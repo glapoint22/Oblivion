@@ -1,0 +1,88 @@
+<div class="backdrop">
+    <div class="form" style="max-width: 350px;">
+        <div class="header">
+            {{headerText}}
+            <div (click)="remove()" class="x">X</div>
+        </div>
+
+        <div class="content">
+
+            <div class="external-login-providers-container">
+
+                <div class="providers-container">
+                    <div class="provider">
+                        <div class="img-container">
+                            <img src="assets/google.png">
+                        </div>
+                        <div class="vertical-line"></div>
+                        <div class="text-container">
+                            <div class="pre-text">{{preText}} with Google</div>
+                            <div class="no-pre-text">Google</div>
+                            
+                        </div>
+                    </div>
+            
+            
+                    <!-- Facebook -->
+                    <div class="provider">
+                        <div class="img-container">
+                            <img src="assets/facebook.png">
+                        </div>
+                        <div class="vertical-line"></div>
+                        <div class="text-container">
+                            <div class="pre-text">{{preText}} with Facebook</div>
+                            <div class="no-pre-text">Facebook</div>
+                        </div>
+                    </div>
+                </div>
+            
+            
+                <div class="providers-container">
+                    <!-- Microsoft -->
+                    <div class="provider">
+                        <div class="img-container">
+                            <img src="assets/microsoft.png">
+                        </div>
+                        <div class="vertical-line"></div>
+                        <div class="text-container">
+                            <div class="pre-text">{{preText}} with Microsoft</div>
+                            <div class="no-pre-text">Microsoft</div>
+                        </div>
+                    </div>
+            
+            
+            
+                    <!-- Amazon -->
+                    <div class="provider">
+                        <div class="img-container">
+                            <img src="assets/amazon.png">
+                        </div>
+                        <div class="vertical-line"></div>
+                        <div class="text-container">
+                            <div class="pre-text">{{preText}} with Amazon</div>
+                            <div class="no-pre-text">Amazon</div>
+                        </div>
+                    </div>
+                </div>
+            
+            
+                <!-- Or -->
+                <div class="or-container">
+                    <div class="left-line"></div>
+                    <div class="text">OR</div>
+                    <div class="right-line"></div>
+                </div>
+            </div>
+
+
+
+            <button (click)="onButtonClick()" class="gold-round-button-sm">{{buttonText}}</button>
+
+            <div class="horizontal-groove-line"></div>
+
+            <span class="member-text">{{footerText1}} </span>
+            <span (click)="setExternalLoginProvidersText()" class="purple-text">{{footerText2}}</span>
+
+        </div>
+    </div>
+</div>

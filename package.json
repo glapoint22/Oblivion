@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "website": "ng serve website --proxy-config website-proxy.config.js -o",
+    "manager": "ng serve manager --proxy-config manager-proxy.config.js -o --port 4201",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -18,11 +19,13 @@
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "~12.2.10",
     "@angular/cli": "~12.2.10",
     "@angular/compiler-cli": "~12.2.0",
     "@types/jasmine": "~3.8.0",

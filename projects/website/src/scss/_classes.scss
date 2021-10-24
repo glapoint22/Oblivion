@@ -1,0 +1,13 @@
+.purple-text {
+    color: $purple-text;
+
+    &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+        color: lighten($purple-text, 12);
+    }
+
+    &:active {
+        color: lighten($purple-text, 17);
+    }
+}

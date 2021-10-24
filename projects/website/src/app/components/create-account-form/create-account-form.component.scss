@@ -1,0 +1,74 @@
+@import '../../../scss/variables';
+
+.backdrop .form .content {
+    padding: 0;
+}
+
+.container {
+    padding: 15px;
+    padding-bottom: 20px;
+
+    .fa-info {
+        font-style: italic;
+        font-size: 12px;
+        color: $purple-text;
+        margin: 0 7px;
+    }
+
+    span {
+        color: $gold;
+        font-size: 12px;
+    }
+
+    .gold-round-button-sm {
+        margin: auto;
+        display: block;
+        margin-top: 22px;
+    }
+}
+
+
+
+.member-text {
+    font-size: 15px;
+    color: #dadada;
+}
+
+.footer {
+    text-align: center;
+    margin-bottom: 17px;
+}
+
+@media (max-height: 500px) {
+    .text-group {
+        display: flex;
+
+        & div:first-child {
+            margin-right: 10px;
+        }
+    }
+
+    .backdrop .form .content input {
+        margin-bottom: 10px;
+    }
+}
+
+@media(max-height: 350px) {
+    .footer {
+        display: none;
+    }
+}
+
+@media(max-height: 300px) {
+    .info-container {
+        display: none;
+    }
+    
+    .container .gold-round-button-sm {
+        margin-top: 5px;
+    }
+
+    .container {
+        padding-bottom: 15px;
+    }
+}

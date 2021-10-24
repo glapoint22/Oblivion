@@ -1,0 +1,68 @@
+<div class="backdrop">
+    <div class="form" style="max-width: 350px;">
+        <div class="header">
+            Create Account
+            <div (click)="remove()" class="x">X</div>
+        </div>
+
+        <div class="content">
+
+            
+
+            <div class="container">
+
+                <div class="text-group">
+                    <div>
+                        <div class="label">First Name:</div>
+                        <input type="text">
+                    </div>
+                    
+                    <div>
+                        <div class="label">Last Name:</div>
+                        <input type="text">
+                    </div>
+                    
+                </div>
+                
+
+                <div class="text-group">
+
+                    <div>
+                        <div class="label">Email:</div>
+                        <input type="text">
+                    </div>
+                    
+                    <div>
+                        <div class="label">Password:</div>
+                        <div class="input-container">
+                            <input style="margin-bottom: 10px;" type="password">
+                            <div class="icon-container">
+                                <i class="fas fa-eye-slash"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="info-container">
+                    <i class="fas fa-info"></i>
+                    <span>Password must be at least 6 characters</span>
+                </div>
+                
+
+                <button class="gold-round-button-sm">Create Account</button>
+            </div>
+
+            
+            <div class="footer">
+                <div class="horizontal-groove-line"></div>
+                <span class="member-text">Already a member? </span>
+                <span class="purple-text" (click)="onLogInClick()">Log In</span>
+            </div>
+
+            
+
+        </div>
+    </div>
+</div>
+
