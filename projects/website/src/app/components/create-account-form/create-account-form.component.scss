@@ -1,74 +1,33 @@
-@import '../../../scss/variables';
+@import '../../../scss/mixins';
 
-.backdrop .form .content {
-    padding: 0;
-}
+.info-container {
+    margin-top: -13px;
+    margin-bottom: 22px;
 
-.container {
-    padding: 15px;
-    padding-bottom: 20px;
-
-    .fa-info {
-        font-style: italic;
-        font-size: 12px;
-        color: $purple-text;
+    .info-icon {
         margin: 0 7px;
     }
 
     span {
-        color: $gold;
+        color: #ffba00;
         font-size: 12px;
-    }
-
-    .gold-round-button-sm {
-        margin: auto;
-        display: block;
-        margin-top: 22px;
     }
 }
 
-
-
-.member-text {
-    font-size: 15px;
-    color: #dadada;
+.gold-round-button-sm {
+    margin: auto;
+    display: block;
 }
 
 .footer {
+    height: 53px;
+    flex-shrink: 0;
     text-align: center;
-    margin-bottom: 17px;
-}
 
-@media (max-height: 500px) {
-    .text-group {
-        display: flex;
-
-        & div:first-child {
-            margin-right: 10px;
-        }
-    }
-
-    .backdrop .form .content input {
-        margin-bottom: 10px;
+    .footer-text {
+        font-size: 15px;
+        color: #dadada;
     }
 }
 
-@media(max-height: 350px) {
-    .footer {
-        display: none;
-    }
-}
-
-@media(max-height: 300px) {
-    .info-container {
-        display: none;
-    }
-    
-    .container .gold-round-button-sm {
-        margin-top: 5px;
-    }
-
-    .container {
-        padding-bottom: 15px;
-    }
-}
+@include modal-values(350px, 393px, 460px);

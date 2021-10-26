@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ExternalLoginProvidersFormType } from '../../classes/enums';
-import { LazyLoading } from '../../classes/lazy-loading';
+import { Modal } from '../../classes/modal';
 
 @Component({
   selector: 'external-login-providers-form',
   templateUrl: './external-login-providers-form.component.html',
   styleUrls: ['./external-login-providers-form.component.scss']
 })
-export class ExternalLoginProvidersFormComponent extends LazyLoading implements OnInit {
+export class ExternalLoginProvidersFormComponent extends Modal implements OnInit {
   public type!: ExternalLoginProvidersFormType;
   public headerText!: string;
   public preText!: string;
@@ -53,7 +53,7 @@ export class ExternalLoginProvidersFormComponent extends LazyLoading implements 
   }
 
   async onButtonClick(): Promise<void> {
-    this.remove();
+    this.close();
 
     if (this.type == ExternalLoginProvidersFormType.SignUp) {
       const { CreateAccountFormComponent } = await import('../create-account-form/create-account-form.component');

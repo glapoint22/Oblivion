@@ -31,8 +31,7 @@
               "projects/website/src/assets"
             ],
             "styles": [
-              "projects/website/src/styles.scss",
-              "node_modules/@fortawesome/fontawesome-free/css/all.css"
+              "projects/website/src/styles.scss"
             ],
             "scripts": []
           },

@@ -22,20 +22,32 @@ export class AppComponent implements OnInit {
 
   async openSignUpForm(): Promise<void> {
     const { ExternalLoginProvidersFormComponent } = await import('./components/external-login-providers-form/external-login-providers-form.component');
-    const externalLoginProvidersForm = this.lazyLoadingService.createComponent(ExternalLoginProvidersFormComponent)
-    externalLoginProvidersForm.type = ExternalLoginProvidersFormType.SignUp;
+    const componentRef = this.lazyLoadingService.createComponent(ExternalLoginProvidersFormComponent);
+    componentRef.instance.type = ExternalLoginProvidersFormType.SignUp;
+    componentRef.instance.viewRef = componentRef.hostView;
   }
 
   async openLogInForm(): Promise<void> {
     const { ExternalLoginProvidersFormComponent } = await import('./components/external-login-providers-form/external-login-providers-form.component');
-    const externalLoginProvidersForm = this.lazyLoadingService.createComponent(ExternalLoginProvidersFormComponent)
-    externalLoginProvidersForm.type = ExternalLoginProvidersFormType.LogIn;
+    const componentRef = this.lazyLoadingService.createComponent(ExternalLoginProvidersFormComponent);
+    const externalLoginProvidersForm = componentRef.instance;
+    componentRef.instance.type = ExternalLoginProvidersFormType.LogIn;
+    componentRef.instance.viewRef = componentRef.hostView;
   }
 
 
   async openCreateAccountForm(): Promise<void> {
     const { CreateAccountFormComponent } = await import('./components/create-account-form/create-account-form.component');
-    this.lazyLoadingService.createComponent(CreateAccountFormComponent)
+
+    const { CreateAccountFormModule } = await import('./components/create-account-form/create-account-form.module');
+
+    this.lazyLoadingService.getModuleRef(CreateAccountFormModule)
+      .then(moduleRef => {
+        const componentRef = this.lazyLoadingService.createComponent(CreateAccountFormComponent, 0, moduleRef.injector);
+        componentRef.instance.viewRef = componentRef.hostView;
+      })
+
+
   }
 
 }

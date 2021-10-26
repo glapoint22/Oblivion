@@ -1,5 +1,5 @@
 @mixin button ($width, $height, $radius) {
-    @include border-radius($radius);
+    border-radius: $radius;
     width: 100%;
     max-width: $width;
     height: $height;

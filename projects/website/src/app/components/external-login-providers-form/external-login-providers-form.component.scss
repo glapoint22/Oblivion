@@ -24,7 +24,7 @@
     max-width: 267px;
     height: 34px;
     border: 1px solid #e5ae1b;
-    @include border-radius(17px);
+    border-radius: 17px;
     background: #181818;
     cursor: pointer;
     color: #dadada;

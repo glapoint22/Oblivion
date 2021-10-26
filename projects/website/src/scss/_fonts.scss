@@ -1,0 +1,76 @@
+@font-face {
+    font-family: 'lithos pro';
+    src: url('../assets/fonts/LithosPro-Black.otf');
+}
+
+@font-face {
+    font-family: 'hide-password';
+    src: url('../assets/fonts/hide-password.ttf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+
+@font-face {
+    font-family: 'show-password';
+    src: url('../assets/fonts/show-password.ttf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+
+@font-face {
+    font-family: 'info';
+    src: url('../assets/fonts/info.ttf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+
+.hide-password, .show-password {
+    color: $purple-text;
+
+    &:hover {
+        color: lighten($purple-text, 6);
+    }
+
+    &:active {
+        color: lighten($purple-text, 10);
+    }
+}
+
+
+.hide-password
+{
+    font-family: 'hide-password';
+    &::before {
+        content: "\e23";
+    }
+}
+
+
+.show-password
+{
+    font-family: 'show-password';
+    &::before {
+    content: "\e22";
+    }
+}
+
+
+.info-icon
+{
+    font-family: 'info';
+    font-style: italic;
+    font-size: 12px;
+    color: $purple-text;
+    
+
+    &::before {
+    content: "\e24";
+    }
+}
+  

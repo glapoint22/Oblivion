@@ -1,68 +1,75 @@
-<div class="backdrop">
-    <div class="form" style="max-width: 350px;">
+<!-- Backdrop -->
+<div class="backdrop" (click)="close()">
+
+    <!-- Base -->
+    <div class="base" (click)="$event.stopPropagation()">
+
+        <!-- Header -->
         <div class="header">
             Create Account
-            <div (click)="remove()" class="x">X</div>
+
+            <!-- X -->
+            <div class="x" (click)="close()">X</div>
         </div>
 
-        <div class="content">
+        <!-- Drop Shadow -->
+        <div class="drop-shadow"></div>
 
-            
+        <!-- Content -->
+        <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()" class="content">
 
-            <div class="container">
+            <!-- First Name -->
+            <div class="label"> First Name:</div>
+            <input type="text" formControlName="firstName"
+                [ngClass]="{'error-border': _form.submitted && form.controls.firstName.errors}">
 
-                <div class="text-group">
-                    <div>
-                        <div class="label">First Name:</div>
-                        <input type="text">
-                    </div>
-                    
-                    <div>
-                        <div class="label">Last Name:</div>
-                        <input type="text">
-                    </div>
-                    
+            <ng-container *ngIf="_form.submitted && form.controls.firstName.errors">
+                <ul>
+                    <li *ngFor="let message of getErrorMessages('firstName')">
+                        {{message}}
+                    </li>
+                </ul>
+            </ng-container>
+
+            <!-- Last Name -->
+            <div class="label">Last Name:</div>
+            <input type="text">
+
+
+
+            <!-- Email -->
+            <div class="label">Email:</div>
+            <input type="text">
+
+
+
+            <!-- Password -->
+            <div class="label">Password:</div>
+            <div class="input-container">
+                <input type="password">
+                <div class="icon-container">
+                    <i class="hide-password"></i>
                 </div>
-                
-
-                <div class="text-group">
-
-                    <div>
-                        <div class="label">Email:</div>
-                        <input type="text">
-                    </div>
-                    
-                    <div>
-                        <div class="label">Password:</div>
-                        <div class="input-container">
-                            <input style="margin-bottom: 10px;" type="password">
-                            <div class="icon-container">
-                                <i class="fas fa-eye-slash"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-
-                <div class="info-container">
-                    <i class="fas fa-info"></i>
-                    <span>Password must be at least 6 characters</span>
-                </div>
-                
-
-                <button class="gold-round-button-sm">Create Account</button>
             </div>
 
-            
-            <div class="footer">
-                <div class="horizontal-groove-line"></div>
-                <span class="member-text">Already a member? </span>
-                <span class="purple-text" (click)="onLogInClick()">Log In</span>
+
+            <!-- Info container -->
+            <div class="info-container">
+                <i class="info-icon"></i>
+                <span>Password must be at least 6 characters</span>
             </div>
 
-            
 
+            <!-- Button -->
+            <button type="submit" class="gold-round-button-sm">Create Account</button>
+        </form>
+
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="horizontal-groove-line"></div>
+            <span class="footer-text">Already a member? </span>
+            <span class="purple-text" (click)="onLogInClick()">Log In</span>
         </div>
     </div>
 </div>
-

@@ -1,6 +1,5 @@
-import { Compiler, ComponentFactory, ComponentFactoryResolver, Injectable, Injector, NgModuleRef, Type, ViewContainerRef } from '@angular/core';
+import { Compiler, ComponentFactory, ComponentFactoryResolver, ComponentRef, Injectable, Injector, NgModuleRef, Type, ViewContainerRef } from '@angular/core';
 import { NgModuleFactory } from '@angular/core/src/r3_symbols';
-import { LazyLoading } from '../../classes/lazy-loading';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +9,9 @@ export class LazyLoadingService {
 
   constructor(private compiler: Compiler, private injector: Injector, private resolver: ComponentFactoryResolver) { }
 
-  createComponent<T extends LazyLoading>(component: Type<T>, index?: number, injector?: Injector): T {
+  createComponent<T>(component: Type<T>, index?: number, injector?: Injector): ComponentRef<T> {
     const componentFactory: ComponentFactory<T> = this.resolver.resolveComponentFactory(component);
-    const componentRef = this.container.createComponent(componentFactory, index, injector);
-
-    componentRef.instance.viewRef = componentRef.hostView;
-    return componentRef.instance;
+    return this.container.createComponent(componentFactory, index, injector);
   }
 
 
