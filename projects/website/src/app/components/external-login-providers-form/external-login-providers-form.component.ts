@@ -5,7 +5,13 @@ import { Modal } from '../../classes/modal';
 @Component({
   selector: 'external-login-providers-form',
   templateUrl: './external-login-providers-form.component.html',
-  styleUrls: ['./external-login-providers-form.component.scss']
+  styleUrls: [
+    '../../../scss/gold-buttons.scss',
+    '../../../scss/horizontal-groove-line.scss',
+    '../../../scss/purple-text.scss',
+    '../../../scss/vertical-line.scss',
+    './external-login-providers-form.component.scss'
+  ]
 })
 export class ExternalLoginProvidersFormComponent extends Modal implements OnInit {
   public type!: ExternalLoginProvidersFormType;
@@ -52,12 +58,18 @@ export class ExternalLoginProvidersFormComponent extends Modal implements OnInit
     }
   }
 
-  async onButtonClick(): Promise<void> {
+  async onCreateAccountButtonClick(): Promise<void> {
     this.close();
 
     if (this.type == ExternalLoginProvidersFormType.SignUp) {
       const { CreateAccountFormComponent } = await import('../create-account-form/create-account-form.component');
-      this.lazyLoadingService.createComponent(CreateAccountFormComponent)
+      const { CreateAccountFormModule } = await import('../create-account-form/create-account-form.module');
+
+      this.lazyLoadingService.getModuleRef(CreateAccountFormModule)
+        .then(moduleRef => {
+          const componentRef = this.lazyLoadingService.createComponent(CreateAccountFormComponent, 0, moduleRef.injector);
+          componentRef.instance.viewRef = componentRef.hostView;
+        })
     }
   }
 }

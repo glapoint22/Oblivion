@@ -1,0 +1,13 @@
+@mixin button ($width, $height, $radius) {
+    border-radius: $radius;
+    width: 100%;
+    max-width: $width;
+    height: $height;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:disabled {
+        cursor: default;
+    }
+}

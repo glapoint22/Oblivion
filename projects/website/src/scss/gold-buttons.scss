@@ -1,0 +1,46 @@
+@import './button.scss';
+
+@mixin gold-button ($width, $height, $radius) {
+    $gold-gradient-map: (light: #ffdc7f, dark: #c08d02);
+    color: black;
+
+    @include button($width, $height, $radius);
+    background: linear-gradient(map-get($gold-gradient-map, light), map-get($gold-gradient-map, dark));
+    
+
+    &:hover {
+        background: linear-gradient(lighten(map-get($gold-gradient-map, light), 6), lighten(map-get($gold-gradient-map, dark), 6));
+    }
+
+    &:disabled {
+        background: linear-gradient(#6e6e6e, #2c2c2c);
+        color: #201f1e;
+    }
+
+    &:active {
+        background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
+    }
+}
+
+
+
+
+
+
+.gold-round-button-sm {
+    @include gold-button(267px, 32px, 16px);
+    font-weight: bold;
+    margin: auto;
+    display: block;
+}
+
+.gold-round-button-lg {
+    @include gold-button(237px, 42px, 21px);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+.gold-rect-button {
+    @include gold-button(75px, 30px, 4px);
+}

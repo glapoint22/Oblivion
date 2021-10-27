@@ -1,6 +1,9 @@
-@import "./scss/variables";
-@import'./scss/fonts';
-@import "./scss/reset";
-@import "./scss/classes";
-@import "./scss/buttons";
-@import "./scss/lines";
+html {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+body {
+    margin: 0;
+    background-color: #1b1b1b;
+}

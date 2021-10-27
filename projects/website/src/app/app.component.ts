@@ -38,7 +38,6 @@ export class AppComponent implements OnInit {
 
   async openCreateAccountForm(): Promise<void> {
     const { CreateAccountFormComponent } = await import('./components/create-account-form/create-account-form.component');
-
     const { CreateAccountFormModule } = await import('./components/create-account-form/create-account-form.module');
 
     this.lazyLoadingService.getModuleRef(CreateAccountFormModule)

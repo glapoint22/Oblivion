@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'info';
+    src: url('../assets/fonts/info.ttf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+.info-icon
+{
+    font-family: 'info';
+    font-style: italic;
+    font-size: 12px;
+    color: #e700c7;
+    
+
+    &::before {
+    content: "\e24";
+    }
+}

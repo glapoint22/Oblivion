@@ -1,21 +1,4 @@
-@import '../../../scss/mixins';
-
-
-.backdrop .form .content {
-    text-align: center;
-    padding: 0;
-    padding-top: 15px;
-    padding-bottom: 17px;
-    .text {
-        margin-bottom: 0;
-    }
-}
-
-
-
-.external-login-providers-container {
-    padding: 0 15px;
-}
+@import '../../../scss/modal.scss';
 
 
 .provider {
@@ -75,16 +58,11 @@
 
 
 
-.providers-container {
-    display: block;
-}
-
-
 .or-container {
     display: flex;
     width: 100%;
     align-items: center;
-    margin-top: 32px;
+    margin: 22px 0;
 
     .left-line {
         background: linear-gradient(to right, rgb(66, 66, 66, 0), rgb(66,66,66)); height: 1px; width: 100%;
@@ -101,98 +79,18 @@
     }
 }
 
-.pre-text {
-    display: block;
-}
-
-.no-pre-text {
-    display: none;
-}
 
 
-button {
-    margin-top: 32px;
-    margin-bottom: 20px;
-}
+.footer {
+    height: 53px;
+    flex-shrink: 0;
+    text-align: center;
 
-
-.member-text {
-    font-size: 15px;
-    color: #dadada;
-}
-
-
-
-
-
-
-
-@media (max-height: 450px) {
-    .providers-container {
-        display: flex;
-        justify-content: center;
-    }
-
-    .provider {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-
-    .or-container {
-        margin-top: 0;
-    }
-
-    button {
-        margin-top: 21px;
+    .footer-text {
+        font-size: 15px;
+        color: #dadada;
     }
 }
 
 
-@media (max-height: 320px) {
-    .member-text {
-        display: none;
-    }
-
-    .purple-text {
-        display: none;
-    }
-
-    .horizontal-groove-line {
-        display: none;
-    }
-
-    button {
-        margin-top: 10px;
-        margin-bottom: 0;
-    }
-
-    .provider {
-        margin-bottom: 10px;
-    }
-}
-
-@media (max-height: 450px) and (max-width: 345px) {
-    .pre-text {
-        display: none;
-    }
-    
-    .no-pre-text {
-        display: block;
-    }
-    
-    .vertical-line {
-        display: none;
-    }
-
-    .provider .text-container {
-        justify-content: start;
-        padding: 0;
-    }
-}
-
-
-@media (max-width: 320px) {
-    .gold-round-button-sm {
-        max-width: 200px;
-    }
-}
+@include modal-values(350px, 326px, 419px);

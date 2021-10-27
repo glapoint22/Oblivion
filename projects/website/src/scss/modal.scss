@@ -4,12 +4,23 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
     display: flex;
     justify-content: center;
     align-items: center;
     outline: 0;
+    pointer-events: none;
 
     .base {
         display: flex;
@@ -18,6 +29,7 @@
         background: #1b1b1b;
         border: 1px solid #380030;
         border-radius: 7px;
+        pointer-events: all;
     }
 
     .header {
@@ -66,6 +78,26 @@
         justify-content: right;
         button {
             margin-left: 10px;
+        }
+    }
+}
+
+
+
+@mixin modal-values ($max-width, $max-height, $breakpoint) {
+    .base {
+        max-width: $max-width;
+    }
+    
+    .content {
+        max-height: $max-height;
+    }
+
+    @media (max-height: $breakpoint) {
+        .base {
+            top: 0; 
+            bottom: 0;
+            position: absolute;
         }
     }
 }

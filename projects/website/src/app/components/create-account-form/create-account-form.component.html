@@ -1,8 +1,12 @@
 <!-- Backdrop -->
-<div class="backdrop" (click)="close()">
+<div class="backdrop" (click)="close()"></div>
+
+
+<!-- Container -->
+<div class="container">
 
     <!-- Base -->
-    <div class="base" (click)="$event.stopPropagation()">
+    <div class="base">
 
         <!-- Header -->
         <div class="header">
@@ -25,7 +29,7 @@
 
             <ng-container *ngIf="_form.submitted && form.controls.firstName.errors">
                 <ul>
-                    <li *ngFor="let message of getErrorMessages('firstName')">
+                    <li *ngFor="let message of getErrorMessages('firstName', 'First name')">
                         {{message}}
                     </li>
                 </ul>
@@ -33,23 +37,52 @@
 
             <!-- Last Name -->
             <div class="label">Last Name:</div>
-            <input type="text">
+            <input type="text" formControlName="lastName"
+                [ngClass]="{'error-border': _form.submitted && form.controls.lastName.errors}">
+
+            <ng-container *ngIf="_form.submitted && form.controls.lastName.errors">
+                <ul>
+                    <li *ngFor="let message of getErrorMessages('lastName', 'Last name')">
+                        {{message}}
+                    </li>
+                </ul>
+            </ng-container>
 
 
 
             <!-- Email -->
             <div class="label">Email:</div>
-            <input type="text">
+            <input type="text" formControlName="email"
+                [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
 
-
+            <ng-container *ngIf="_form.submitted && form.controls.email.errors">
+                <ul>
+                    <li *ngFor="let message of getErrorMessages('email', 'Email')">
+                        {{message}}
+                    </li>
+                </ul>
+            </ng-container>
 
             <!-- Password -->
             <div class="label">Password:</div>
             <div class="input-container">
-                <input type="password">
-                <div class="icon-container">
+                <input type="password" formControlName="password"
+                    [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}">
+
+
+                <div class="icon-container" showHidePassword>
                     <i class="hide-password"></i>
                 </div>
+
+                <ng-container *ngIf="_form.submitted && form.controls.password.errors">
+                    <ul>
+                        <li *ngFor="let message of getErrorMessages('password', 'Password')">
+                            {{message}}
+                        </li>
+                    </ul>
+                </ng-container>
+
+
             </div>
 
 
@@ -61,7 +94,7 @@
 
 
             <!-- Button -->
-            <button type="submit" class="gold-round-button-sm">Create Account</button>
+            <button type="submit" class="gold-round-button-sm">Create Your Account</button>
         </form>
 
 

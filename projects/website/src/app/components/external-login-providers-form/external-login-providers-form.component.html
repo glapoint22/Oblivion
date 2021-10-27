@@ -1,88 +1,97 @@
-<div class="backdrop">
-    <div class="form" style="max-width: 350px;">
+<!-- Backdrop -->
+<div class="backdrop" (click)="close()"></div>
+
+<!-- Container -->
+<div class="container">
+
+    <!-- Base -->
+    <div class="base">
+
+        <!-- Header -->
         <div class="header">
             {{headerText}}
-            <div (click)="close()" class="x">X</div>
+
+            <!-- X -->
+            <div class="x" (click)="close()">X</div>
         </div>
 
+        <!-- Drop Shadow -->
+        <div class="drop-shadow"></div>
+
+        <!-- Content -->
         <div class="content">
 
-            <div class="external-login-providers-container">
-
-                <div class="providers-container">
-                    <div class="provider">
-                        <div class="img-container">
-                            <img src="assets/google.png">
-                        </div>
-                        <div class="vertical-line"></div>
-                        <div class="text-container">
-                            <div class="pre-text">{{preText}} with Google</div>
-                            <div class="no-pre-text">Google</div>
-                            
-                        </div>
-                    </div>
-            
-            
-                    <!-- Facebook -->
-                    <div class="provider">
-                        <div class="img-container">
-                            <img src="assets/facebook.png">
-                        </div>
-                        <div class="vertical-line"></div>
-                        <div class="text-container">
-                            <div class="pre-text">{{preText}} with Facebook</div>
-                            <div class="no-pre-text">Facebook</div>
-                        </div>
-                    </div>
+            <!-- Google -->
+            <div class="provider">
+                <div class="img-container">
+                    <img src="assets/google.png">
                 </div>
-            
-            
-                <div class="providers-container">
-                    <!-- Microsoft -->
-                    <div class="provider">
-                        <div class="img-container">
-                            <img src="assets/microsoft.png">
-                        </div>
-                        <div class="vertical-line"></div>
-                        <div class="text-container">
-                            <div class="pre-text">{{preText}} with Microsoft</div>
-                            <div class="no-pre-text">Microsoft</div>
-                        </div>
-                    </div>
-            
-            
-            
-                    <!-- Amazon -->
-                    <div class="provider">
-                        <div class="img-container">
-                            <img src="assets/amazon.png">
-                        </div>
-                        <div class="vertical-line"></div>
-                        <div class="text-container">
-                            <div class="pre-text">{{preText}} with Amazon</div>
-                            <div class="no-pre-text">Amazon</div>
-                        </div>
-                    </div>
-                </div>
-            
-            
-                <!-- Or -->
-                <div class="or-container">
-                    <div class="left-line"></div>
-                    <div class="text">OR</div>
-                    <div class="right-line"></div>
+                <div class="vertical-line"></div>
+                <div class="text-container">
+                    <div>{{preText}} with Google</div>
                 </div>
             </div>
 
 
 
-            <button (click)="onButtonClick()" class="gold-round-button-sm">{{buttonText}}</button>
+            <!-- Facebook -->
+            <div class="provider">
+                <div class="img-container">
+                    <img src="assets/facebook.png">
+                </div>
+                <div class="vertical-line"></div>
+                <div class="text-container">
+                    <div>{{preText}} with Facebook</div>
+                </div>
+            </div>
 
+
+
+
+            <!-- Microsoft -->
+            <div class="provider">
+                <div class="img-container">
+                    <img src="assets/microsoft.png">
+                </div>
+                <div class="vertical-line"></div>
+                <div class="text-container">
+                    <div>{{preText}} with Microsoft</div>
+                </div>
+            </div>
+    
+    
+    
+           <!-- Amazon -->
+            <div class="provider">
+                <div class="img-container">
+                    <img src="assets/amazon.png">
+                </div>
+                <div class="vertical-line"></div>
+                <div class="text-container">
+                    <div>{{preText}} with Amazon</div>
+                </div>
+            </div>
+
+
+
+            <!-- Or -->
+            <div class="or-container">
+                <div class="left-line"></div>
+                <div class="text">OR</div>
+                <div class="right-line"></div>
+            </div>
+
+
+            <!-- Button -->
+            <button (click)="onCreateAccountButtonClick()" class="gold-round-button-sm">{{buttonText}}</button>
+        </div>
+
+
+        <!-- Footer -->
+        <div class="footer">
             <div class="horizontal-groove-line"></div>
-
-            <span class="member-text">{{footerText1}} </span>
-            <span (click)="setExternalLoginProvidersText()" class="purple-text">{{footerText2}}</span>
-
+            <span class="footer-text">{{footerText1}} </span>
+            <span class="purple-text" (click)="setExternalLoginProvidersText()">{{footerText2}}</span>
         </div>
     </div>
 </div>

@@ -6,16 +6,26 @@ import { Validation } from '../../classes/validation';
 @Component({
   selector: 'create-account-form',
   templateUrl: './create-account-form.component.html',
-  styleUrls: ['../../../scss/modal.scss', '../../../scss/forms.scss', './create-account-form.component.scss']
+  styleUrls: [
+    '../../../scss/forms.scss',
+    '../../../scss/gold-buttons.scss',
+    '../../../scss/horizontal-groove-line.scss',
+    '../../../scss/purple-text.scss',
+    '../../../scss/show-hide-password.scss',
+    '../../../scss/lithos-pro.scss',
+    '../../../scss/info-icon.scss',
+    './create-account-form.component.scss'
+  ]
 })
 export class CreateAccountFormComponent extends Validation {
+  
   
 
 
   onSubmit() {
-    // if (this.form.valid) {
-    //   console.log('Submitting!!!');
-    // }
+    if (this.form.valid) {
+      console.log('Submit');
+    }
   }
 
 
