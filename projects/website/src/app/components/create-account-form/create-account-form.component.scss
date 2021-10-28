@@ -1,4 +1,6 @@
 @import '../../../scss/modal.scss';
+@import '../../../scss/variables.scss';
+@include modal-values(350px, 387px, 480px);
 
 .info-container {
     margin-top: -13px;
@@ -9,21 +11,7 @@
     }
 
     span {
-        color: #ffba00;
+        color: $gold;
         font-size: 12px;
     }
 }
-
-
-.footer {
-    height: 53px;
-    flex-shrink: 0;
-    text-align: center;
-
-    .footer-text {
-        font-size: 15px;
-        color: #dadada;
-    }
-}
-
-@include modal-values(350px, 393px, 460px);

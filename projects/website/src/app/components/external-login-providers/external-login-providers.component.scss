@@ -1,4 +1,4 @@
-@import '../../../scss/modal.scss';
+@import '../../../scss/variables.scss';
 
 
 .provider {
@@ -6,7 +6,7 @@
     width: 100%;
     max-width: 267px;
     height: 34px;
-    border: 1px solid #e5ae1b;
+    border: 1px solid $gold;
     border-radius: 17px;
     background: #181818;
     cursor: pointer;
@@ -16,7 +16,7 @@
     
 
     &:hover {
-        border-color: lighten(#e5ae1b, 10);
+        border-color: lighten($gold, 10);
         background: lighten(#181818, 2);
         color: lighten(#dadada, 8);
         & > .img-container {
@@ -25,7 +25,7 @@
     }
 
     &:active {
-        border-color: lighten(#e5ae1b, 15);
+        border-color: lighten($gold, 15);
         background: lighten(#181818, 4);
         color: lighten(#dadada, 12);
         & > .img-container {
@@ -55,42 +55,3 @@
         padding: 0 10px;
     }
 }
-
-
-
-.or-container {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    margin: 22px 0;
-
-    .left-line {
-        background: linear-gradient(to right, rgb(66, 66, 66, 0), rgb(66,66,66)); height: 1px; width: 100%;
-    }
-
-    .text {
-        margin: 0 5px;
-        color: white;
-        font-weight: bold;
-    }
-
-    .right-line {
-        background: linear-gradient(to right, rgb(66, 66, 66), rgb(66,66,66, 0)); height: 1px; width: 100%;
-    }
-}
-
-
-
-.footer {
-    height: 53px;
-    flex-shrink: 0;
-    text-align: center;
-
-    .footer-text {
-        font-size: 15px;
-        color: #dadada;
-    }
-}
-
-
-@include modal-values(350px, 326px, 419px);

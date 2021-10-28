@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { ExternalLoginProvidersFormType } from './classes/enums';
 import { LazyLoadingService } from './services/lazy-loading/lazy-loading.service';
 
 @Component({
@@ -21,18 +20,26 @@ export class AppComponent implements OnInit {
 
 
   async openSignUpForm(): Promise<void> {
-    const { ExternalLoginProvidersFormComponent } = await import('./components/external-login-providers-form/external-login-providers-form.component');
-    const componentRef = this.lazyLoadingService.createComponent(ExternalLoginProvidersFormComponent);
-    componentRef.instance.type = ExternalLoginProvidersFormType.SignUp;
-    componentRef.instance.viewRef = componentRef.hostView;
+    const { SignUpFormModule } = await import('./components/sign-up-form/sign-up-form.module');
+    const { SignUpFormComponent } = await import('./components/sign-up-form/sign-up-form.component');
+
+    this.lazyLoadingService.getModuleRef(SignUpFormModule)
+      .then(moduleRef => {
+        const componentRef = this.lazyLoadingService.createComponent(SignUpFormComponent, 0, moduleRef.injector);
+        componentRef.instance.viewRef = componentRef.hostView;
+      });
   }
 
+  
   async openLogInForm(): Promise<void> {
-    const { ExternalLoginProvidersFormComponent } = await import('./components/external-login-providers-form/external-login-providers-form.component');
-    const componentRef = this.lazyLoadingService.createComponent(ExternalLoginProvidersFormComponent);
-    const externalLoginProvidersForm = componentRef.instance;
-    componentRef.instance.type = ExternalLoginProvidersFormType.LogIn;
-    componentRef.instance.viewRef = componentRef.hostView;
+    const { LogInFormModule } = await import('./components/log-in-form/log-in-form.module');
+    const { LogInFormComponent } = await import('./components/log-in-form/log-in-form.component');
+
+    this.lazyLoadingService.getModuleRef(LogInFormModule)
+      .then(moduleRef => {
+        const componentRef = this.lazyLoadingService.createComponent(LogInFormComponent, 0, moduleRef.injector);
+        componentRef.instance.viewRef = componentRef.hostView;
+      });
   }
 
 
@@ -44,7 +51,7 @@ export class AppComponent implements OnInit {
       .then(moduleRef => {
         const componentRef = this.lazyLoadingService.createComponent(CreateAccountFormComponent, 0, moduleRef.injector);
         componentRef.instance.viewRef = componentRef.hostView;
-      })
+      });
 
 
   }

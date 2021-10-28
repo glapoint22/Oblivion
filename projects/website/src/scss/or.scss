@@ -1,0 +1,24 @@
+.or-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    margin: 22px 0;
+
+    .left-line {
+        background: linear-gradient(to right, rgb(66, 66, 66, 0), rgb(66,66,66));
+        height: 1px;
+        width: 100%;
+    }
+
+    .text {
+        margin: 0 5px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .right-line {
+        background: linear-gradient(to right, rgb(66, 66, 66), rgb(66,66,66, 0));
+        height: 1px;
+        width: 100%;
+    }
+}

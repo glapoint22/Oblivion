@@ -7,8 +7,8 @@ export class ShowHidePasswordDirective {
   constructor(private el: ElementRef<HTMLElement>) { }
 
   @HostListener('click') onClick() {
-    let inputElement: HTMLInputElement = this.el.nativeElement.previousElementSibling as HTMLInputElement;
-    let iconElement: HTMLElement = this.el.nativeElement.firstChild as HTMLElement;
+    const inputElement: HTMLInputElement = this.el.nativeElement.previousElementSibling as HTMLInputElement;
+    const iconElement: HTMLElement = this.el.nativeElement.firstChild as HTMLElement;
 
 
     if(inputElement.type == 'text') {

@@ -1,0 +1,56 @@
+$background: #282828;
+$border: #505050;
+
+.checkbox, .radio {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    // width: 13px;
+    // height: 13px;
+    padding-left: 21px;
+
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 13px;
+        width: 13px;
+        background-color: $background;
+        border: 1px solid $border;
+
+        &:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+    }
+    
+
+    & input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+
+        &:checked ~ .checkmark {
+            background-color: lighten($background, 10);
+            border-color: lighten($border, 10);
+    
+            &:after {
+                display: block;
+            }
+        }
+    }
+
+
+    &:hover input ~ .checkmark {
+        background-color: lighten($background, 6);
+        border-color: lighten($border, 6);
+    }
+}

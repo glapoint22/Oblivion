@@ -1,0 +1,13 @@
+@import './checkbox-radio.scss';
+
+.radio .checkmark {
+    border-radius: 50%;
+    &:after {
+        top: 3px;
+        left: 3px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #ffba00;
+    }
+}

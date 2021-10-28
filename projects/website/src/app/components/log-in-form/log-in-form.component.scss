@@ -1,0 +1,17 @@
+@import '../../../scss/modal.scss';
+@include modal-values(350px, 497px, 590px);
+
+
+.or-container {
+    margin-bottom: 19px;
+}
+
+.forgot-password {
+    float: right;
+}
+
+@media (max-width: 300px) {
+    .forgot-password {
+        float: none;
+    }
+}

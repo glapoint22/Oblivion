@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ExternalLoginProvidersFormType } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 
 
@@ -14,14 +13,13 @@ import { Validation } from '../../classes/validation';
     '../../../scss/show-hide-password.scss',
     '../../../scss/lithos-pro.scss',
     '../../../scss/info-icon.scss',
+    '../../../scss/footer.scss',
     './create-account-form.component.scss'
   ]
 })
 export class CreateAccountFormComponent extends Validation {
   
   
-
-
   onSubmit() {
     if (this.form.valid) {
       console.log('Submit');
@@ -29,11 +27,15 @@ export class CreateAccountFormComponent extends Validation {
   }
 
 
-  async onLogInClick(): Promise<void> {
+  async onLogInLinkClick() {
     this.close();
-    const { ExternalLoginProvidersFormComponent } = await import('../external-login-providers-form/external-login-providers-form.component');
-    const componentRef = this.lazyLoadingService.createComponent(ExternalLoginProvidersFormComponent);
-    const externalLoginProvidersForm = componentRef.instance;
-    externalLoginProvidersForm.type = ExternalLoginProvidersFormType.LogIn;
+    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
+    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+
+    this.lazyLoadingService.getModuleRef(LogInFormModule)
+      .then(moduleRef => {
+        const componentRef = this.lazyLoadingService.createComponent(LogInFormComponent, 0, moduleRef.injector);
+        componentRef.instance.viewRef = componentRef.hostView;
+      });
   }
 }

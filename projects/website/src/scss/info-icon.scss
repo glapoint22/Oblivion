@@ -1,3 +1,5 @@
+@import '../scss/variables.scss';
+
 @font-face {
     font-family: 'info';
     src: url('../assets/fonts/info.ttf');
@@ -11,7 +13,7 @@
     font-family: 'info';
     font-style: italic;
     font-size: 12px;
-    color: #e700c7;
+    color: $purple-text;
     
 
     &::before {

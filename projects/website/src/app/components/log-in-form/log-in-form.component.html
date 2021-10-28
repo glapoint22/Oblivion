@@ -1,0 +1,94 @@
+<!-- Backdrop -->
+<div class="backdrop" (click)="close()"></div>
+
+<!-- Container -->
+<div class="container">
+
+    <!-- Base -->
+    <div class="base">
+
+        <!-- Header -->
+        <div class="header">
+            Log In
+
+            <!-- X -->
+            <div class="x" (click)="close()">X</div>
+        </div>
+
+        <!-- Drop Shadow -->
+        <div class="drop-shadow"></div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <external-login-providers [signInType]="'Log in'"></external-login-providers>
+
+            <!-- Or -->
+            <div class="or-container">
+                <div class="left-line"></div>
+                <div class="text">OR</div>
+                <div class="right-line"></div>
+            </div>
+
+
+            <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onLogIn()">
+                <!-- Email -->
+                <div class="label">Email:</div>
+                <input type="text" formControlName="email"
+                    [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
+
+                <ng-container *ngIf="_form.submitted && form.controls.email.errors">
+                    <ul>
+                        <li *ngFor="let message of getErrorMessages('email', 'Email')">
+                            {{message}}
+                        </li>
+                    </ul>
+                </ng-container>
+
+                <!-- Password -->
+                <div class="label">Password:</div>
+                <div class="input-container">
+                    <input type="password" formControlName="password"
+                        [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}" style="margin-bottom: 8px;">
+
+
+                    <div class="icon-container" showHidePassword>
+                        <i class="hide-password"></i>
+                    </div>
+
+                    <ng-container *ngIf="_form.submitted && form.controls.password.errors">
+                        <ul style="margin-top: -2px;">
+                            <li *ngFor="let message of getErrorMessages('password', 'Password')">
+                                {{message}}
+                            </li>
+                        </ul>
+                    </ng-container>
+                </div>
+
+                <!-- <div class="checkbox-container"> -->
+                    <label class="checkbox">
+                        <div style="color: #dadada;">Keep me logged in</div>
+                        <input type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+
+                    <div class="purple-text forgot-password">Forgot password?</div>
+                <!-- </div> -->
+
+                
+
+
+                <!-- Button -->
+                <button type="submit" class="gold-round-button-sm" style="margin-top: 10px;">Log In</button>
+            </form>
+        </div>
+
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="horizontal-groove-line"></div>
+            <span class="footer-text">Not a member yet? </span>
+            <span class="purple-text" (click)="onSignUpLinkClick()">Sign Up</span>
+        </div>
+    </div>
+</div>

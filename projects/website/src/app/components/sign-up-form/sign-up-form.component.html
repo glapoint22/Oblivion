@@ -1,0 +1,46 @@
+<!-- Backdrop -->
+<div class="backdrop" (click)="close()"></div>
+
+<!-- Container -->
+<div class="container">
+
+    <!-- Base -->
+    <div class="base">
+
+        <!-- Header -->
+        <div class="header">
+            Sign Up
+
+            <!-- X -->
+            <div class="x" (click)="close()">X</div>
+        </div>
+
+        <!-- Drop Shadow -->
+        <div class="drop-shadow"></div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <external-login-providers [signInType]="'Sign up'"></external-login-providers>
+
+            <!-- Or -->
+            <div class="or-container">
+                <div class="left-line"></div>
+                <div class="text">OR</div>
+                <div class="right-line"></div>
+            </div>
+
+
+            <!-- Button -->
+            <button (click)="onCreateAccountButtonClick()" class="gold-round-button-sm">Create an account</button>
+        </div>
+
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="horizontal-groove-line"></div>
+            <span class="footer-text">Already a member? </span>
+            <span class="purple-text" (click)="onLogInLinkClick()">Log In</span>
+        </div>
+    </div>
+</div>
