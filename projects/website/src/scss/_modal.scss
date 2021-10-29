@@ -71,33 +71,4 @@
         height: 100%;
         overflow-y: auto;
     }
-
-    .button-container {
-        display: flex;
-        width: 100%;
-        justify-content: right;
-        button {
-            margin-left: 10px;
-        }
-    }
-}
-
-
-
-@mixin modal-values ($max-width, $max-height, $breakpoint) {
-    .base {
-        max-width: $max-width;
-    }
-    
-    .content {
-        max-height: $max-height;
-    }
-
-    @media (max-height: $breakpoint) {
-        .base {
-            top: 0; 
-            bottom: 0;
-            position: absolute;
-        }
-    }
 }

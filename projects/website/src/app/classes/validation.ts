@@ -1,34 +1,11 @@
 import { Directive } from "@angular/core";
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { Modal } from "./modal";
 
 @Directive()
 export class Validation extends Modal {
   public form!: FormGroup;
-
-
-  ngOnInit(): void {
-    this.form = new FormGroup({
-      firstName: new FormControl('', [
-        Validators.required,
-        invalidNameValidator(),
-        Validators.maxLength(40)
-      ]),
-      lastName: new FormControl('', [
-        Validators.required,
-        invalidNameValidator(),
-        Validators.maxLength(40)
-      ]),
-      email: new FormControl('', [
-        Validators.required,
-        Validators.email
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.pattern(/(?=.*\S).{6,}/)
-      ])
-    });
-  }
+  
 
   getErrorMessages(control: string, controlName: string): Array<string> {
     let messages: Array<string> = [];
@@ -44,7 +21,7 @@ export class Validation extends Modal {
         messages.push(controlName + ' cannot contain any special characters');
       } else if (error == 'email') {
         messages.push('A valid email is required');
-      } else if (error == 'pattern') {
+      } else if (error == 'invalidPassword') {
         messages.push('Password must be at least 6 characters');
       }
     });
@@ -61,5 +38,15 @@ export function invalidNameValidator(): ValidatorFn {
 
     const valid = /^\b[a-zA-Z\s]+\b$/.test(control.value);
     return !valid ? { invalidName: { value: control.value } } : null;
+  };
+}
+
+
+export function invalidPasswordValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value == '') return null;
+
+    const valid = /(?=.*\S).{6,}/.test(control.value);
+    return !valid ? { invalidPassword: { value: control.value } } : null;
   };
 }

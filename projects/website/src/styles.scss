@@ -1,9 +1,13 @@
-html {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
-}
-
-body {
-    margin: 0;
-    background-color: #1b1b1b;
-}
+@import './scss/variables';
+@import './scss//reset';
+@import './scss/mixins';
+@import './scss/fonts';
+@import './scss/buttons';
+@import './scss/checkbox-radio';
+@import './scss/forms';
+@import './scss/icons';
+@import './scss/input-text';
+@import './scss/lines';
+@import './scss/modal';
+@import './scss/prompt';
+@import './scss/text';

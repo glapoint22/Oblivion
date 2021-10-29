@@ -1,0 +1,22 @@
+.footer {
+    height: 53px;
+    flex-shrink: 0;
+    text-align: center;
+
+    .footer-text {
+        font-size: 15px;
+        color: #dadada;
+    }
+}
+
+
+input.error-border {
+    border: 1px solid $error-color;
+}
+
+ul {
+    margin-top: -15px;
+    padding-inline-start: 20px;
+    color: $error-color;
+    font-size: 13px;
+}

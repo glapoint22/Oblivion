@@ -1,15 +1,14 @@
-import { Directive, HostListener, ViewRef } from "@angular/core";
+import { Directive, HostListener } from "@angular/core";
 import { LazyLoadingService } from "../services/lazy-loading/lazy-loading.service";
+import { ModalService } from "../services/modal/modal.service";
 
 @Directive()
 export class Modal {
-    public viewRef!: ViewRef;
 
-    constructor(public lazyLoadingService: LazyLoadingService) { }
+    constructor(public lazyLoadingService: LazyLoadingService, public modalService: ModalService) { }
 
     close(): void {
-        const index = this.lazyLoadingService.container.indexOf(this.viewRef);
-        this.lazyLoadingService.container.remove(index);
+        this.modalService.container.clear();
     }
 
 

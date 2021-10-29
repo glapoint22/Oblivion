@@ -1,0 +1,47 @@
+<!-- Backdrop -->
+<div class="backdrop" (click)="close()"></div>
+
+
+<!-- Container -->
+<div class="container">
+
+    <!-- Base -->
+    <div class="base">
+
+        <!-- Header -->
+        <div class="header">
+            Email Sent
+
+            <!-- X -->
+            <div class="x" (click)="close()">X</div>
+        </div>
+
+        <!-- Drop Shadow -->
+        <div class="drop-shadow"></div>
+
+        <!-- Content -->
+        <div class="prompt-content">
+
+            <div class="img-container">
+                <img src="assets/checkmark.png" alt="checkmark">
+            </div>
+            
+
+            <!-- Message -->
+            <div class="message-text">
+                <div>An email has been sent to the following address:</div>
+
+                <div class="emphasized-text">{{email}}</div>    
+
+                <div>If you don’t see this email in your inbox, please check your junk or spam folder.</div>    
+            </div>
+
+        </div>
+
+
+        <!-- Button Container -->
+        <div class="button-container">
+            <button class="dark-button" (click)="close()">Close</button>
+        </div>
+    </div>
+</div>

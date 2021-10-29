@@ -4,7 +4,7 @@ import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, Micros
 @Component({
   selector: 'external-login-providers',
   templateUrl: './external-login-providers.component.html',
-  styleUrls: ['../../../scss/vertical-line.scss', './external-login-providers.component.scss']
+  styleUrls: ['./external-login-providers.component.scss']
 })
 export class ExternalLoginProvidersComponent {
   constructor(private authService: SocialAuthService) { }

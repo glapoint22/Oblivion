@@ -1,21 +1,20 @@
-@import '../scss/variables.scss';
 
-@font-face {
-    font-family: 'hide-password';
-    src: url('../assets/fonts/hide-password.ttf');
-    font-weight: normal;
-    font-style: normal;
-    font-display: block;
+
+.info-icon
+{
+    font-family: 'info';
+    font-style: italic;
+    font-size: 12px;
+    color: $purple-text;
+    
+
+    &::before {
+    content: "\e24";
+    }
 }
 
 
-@font-face {
-    font-family: 'show-password';
-    src: url('../assets/fonts/show-password.ttf');
-    font-weight: normal;
-    font-style: normal;
-    font-display: block;
-}
+
 
 
 .hide-password, .show-password {

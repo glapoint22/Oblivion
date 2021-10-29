@@ -4,14 +4,7 @@ import { Modal } from '../../classes/modal';
 @Component({
   selector: 'sign-up-form',
   templateUrl: './sign-up-form.component.html',
-  styleUrls: [
-    '../../../scss/gold-buttons.scss',
-    '../../../scss/horizontal-groove-line.scss',
-    '../../../scss/purple-text.scss',
-    '../../../scss/or.scss',
-    '../../../scss/footer.scss',
-    './sign-up-form.component.scss'
-  ]
+  styleUrls: ['./sign-up-form.component.scss']
 })
 export class SignUpFormComponent extends Modal {
 
@@ -23,8 +16,7 @@ export class SignUpFormComponent extends Modal {
 
     this.lazyLoadingService.getModuleRef(CreateAccountFormModule)
       .then(moduleRef => {
-        const componentRef = this.lazyLoadingService.createComponent(CreateAccountFormComponent, 0, moduleRef.injector);
-        componentRef.instance.viewRef = componentRef.hostView;
+        this.lazyLoadingService.createComponent(CreateAccountFormComponent, this.modalService.container, 0, moduleRef.injector);
       })
   }
 
@@ -36,8 +28,7 @@ export class SignUpFormComponent extends Modal {
 
     this.lazyLoadingService.getModuleRef(LogInFormModule)
       .then(moduleRef => {
-        const componentRef = this.lazyLoadingService.createComponent(LogInFormComponent, 0, moduleRef.injector);
-        componentRef.instance.viewRef = componentRef.hostView;
+        this.lazyLoadingService.createComponent(LogInFormComponent, this.modalService.container, 0, moduleRef.injector);
       });
   }
 }

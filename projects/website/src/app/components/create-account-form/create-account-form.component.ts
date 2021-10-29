@@ -1,23 +1,37 @@
-import { Component } from '@angular/core';
-import { Validation } from '../../classes/validation';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { invalidNameValidator, invalidPasswordValidator, Validation } from '../../classes/validation';
 
 
 @Component({
   selector: 'create-account-form',
   templateUrl: './create-account-form.component.html',
-  styleUrls: [
-    '../../../scss/forms.scss',
-    '../../../scss/gold-buttons.scss',
-    '../../../scss/horizontal-groove-line.scss',
-    '../../../scss/purple-text.scss',
-    '../../../scss/show-hide-password.scss',
-    '../../../scss/lithos-pro.scss',
-    '../../../scss/info-icon.scss',
-    '../../../scss/footer.scss',
-    './create-account-form.component.scss'
-  ]
+  styleUrls: ['./create-account-form.component.scss']
 })
-export class CreateAccountFormComponent extends Validation {
+export class CreateAccountFormComponent extends Validation implements OnInit {
+
+  ngOnInit(): void {
+    this.form = new FormGroup({
+      firstName: new FormControl('', [
+        Validators.required,
+        invalidNameValidator(),
+        Validators.maxLength(40)
+      ]),
+      lastName: new FormControl('', [
+        Validators.required,
+        invalidNameValidator(),
+        Validators.maxLength(40)
+      ]),
+      email: new FormControl('', [
+        Validators.required,
+        Validators.email
+      ]),
+      password: new FormControl('', [
+        Validators.required,
+        invalidPasswordValidator()
+      ])
+    });
+  }
   
   
   onSubmit() {
@@ -34,8 +48,7 @@ export class CreateAccountFormComponent extends Validation {
 
     this.lazyLoadingService.getModuleRef(LogInFormModule)
       .then(moduleRef => {
-        const componentRef = this.lazyLoadingService.createComponent(LogInFormComponent, 0, moduleRef.injector);
-        componentRef.instance.viewRef = componentRef.hostView;
+        this.lazyLoadingService.createComponent(LogInFormComponent, this.modalService.container, 0, moduleRef.injector);
       });
   }
 }

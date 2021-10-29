@@ -1,0 +1,24 @@
+.img-container {
+    margin-right: 15px;
+    width: 27px;
+    height: 27px;
+    flex-shrink: 0;
+}
+
+.emphasized-text {
+    padding: 20px 0;
+    color: #dadada;
+    font-weight: bold;
+}
+
+
+.button-container {
+    padding-top: 12px;
+}
+
+ .prompt-content {
+    display: flex;
+    padding: 15px;
+    height: 100%;
+    overflow-y: auto;
+}

@@ -10,8 +10,6 @@ $border: #505050;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    // width: 13px;
-    // height: 13px;
     padding-left: 21px;
 
     .checkmark {
@@ -52,5 +50,34 @@ $border: #505050;
     &:hover input ~ .checkmark {
         background-color: lighten($background, 6);
         border-color: lighten($border, 6);
+    }
+}
+
+
+.checkbox .checkmark {
+    border-radius: 2px;
+    &:after {
+        left: 4px;
+        top: -3px;
+        width: 5px;
+        height: 10px;
+        border: solid #ffba00;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+}
+
+
+.radio .checkmark {
+    border-radius: 50%;
+    &:after {
+        top: 3px;
+        left: 3px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #ffba00;
     }
 }
