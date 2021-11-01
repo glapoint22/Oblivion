@@ -1,6 +1,9 @@
 @import '../../../scss/mixins.scss';
 @include modal-values(350px, 497px, 590px);
 
+.content {
+    padding: 15px;
+}
 
 .or-container {
     margin-bottom: 19px;

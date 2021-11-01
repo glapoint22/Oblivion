@@ -72,4 +72,95 @@ export class AppComponent implements OnInit {
     const { EmailSentPromptComponent } = await import('./components/email-sent-prompt/email-sent-prompt.component');
     this.lazyLoadingService.createComponent(EmailSentPromptComponent, this.container);
   }
+
+
+
+
+  async openChangeNameForm() {
+    const { ChangeNameFormComponent } = await import('./components/change-name-form/change-name-form.component');
+    const { ChangeNameFormModule } = await import('./components/change-name-form/change-name-form.module');
+
+    this.lazyLoadingService.getModuleRef(ChangeNameFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(ChangeNameFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+  async openChangeEmailForm() {
+    const { ChangeEmailFormComponent } = await import('./components/change-email-form/change-email-form.component');
+    const { ChangeEmailFormModule } = await import('./components/change-email-form/change-email-form.module');
+
+    this.lazyLoadingService.getModuleRef(ChangeEmailFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(ChangeEmailFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+
+
+  async openChangePasswordForm() {
+    const { ChangePasswordFormComponent } = await import('./components/change-password-form/change-password-form.component');
+    const { ChangePasswordFormModule } = await import('./components/change-password-form/change-password-form.module');
+
+    this.lazyLoadingService.getModuleRef(ChangePasswordFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(ChangePasswordFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+  async openCreatePasswordForm() {
+    const { CreatePasswordFormComponent } = await import('./components/create-password-form/create-password-form.component');
+    const { CreatePasswordFormModule } = await import('./components/create-password-form/create-password-form.module');
+
+    this.lazyLoadingService.getModuleRef(CreatePasswordFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(CreatePasswordFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+
+  async openReportItemForm() {
+    const { ReportItemFormComponent } = await import('./components/report-item-form/report-item-form.component');
+    const { ReportItemFormModule } = await import('./components/report-item-form/report-item-form.module');
+
+    this.lazyLoadingService.getModuleRef(ReportItemFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(ReportItemFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+  async openProfilePictureForm() {
+    const { ProfilePictureFormComponent } = await import('./components/profile-picture-form/profile-picture-form.component');
+    this.lazyLoadingService.createComponent(ProfilePictureFormComponent, this.container);
+  }
+
+
+
+  async openContactUsForm() {
+    const { ContactUsFormComponent } = await import('./components/contact-us-form/contact-us-form.component');
+    const { ContactUsFormModule } = await import('./components/contact-us-form/contact-us-form.module');
+
+    this.lazyLoadingService.getModuleRef(ContactUsFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(ContactUsFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+
+
+  async openAddToListForm() {
+    const { AddToListFormComponent } = await import('./components/add-to-list-form/add-to-list-form.component');
+    const { AddToListFormModule } = await import('./components/add-to-list-form/add-to-list-form.module');
+
+    this.lazyLoadingService.getModuleRef(AddToListFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(AddToListFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
 }

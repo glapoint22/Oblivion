@@ -1,3 +1,32 @@
+.show-password
+{
+    font-family: 'show-password';
+    &::before {
+    content: "\e22";
+    }
+}
+
+
+.hide-password
+{
+    font-family: 'hide-password';
+    &::before {
+        content: "\e23";
+    }
+}
+
+
+.hide-password, .show-password {
+    color: $purple-text;
+
+    &:hover {
+        color: lighten($purple-text, 6);
+    }
+
+    &:active {
+        color: lighten($purple-text, 10);
+    }
+}
 
 
 .info-icon
@@ -15,34 +44,25 @@
 
 
 
-
-
-.hide-password, .show-password {
-    color: $purple-text;
-
-    &:hover {
-        color: lighten($purple-text, 6);
-    }
-
-    &:active {
-        color: lighten($purple-text, 10);
-    }
-}
-
-
-.hide-password
+.dropdown-arrow
 {
-    font-family: 'hide-password';
+    font-family: 'dropdown-arrow';
+    font-size: 12px;
+    color: #dadada;
+    
+
     &::before {
-        content: "\e23";
+    content: "\e25";
     }
 }
 
 
-.show-password
-{
-    font-family: 'show-password';
-    &::before {
-    content: "\e22";
-    }
-}
+
+
+
+
+
+
+
+
+

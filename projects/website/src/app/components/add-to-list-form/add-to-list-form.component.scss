@@ -1,0 +1,59 @@
+@import '../../../scss/mixins.scss';
+@include modal-values(350px, 325px, 365px);
+
+
+.product-container {
+    text-align: center;
+}
+
+.product-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #c0c0c0;
+    margin-bottom: 12px;
+}
+
+.img-container {
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    margin-bottom: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+img {
+    max-width: 150px;
+    max-height: 150px;
+}
+
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 22px;
+}
+
+
+.purple-button {
+    max-width: 85px;
+}
+
+
+button {
+    flex-shrink: 0;
+}
+
+@media(max-width: 285px) {
+    button {
+        flex-shrink: 1;
+    }
+}
+
+@media(max-width: 242px) {
+    button {
+        height: 35px;
+    }
+}

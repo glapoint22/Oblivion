@@ -1,0 +1,52 @@
+<!-- Backdrop -->
+<div class="backdrop" (click)="close()"></div>
+
+
+<!-- Container -->
+<div class="container">
+
+    <!-- Base -->
+    <div class="base">
+
+        <!-- Header -->
+        <div class="header">
+            Report Item
+
+            <!-- X -->
+            <div class="x" (click)="close()">X</div>
+        </div>
+
+        <!-- Drop Shadow -->
+        <div class="drop-shadow"></div>
+
+
+        <div class="content">
+
+            <!-- Where is the issue -->
+            <div class="label">Where is the issue?</div>
+            <dropdown #whereDropdown [listItems]="listItems"></dropdown>
+
+            
+            <!-- What is the issue -->
+            <div class="label" style="margin-top: 22px;">What is the issue?</div>
+            <dropdown [listItems]="whereDropdown.selectedListItem.value"></dropdown>
+
+
+            
+
+
+            <!-- Comments -->
+            <div class="label" style="margin-top: 22px;">Comments (optional):</div>
+            <textarea></textarea>
+
+            <!-- Button Container -->
+            <div class="button-container">
+                <button class="dark-button" (click)="close()">Cancel</button>
+                <button class="gold-rect-button" (click)="onSubmit()">Submit</button>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>

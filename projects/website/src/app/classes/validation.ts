@@ -9,7 +9,18 @@ export class Validation extends Modal {
 
   getErrorMessages(control: string, controlName: string): Array<string> {
     let messages: Array<string> = [];
-    const errors: ValidationErrors = this.form.get(control)?.errors as ValidationErrors;
+    let errors: ValidationErrors = this.form.get(control)?.errors as ValidationErrors;
+
+    
+    if(control == 'confirmPassword'  && this.form.errors) {
+      if(errors) {
+        errors[Object.keys(this.form.errors)[0]] = this.form.errors;
+      } else {
+        errors = this.form.errors;
+      }
+      
+    }
+    
     const errorsArray: Array<string> = Object.keys(errors);
 
     errorsArray.forEach((error: string) => {
@@ -23,6 +34,8 @@ export class Validation extends Modal {
         messages.push('A valid email is required');
       } else if (error == 'invalidPassword') {
         messages.push('Password must be at least 6 characters');
+      } else if (error == 'noPasswordMatch') {
+        messages.push('Passwords must match');
       }
     });
 
@@ -50,3 +63,11 @@ export function invalidPasswordValidator(): ValidatorFn {
     return !valid ? { invalidPassword: { value: control.value } } : null;
   };
 }
+
+
+export const matchPasswordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const newPassword = control.get('newPassword');
+  const confirmPassword = control.get('confirmPassword');
+
+  return newPassword && confirmPassword && newPassword.value != confirmPassword.value ? { noPasswordMatch: true } : null;
+};

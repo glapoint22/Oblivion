@@ -1,0 +1,21 @@
+<div style="position: relative;" tabindex="0" (blur)="showDropdownList = false">
+
+    <div class="dropdown-base" (click)="showDropdownList = !showDropdownList">
+
+        <div *ngIf="selectedListItem" class="dropdown-text">
+            {{selectedListItem.key}}
+        </div>
+
+        <div class="dropdown-arrow"></div>
+    </div>
+
+
+    <div class="dropdown-list" *ngIf="showDropdownList">
+        <div class="dropdown-list-item" *ngFor="let listItem of listItems" (click)="onListItemClick(listItem)"
+            [ngClass]="{'selected-dropdown-list-item': listItem == selectedListItem}">
+            <div class="dropdown-text">
+                {{listItem.key}}
+            </div>
+        </div>
+    </div>
+</div>
