@@ -57,12 +57,34 @@
 }
 
 
+.full-star
+{
+    font-family: 'full-star';
+    color: $gold;
+    &::before {
+        content: "\e26";
+    }
+}
+
+
+.empty-star
+{
+    font-family: 'empty-star';
+    color: $gold;
+    &::before {
+        content: "\e27";
+    }
+}
 
 
 
 
 
-
-
-
-
+.half-star
+{
+    font-family: 'half-star';
+    color: $gold;
+    &::before {
+        content: "\e28";
+    }
+}
