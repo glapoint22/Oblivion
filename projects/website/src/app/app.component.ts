@@ -163,4 +163,86 @@ export class AppComponent implements OnInit {
         this.lazyLoadingService.createComponent(AddToListFormComponent, this.container, 0, moduleRef.injector);
       });
   }
+
+
+
+  async openWriteReviewForm() {
+    const { WriteReviewFormComponent } = await import('./components/write-review-form/write-review-form.component');
+    const { WriteReviewFormModule } = await import('./components/write-review-form/write-review-form.module');
+
+    this.lazyLoadingService.getModuleRef(WriteReviewFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(WriteReviewFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+  async openReportReviewForm() {
+    const { ReportReviewFormComponent } = await import('./components/report-review-form/report-review-form.component');
+    this.lazyLoadingService.createComponent(ReportReviewFormComponent, this.container);
+  }
+
+
+  async openReportReviewPrompt() {
+    const { ReportReviewPromptComponent } = await import('./components/report-review-prompt/report-review-prompt.component');
+    this.lazyLoadingService.createComponent(ReportReviewPromptComponent, this.container);
+  }
+
+
+  async openCreateListForm() {
+    const { CreateListFormComponent } = await import('./components/create-list-form/create-list-form.component');
+    const { CreateListFormModule } = await import('./components/create-list-form/create-list-form.module');
+
+    this.lazyLoadingService.getModuleRef(CreateListFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(CreateListFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+  async openMoveItemPrompt() {
+    const { MoveItemPromptComponent } = await import('./components/move-item-prompt/move-item-prompt.component');
+    this.lazyLoadingService.createComponent(MoveItemPromptComponent, this.container);
+  }
+
+
+  async openRemoveItemPrompt() {
+    const { RemoveItemPromptComponent } = await import('./components/remove-item-prompt/remove-item-prompt.component');
+    this.lazyLoadingService.createComponent(RemoveItemPromptComponent, this.container);
+  }
+
+
+  async openDeleteListPrompt() {
+    const { DeleteListPromptComponent } = await import('./components/delete-list-prompt/delete-list-prompt.component');
+    this.lazyLoadingService.createComponent(DeleteListPromptComponent, this.container);
+  }
+
+
+  async openEditListForm() {
+    const { EditListFormComponent } = await import('./components/edit-list-form/edit-list-form.component');
+    const { EditListFormModule } = await import('./components/edit-list-form/edit-list-form.module');
+
+    this.lazyLoadingService.getModuleRef(EditListFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(EditListFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+  async openAccountActivationPrompt() {
+    const { AccountActivationPromptComponent } = await import('./components/account-activation-prompt/account-activation-prompt.component');
+    this.lazyLoadingService.createComponent(AccountActivationPromptComponent, this.container);
+  }
+
+
+  async openShareListForm() {
+    const { ShareListFormComponent } = await import('./components/share-list-form/share-list-form.component');
+    this.lazyLoadingService.createComponent(ShareListFormComponent, this.container);
+  }
+
+
+  async openAddToListPrompt() {
+    const { AddToListPromptComponent } = await import('./components/add-to-list-prompt/add-to-list-prompt.component');
+    this.lazyLoadingService.createComponent(AddToListPromptComponent, this.container);
+  }
 }

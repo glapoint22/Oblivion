@@ -11,6 +11,12 @@
     background: linear-gradient(to bottom, rgb(76, 76, 76, 0) 10%, rgb(76, 76, 76), rgb(76, 76, 76, 0) 90%);
 }
 
+.horizontal-line {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(to right, rgb(76, 76, 76, 0) 10%, rgb(76, 76, 76), rgb(76, 76, 76, 0) 90%);
+}
+
 .or-container {
     display: flex;
     width: 100%;

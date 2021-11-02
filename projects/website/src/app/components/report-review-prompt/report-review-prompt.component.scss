@@ -1,0 +1,6 @@
+@import '../../../scss/mixins.scss';
+@include modal-values(350px, 109px, 149px);
+
+.prompt-content {
+    align-items: center;
+}

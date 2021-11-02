@@ -1,0 +1,51 @@
+@import '../../../scss/mixins.scss';
+@import '../../../scss/variables';
+@include modal-values(350px, 255px, 295px);
+
+.content-container {
+    display: flex;
+}
+
+.options-container {
+    width: 100%;
+    max-width: 255px;
+    margin-bottom: 15px;
+}
+
+.option-heading {
+    color: $gold;
+    margin-bottom: 13px;
+}
+
+.radio {
+    div {
+        width: 140px;
+    }
+}
+
+.horizontal-line {
+    margin-top: 13px;
+    margin-bottom: 25px;
+}
+
+.vertical-line {
+    height: 180px;
+    flex-shrink: 0;
+}
+
+.share-container {
+    padding-left: 15px;
+    width: 100%;
+    height: 180px;
+    max-width: 65px;
+    display: flex;
+    flex-direction: column;
+    justify-content:space-evenly;
+    align-items: center;
+
+    img{
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+}

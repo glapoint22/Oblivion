@@ -1,0 +1,29 @@
+@import '../../../scss/mixins';
+@include modal-values(350px, 546px, 586px);
+
+.product-container {
+    text-align: center;
+}
+
+.product-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #c0c0c0;
+    margin-bottom: 12px;
+}
+
+.img-container {
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    margin-bottom: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+img {
+    max-width: 150px;
+    max-height: 150px;
+}

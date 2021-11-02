@@ -10,7 +10,7 @@
 
         <!-- Header -->
         <div class="header">
-            Email Sent
+            Move Item
 
             <!-- X -->
             <div class="x" (click)="close()">X</div>
@@ -24,27 +24,30 @@
             <div class="prompt-content">
 
                 <div class="img-container">
-                    <img src="assets/checkmark.png" alt="Checkmark">
+                    <img src="assets/move.png" alt="Move">
                 </div>
 
 
                 <!-- Message -->
                 <div class="message-text">
-                    <div>An email has been sent to the following address:</div>
+                    <div>The following item:</div>
 
-                    <div class="emphasized-text">{{email}}</div>
+                    <div class="emphasized-text">10 Minute Awakening</div>
 
-                    <div>If you don’t see this email in your inbox, please check your junk or spam folder.</div>
+                    <div>Will be moved from list:</div>
+                    <div class="emphasized-text">Christmas List</div>
+
+                    <div>To list:</div>
+                    <div class="emphasized-text" style="padding-bottom: 0;">My List</div>
                 </div>
 
             </div>
 
             <!-- Button Container -->
             <div class="button-container">
-                <button class="dark-button" (click)="close()">Close</button>
+                <button class="dark-button" (click)="close()">Cancel</button>
+                <button class="gold-rect-button">Move</button>
             </div>
         </div>
-
-
     </div>
 </div>

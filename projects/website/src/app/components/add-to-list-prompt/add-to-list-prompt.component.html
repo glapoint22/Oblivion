@@ -10,7 +10,7 @@
 
         <!-- Header -->
         <div class="header">
-            Email Sent
+            Add to List
 
             <!-- X -->
             <div class="x" (click)="close()">X</div>
@@ -19,7 +19,9 @@
         <!-- Drop Shadow -->
         <div class="drop-shadow"></div>
 
+        <!-- Content -->
         <div class="content">
+
             <!-- Prompt Content -->
             <div class="prompt-content">
 
@@ -30,21 +32,23 @@
 
                 <!-- Message -->
                 <div class="message-text">
-                    <div>An email has been sent to the following address:</div>
+                    <div>The following item:</div>
 
-                    <div class="emphasized-text">{{email}}</div>
+                    <div class="emphasized-text" style="margin-bottom: 20px;">Trumpy Bear</div>
 
-                    <div>If you don’t see this email in your inbox, please check your junk or spam folder.</div>
+                    <div>Has been added to list:</div>
+
+                    <div class="emphasized-text">My List</div>
                 </div>
 
             </div>
 
-            <!-- Button Container -->
+
             <div class="button-container">
                 <button class="dark-button" (click)="close()">Close</button>
+                <button class="gold-rect-button" (click)="onViewList()">View List</button>
             </div>
+
         </div>
-
-
     </div>
 </div>
