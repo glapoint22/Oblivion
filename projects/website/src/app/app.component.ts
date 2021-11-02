@@ -245,4 +245,24 @@ export class AppComponent implements OnInit {
     const { AddToListPromptComponent } = await import('./components/add-to-list-prompt/add-to-list-prompt.component');
     this.lazyLoadingService.createComponent(AddToListPromptComponent, this.container);
   }
+
+
+  
+
+
+  async openManageCollaboratorsForm() {
+    const { ManageCollaboratorsFormComponent } = await import('./components/manage-collaborators-form/manage-collaborators-form.component');
+    const { ManageCollaboratorsFormModule } = await import('./components/manage-collaborators-form/manage-collaborators-form.module');
+
+    this.lazyLoadingService.getModuleRef(ManageCollaboratorsFormModule)
+      .then(moduleRef => {
+        this.lazyLoadingService.createComponent(ManageCollaboratorsFormComponent, this.container, 0, moduleRef.injector);
+      });
+  }
+
+
+  async openRemoveCollaboratorPrompt() {
+    const { RemoveCollaboratorPromptComponent } = await import('./components/remove-collaborator-prompt/remove-collaborator-prompt.component');
+    this.lazyLoadingService.createComponent(RemoveCollaboratorPromptComponent, this.container);
+  }
 }

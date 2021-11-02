@@ -1,3 +1,5 @@
+@import '../../../scss/variables';
+
 .dropdown-base {
     height: 24px;
     background: #282828;
@@ -40,13 +42,13 @@
     cursor: pointer;
 
     &:hover:not(.selected-dropdown-list-item) {
-        background: rgba(255, 255, 255, 0.06);
-        color: lighten(#b4b4b4, 6);
+        background: $hover-background-color;
+        color: $hover-text-color;
     }
 }
 
 .selected-dropdown-list-item {
-    background: rgba(255, 0, 217, 0.35);
-    color: white;
+    background: $selected-background-color;
+    color: $selected-text-color;
     cursor: default;
 }
