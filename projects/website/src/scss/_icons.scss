@@ -115,3 +115,41 @@
         content: "\e30";
     }
 }
+
+
+
+.facebook-icon
+{
+    font-family: 'facebook-icon';
+    &::before {
+        content: "\e51";
+    }
+}
+
+
+.twitter-icon
+{
+    font-family: 'twitter-icon';
+    &::before {
+        content: "\e32";
+    }
+}
+
+
+
+.instagram-icon
+{
+    font-family: 'instagram-icon';
+    &::before {
+        content: "\e50";
+    }
+}
+
+
+.pintrest-icon
+{
+    font-family: 'pintrest-icon';
+    &::before {
+        content: "\e52";
+    }
+}

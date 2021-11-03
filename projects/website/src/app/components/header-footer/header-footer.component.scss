@@ -1,0 +1,27 @@
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
+.content-container {
+    padding-top: 79px;
+    padding-bottom: 126px;
+}
+
+.page-content {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+@media(max-width: 1400px) {
+    .content-container {
+        padding-bottom: 174px;
+    }
+}
+
+@media(max-width: 525px) {
+    .content-container {
+        padding-bottom: 271px;
+    }
+}
