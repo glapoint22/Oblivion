@@ -1,0 +1,175 @@
+@import '../../../../scss/mixins';
+
+.header-container {
+    height: 79px;
+    background: linear-gradient(to bottom, #8a0077, #46003d);
+    box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+
+.left-container {
+    width: 369px;
+    height: 45px;
+    display: flex;
+    margin-right: 20px;
+}
+
+
+.center-container {
+    width: 800px;
+    height: 36px;
+    display: flex;
+}
+
+
+.right-container {
+    width: 369px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 20px;
+    flex-shrink: 0;
+}
+
+
+.hamburger-button {
+    margin-right: 16px;
+    width: 22px;
+    height: 22px;
+}
+
+.niches-button {
+    @include gold-button(fit-content, 36px, 0);
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+    font-size: 13px;
+    color: black;
+    font-weight: bold;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.arrow-down {
+    width: 0; 
+    height: 0; 
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid black;
+    margin-left: 7px;
+}
+
+
+input {
+    border: none;
+    outline: 0;
+    padding-left: 5px;
+    flex: auto;
+    width: 100%;
+}
+
+
+
+.search-button {
+    @include gold-button(44px, 36px, 0);
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+}
+
+.login-button {
+    @include gold-button(88px, 28px, 14px);
+    font-weight: bold;
+}
+
+.links {
+    color: #dadada;
+}
+
+.sign-up-button {
+    width: 88px;
+    height: 28px;
+    border-radius: 14px;
+    border: 1px solid white;
+    background: none;
+    color: white;
+    cursor: pointer;
+}
+
+
+.profile-pic {
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #acacac
+}
+
+
+
+@media(max-width: 1100px) {
+    #orders, #lists, #about1, #orderSupport1 {
+        display: none;
+    }
+
+    .left-container, .right-container {
+        width: 200px;
+    }
+}
+
+
+@media(max-width: 900px) {
+    #about2, #orderSupport2 {
+        display: none;
+    }
+
+    .right-container {
+        width: auto;
+        margin-left: 0;
+    }
+
+    .login-button {
+        display: none;
+    }
+
+    .sign-up-button {
+        display: none;
+    }
+
+    .profile-pic {
+        margin-left: 15px;
+    }
+}
+
+
+@media(max-width: 700px) {
+    img {
+        display: none;
+    }
+
+    .left-container {
+        width: auto;
+        margin-right: 0;
+        align-items: center;
+    }
+
+    .hamburger-button {
+        margin-right: 12px;
+    }
+}
+
+
+@media(max-width: 450px) {
+    .niches-button {
+        display: none;
+    }
+
+    input {
+        border-top-left-radius: 18px;
+        border-bottom-left-radius: 18px;
+    }
+}

@@ -1,0 +1,46 @@
+<div class="header-container">
+
+
+    <div class="left-container">
+        <div class="hamburger-button"></div>
+        <img src="assets/logo.png" style="cursor: pointer;">
+    </div>
+
+
+
+
+    <div class="center-container">
+        <button class="niches-button">
+            All Niches
+            <div class="arrow-down"></div>
+        </button>
+
+        <input placeholder="Search in all niches">
+
+        <button class="search-button">
+            <div class="search-icon"></div>
+        </button>
+    </div>
+
+
+
+
+    <div class="right-container">
+
+
+        <ng-container *ngIf="false">
+            <div id="about1" class="links">About</div>
+            <div id="orderSupport1" class="links">Order Support</div>
+            <button class="login-button">Log In</button>
+            <button class="sign-up-button">Sign Up</button>
+        </ng-container>
+
+        <ng-container *ngIf="true">
+            <div id="about2" class="links">About</div>
+            <div id="orderSupport2" class="links">Order Support</div>
+            <div id="orders" class="links">Orders</div>
+            <div id="lists" class="links">Lists</div>
+            <img src="assets/logo.png" class="profile-pic">
+        </ng-container>
+    </div>
+</div>

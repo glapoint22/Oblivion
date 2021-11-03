@@ -88,3 +88,30 @@
         content: "\e28";
     }
 }
+
+
+.hamburger-button
+{
+    font-family: 'hamburger-button';
+    color: $gold;
+    font-size: 22px;
+    cursor: pointer;
+    &::before {
+        content: "\e29";
+    }
+
+    &:hover {
+        color: lighten($gold, 8);
+    }
+}
+
+
+
+.search-icon
+{
+    font-family: 'search-icon';
+    color: black;
+    &::before {
+        content: "\e30";
+    }
+}
