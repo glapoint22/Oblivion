@@ -28,14 +28,14 @@
     <div class="right-container">
 
 
-        <ng-container *ngIf="false">
+        <ng-container *ngIf="true">
             <div id="about1" class="links">About</div>
             <div id="orderSupport1" class="links">Order Support</div>
-            <button class="login-button">Log In</button>
-            <button class="sign-up-button">Sign Up</button>
+            <button class="login-button" (click)="onLoginClick()">Log In</button>
+            <button class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
         </ng-container>
 
-        <ng-container *ngIf="true">
+        <ng-container *ngIf="false">
             <div id="about2" class="links">About</div>
             <div id="orderSupport2" class="links">Order Support</div>
             <div id="orders" class="links">Orders</div>

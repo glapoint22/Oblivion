@@ -100,10 +100,15 @@ input {
     width: 88px;
     height: 28px;
     border-radius: 14px;
-    border: 1px solid white;
+    border: 1px solid #dadada;
     background: none;
-    color: white;
+    color: #dadada;
     cursor: pointer;
+
+    &:hover {
+        color: white;
+        border-color: white;
+    }
 }
 
 
