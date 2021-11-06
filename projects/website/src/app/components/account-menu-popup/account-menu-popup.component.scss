@@ -1,0 +1,156 @@
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+$icon-color: #8a0077;
+
+.popup {
+    @include popup(138px);
+}
+    
+.popup-content {
+    padding: 2px;
+}
+
+.menu-option-container {
+    display: flex;
+    height: 30px;
+    cursor: pointer;
+
+    &, a {
+        color: #b4b4b4;
+        text-decoration: none;
+    }
+
+    &:hover {
+        background: $hover-background-color;
+
+        & .icon {
+            color: lighten($icon-color, 10);
+        }
+
+        & .menu-option-text-container:not(.log-out) {
+            text-decoration: underline;
+            color: #dadada;
+        }
+    }
+}
+
+
+.menu-option-icon-container {
+    display: flex;
+    width: 44px;
+    height: 100%;
+    align-items: center;
+    padding-left: 10px;
+}
+ 
+.menu-option-text-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+
+
+.icon {
+    color: $icon-color;
+}
+
+
+.log-out {
+    color: #b4b4b4;
+    cursor: pointer;
+    &:hover {
+        color: #dadada;
+    }
+}
+
+
+// Account Icon
+@font-face {
+    font-family: 'account-icon';
+    src: url('../../../assets/fonts/account-icon.ttf');
+}
+
+.account-icon
+{
+    font-family: 'account-icon';
+    &::before {
+        content: "\e900";
+    }
+}
+
+
+
+// Orders Icon
+@font-face {
+    font-family: 'orders-icon';
+    src: url('../../../assets/fonts/orders-icon.ttf');
+}
+.orders-icon
+{
+    font-family: 'orders-icon';
+    &::before {
+        content: "\e901";
+    }
+}
+
+
+
+// Lists Icon
+@font-face {
+    font-family: 'lists-icon';
+    src: url('../../../assets/fonts/lists-icon.ttf');
+}
+.lists-icon
+{
+    font-family: 'lists-icon';
+    &::before {
+        content: "\e902";
+    }
+}
+
+
+
+// Profile Icon
+@font-face {
+    font-family: 'profile-icon';
+    src: url('../../../assets/fonts/profile-icon.ttf');
+}
+.profile-icon
+{
+    font-family: 'profile-icon';
+    &::before {
+        content: "\e903";
+    }
+}
+
+
+
+// Email Icon
+@font-face {
+    font-family: 'email-icon';
+    src: url('../../../assets/fonts/email-icon.ttf');
+}
+.email-icon
+{
+    font-family: 'email-icon';
+    &::before {
+        content: "\e904";
+    }
+}
+
+
+
+// Log Out Icon
+@font-face {
+    font-family: 'log-out-icon';
+    src: url('../../../assets/fonts/log-out-icon.ttf');
+}
+.log-out-icon
+{
+    font-family: 'log-out-icon';
+    &::before {
+        content: "\e905";
+    }
+}

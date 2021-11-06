@@ -1,0 +1,76 @@
+<div class="popup">
+
+    <div class="popup-content">
+
+        <!-- Account -->
+        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/account"
+            (mousedown)="$event.preventDefault()">
+            <div class="menu-option-icon-container">
+                <div class="account-icon icon"></div>
+            </div>
+            <div class="menu-option-text-container">
+                Your Account
+            </div>
+        </a>
+
+
+        <!-- Orders -->
+        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/orders"
+            (mousedown)="$event.preventDefault()">
+            <div class="menu-option-icon-container">
+                <div class="orders-icon icon"></div>
+            </div>
+            <div class="menu-option-text-container">
+                Your Orders
+            </div>
+        </a>
+
+
+        <!-- Lists -->
+        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/lists" (mousedown)="$event.preventDefault()">
+            <div class="menu-option-icon-container">
+                <div class="lists-icon icon"></div>
+            </div>
+            <div class="menu-option-text-container">
+                Your Lists
+            </div>
+        </a>
+
+
+
+        <!-- Profile -->
+        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/profile" (mousedown)="$event.preventDefault()">
+            <div class="menu-option-icon-container">
+                <div class="profile-icon icon"></div>
+            </div>
+            <div class="menu-option-text-container">
+                Your Profile
+            </div>
+        </a>
+
+
+
+        <!-- Email Preferences -->
+        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/email-preferences" (mousedown)="$event.preventDefault()">
+            <div class="menu-option-icon-container">
+                <div class="email-icon icon"></div>
+            </div>
+            <div class="menu-option-text-container">
+                Email Preferences
+            </div>
+        </a>
+
+        <div class="horizontal-line" style="margin: 4px 0;"></div>
+
+
+        <div class="menu-option-container">
+            <div class="menu-option-icon-container">
+                <div class="log-out-icon icon"></div>
+            </div>
+            <div class="menu-option-text-container log-out" (click)="onLogOutClick()">
+                Log Out
+            </div>
+        </div>
+
+    </div>
+</div>

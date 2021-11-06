@@ -68,7 +68,8 @@
 
                 <label class="checkbox">
                     <div style="color: #dadada;">Keep me logged in</div>
-                    <input type="checkbox" checked="checked">
+                    <input type="checkbox" (change)="isPersistent = !isPersistent"
+                    [checked]="isPersistent">
                     <span class="checkmark"></span>
                 </label>
 

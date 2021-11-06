@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { invalidPasswordValidator, Validation } from '../../classes/validation';
+import { CustomerService } from '../../services/customer/customer.service';
+import { DataService } from '../../services/data/data.service';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { ModalService } from '../../services/modal/modal.service';
 
 @Component({
   selector: 'log-in-form',
@@ -8,6 +12,8 @@ import { invalidPasswordValidator, Validation } from '../../classes/validation';
   styleUrls: ['./log-in-form.component.scss']
 })
 export class LogInFormComponent extends Validation implements OnInit {
+  public isPersistent: boolean = true;
+  constructor(lazyLoadingService: LazyLoadingService, modalService: ModalService, private dataService: DataService, private customerService: CustomerService) { super(lazyLoadingService, modalService) }
 
 
   ngOnInit(): void {
@@ -27,7 +33,14 @@ export class LogInFormComponent extends Validation implements OnInit {
 
   onLogIn() {
     if (this.form.valid) {
-      console.log('Submit');
+      this.dataService.post('api/Account/SignIn', {
+        email: this.form.get('email')?.value,
+        password: this.form.get('password')?.value,
+        isPersistent: this.isPersistent
+      }).subscribe(() => {
+        this.customerService.setCustomer();
+        this.close();
+      })
     }
   }
 
@@ -36,7 +49,7 @@ export class LogInFormComponent extends Validation implements OnInit {
     const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
     const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
 
-    
+
     this.close();
     this.lazyLoadingService.getModuleRef(SignUpFormModule)
       .then(moduleRef => {

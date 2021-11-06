@@ -54,3 +54,44 @@
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
     }
 }
+
+@mixin arrow-down ($width, $height, $color) {
+    border-left: ($width / 2) solid transparent;
+    border-right: ($width / 2) solid transparent;
+    border-top: $height solid $color;
+}
+
+
+@mixin arrow-up ($width, $height, $color) {
+    border-left: ($width / 2) solid transparent;
+    border-right: ($width / 2) solid transparent;
+    border-bottom: $height solid $color;
+}
+
+
+
+@mixin popup ($arrowPos) {
+    position: relative;
+    top: 12px;
+    background: #161616f2;
+    border-radius: 6px;
+    border: 1px solid #424242;
+    box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.5);
+
+
+    // Arrow
+    &::before {
+        content: "";
+        position: absolute;
+        top: -13px;
+        left: $arrowPos;
+        @include arrow-up(26px, 13px, #5e5e5e);
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        top: -12px;
+        left: $arrowPos + 1;
+        @include arrow-up(24px, 12px, #161616);
+    }
+}

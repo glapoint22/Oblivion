@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { CustomerService } from '../../../services/customer/customer.service';
 import { LazyLoadingService } from '../../../services/lazy-loading/lazy-loading.service';
 import { ModalService } from '../../../services/modal/modal.service';
 
@@ -8,10 +9,12 @@ import { ModalService } from '../../../services/modal/modal.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild('accountMenuPopupContainer', { read: ViewContainerRef }) accountMenuPopupContainer!: ViewContainerRef;
 
-  constructor(private modalService: ModalService, private lazyLoadingService: LazyLoadingService) { }
+  constructor(private modalService: ModalService, private lazyLoadingService: LazyLoadingService, public customerService: CustomerService) { }
 
   ngOnInit(): void {
+
   }
 
 
@@ -37,4 +40,28 @@ export class HeaderComponent implements OnInit {
       });
   }
 
+
+
+  async onProfilePicClick(): Promise<void> {
+    if (this.accountMenuPopupContainer.length == 0) {
+      const { AccountMenuPopupComponent } = await import('../../account-menu-popup/account-menu-popup.component');
+      const { AccountMenuPopupModule } = await import('../../account-menu-popup/account-menu-popup.module');
+
+      this.lazyLoadingService.getModuleRef(AccountMenuPopupModule)
+        .then(moduleRef => {
+          const accountMenuPopupComponent = this.lazyLoadingService.createComponent(AccountMenuPopupComponent, this.accountMenuPopupContainer, 0, moduleRef.injector);
+          accountMenuPopupComponent.accountMenuPopupContainer = this.accountMenuPopupContainer;
+        });
+    } else {
+      this.closeAccountMenuPopup();
+    }
+
+
+  }
+
+
+
+  closeAccountMenuPopup() {
+    this.accountMenuPopupContainer.clear();
+  }
 }
