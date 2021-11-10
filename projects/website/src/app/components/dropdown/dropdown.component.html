@@ -10,9 +10,9 @@
     </div>
 
 
-    <div class="dropdown-list" *ngIf="showDropdownList">
-        <div class="dropdown-list-item" *ngFor="let listItem of listItems" (click)="onListItemClick(listItem)"
-            [ngClass]="{'selected-dropdown-list-item': listItem == selectedListItem}">
+    <div class="list" *ngIf="showDropdownList">
+        <div class="list-item" *ngFor="let listItem of listItems" (click)="onListItemClick(listItem)"
+            [ngClass]="{'selected-list-item': listItem == selectedListItem}">
             <div class="dropdown-text">
                 {{listItem.key}}
             </div>

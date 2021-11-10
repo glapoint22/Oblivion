@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @mixin modal-values ($max-width, $max-height, $breakpoint) {
     .base {
         max-width: $max-width;
@@ -56,28 +58,29 @@
 }
 
 @mixin arrow-down ($width, $height, $color) {
-    border-left: ($width / 2) solid transparent;
-    border-right: ($width / 2) solid transparent;
+    border-left: math.div($width, 2) solid transparent;
+    border-right: math.div($width, 2) solid transparent;
     border-top: $height solid $color;
 }
 
 
 @mixin arrow-up ($width, $height, $color) {
-    border-left: ($width / 2) solid transparent;
-    border-right: ($width / 2) solid transparent;
+    border-left: math.div($width, 2) solid transparent;
+    border-right: math.div($width, 2) solid transparent;
     border-bottom: $height solid $color;
 }
 
 
 
 @mixin popup ($arrowPos) {
-    position: relative;
+    z-index: 1000;
+    position: absolute;
     top: 12px;
     background: #161616f2;
     border-radius: 6px;
     border: 1px solid #424242;
     box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.5);
-
+    pointer-events: all;
 
     // Arrow
     &::before {

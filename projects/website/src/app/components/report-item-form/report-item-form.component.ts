@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { Modal } from '../../classes/modal';
+import { LazyLoad } from '../../classes/lazy-load';
 
 @Component({
   selector: 'report-item-form',
   templateUrl: './report-item-form.component.html',
   styleUrls: ['./report-item-form.component.scss']
 })
-export class ReportItemFormComponent extends Modal {
+export class ReportItemFormComponent extends LazyLoad {
   public listItems = [
     {
       key: 'Product Name',

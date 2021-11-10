@@ -1,9 +1,9 @@
 import { Directive } from "@angular/core";
 import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { Modal } from "./modal";
+import { LazyLoad } from "./lazy-load";
 
 @Directive()
-export class Validation extends Modal {
+export class Validation extends LazyLoad {
   public form!: FormGroup;
   
 

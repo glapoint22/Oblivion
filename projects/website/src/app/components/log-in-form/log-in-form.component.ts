@@ -4,7 +4,8 @@ import { invalidPasswordValidator, Validation } from '../../classes/validation';
 import { CustomerService } from '../../services/customer/customer.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { ModalService } from '../../services/modal/modal.service';
+import { ForgotPasswordFormComponent } from '../forgot-password-form/forgot-password-form.component';
+import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
 
 @Component({
   selector: 'log-in-form',
@@ -13,8 +14,12 @@ import { ModalService } from '../../services/modal/modal.service';
 })
 export class LogInFormComponent extends Validation implements OnInit {
   public isPersistent: boolean = true;
-  constructor(lazyLoadingService: LazyLoadingService, modalService: ModalService, private dataService: DataService, private customerService: CustomerService) { super(lazyLoadingService, modalService) }
 
+  constructor(
+    private dataService: DataService,
+    private customerService: CustomerService,
+    private lazyLoadingService: LazyLoadingService,
+  ) { super() }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -46,26 +51,19 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   async onSignUpLinkClick() {
-    const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
-    const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
-
-
     this.close();
-    this.lazyLoadingService.getModuleRef(SignUpFormModule)
-      .then(moduleRef => {
-        this.lazyLoadingService.createComponent(SignUpFormComponent, this.modalService.container, 0, moduleRef.injector);
-      });
+    const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
+    const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
+
+    this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container);
   }
 
 
   async onForgotPasswordLinkClick() {
+    this.close();
     const { ForgotPasswordFormComponent } = await import('../forgot-password-form/forgot-password-form.component');
     const { ForgotPasswordFormModule } = await import('../forgot-password-form/forgot-password-form.module');
 
-    this.close();
-    this.lazyLoadingService.getModuleRef(ForgotPasswordFormModule)
-      .then(moduleRef => {
-        this.lazyLoadingService.createComponent(ForgotPasswordFormComponent, this.modalService.container, 0, moduleRef.injector);
-      });
+    this.lazyLoadingService.getComponentAsync(ForgotPasswordFormComponent, ForgotPasswordFormModule, this.lazyLoadingService.container);
   }
 }

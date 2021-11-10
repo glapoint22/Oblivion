@@ -27,6 +27,7 @@
     width: 800px;
     height: 36px;
     display: flex;
+    position: relative;
 }
 
 
@@ -48,9 +49,8 @@
 }
 
 .niches-button {
-    @include gold-button(fit-content, 36px, 0);
+    @include gold-button(max-content, 36px, 0);
     border-top-left-radius: 18px;
-    border-bottom-left-radius: 18px;
     font-size: 13px;
     color: black;
     font-weight: bold;
@@ -58,10 +58,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    user-select: none;
+    position: relative;
 }
 
 
-
+.niches-button-text {
+    white-space: nowrap;
+    overflow: hide;
+    text-overflow: ellipsis;
+}
 
 
 .arrow-down {
@@ -136,8 +142,106 @@ input {
     max-width: 180px;
     right: 5px;
     top: 61px;
+    pointer-events: none;
 }
 
+
+.niches-button-container {
+    outline: none;
+    width: 100%;
+    max-width: fit-content;
+}
+
+.niches-menu-popup-container {
+    position: absolute;
+    width: 100%;
+    max-width: 300px;
+    top: 25px;
+    left: 0; pointer-events: none;
+}
+
+
+.suggestion-list {
+    z-index: 200;
+    position: absolute;
+    background: white;
+    left: 0;
+    right: 0;
+    top: 36px;
+    border-top: 1px solid #d8d8d8;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.suggestion {
+    height: 37px;
+    cursor: pointer;
+    
+    &:not(:last-child) .suggestion-text {
+        border-bottom: 1px solid #dadada;
+    }
+}
+
+.highlight {
+    background: #dddddd;
+
+    &:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+}
+
+.suggestion-text {
+    margin: 0 10px;
+    user-select: none;
+    height: 37px;
+    line-height: 37px;
+    padding-left: 10px;
+    box-sizing: border-box;
+}
+
+.niche-suggestion {
+    color: #8a0077;
+    font-size: 13px;
+    font-style: italic;
+}
+
+
+.suggestion-list-backdrop {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    top: 79px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+}
+
+
+@media(max-width: 1500px) {
+    .niches-button-text {
+        max-width: 200px;
+    }
+}
+
+
+@media(max-width: 1400px) {
+    .niches-button-text {
+        max-width: 150px;
+    }
+}
+
+@media(max-width: 1300px) {
+    .niches-button-text {
+        max-width: 100px;
+    }
+}
+
+@media(max-width: 1200px) {
+    .niches-button-text {
+        max-width: 50px;
+    }
+}
 
 
 @media(max-width: 1100px) {
@@ -148,8 +252,18 @@ input {
     .left-container, .right-container {
         width: 200px;
     }
+
+    .niches-button-text {
+        max-width: 100px;
+    }
 }
 
+
+@media(max-width: 1000px) {
+    .niches-button-text {
+        max-width: 50px;
+    }
+}
 
 @media(max-width: 900px) {
     #about2, #orderSupport2 {
@@ -172,8 +286,18 @@ input {
     .profile-pic {
         margin-left: 15px;
     }
+
+    .niches-button-text {
+        max-width: 100px;
+    }
 }
 
+
+@media(max-width: 800px) {
+    .niches-button-text {
+        max-width: 50px;
+    }
+}
 
 @media(max-width: 700px) {
     img {
@@ -189,6 +313,24 @@ input {
     .hamburger-button {
         margin-right: 12px;
     }
+
+    .niches-button-text {
+        max-width: 150px;
+    }
+}
+
+
+@media(max-width: 600px) {
+    .niches-button-text {
+        max-width: 100px;
+    }
+}
+
+
+@media(max-width: 500px) {
+    .niches-button-text {
+        max-width: 50px;
+    }
 }
 
 
@@ -201,4 +343,18 @@ input {
         border-top-left-radius: 18px;
         border-bottom-left-radius: 18px;
     }
+
+
+    ::-webkit-input-placeholder {
+        color: transparent;
+      }
+      ::-moz-placeholder { 
+        color: transparent;
+      }
+      :-ms-input-placeholder { 
+        color: transparent;
+      }
+      :-moz-placeholder { 
+        color: transparent;
+      }
 }

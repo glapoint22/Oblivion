@@ -40,7 +40,7 @@
             
 
             <div style="margin-bottom: 20px;">
-                <input type="hidden" formControlName="rating">
+                <input type="hide" formControlName="rating">
                 <span *ngFor="let i of [1,2,3,4,5]" style="cursor: pointer;" (click)="onStarClick(i)">
                     <span [class]="getStar(i)"></span>
                 </span>

@@ -1,12 +1,12 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { Modal } from '../../classes/modal';
+import { LazyLoad } from '../../classes/lazy-load';
 
 @Component({
   selector: 'profile-picture-form',
   templateUrl: './profile-picture-form.component.html',
   styleUrls: ['./profile-picture-form.component.scss']
 })
-export class ProfilePictureFormComponent extends Modal {
+export class ProfilePictureFormComponent extends LazyLoad {
   @ViewChild('profilePic', { static: false }) profilePic!: ElementRef<HTMLElement>;
 
   onSubmit() {

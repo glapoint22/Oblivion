@@ -10,6 +10,10 @@ const routes: Routes = [
   {
     path: 'home',
     redirectTo: '',
+  },
+  {
+    path: 'search',
+    loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule)
   }
 ];
 

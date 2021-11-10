@@ -1,9 +1,9 @@
-<div class="popup">
+<div class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <div class="popup-content">
 
         <!-- Account -->
-        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/account"
+        <a class="menu-option-container" (click)="close()" routerLink="/account"
             (mousedown)="$event.preventDefault()">
             <div class="menu-option-icon-container">
                 <div class="account-icon icon"></div>
@@ -15,7 +15,7 @@
 
 
         <!-- Orders -->
-        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/orders"
+        <a class="menu-option-container" (click)="close()" routerLink="/orders"
             (mousedown)="$event.preventDefault()">
             <div class="menu-option-icon-container">
                 <div class="orders-icon icon"></div>
@@ -27,7 +27,7 @@
 
 
         <!-- Lists -->
-        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/lists" (mousedown)="$event.preventDefault()">
+        <a class="menu-option-container" (click)="close()" routerLink="/lists" (mousedown)="$event.preventDefault()">
             <div class="menu-option-icon-container">
                 <div class="lists-icon icon"></div>
             </div>
@@ -39,7 +39,7 @@
 
 
         <!-- Profile -->
-        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/profile" (mousedown)="$event.preventDefault()">
+        <a class="menu-option-container" (click)="close()" routerLink="/profile" (mousedown)="$event.preventDefault()">
             <div class="menu-option-icon-container">
                 <div class="profile-icon icon"></div>
             </div>
@@ -51,7 +51,7 @@
 
 
         <!-- Email Preferences -->
-        <a class="menu-option-container" (click)="onMenuOptionClick()" routerLink="/email-preferences" (mousedown)="$event.preventDefault()">
+        <a class="menu-option-container" (click)="close()" routerLink="/email-preferences" (mousedown)="$event.preventDefault()">
             <div class="menu-option-icon-container">
                 <div class="email-icon icon"></div>
             </div>

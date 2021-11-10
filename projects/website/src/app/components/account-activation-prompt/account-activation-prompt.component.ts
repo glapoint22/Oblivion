@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Modal } from '../../classes/modal';
+import { LazyLoad } from '../../classes/lazy-load';
 
 @Component({
   selector: 'account-activation-prompt',
   templateUrl: './account-activation-prompt.component.html',
   styleUrls: ['./account-activation-prompt.component.scss']
 })
-export class AccountActivationPromptComponent extends Modal {
+export class AccountActivationPromptComponent extends LazyLoad {
   public email: string = "trumpy@usa.com";
 }

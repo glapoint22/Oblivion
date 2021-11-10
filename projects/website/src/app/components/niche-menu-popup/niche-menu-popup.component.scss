@@ -1,0 +1,42 @@
+@import '../../../scss/mixins';
+
+.popup {
+    @include popup(76px);
+
+    &::before {
+        border: none;
+    }
+
+    &::after {
+        border: none;
+    }
+}
+
+.arrow-container {
+    position: absolute;
+}
+
+.arrow {
+    &::before {
+        content: "";
+        position: absolute;
+        top: -13px;
+        left: -1px;
+        @include arrow-up(26px, 13px, #5e5e5e);
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        top: -12px;
+        @include arrow-up(24px, 12px, #161616);
+    }
+}
+
+.popup-content {
+    padding: 2px;
+}
+
+.niche-menu {
+    height: 220px;
+    overflow-y: auto;
+}

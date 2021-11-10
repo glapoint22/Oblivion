@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Modal } from '../../classes/modal';
+import { LazyLoad } from '../../classes/lazy-load';
 
 @Component({
   selector: 'remove-item-prompt',
   templateUrl: './remove-item-prompt.component.html',
   styleUrls: ['./remove-item-prompt.component.scss']
 })
-export class RemoveItemPromptComponent extends Modal { }
+export class RemoveItemPromptComponent extends LazyLoad { }

@@ -1,0 +1,15 @@
+<div class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="arrow-container" [style.left.px]="arrowPos">
+        <div class="arrow"></div>
+    </div>
+
+    <div class="popup-content">
+        <div id="nicheMenu" class="niche-menu">
+            <div [id]="niche.name" class="list-item" *ngFor="let niche of niches" (click)="onNicheClick(niche)"
+                [ngClass]="{'selected-list-item': niche.name == selectedNicheName}">
+                {{niche.name}}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { Modal } from '../../classes/modal';
+import { LazyLoad } from '../../classes/lazy-load';
 
 @Component({
   selector: 'manage-collaborators-form',
   templateUrl: './manage-collaborators-form.component.html',
   styleUrls: ['./manage-collaborators-form.component.scss']
 })
-export class ManageCollaboratorsFormComponent extends Modal {
+export class ManageCollaboratorsFormComponent extends LazyLoad {
   public collaborators: Array<string> = [
     'Trumpy',
     'Alita',

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { invalidNameValidator, invalidPasswordValidator, Validation } from '../../classes/validation';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 
 @Component({
@@ -9,6 +10,9 @@ import { invalidNameValidator, invalidPasswordValidator, Validation } from '../.
   styleUrls: ['./create-account-form.component.scss']
 })
 export class CreateAccountFormComponent extends Validation implements OnInit {
+
+  constructor(private lazyLoadingService: LazyLoadingService) { super() }
+
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -32,8 +36,8 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
       ])
     });
   }
-  
-  
+
+
   onSubmit() {
     if (this.form.valid) {
       console.log('Submit');
@@ -43,12 +47,9 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
   async onLogInLinkClick() {
     this.close();
-    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
-    this.lazyLoadingService.getModuleRef(LogInFormModule)
-      .then(moduleRef => {
-        this.lazyLoadingService.createComponent(LogInFormComponent, this.modalService.container, 0, moduleRef.injector);
-      });
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container);
   }
 }
