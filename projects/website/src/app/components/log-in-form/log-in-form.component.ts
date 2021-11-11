@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { invalidPasswordValidator, Validation } from '../../classes/validation';
-import { CustomerService } from '../../services/customer/customer.service';
+import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { ForgotPasswordFormComponent } from '../forgot-password-form/forgot-password-form.component';
-import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
 
 @Component({
   selector: 'log-in-form',
@@ -17,7 +15,7 @@ export class LogInFormComponent extends Validation implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private customerService: CustomerService,
+    private accountService: AccountService,
     private lazyLoadingService: LazyLoadingService,
   ) { super() }
 
@@ -43,7 +41,7 @@ export class LogInFormComponent extends Validation implements OnInit {
         password: this.form.get('password')?.value,
         isPersistent: this.isPersistent
       }).subscribe(() => {
-        this.customerService.setCustomer();
+        this.accountService.setCustomer();
         this.close();
       })
     }

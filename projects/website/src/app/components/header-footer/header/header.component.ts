@@ -1,14 +1,17 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { Category } from '../../../classes/category';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { delay } from 'rxjs';
+import { Niche } from '../../../classes/niche';
 import { Suggestion } from '../../../classes/suggestion';
-import { CustomerService } from '../../../services/customer/customer.service';
+import { AccountService } from '../../../services/account/account.service';
 import { DataService } from '../../../services/data/data.service';
 import { LazyLoadingService } from '../../../services/lazy-loading/lazy-loading.service';
+import { NichesService } from '../../../services/niches/niches.service';
 import { AccountMenuPopupComponent } from '../../account-menu-popup/account-menu-popup.component';
 import { NicheMenuPopupComponent } from '../../niche-menu-popup/niche-menu-popup.component';
+import { SideMenuComponent } from '../../side-menu/side-menu.component';
 
 @Component({
   selector: 'header',
@@ -18,11 +21,13 @@ import { NicheMenuPopupComponent } from '../../niche-menu-popup/niche-menu-popup
 export class HeaderComponent {
   @ViewChild('accountMenuPopupContainer', { read: ViewContainerRef }) accountMenuPopupContainer!: ViewContainerRef;
   @ViewChild('nicheMenuPopupContainer', { read: ViewContainerRef }) nicheMenuPopupContainer!: ViewContainerRef;
+  @ViewChild('sideMenuContainer', { read: ViewContainerRef }) sideMenuContainer!: ViewContainerRef;
   @ViewChild('arrow') arrow!: ElementRef<HTMLElement>;
   @ViewChild('input', { static: false }) searchInput!: ElementRef<HTMLInputElement>;
-  public selectedNiche!: Category;
+  public selectedNiche!: Niche;
   public nicheMenuPopup!: NicheMenuPopupComponent;
   public accountMenuPopupComponent!: AccountMenuPopupComponent;
+  public sideMenu!: SideMenuComponent;
   public suggestionIndex: number = -1;
   public suggestions: Array<Suggestion> = [];
   public suggestionListMousedown: boolean = false;
@@ -30,20 +35,27 @@ export class HeaderComponent {
 
   constructor(
     private lazyLoadingService: LazyLoadingService,
-    public customerService: CustomerService,
+    public accountService: AccountService,
     private sanitizer: DomSanitizer,
     private dataService: DataService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private nicheService: NichesService
   ) { }
 
 
 
 
   ngAfterViewInit() {
-    this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
-      this.searchInput.nativeElement.value = queryParams.get('search') as string;
-    });
+    this.searchInput.nativeElement.value = this.route.snapshot.queryParamMap.get('search') as string;
+    const nicheId = this.route.snapshot.queryParamMap.get('nicheId') as string;
+    if (nicheId) {
+      this.nicheService.getNiches()
+        .pipe(delay(1))
+        .subscribe((niches: Array<Niche>) => {
+          this.selectedNiche = niches.find(x => x.urlId == nicheId) as Niche;
+        });
+    }
   }
 
 
@@ -100,7 +112,7 @@ export class HeaderComponent {
           this.nicheMenuPopup.arrowPos = this.arrow.nativeElement.offsetLeft - 8;
 
           this.nicheMenuPopup.onNicheMenuItemClick
-            .subscribe((niche: Category) => {
+            .subscribe((niche: Niche) => {
               this.selectedNiche = niche;
 
             });
@@ -113,8 +125,29 @@ export class HeaderComponent {
 
 
 
-  getSuggestions(input: HTMLInputElement) {
-    this.searchwords = input.value;
+
+
+  async onHamburgerButtonClick() {
+    if (this.sideMenuContainer.length == 0) {
+      const { SideMenuComponent } = await import('../../side-menu/side-menu.component');
+      const { SideMenuModule } = await import('../../side-menu/side-menu.module');
+
+      this.lazyLoadingService.getComponentAsync(SideMenuComponent, SideMenuModule, this.sideMenuContainer)
+        .then((sideMenu: SideMenuComponent) => {
+          this.sideMenu = sideMenu;
+          
+        });
+    } else {
+      this.sideMenu.close();
+    }
+  }
+
+
+
+
+
+  getSuggestions() {
+    this.searchwords = this.searchInput.nativeElement.value;
 
 
     if (this.searchwords) {
@@ -127,7 +160,7 @@ export class HeaderComponent {
             value: this.searchwords.toLowerCase()
           },
           {
-            key: 'categoryId',
+            key: 'nicheId',
             value: this.selectedNiche.urlId
           }
         ]
@@ -140,7 +173,6 @@ export class HeaderComponent {
         .subscribe((suggestions: Array<Suggestion>) => {
           this.suggestions = [];
           this.suggestionIndex = -1;
-          if (!input.value) return;
 
           if (suggestions) {
             let suggestionsCount: number;
@@ -166,7 +198,7 @@ export class HeaderComponent {
 
               this.suggestions.push({
                 name: suggestion.name,
-                category: suggestion.category,
+                niche: suggestion.niche,
                 html: this.sanitizer.bypassSecurityTrustHtml(html)
               });
             }
@@ -188,20 +220,24 @@ export class HeaderComponent {
   }
 
 
-  search(searchword: string, category?: Category) {
+  search(searchword: string, niche?: Niche) {
     let queryParams: Params;
 
     if (searchword == '') return;
 
-    if (!this.selectedNiche && !category) {
-      queryParams = { 'search': searchword }
-    } else {
+
+
+    if ((this.selectedNiche && this.selectedNiche.urlId != 'all') || niche) {
       queryParams = {
         'search': searchword,
-        'categoryId': (this.selectedNiche && this.selectedNiche.urlId) || (category && category.urlId),
-        'categoryName': (this.selectedNiche && this.selectedNiche.name) || (category && category.urlName)
+        'nicheId': (this.selectedNiche && this.selectedNiche.urlId) || (niche && niche.urlId),
+        'nicheName': (this.selectedNiche && this.selectedNiche.urlName) || (niche && niche.urlName)
       }
+    } else {
+      queryParams = { 'search': searchword }
     }
+
+
 
     this.router.navigate(['/search'], {
       queryParams: queryParams
@@ -229,10 +265,10 @@ export class HeaderComponent {
     // Display the suggestion in the search input
     input.value = this.suggestions[this.suggestionIndex].name;
 
-    // Set the category in the category dropdown if the suggestion has a category
-    if (this.suggestions.findIndex(x => x.category) != -1) {
-      if (this.suggestions[this.suggestionIndex].category) {
-        this.selectedNiche = this.suggestions[this.suggestionIndex].category;
+    // Set the niche in the niche dropdown if the suggestion has a niche
+    if (this.suggestions.findIndex(x => x.niche) != -1) {
+      if (this.suggestions[this.suggestionIndex].niche) {
+        this.selectedNiche = this.suggestions[this.suggestionIndex].niche;
       } else {
         this.selectedNiche = {
           name: 'All Niches',

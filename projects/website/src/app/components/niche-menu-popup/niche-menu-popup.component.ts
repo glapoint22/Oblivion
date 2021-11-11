@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Category } from '../../classes/category';
+import { Niche } from '../../classes/niche';
 import { LazyLoad } from '../../classes/lazy-load';
 import { NichesService } from '../../services/niches/niches.service';
 
@@ -9,8 +9,8 @@ import { NichesService } from '../../services/niches/niches.service';
   styleUrls: ['./niche-menu-popup.component.scss']
 })
 export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
-  @Output() onNicheMenuItemClick: EventEmitter<Category> = new EventEmitter();
-  public niches!: Array<Category>;
+  @Output() onNicheMenuItemClick: EventEmitter<Niche> = new EventEmitter();
+  public niches!: Array<Niche>;
   public selectedNicheName!: string;
   public arrowPos!: number;
 
@@ -20,13 +20,13 @@ export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
 
   ngOnInit(): void {
     this.nichesService.getNiches()
-      .subscribe((niches: Array<Category>) => {
+      .subscribe((niches: Array<Niche>) => {
         this.niches = niches;
       });
   }
 
 
-  onNicheClick(niche: Category) {
+  onNicheClick(niche: Niche) {
     this.selectedNicheName = niche.name;
     this.onNicheMenuItemClick.emit(niche);
     this.close();

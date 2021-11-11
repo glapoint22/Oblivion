@@ -4,9 +4,8 @@ import { Customer } from '../../classes/customer';
 @Injectable({
   providedIn: 'root'
 })
-export class CustomerService {
-  constructor() { }
-  public customer!: Customer;
+export class AccountService {
+  public customer: Customer | undefined;
 
 
   getCustomerCookieIndex(strArray: Array<string>) {
@@ -27,6 +26,5 @@ export class CustomerService {
       const customerProperties = customerSubStr.split(',');
       this.customer = new Customer(customerProperties[0], customerProperties[1], customerProperties[2], customerProperties[3]);
     }
-
   }
 }

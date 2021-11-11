@@ -1,8 +1,8 @@
 import { SafeHtml } from "@angular/platform-browser";
-import { Category } from "./category";
+import { Niche } from "./niche";
 
 export interface Suggestion {
     name: string;
-    category: Category;
+    niche: Niche;
     html?: SafeHtml;
 }

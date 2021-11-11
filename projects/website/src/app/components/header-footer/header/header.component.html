@@ -2,7 +2,12 @@
 
     <!-- Left Container -->
     <div class="left-container">
-        <div class="hamburger-button"></div>
+
+        <div tabindex="0" (blur)="sideMenu.close()" class="hamburger-button-container">
+            <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
+            <ng-template #sideMenuContainer></ng-template>
+        </div>
+
         <img src="assets/logo.png" style="cursor: pointer;">
     </div>
 
@@ -21,6 +26,7 @@
                 <div class="niches-button-text">
 
                     {{selectedNiche ? selectedNiche.name: 'All Niches'}}
+                    
                 </div>
 
                 <div #arrow class="arrow-down"></div>
@@ -34,9 +40,9 @@
 
         <!-- Search Input -->
         <input #input tabindex="0" (blur)="hideSuggestionList()"
-            [placeholder]="'Search in ' + (selectedNiche ? selectedNiche.name: 'All Niches')"
-            (input)="getSuggestions(input)" (keydown.enter)="search(input.value)" (mousedown)="getSuggestions(input)"
-            (keydown.escape)="suggestions = []" (keydown.arrowUp)="onArrowPress(-1, input); $event.preventDefault()"
+            [placeholder]="'Search in ' + (selectedNiche ? selectedNiche.name: 'All Niches')" (input)="getSuggestions()"
+            (keydown.enter)="search(input.value)" (mousedown)="getSuggestions()" (keydown.escape)="suggestions = []"
+            (keydown.arrowUp)="onArrowPress(-1, input); $event.preventDefault()"
             (keydown.arrowDown)="onArrowPress(1, input); $event.preventDefault()">
 
         <div *ngIf="suggestions && suggestions.length > 0" class="suggestion-list"
@@ -47,18 +53,18 @@
             <ng-container *ngFor="let suggestion of suggestions; let i = index">
 
                 <!-- Suggestion -->
-                <div *ngIf="!suggestion.category" class="suggestion" (click)="search(suggestion.name)"
+                <div *ngIf="!suggestion.niche" class="suggestion" (click)="search(suggestion.name)"
                     (mouseover)="suggestionIndex = i" [ngClass]="{'highlight': i == suggestionIndex}">
                     <div class="suggestion-text" [innerHTML]="suggestion.html"></div>
                 </div>
 
 
-                <!-- Suggested Category -->
-                <div *ngIf="suggestion.category" class="suggestion niche-suggestion"
-                    (click)="search(suggestion.name, suggestion.category)" (mouseover)="suggestionIndex = i"
+                <!-- Suggested Niche -->
+                <div *ngIf="suggestion.niche" class="suggestion niche-suggestion"
+                    (click)="search(suggestion.name, suggestion.niche)" (mouseover)="suggestionIndex = i"
                     [ngClass]="{'highlight': i == suggestionIndex}">
                     <div class="suggestion-text" style="padding-left: 30px;">
-                        in {{suggestion.category.name}}
+                        in {{suggestion.niche.name}}
                     </div>
 
                 </div>
@@ -78,14 +84,14 @@
 
     <!-- Right Container -->
     <div class="right-container">
-        <ng-container *ngIf="!customerService.customer || !customerService.customer.firstName">
+        <ng-container *ngIf="!accountService.customer || !accountService.customer.firstName">
             <div id="about1" class="links">About</div>
             <div id="orderSupport1" class="links">Order Support</div>
             <button class="login-button" (click)="onLoginClick()">Log In</button>
             <button class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
         </ng-container>
 
-        <ng-container *ngIf="customerService.customer && customerService.customer.firstName">
+        <ng-container *ngIf="accountService.customer && accountService.customer.firstName">
             <div id="about2" class="links">About</div>
             <div id="orderSupport2" class="links">Order Support</div>
             <div id="orders" class="links">Orders</div>
@@ -95,7 +101,7 @@
             <div tabindex="0" (blur)="accountMenuPopupComponent.close()"
                 (keydown.escape)="accountMenuPopupComponent.close()" style="outline: none;">
                 <img src="assets/logo.png" class="profile-pic"
-                    [title]="customerService.customer.firstName + ' ' + customerService.customer.lastName"
+                    [title]="accountService.customer.firstName + ' ' + accountService.customer.lastName"
                     (click)="onProfilePicClick()">
 
 
@@ -110,4 +116,4 @@
 </div>
 
 <!-- Suggestion list backdrop -->
-<div *ngIf="suggestions && suggestions.length > 0" class="suggestion-list-backdrop"></div>
+<div class="suggestion-list-backdrop hide" [ngClass]="{'show': (suggestions && suggestions.length) > 0 || (sideMenu && sideMenu.show)}" [style.pointerEvents]="(suggestions && suggestions.length) > 0 || (sideMenu && sideMenu.show) ? 'all' : 'none'"></div>

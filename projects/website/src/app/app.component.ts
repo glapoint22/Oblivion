@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { CustomerService } from './services/customer/customer.service';
+import { AccountService } from './services/account/account.service';
 import { LazyLoadingService } from './services/lazy-loading/lazy-loading.service';
 
 @Component({
@@ -9,12 +9,12 @@ import { LazyLoadingService } from './services/lazy-loading/lazy-loading.service
 })
 export class AppComponent implements OnInit {
 
-  constructor(private container: ViewContainerRef, private lazyLoadingService: LazyLoadingService, private customerService: CustomerService) { }
+  constructor(private container: ViewContainerRef, private lazyLoadingService: LazyLoadingService, private accountService: AccountService) { }
 
 
   ngOnInit(): void {
     this.lazyLoadingService.container = this.container;
-    this.customerService.setCustomer();
+    this.accountService.setCustomer();
   }
 
 
