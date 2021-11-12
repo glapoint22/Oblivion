@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SideMenuComponent } from './side-menu.component';
 import { AccountModule } from '../account/account.module';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -9,7 +10,8 @@ import { AccountModule } from '../account/account.module';
   declarations: [SideMenuComponent],
   imports: [
     CommonModule,
-    AccountModule
+    AccountModule,
+    RouterModule
   ]
 })
 export class SideMenuModule { }

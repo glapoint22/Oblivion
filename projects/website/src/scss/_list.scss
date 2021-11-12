@@ -17,3 +17,49 @@
     color: $selected-text-color;
     cursor: default;
 }
+
+
+
+
+
+$icon-color: #8a0077;
+
+.list-item-container {
+    display: flex;
+    height: 30px;
+    cursor: pointer;
+
+    &, a {
+        color: #b4b4b4;
+        text-decoration: none;
+    }
+
+    &:hover {
+        background: $hover-background-color;
+
+        & .icon {
+            color: lighten($icon-color, 10);
+        }
+    }
+}
+
+
+.list-item-icon-container {
+    display: flex;
+    width: 44px;
+    height: 100%;
+    align-items: center;
+    padding-left: 10px;
+}
+ 
+.list-item-text-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+
+
+.icon {
+    color: $icon-color;
+}

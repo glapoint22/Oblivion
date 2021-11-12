@@ -8,6 +8,12 @@ import { DataService } from '../data/data.service';
 })
 export class NichesService {
   private niches!: Array<Niche>;
+  public allNiche: Niche = {
+    id: 0,
+    name: 'All Niches',
+    urlName: '',
+    urlId: 'all'
+  }
 
   constructor(private dataService: DataService) { }
 
@@ -17,11 +23,7 @@ export class NichesService {
     return this.dataService.get<Array<Niche>>('api/Categories')
       .pipe(tap(niches => {
         this.niches = niches;
-        this.niches.unshift({
-          name: 'All Niches',
-          urlName: '',
-          urlId: 'all'
-        });
+        this.niches.unshift(this.allNiche);
       }));
   }
 }

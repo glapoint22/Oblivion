@@ -10,7 +10,7 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  get<T>(url: string, parameters?: Array<KeyValue<string, string>>): Observable<T> {
+  get<T>(url: string, parameters?: Array<KeyValue<any, any>>): Observable<T> {
     let params = new HttpParams();
 
     if (parameters) parameters.forEach(x => params = params.set(x.key, x.value));

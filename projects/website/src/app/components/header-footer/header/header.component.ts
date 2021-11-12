@@ -270,11 +270,7 @@ export class HeaderComponent {
       if (this.suggestions[this.suggestionIndex].niche) {
         this.selectedNiche = this.suggestions[this.suggestionIndex].niche;
       } else {
-        this.selectedNiche = {
-          name: 'All Niches',
-          urlId: 'all',
-          urlName: ''
-        }
+        this.selectedNiche = this.nicheService.allNiche;
       }
     }
   }
