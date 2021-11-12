@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { AccountMenuPopupComponent } from './account-menu-popup.component';
-import { AccountModule } from '../account/account.module';
+import { AccountListModule } from '../account-list/account-list.module';
 
 
 
@@ -10,7 +9,7 @@ import { AccountModule } from '../account/account.module';
   declarations: [AccountMenuPopupComponent],
   imports: [
     CommonModule,
-    AccountModule
+    AccountListModule
   ]
 })
 export class AccountMenuPopupModule { }

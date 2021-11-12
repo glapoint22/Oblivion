@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AccountGuard } from './guards/account/account.guard';
 
 const routes: Routes = [
   {
@@ -14,6 +15,12 @@ const routes: Routes = [
   {
     path: 'search',
     loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule)
+  },
+  {
+    path: 'account',
+    loadChildren: () => import('./pages/account/account.module').then(m => m.AccountModule),
+    canLoad: [AccountGuard],
+    canActivate: [AccountGuard]
   }
 ];
 

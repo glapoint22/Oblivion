@@ -3,11 +3,11 @@ import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 
 @Component({
-  selector: 'account',
-  templateUrl: './account.component.html',
-  styleUrls: ['./account.component.scss']
+  selector: 'account-list',
+  templateUrl: './account-list.component.html',
+  styleUrls: ['./account-list.component.scss']
 })
-export class AccountComponent {
+export class AccountListComponent {
   @Output() onClose: EventEmitter<void> = new EventEmitter();
 
   constructor(private dataService: DataService, private accountService: AccountService) { }
