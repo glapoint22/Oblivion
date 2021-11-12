@@ -107,6 +107,7 @@ input {
 .links {
     color: #dadada;
     cursor: pointer;
+    text-decoration: none;
 
     &:hover {
         text-decoration: underline;
@@ -130,11 +131,13 @@ input {
 }
 
 
+
+
 .profile-pic {
     border-radius: 50%;
     width: 34px;
     height: 34px;
-    border: 1px solid #acacac;
+    border: 1px solid #999999;
     cursor: pointer;
 
     &:hover {

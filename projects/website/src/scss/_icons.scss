@@ -29,34 +29,6 @@
 }
 
 
-.info-icon
-{
-    font-family: 'info';
-    font-style: italic;
-    font-size: 12px;
-    color: $purple-text;
-    
-
-    &::before {
-    content: "\e24";
-    }
-}
-
-
-
-.dropdown-arrow
-{
-    font-family: 'dropdown-arrow';
-    font-size: 12px;
-    color: #dadada;
-    
-
-    &::before {
-    content: "\e25";
-    }
-}
-
-
 .full-star
 {
     font-family: 'full-star';
@@ -113,43 +85,5 @@
     color: black;
     &::before {
         content: "\e30";
-    }
-}
-
-
-
-.facebook-icon
-{
-    font-family: 'facebook-icon';
-    &::before {
-        content: "\e51";
-    }
-}
-
-
-.twitter-icon
-{
-    font-family: 'twitter-icon';
-    &::before {
-        content: "\e32";
-    }
-}
-
-
-
-.instagram-icon
-{
-    font-family: 'instagram-icon';
-    &::before {
-        content: "\e50";
-    }
-}
-
-
-.pintrest-icon
-{
-    font-family: 'pintrest-icon';
-    &::before {
-        content: "\e52";
     }
 }

@@ -8,7 +8,10 @@
             <ng-template #sideMenuContainer></ng-template>
         </div>
 
-        <img src="assets/logo.png" style="cursor: pointer;">
+        <a routerLink="/home" title="Niche Shack Homepage">
+            <img src="assets/logo.png">
+        </a>
+        
     </div>
 
 
@@ -85,22 +88,23 @@
     <!-- Right Container -->
     <div class="right-container">
         <ng-container *ngIf="!accountService.customer || !accountService.customer.firstName">
-            <div id="about1" class="links">About</div>
-            <div id="orderSupport1" class="links">Order Support</div>
+            <a id="about1" class="links" routerLink="/about">About</a>
+            <a id="orderSupport1" class="links" href="https://www.clkbank.com/" target="_blank">Order Support</a>
             <button class="login-button" (click)="onLoginClick()">Log In</button>
             <button class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
         </ng-container>
 
         <ng-container *ngIf="accountService.customer && accountService.customer.firstName">
-            <div id="about2" class="links">About</div>
-            <div id="orderSupport2" class="links">Order Support</div>
-            <div id="orders" class="links">Orders</div>
-            <div id="lists" class="links">Lists</div>
+            <a id="about2" class="links" routerLink="/about">About</a>
+            <a id="orderSupport2" class="links" href="https://www.clkbank.com/" target="_blank">Order Support</a>
+            <a id="orders" class="links" routerLink="/orders">Orders</a>
+            <a id="lists" class="links" routerLink="/lists">Lists</a>
 
             <!-- Account profile pic -->
             <div tabindex="0" (blur)="accountMenuPopupComponent.close()"
                 (keydown.escape)="accountMenuPopupComponent.close()" style="outline: none;">
-                <img src="assets/logo.png" class="profile-pic"
+                <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
+                <img [src]="getProfileImg()" class="profile-pic"
                     [title]="accountService.customer.firstName + ' ' + accountService.customer.lastName"
                     (click)="onProfilePicClick()">
 

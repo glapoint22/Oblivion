@@ -19,3 +19,22 @@
         font-size: 12px;
     }
 }
+
+
+@font-face {
+    font-family: 'info';
+    src: url('../../../assets/fonts/info.ttf');
+}
+
+.info-icon
+{
+    font-family: 'info';
+    font-style: italic;
+    font-size: 12px;
+    color: $purple-text;
+    
+
+    &::before {
+    content: "\e24";
+    }
+}

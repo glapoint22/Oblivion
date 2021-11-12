@@ -274,4 +274,9 @@ export class HeaderComponent {
       }
     }
   }
+
+  getProfileImg() {
+    if(this.accountService.customer && this.accountService.customer.profileImage) return 'images/' + this.accountService.customer.profileImage;
+    return 'assets/no-account-pic.png';
+  }
 }

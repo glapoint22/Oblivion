@@ -20,7 +20,12 @@
     text-align: center;
     margin: 9px 0 10px;
 
-    div {
+    a {
+        display: block;
+    }
+
+    a, div {
+        text-decoration: none;
         &:not(:last-child):not(:first-child) {
             margin-bottom: 13px;
         }
@@ -61,9 +66,78 @@
     width: 210px;
 }
 
-.facebook-icon, .twitter-icon, .instagram-icon, .pintrest-icon {
+.facebook-icon, .twitter-icon, .instagram-icon, .pinterest-icon {
+    text-decoration: none;
+    color: inherit;
     font-size: 18px;
 }
+
+
+
+
+@font-face {
+    font-family: 'facebook-icon';
+    src: url('../../../../assets/fonts/facebook-icon.ttf');
+}
+
+
+@font-face {
+    font-family: 'twitter-icon';
+    src: url('../../../../assets/fonts/twitter-icon.ttf');
+}
+
+
+@font-face {
+    font-family: 'instagram-icon';
+    src: url('../../../../assets/fonts/instagram-icon.ttf');
+}
+
+
+@font-face {
+    font-family: 'pinterest-icon';
+    src: url('../../../../assets/fonts/pinterest-icon.ttf');
+}
+
+
+
+.facebook-icon
+{
+    font-family: 'facebook-icon';
+    &::before {
+        content: "\e51";
+    }
+}
+
+
+.twitter-icon
+{
+    font-family: 'twitter-icon';
+    &::before {
+        content: "\e32";
+    }
+}
+
+
+
+.instagram-icon
+{
+    font-family: 'instagram-icon';
+    &::before {
+        content: "\e50";
+    }
+}
+
+
+.pinterest-icon
+{
+    font-family: 'pinterest-icon';
+    &::before {
+        content: "\e52";
+    }
+}
+
+
+
 
 @media(max-width: 1400px) {
     .social-media-container {
