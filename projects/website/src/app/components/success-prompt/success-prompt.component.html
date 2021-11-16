@@ -8,11 +8,11 @@
     <div class="container">
 
         <!-- Base -->
-        <div class="base">
+        <div class="base" style="max-width: 350px;">
 
             <!-- Header -->
             <div class="header">
-                Report Review
+                {{header}}
 
                 <!-- X -->
                 <div class="x" (click)="close()">X</div>
@@ -32,7 +32,7 @@
 
                     <!-- Message -->
                     <div class="message-text">
-                        Thank you for your feedback!
+                        {{message}}
                     </div>
 
                 </div>

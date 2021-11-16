@@ -71,6 +71,13 @@
 }
 
 
+@mixin arrow-right ($width, $height, $color) {
+    border-top: math.div($width, 2) solid transparent;
+    border-bottom: math.div($width, 2) solid transparent;
+    border-left: $height solid $color;
+}
+
+
 
 @mixin popup ($arrowPos) {
     z-index: 1000;

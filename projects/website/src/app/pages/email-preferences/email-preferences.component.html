@@ -1,0 +1,226 @@
+<header-footer>
+    <div class="breadcrumb">
+        <a routerLink="/account">Your Account</a>
+        <div></div>
+
+        <div>Email Preferences</div>
+    </div>
+
+    <div class="email-preferences-page-container">
+        <div class="email-preferences-page-content">
+            <div class="page-title">Email Preferences</div>
+
+            <div class="preferences-container">
+
+
+                <!-- Account -->
+                <div class="section">
+
+
+
+                    <label class="checkbox" style="float: right;">
+                        <input type="checkbox"
+                            (change)="allChecked = !allChecked; toggleAllChecked()"
+                            [checked]="allChecked">
+                        <span class="checkmark"></span>
+                    </label>
+
+
+                    <div class="heading">Account</div>
+
+
+                    <!-- Name Change -->
+                    <div class="preference">
+                        Notify me on a successful name change
+
+                        <label class="checkbox">
+                            <input #nameChangeInput type="checkbox"
+                                (change)="preferences.nameChange = nameChangeInput.checked; setAllChecked()"
+                                [checked]="preferences?.nameChange">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+
+                    <!-- Email Change -->
+                    <div class="preference">
+                        Notify me on a successful email change
+
+                        <label class="checkbox">
+                            <input #emailChangeInput type="checkbox" [checked]="preferences?.emailChange"
+                                (change)="preferences.emailChange = emailChangeInput.checked; setAllChecked()">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+
+                    <!-- Password Change -->
+                    <div class="preference">
+                        Notify me on a successful password change
+
+                        <label class="checkbox">
+                            <input #passwordChangeInput type="checkbox"
+                                (change)="preferences.passwordChange = passwordChangeInput.checked; setAllChecked()"
+                                [checked]="preferences?.passwordChange">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+                    <!-- Profile Pic Change -->
+                    <div class="preference">
+                        Notify me on a successful profile picture change
+
+                        <label class="checkbox">
+                            <input #profilePicChangeInput type="checkbox"
+                                (change)="preferences.profilePicChange = profilePicChangeInput.checked; setAllChecked()"
+                                [checked]="preferences?.profilePicChange">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+
+
+
+
+                <!-- Lists -->
+                <div class="section">
+
+                    <div class="heading">Lists</div>
+
+
+                    <!-- New Collaborator -->
+                    <div class="preference">
+                        Notify me when a new collaborator has joined a list
+
+                        <label class="checkbox">
+                            <input #newCollaboratorInput type="checkbox"
+                                (change)="preferences.newCollaborator = newCollaboratorInput.checked; setAllChecked()"
+                                [checked]="preferences?.newCollaborator">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+
+
+
+                    <!-- Remove Collaborator -->
+                    <div class="preference">
+                        Notify me when a list owner has removed me from their list
+
+                        <label class="checkbox">
+                            <input #removedCollaboratorInput type="checkbox"
+                                (change)="preferences.removedCollaborator = removedCollaboratorInput.checked; setAllChecked()"
+                                [checked]="preferences?.removedCollaborator">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+
+
+                    <!-- Added List Item -->
+                    <div class="preference">
+                        Notify me when a collaborator adds an item to a list
+
+                        <label class="checkbox">
+                            <input #addedListItemInput type="checkbox"
+                                (change)="preferences.addedListItem = addedListItemInput.checked; setAllChecked()"
+                                [checked]="preferences?.addedListItem">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+
+
+                    <!-- Removed List Item -->
+                    <div class="preference">
+                        Notify me when a collaborator removes an item from a list
+
+                        <label class="checkbox">
+                            <input #removedListItemInput type="checkbox"
+                                (change)="preferences.removedListItem = removedListItemInput.checked; setAllChecked()"
+                                [checked]="preferences?.removedListItem">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+
+
+
+                    <!-- Moved List Item -->
+                    <div class="preference">
+                        Notify me when a collaborator has moved an item from one list to another
+
+                        <label class="checkbox">
+                            <input #movedListItemInput type="checkbox"
+                                (change)="preferences.movedListItem = movedListItemInput.checked; setAllChecked()"
+                                [checked]="preferences?.movedListItem">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+
+
+
+                    <!-- List Name Change -->
+                    <div class="preference">
+                        Notify me when a list owner renames a list I'm a collaborator of
+
+                        <label class="checkbox">
+                            <input #listNameChangeInput type="checkbox"
+                                (change)="preferences.listNameChange = listNameChangeInput.checked; setAllChecked()"
+                                [checked]="preferences?.listNameChange">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+
+
+                    <!-- Deleted List -->
+                    <div class="preference">
+                        Notify me when a list owner deletes a list I'm a collaborator of
+
+                        <label class="checkbox">
+                            <input #deletedListInput type="checkbox"
+                                (change)="preferences.deletedList = deletedListInput.checked; setAllChecked()"
+                                [checked]="preferences?.deletedList">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+
+                </div>
+
+
+
+
+                <!-- Product Reviews -->
+                <div class="heading">Product Reviews</div>
+
+                <!-- Review -->
+                <div class="preference">
+                    Notify me when my product review is posted
+
+                    <label class="checkbox">
+                        <input #reviewInput type="checkbox" (change)="preferences.review = reviewInput.checked; setAllChecked()"
+                            [checked]="preferences?.review">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+
+
+                <button class="gold-rect-button" [disabled]="isDisabled()" (click)="onSaveChangesClick()">Save Changes</button>
+
+            </div>
+
+        </div>
+    </div>
+</header-footer>

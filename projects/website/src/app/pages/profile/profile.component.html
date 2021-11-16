@@ -1,0 +1,75 @@
+<header-footer>
+    <div class="breadcrumb">
+        <a routerLink="/account">Your Account</a>
+        <div></div>
+
+        <div>Your Profile</div>
+    </div>
+
+    <div class="profile-page-container">
+        <div class="profile-page-content">
+            <div class="page-title">Your Profile</div>
+
+            <!-- Name -->
+            <div class="section">
+                <div class="property">
+                    <div>Name:</div>
+                    <div>{{accountService.customer?.firstName + ' ' + accountService.customer?.lastName}}</div>
+                </div>
+
+                <div class="icon-container" title="Change Name" (click)="onChangeNameClick()">
+                    <div class="pencil-icon"></div>
+                </div>
+            </div>
+
+
+
+            <!-- Email -->
+            <div class="section">
+                <div class="property">
+                    <div>Email:</div>
+                    <div>{{accountService.customer?.email}}</div>
+                </div>
+
+                <div class="icon-container" title="Change Email" (click)="onChangeEmailClick()">
+                    <div class="pencil-icon"></div>
+                </div>
+            </div>
+
+
+
+
+            <!-- Password -->
+            <div class="section" style="margin-bottom: 8px;">
+                <div class="property">
+                    <div>Password:</div>
+                    <div>******</div>
+                </div>
+
+                <div class="icon-container" title="Change Password" (click)="onChangePasswordClick()">
+                    <div class="pencil-icon"></div>
+                </div>
+            </div>
+
+
+
+
+            <!-- Profile Picture -->
+            <div class="section" style="padding-bottom: 9px;">
+                <div class="property">
+                    <div style="margin-bottom: 10px;">Profile Picture:</div>
+                    <div>
+                        <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
+                        <img [src]="accountService.getProfileImg()" class="profile-pic"
+                            [title]="accountService.customer?.firstName + ' ' + accountService.customer?.lastName"
+                            >
+                            </div>
+                        </div>
+
+                <div class="icon-container" title="Change Profile Picture" (click)="onChangeProfilePictureClick()">
+                    <div class="pencil-icon"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header-footer>

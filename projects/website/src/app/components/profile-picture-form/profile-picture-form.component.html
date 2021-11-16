@@ -1,64 +1,68 @@
-<!-- Backdrop -->
-<div class="backdrop" (click)="close()"></div>
+<div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <!-- Backdrop -->
+    <div class="backdrop"></div>
 
 
-<!-- Container -->
-<div class="container">
+    <!-- Container -->
+    <div class="container">
 
-    <!-- Base -->
-    <div class="base" style="width: 700px; height: 100%;
+        <!-- Base -->
+        <div class="base" style="width: 700px; height: 100%;
     max-height: 585px;">
 
-        <!-- Header -->
-        <div class="header">
-            Profile Picture
+            <!-- Header -->
+            <div class="header">
+                Profile Picture
 
-            <!-- X -->
-            <div class="x" (click)="close()">X</div>
-        </div>
+                <!-- X -->
+                <div class="x" (click)="close()">X</div>
+            </div>
 
-        <!-- Drop Shadow -->
-        <div class="drop-shadow"></div>
-
-        
-        <div style="display: flex; height: 100%; justify-content: center; align-items: center; position: relative; overflow: hide;">
+            <!-- Drop Shadow -->
+            <div class="drop-shadow"></div>
 
 
-            
-            <img src="assets/alita.png">
+            <div
+                style="display: flex; height: 100%; justify-content: center; align-items: center; position: relative; overflow: hidden;">
 
-            <div #profilePic style="position: absolute;
+
+
+                <!-- <img src="assets/alita.png"> -->
+
+                <div style="
+                
+                
+                position: absolute;
             
             height: 100%; 
-            
+            width: 300px;
             max-height: 300px;
             border-radius: 50%;
             box-shadow: 0 0 0 300px rgba(22, 22, 22, 0.95);"></div>
 
-        </div>
-
-            
-
-
-        <div style="height: 128px; flex-shrink: 0;">
-
-
-            <div style="width: 100%; height: 1px; background: #282828;"></div>
-
-            <div style="display: flex; justify-content: space-between;">
-
-                <button style="max-width: 173px;" class="dark-button" (click)="close()">Choose another image</button>
-
-                <div class="button-container">
-                    <button style="flex-shrink: 0;" class="dark-button" (click)="close()">Cancel</button>
-                    <button style="flex-shrink: 0;" class="gold-rect-button" (click)="onSubmit()">Submit</button>
-                </div>
             </div>
 
 
 
 
+            <div style="height: 128px; flex-shrink: 0;">
 
+
+                <div style="width: 100%; height: 1px; background: #282828;"></div>
+
+                <div style="display: flex; justify-content: space-between;">
+
+                    <button style="max-width: 173px;" class="dark-button" (click)="close()">Choose another
+                        image</button>
+
+                    <div class="button-container">
+                        <button style="flex-shrink: 0;" class="dark-button" (click)="close()">Cancel</button>
+                        <button style="flex-shrink: 0;" class="gold-rect-button" (click)="onSubmit()">Submit</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>

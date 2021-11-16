@@ -11,13 +11,13 @@ export class LazyLoadingService {
   constructor(private compiler: Compiler, private injector: Injector, private resolver: ComponentFactoryResolver) { }
 
 
-  async getModuleRef<T>(module: Type<T>): Promise<NgModuleRef<T>> {
+  private async getModuleRef<T>(module: Type<T>): Promise<NgModuleRef<T>> {
     const moduleFactory: NgModuleFactory<T> = await this.compiler.compileModuleAsync(module);
     return moduleFactory.create(this.injector);
   }
 
 
-  getComponent<T extends LazyLoad>(component: Type<T>, container: ViewContainerRef, injector?: Injector): T {
+  public getComponent<T extends LazyLoad>(component: Type<T>, container: ViewContainerRef, injector?: Injector): T {
     const componentFactory: ComponentFactory<T> = this.resolver.resolveComponentFactory(component);
     const componentRef: ComponentRef<T> = container.createComponent(componentFactory, undefined, injector);
 
@@ -27,7 +27,7 @@ export class LazyLoadingService {
   }
 
 
-  async getComponentAsync<T1 extends LazyLoad, T2>(component: Type<T1>, module: Type<T2>, container: ViewContainerRef): Promise<T1> {
+  public async getComponentAsync<T1 extends LazyLoad, T2>(component: Type<T1>, module: Type<T2>, container: ViewContainerRef): Promise<T1> {
     const moduleRef = await this.getModuleRef(module);
     return this.getComponent(component, container, moduleRef.injector);
   }

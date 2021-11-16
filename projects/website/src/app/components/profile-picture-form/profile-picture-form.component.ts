@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 
 @Component({
@@ -13,15 +13,15 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
   }
 
-  ngAfterViewInit() {
-    this.onWindowResize();
-  }
+  // ngAfterViewInit() {
+  //   this.onWindowResize();
+  // }
 
 
-  @HostListener('window:resize')
-  onWindowResize() {
-    if (this.profilePic != null) {
-      this.profilePic.nativeElement.style.width = this.profilePic.nativeElement.clientHeight + 'px';
-    }
-  }
+  // @HostListener('window:resize')
+  // onWindowResize() {
+  //   if (this.profilePic != null) {
+  //     this.profilePic.nativeElement.style.width = this.profilePic.nativeElement.clientHeight + 'px';
+  //   }
+  // }
 }

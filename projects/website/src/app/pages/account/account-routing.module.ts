@@ -6,6 +6,14 @@ const routes: Routes = [
   {
     path: '',
     component: AccountComponent
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('../../pages/profile/profile.module').then(m => m.ProfileModule)
+  },
+  {
+    path: 'email-preferences',
+    loadChildren: () => import('../../pages/email-preferences/email-preferences.module').then(m => m.EmailPreferencesModule)
   }
 ];
 

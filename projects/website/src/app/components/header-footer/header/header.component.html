@@ -3,6 +3,7 @@
     <!-- Left Container -->
     <div class="left-container">
 
+        <!-- Side Menu -->
         <div tabindex="0" (blur)="sideMenu.close()" class="hamburger-button-container">
             <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
             <ng-template #sideMenuContainer></ng-template>
@@ -104,7 +105,7 @@
             <div tabindex="0" (blur)="accountMenuPopupComponent.close()"
                 (keydown.escape)="accountMenuPopupComponent.close()" style="outline: none;">
                 <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                <img [src]="getProfileImg()" class="profile-pic"
+                <img [src]="accountService.getProfileImg()" class="profile-pic"
                     [title]="accountService.customer.firstName + ' ' + accountService.customer.lastName"
                     (click)="onProfilePicClick()">
 

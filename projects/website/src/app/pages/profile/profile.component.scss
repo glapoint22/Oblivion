@@ -1,0 +1,105 @@
+.profile-page-container {
+    padding: 0 20px 20px;
+}
+
+.profile-page-content {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.section {
+    width: 100%;
+    max-width: 780px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #3d3d3d;
+    padding-bottom: 21px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.property {
+    width: 100%;
+    max-width: 600px;
+    div:first-child {
+        color: #ffba0e;
+        margin-bottom: 5px;
+    }
+
+    div:last-child {
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.icon-container {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover .pencil-icon {
+        color: white;
+    }
+}
+
+@font-face {
+    font-family: 'pencil-icon';
+    src: url('../../../assets/fonts/pencil-icon.ttf');
+}
+
+.pencil-icon
+{
+    font-family: 'pencil-icon';
+    color: #dadada;
+    font-size: 18px;
+    &::before {
+        content: "\e907";
+    }
+}
+
+
+.profile-pic {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #999999;
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(1.25);
+    }
+}
+
+@media(max-width: 665px) {
+    .property {
+        max-width: 400px;
+    }
+}
+
+
+@media(max-width: 465px) {
+    .property {
+        max-width: 200px;
+    }
+}
+
+
+@media(max-width: 400px) {
+    .page-title {
+        white-space: normal;
+    }
+}
+
+
+@media(max-width: 265px) {
+    .property {
+        max-width: 175px;
+    }
+}

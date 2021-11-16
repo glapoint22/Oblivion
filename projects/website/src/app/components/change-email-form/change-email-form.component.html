@@ -1,48 +1,56 @@
-<!-- Backdrop -->
-<div class="backdrop" (click)="close()"></div>
+<div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <!-- Backdrop -->
+    <div class="backdrop" (click)="close()"></div>
 
 
-<!-- Container -->
-<div class="container">
+    <!-- Container -->
+    <div class="container">
 
-    <!-- Base -->
-    <div class="base">
+        <!-- Base -->
+        <div class="base">
 
-        <!-- Header -->
-        <div class="header">
-            Change Email
+            <!-- Header -->
+            <div class="header">
+                Change Email
 
-            <!-- X -->
-            <div class="x" (click)="close()">X</div>
-        </div>
-
-        <!-- Drop Shadow -->
-        <div class="drop-shadow"></div>
-
-        <!-- Content -->
-        <form class="content" [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
-            <!-- Message -->
-            <div class="message-text">Enter a new email address below and we'll send a verification email to that
-                address.</div>
-
-            <!-- Email -->
-            <div class="label">Email:</div>
-            <input type="text" formControlName="email"
-                [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
-
-            <ng-container *ngIf="_form.submitted && form.controls.email.errors">
-                <ul>
-                    <li *ngFor="let message of getErrorMessages('email', 'Email')">
-                        {{message}}
-                    </li>
-                </ul>
-            </ng-container>
-
-            <!-- Button Container -->
-            <div class="button-container">
-                <button type="button" class="dark-button" (click)="close()">Cancel</button>
-                <button type="submit" class="gold-rect-button">Submit</button>
+                <!-- X -->
+                <div class="x" (click)="close()">X</div>
             </div>
-        </form>
+
+            <!-- Drop Shadow -->
+            <div class="drop-shadow"></div>
+            
+
+            <!-- Content -->
+            <form class="content" [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
+                <div *ngIf="isError" class="error-text">This email address is already linked to another Niche Shack account. Please provide a different email address.</div>
+
+                <!-- Message -->
+                <div class="message-text">Enter a new email address below and we'll send a verification email to that
+                    address.</div>
+
+                
+
+                <!-- Email -->
+                <div class="label">Email:</div>
+                <input #emailInput type="text" formControlName="email"
+                    [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}" (input)="isError = false">
+
+                <ng-container *ngIf="_form.submitted && form.controls.email.errors">
+                    <ul>
+                        <li *ngFor="let message of getErrorMessages('email', 'Email')">
+                            {{message}}
+                        </li>
+                    </ul>
+                </ng-container>
+
+                <!-- Button Container -->
+                <div class="button-container">
+                    <button type="button" class="dark-button" (click)="close()">Cancel</button>
+                    <button type="submit" class="gold-rect-button" [disabled]="emailInput.value == accountService.customer?.email">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
