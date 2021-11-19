@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AccountGuard } from './guards/account/account.guard';
+import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,17 @@ const routes: Routes = [
     canLoad: [AccountGuard],
     canActivate: [AccountGuard]
   }
+
+
+
+
+
+
+
+
+  ,
+
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({

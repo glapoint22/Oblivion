@@ -3,7 +3,7 @@
     min-height: 100vh;
 }
 
-.content-container {
+.page {
     padding-top: 79px;
     padding-bottom: 126px;
 }
@@ -11,13 +11,13 @@
 
 
 @media(max-width: 1400px) {
-    .content-container {
+    .page {
         padding-bottom: 174px;
     }
 }
 
 @media(max-width: 525px) {
-    .content-container {
+    .page {
         padding-bottom: 271px;
     }
 }

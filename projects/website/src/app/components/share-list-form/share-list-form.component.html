@@ -1,66 +1,69 @@
-<!-- Backdrop -->
-<div class="backdrop" (click)="close()"></div>
+<div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-<!-- Container -->
-<div class="container">
+    <!-- Backdrop -->
+    <div class="backdrop" (click)="close()"></div>
 
-    <!-- Base -->
-    <div class="base">
+    <!-- Container -->
+    <div class="container">
 
-        <!-- Header -->
-        <div class="header">
-            Share List
+        <!-- Base -->
+        <div class="base">
 
-            <!-- X -->
-            <div class="x" (click)="close()">X</div>
-        </div>
+            <!-- Header -->
+            <div class="header">
+                Share List
 
-        <!-- Drop Shadow -->
-        <div class="drop-shadow"></div>
-
-        <!-- Content -->
-        <div class="content">
-
-            <div class="content-container">
-
-                <div class="options-container">
-
-                    <div class="option-heading">Share List With Others</div>
-
-                    <label class="radio">
-                        <div>People I share with can only view this list</div>
-                        <input type="radio" name="share-list" checked="checked">
-                        <span class="checkmark"></span>
-                    </label>
-
-                    <div class="horizontal-line"></div>
-
-                    <div class="option-heading">Invite Collaborators</div>
-
-                    <label class="radio">
-                        <div>People I invite can view and edit this list.</div>
-                        <input type="radio" name="share-list">
-                        <span class="checkmark"></span>
-                    </label>
-
-                </div>
-
-                <div class="vertical-line"></div>
-
-                <div class="share-container">
-                    <img src="assets/facebook-share.png" title="Share your list on Facebook"
-                        alt="Share your list on Facebook">
-                    <img src="assets/twitter-share.png" title="Share your list on Twitter"
-                        alt="Share your list on Twitter">
-                    <img src="assets/link.png" title="Share your list with this link"
-                        alt="Share your list with this link">
-                </div>
+                <!-- X -->
+                <div class="x" (click)="close()">X</div>
             </div>
 
+            <!-- Drop Shadow -->
+            <div class="drop-shadow"></div>
 
-            <!-- Button Container -->
-            <div class="button-container">
-                <button class="dark-button" (click)="close()">Close</button>
+            <!-- Content -->
+            <div class="content">
+
+                <div class="content-container">
+
+                    <div class="options-container">
+
+                        <div class="option-heading">Share List With Others</div>
+
+                        <label class="radio">
+                            <div>People I share with can only view this list</div>
+                            <input type="radio" name="share-list" checked="checked">
+                            <span class="checkmark"></span>
+                        </label>
+
+                        <div class="horizontal-line"></div>
+
+                        <div class="option-heading">Invite Collaborators</div>
+
+                        <label class="radio">
+                            <div>People I invite can view and edit this list.</div>
+                            <input type="radio" name="share-list">
+                            <span class="checkmark"></span>
+                        </label>
+
+                    </div>
+
+                    <div class="vertical-line"></div>
+
+                    <div class="share-container">
+                        <img src="assets/facebook-share.png" title="Share your list on Facebook"
+                            alt="Share your list on Facebook">
+                        <img src="assets/twitter-share.png" title="Share your list on Twitter"
+                            alt="Share your list on Twitter">
+                        <img src="assets/link.png" title="Share your list with this link"
+                            alt="Share your list with this link">
+                    </div>
+                </div>
+
+
+                <!-- Button Container -->
+                <div class="button-container">
+                    <button class="dark-button" (click)="close()">Close</button>
+                </div>
             </div>
         </div>
     </div>

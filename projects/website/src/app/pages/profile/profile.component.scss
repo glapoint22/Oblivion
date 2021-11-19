@@ -1,13 +1,3 @@
-.profile-page-container {
-    padding: 0 20px 20px;
-}
-
-.profile-page-content {
-    width: 100%;
-    max-width: 1000px;
-    margin: auto;
-}
-
 .section {
     width: 100%;
     max-width: 780px;
@@ -65,17 +55,7 @@
 }
 
 
-.profile-pic {
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    border: 1px solid #999999;
-    cursor: pointer;
 
-    &:hover {
-        filter: brightness(1.25);
-    }
-}
 
 @media(max-width: 665px) {
     .property {

@@ -14,6 +14,14 @@ const routes: Routes = [
   {
     path: 'email-preferences',
     loadChildren: () => import('../../pages/email-preferences/email-preferences.module').then(m => m.EmailPreferencesModule)
+  },
+  {
+    path: 'lists',
+    loadChildren: () => import('../../pages/lists/lists.module').then(m => m.ListsModule)
+  },
+  {
+    path: 'lists/:listId',
+    loadChildren: () => import('../../pages/lists/lists.module').then(m => m.ListsModule)
   }
 ];
 

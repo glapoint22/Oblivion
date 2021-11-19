@@ -1,52 +1,55 @@
-<!-- Backdrop -->
-<div class="backdrop" (click)="close()"></div>
+<div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <!-- Backdrop -->
+    <div class="backdrop" (click)="close()"></div>
 
 
-<!-- Container -->
-<div class="container">
+    <!-- Container -->
+    <div class="container">
 
-    <!-- Base -->
-    <div class="base">
+        <!-- Base -->
+        <div class="base">
 
-        <!-- Header -->
-        <div class="header">
-            Move Item
+            <!-- Header -->
+            <div class="header">
+                Move Item
 
-            <!-- X -->
-            <div class="x" (click)="close()">X</div>
-        </div>
-
-        <!-- Drop Shadow -->
-        <div class="drop-shadow"></div>
-
-        <div class="content">
-            <!-- Prompt Content -->
-            <div class="prompt-content">
-
-                <div class="img-container">
-                    <img src="assets/move.png" alt="Move">
-                </div>
-
-
-                <!-- Message -->
-                <div class="message-text">
-                    <div>The following item:</div>
-
-                    <div class="emphasized-text">10 Minute Awakening</div>
-
-                    <div>Will be moved from list:</div>
-                    <div class="emphasized-text">Christmas List</div>
-
-                    <div>To list:</div>
-                    <div class="emphasized-text" style="padding-bottom: 0;">My List</div>
-                </div>
-
+                <!-- X -->
+                <div class="x" (click)="close()">X</div>
             </div>
 
-            <!-- Button Container -->
-            <div class="button-container">
-                <button class="dark-button" (click)="close()">Cancel</button>
-                <button class="gold-rect-button">Move</button>
+            <!-- Drop Shadow -->
+            <div class="drop-shadow"></div>
+
+            <div class="content">
+                <!-- Prompt Content -->
+                <div class="prompt-content">
+
+                    <div class="img-container">
+                        <img src="assets/move.png" alt="Move">
+                    </div>
+
+
+                    <!-- Message -->
+                    <div>
+                        <div class="prompt-key">The following item:</div>
+
+                        <div class="prompt-value">10 Minute Awakening</div>
+
+                        <div class="prompt-key">Will be moved from list:</div>
+                        <div class="prompt-value">Christmas List</div>
+
+                        <div class="prompt-key">To list:</div>
+                        <div class="prompt-value" style="padding-bottom: 0;">My List</div>
+                    </div>
+
+                </div>
+
+                <!-- Button Container -->
+                <div class="button-container">
+                    <button class="dark-button" (click)="close()">Cancel</button>
+                    <button class="gold-rect-button">Move</button>
+                </div>
             </div>
         </div>
     </div>

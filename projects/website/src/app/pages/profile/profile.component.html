@@ -6,8 +6,8 @@
         <div>Your Profile</div>
     </div>
 
-    <div class="profile-page-container">
-        <div class="profile-page-content">
+    <div class="page-content-container">
+        <div class="page-content">
             <div class="page-title">Your Profile</div>
 
             <!-- Name -->
@@ -61,10 +61,9 @@
                     <div>
                         <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
                         <img [src]="accountService.getProfileImg()" class="profile-pic"
-                            [title]="accountService.customer?.firstName + ' ' + accountService.customer?.lastName"
-                            >
-                            </div>
-                        </div>
+                            [title]="accountService.customer?.firstName + ' ' + accountService.customer?.lastName">
+                    </div>
+                </div>
 
                 <div class="icon-container" title="Change Profile Picture" (click)="onChangeProfilePictureClick()">
                     <div class="pencil-icon"></div>

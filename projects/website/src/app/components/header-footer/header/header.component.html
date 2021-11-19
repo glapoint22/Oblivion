@@ -98,8 +98,8 @@
         <ng-container *ngIf="accountService.customer && accountService.customer.firstName">
             <a id="about2" class="links" routerLink="/about">About</a>
             <a id="orderSupport2" class="links" href="https://www.clkbank.com/" target="_blank">Order Support</a>
-            <a id="orders" class="links" routerLink="/orders">Orders</a>
-            <a id="lists" class="links" routerLink="/lists">Lists</a>
+            <a id="orders" class="links" routerLink="/account/orders">Orders</a>
+            <a id="lists" class="links" routerLink="/account/lists">Lists</a>
 
             <!-- Account profile pic -->
             <div tabindex="0" (blur)="accountMenuPopupComponent.close()"

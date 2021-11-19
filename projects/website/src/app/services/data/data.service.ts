@@ -21,7 +21,7 @@ export class DataService {
     return this.http.post(url, body);
   }
 
-  put(url: string, body: any, headers?: HttpHeaders) {
-    return this.http.put(url, body, {headers});
+  put<T>(url: string, body: any, headers?: HttpHeaders): Observable<T> {
+    return this.http.put<T>(url, body, {headers});
   }
 }
