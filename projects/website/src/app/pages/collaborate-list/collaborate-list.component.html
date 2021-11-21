@@ -1,0 +1,39 @@
+<ng-container *ngIf="listId">
+    <header-footer>
+        <div class="page-content-container">
+            <div class="page-content">
+                <!-- Logo -->
+                <img src="assets/logo.png" routerLink="" title="Niche Shack Homepage" style="margin-top: 20px;">
+
+
+
+                <div class="collaborate-list-container">
+
+                    <div class="lines-container">
+                        <div class="left-line"></div>
+                        <img [src]="profilePic ? 'images/' + profilePic : 'assets/no-account-pic.png'">
+                        <div class="right-line"></div>
+                    </div>
+
+
+
+                    <!-- Caption -->
+                    <div class="caption">
+                        You have been invited to collaborate on {{ownerName}}'s list
+                    </div>
+
+                    <!-- List name -->
+                    <div class="list-name">"{{listName}}"</div>
+
+                    <div class="horizontal-line"></div>
+
+                    <!-- Button Container -->
+                    <div class="button-container">
+                        <button class="dark-button" (click)="onCancelClick()">Cancel</button>
+                        <button class="gold-rect-button" (click)="onAcceptClick()">Accept</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header-footer>
+</ng-container>

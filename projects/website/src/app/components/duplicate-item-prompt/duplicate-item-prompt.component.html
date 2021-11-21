@@ -12,7 +12,7 @@
 
             <!-- Header -->
             <div class="header">
-                Move Item
+                Duplicate Item
 
                 <!-- X -->
                 <div class="x" (click)="close()">X</div>
@@ -26,29 +26,25 @@
                 <div class="prompt-content">
 
                     <div class="img-container">
-                        <img src="assets/move.png" alt="Move">
+                        <img src="assets/info.png" alt="Info">
                     </div>
 
 
                     <!-- Message -->
-                    <div>
-                        <div class="prompt-key">The following item:</div>
+                    <div class="message-text">
+                        <div class="prompt-key">The following list:</div>
 
-                        <div class="prompt-value">{{product.title}}</div>
+                        <div class="prompt-value">{{list}}</div>
 
-                        <div class="prompt-key">Will be moved from list:</div>
-                        <div class="prompt-value">{{fromList.name}}</div>
-
-                        <div class="prompt-key">To list:</div>
-                        <div class="prompt-value" style="padding-bottom: 0;">{{toList.key}}</div>
+                        <div class="prompt-key">Already contains item:</div>
+                        <div class="prompt-value" style="padding-bottom: 0;">{{product}}</div>
                     </div>
 
                 </div>
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button class="dark-button" (click)="close()">Cancel</button>
-                    <button class="gold-rect-button" (click)="onMoveClick()">Move</button>
+                    <button class="dark-button" (click)="close()">Close</button>
                 </div>
             </div>
         </div>

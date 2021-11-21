@@ -1,6 +1,6 @@
 <div class="dropdown-container" tabindex="0" (blur)="showDropdownList = false">
 
-    <div class="dropdown-base" (click)="showDropdownList = !showDropdownList">
+    <div class="dropdown-base" (click)="listItems.length > 0 ? showDropdownList = !showDropdownList : null" [ngClass]="{'disabled': listItems.length == 0}">
 
         <div class="dropdown-text">
             Move to

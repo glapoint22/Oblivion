@@ -34,7 +34,7 @@
                     <div>
                         <div class="prompt-key">The following list will be deleted:</div>
 
-                        <div class="prompt-value" style="padding-bottom: 0;">My List</div>
+                        <div class="prompt-value" style="padding-bottom: 0;">{{list.name}}</div>
                     </div>
 
                 </div>
@@ -42,7 +42,7 @@
                 <!-- Button Container -->
                 <div class="button-container">
                     <button class="dark-button" (click)="close()">Cancel</button>
-                    <button class="gold-rect-button">Delete</button>
+                    <button class="gold-rect-button" (click)="onDeleteClick()">Delete</button>
                 </div>
             </div>
         </div>

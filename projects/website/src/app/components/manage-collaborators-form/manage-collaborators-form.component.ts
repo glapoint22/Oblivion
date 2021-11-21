@@ -23,6 +23,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad {
     'Full Control',
     'Add to List',
     'Share List',
+    'Invite Collaborators',
     'Edit List',
     'Delete List',
     'Move Item',

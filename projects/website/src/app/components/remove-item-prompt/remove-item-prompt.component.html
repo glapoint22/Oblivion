@@ -34,10 +34,10 @@
                     <div class="message-text">
                         <div class="prompt-key">The following item:</div>
 
-                        <div class="prompt-value">10 Minute Awakening</div>
+                        <div class="prompt-value">{{product.title}}</div>
 
                         <div class="prompt-key">Will be removed from list:</div>
-                        <div class="prompt-value" style="padding-bottom: 0;">Christmas List</div>
+                        <div class="prompt-value" style="padding-bottom: 0;">{{list.name}}</div>
                     </div>
 
                 </div>
@@ -45,7 +45,7 @@
                 <!-- Button Container -->
                 <div class="button-container">
                     <button class="dark-button" (click)="close()">Cancel</button>
-                    <button class="gold-rect-button">Remove</button>
+                    <button class="gold-rect-button" (click)="onRemoveClick()">Remove</button>
                 </div>
             </div>
         </div>

@@ -17,11 +17,15 @@ export class DataService {
     return this.http.get<T>(url, { params: params, headers: headers });
   }
 
-  post(url: string, body: any) {
-    return this.http.post(url, body);
+  post<T>(url: string, body: any, headers?: HttpHeaders): Observable<T> {
+    return this.http.post<T>(url, body, { headers });
   }
 
   put<T>(url: string, body: any, headers?: HttpHeaders): Observable<T> {
-    return this.http.put<T>(url, body, {headers});
+    return this.http.put<T>(url, body, { headers });
+  }
+
+  delete(url: string, params: any, headers?: HttpHeaders) {
+    return this.http.delete(url, { params: params, headers: headers });
   }
 }

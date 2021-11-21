@@ -5,7 +5,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   selector: 'dropdown-button',
   templateUrl: './dropdown-button.component.html',
   styleUrls: ['../dropdown/dropdown.component.scss','./dropdown-button.component.scss']
-  //  
 })
 export class DropdownButtonComponent {
   @Input() listItems!: Array<KeyValue<any, any>>;

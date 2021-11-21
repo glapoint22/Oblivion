@@ -4,10 +4,10 @@
     <div class="backdrop" (click)="close()"></div>
 
     <!-- Container -->
-    <div class="container">
+    <div [ngClass]="{'both': shareListType == ShareListType.Both}"  class="container">
 
         <!-- Base -->
-        <div class="base">
+        <div class="base" [ngClass]="{'max-width': shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate}">
 
             <!-- Header -->
             <div class="header">
@@ -21,9 +21,9 @@
             <div class="drop-shadow"></div>
 
             <!-- Content -->
-            <div class="content">
+            <div [style]="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate ? 'overflow-y: visible;' : 'overflow-y: auto;'" class="content">
 
-                <div class="content-container">
+                <div *ngIf="shareListType == ShareListType.Both" class="content-container">
 
                     <div class="options-container">
 
@@ -41,7 +41,7 @@
 
                         <label class="radio">
                             <div>People I invite can view and edit this list.</div>
-                            <input type="radio" name="share-list">
+                            <input id="collaborate" type="radio" name="share-list">
                             <span class="checkmark"></span>
                         </label>
 
@@ -49,13 +49,33 @@
 
                     <div class="vertical-line"></div>
 
-                    <div class="share-container">
+                    <div class="vertical-share-container">
                         <img src="assets/facebook-share.png" title="Share your list on Facebook"
-                            alt="Share your list on Facebook">
+                            alt="Share your list on Facebook" (click)="onShareClick('Facebook')">
                         <img src="assets/twitter-share.png" title="Share your list on Twitter"
-                            alt="Share your list on Twitter">
+                            alt="Share your list on Twitter" (click)="onShareClick('Twitter')">
                         <img src="assets/link.png" title="Share your list with this link"
-                            alt="Share your list with this link">
+                            alt="Share your list with this link" (click)="onShareClick('Link')">
+                    </div>
+                </div>
+
+
+                <div *ngIf="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate" class="content-container">
+
+                    <div style="max-width: 100%;" class="options-container">
+
+                        <div class="option-heading">{{shareListType == ShareListType.Share ? 'Share List With Others' : 'Invite Collaborators'}}</div>
+
+                        <div class="option-description">{{shareListType == ShareListType.Share ? 'People I share with can only view this list' : 'People I invite can view and edit this list.'}}</div>
+
+                        <div class="horizontal-share-container">
+                            <img src="assets/facebook-share.png" title="Share your list on Facebook"
+                                alt="Share your list on Facebook" (click)="onShareClick('Facebook')">
+                            <img src="assets/twitter-share.png" title="Share your list on Twitter"
+                                alt="Share your list on Twitter" (click)="onShareClick('Twitter')">
+                            <img src="assets/link.png" title="Share your list with this link"
+                                alt="Share your list with this link" (click)="onShareClick('Link')">
+                        </div>
                     </div>
                 </div>
 
@@ -67,4 +87,5 @@
             </div>
         </div>
     </div>
+    <input id="copy" type="text" style="position: absolute; top: -100px; left: -100px">
 </div>
