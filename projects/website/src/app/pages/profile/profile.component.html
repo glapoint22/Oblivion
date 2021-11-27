@@ -60,8 +60,9 @@
                     <div style="margin-bottom: 10px;">Profile Picture:</div>
                     <div>
                         <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                        <img [src]="accountService.getProfileImg()" class="profile-pic"
-                            [title]="accountService.customer?.firstName + ' ' + accountService.customer?.lastName">
+                        <img [src]="accountService.customer?.profileImage?.url" class="profile-pic"
+                            [title]="accountService.customer?.profileImage?.name"
+                            [alt]="accountService.customer?.profileImage?.name">
                     </div>
                 </div>
 

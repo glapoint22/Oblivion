@@ -4,7 +4,6 @@ import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
 import { DuplicateItemPromptComponent } from '../../components/duplicate-item-prompt/duplicate-item-prompt.component';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -19,7 +18,7 @@ export class MoveItemPromptComponent extends LazyLoad {
   public toList!: KeyValue<any, any>;
   @Output() onMove: EventEmitter<void> = new EventEmitter();
 
-  constructor(private dataService: DataService, private accountService: AccountService, private lazyLoadingService: LazyLoadingService) {
+  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) {
     super();
   }
 
@@ -33,9 +32,7 @@ export class MoveItemPromptComponent extends LazyLoad {
       CollaboratorId: this.product.collaborator.id,
       FromListId: this.fromList.id,
       ToListId: this.toList.value
-
-
-    }, this.accountService.getHeaders())
+    }, true)
       .subscribe((isDuplicate: boolean) => {
         this.close();
 

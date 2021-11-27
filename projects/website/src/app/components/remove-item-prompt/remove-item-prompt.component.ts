@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 
 @Component({
@@ -15,7 +14,7 @@ export class RemoveItemPromptComponent extends LazyLoad {
   public list!: List;
   public product!: Product;
 
-  constructor(private dataService: DataService, private accountService: AccountService) {
+  constructor(private dataService: DataService) {
     super();
   }
 
@@ -24,7 +23,7 @@ export class RemoveItemPromptComponent extends LazyLoad {
       productId: this.product.id,
       collaboratorId: this.product.collaborator.id,
       listId: this.list.id
-    }, this.accountService.getHeaders()).subscribe(()=> {
+    }, true).subscribe(() => {
       this.onRemove.emit();
       this.close();
     });

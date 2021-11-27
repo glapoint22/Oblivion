@@ -8,7 +8,6 @@ import { CreateListFormComponent } from '../../components/create-list-form/creat
 import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-side-menu.component';
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -34,7 +33,6 @@ export class ListsComponent implements OnInit {
   public moveToList: Array<KeyValue<string, string>> = [];
 
   constructor(
-    public accountService: AccountService,
     private lazyLoadingService: LazyLoadingService,
     public dataService: DataService,
     public route: ActivatedRoute,
@@ -47,7 +45,7 @@ export class ListsComponent implements OnInit {
 
   ngOnInit() {
     // Get the lists
-    this.dataService.get<Array<List>>('api/Lists/', undefined, this.accountService.getHeaders())
+    this.dataService.get<Array<List>>('api/Lists/', undefined, true)
       .subscribe((lists: Array<List>) => {
         this.lists = lists;
 
@@ -75,7 +73,7 @@ export class ListsComponent implements OnInit {
                 .get<Array<Product>>('api/Lists/Products', [
                   { key: 'listId', value: this.selectedList.id },
                   { key: 'sort', value: routeParams.sort ? routeParams.sort : '' }
-                ], this.accountService.getHeaders()).subscribe((products: Array<Product>) => {
+                ], true).subscribe((products: Array<Product>) => {
                   this.products = products;
                 });
             }

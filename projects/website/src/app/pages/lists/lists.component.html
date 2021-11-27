@@ -18,7 +18,7 @@
 
 
                     <div class="top-container-right">
-                        <div class="list-title-lg">{{selectedList.name}}</div>
+                        <div class="list-title">{{selectedList.name}}</div>
                         <div *ngIf="products && products.length > 0" class="dropdown-container">
                             <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event.value)">
                             </dropdown>
@@ -68,7 +68,7 @@
                                 <div class="profile-img-container" [title]="product.collaborator.image.name">
                                     <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
                                     <img [src]="product.collaborator.image.url ? 'images/' + product.collaborator.image.url : 'assets/no-account-pic.png'"
-                                        class="profile-pic">
+                                        [alt]="product.collaborator.image.name" class="profile-pic">
                                 </div>
 
 
@@ -130,7 +130,8 @@
                 <div class="page-title">Your Lists</div>
                 <div style="text-align: center;">
                     <div style="font-size: 16px; color: white; margin-bottom: 24px;">You currently have no lists.</div>
-                    <button class="purple-button" (click)="onCreateNewListClick()" style="width: 190px; max-width: inherit;">Create list</button>
+                    <button class="purple-button" (click)="onCreateNewListClick()"
+                        style="width: 190px; max-width: inherit;">Create list</button>
                 </div>
             </div>
         </div>

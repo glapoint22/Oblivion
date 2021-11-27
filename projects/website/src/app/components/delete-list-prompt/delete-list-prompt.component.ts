@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 
 @Component({
@@ -13,10 +12,10 @@ export class DeleteListPromptComponent extends LazyLoad {
   @Output() onDelete: EventEmitter<void> = new EventEmitter();
   public list!: List;
 
-  constructor(private dataService: DataService, private accountService: AccountService) { super(); }
+  constructor(private dataService: DataService) { super(); }
 
   onDeleteClick() {
-    this.dataService.delete('api/Lists', { listId: this.list.id }, this.accountService.getHeaders())
+    this.dataService.delete('api/Lists', { listId: this.list.id }, true)
       .subscribe(() => {
         this.onDelete.emit();
         this.close();

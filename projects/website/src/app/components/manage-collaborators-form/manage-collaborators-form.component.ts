@@ -4,7 +4,6 @@ import { ShareListType } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { ListPermissions } from '../../classes/list-permissions';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { ShareListFormComponent } from '../share-list-form/share-list-form.component';
@@ -38,11 +37,11 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   public allChecked!: boolean;
 
 
-  constructor(private dataService: DataService, private accountService: AccountService, private lazyLoadingService: LazyLoadingService) { super(); }
+  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { super(); }
 
 
   ngOnInit(): void {
-    this.dataService.get<Array<Collaborator>>('api/Lists/Collaborators', [{ key: 'listId', value: this.list.id }], this.accountService.getHeaders())
+    this.dataService.get<Array<Collaborator>>('api/Lists/Collaborators', [{ key: 'listId', value: this.list.id }], true)
       .subscribe((collaborators: Array<Collaborator>) => {
         this.collaborators = collaborators;
         if (collaborators.length > 0) {
@@ -105,7 +104,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   onApplyClick() {
-    this.dataService.put('api/Lists/UpdateCollaborators', this.updatedCollaborators, this.accountService.getHeaders())
+    this.dataService.put('api/Lists/UpdateCollaborators', this.updatedCollaborators, true)
       .subscribe(() => {
         this.list.collaboratorCount = this.collaborators.length;
         this.close();
@@ -116,7 +115,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
     this.selectedCollaborator.isRemoved = true;
     this.addToUpdatedCollaborators();
     this.collaborators.splice(this.collaborators.findIndex(x => x == this.selectedCollaborator), 1);
-    
+
     if (this.collaborators.length > 0) {
       this.onCollaboratorClick(this.collaborators[0]);
     } else {

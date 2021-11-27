@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 
 @Component({
@@ -14,10 +13,10 @@ export class CollaborateListComponent implements OnInit {
   public profilePic!: string;
   public listId!: string;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router, private accountService: AccountService) { }
+  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
-    this.dataService.get('api/Lists/ListInfo', [{ key: 'collaborateId', value: this.route.snapshot.params.collaborateListId }], this.accountService.getHeaders())
+    this.dataService.get('api/Lists/ListInfo', [{ key: 'collaborateId', value: this.route.snapshot.params.collaborateListId }], true)
       .subscribe((listInfo: any) => {
         if (listInfo.exists) {
           this.router.navigate(['account', 'lists', listInfo.listId]);
@@ -32,7 +31,7 @@ export class CollaborateListComponent implements OnInit {
 
 
   onAcceptClick() {
-    this.dataService.put('api/Lists/Collaborator', { name: this.route.snapshot.params.collaborateListId }, this.accountService.getHeaders())
+    this.dataService.put('api/Lists/Collaborator', { name: this.route.snapshot.params.collaborateListId }, true)
       .subscribe(() => {
         this.router.navigate(['account', 'lists', this.listId]);
       });

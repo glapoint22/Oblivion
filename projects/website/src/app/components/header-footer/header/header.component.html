@@ -12,7 +12,7 @@
         <a routerLink="/home" title="Niche Shack Homepage">
             <img src="assets/logo.png">
         </a>
-        
+
     </div>
 
 
@@ -30,7 +30,7 @@
                 <div class="niches-button-text">
 
                     {{selectedNiche ? selectedNiche.name: 'All Niches'}}
-                    
+
                 </div>
 
                 <div #arrow class="arrow-down"></div>
@@ -105,9 +105,9 @@
             <div tabindex="0" (blur)="accountMenuPopupComponent.close()"
                 (keydown.escape)="accountMenuPopupComponent.close()" style="outline: none;">
                 <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                <img [src]="accountService.getProfileImg()" class="profile-pic"
-                    [title]="accountService.customer.firstName + ' ' + accountService.customer.lastName"
-                    (click)="onProfilePicClick()">
+                <img [src]="accountService.customer.profileImage.url" class="profile-pic"
+                    [title]="accountService.customer.profileImage.name"
+                    [alt]="accountService.customer.profileImage.name" (click)="onProfilePicClick()">
 
 
                 <!-- Account Menu Popup -->
@@ -121,4 +121,7 @@
 </div>
 
 <!-- Suggestion list backdrop -->
-<div class="suggestion-list-backdrop hide" [ngClass]="{'show': (suggestions && suggestions.length) > 0 || (sideMenu && sideMenu.show)}" [style.pointerEvents]="(suggestions && suggestions.length) > 0 || (sideMenu && sideMenu.show) ? 'all' : 'none'"></div>
+<div class="suggestion-list-backdrop hide"
+    [ngClass]="{'show': (suggestions && suggestions.length) > 0 || (sideMenu && sideMenu.show)}"
+    [style.pointerEvents]="(suggestions && suggestions.length) > 0 || (sideMenu && sideMenu.show) ? 'all' : 'none'">
+</div>

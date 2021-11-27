@@ -37,7 +37,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
         firstName: this.form.get('firstName')?.value,
         lastName: this.form.get('lastName')?.value
       },
-      this.accountService.getHeaders()
+        true
       ).subscribe(() => {
         this.accountService.setCustomer();
         this.close();
@@ -52,9 +52,9 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-    .then((successPromptComponent: SuccessPromptComponent)=> {
-      successPromptComponent.header = 'Successful Name Change';
-      successPromptComponent.message = 'Your name has been successfully changed.';
-    });
+      .then((successPromptComponent: SuccessPromptComponent) => {
+        successPromptComponent.header = 'Successful Name Change';
+        successPromptComponent.message = 'Your name has been successfully changed.';
+      });
   }
 }

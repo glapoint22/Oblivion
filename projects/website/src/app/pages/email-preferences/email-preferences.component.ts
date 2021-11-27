@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EmailPreferences } from '../../classes/email-preferences';
 import { SuccessPromptComponent } from '../../components/success-prompt/success-prompt.component';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -15,10 +14,10 @@ export class EmailPreferencesComponent implements OnInit {
   private initialPreferences: EmailPreferences = new EmailPreferences();
   public allChecked!: boolean;
 
-  constructor(private dataService: DataService, private accountService: AccountService, private lazyLoadingService: LazyLoadingService) { }
+  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
 
   ngOnInit() {
-    this.dataService.get<EmailPreferences>('api/EmailPreferences', undefined, this.accountService.getHeaders())
+    this.dataService.get<EmailPreferences>('api/EmailPreferences', undefined, true)
       .subscribe((preferences: EmailPreferences) => {
         this.preferences = preferences;
 
@@ -30,7 +29,7 @@ export class EmailPreferencesComponent implements OnInit {
 
 
   isDisabled() {
-    if(!this.preferences) return true;
+    if (!this.preferences) return true;
 
     const keys: Array<keyof EmailPreferences> = Object.keys(this.preferences) as Array<keyof EmailPreferences>;
 
@@ -57,7 +56,7 @@ export class EmailPreferencesComponent implements OnInit {
 
 
   onSaveChangesClick() {
-    this.dataService.put('api/EmailPreferences', this.preferences, this.accountService.getHeaders()).subscribe(()=>{
+    this.dataService.put('api/EmailPreferences', this.preferences, true).subscribe(() => {
       this.setInitialPreferences();
       this.OpenSuccessPrompt();
     });
@@ -69,7 +68,7 @@ export class EmailPreferencesComponent implements OnInit {
 
     preferencesKeys.forEach(key => {
       this.initialPreferences[key] = this.preferences[key];
-      if(!this.initialPreferences[key]) this.allChecked = false;
+      if (!this.initialPreferences[key]) this.allChecked = false;
     });
   }
 
@@ -79,9 +78,9 @@ export class EmailPreferencesComponent implements OnInit {
     const { SuccessPromptModule } = await import('../../components/success-prompt/success-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-    .then((successPromptComponent: SuccessPromptComponent)=> {
-      successPromptComponent.header = 'Email Preferences';
-      successPromptComponent.message = 'Your email preferences have been successfully updated.';
-    });
+      .then((successPromptComponent: SuccessPromptComponent) => {
+        successPromptComponent.header = 'Email Preferences';
+        successPromptComponent.message = 'Your email preferences have been successfully updated.';
+      });
   }
 }

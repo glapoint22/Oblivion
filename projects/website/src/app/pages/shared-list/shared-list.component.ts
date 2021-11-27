@@ -22,7 +22,7 @@ export class SharedListComponent extends ListsComponent implements OnInit {
         .get<Array<Product>>('api/Lists/Products', [
           { key: 'listId', value: this.selectedList.id },
           { key: 'sort', value: params.get('sort') ? params.get('sort') : '' }
-        ], this.accountService.getHeaders()).subscribe((products: Array<Product>) => {
+        ], true).subscribe((products: Array<Product>) => {
           this.products = products;
         });
     })

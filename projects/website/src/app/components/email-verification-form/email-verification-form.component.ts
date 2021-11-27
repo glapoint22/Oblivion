@@ -46,10 +46,10 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-    .then((successPromptComponent: SuccessPromptComponent)=> {
-      successPromptComponent.header = 'Successful Email Change';
-      successPromptComponent.message = 'Your email has been successfully changed.';
-    });
+      .then((successPromptComponent: SuccessPromptComponent) => {
+        successPromptComponent.header = 'Successful Email Change';
+        successPromptComponent.message = 'Your email has been successfully changed.';
+      });
   }
 
 
@@ -60,7 +60,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
         password: this.form.get('password')?.value,
         token: this.form.get('otp')?.value
       },
-        this.accountService.getHeaders()
+        true
       ).subscribe(() => {
         this.accountService.setCustomer();
         this.close();

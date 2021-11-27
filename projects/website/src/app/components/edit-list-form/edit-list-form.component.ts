@@ -2,7 +2,6 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { List } from '../../classes/list';
 import { Validation } from '../../classes/validation';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 
 @Component({
@@ -14,7 +13,7 @@ export class EditListFormComponent extends Validation implements OnInit {
   @Output() onInit: EventEmitter<void> = new EventEmitter();
   public list!: List;
 
-  constructor(private dataService: DataService, private accountService: AccountService) { super() }
+  constructor(private dataService: DataService) { super() }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -33,7 +32,7 @@ export class EditListFormComponent extends Validation implements OnInit {
         id: this.list.id,
         name: this.form.get('listName')?.value,
         description: this.form.get('description')?.value
-      }, this.accountService.getHeaders()).subscribe((list: List) => {
+      }, true).subscribe((list: List) => {
 
         // Assign the name and description to the list
         this.list.name = list.name;

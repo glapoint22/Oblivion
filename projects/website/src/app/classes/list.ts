@@ -1,5 +1,5 @@
+import { Image } from "./image";
 import { ListPermissions } from "./list-permissions";
-import { ProfilePicInfo } from "./profile-pic-info";
 
 export class List {
     public totalItems: number = 0;
@@ -13,6 +13,6 @@ export class List {
         public name: string,
         public description?: string,
         public collaborateId?: string,
-        public profilePic?: ProfilePicInfo
+        public profilePic?: Image
     ) { }
 }

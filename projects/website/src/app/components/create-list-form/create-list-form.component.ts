@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { List } from '../../classes/list';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
@@ -14,7 +13,7 @@ import { DataService } from '../../services/data/data.service';
 export class CreateListFormComponent extends Validation implements OnInit {
   @Output() onListCreated: EventEmitter<List> = new EventEmitter();
 
-  constructor(private dataService: DataService, private accountService: AccountService, private router: Router) { super(); }
+  constructor(private dataService: DataService, private accountService: AccountService) { super(); }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -31,7 +30,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
           name: this.form.get('listName')?.value,
           description: this.form.get('description')?.value
         },
-        this.accountService.getHeaders()
+        true
       ).subscribe((list: List) => {
         this.close();
         this.onListCreated.emit(new List(
@@ -39,10 +38,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
           this.form.get('listName')?.value,
           this.form.get('description')?.value,
           list.collaborateId,
-          {
-            name: this.accountService.customer?.firstName + ' ' + this.accountService.customer?.lastName,
-            url: this.accountService.getProfileImg()
-          }
+          this.accountService.customer?.profileImage
         ));
       });
     }

@@ -1,4 +1,3 @@
 export class Image {
-    public name!: string;
-    public url!: string;
+    constructor(public name: string, public url: string) { }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { invalidPasswordValidator, matchPasswordValidator, Validation } from '../../classes/validation';
-import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -13,9 +12,9 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 })
 export class ChangePasswordFormComponent extends Validation implements OnInit {
 
-constructor(private dataService: DataService, private accountService: AccountService, private lazyLoadingService: LazyLoadingService) {
-  super();
-}
+  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -37,11 +36,11 @@ constructor(private dataService: DataService, private accountService: AccountSer
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.put('api/Account/UpdatePassword', {CurrentPassword: this.form.get('currentPassword')?.value, NewPassword: this.form.get('newPassword')?.value}, this.accountService.getHeaders())
-      .subscribe(()=> {
-        this.close();
-        this.OpenSuccessPrompt();
-      });
+      this.dataService.put('api/Account/UpdatePassword', { CurrentPassword: this.form.get('currentPassword')?.value, NewPassword: this.form.get('newPassword')?.value }, true)
+        .subscribe(() => {
+          this.close();
+          this.OpenSuccessPrompt();
+        });
     }
   }
 
@@ -51,9 +50,9 @@ constructor(private dataService: DataService, private accountService: AccountSer
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-    .then((successPromptComponent: SuccessPromptComponent)=> {
-      successPromptComponent.header = 'Successful Password Change';
-      successPromptComponent.message = 'Your password has been successfully changed.';
-    });
+      .then((successPromptComponent: SuccessPromptComponent) => {
+        successPromptComponent.header = 'Successful Password Change';
+        successPromptComponent.message = 'Your password has been successfully changed.';
+      });
   }
 }
