@@ -1,4 +1,4 @@
-<ng-container *ngIf="selectedList">
+<ng-container *ngIf="selectedList && lists.length > 0">
     <header-footer>
         <div class="breadcrumb">
             <a routerLink="/account">Your Account</a>
@@ -10,19 +10,6 @@
         <div class="page-content-container">
             <div class="page-content">
                 <div class="page-title">Your Lists</div>
-
-                <!-- Menu Bar -->
-                <div class="menu-bar" *ngIf="selectedList.isOwner || selectedList.listPermissions?.editList || selectedList.listPermissions?.deleteList || selectedList.listPermissions?.shareList || selectedList.listPermissions?.inviteCollaborators">
-
-                    <div *ngIf="selectedList.isOwner || selectedList.listPermissions?.editList" (click)="onEditListClick()">Edit List</div>
-                    <div *ngIf="selectedList.isOwner || selectedList.listPermissions?.deleteList" (click)="onDeleteListClick()">Delete List
-                    </div>
-                    <div *ngIf="selectedList.isOwner || selectedList.listPermissions?.shareList || selectedList.listPermissions?.inviteCollaborators" (click)="onShareListClick()">Share List
-                    </div>
-                    <div *ngIf="selectedList.isOwner" (click)="onManageCollaboratorsClick()">Manage
-                        Collaborators
-                        ({{selectedList.collaboratorCount}})</div>
-                </div>
 
 
                 <!-- Top Container -->
@@ -37,6 +24,8 @@
                             </dropdown>
                         </div>
 
+                        <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
+
                     </div>
                 </div>
 
@@ -44,27 +33,8 @@
                 <!-- Bottom Container -->
                 <div class="bottom-container">
                     <div class="bottom-container-left">
-
-
-                        <!-- List Info -->
-                        <div *ngFor="let list of lists" class="list-info"
-                            [ngClass]="{'selected-list': selectedList == list}" (click)="onListClick(list)">
-                            <div style="margin-right: 10px;" [title]="list.profilePic.name">
-                                <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-                                <img [src]="list.profilePic.url"
-                                    class="profile-pic">
-                            </div>
-
-                            <div>
-                                <div class="list-title-sm">{{list.name}}</div>
-                                <div class="owner">Owner: {{list.ownerName}}</div>
-                                <div class="description">{{list.description}}</div>
-                                <div class="item-count">{{list.totalItems}} Item{{list.totalItems == 0 || list.totalItems > 1  ? 's' : ''}}
-                                </div>
-                            </div>
-
-                        </div>
-                        <button class="purple-button" (click)="onCreateNewListClick()">Create a new list</button>
+                        <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick($event)"
+                            (onCreateNewListClick)="onCreateNewListClick()"></lists-menu>
                     </div>
 
 
@@ -79,15 +49,19 @@
                                         [alt]="product.image.name">
                                 </div>
 
-                                <div class="item-title">{{product.title}}</div>
-                                <stars [rating]="product.rating"></stars>
-                                <div class="item-price">{{product.maxPrice ? product.minPrice + ' - ' +
-                                    product.maxPrice
-                                    : product.minPrice | currency:'USD'}}</div>
+                                <div class="item-info-container">
+                                    <div class="item-title">{{product.title}}</div>
+                                    <stars [rating]="product.rating"></stars>
+                                    <div class="item-price">{{product.maxPrice ? product.minPrice + ' - ' +
+                                        product.maxPrice
+                                        : product.minPrice | currency:'USD'}}</div>
+                                </div>
+
                             </div>
 
                             <div class="vertical-line"></div>
 
+                            <div class="horizontal-line"></div>
 
                             <!-- Item Actions -->
                             <div class="item-actions">
@@ -104,15 +78,16 @@
 
                                 <div class="added-text">Added by {{product.collaborator.name}}</div>
 
-                                <div *ngIf="selectedList.isOwner || selectedList.listPermissions?.moveItem || selectedList.listPermissions?.removeItem"
-                                    class="item-actions-button-container">
-                                    <dropdown-button *ngIf="selectedList.isOwner || selectedList.listPermissions?.moveItem" style="flex: 1;"
-                                        [listItems]="moveToList" (onSelectedListItem)="onMoveItem($event, product)">
+                                <div class="item-actions-button-container">
+                                    <dropdown-button
+                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.moveItem"
+                                        style="flex: 1;" [listItems]="moveToList"
+                                        (onSelectedListItem)="onMoveItem($event, product)">
                                     </dropdown-button>
 
-                                    <button *ngIf="selectedList.isOwner || selectedList.listPermissions?.removeItem"
-                                        style="flex: 1; max-width: inherit;" class="dark-button"
-                                        [style.marginLeft.px]="selectedList.isOwner || selectedList.listPermissions?.moveItem ? 10: 0"
+                                    <button
+                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.removeItem"
+                                        style="flex: 1; max-width: inherit; margin-left: 10px;" class="dark-button"
                                         (click)="onRemoveItemClick(product)">Remove</button>
                                 </div>
 
@@ -124,7 +99,9 @@
                         </div>
 
                         <div style="width: 100%; text-align: center;" *ngIf="products && products.length == 0">
-                            <div style="color: white; font-size: 16px; margin-bottom: 24px;">
+                            <div class="horizontal-line"></div>
+                            <div class="no-items">
+
                                 0 items in this list
                             </div>
 
@@ -153,10 +130,8 @@
                 <div class="page-title">Your Lists</div>
                 <div style="text-align: center;">
                     <div style="font-size: 16px; color: white; margin-bottom: 24px;">You currently have no lists.</div>
-                    <button class="purple-button" (click)="onCreateNewListClick()" style="width: 190px;">Create
-                        list</button>
+                    <button class="purple-button" (click)="onCreateNewListClick()" style="width: 190px; max-width: inherit;">Create list</button>
                 </div>
-
             </div>
         </div>
     </header-footer>

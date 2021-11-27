@@ -1,0 +1,76 @@
+<header-footer>
+    <div class="page-content-container">
+        <div class="page-content">
+
+            <!-- Top Container -->
+            <div class="top-container" style="margin-top: 46px;">
+
+
+                <div class="top-container-right">
+                    <div class="list-title-lg">{{selectedList.name}}</div>
+                    <div *ngIf="products && products.length > 0" class="dropdown-container">
+                        <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event.value)">
+                        </dropdown>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Bottom Container -->
+            <div class="bottom-container">
+                <div class="bottom-container-right">
+
+                    <div class="item-container" *ngFor="let product of products">
+
+                        <!-- Item Details -->
+                        <div class="item-details">
+                            <div class="item-image-container">
+                                <img [src]="'images/' + product.image.url" [title]="product.image.name"
+                                    [alt]="product.image.name">
+                            </div>
+
+                            <div class="item-info-container">
+                                <div class="item-title">{{product.title}}</div>
+                                <stars [rating]="product.rating"></stars>
+                                <div class="item-price">{{product.maxPrice ? product.minPrice + ' - ' +
+                                    product.maxPrice
+                                    : product.minPrice | currency:'USD'}}</div>
+                            </div>
+
+                        </div>
+
+                        <div class="vertical-line"></div>
+
+                        <div class="horizontal-line"></div>
+
+                        <!-- Item Actions -->
+                        <div class="item-actions">
+                            <div class="profile-img-container" [title]="product.collaborator.image.name">
+                                <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
+                                <img [src]="product.collaborator.image.url ? 'images/' + product.collaborator.image.url : 'assets/no-account-pic.png'"
+                                    class="profile-pic">
+                            </div>
+
+
+                            <div class="date">
+                                Added {{product.dateAdded}}
+                            </div>
+
+                            <div class="added-text">Added by {{product.collaborator.name}}</div>
+
+                            <button class="gold-rect-button" (click)="onVisitOfficalWebsiteClick(product.hoplink)">Visit
+                                official
+                                website</button>
+                        </div>
+                    </div>
+
+                    <div style="width: 100%; text-align: center;" *ngIf="products && products.length == 0">
+                        <div class="horizontal-line"></div>
+                        <div class="no-items">0 items in
+                            this list</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header-footer>

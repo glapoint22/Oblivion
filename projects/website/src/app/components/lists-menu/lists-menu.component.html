@@ -1,0 +1,33 @@
+<div class="menu-bar">
+    <button (click)="onEditListClick()"
+        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.editList">Edit</button>
+    <button (click)="onDeleteListClick()"
+        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.deleteList">Delete</button>
+    <button (click)="onShareListClick()"
+        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.shareList">Share</button>
+    <button (click)="onManageCollaboratorsClick()"
+        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.inviteCollaborators">Collaborators</button>
+</div>
+
+
+<div *ngFor="let list of lists" class="list-info" [ngClass]="{'selected-list': selectedList == list}"
+    (click)="selectedList = list; onListClick.emit(list)">
+
+    <div style="margin-right: 10px;" [title]="list.profilePic?.name">
+        <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
+        <img [src]="list.profilePic?.url" class="profile-pic">
+    </div>
+
+    <div>
+        <div class="list-title">{{list.name}}</div>
+        <div class="owner">Owner: {{list.ownerName}}</div>
+        <div class="description">{{list.description}}</div>
+        <div class="item-count">{{list.totalItems}} Item{{list.totalItems == 0 ||
+            list.totalItems > 1 ? 's' : ''}}
+        </div>
+
+
+    </div>
+
+</div>
+<button class="purple-button" (click)="onCreateNewListClick.emit()">Create a new list</button>

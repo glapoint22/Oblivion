@@ -30,7 +30,7 @@
                         <div class="option-heading">Share List With Others</div>
 
                         <label class="radio">
-                            <div>People I share with can only view this list</div>
+                            <div>Click one of the options on the right to share this list.</div>
                             <input type="radio" name="share-list" checked="checked">
                             <span class="checkmark"></span>
                         </label>
@@ -40,7 +40,7 @@
                         <div class="option-heading">Invite Collaborators</div>
 
                         <label class="radio">
-                            <div>People I invite can view and edit this list.</div>
+                            <div>Click one of the options on the right to invite people to collaborate on this list.</div>
                             <input id="collaborate" type="radio" name="share-list">
                             <span class="checkmark"></span>
                         </label>
@@ -66,7 +66,7 @@
 
                         <div class="option-heading">{{shareListType == ShareListType.Share ? 'Share List With Others' : 'Invite Collaborators'}}</div>
 
-                        <div class="option-description">{{shareListType == ShareListType.Share ? 'People I share with can only view this list' : 'People I invite can view and edit this list.'}}</div>
+                        <div class="option-description">{{shareListType == ShareListType.Share ? 'Click one of the options below to share this list.' : 'Click one of the options below to invite people to collaborate on this list.'}}</div>
 
                         <div class="horizontal-share-container">
                             <img src="assets/facebook-share.png" title="Share your list on Facebook"

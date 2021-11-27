@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ListResolver } from '../../guards/list/list.resolver';
 import { AccountComponent } from './account.component';
 
 const routes: Routes = [
@@ -17,7 +18,10 @@ const routes: Routes = [
   },
   {
     path: 'lists',
-    loadChildren: () => import('../../pages/lists/lists.module').then(m => m.ListsModule)
+    loadChildren: () => import('../../pages/lists/lists.module').then(m => m.ListsModule),
+    resolve: {
+      lists: ListResolver
+    }
   },
   {
     path: 'lists/:listId',

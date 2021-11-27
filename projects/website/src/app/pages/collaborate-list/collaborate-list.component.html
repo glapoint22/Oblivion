@@ -11,7 +11,12 @@
 
                     <div class="lines-container">
                         <div class="left-line"></div>
-                        <img [src]="profilePic ? 'images/' + profilePic : 'assets/no-account-pic.png'">
+
+                        <div style="position: relative;" [title]="ownerName">
+                            <div class="profile-pic ring"></div>
+                            <img [src]="profilePic ? 'images/' + profilePic : 'assets/no-account-pic.png'" class="profile-pic">
+                        </div>
+
                         <div class="right-line"></div>
                     </div>
 
@@ -19,7 +24,7 @@
 
                     <!-- Caption -->
                     <div class="caption">
-                        You have been invited to collaborate on {{ownerName}}'s list
+                        {{ownerName}} has invited you to collaborate on list:
                     </div>
 
                     <!-- List name -->

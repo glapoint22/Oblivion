@@ -5,7 +5,7 @@
 
 
 .both {
-    @include modal-values(350px, 255px, 295px);
+    @include modal-values(350px, 303px, 343px);
 }
 
 .max-width {
@@ -20,6 +20,7 @@
     width: 100%;
     max-width: 255px;
     margin-bottom: 15px;
+    margin-right: 10px;
 }
 
 .option-heading {
@@ -29,7 +30,7 @@
 
 .radio {
     div {
-        width: 140px;
+        width: 180px;
     }
 }
 
@@ -73,4 +74,16 @@ img{
     width: 16px;
     height: 16px;
     cursor: pointer;
+
+    &:hover {
+        filter: brightness(1.5);
+    }
+}
+
+@media(max-width: 280px) {
+    .radio {
+        div {
+            width: 140px;
+        }
+    }
 }

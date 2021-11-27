@@ -6,6 +6,7 @@ import { HeaderFooterModule } from '../../components/header-footer/header-footer
 import { StarsModule } from '../../components/stars/stars.module';
 import { DropdownModule } from '../../components/dropdown/dropdown.module';
 import { DropdownButtonComponent } from '../../components/dropdown-button/dropdown-button.component';
+import { ListsMenuModule } from '../../components/lists-menu/lists-menu.module';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { DropdownButtonComponent } from '../../components/dropdown-button/dropdo
     ListsRoutingModule,
     HeaderFooterModule,
     StarsModule,
-    DropdownModule
+    DropdownModule,
+    ListsMenuModule
   ]
 })
 export class ListsModule { }

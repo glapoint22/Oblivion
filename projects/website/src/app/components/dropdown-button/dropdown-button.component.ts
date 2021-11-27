@@ -8,6 +8,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class DropdownButtonComponent {
   @Input() listItems!: Array<KeyValue<any, any>>;
+  @Input() disabled!: boolean;
   @Output() onSelectedListItem: EventEmitter<KeyValue<any, any>> = new EventEmitter();
   public showDropdownList: boolean = false;
 

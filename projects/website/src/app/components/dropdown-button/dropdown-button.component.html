@@ -1,9 +1,9 @@
 <div class="dropdown-container" tabindex="0" (blur)="showDropdownList = false">
 
-    <div class="dropdown-base" (click)="listItems.length > 0 ? showDropdownList = !showDropdownList : null" [ngClass]="{'disabled': listItems.length == 0}">
+    <div class="dropdown-base" (click)="listItems.length > 0 && !disabled ? showDropdownList = !showDropdownList : null" [ngClass]="{'disabled': listItems.length == 0 || disabled}">
 
         <div class="dropdown-text">
-            Move to
+            Move
         </div>
 
         <div class="dropdown-arrow"></div>
@@ -11,7 +11,7 @@
 
 
     <div class="list" *ngIf="showDropdownList">
-        <div class="list-item" *ngFor="let listItem of listItems" (click)="onListItemClick(listItem)">
+        <div class="list-item" *ngFor="let listItem of listItems" (click)="onListItemClick(listItem)" [title]="listItem.key">
             <div class="dropdown-text">
                 {{listItem.key}}
             </div>

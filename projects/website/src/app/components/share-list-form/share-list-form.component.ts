@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ShareListType } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
   selector: 'share-list-form',
@@ -12,6 +14,10 @@ export class ShareListFormComponent extends LazyLoad {
   public shareListType!: ShareListType;
   public ShareListType = ShareListType;
   public list!: List;
+
+  constructor(private lazyLoadingService: LazyLoadingService){
+    super();
+  }
 
   onShareClick(socialType: string) {
     let pathName: string;
@@ -41,6 +47,8 @@ export class ShareListFormComponent extends LazyLoad {
         copyText.value = location.origin + pathName;
         copyText.select();
         navigator.clipboard.writeText(copyText.value);
+
+        this.OpenSuccessPrompt();
     }
   }
 
@@ -71,5 +79,17 @@ export class ShareListFormComponent extends LazyLoad {
 
     window.open(url, '_blank', 'toolbar=yes,scrollbars=no,resizable=yes,top=' +
       verticalCenter + ',left=' + horizontalCenter + ',width=' + width + ',height=' + height);
+  }
+
+
+  async OpenSuccessPrompt() {
+    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+    .then((successPromptComponent: SuccessPromptComponent)=> {
+      successPromptComponent.header = 'Link Coppied';
+      successPromptComponent.message = 'The link has been copied to the clipboard.';
+    });
   }
 }

@@ -11,8 +11,8 @@ export class List {
     constructor(
         public id: string,
         public name: string,
-        public description: string,
-        public collaborateId: string,
-        public profilePic: ProfilePicInfo
+        public description?: string,
+        public collaborateId?: string,
+        public profilePic?: ProfilePicInfo
     ) { }
 }

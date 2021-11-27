@@ -1,6 +1,10 @@
 @import '../../../scss/mixins.scss';
 @include modal-values(350px, 482px, 522px);
 
+.base {
+    max-width: 350px;
+}
+
 .list-container {
     background: #181818;
     border: 1px solid #343434;
@@ -12,4 +16,14 @@
     justify-content: right;
     align-items: center;
     margin-bottom: 7px;
+}
+
+.invite-collaborators {
+    text-decoration: underline;
+    cursor: pointer;
+    color: #dadada;
+
+    &:hover {
+        color: white;
+    }
 }

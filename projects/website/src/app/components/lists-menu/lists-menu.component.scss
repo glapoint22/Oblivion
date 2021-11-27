@@ -1,0 +1,85 @@
+@import '../../../scss/variables';
+
+.list-info {
+    background: #202020;
+    border: 1px solid #303030;
+    display: flex;
+    padding: 7px;
+    margin-bottom: 14px;
+    border-radius: 4px;
+    position: relative;
+
+    &:not(.selected-list) {
+        cursor: pointer;
+    }
+
+    &:hover:not(.selected-list) {
+        background: lighten(#202020, 2);
+        border-color: lighten(#303030, 2);
+    }
+}
+
+.selected-list {
+    background: lighten(#202020, 6);
+    border-color: lighten(#303030, 14);
+    cursor: default;
+
+    
+}
+
+.list-title {
+    font-size: 16px;
+    color: #dadada;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.owner {
+    color: $gold;
+    margin-bottom: 5px;
+}
+
+.description {
+    color: #dadada;
+    margin-bottom: 7px;
+}
+
+
+.item-count {
+    color: #b4b4b4;
+    font-style: italic;
+    font-size: 13px;
+}
+
+.purple-button {
+    max-width: 240px;
+    height: 33px;
+    margin-bottom: 20px;
+}
+
+
+
+.menu-bar {
+    margin-bottom: 10px;
+    max-width: 240px;
+    display: flex;
+    align-items:flex-end;
+    justify-content: space-between;
+    
+    button {
+        background: none;
+        border: none;
+        color: #cacaca;
+        cursor: pointer;
+        text-decoration:underline;
+
+        &:hover {
+            color: white;
+        }
+
+        &:disabled {
+            color: #646464;
+            cursor: default;
+        }
+    }
+}

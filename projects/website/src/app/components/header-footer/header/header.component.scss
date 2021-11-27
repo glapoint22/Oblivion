@@ -211,7 +211,7 @@ input {
 
 
 .suggestion-list-backdrop {
-    position: absolute;
+    position: fixed;
     background: rgba(0, 0, 0, 0.5);
     top: 79px;
     right: 0;
