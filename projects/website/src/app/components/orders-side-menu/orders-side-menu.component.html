@@ -8,9 +8,15 @@
 
         <!-- Content -->
         <div class="side-menu-content">
-
-            <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="close(); onListClick.emit($event)" (onCreateNewListClick)="onCreateNewListClick.emit()"></lists-menu>
-
+            <div class="view-orders">View orders in:</div>
+            
+            <ng-container *ngFor="let filter of filters">
+                <label class="radio" style="display: block;">
+                    <div>{{filter.key}}</div>
+                    <input type="radio" name="order-filter" [checked]="filter == selectedFilter" (change)="onApply.emit(filter)">
+                    <span class="checkmark"></span>
+                </label>
+            </ng-container>
         </div>
     </div>
 </div>

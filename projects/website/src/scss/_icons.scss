@@ -87,3 +87,14 @@
         content: "\e30";
     }
 }
+
+
+
+.clock-icon
+{
+    font-family: 'clock-icon';
+    color: $gold;
+    &::before {
+        content: "\e908";
+    }
+}

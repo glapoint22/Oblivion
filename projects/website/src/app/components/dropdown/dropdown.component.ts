@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'dropdown',
@@ -9,12 +9,12 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 export class DropdownComponent implements OnChanges {
   @Input() listItems!: Array<KeyValue<any, any>>;
   @Output() onSelectedListItem: EventEmitter<KeyValue<any, any>> = new EventEmitter();
-  public selectedListItem!: KeyValue<any, any>;
+  @Input() selectedListItem!: KeyValue<any, any>;
   public showDropdownList: boolean = false;
 
 
   ngOnChanges(): void {
-    if (this.listItems) {
+    if (this.listItems && !this.selectedListItem) {
       this.selectedListItem = this.listItems[0];
     }
   }

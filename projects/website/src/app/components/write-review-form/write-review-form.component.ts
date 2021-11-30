@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Image } from '../../classes/image';
 import { Validation } from '../../classes/validation';
 
 @Component({
@@ -8,6 +9,9 @@ import { Validation } from '../../classes/validation';
   styleUrls: ['./write-review-form.component.scss']
 })
 export class WriteReviewFormComponent extends Validation implements OnInit {
+  public productId!: number;
+  public productImage!: Image;
+
 
   ngOnInit(): void {
     this.form = new FormGroup({

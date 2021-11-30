@@ -1,0 +1,203 @@
+<header-footer>
+    <div class="breadcrumb">
+
+        <ng-container *ngIf="!isSearch">
+            <a routerLink="/account">Your Account</a>
+            <div></div>
+
+            <div>Your Orders</div>
+        </ng-container>
+
+        <ng-container *ngIf="isSearch">
+            <a routerLink="/account">Your Account</a>
+            <div></div>
+
+            <a routerLink="/account/orders">Your Orders</a>
+            <div></div>
+
+            <div>Order Search</div>
+        </ng-container>
+
+    </div>
+
+    <div class="page-content-container">
+        <div class="page-content">
+            <div class="page-title">{{!isSearch ? 'Your Orders': 'Order Search'}}</div>
+
+
+
+            <div class="orders-container">
+                <div class="top-container">
+
+                    <div *ngIf="!isSearch && orders" class="orders-placed-container">
+                        <div class="orders-placed-text">
+                            {{orders.length}} order{{orders.length == 0 || orders.length > 1 ? 's' : ''}} placed in
+                        </div>
+                        <dropdown style="width: 186px;" [listItems]="filters" [selectedListItem]="selectedFilter"
+                            (onSelectedListItem)="onFilterChange($event)">
+                        </dropdown>
+                    </div>
+
+                    <div *ngIf="!isSearch" class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
+
+
+                    <div *ngIf="isSearch && products" class="search-match-text">
+                        {{products.length}} product{{products.length == 0 || products.length > 1 ? 's' : ''}} matching "{{searchTerm}}"
+                    </div>
+
+
+                    <div *ngIf="isSearch && orders" class="search-match-text">
+                        {{orders.length}} order{{orders.length == 0 || orders.length > 1 ? 's' : ''}} matching "{{searchTerm}}"
+                    </div>
+
+
+                    <div class="search-container">
+                        <input #searchInput placeholder="Search all orders"
+                            (keydown.enter)="onSearch(searchInput.value)" [value]="searchTerm">
+
+                        <button class="search-button" (click)="onSearch(searchInput.value)">
+                            <div class="search-icon"></div>
+                        </button>
+                    </div>
+                </div>
+
+
+
+                <ng-container *ngFor="let order of orders">
+                    <div class="order-header">
+                        <div class="header-text">
+                            <div>Ordered On:</div>
+                            <div>{{order.date}}</div>
+                        </div>
+                        <div class="header-text" style="align-items: flex-end;">
+                            <div>Order Number:</div>
+                            <div>{{order.orderNumber}}</div>
+                        </div>
+                    </div>
+
+                    <div class="order">
+
+                        <!-- Products -->
+                        <div class="products-container">
+
+
+                            <div class="product-container" *ngFor="let product of order.products">
+
+                                <div class="image-container">
+                                    <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
+                                        [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
+                                        [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
+                                </div>
+
+                                <div class="product-info">
+                                    <div class="product-name">{{product.name}}</div>
+                                    <div class="product-price">{{product.price | currency:'USD'}}</div>
+
+                                    <div *ngIf="product.rebillFrequency" style="color: #b4b4b4;">Recurring -
+                                        {{getRecurringText(product)}} {{product.rebillAmount | currency:'USD'}}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="vertical-line"></div>
+
+                        <div class="horizontal-line"></div>
+
+                        <div class="order-info">
+                            <div>
+                                <div class="order-info-heading">Payment Method</div>
+
+                                <div class="order-info-row" style="margin-bottom: 26px;">
+                                    <div>{{order.paymentMethod}}:</div>
+                                    <img [src]="'assets/' + order.paymentMethodImg">
+                                </div>
+
+                                <div class="order-info-heading">Order Summary</div>
+
+                                <div class="order-info-row">
+                                    <div>Item(s) Subtotal:</div>
+                                    <div>{{order.subtotal | currency:'USD'}}</div>
+                                </div>
+
+                                <div class="order-info-row">
+                                    <div>Shipping & Handling:</div>
+                                    <div>{{order.shippingHandling | currency:'USD'}}</div>
+                                </div>
+
+                                <div class="order-info-row">
+                                    <div>Discount:</div>
+                                    <div>{{order.discount | currency:'USD'}}</div>
+                                </div>
+
+                                <div class="order-info-row">
+                                    <div>Tax:</div>
+                                    <div>{{order.tax | currency:'USD'}}</div>
+                                </div>
+
+                                <div class="order-info-row">
+                                    <div>Total:</div>
+                                    <div>{{order.total | currency:'USD'}}</div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div>
+                                <button class="dark-button" (click)="onWriteReviewClick(order)">Write a review</button>
+
+                                <button class="gold-rect-button"
+                                    (click)="onVisitOfficialWebsiteClick(order.hoplink)">Visit official website</button>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </ng-container>
+
+
+
+
+                <div *ngIf="orders && orders.length == 0"
+                    style="color: #dadada; text-align: center; font-size: 16px; margin-top: 36px;">No orders found
+                </div>
+
+
+
+                <ng-container *ngFor="let product of products">
+                    <div class="query-product">
+
+                        <div class="image-container">
+                            <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
+                                [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
+                                [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
+                        </div>
+
+                        <div class="product-info-container">
+
+                            <div>{{product.name}}</div>
+
+                            <div>Ordered on {{product.date}}</div>
+
+                            <div (click)="onSearch(product.orderNumber)">View Order</div>
+
+                            <button class="gold-rect-button"
+                                (click)="onVisitOfficialWebsiteClick(product.hoplink)">Visit official website</button>
+
+                        </div>
+
+                    </div>
+
+                </ng-container>
+
+            </div>
+
+        </div>
+    </div>
+</header-footer>
