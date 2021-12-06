@@ -1,48 +1,51 @@
-<!-- Backdrop -->
-<div class="backdrop" (click)="close()"></div>
+<div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <!-- Backdrop -->
+    <div class="backdrop" (click)="close()"></div>
 
 
-<!-- Container -->
-<div class="container">
+    <!-- Container -->
+    <div class="container">
 
-    <!-- Base -->
-    <div class="base">
+        <!-- Base -->
+        <div class="base">
 
-        <!-- Header -->
-        <div class="header">
-            Add to List
+            <!-- Header -->
+            <div class="header">
+                Add to List
 
-            <!-- X -->
-            <div class="x" (click)="close()">X</div>
-        </div>
-
-        <!-- Drop Shadow -->
-        <div class="drop-shadow"></div>
-
-        <!-- Content -->
-        <div class="content">
-            
-            <div class="product-container">
-                <div class="product-name">
-                    Cloud Stream Store
-                </div>
-                
-                <div class="img-container">
-                    <img src="assets/medalion.png">
-                </div>
-                
+                <!-- X -->
+                <div class="x" (click)="close()">X</div>
             </div>
 
-            <div class="label">Your Lists:</div>
-            <dropdown [listItems]="list"></dropdown>
+            <!-- Drop Shadow -->
+            <div class="drop-shadow"></div>
 
-            <div class="buttons">
+            <!-- Content -->
+            <div class="content">
 
-                <button class="purple-button" (click)="createList()">Create list</button>
+                <div class="product-container">
+                    <div class="product-name">
+                        Cloud Stream Store
+                    </div>
 
-                <div class="button-container">
-                    <button class="dark-button" (click)="close()">Cancel</button>
-                    <button class="gold-rect-button" (click)="onSubmit()">Submit</button>
+                    <div class="img-container">
+                        <img src="assets/medalion.png">
+                    </div>
+
+                </div>
+
+                <div class="label">Your Lists:</div>
+                <dropdown [listItems]="list"></dropdown>
+
+                <div class="buttons">
+
+                    <button class="purple-button" (click)="createList()">Create list</button>
+
+                    <div class="button-container">
+                        <button class="dark-button" (click)="close()">Cancel</button>
+                        <button class="gold-rect-button" (click)="onSubmit()">Submit</button>
+                    </div>
                 </div>
             </div>
         </div>

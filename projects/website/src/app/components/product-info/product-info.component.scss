@@ -1,0 +1,139 @@
+@import '../../../scss/variables';
+
+.product-section {
+    padding: 25px 10px;
+}
+
+.product-info-container {
+    width: 100%;
+    max-width: 1380px;
+    margin: auto;
+    display: flex;
+}
+
+.media-list-container {
+    height: 500px;
+    margin-right: 20px;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.media-thumbnail {
+    width: 52px;
+    height: 52px;
+    border: 1px solid #5a5a5a;
+    box-sizing: border-box;
+    margin-bottom: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        max-width: 52px;
+        max-height: 52px;
+    }
+}
+
+.media-container {
+    margin-right: 26px;
+}
+
+// .media-display {
+//     position: relative;
+//     background: #191919;
+//     width: 500px;
+//     height: 500px;
+//     border: 1px solid #141414;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+
+//     img {
+//         max-width: 480px;
+//         max-height: 480px;
+//     }
+// }
+
+
+
+.video-container {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+
+    iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.additional-info-container {
+    margin-top: 13px;
+    padding-left: 5px;
+}
+
+.product-details {
+    width: 100%;
+}
+
+.product-title-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.product-title {
+    font-size: 30px;
+    color: white;
+    font-weight: bold;
+}
+
+.social-media-container {
+    display: flex;
+    width: 80px;
+    justify-content: space-between;
+
+    div {
+        width: 22px;
+        height: 22px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+}
+
+.reviews {
+    color: $purple-text;
+    margin-bottom: 4px;
+}
+
+.price-container {
+    color: #ffba00;
+    margin-top: 6px;
+    margin-bottom: 8px;
+}
+
+.report-item-container {
+    display: flex;
+    cursor: pointer;
+    height: 16px;
+}
+
+.report-item-text {
+    color: $purple-text;
+    text-decoration: underline;
+    margin-left: 4px;
+}
+
+.product-description {
+    color: #dadada;
+    margin-top: 13px;
+    margin-bottom: 25px;
+}
+

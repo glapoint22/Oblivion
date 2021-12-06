@@ -1,0 +1,90 @@
+<div class="product-section">
+
+    <div class="product-info-container">
+
+        <div class="media-list-container" [style.width.px]="product.media.length > 8 ? 72 : 52">
+            <div *ngFor="let media of product.media" class="media-thumbnail" (click)="onMediaClick(media)">
+                <img [src]="'images/' + media.image.url">
+            </div>
+        </div>
+
+        <div class="media-container">
+            <div class="media-display">
+                <!-- Image -->
+                <img *ngIf="selectedMedia.type == mediaType.Image" [src]="'images/' + selectedMedia.image.url"
+                    [title]="selectedMedia.name" [alt]="selectedMedia.name">
+
+                <!-- Video -->
+                <div class="video-container">
+                    <!-- Had to add extra div here because vimeo script was adding padding -->
+                    <div>
+                        <iframe #iframe frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+
+
+            <div *ngIf="product.additionalInfo.length > 0" class="additional-info-container">
+                <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
+            </div>
+        </div>
+
+
+        <div class="product-details">
+
+            <div class="product-title-container">
+
+                <div class="product-title">{{product.title}}</div>
+                <div class="social-media-container">
+                    <div title="Share on Facebook">
+                        <img src="assets/facebook-share.png" alt="Share on Facebook">
+                    </div>
+
+                    <div title="Share on Twitter">
+                        <img src="assets/twitter-share.png" alt="Share on Twitter">
+                    </div>
+
+                    <div title="Share on Pinterest">
+                        <img src="assets/pinterest-share.png" alt="Share on Pinterest">
+                    </div>
+                </div>
+            </div>
+
+            <div class="reviews">
+                {{product.totalReviews}}
+                Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
+            </div>
+
+            <stars [rating]="product.rating"></stars>
+
+
+            <div class="price-container">
+                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+                <ng-container *ngIf="product.maxPrice > 0">
+                    {{product.minPrice | currency:'USD'}} -
+                    {{product.maxPrice | currency:'USD'}}
+                </ng-container>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+                <button class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">
+                    Visit offical website to buy
+                </button>
+
+                <div class="report-item-container" (click)="onReportItemClick()">
+
+                    <div class="flag-icon"></div>
+                    <div class="report-item-text">
+                        Report this item
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-description" [innerHtml]="product.description"></div>
+
+            <button class="purple-button" style="max-width: 100px;" (click)="onAddToListClick()">
+                Add to List
+            </button>
+        </div>
+    </div>
+</div>

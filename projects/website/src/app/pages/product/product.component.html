@@ -1,0 +1,64 @@
+<header-footer>
+    <div class="breadcrumb">
+        <a routerLink="">Health & Fitness</a>
+        <div></div>
+
+        <a routerLink="">Strength Training</a>
+        <div></div>
+
+        <div>Isometrics Mass</div>
+    </div>
+
+
+    <product-info [product]="product"></product-info>
+
+
+    <price-points></price-points>
+
+
+
+    <subproducts></subproducts>
+
+
+    <product-group-widget></product-group-widget>
+
+
+
+
+
+    <div class="reviews-background">
+
+        <div class="section-container">
+            <div class="section-background"></div>
+            <div class="section-text">Reviews</div>
+        </div>
+
+
+
+        <div class="review-summary-container">
+            <review-summary [product]="product"></review-summary>
+        </div>
+
+
+
+        <div class="write-review-button-container">
+            <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a Review</button>
+        </div>
+
+
+
+        <helpful-reviews></helpful-reviews>
+
+
+        <reviews></reviews>
+
+
+
+
+        <button class="gold-round-button-lg" style="margin: auto; display: block;"
+            (click)="onVisitOfficialWebsiteClick()">Visit offical website to
+            buy</button>
+
+    </div>
+
+</header-footer>

@@ -1,0 +1,103 @@
+<div class="subproducts-container">
+    <!-- Components -->
+    <div *ngIf="components && components.length > 0" class="subproducts-background">
+
+        <div class="section-container">
+            <div class="section-background"></div>
+            <div class="section-text">Component{{components.length > 1 ? 's': ''}}</div>
+        </div>
+
+
+
+
+        <ng-container *ngFor="let component of components">
+            <div class="subproduct-container">
+                <div class="left-container">
+                    <div #imgContainer class="subproduct-img-container">
+                        <img #img [src]="'images/' + component.image.url" [alt]="component.image.name"
+                            [title]="component.image.name"
+                            (load)="imgContainer.style.maxWidth = img.naturalWidth + 'px'">
+                    </div>
+                </div>
+
+                <div class="right-container">
+
+                    <div class="subproduct-title">
+                        {{component.title}}</div>
+
+                    <div class="subproduct-description" [innerHtml]="component.description">
+
+                    </div>
+                </div>
+
+
+                <div *ngIf="component.value && component.value > 0" class="value-container">
+                    <img src="assets/value-star.png">
+
+                    <div class="value-text-container">
+                        <div class="value-amount-text">${{component.value}}</div>
+                        <div class="value-text">Value</div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="horizontal-line-light"></div>
+        </ng-container>
+    </div>
+
+
+
+
+
+    <!-- Bonuses -->
+    <div *ngIf="bonuses && bonuses.length > 0" class="subproducts-background">
+
+        <div class="section-container">
+            <div class="section-background"></div>
+            <div class="section-text">Bonus{{bonuses.length > 1 ? 'es': ''}}</div>
+        </div>
+
+
+
+
+        <ng-container *ngFor="let bonus of bonuses">
+            <div class="subproduct-container">
+                <div class="left-container">
+                    <div #imgContainer class="subproduct-img-container">
+                        <img #img [src]="'images/' + bonus.image.url" [alt]="bonus.image.name"
+                            [title]="bonus.image.name" (load)="imgContainer.style.maxWidth = img.naturalWidth + 'px'">
+                    </div>
+                </div>
+
+                <div class="right-container">
+
+                    <div class="subproduct-title">{{bonus.title}}
+                    </div>
+
+                    <div class="subproduct-description" [innerHtml]="bonus.description">
+
+                    </div>
+                </div>
+
+
+                <div *ngIf="bonus.value && bonus.value > 0" class="value-container">
+                    <img src="assets/value-star.png">
+
+                    <div class="value-text-container">
+                        <div class="value-amount-text">${{bonus.value}}</div>
+                        <div class="value-text">Value</div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <div class="horizontal-line-dark"></div>
+        </ng-container>
+    </div>
+</div>

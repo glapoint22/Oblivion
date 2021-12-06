@@ -1,0 +1,28 @@
+<ng-container *ngIf="additionalInfo && additionalInfo.length > 0">
+    <ng-container *ngFor="let additionalInfo of additionalInfo">
+
+        <!-- Shipping -->
+        <div *ngIf="!additionalInfo.isRecurring" class="additional-info">
+            <span class="shipping-icon" *ngIf="additionalInfo.shippingType != shippingType.None"></span>
+            <span class="header-text">{{getShippingText(additionalInfo.shippingType)}}</span>
+        </div>
+
+
+        <!-- Recurring -->
+        <div *ngIf="additionalInfo.isRecurring" class="additional-info">
+            <span class="clock-icon" *ngIf="additionalInfo.recurringPayment.price > 0"></span>
+            <span class="header-text">{{getPaymentText(additionalInfo.recurringPayment)}}</span>
+
+            <!-- Price -->
+            <span class="header-text"
+                *ngIf="additionalInfo.recurringPayment.price > 0">{{additionalInfo.recurringPayment.price
+                | currency:'USD'}}</span>
+
+                
+            <div class="billing-text">{{getBillingText(additionalInfo.recurringPayment)}}</div>
+            <div class="billing-text" style="color: #c18f07;" *ngIf="hasTimeFrameBetweenRebill(additionalInfo.recurringPayment.rebillFrequency)">
+                {{getTimeFrameBetweenRebill(additionalInfo.recurringPayment)}}</div>
+        </div>
+
+    </ng-container>
+</ng-container>

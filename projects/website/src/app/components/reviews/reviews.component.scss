@@ -1,0 +1,157 @@
+@import '../../../scss/variables';
+
+
+.reviews-container {
+    width: 100%;
+    max-width: 1560px;
+    margin: 32px auto;
+    border-top: 1px solid #3d3d3d;
+    padding-top: 16px;
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.review-count-text {
+    color: #dadada;
+}
+
+
+.dropdowns-container {
+    display: flex;
+}
+
+
+.purple-button {
+    max-width:fit-content;
+    padding: 0 16px;
+    margin-bottom: 24px;
+}
+
+.review-container {
+    display: flex;
+    border-bottom: 1px solid #3d3d3d;
+    padding-bottom: 19px;
+    margin-bottom: 16px;
+}
+
+.review-info-container {
+    margin-left: 14px;
+}
+
+.review-title {
+    color: #dadada;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+
+.verified-purchase {
+    color: $gold;
+    font-style: italic;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+
+.review-info {
+    color: #b4b4b4;
+    margin-top: 5px;
+}
+
+
+.name-date {
+    margin-bottom: 4px;
+}
+
+.review-text {
+    color: #dadada;
+    margin-top: 21px;
+}
+
+
+.review-rating {
+    display: flex;
+    padding-top: 21px;
+    align-items: center;
+}
+
+.review-helpful-text {
+    color: $gold;
+    margin-right: 11px;
+}
+
+.thanks-for-feedback-text {
+    color: #00ff00;
+    margin-right: 11px;
+}
+
+
+.rating-container {
+    display: flex;
+    align-items: center;
+}
+
+.rating-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 16px;
+    
+    div:first-child {
+        margin-right: 4px;
+    }
+}
+
+.rating-count-text {
+    color: #dadada;
+}
+
+.report-review {
+    color: $purple-text;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    div:first-child {
+        margin-right: 4px;
+    }
+}
+
+@font-face {
+    font-family: 'like-icon';
+    src: url('../../../assets/fonts/like-icon.ttf');
+}
+
+.like-icon
+{
+    font-family: 'like-icon';
+    color: $purple-text;
+    &::before {
+        content: "\e911";
+    }
+}
+
+
+
+
+@font-face {
+    font-family: 'dislike-icon';
+    src: url('../../../assets/fonts/dislike-icon.ttf');
+}
+
+.dislike-icon
+{
+    font-family: 'dislike-icon';
+    color: $purple-text;
+    &::before {
+        content: "\e912";
+    }
+}
+
+

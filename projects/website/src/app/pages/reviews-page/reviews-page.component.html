@@ -1,0 +1,54 @@
+<header-footer>
+    <div class="breadcrumb">
+        <a routerLink="">Health & Fitness</a>
+        <div></div>
+
+        <a routerLink="">Strength Training</a>
+        <div></div>
+
+        <a routerLink="">Isometrics Mass</a>
+        <div></div>
+
+        <div>Reviews</div>
+    </div>
+
+
+    <div class="page-content-container">
+        <div class="page-content">
+            <div class="page-title">Reviews</div>
+
+            <div style="width: 700px; margin: 0 auto 53px; display: flex;">
+                <div class="media-display">
+
+                    <img [src]="'images/' + product.media[0].image.url" [title]="product.media[0].image.name"
+                        [alt]="product.media[0].image.name">
+                </div>
+
+                <div style="margin-left: 25px;">
+
+                    <div style="font-size: 30px; color: white; font-weight: bold; margin-bottom: 15px;">Isometrics Mass</div>
+
+                    <div style="width: 285px;">
+                        <review-summary [product]="product"></review-summary>
+
+                        <button class="gold-round-button-lg" style="margin: 20px auto 0; display: block;">Write a
+                            Review</button>
+                    </div>
+
+                    
+
+                </div>
+                
+            </div>
+
+            <helpful-reviews></helpful-reviews>
+
+            
+        </div>
+        <reviews></reviews>
+    </div>
+
+
+
+
+</header-footer>

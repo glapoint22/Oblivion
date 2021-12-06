@@ -1,39 +1,41 @@
-<!-- Backdrop -->
-<div class="backdrop" (click)="close()"></div>
+<div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+    <!-- Backdrop -->
+    <div class="backdrop" (click)="close()"></div>
 
 
-<!-- Container -->
-<div class="container">
+    <!-- Container -->
+    <div class="container">
 
-    <!-- Base -->
-    <div class="base">
+        <!-- Base -->
+        <div class="base">
 
-        <!-- Header -->
-        <div class="header">
-            Report Review
+            <!-- Header -->
+            <div class="header">
+                Report Review
 
-            <!-- X -->
-            <div class="x" (click)="close()">X</div>
-        </div>
+                <!-- X -->
+                <div class="x" (click)="close()">X</div>
+            </div>
 
-        <!-- Drop Shadow -->
-        <div class="drop-shadow"></div>
+            <!-- Drop Shadow -->
+            <div class="drop-shadow"></div>
 
-        <!-- Content -->
-        <div class="content">
-            <!-- Message -->
-            <div class="message-text">If you find this review to be offensive or irrelevant to the item in question,
-                please let us know by clicking the submit button below.</div>
+            <!-- Content -->
+            <div class="content">
+                <!-- Message -->
+                <div class="message-text">If you find this review to be offensive or irrelevant to the item in question,
+                    please let us know by clicking the submit button below.</div>
 
-            <!-- Email -->
-            <div class="label">Additional Comments (optional):</div>
-            <textarea></textarea>
+                <!-- Email -->
+                <div class="label">Additional Comments (optional):</div>
+                <textarea></textarea>
 
 
-            <!-- Button Container -->
-            <div class="button-container">
-                <button class="dark-button" (click)="close()">Cancel</button>
-                <button class="gold-rect-button" (click)="onSubmit()">Submit</button>
+                <!-- Button Container -->
+                <div class="button-container">
+                    <button class="dark-button" (click)="close()">Cancel</button>
+                    <button class="gold-rect-button" (click)="onSubmit()">Submit</button>
+                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,47 @@
+<div class="review-summary-container">
+    <div class="stars-label-container">
+        <div></div>
+        <div>5 Stars</div>
+        <div>4 Stars</div>
+        <div>3 Stars</div>
+        <div>2 Stars</div>
+        <div>1 Star</div>
+    </div>
+
+    <div>
+        <div style="width: 200px;">
+            <div class="review-info-container">
+                <div class="rating">{{product.rating | number:'1.1-1'}}</div>
+                <div class="stars-container">
+                    <div>{{product.totalReviews}} reviews</div>
+                    <stars [rating]="product.rating"></stars>
+                </div>
+            </div>
+        </div>
+
+        <div class="bar">
+            <div [style.width.%]="percentages[0]"></div>
+        </div>
+        <div class="bar">
+            <div [style.width.%]="percentages[1]"></div>
+        </div>
+        <div class="bar">
+            <div [style.width.%]="percentages[2]"></div>
+        </div>
+        <div class="bar">
+            <div [style.width.%]="percentages[3]"></div>
+        </div>
+        <div class="bar">
+            <div [style.width.%]="percentages[4]"></div>
+        </div>
+    </div>
+
+    <div class="percent-label-container">
+        <div></div>
+        <div>{{percentages[0]}}%</div>
+        <div>{{percentages[1]}}%</div>
+        <div>{{percentages[2]}}%</div>
+        <div>{{percentages[3]}}%</div>
+        <div>{{percentages[4]}}%</div>
+    </div>
+</div>

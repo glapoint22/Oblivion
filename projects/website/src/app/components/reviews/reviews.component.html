@@ -1,0 +1,70 @@
+<div class="reviews-container">
+
+    <div class="reviews-header">
+        <div class="review-count-text">Showing 1 - 10 of {{reviews.length}} reviews</div>
+
+        <div class="dropdowns-container">
+            <dropdown style="width: 137px;" [listItems]="reviewFilterDropdownList"></dropdown>
+            <dropdown style="margin-left: 30px; width: 200px;" [listItems]="reviewSortDropdownList"></dropdown>
+        </div>
+
+    </div>
+
+    <button *ngIf="showButton" class="purple-button" (click)="onViewAllReviewsClick()">View all
+        {{reviews.length}} reviews</button>
+
+
+    <div *ngFor="let review of reviews" class="review-container">
+
+        <div class="profile-img-container" [title]="review.profileImage.name">
+            <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
+            <img [src]="review.profileImage.url" [alt]="review.profileImage.name" class="profile-pic">
+        </div>
+
+
+        <div class="review-info-container">
+
+            <div class="review-title">
+                {{review.title}}
+                <span class="verified-purchase" *ngIf="review.isVerified">
+                    (Verified Purchase)
+                </span>
+            </div>
+
+
+            <stars [rating]="review.rating"></stars>
+
+            <div class="review-info">
+                <div class="name-date">{{review.userName}}</div>
+                <div class="name-date">{{review.date}}</div>
+
+                <div class="review-text">{{review.text}}</div>
+                <div class="review-rating">
+
+                    <div *ngIf="!review.hasBeenRated" class="review-helpful-text">Was this review helpful?</div>
+                    <div *ngIf="review.hasBeenRated" class="thanks-for-feedback-text">Thanks for your feedback</div>
+
+                    <div *ngIf="!review.hasBeenRated" class="rating-container">
+                        <div (click)="onRateReviewClick(review)" class="rating-icon-container">
+                            <div class="like-icon"></div>
+                            <div class="rating-count-text">{{review.likes}}</div>
+                        </div>
+
+
+                        <div (click)="onRateReviewClick(review)" class="rating-icon-container">
+                            <div class="dislike-icon"></div>
+                            <div class="rating-count-text">{{review.dislikes}}</div>
+                        </div>
+
+                    </div>
+
+                    <div class="report-review" (click)="onReportReviewClick()">
+                        <div class="flag-icon"></div>
+                        Report this review
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="purple-button" (click)="onViewAllReviewsClick()" *ngIf="showButton">View all {{reviews.length}} reviews</button>
+</div>

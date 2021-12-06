@@ -1,0 +1,94 @@
+<div *ngIf="helpfulReviews.positiveReview || helpfulReviews.negativeReview" class="helpful-reviews-container">
+
+    <div *ngIf="helpfulReviews.positiveReview" class="review-base">
+        <div class="review-container">
+            <div class="review-heading">
+                Most helpful positive review
+            </div>
+
+            <div class="helpful-text">
+                {{helpfulReviews.positiveReview.likes}} customer{{helpfulReviews.positiveReview.likes > 1 ? 's': ''}}
+                found this helpful
+            </div>
+
+            <div class="review-info-container">
+
+                <div class="profile-img-container" [title]="helpfulReviews.positiveReview.profileImage.name">
+                    <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
+                    <img [src]="helpfulReviews.positiveReview.profileImage.url"
+                        [alt]="helpfulReviews.positiveReview.profileImage.name" class="profile-pic">
+                </div>
+
+
+                <div class="review-info">
+
+                    <div class="review-title">
+                        {{helpfulReviews.positiveReview.title}}
+                        <span class="verified-purchase" *ngIf="helpfulReviews.positiveReview.isVerified">
+                            (Verified Purchase)
+                        </span>
+                    </div>
+                    <stars [rating]="helpfulReviews.positiveReview.rating"></stars>
+
+
+                    <div class="name-date">
+                        <div>{{helpfulReviews.positiveReview.userName}}</div>
+                        <div>{{helpfulReviews.positiveReview.date}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-text">
+            {{helpfulReviews.positiveReview.text}}
+        </div>
+    </div>
+
+
+
+
+    <div *ngIf="helpfulReviews.negativeReview" class="review-base">
+        <div class="review-container">
+            <div class="review-heading">
+                Most helpful negative review
+            </div>
+
+            <div class="helpful-text">
+                {{helpfulReviews.negativeReview.likes}} customer{{helpfulReviews.negativeReview.likes > 1 ? 's': ''}}
+                found this helpful
+            </div>
+
+            <div class="review-info-container">
+                <div class="profile-img-container" [title]="helpfulReviews.negativeReview.profileImage.name">
+                    <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
+                    <img [src]="helpfulReviews.negativeReview.profileImage.url"
+                        [alt]="helpfulReviews.negativeReview.profileImage.name" class="profile-pic">
+                </div>
+
+
+                <div class="review-info">
+
+                    <div class="review-title">
+                        {{helpfulReviews.negativeReview.title}}
+
+                        <span class="verified-purchase" *ngIf="helpfulReviews.negativeReview.isVerified">
+                            (Verified Purchase)
+                        </span>
+                    </div>
+                    <stars [rating]="helpfulReviews.negativeReview.rating"></stars>
+
+
+                    <div class="name-date">
+                        <div>{{helpfulReviews.negativeReview.userName}}</div>
+                        <div>{{helpfulReviews.negativeReview.date}}</div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-text">
+            {{helpfulReviews.negativeReview.text}}
+        </div>
+    </div>
+</div>

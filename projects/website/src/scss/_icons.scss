@@ -90,11 +90,11 @@
 
 
 
-.clock-icon
+.flag-icon
 {
-    font-family: 'clock-icon';
-    color: $gold;
+    font-family: 'flag-icon';
+    color: $purple-text;
     &::before {
-        content: "\e908";
+        content: "\e910";
     }
 }
