@@ -19,7 +19,7 @@
                 | currency:'USD'}}</span>
 
                 
-            <div class="billing-text">{{getBillingText(additionalInfo.recurringPayment)}}</div>
+            <div style="margin-top: 4px;" class="billing-text">{{getBillingText(additionalInfo.recurringPayment)}}</div>
             <div class="billing-text" style="color: #c18f07;" *ngIf="hasTimeFrameBetweenRebill(additionalInfo.recurringPayment.rebillFrequency)">
                 {{getTimeFrameBetweenRebill(additionalInfo.recurringPayment)}}</div>
         </div>

@@ -1,11 +1,60 @@
-<div style="background: #1e1e1e; padding: 20px 10px; display: flex; justify-content: center;">
-    <div
-        style="background: #46003c; width: 100%; max-width: 300px; height: 510px; border-radius: 18px; margin: 0 30px;">
-    </div>
-    <div
-        style="background: #46003c; width: 100%; max-width: 300px; height: 510px; border-radius: 18px; margin: 0 30px;">
-    </div>
-    <div
-        style="background: #46003c; width: 100%; max-width: 300px; height: 510px; border-radius: 18px; margin: 0 30px;">
+<div class="price-points-background">
+    <!-- Background -->
+    <div class="price-points-container">
+
+        <!-- Price Point Container -->
+        <div *ngFor="let pricePoint of pricePoints" class="price-point-container">
+
+            <!-- Price Point Base -->
+            <div class="price-point-base">
+
+
+                <!-- Header -->
+                <div class="price-point-header">
+                    {{pricePoint.header}}
+                </div>
+
+                <!-- Quantity -->
+                <div *ngIf="pricePoint.quantity" class="quantity">
+                    {{pricePoint.quantity}}
+                </div>
+
+
+                <!-- Image -->
+                <img *ngIf="pricePoint.image" [src]="'images/' + pricePoint.image.url">
+
+
+                <!-- Space Between -->
+                <div class="space-between-container">
+
+                    <!-- Unit -->
+                    <div *ngIf="pricePoint.unitPrice || pricePoint.unit" class="unit-container">
+                        <div *ngIf="pricePoint.unitPrice" class="unit-price">${{pricePoint.unitPrice}}</div>
+                        <div *ngIf="pricePoint.unitPrice && pricePoint.unit" class="unit">{{pricePoint.unitPrice ? '/ '
+                            + pricePoint.unit : pricePoint.unit}}</div>
+                    </div>
+
+
+                    <!-- Total -->
+                    <div *ngIf="pricePoint.strikethroughPrice || pricePoint.price" class="total-container">
+                        <div class="total-label">Total:</div>
+                        <div *ngIf="pricePoint.strikethroughPrice" class="strikethrough">
+                            <div class="strikethrough-price">${{pricePoint.strikethroughPrice}}</div>
+                        </div>
+                        <div *ngIf="pricePoint.price" class="total-price">${{pricePoint.price}}</div>
+                    </div>
+
+                    <!-- Gold Button -->
+                    <button class="gold-round-button-lg">Visit offical website to buy</button>
+
+                    <!-- Additional Info -->
+                    <div *ngIf="pricePoint.additionalInfo && pricePoint.additionalInfo.length > 0"
+                        class="additional-info-container">
+                        <additional-info [additionalInfo]="pricePoint.additionalInfo"></additional-info>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
