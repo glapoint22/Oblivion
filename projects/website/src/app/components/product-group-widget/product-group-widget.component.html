@@ -1,6 +1,29 @@
-<div style="background: #202020; padding: 16px 10px;">
-    <div style="font-size: 25px; color: #dadada; text-align: center;">
-        More related yoga products
+<div #container class="product-group-container">
+
+    <!-- Caption -->
+    <div class="caption">
+        {{caption}}
     </div>
-    <div style="background: #272727; width: 100%; max-width: 1484px; height: 322px; margin: 10px auto 20px;"></div>
+
+    <!-- Slider -->
+    <div class="slider-container">
+        <div #slider class="slider" [style.transform]="'translateX(-' + translate + 'px)'">
+
+            <!-- Products -->
+            <ng-container *ngFor="let product of products">
+                <div class="product-thumbnail-container">
+                    <product-thumbnail [product]="product"></product-thumbnail>
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- Left Button -->
+        <div class="left-button" *ngIf="translate != 0" (click)="onLeftButtonClick()">
+        </div>
+
+        <!-- Right Button -->
+        <div class="right-button" *ngIf="!isLastPage(container.offsetWidth)"
+            (click)="onRightButtonClick(container.offsetWidth)">
+        </div>
+    </div>
 </div>

@@ -1,0 +1,32 @@
+.media-display {
+    position: relative;
+    background: linear-gradient(to bottom, rgb(255, 255, 255, 0.06), rgb(0, 0, 0, 0.3));
+    width: 500px;
+    height: 500px;
+    flex-shrink: 0;
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        bottom: 1px;
+        left: 1px;
+        background: linear-gradient(to bottom, rgb(0, 0, 0, 0.2), rgb(255, 255, 255, 0.02));
+    }
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        z-index: 10;
+        max-width: 480px;
+        max-height: 480px;
+    }
+
+    iframe {
+        z-index: 10;
+    }
+}

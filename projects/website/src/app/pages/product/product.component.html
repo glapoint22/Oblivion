@@ -10,17 +10,19 @@
     </div>
 
 
-    <!-- <product-info [product]="product"></product-info> -->
+    <product-info [product]="product"></product-info>
 
 
-    <price-points></price-points>
+    <price-points [pricePoints]="product.pricePoints"></price-points>
 
 
 
-    <!-- <subproducts></subproducts>
+    <subproducts [components]="product.components" [bonuses]="product.bonuses"></subproducts>
 
+    <div *ngIf="product.relatedProducts" style="background: #202020; padding: 15px 0 20px;">
+        <product-group-widget [products]="product.relatedProducts.products" [caption]="product.relatedProducts.caption"></product-group-widget>
+    </div>
 
-    <product-group-widget></product-group-widget>
 
 
 
@@ -34,31 +36,44 @@
         </div>
 
 
+        <ng-container *ngIf="product.totalReviews > 0">
+            <div class="review-summary-container">
+                <review-summary [product]="product"></review-summary>
+            </div>
+    
+    
+    
+            <div class="write-review-button-container">
+                <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a Review</button>
+            </div>
+    
+    
+    
+            <helpful-reviews></helpful-reviews>
+    
+    
+            <reviews></reviews>
+        </ng-container>
+        
 
-        <div class="review-summary-container">
-            <review-summary [product]="product"></review-summary>
-        </div>
+        <ng-container *ngIf="product.totalReviews == 0">
+            <div style="    text-align: center;
+            margin-top: 20px;
+            color: white;
+            font-size: 16px;">
+                Be the first to review this item!
+            </div>
+            
+            <div class="write-review-button-container">
+                <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a Review</button>
+            </div>
+        </ng-container>
 
 
-
-        <div class="write-review-button-container">
-            <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a Review</button>
-        </div>
-
-
-
-        <helpful-reviews></helpful-reviews>
-
-
-        <reviews></reviews>
-
-
-
-
-        <button class="gold-round-button-lg" style="margin: auto; display: block;"
+        <!-- <button *ngIf="product.totalReviews > 0" class="gold-round-button-lg" style="margin: auto; display: block;"
             (click)="onVisitOfficialWebsiteClick()">Visit offical website to
-            buy</button>
+            buy</button> -->
 
-    </div> -->
+    </div>
 
 </header-footer>

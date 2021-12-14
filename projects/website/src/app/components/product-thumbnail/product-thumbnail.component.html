@@ -1,0 +1,24 @@
+<div class="product-container" (click)="onClick()">
+    <div class="media-display">
+        <img [src]="'images/' + product.image.url">
+    </div>
+
+    <div class="product-info    ">
+        <div style="font-size: 14px; font-weight: bold; color: #dadada;">{{product.title}}</div>
+        
+        <div>
+            <!-- <stars [rating]="product.rating"></stars> -->
+            <stars-summary [product]="product"></stars-summary>
+        </div>
+        
+        
+        <div>
+            <div *ngIf="product.maxPrice == 0">
+                {{product.minPrice | currency:'USD'}}
+            </div>
+            <div *ngIf="product.maxPrice > 0">
+                {{product.minPrice | currency:'USD'}} - {{product.maxPrice | currency:'USD'}}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,8 @@
 import { Component, Input, OnChanges } from '@angular/core';
+import { Router } from '@angular/router';
+import { ReviewFilter } from '../../classes/enums';
 import { Product } from '../../classes/product';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'review-summary',
@@ -9,6 +12,9 @@ import { Product } from '../../classes/product';
 export class ReviewSummaryComponent implements OnChanges {
   @Input() product!: Product;
   public percentages: Array<number> = new Array<number>(5);
+  public reviewFilter = ReviewFilter;
+
+  constructor(private router: Router, private lazyLoadingService: LazyLoadingService) { }
 
   ngOnChanges(): void {
     this.percentages[0] = this.getStatPercentage(this.product.oneStar);
@@ -40,4 +46,12 @@ export class ReviewSummaryComponent implements OnChanges {
     return percentage;
   }
 
+  setRoute(filterValue: string) {
+    this.router.navigate([this.product.urlTitle, this.product.urlId, 'reviews'], {
+      queryParams: { filter: filterValue, page: null },
+      queryParamsHandling: 'merge'
+    });
+
+    this.lazyLoadingService.container.clear();
+  }
 }

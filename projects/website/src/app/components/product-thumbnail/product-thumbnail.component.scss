@@ -1,0 +1,46 @@
+@import '../../../scss/variables';
+
+.product-container {
+    width: 100%;
+    max-width: 234px;
+    height: 100%;
+    min-height: 322px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-sizing: border-box;
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+}
+
+.media-display {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 10px;
+    img {
+        max-width: 180px;
+        max-height: 180px;
+    }
+}
+
+.product-info {
+    width: 100%;
+
+    div:first-child {
+        margin-bottom: 5px;
+    }
+
+    div:nth-child(2) {
+        margin-bottom: 3px;
+    }
+    
+    div:last-child {
+        color: $gold;
+    }
+}

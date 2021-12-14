@@ -1,0 +1,84 @@
+@import '../../../scss/mixins';
+
+
+.review-summary-popup-container {
+    position: absolute;
+    width: 312px;
+    z-index: 50; 
+}
+
+
+.stars-overlay {
+    position: relative;
+    width: 79px;
+    height: 17px;
+    cursor: pointer;
+}
+
+.popup {
+    @include popup(0);
+
+    &::before {
+        border: none;
+    }
+
+    &::after {
+        border: none;
+    }
+
+    position: relative;
+
+    top: 0;
+}
+
+.arrow-container {
+    position: relative;
+}
+
+.arrow-up {
+    &::before {
+        content: "";
+        position: absolute;
+        top: -13px;
+        left: -1px;
+        @include arrow-up(26px, 13px, #5e5e5e);
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        top: -12px;
+        @include arrow-up(24px, 12px, #161616);
+    }
+}
+
+
+.arrow-down {
+    &::before {
+        content: "";
+        position: absolute;
+        top: -12px;
+        left: -1px;
+        @include arrow-down(26px, 13px, #5e5e5e);
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        top: -13px;
+        @include arrow-down(24px, 12px, #161616);
+    }
+}
+
+
+    
+.popup-content {
+    padding: 5px 20px 20px;
+}
+
+.horizontal-line {
+    margin-top: 24px;
+    margin-bottom: 20px;
+}
+
+.gold-rect-button {
+    max-width: inherit;
+}

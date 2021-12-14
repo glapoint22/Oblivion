@@ -1,17 +1,17 @@
 <div class="reviews-container">
 
     <div class="reviews-header">
-        <div class="review-count-text">Showing 1 - 10 of {{reviews.length}} reviews</div>
+        <div class="review-count-text">Showing {{reviewsStart}} - {{reviewsEnd}} of {{totalReviews}} review{{totalReviews > 1 ? 's' : ''}}</div>
 
         <div class="dropdowns-container">
-            <dropdown style="width: 137px;" [listItems]="reviewFilterDropdownList"></dropdown>
+            <dropdown style="width: 137px;" [listItems]="reviewFilterDropdownList" (onSelectedListItem)="onReviewFilterChange($event)"></dropdown>
             <dropdown style="margin-left: 30px; width: 200px;" [listItems]="reviewSortDropdownList"></dropdown>
         </div>
 
     </div>
 
-    <button *ngIf="showButton" class="purple-button" (click)="onViewAllReviewsClick()">View all
-        {{reviews.length}} reviews</button>
+    <button *ngIf="showButton" class="purple-button" style=" margin-bottom: 24px" (click)="onViewAllReviewsClick()">View all
+        {{totalReviews}} reviews</button>
 
 
     <div *ngFor="let review of reviews" class="review-container">
@@ -66,5 +66,5 @@
             </div>
         </div>
     </div>
-    <button class="purple-button" (click)="onViewAllReviewsClick()" *ngIf="showButton">View all {{reviews.length}} reviews</button>
+    <button class="purple-button" (click)="onViewAllReviewsClick()" *ngIf="showButton">View all {{totalReviews}} reviews</button>
 </div>

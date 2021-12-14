@@ -5,6 +5,7 @@ export class LazyLoad implements AfterViewInit {
     public show: boolean = false;
     public viewRef!: ViewRef;
     public container!: ViewContainerRef;
+    public setTimeOut!: number;
 
     ngAfterViewInit(): void {
         this.open();
@@ -12,7 +13,7 @@ export class LazyLoad implements AfterViewInit {
 
 
     open() {
-        window.setTimeout(() => {
+        this.setTimeOut = window.setTimeout(() => {
             this.show = true;
             this.onOpen();
         }, 50);
@@ -21,6 +22,7 @@ export class LazyLoad implements AfterViewInit {
 
     close() {
         this.show = false;
+        window.clearTimeout(this.setTimeOut);
     }
 
     onHide() {

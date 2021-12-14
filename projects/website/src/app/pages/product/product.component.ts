@@ -23,7 +23,9 @@ export class ProductComponent implements OnInit {
   constructor(private route: ActivatedRoute, private lazyLoadingService: LazyLoadingService) { }
 
   ngOnInit(): void {
-    this.product = this.route.snapshot.data.product;
+    this.route.data.subscribe(data => {
+      this.product = data.product;
+    })
   }
 
   onVisitOfficialWebsiteClick() {

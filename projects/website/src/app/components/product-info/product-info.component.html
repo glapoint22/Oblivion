@@ -2,7 +2,7 @@
 
     <div class="product-info-container">
 
-        <div class="media-list-container" [style.width.px]="product.media.length > 8 ? 72 : 52">
+        <div *ngIf="product.media.length > 1" class="media-list-container" [style.width.px]="product.media.length > 8 ? 72 : 52">
             <div *ngFor="let media of product.media" class="media-thumbnail" (click)="onMediaClick(media)">
                 <img [src]="'images/' + media.image.url">
             </div>
@@ -24,7 +24,7 @@
             </div>
 
 
-            <div *ngIf="product.additionalInfo.length > 0" class="additional-info-container">
+            <div *ngIf="product.additionalInfo && product.additionalInfo.length > 0" class="additional-info-container">
                 <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
             </div>
         </div>
@@ -55,8 +55,9 @@
                 Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
             </div>
 
-            <stars [rating]="product.rating"></stars>
+            
 
+            <stars-summary [product]="product"></stars-summary>
 
             <div class="price-container">
                 <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>

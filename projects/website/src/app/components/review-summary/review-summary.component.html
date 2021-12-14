@@ -19,20 +19,20 @@
             </div>
         </div>
 
-        <div class="bar">
-            <div [style.width.%]="percentages[0]"></div>
+        <div class="bar" title="Click to filter reviews by five stars" (click)="setRoute(reviewFilter.FiveStars)">
+            <div [style.width.%]="percentages[4]"></div>
         </div>
-        <div class="bar">
-            <div [style.width.%]="percentages[1]"></div>
-        </div>
-        <div class="bar">
-            <div [style.width.%]="percentages[2]"></div>
-        </div>
-        <div class="bar">
+        <div class="bar" title="Click to filter reviews by four stars" (click)="setRoute(reviewFilter.FourStars)">
             <div [style.width.%]="percentages[3]"></div>
         </div>
-        <div class="bar">
-            <div [style.width.%]="percentages[4]"></div>
+        <div class="bar" title="Click to filter reviews by three stars" (click)="setRoute(reviewFilter.ThreeStars)">
+            <div [style.width.%]="percentages[2]"></div>
+        </div>
+        <div class="bar" title="Click to filter reviews by two stars" (click)="setRoute(reviewFilter.TwoStars)">
+            <div [style.width.%]="percentages[1]"></div>
+        </div>
+        <div class="bar" title="Click to filter reviews by one star" (click)="setRoute(reviewFilter.OneStar)">
+            <div [style.width.%]="percentages[0]"></div>
         </div>
     </div>
 

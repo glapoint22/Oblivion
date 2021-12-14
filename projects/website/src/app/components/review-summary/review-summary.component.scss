@@ -20,7 +20,8 @@
 
 .stars-label-container {
     padding-right: 5px;
-    @extend .label-container
+    @extend .label-container;
+    flex-shrink: 0;
 }
 
 .review-info-container {
@@ -57,12 +58,21 @@
     margin-top: 1px;
     margin-bottom: 6px;
     position: relative;
+    cursor: pointer;
 
     div:first-child {
         position: absolute;
         background: #ffba00;
         height: inherit;
         border-radius: 7.5px
+    }
+
+    &:hover {
+        background: lighten(#3d3d3d, 8);
+
+        div:first-child {
+            background: lighten(#ffba00, 15);
+        }
     }
 }
 

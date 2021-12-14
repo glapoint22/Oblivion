@@ -2,7 +2,8 @@ import { AdditionalInfo } from "./additional-info";
 import { Collaborator } from "./collaborator";
 import { Image } from "./image";
 import { Media } from "./media";
-import { Review } from "./review";
+import { PricePoint } from "./price-point";
+import { RelatedProducts } from "./related-products";
 import { Subproduct } from "./subproduct";
 
 export class Product {
@@ -28,5 +29,6 @@ export class Product {
     public threeStars!: number;
     public fourStars!: number;
     public fiveStars!: number;
-    public reviews!: Array<Review>;
+    public pricePoints!: Array<PricePoint>;
+    public relatedProducts!: RelatedProducts;
 }

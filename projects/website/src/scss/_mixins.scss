@@ -78,6 +78,12 @@
     border-left: $height solid $color;
 }
 
+@mixin arrow-left ($width, $height, $color) {
+    border-top: math.div($width, 2) solid transparent;
+    border-bottom: math.div($width, 2) solid transparent;
+    border-right: $height solid $color;
+}
+
 
 
 @mixin popup ($arrowPos) {
