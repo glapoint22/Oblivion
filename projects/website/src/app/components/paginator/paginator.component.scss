@@ -1,0 +1,46 @@
+.paginator-container {
+    display: flex;
+    justify-content: center;
+    margin: 48px 0;
+
+    .ellipsis, .page-button {
+        height:30px;
+        text-align: center;
+        line-height: 30px
+    }
+    
+    .page-button {
+        border: 1px solid #424242;
+        margin: 0 5px;
+        border-radius: 5px;
+        padding: 0 10px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #dadada;
+
+        &:hover:not(.active) {
+            background-color: #161616;
+        }
+    }
+    
+    .active {
+        background: #4c4c4c;
+        border-color: #dadada;
+        color: white;
+        cursor: default;
+    }
+}
+
+@font-face {
+    font-family: 'ellipsis-icon';
+    src: url('../../../assets/fonts/ellipsis-icon.ttf');
+}
+
+.ellipsis-icon
+{
+    font-family: 'ellipsis-icon';
+    color: #dadada;
+    &::before {
+        content: "\e913";
+    }
+}

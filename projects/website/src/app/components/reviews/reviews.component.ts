@@ -13,6 +13,8 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class ReviewsComponent implements OnInit {
   public reviews: Array<Review> = new Array<Review>();
+  public selectedFilter!: KeyValue<string, string>;
+  public selectedSort!: KeyValue<string, string>;
   public reviewFilterDropdownList: Array<KeyValue<string, string>> =
     [
       {
@@ -86,6 +88,8 @@ export class ReviewsComponent implements OnInit {
     this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
       let currentPage = queryParams.has('page') ? Math.max(1, Number.parseInt(queryParams.get('page') as string)) : 1;
 
+      this.selectedFilter = this.getSelectedDropdown(this.reviewFilterDropdownList, 'filter');
+      this.selectedSort = this.getSelectedDropdown(this.reviewSortDropdownList, 'sort');
 
       this.reviews = [
         {
@@ -310,5 +314,19 @@ export class ReviewsComponent implements OnInit {
       queryParams: { filter: reviewFilter.value, page: null },
       queryParamsHandling: 'merge'
     });
+  }
+
+
+  onSortChange(sortFilter: KeyValue<string, string>) {
+    this.router.navigate([], {
+      queryParams: { sort: sortFilter.value, page: null },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+
+  getSelectedDropdown(dropdownList: Array<KeyValue<string, string>>, value: string): KeyValue<string, string> {
+    const index = Math.max(0, dropdownList.findIndex(x => x.value == this.route.snapshot.queryParams[value]));
+    return dropdownList[index];
   }
 }

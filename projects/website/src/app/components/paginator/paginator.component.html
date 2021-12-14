@@ -1,0 +1,21 @@
+<div *ngIf="pageCount > 1" class="paginator-container">
+
+    <!-- Previous Button -->
+    <div *ngIf="currentPage > 1" class="page-button" (click)="setPage(currentPage - 1)">Previous</div>
+
+    <!-- Page Buttons & Ellipsis -->
+    <div *ngFor="let page of pages" class="show-xs">
+        <!-- Ellipsis -->
+        <div class="ellipsis" *ngIf="page == -1; else pageNumber">
+            <div class="ellipsis-icon"></div>
+        </div>
+
+        <!-- Page Button -->
+        <ng-template #pageNumber>
+            <div class="page-button" [ngClass]="{'active': currentPage == page}" (click)="setPage(page)">{{page}}</div>
+        </ng-template>
+    </div>
+
+    <!-- Next Button -->
+    <div *ngIf="currentPage < pageCount" class="page-button" (click)="setPage(currentPage + 1)">Next</div>
+</div>

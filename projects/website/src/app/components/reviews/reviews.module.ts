@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReviewsComponent } from './reviews.component';
 import { DropdownModule } from '../dropdown/dropdown.module';
 import { StarsModule } from '../stars/stars.module';
+import { PaginatorModule } from '../paginator/paginator.module';
 
 
 
@@ -11,7 +12,8 @@ import { StarsModule } from '../stars/stars.module';
   imports: [
     CommonModule,
     DropdownModule,
-    StarsModule
+    StarsModule,
+    PaginatorModule
   ],
   exports: [
     ReviewsComponent
