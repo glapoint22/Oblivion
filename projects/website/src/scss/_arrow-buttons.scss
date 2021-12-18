@@ -1,0 +1,49 @@
+@mixin arrow-button ($size) {
+    width: $size;
+    height: $size;
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    transform: translateY(-50%);
+    border: 1px solid #dadada;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(24, 24, 24, 0.75);
+}
+
+@font-face {
+    font-family: 'arrow-icons';
+    src: url('../assets/fonts/arrow-icons.ttf');
+}
+
+.left-arrow-button, .right-arrow-button {
+    @include arrow-button(50px);
+
+    i {
+        color: #dadada;
+        font-size: 24px;
+    }
+}
+
+.left-arrow-button {
+    left: 10px;
+
+    i {
+        font-family: 'arrow-icons';
+        &::before {
+            content: "\e914";
+        }
+    }
+}
+
+.right-arrow-button {
+    right: 10px;
+    i {
+        font-family: 'arrow-icons';
+        &::before {
+            content: "\e915";
+        }
+    }
+}

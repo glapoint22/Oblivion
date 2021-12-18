@@ -17,7 +17,7 @@ export class ProductInfoComponent implements OnInit {
   @Input() product!: Product;
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
 
-  
+
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
 
@@ -38,12 +38,12 @@ export class ProductInfoComponent implements OnInit {
 
   onMediaClick(media: Media) {
     this.selectedMedia = media;
-    if(media.type == MediaType.Video) {
+    if (media.type == MediaType.Video) {
       this.iframe.nativeElement.src = media.videoUrl;
     } else {
       this.iframe.nativeElement.src = '';
     }
-    
+
   }
 
   onVisitOfficialWebsiteClick() {
@@ -61,4 +61,28 @@ export class ProductInfoComponent implements OnInit {
 
       });
   }
+
+
+  // onScrollbarTouchStart(e: TouchEvent, scrollbar: HTMLElement) {
+    
+  // }
+
+
+  // onScrollbarTouchMove(e: TouchEvent, scrollbar: HTMLElement, sliderContainer: HTMLElement) {
+  //   scrollbar.style.left = (e.changedTouches[0].clientX - this.scrollbarStartClientX) + "px";
+
+
+  //   if(scrollbar.offsetLeft < 10) {
+  //     scrollbar.style.left = "10px";
+  //   }
+
+  //   if(scrollbar.offsetLeft + scrollbar.clientWidth > sliderContainer.clientWidth + 10) {
+  //     scrollbar.style.left = sliderContainer.clientWidth + 10 - scrollbar.clientWidth + "px";
+
+      
+  //   }
+  // }
+
+
+
 }

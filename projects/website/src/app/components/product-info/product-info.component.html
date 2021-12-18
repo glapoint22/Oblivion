@@ -1,8 +1,10 @@
 <div class="product-section">
 
-    <div class="product-info-container">
+    <!-- PC -->
+    <div class="product-info-container-pc">
 
-        <div *ngIf="product.media.length > 1" class="media-list-container" [style.width.px]="product.media.length > 8 ? 72 : 52">
+        <div *ngIf="product.media.length > 1" class="media-list-container"
+            [style.width.px]="product.media.length > 8 ? 72 : 52">
             <div *ngFor="let media of product.media" class="media-thumbnail" (click)="onMediaClick(media)">
                 <img [src]="'images/' + media.image.url">
             </div>
@@ -55,7 +57,7 @@
                 Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
             </div>
 
-            
+
 
             <stars-summary [product]="product"></stars-summary>
 
@@ -88,4 +90,45 @@
             </button>
         </div>
     </div>
+
+
+    <!-- Mobile -->
+    <div class="product-info-container-mobile">
+        <div class="social-media-container">
+            <div title="Share on Facebook">
+                <img src="assets/facebook-share.png" alt="Share on Facebook">
+            </div>
+
+            <div title="Share on Twitter">
+                <img src="assets/twitter-share.png" alt="Share on Twitter">
+            </div>
+
+            <div title="Share on Pinterest">
+                <img src="assets/pinterest-share.png" alt="Share on Pinterest">
+            </div>
+        </div>
+
+        <div class="product-title">{{product.title}}</div>
+        <div class="reviews">
+            {{product.totalReviews}}
+            Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
+        </div>
+        <stars-summary [product]="product"></stars-summary>
+
+        <div class="price-container">
+            <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+            <ng-container *ngIf="product.maxPrice > 0">
+                {{product.minPrice | currency:'USD'}} -
+                {{product.maxPrice | currency:'USD'}}
+            </ng-container>
+        </div>
+
+        <media-slider [media]="product.media"></media-slider>
+
+        
+
+
+    </div>
+
+
 </div>
