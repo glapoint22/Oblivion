@@ -17,10 +17,10 @@
 
 
 
-    <subproducts [components]="product.components" [bonuses]="product.bonuses"></subproducts>
+    <subproducts [components]="product.components" [bonuses]="product.bonuses"></subproducts> -->
 
-    <div *ngIf="product.relatedProducts" style="background: #202020; padding: 15px 0 20px;">
-        <product-group-widget [products]="product.relatedProducts.products" [caption]="product.relatedProducts.caption"></product-group-widget>
+    <div *ngIf="product.relatedProducts && product.relatedProducts.products && product.relatedProducts.products.length > 0" style="background: #202020; padding: 15px 0 20px;">
+        <product-slider-widget [products]="product.relatedProducts.products" [caption]="product.relatedProducts.caption"></product-slider-widget>
     </div>
 
 
@@ -28,7 +28,7 @@
 
 
 
-    <div class="reviews-background">
+    <!-- <div class="reviews-background">
 
         <div class="section-container">
             <div class="section-background"></div>

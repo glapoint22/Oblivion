@@ -28,24 +28,7 @@
     }
 }
 
-.scroll-track {
-    background: #242424;
-    height: 2px;
-    position: relative;
-    top: 23px;
-}
 
-.scrollbar-container {
-    width: fit-content;
-    padding: 18px 0;
-    position: absolute;
-}
-
-.scrollbar {
-    height: 8px;
-    border-radius: 4px;
-    background: linear-gradient(#404040, #2b2b2b);
-}
 
 
 @media(max-width: 460px) {

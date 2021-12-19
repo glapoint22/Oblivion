@@ -9,7 +9,8 @@ import { ReviewSummaryModule } from '../../components/review-summary/review-summ
 import { HelpfulReviewsModule } from '../../components/helpful-reviews/helpful-reviews.module';
 import { ReviewsModule } from '../../components/reviews/reviews.module';
 import { PricePointsModule } from '../../components/price-points/price-points.module';
-import { ProductGroupWidgetModule } from '../../components/product-group-widget/product-group-widget.module';
+import { ProductSliderWidgetModule } from '../../components/product-slider-widget/product-slider-widget.module';
+// import { ProductGroupWidgetModule } from '../../components/product-group-widget/product-group-widget.module';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { ProductGroupWidgetModule } from '../../components/product-group-widget/
     HelpfulReviewsModule,
     ReviewsModule,
     PricePointsModule,
-    ProductGroupWidgetModule
+    ProductSliderWidgetModule
+    // ProductGroupWidgetModule
   ]
 })
 export class ProductModule { }

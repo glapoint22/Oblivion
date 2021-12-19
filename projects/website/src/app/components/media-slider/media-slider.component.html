@@ -1,7 +1,8 @@
 <div #sliderContainer class="slider-container">
 
     <!-- Slider -->
-    <div #slider slider class="slider">
+    <div #slider slider [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton"
+        [scrollbarElement]="scrollbar" class="slider">
 
         <!-- Media -->
         <div *ngFor="let media of media" class="media" [style.width.px]="sliderContainer.clientWidth">
@@ -12,20 +13,23 @@
     </div>
 
     <!-- Left Arrow Button -->
-    <div id="left-arrow-button" class="left-arrow-button">
+    <div #leftArrowButton class="left-arrow-button">
         <i></i>
     </div>
 
     <!-- Right Arrow Button -->
-    <div id="right-arrow-button" class="right-arrow-button">
+    <div #rightArrowButton class="right-arrow-button">
         <i></i>
     </div>
 </div>
 
-<!-- Scroll Track -->
-<div class="scroll-track"></div>
 
-<!-- Scrollbar -->
-<div id="scrollbar" class="scrollbar-container">
-    <div [style.width.px]="sliderContainer.clientWidth / slider.childElementCount" class="scrollbar"></div>
+<div class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth">
+    <!-- Scroll Track -->
+    <div class="scroll-track"></div>
+
+    <!-- Scrollbar -->
+    <div #scrollbar class="scroll-thumb-container">
+        <div [style.width.px]="sliderContainer.clientWidth / slider.childElementCount" class="scroll-thumb"></div>
+    </div>
 </div>
