@@ -1,0 +1,26 @@
+<div class="carousel-container">
+    
+
+
+    <div carousel [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton" class="carousel" >
+
+        <!-- Carousel element -->
+        <div *ngFor="let banner of banners" class="carousel-element" (click)="$event.preventDefault()">
+
+            <a [routerLink]="banner.link.url" draggable="false">
+                <img [src]="'/images/' + banner.image.url" [alt]="banner.image.name" [title]="banner.image.name"
+                    draggable="false" (mousedown)="$event.preventDefault()">
+            </a>
+        </div>
+    </div>
+
+    <!-- Left Arrow Button -->
+    <div #leftArrowButton class="left-arrow-button">
+        <i></i>
+    </div>
+
+    <!-- Right Arrow Button -->
+    <div #rightArrowButton class="right-arrow-button">
+        <i></i>
+    </div>
+</div>
