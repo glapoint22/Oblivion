@@ -54,6 +54,7 @@
     font-style: italic;
     font-size: 14px;
     font-weight: normal;
+    margin-top: 2px;
 }
 
 
@@ -77,6 +78,7 @@
     display: flex;
     padding-top: 21px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .review-helpful-text {
@@ -153,4 +155,31 @@
     }
 }
 
+.hamburger-button {
+    display: none;;
+}
 
+@media(max-width: 560px) {
+    .dropdowns-container {
+        display: none;
+    }
+
+    .hamburger-button {
+        display: block;;
+    }
+}
+
+
+@media(max-width: 460px) {
+    .report-review {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+
+@media(max-width: 330px) {
+    .rating-container {
+        width: 100%;
+        margin-top: 5px;
+    }
+}

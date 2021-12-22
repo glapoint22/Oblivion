@@ -24,9 +24,9 @@
 
                     <div class="review-title">
                         {{helpfulReviews.positiveReview.title}}
-                        <span class="verified-purchase" *ngIf="helpfulReviews.positiveReview.isVerified">
+                        <div class="verified-purchase" *ngIf="helpfulReviews.positiveReview.isVerified">
                             (Verified Purchase)
-                        </span>
+                        </div>
                     </div>
                     <stars [rating]="helpfulReviews.positiveReview.rating"></stars>
 

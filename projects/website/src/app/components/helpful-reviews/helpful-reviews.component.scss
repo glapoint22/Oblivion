@@ -58,6 +58,7 @@
     font-style: italic;
     font-size: 14px;
     font-weight: normal;
+    margin-top: 2px;
 }
 
 .name-date {
@@ -73,3 +74,43 @@
     color: #dadada;
 }
 
+
+@media (max-width: 1100px) {
+    .review-base {
+        width: 450px;
+    }
+}
+
+@media (max-width: 1005px) {
+    .review-base {
+        width: 400px;
+    }
+}
+
+@media (max-width: 905px) {
+    .review-base {
+        width: 350px;
+    }
+}
+
+@media (max-width: 805px) {
+    .review-base {
+        width: 300px;
+    }
+}
+
+@media (max-width: 705px) {
+
+    .helpful-reviews-container {
+        flex-wrap: wrap;
+    }
+
+    .review-base {
+        width: 100%;
+
+        &:nth-child(2) {
+            margin-left: 0;
+            margin-top: 20px;
+        }
+    }
+}

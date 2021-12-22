@@ -24,11 +24,6 @@
                     </div>
                 </div>
             </div>
-
-
-            <div *ngIf="product.additionalInfo && product.additionalInfo.length > 0" class="additional-info-container">
-                <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
-            </div>
         </div>
 
 
@@ -69,13 +64,22 @@
                 </ng-container>
             </div>
 
-            <div style="display: flex; justify-content: space-between; width: 100%;">
-                <button class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">
-                    Visit offical website to buy
+            <div *ngIf="product.additionalInfo && product.additionalInfo.length > 0" class="additional-info-container">
+                <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
+            </div>
+
+
+
+            <div class="product-description" [innerHtml]="product.description"></div>
+
+
+
+            <div class="buttons-container">
+                <button class="purple-button" (click)="onAddToListClick()">
+                    Add to List
                 </button>
 
                 <div class="report-item-container" (click)="onReportItemClick()">
-
                     <div class="flag-icon"></div>
                     <div class="report-item-text">
                         Report this item
@@ -83,30 +87,31 @@
                 </div>
             </div>
 
-            <div class="product-description" [innerHtml]="product.description"></div>
 
-            <button class="purple-button" style="max-width: 100px;" (click)="onAddToListClick()">
-                Add to List
-            </button>
+
         </div>
     </div>
 
 
     <!-- Mobile -->
     <div class="product-info-container-mobile">
-        <div class="social-media-container">
-            <div title="Share on Facebook">
-                <img src="assets/facebook-share.png" alt="Share on Facebook">
-            </div>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="social-media-container">
+                <div title="Share on Facebook">
+                    <img src="assets/facebook-share.png" alt="Share on Facebook">
+                </div>
 
-            <div title="Share on Twitter">
-                <img src="assets/twitter-share.png" alt="Share on Twitter">
-            </div>
+                <div title="Share on Twitter">
+                    <img src="assets/twitter-share.png" alt="Share on Twitter">
+                </div>
 
-            <div title="Share on Pinterest">
-                <img src="assets/pinterest-share.png" alt="Share on Pinterest">
+                <div title="Share on Pinterest">
+                    <img src="assets/pinterest-share.png" alt="Share on Pinterest">
+                </div>
             </div>
         </div>
+
+
 
         <div class="product-title">{{product.title}}</div>
         <div class="reviews">
@@ -123,10 +128,35 @@
             </ng-container>
         </div>
 
-        <media-slider [media]="product.media"></media-slider>
+        <div *ngIf="product.additionalInfo && product.additionalInfo.length > 0" class="additional-info-container">
+            <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
+        </div>
 
         
 
+        <media-slider [media]="product.media"></media-slider>
+
+
+
+        <div class="product-description" [innerHtml]="product.description"></div>
+
+
+
+
+        
+
+        <div class="buttons-container">
+            <button class="purple-button" (click)="onAddToListClick()">
+                Add to List
+            </button>
+
+            <div class="report-item-container" (click)="onReportItemClick()">
+                <div class="flag-icon"></div>
+                <div class="report-item-text">
+                    Report this item
+                </div>
+            </div>
+        </div>
 
     </div>
 

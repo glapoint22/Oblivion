@@ -7,9 +7,11 @@
         <div class="dropdowns-container">
             <dropdown style="width: 137px;" [listItems]="reviewFilterDropdownList"
                 (onSelectedListItem)="onReviewFilterChange($event)" [selectedListItem]="selectedFilter"></dropdown>
-            <dropdown style="margin-left: 30px; width: 200px;" [listItems]="reviewSortDropdownList"
+            <dropdown style="margin-left: 15px; width: 200px;" [listItems]="reviewSortDropdownList"
                 (onSelectedListItem)="onSortChange($event)" [selectedListItem]="selectedSort"></dropdown>
         </div>
+
+        <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
 
     </div>
 
@@ -30,9 +32,9 @@
 
             <div class="review-title">
                 {{review.title}}
-                <span class="verified-purchase" *ngIf="review.isVerified">
+                <div class="verified-purchase" *ngIf="review.isVerified">
                     (Verified Purchase)
-                </span>
+                </div>
             </div>
 
 

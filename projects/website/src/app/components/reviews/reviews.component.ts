@@ -4,6 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ReviewFilter } from '../../classes/enums';
 import { Review } from '../../classes/review';
 import { ReportReviewFormComponent } from '../../components/report-review-form/report-review-form.component';
+import { ReviewsSideMenuComponent } from '../../components/reviews-side-menu/reviews-side-menu.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
@@ -241,36 +242,6 @@ export class ReviewsComponent implements OnInit {
           likes: 21,
           dislikes: 85
         },
-
-        // {
-        //   title: 'Piece of shit',
-        //   rating: 1,
-        //   userName: 'Jim',
-        //   profileImage: {
-        //     name: 'Jim',
-        //     url: 'images/bron-pic.jpg'
-        //   },
-        //   date: 'March 17, 2003',
-        //   isVerified: true,
-        //   text: 'I hate this product',
-        //   likes: 14,
-        //   dislikes: 39
-        // },
-
-        // {
-        //   title: 'Make america great again',
-        //   rating: 4,
-        //   userName: 'Trumpy',
-        //   profileImage: {
-        //     name: 'Trumpy',
-        //     url: 'images/bron-pic.jpg'
-        //   },
-        //   date: 'April 15, 2016',
-        //   isVerified: true,
-        //   text: 'This is MAGA country',
-        //   likes: 45,
-        //   dislikes: 45
-        // },
       ]
 
       this.currentPage = currentPage;
@@ -328,5 +299,30 @@ export class ReviewsComponent implements OnInit {
   getSelectedDropdown(dropdownList: Array<KeyValue<string, string>>, value: string): KeyValue<string, string> {
     const index = Math.max(0, dropdownList.findIndex(x => x.value == this.route.snapshot.queryParams[value]));
     return dropdownList[index];
+  }
+
+
+  async onHamburgerButtonClick() {
+    const { ReviewsSideMenuComponent } = await import('../../components/reviews-side-menu/reviews-side-menu.component');
+    const { ReviewsSideMenuModule } = await import('../../components/reviews-side-menu/reviews-side-menu.module');
+
+    this.lazyLoadingService.getComponentAsync(ReviewsSideMenuComponent, ReviewsSideMenuModule, this.lazyLoadingService.container)
+      .then((reviewsSideMenu: ReviewsSideMenuComponent) => {
+        reviewsSideMenu.filtersList = this.reviewFilterDropdownList;
+        reviewsSideMenu.selectedFilter = this.selectedFilter;
+
+        reviewsSideMenu.onFilterChange.subscribe((filter: KeyValue<string, string>) => {
+          this.onReviewFilterChange(filter);
+        });
+
+
+
+        reviewsSideMenu.sortList = this.reviewSortDropdownList;
+        reviewsSideMenu.selectedSort = this.selectedSort;
+
+        reviewsSideMenu.onSortChange.subscribe((sort: KeyValue<string, string>) => {
+          this.onSortChange(sort);
+        });
+      });
   }
 }

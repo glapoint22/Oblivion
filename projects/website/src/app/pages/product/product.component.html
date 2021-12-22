@@ -1,5 +1,5 @@
 <header-footer>
-    <!-- <div class="breadcrumb">
+    <div class="breadcrumb">
         <a routerLink="">Health & Fitness</a>
         <div></div>
 
@@ -7,17 +7,17 @@
         <div></div>
 
         <div>Isometrics Mass</div>
-    </div> -->
+    </div>
 
 
     <product-info [product]="product"></product-info>
 
 
-    <!-- <price-points [pricePoints]="product.pricePoints"></price-points>
+    <price-points [pricePoints]="product.pricePoints"></price-points>
 
 
 
-    <subproducts [components]="product.components" [bonuses]="product.bonuses"></subproducts> -->
+    <subproducts [components]="product.components" [bonuses]="product.bonuses"></subproducts>
 
     <div *ngIf="product.relatedProducts && product.relatedProducts.products && product.relatedProducts.products.length > 0" style="background: #202020; padding: 15px 0 20px;">
         <product-slider-widget [products]="product.relatedProducts.products" [caption]="product.relatedProducts.caption"></product-slider-widget>
@@ -28,7 +28,7 @@
 
 
 
-    <!-- <div class="reviews-background">
+    <div class="reviews-background">
 
         <div class="section-container">
             <div class="section-background"></div>
@@ -72,6 +72,6 @@
 
         
 
-    </div> -->
+    </div>
 
 </header-footer>

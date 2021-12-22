@@ -185,7 +185,7 @@ export class ProductResolver implements Resolve<Product> {
         `,
         image: {
           name: 'Isometrics Mass Quick Start Video Guide',
-          url: 'daec89e7c40b46b382dc923edcb120c4.png'
+          url: 'YogaBurn.png'
         },
         value: 0
       },

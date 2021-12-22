@@ -24,6 +24,10 @@
     flex-shrink: 0;
 }
 
+.rating-container {
+    width: 200px;
+}
+
 .review-info-container {
     display: flex;
     justify-content: center;
@@ -78,5 +82,39 @@
 
 .percent-label-container {
     padding-left: 5px;
-    @extend .label-container
+    @extend .label-container;
+}
+
+
+@media(max-width: 300px) {
+
+    .rating-container {
+        width: 160px;
+    }
+}
+
+
+@media(max-width: 270px) {
+
+    .label-container {
+        div:first-child {
+            height: 52px;
+        }
+    }
+
+    .rating-container {
+        width: 135px;
+    }
+
+    .review-info-container {
+        align-items: flex-end;
+    }
+
+    .rating {
+        font-size: 35px;
+    }
+
+    .stars-container {
+        padding-bottom: 6px;
+    }
 }

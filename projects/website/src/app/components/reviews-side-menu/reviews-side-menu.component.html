@@ -1,0 +1,45 @@
+<div id="menuContainer" class="translate-start side-menu-container" [ngClass]="{'translate-end': show}" (transitionend)="onHide()" tabindex="0" (blur)="close()">
+
+    <div class="side-menu-bar">
+        <div class="side-menu-x" (click)="close()">X</div>
+    </div>
+
+    <div class="side-menu-content-container">
+
+        <!-- Content -->
+        <div class="side-menu-content">
+
+            <!-- Filter Reviews -->
+            <div class="options-label">Filter reviews:</div>
+            
+            <div class="radio-buttons-container">
+                <ng-container *ngFor="let filter of filtersList">
+                    <label class="radio" style="display: block;">
+                        <div>{{filter.key}}</div>
+                        <input type="radio" name="order-filter" [checked]="filter == selectedFilter" (change)="onFilterChange.emit(filter)">
+                        <span class="checkmark"></span>
+                    </label>
+                </ng-container>
+            </div>
+
+
+            <div class="horizontal-line"></div>
+
+            <!-- Sort Reviews -->
+            <div class="options-label">Sort reviews:</div>
+            
+            <div class="radio-buttons-container">
+                <ng-container *ngFor="let sort of sortList">
+                    <label class="radio" style="display: block;">
+                        <div>{{sort.key}}</div>
+                        <input type="radio" name="sort" [checked]="sort == selectedSort" (change)="onSortChange.emit(sort)">
+                        <span class="checkmark"></span>
+                    </label>
+                </ng-container>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<div class="side-menu-backdrop hide" [ngClass]="{'show': show}"></div>
