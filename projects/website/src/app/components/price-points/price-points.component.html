@@ -1,60 +1,95 @@
+<!-- Background -->
 <div *ngIf="pricePoints && pricePoints.length > 0" class="price-points-background">
-    <!-- Background -->
-    <div class="price-points-container">
 
-        <!-- Price Point Container -->
-        <div *ngFor="let pricePoint of pricePoints" class="price-point-container">
-
-            <!-- Price Point Base -->
-            <div class="price-point-base">
+    <div #sliderContainer class="price-points-slider-container">
 
 
-                <!-- Header -->
-                <div class="price-point-header">
-                    {{pricePoint.header}}
-                </div>
 
-                <!-- Quantity -->
-                <div *ngIf="pricePoint.quantity" class="quantity">
-                    {{pricePoint.quantity}}
-                </div>
+        <!-- Slider -->
+        <div class="slider-container">
+            <div #slider slider [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton"
+                [scrollbarElement]="scrollbar" class="slider">
 
+                <!-- Products -->
+                <div *ngFor="let pricePointGroup of pricePointGroups" class="price-point-group"
+                    [style.width.px]="sliderContainer.clientWidth">
 
-                <!-- Image -->
-                <img *ngIf="pricePoint.image" [src]="'images/' + pricePoint.image.url">
-
-
-                <!-- Space Between -->
-                <div class="space-between-container">
-
-                    <!-- Unit -->
-                    <div *ngIf="pricePoint.unitPrice || pricePoint.unit" class="unit-container">
-                        <div *ngIf="pricePoint.unitPrice" class="unit-price">${{pricePoint.unitPrice}}</div>
-                        <div *ngIf="pricePoint.unitPrice && pricePoint.unit" class="unit">{{pricePoint.unitPrice ? '/ '
-                            + pricePoint.unit : pricePoint.unit}}</div>
-                    </div>
+                    <div *ngFor="let pricePoint of pricePointGroup">
+                        <!-- Price Point Base -->
+                        <div class="price-point-base">
 
 
-                    <!-- Total -->
-                    <div *ngIf="pricePoint.strikethroughPrice || pricePoint.price" class="total-container">
-                        <div class="total-label">Total:</div>
-                        <div *ngIf="pricePoint.strikethroughPrice" class="strikethrough">
-                            <div class="strikethrough-price">${{pricePoint.strikethroughPrice}}</div>
+                            <!-- Header -->
+                            <div class="price-point-header">
+                                {{pricePoint.header}}
+                            </div>
+
+                            <!-- Quantity -->
+                            <div *ngIf="pricePoint.quantity" class="quantity">
+                                {{pricePoint.quantity}}
+                            </div>
+
+
+                            <!-- Image -->
+                            <img *ngIf="pricePoint.image" [src]="'images/' + pricePoint.image.url">
+
+
+                            <!-- Space Between -->
+                            <div class="space-between-container">
+
+                                <!-- Unit -->
+                                <div *ngIf="pricePoint.unitPrice || pricePoint.unit" class="unit-container">
+                                    <div *ngIf="pricePoint.unitPrice" class="unit-price">${{pricePoint.unitPrice}}</div>
+                                    <div *ngIf="pricePoint.unitPrice && pricePoint.unit" class="unit">
+                                        {{pricePoint.unitPrice
+                                        ? '/ '
+                                        + pricePoint.unit : pricePoint.unit}}</div>
+                                </div>
+
+
+                                <!-- Total -->
+                                <div *ngIf="pricePoint.strikethroughPrice || pricePoint.price" class="total-container">
+                                    <div class="total-label">Total:</div>
+                                    <div *ngIf="pricePoint.strikethroughPrice" class="strikethrough">
+                                        <div class="strikethrough-price">${{pricePoint.strikethroughPrice}}</div>
+                                    </div>
+                                    <div *ngIf="pricePoint.price" class="total-price">${{pricePoint.price}}</div>
+                                </div>
+
+                                <!-- Gold Button -->
+                                <button class="gold-round-button-lg">Visit offical website to buy</button>
+
+                                <!-- Additional Info -->
+                                <div *ngIf="pricePoint.additionalInfo && pricePoint.additionalInfo.length > 0"
+                                    class="additional-info-container">
+                                    <additional-info [additionalInfo]="pricePoint.additionalInfo"></additional-info>
+                                </div>
+                            </div>
+
                         </div>
-                        <div *ngIf="pricePoint.price" class="total-price">${{pricePoint.price}}</div>
-                    </div>
-
-                    <!-- Gold Button -->
-                    <button class="gold-round-button-lg">Visit offical website to buy</button>
-
-                    <!-- Additional Info -->
-                    <div *ngIf="pricePoint.additionalInfo && pricePoint.additionalInfo.length > 0"
-                        class="additional-info-container">
-                        <additional-info [additionalInfo]="pricePoint.additionalInfo"></additional-info>
                     </div>
                 </div>
-
             </div>
+
+            <!-- Left Arrow Button -->
+            <div #leftArrowButton class="left-arrow-button">
+                <i></i>
+            </div>
+
+            <!-- Right Arrow Button -->
+            <div #rightArrowButton class="right-arrow-button">
+                <i></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth">
+        <!-- Scroll Track -->
+        <div class="scroll-track"></div>
+
+        <!-- Scrollbar -->
+        <div #scrollbar class="scroll-thumb-container">
+            <div [style.width.px]="sliderContainer.clientWidth / slider.childElementCount" class="scroll-thumb"></div>
         </div>
     </div>
 </div>

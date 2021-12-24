@@ -1,23 +1,13 @@
 @import '../../../scss/variables';
 
+$price-point-width: 330px;
+
 .price-points-background {
     width: 100%;
     background: #1e1e1e;
-    display: flex;
-    justify-content: center;
     padding: 10px 0;
 }
 
-.price-points-container {
-    display: flex;
-    padding: 10px 0;
-    overflow-x: auto;
-}
-
-.price-point-container {
-    width: 300px;
-    margin: 0 15px;
-}
 
 .price-point-header {
     display: flex;
@@ -46,6 +36,8 @@
     align-items: center;
     height: 100%;
     padding: 0 10px 12px;
+    width: 300px;
+    margin: 0 15px;
 }
 
 
@@ -121,4 +113,114 @@
     margin-top: 20px;
     padding-left: 23px;
     padding-right: 23px;
+}
+
+
+.price-points-slider-container {
+    overflow: hidden;
+    margin: auto;
+    width: 0;
+}
+
+
+
+.price-point-group {
+    display: flex;
+}
+
+
+.slider-container {
+    position: relative;
+}
+
+.slider {
+    display: flex;
+    position: relative;
+    width: fit-content;
+}
+
+
+
+.p1 {
+    width: $price-point-width;
+}
+
+.p2 {
+    width: $price-point-width * 2;
+}
+
+
+.p3 {
+    width: $price-point-width * 3;
+}
+
+.p4 {
+    width: $price-point-width * 4;
+}
+
+
+.p5, .p6, .p7, .p8, .p9, .p10 {
+    width: $price-point-width * 5;
+}
+
+
+
+@media(max-width: 1650px) {
+    .p5, .p6, .p7, .p8, .p9, .p10 {
+        width: 1320px;
+    }
+}
+
+
+@media(max-width: 1320px) {
+    .p4, .p5, .p6, .p7, .p8, .p9, .p10 {
+        width: 990px;
+    }
+}
+
+
+@media(max-width: 990px) {
+    .p3, .p4, .p5, .p6, .p7, .p8, .p9, .p10 {
+        width: 660px;
+    }
+}
+
+
+@media(max-width: 660px) {
+    .p2, .p3, .p4, .p5, .p6, .p7, .p8, .p9, .p10 {
+        width: 330px;
+    }
+}
+
+
+@media(max-width: 330px) {
+
+
+    .price-point-header {
+        width: 240px;
+    }
+
+    .price-point-base {
+        width: 240px;
+    }
+
+    .price-point-base {
+        margin: 0 0;
+    }
+
+    img {
+        width: 240px;
+    }
+
+    .unit-price {
+        font-size: 60px;
+    }
+
+    .gold-round-button-lg {
+        font-size: 14px;
+    }
+
+    .p1, .p2, .p3, .p4, .p5, .p6, .p7, .p8, .p9, .p10 {
+        width: 240px;
+    }
 }

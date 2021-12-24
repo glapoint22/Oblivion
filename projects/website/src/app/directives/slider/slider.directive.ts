@@ -1,9 +1,9 @@
-import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
+import { AfterViewChecked, Directive, ElementRef, Input } from '@angular/core';
 
 @Directive({
   selector: '[slider]'
 })
-export class SliderDirective implements AfterViewInit {
+export class SliderDirective implements AfterViewChecked {
   public sliderElement!: HTMLElement;
   public viewChecked!: boolean;
   @Input() scrollbarElement!: HTMLElement;
@@ -26,44 +26,47 @@ export class SliderDirective implements AfterViewInit {
 
 
   ngAfterViewChecked() {
-    if (this.sliderElement.childElementCount > 0 && !this.viewChecked && this.sliderElement.childElementCount < 2) {
+    if (this.sliderElement.childElementCount > 0 && !this.viewChecked) {
       this.viewChecked = true;
+      this.containerWidth = this.sliderElement.parentElement?.clientWidth as number;
+      this.sliderElement.style.left = '0';
+
+      // Set the transitions to zero
+      this.initializeTransitions();
+
+      // If we have a scrollbar
       if (this.scrollbarElement) {
-        const scrollbarParentElement = this.scrollbarElement.parentElement as HTMLElement;
-        scrollbarParentElement.style.display = 'none';
+        this.scrollbarOffset = this.scrollbarElement.offsetLeft;
+        this.scrollbarPosition = this.scrollbarOffset;
+        this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
+        this.scrollbarElement.addEventListener('touchstart', this.onScrollbarStart);
+        this.scrollbarElement.addEventListener('mousedown', this.onScrollbarStart);
       }
 
+      // If we have arrows
       if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
-        this.leftArrowButtonElement.style.display = 'none';
-        this.rightArrowButtonElement.style.display = 'none';
+        this.leftArrowButtonElement.addEventListener('click', this.onLeftArrowClick);
+        this.rightArrowButtonElement.addEventListener('click', this.onRightArrowClick);
+        this.setLeftArrowVisibility();
+      }
+
+
+      // Check to see if we hide the scrollbar and arrow buttons
+      if (this.sliderElement.childElementCount < 2) {
+        if (this.scrollbarElement) {
+          const scrollbarParentElement = this.scrollbarElement.parentElement as HTMLElement;
+          scrollbarParentElement.style.display = 'none';
+        }
+
+        if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
+          this.leftArrowButtonElement.style.display = 'none';
+          this.rightArrowButtonElement.style.display = 'none';
+        }
       }
     }
   }
 
-  // ----------------------------------------------------------------- Ng After View Init ------------------------------------------------------------------------
-  ngAfterViewInit(): void {
-    this.containerWidth = this.sliderElement.parentElement?.clientWidth as number;
-    this.sliderElement.style.left = '0';
-
-    // Set the transitions to zero
-    this.initializeTransitions();
-
-    // If we have a scrollbar
-    if (this.scrollbarElement) {
-      this.scrollbarOffset = this.scrollbarElement.offsetLeft;
-      this.scrollbarPosition = this.scrollbarOffset;
-      this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
-      this.scrollbarElement.addEventListener('touchstart', this.onScrollbarStart);
-      this.scrollbarElement.addEventListener('mousedown', this.onScrollbarStart);
-    }
-
-    // If we have arrows
-    if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
-      this.leftArrowButtonElement.addEventListener('click', this.onLeftArrowClick);
-      this.rightArrowButtonElement.addEventListener('click', this.onRightArrowClick);
-      this.setLeftArrowVisibility();
-    }
-  }
+  
 
 
 

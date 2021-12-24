@@ -382,6 +382,161 @@ export class ProductResolver implements Resolve<Product> {
           }
           
         ]
+      },
+
+
+      {
+        header: '3 BOTTLES',
+        quantity: '90 Day Supply',
+        image: {
+          name: '3 Bottle',
+          url: '3Bottles.png'
+        },
+        unitPrice: '1.97',
+        unit: 'day',
+        strikethroughPrice: '347',
+        price: '177',
+        additionalInfo: [
+          {
+            id: 1,
+            isRecurring: false,
+            shippingType: ShippingType.FreeShipping,
+            recurringPayment: new RecurringPayment()
+          }
+          
+        ]
+      },
+
+
+      {
+        header: '3 BOTTLES',
+        quantity: '90 Day Supply',
+        image: {
+          name: '3 Bottle',
+          url: '3Bottles.png'
+        },
+        unitPrice: '1.97',
+        unit: 'day',
+        strikethroughPrice: '347',
+        price: '177',
+        additionalInfo: [
+          {
+            id: 1,
+            isRecurring: false,
+            shippingType: ShippingType.FreeShipping,
+            recurringPayment: new RecurringPayment()
+          }
+          
+        ]
+      },
+
+      {
+        header: '3 BOTTLES',
+        quantity: '90 Day Supply',
+        image: {
+          name: '3 Bottle',
+          url: '3Bottles.png'
+        },
+        unitPrice: '1.97',
+        unit: 'day',
+        strikethroughPrice: '347',
+        price: '177',
+        additionalInfo: [
+          {
+            id: 1,
+            isRecurring: false,
+            shippingType: ShippingType.FreeShipping,
+            recurringPayment: new RecurringPayment()
+          }
+          
+        ]
+      },
+      {
+        header: '3 BOTTLES',
+        quantity: '90 Day Supply',
+        image: {
+          name: '3 Bottle',
+          url: '3Bottles.png'
+        },
+        unitPrice: '1.97',
+        unit: 'day',
+        strikethroughPrice: '347',
+        price: '177',
+        additionalInfo: [
+          {
+            id: 1,
+            isRecurring: false,
+            shippingType: ShippingType.FreeShipping,
+            recurringPayment: new RecurringPayment()
+          }
+          
+        ]
+      },
+
+      {
+        header: '3 BOTTLES',
+        quantity: '90 Day Supply',
+        image: {
+          name: '3 Bottle',
+          url: '3Bottles.png'
+        },
+        unitPrice: '1.97',
+        unit: 'day',
+        strikethroughPrice: '347',
+        price: '177',
+        additionalInfo: [
+          {
+            id: 1,
+            isRecurring: false,
+            shippingType: ShippingType.FreeShipping,
+            recurringPayment: new RecurringPayment()
+          }
+          
+        ]
+      },
+
+      {
+        header: '3 BOTTLES',
+        quantity: '90 Day Supply',
+        image: {
+          name: '3 Bottle',
+          url: '3Bottles.png'
+        },
+        unitPrice: '1.97',
+        unit: 'day',
+        strikethroughPrice: '347',
+        price: '177',
+        additionalInfo: [
+          {
+            id: 1,
+            isRecurring: false,
+            shippingType: ShippingType.FreeShipping,
+            recurringPayment: new RecurringPayment()
+          }
+          
+        ]
+      },
+
+      {
+        header: '3 BOTTLES',
+        quantity: '90 Day Supply',
+        image: {
+          name: '3 Bottle',
+          url: '3Bottles.png'
+        },
+        unitPrice: '1.97',
+        unit: 'day',
+        strikethroughPrice: '347',
+        price: '177',
+        additionalInfo: [
+          {
+            id: 1,
+            isRecurring: false,
+            shippingType: ShippingType.FreeShipping,
+            recurringPayment: new RecurringPayment()
+          }
+          
+        ]
       }
     ];
 

@@ -103,7 +103,7 @@ export class ReviewsComponent implements OnInit {
           },
           date: 'October 11, 2018',
           isVerified: false,
-          text: 'This product is a work of art',
+          text: 'This product is a work of art fdsas sdfhdsf sdfhkdf dsfakhsdf dsfkhdsfkhfdsakhfdsa dsfkhsdf sdfkhdsf dsfkhfd sdfkhdsf dskfdsf sdafkhdfs dsfkhdsf dsfkhsdf sdfkhdfs dsfkhdsfhdfskh sfsakfsdh dsafkasdf dsfakdsfhafd dsfkhdsfhkafdkhfd dfdskfsa dsfkhdsf fdskhdfas dfksdfhafdskhfdsfds fksdafd fdskhdsaf dfdskhfds dsfkhdsaf afsdkhfds sdfkhsadf fsdkhfdsa dsfksdahfa sdfskfhdshfdsf dsafksdafhasfdskdsaf hdsfkasdfahfds <br><br>dsafkasdfhafd kdsfkhdsf fdkhdf dfskdsfhdf dfskdfhdsfk sdfskdfdsahfdsaf sadfkf hasfdkfdshdsfakdfs dsafkdsfhf fsdfadsfdsf dskfhdsf kdfhdf dfkdsh fdskdsfh dsfkdsfah dsfkhdsfhkdsfkadf fdskdsf sdfkhksdfhkdsf sdafkdf dsfksdfhdsf dsfkdf dsfkdsf dfskfh dsakdsafhfd dsfdsfhsdafkadsf dfskhaf sdfkhdsfhkdfkhsdhkfads fsdakfadfh sakfd',
           likes: 100,
           dislikes: 54
         },

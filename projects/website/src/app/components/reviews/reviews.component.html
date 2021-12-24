@@ -44,7 +44,7 @@
                 <div class="name-date">{{review.userName}}</div>
                 <div class="name-date">{{review.date}}</div>
 
-                <div class="review-text">{{review.text}}</div>
+                <div class="review-text" [innerHtml]="review.text"></div>
                 <div class="review-rating">
 
                     <div *ngIf="!review.hasBeenRated" class="review-helpful-text">Was this review helpful?</div>

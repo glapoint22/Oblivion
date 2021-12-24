@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { PricePoint } from '../../classes/price-point';
 
 @Component({
@@ -8,4 +8,78 @@ import { PricePoint } from '../../classes/price-point';
 })
 export class PricePointsComponent {
   @Input() pricePoints!: Array<PricePoint>;
+  @ViewChild('sliderContainer') sliderContainer!: ElementRef<HTMLElement>;
+  public pricePointGroups: Array<any> = [];
+  private classSet!: boolean;
+  private pricePointGroupsSet!: boolean;
+
+  ngDoCheck() {
+    if (this.pricePoints && this.pricePoints.length > 0 && this.sliderContainer && !this.classSet) {
+      this.classSet = true;
+
+
+      let className: string = '';
+
+      switch (this.pricePoints.length) {
+        case 1:
+          className = 'p1';
+          break;
+
+        case 2:
+          className = 'p2';
+          break;
+
+
+        case 3:
+          className = 'p3';
+          break;
+
+
+        case 4:
+          className = 'p4';
+          break;
+
+        case 5:
+          className = 'p5';
+          break;
+
+        case 6:
+          className = 'p6';
+          break;
+
+        case 7:
+          className = 'p7';
+          break;
+
+        case 8:
+          className = 'p8';
+          break;
+
+
+        case 9:
+          className = 'p9';
+          break;
+
+
+        case 10:
+          className = 'p10';
+          break;
+      }
+
+      this.sliderContainer.nativeElement.className = 'price-points-slider-container ' + className;
+    }
+
+
+
+    if (this.sliderContainer && this.sliderContainer.nativeElement.clientWidth > 0 && !this.pricePointGroupsSet) {
+      this.pricePointGroupsSet = true;
+      const productsPerGroup = Math.round(this.sliderContainer.nativeElement.clientWidth / 330);
+
+      for (let i = 0; i < this.pricePoints.length; i++) {
+        if (i % productsPerGroup == 0) this.pricePointGroups.push([]);
+
+        this.pricePointGroups[this.pricePointGroups.length - 1].push(this.pricePoints[i]);
+      }
+    }
+  }
 }

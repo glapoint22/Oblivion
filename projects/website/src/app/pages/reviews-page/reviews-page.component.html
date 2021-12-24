@@ -17,33 +17,35 @@
         <div class="page-content">
             <div class="page-title">Reviews</div>
 
-            <div style="width: 700px; margin: 0 auto 53px; display: flex;">
+            <div class="reviews-page-container">
+                <div class="mobile-product-title">Isometrics Mass</div>
+
                 <div class="media-display">
 
                     <img [src]="'images/' + product.media[0].image.url" [title]="product.media[0].image.name"
                         [alt]="product.media[0].image.name">
                 </div>
 
-                <div style="margin-left: 25px;">
+                <div class="review-info">
 
-                    <div style="font-size: 30px; color: white; font-weight: bold; margin-bottom: 15px;">Isometrics Mass</div>
+                    <div class="product-title">Isometrics Mass</div>
 
-                    <div style="width: 285px;">
+                    <div class="review-summary-container">
                         <review-summary [product]="product"></review-summary>
 
-                        <button class="gold-round-button-lg" style="margin: 20px auto 0; display: block;">Write a
+                        <button class="gold-round-button-lg">Write a
                             Review</button>
                     </div>
 
-                    
+
 
                 </div>
-                
+
             </div>
 
             <helpful-reviews></helpful-reviews>
 
-            
+
         </div>
         <reviews></reviews>
     </div>
