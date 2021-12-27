@@ -2,12 +2,12 @@
 
     <!-- Slider -->
     <div #slider slider [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton"
-        [scrollbarElement]="scrollbar" class="slider">
+        [scrollbarElement]="scrollbar" [changeCount]="changeCount" class="slider">
 
         <!-- Media -->
         <div *ngFor="let media of media" class="media" [style.width.px]="sliderContainer.clientWidth">
             <div class="media-display">
-                <img [src]="'images/' + media.image.url" [title]="media.name" [alt]="media.name">
+                <img [src]="'images/' + media.image" [title]="media.name" [alt]="media.name">
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
     <div class="scroll-track"></div>
 
     <!-- Scrollbar -->
-    <div #scrollbar class="scroll-thumb-container">
+    <div #scrollbar class="scroll-thumb-container" (mousedown)="$event.preventDefault()">
         <div [style.width.px]="sliderContainer.clientWidth / slider.childElementCount" class="scroll-thumb"></div>
     </div>
 </div>

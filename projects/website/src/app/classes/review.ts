@@ -1,6 +1,7 @@
 import { Image } from "./image";
 
 export class Review {
+    public id!: number;
     public title!: string;
     public rating!: number;
     public userName!: string;

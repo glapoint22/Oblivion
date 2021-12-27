@@ -10,8 +10,8 @@ export class CarouselDirective extends SliderDirective {
 
   // ----------------------------------------------------------------- Ng After View Checked ------------------------------------------------------------------------
   ngAfterViewChecked() {
-    if (this.sliderElement.childElementCount > 0 && !this.viewChecked) {
-      this.viewChecked = true;
+    if (this.sliderElement.childElementCount > 0 && !this.sliderSet) {
+      this.sliderSet = true;
 
       this.sliderElement.appendChild(this.sliderElement.children[0].cloneNode(true) as HTMLElement);
       this.sliderElement.insertBefore(this.sliderElement.children[this.sliderElement.childElementCount - 2].cloneNode(true) as HTMLElement, this.sliderElement.firstElementChild);

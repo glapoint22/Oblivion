@@ -26,11 +26,12 @@
 
                 <div class="product-container">
                     <div class="product-name">
-                        Cloud Stream Store
+                        {{product.name}}
                     </div>
 
                     <div class="img-container">
-                        <img src="assets/medalion.png">
+                        <img [src]="'images/' + product.media[0].image" [title]="product.media[0].name"
+                            [alt]="product.media[0].name">
                     </div>
 
                 </div>

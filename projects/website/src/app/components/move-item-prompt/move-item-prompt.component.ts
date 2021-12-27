@@ -53,7 +53,7 @@ export class MoveItemPromptComponent extends LazyLoad {
     this.lazyLoadingService.getComponentAsync(DuplicateItemPromptComponent, DuplicateItemPromptModule, this.lazyLoadingService.container)
       .then((duplicateItemPrompt: DuplicateItemPromptComponent) => {
         duplicateItemPrompt.list = this.toList.key;
-        duplicateItemPrompt.product = this.product.title;
+        duplicateItemPrompt.product = this.product.name;
       })
   }
 }

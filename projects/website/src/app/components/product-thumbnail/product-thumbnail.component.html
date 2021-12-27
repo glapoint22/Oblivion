@@ -4,8 +4,13 @@
     </div>
 
     <div class="product-info    ">
-        <div style="font-size: 14px; font-weight: bold; color: #dadada;">{{product.title}}</div>
+        <div style="font-size: 14px; font-weight: bold; color: #dadada;">{{product.name}}</div>
         
+        <div class="reviews" *ngIf="product.totalReviews > 0">
+            {{product.totalReviews}}
+            Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
+        </div>
+
         <div>
             <!-- <stars [rating]="product.rating"></stars> -->
             <stars-summary [product]="product"></stars-summary>

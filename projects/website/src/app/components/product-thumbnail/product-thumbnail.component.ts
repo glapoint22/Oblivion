@@ -18,7 +18,7 @@ export class ProductThumbnailComponent implements OnInit {
   }
 
   onClick() {
-    this.router.navigate([this.product.urlTitle, this.product.urlId]);
+    this.router.navigate([this.product.urlName, this.product.urlId]);
   }
 
 }

@@ -1,10 +1,12 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ReviewFilter } from '../../classes/enums';
+import { Product } from '../../classes/product';
 import { Review } from '../../classes/review';
 import { ReportReviewFormComponent } from '../../components/report-review-form/report-review-form.component';
 import { ReviewsSideMenuComponent } from '../../components/reviews-side-menu/reviews-side-menu.component';
+import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
@@ -13,9 +15,17 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   styleUrls: ['./reviews.component.scss']
 })
 export class ReviewsComponent implements OnInit {
+  @Input() product!: Product;
+  @Input() showPaginator: boolean = false;
   public reviews: Array<Review> = new Array<Review>();
   public selectedFilter!: KeyValue<string, string>;
   public selectedSort!: KeyValue<string, string>;
+  public showButton!: boolean;
+  public totalReviews!: number;
+  private reviewsPerPage: number = 10;
+  public currentPage!: number;
+  public pageCount!: number;
+  public showing!: string;
   public reviewFilterDropdownList: Array<KeyValue<string, string>> =
     [
       {
@@ -70,188 +80,52 @@ export class ReviewsComponent implements OnInit {
     ];
 
 
-
-  public showButton!: boolean;
-  public totalReviews: number = 12;
-  private reviewsPerPage: number = 10;
-  public currentPage!: number;
-  public pageCount!: number;
-  public reviewsStart!: number;
-  public reviewsEnd!: number;
-
-  constructor(private lazyLoadingService: LazyLoadingService, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private lazyLoadingService: LazyLoadingService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private dataService: DataService
+  ) { }
 
   ngOnInit(): void {
 
 
-    this.showButton = this.router.url.indexOf('reviews') == -1 && this.totalReviews > 10;
 
     this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
-      let currentPage = queryParams.has('page') ? Math.max(1, Number.parseInt(queryParams.get('page') as string)) : 1;
+      const currentPage = queryParams.has('page') ? Math.max(1, Number.parseInt(queryParams.get('page') as string)) : 1;
+      const sort = queryParams.get('sort');
+      const filter = queryParams.get('filter');
+
 
       this.selectedFilter = this.getSelectedDropdown(this.reviewFilterDropdownList, 'filter');
       this.selectedSort = this.getSelectedDropdown(this.reviewSortDropdownList, 'sort');
-
-      this.reviews = [
-        {
-          title: 'A work of art',
-          rating: 5,
-          userName: 'Mike',
-          profileImage: {
-            name: 'Mike',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'October 11, 2018',
-          isVerified: false,
-          text: 'This product is a work of art fdsas sdfhdsf sdfhkdf dsfakhsdf dsfkhdsfkhfdsakhfdsa dsfkhsdf sdfkhdsf dsfkhfd sdfkhdsf dskfdsf sdafkhdfs dsfkhdsf dsfkhsdf sdfkhdfs dsfkhdsfhdfskh sfsakfsdh dsafkasdf dsfakdsfhafd dsfkhdsfhkafdkhfd dfdskfsa dsfkhdsf fdskhdfas dfksdfhafdskhfdsfds fksdafd fdskhdsaf dfdskhfds dsfkhdsaf afsdkhfds sdfkhsadf fsdkhfdsa dsfksdahfa sdfskfhdshfdsf dsafksdafhasfdskdsaf hdsfkasdfahfds <br><br>dsafkasdfhafd kdsfkhdsf fdkhdf dfskdsfhdf dfskdfhdsfk sdfskdfdsahfdsaf sadfkf hasfdkfdshdsfakdfs dsafkdsfhf fsdfadsfdsf dskfhdsf kdfhdf dfkdsh fdskdsfh dsfkdsfah dsfkhdsfhkdsfkadf fdskdsf sdfkhksdfhkdsf sdafkdf dsfksdfhdsf dsfkdf dsfkdsf dfskfh dsakdsafhfd dsfdsfhsdafkadsf dfskhaf sdfkhdsfhkdfkhsdhkfads fsdakfadfh sakfd',
-          likes: 100,
-          dislikes: 54
-        },
-
-        {
-          title: 'Great Product',
-          rating: 4,
-          userName: 'Bob',
-          profileImage: {
-            name: 'Bob',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'May 22, 2020',
-          isVerified: true,
-          text: 'This is a great product, I recommend it',
-          likes: 70,
-          dislikes: 20
-        },
-
-        {
-          title: 'Love It!!!',
-          rating: 5,
-          userName: 'Jane',
-          profileImage: {
-            name: 'Jane',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'September 18, 2016',
-          isVerified: false,
-          text: 'I love this product so much, I want to marry it',
-          likes: 0,
-          dislikes: 30
-        },
-
-        {
-          title: 'Fucking Awesome!',
-          rating: 5,
-          userName: 'Scott',
-          profileImage: {
-            name: 'Scott',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'July 26, 2015',
-          isVerified: false,
-          text: 'This is the best product that I have ever bought!',
-          likes: 18,
-          dislikes: 0
-        },
-
-        {
-          title: 'I like it',
-          rating: 3,
-          userName: 'Todd',
-          profileImage: {
-            name: 'Todd',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'October 19, 2021',
-          isVerified: true,
-          text: 'I like this product',
-          likes: 78,
-          dislikes: 42
-        },
-
-        {
-          title: 'Pretty cool',
-          rating: 2,
-          userName: 'Sara',
-          profileImage: {
-            name: 'Sara',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'February 27, 2019',
-          isVerified: false,
-          text: 'This product is pretty damn cool',
-          likes: 29,
-          dislikes: 51
-        },
-
-        {
-          title: 'Pretty Good',
-          rating: 3,
-          userName: 'Dana',
-          profileImage: {
-            name: 'Dana',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'January 03, 2021',
-          isVerified: true,
-          text: 'This product is pretty damn good',
-          likes: 0,
-          dislikes: 0
-        },
-
-        {
-          title: 'Could be better',
-          rating: 3,
-          userName: 'Frank',
-          profileImage: {
-            name: 'Frank',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'August 24, 2020',
-          isVerified: false,
-          text: 'This product could be better in my opinion',
-          likes: 64,
-          dislikes: 92
-        },
-
-        {
-          title: 'Not Bad',
-          rating: 2,
-          userName: 'Megan',
-          profileImage: {
-            name: 'Megan',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'June 09, 2019',
-          isVerified: true,
-          text: 'This product is alright. I’m not blown away by it, but I guess it’s ok',
-          likes: 77,
-          dislikes: 34
-        },
-
-        {
-          title: 'So So',
-          rating: 3,
-          userName: 'Phil',
-          profileImage: {
-            name: 'Phil',
-            url: 'images/bron-pic.jpg'
-          },
-          date: 'December 23, 2016',
-          isVerified: false,
-          text: 'This product is so so',
-          likes: 21,
-          dislikes: 85
-        },
-      ]
-
       this.currentPage = currentPage;
 
-      // Set the properties that display the starting and ending of reviews
-      this.reviewsStart = this.reviewsPerPage * (this.currentPage - 1) + 1;
-      this.reviewsEnd = this.reviewsStart + this.reviews.length - 1;
+
+
+      this.dataService.get('api/ProductReviews/', [
+        { key: 'productId', value: this.product.urlId },
+        { key: 'page', value: currentPage },
+        { key: 'sortBy', value: sort ? sort : '' },
+        { key: 'filterBy', value: filter ? filter : '' }
+      ]).subscribe((reviews: any) => {
+        this.reviews = reviews.reviews;
+        this.pageCount = reviews.pageCount;
+        this.totalReviews = reviews.totalReviews;
+        this.showButton = this.router.url.indexOf('reviews') == -1 && this.totalReviews > 10;
+
+        // Set the properties that display the starting and ending of reviews
+        if (this.totalReviews > 0) {
+          const reviewsStart = this.reviewsPerPage * (this.currentPage - 1) + 1;
+          const reviewsEnd = reviewsStart + this.reviews.length - 1;
+
+          this.showing = 'Showing ' + reviewsStart +  ' - ' + reviewsEnd + ' of ' + this.totalReviews + ' review' + (this.totalReviews > 1 ? 's' : '');
+        } else {
+          this.showing = 'Showing 0 results';
+        }
+
+      });
     });
-
-
   }
 
 
@@ -270,8 +144,17 @@ export class ReviewsComponent implements OnInit {
 
 
 
-  onRateReviewClick(review: Review) {
-    review.hasBeenRated = true;
+
+  onRateReviewClick(review: Review, likes: number, dislikes: number) {
+    this.dataService
+      .put('api/ProductReviews', {
+        reviewId: review.id,
+        likes: likes,
+        dislikes: dislikes
+      })
+      .subscribe(() => {
+        review.hasBeenRated = true;
+      });
   }
 
 

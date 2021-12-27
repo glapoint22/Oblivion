@@ -11,8 +11,22 @@ export class ProductSliderWidgetComponent implements AfterViewInit {
   @Input() caption!: string;
   @ViewChild('sliderContainer') sliderContainer!: ElementRef<HTMLElement>;
   public productGroups: Array<any> = []
+  public changeCount: number = 0;
+
+  ngOnChanges() {
+    if(this.sliderContainer) {
+      this.productGroups = [];
+      this.setProductGroups();
+      this.changeCount++;
+    };
+  }
 
   ngAfterViewInit() {
+    this.setProductGroups();
+  }
+
+
+  setProductGroups() {
     if (this.sliderContainer) {
       const productsPerGroup = Math.round(this.sliderContainer.nativeElement.clientWidth / 250);
 

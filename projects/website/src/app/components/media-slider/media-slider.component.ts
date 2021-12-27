@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Media } from '../../classes/media';
 
 @Component({
@@ -6,12 +6,11 @@ import { Media } from '../../classes/media';
   templateUrl: './media-slider.component.html',
   styleUrls: ['./media-slider.component.scss']
 })
-export class MediaSliderComponent implements OnInit {
+export class MediaSliderComponent implements OnChanges {
   @Input() media!: Array<Media>;
+  public changeCount: number = 0;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    this.changeCount++;
   }
-
 }

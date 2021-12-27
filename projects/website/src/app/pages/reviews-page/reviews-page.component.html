@@ -18,17 +18,17 @@
             <div class="page-title">Reviews</div>
 
             <div class="reviews-page-container">
-                <div class="mobile-product-title">Isometrics Mass</div>
+                <div class="mobile-product-title">{{product.name}}</div>
 
                 <div class="media-display">
 
-                    <img [src]="'images/' + product.media[0].image.url" [title]="product.media[0].image.name"
-                        [alt]="product.media[0].image.name">
+                    <img [src]="'images/' + product.media[0].image" [title]="product.media[0].name"
+                        [alt]="product.media[0].name">
                 </div>
 
                 <div class="review-info">
 
-                    <div class="product-title">Isometrics Mass</div>
+                    <div class="product-title">{{product.name}}</div>
 
                     <div class="review-summary-container">
                         <review-summary [product]="product"></review-summary>
@@ -47,7 +47,7 @@
 
 
         </div>
-        <reviews></reviews>
+        <reviews [product]="product" [showPaginator]="true"></reviews>
     </div>
 
 

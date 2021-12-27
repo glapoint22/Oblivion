@@ -27,13 +27,13 @@
             <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()" class="content">
                 <div class="product-container">
                     <div class="product-name">
-                        {{productImage.name}}
+                        {{productName}}
                     </div>
 
                     <div class="img-container">
-                        <img [src]="'images/' + productImage.url"
-                                [alt]="productImage.name"
-                                [title]="productImage.name">
+                        <img [src]="'images/' + productImage"
+                                [alt]="productName"
+                                [title]="productName">
                     </div>
 
                 </div>

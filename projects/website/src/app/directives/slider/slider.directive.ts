@@ -5,10 +5,11 @@ import { AfterViewChecked, Directive, ElementRef, Input } from '@angular/core';
 })
 export class SliderDirective implements AfterViewChecked {
   public sliderElement!: HTMLElement;
-  public viewChecked!: boolean;
+  public sliderSet!: boolean;
   @Input() scrollbarElement!: HTMLElement;
   @Input() leftArrowButtonElement!: HTMLElement;
   @Input() rightArrowButtonElement!: HTMLElement;
+  @Input() changeCount!: number;
   public sliderPosition: number = 0;
   public sliderStartPosition!: number;
   private sliderStartClientX!: number;
@@ -18,6 +19,7 @@ export class SliderDirective implements AfterViewChecked {
   private scrollbarPosition!: number;
   private transitionSpeed: number = 500;
   private scrollbarOffset!: number;
+  private scrollbarStartPosition!: number;
 
   constructor(el: ElementRef<HTMLElement>) {
     this.sliderElement = el.nativeElement;
@@ -25,9 +27,38 @@ export class SliderDirective implements AfterViewChecked {
   }
 
 
+  ngOnChanges() {
+    // Reset the slider values
+    if (this.sliderElement && this.sliderElement.childElementCount > 0) {
+      this.sliderPosition = 0;
+      this.sliderStartPosition = 0;
+      this.sliderStopPosition = 0;
+      this.scrollbarPosition = this.scrollbarStartPosition;
+      this.scrollbarOffset = 0;
+
+      if (this.scrollbarElement) {
+        this.scrollbarElement.removeEventListener('touchstart', this.onScrollbarStart);
+        this.scrollbarElement.removeEventListener('mousedown', this.onScrollbarStart);
+        this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
+        const scrollbarParentElement = this.scrollbarElement.parentElement as HTMLElement;
+        scrollbarParentElement.style.display = 'block';
+      }
+
+      if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
+        this.leftArrowButtonElement.removeEventListener('click', this.onLeftArrowClick);
+        this.rightArrowButtonElement.removeEventListener('click', this.onRightArrowClick);
+        this.leftArrowButtonElement.style.display = 'flex';
+        this.rightArrowButtonElement.style.display = 'flex';
+      }
+      this.initializeTransitions();
+      this.sliderSet = false;
+    }
+  }
+
+
   ngAfterViewChecked() {
-    if (this.sliderElement.childElementCount > 0 && !this.viewChecked) {
-      this.viewChecked = true;
+    if (this.sliderElement.childElementCount > 0 && !this.sliderSet) {
+      this.sliderSet = true;
       this.containerWidth = this.sliderElement.parentElement?.clientWidth as number;
       this.sliderElement.style.left = '0';
 
@@ -36,7 +67,7 @@ export class SliderDirective implements AfterViewChecked {
 
       // If we have a scrollbar
       if (this.scrollbarElement) {
-        this.scrollbarOffset = this.scrollbarElement.offsetLeft;
+        this.scrollbarStartPosition = this.scrollbarOffset = this.scrollbarElement.offsetLeft;
         this.scrollbarPosition = this.scrollbarOffset;
         this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
         this.scrollbarElement.addEventListener('touchstart', this.onScrollbarStart);
@@ -48,6 +79,7 @@ export class SliderDirective implements AfterViewChecked {
         this.leftArrowButtonElement.addEventListener('click', this.onLeftArrowClick);
         this.rightArrowButtonElement.addEventListener('click', this.onRightArrowClick);
         this.setLeftArrowVisibility();
+        this.setRightArrowVisibility();
       }
 
 
@@ -66,7 +98,7 @@ export class SliderDirective implements AfterViewChecked {
     }
   }
 
-  
+
 
 
 
@@ -355,6 +387,7 @@ export class SliderDirective implements AfterViewChecked {
       event = event as MouseEvent;
       element.addEventListener('mousemove', move);
       element.addEventListener('mouseup', end);
+      element.addEventListener('mouseleave', end);
     }
   }
 
@@ -372,6 +405,7 @@ export class SliderDirective implements AfterViewChecked {
       event = event as MouseEvent;
       element.removeEventListener('mousemove', move);
       element.removeEventListener('mouseup', end);
+      element.removeEventListener('mouseleave', end);
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { MediaType } from '../../classes/enums';
 import { Media } from '../../classes/media';
 import { Product } from '../../classes/product';
@@ -11,7 +11,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   templateUrl: './product-info.component.html',
   styleUrls: ['./product-info.component.scss']
 })
-export class ProductInfoComponent implements OnInit {
+export class ProductInfoComponent implements OnChanges {
   public selectedMedia!: Media;
   public mediaType = MediaType;
   @Input() product!: Product;
@@ -21,7 +21,7 @@ export class ProductInfoComponent implements OnInit {
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
 
-  ngOnInit() {
+  ngOnChanges() {
     this.selectedMedia = this.product.media[0];
   }
 
@@ -31,7 +31,7 @@ export class ProductInfoComponent implements OnInit {
 
     this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
       .then((addToListForm: AddToListFormComponent) => {
-
+        addToListForm.product = this.product;
       });
   }
 
@@ -39,7 +39,7 @@ export class ProductInfoComponent implements OnInit {
   onMediaClick(media: Media) {
     this.selectedMedia = media;
     if (media.type == MediaType.Video) {
-      this.iframe.nativeElement.src = media.videoUrl;
+      this.iframe.nativeElement.src = media.video;
     } else {
       this.iframe.nativeElement.src = '';
     }
@@ -63,25 +63,7 @@ export class ProductInfoComponent implements OnInit {
   }
 
 
-  // onScrollbarTouchStart(e: TouchEvent, scrollbar: HTMLElement) {
-    
-  // }
-
-
-  // onScrollbarTouchMove(e: TouchEvent, scrollbar: HTMLElement, sliderContainer: HTMLElement) {
-  //   scrollbar.style.left = (e.changedTouches[0].clientX - this.scrollbarStartClientX) + "px";
-
-
-  //   if(scrollbar.offsetLeft < 10) {
-  //     scrollbar.style.left = "10px";
-  //   }
-
-  //   if(scrollbar.offsetLeft + scrollbar.clientWidth > sliderContainer.clientWidth + 10) {
-  //     scrollbar.style.left = sliderContainer.clientWidth + 10 - scrollbar.clientWidth + "px";
-
-      
-  //   }
-  // }
+  
 
 
 

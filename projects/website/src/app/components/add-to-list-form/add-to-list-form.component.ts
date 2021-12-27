@@ -1,6 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
+import { Product } from '../../classes/product';
 
 @Component({
   selector: 'add-to-list-form',
@@ -12,6 +13,8 @@ export class AddToListFormComponent extends LazyLoad {
     {key: 'Trumpy', value: 'Bear'},
     {key: 'Alita', value: 'Battle'}
   ];
+
+  public product!: Product;
 
   onSubmit() {
 

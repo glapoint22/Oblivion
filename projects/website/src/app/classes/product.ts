@@ -9,7 +9,7 @@ import { Subproduct } from "./subproduct";
 export class Product {
     public id!: number;
     public urlId!: string;
-    public title!: string;
+    public name!: string;
     public description!: string;
     public rating!: number;
     public totalReviews!: number;
@@ -19,7 +19,7 @@ export class Product {
     public collaborator!: Collaborator;
     public hoplink!: string;
     public image!: Image;
-    public urlTitle!: string;
+    public urlName!: string;
     public additionalInfo!: Array<AdditionalInfo>;
     public media!: Array<Media>;
     public components!: Array<Subproduct>;

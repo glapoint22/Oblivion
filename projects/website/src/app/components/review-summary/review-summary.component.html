@@ -13,7 +13,7 @@
             <div class="review-info-container">
                 <div class="rating">{{product.rating | number:'1.1-1'}}</div>
                 <div class="stars-container">
-                    <div>{{product.totalReviews}} reviews</div>
+                    <div>{{product.totalReviews}} Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}</div>
                     <stars [rating]="product.rating"></stars>
                 </div>
             </div>

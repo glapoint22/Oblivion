@@ -12,12 +12,19 @@ export class PricePointsComponent {
   public pricePointGroups: Array<any> = [];
   private classSet!: boolean;
   private pricePointGroupsSet!: boolean;
+  public changeCount: number = 0;
+
+  ngOnChanges() {
+    if (this.sliderContainer) {
+      this.classSet = false;
+      this.pricePointGroupsSet = false;
+      this.pricePointGroups = [];
+    }
+
+  }
 
   ngDoCheck() {
     if (this.pricePoints && this.pricePoints.length > 0 && this.sliderContainer && !this.classSet) {
-      this.classSet = true;
-
-
       let className: string = '';
 
       switch (this.pricePoints.length) {
@@ -67,19 +74,24 @@ export class PricePointsComponent {
       }
 
       this.sliderContainer.nativeElement.className = 'price-points-slider-container ' + className;
+      this.classSet = true;
     }
 
 
 
     if (this.sliderContainer && this.sliderContainer.nativeElement.clientWidth > 0 && !this.pricePointGroupsSet) {
-      this.pricePointGroupsSet = true;
-      const productsPerGroup = Math.round(this.sliderContainer.nativeElement.clientWidth / 330);
+      const pricePointWidth: number = 330;
+      const pricePointsPerGroup = Math.round(this.sliderContainer.nativeElement.clientWidth / pricePointWidth);
 
       for (let i = 0; i < this.pricePoints.length; i++) {
-        if (i % productsPerGroup == 0) this.pricePointGroups.push([]);
+        if (i % pricePointsPerGroup == 0) this.pricePointGroups.push([]);
 
         this.pricePointGroups[this.pricePointGroups.length - 1].push(this.pricePoints[i]);
       }
+
+      this.pricePointGroupsSet = true;
+      this.changeCount++;
+      
     }
   }
 }

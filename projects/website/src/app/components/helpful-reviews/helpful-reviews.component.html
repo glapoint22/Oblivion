@@ -1,4 +1,4 @@
-<div *ngIf="helpfulReviews.positiveReview || helpfulReviews.negativeReview" class="helpful-reviews-container">
+<div *ngIf="helpfulReviews && (helpfulReviews.positiveReview || helpfulReviews.negativeReview)" class="helpful-reviews-container">
 
     <div *ngIf="helpfulReviews.positiveReview" class="review-base">
         <div class="review-container">
@@ -15,7 +15,7 @@
 
                 <div class="profile-img-container" [title]="helpfulReviews.positiveReview.profileImage.name">
                     <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-                    <img [src]="helpfulReviews.positiveReview.profileImage.url"
+                    <img [src]="'images/' + helpfulReviews.positiveReview.profileImage.url"
                         [alt]="helpfulReviews.positiveReview.profileImage.name" class="profile-pic">
                 </div>
 
@@ -61,7 +61,7 @@
             <div class="review-info-container">
                 <div class="profile-img-container" [title]="helpfulReviews.negativeReview.profileImage.name">
                     <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-                    <img [src]="helpfulReviews.negativeReview.profileImage.url"
+                    <img [src]="'images/' + helpfulReviews.negativeReview.profileImage.url"
                         [alt]="helpfulReviews.negativeReview.profileImage.name" class="profile-pic">
                 </div>
 

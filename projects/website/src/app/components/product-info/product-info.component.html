@@ -6,23 +6,23 @@
         <div *ngIf="product.media.length > 1" class="media-list-container"
             [style.width.px]="product.media.length > 8 ? 72 : 52">
             <div *ngFor="let media of product.media" class="media-thumbnail" (click)="onMediaClick(media)">
-                <img [src]="'images/' + media.image.url">
+                <img [src]="'images/' + media.image" [alt]="media.name" [title]="media.name">
             </div>
         </div>
 
         <div class="media-container">
             <div class="media-display">
                 <!-- Image -->
-                <img *ngIf="selectedMedia.type == mediaType.Image" [src]="'images/' + selectedMedia.image.url"
+                <img [src]="'images/' + selectedMedia.image"
                     [title]="selectedMedia.name" [alt]="selectedMedia.name">
 
                 <!-- Video -->
-                <div class="video-container">
-                    <!-- Had to add extra div here because vimeo script was adding padding -->
+                <!-- <div class="video-container">
+                    
                     <div>
                         <iframe #iframe frameborder="0" allowfullscreen></iframe>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -31,7 +31,7 @@
 
             <div class="product-title-container">
 
-                <div class="product-title">{{product.title}}</div>
+                <div class="product-title">{{product.name}}</div>
                 <div class="social-media-container">
                     <div title="Share on Facebook">
                         <img src="assets/facebook-share.png" alt="Share on Facebook">
@@ -68,7 +68,7 @@
                 <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
             </div>
 
-
+            <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to buy</button>
 
             <div class="product-description" [innerHtml]="product.description"></div>
 
@@ -113,7 +113,7 @@
 
 
 
-        <div class="product-title">{{product.title}}</div>
+        <div class="product-title">{{product.name}}</div>
         <div class="reviews">
             {{product.totalReviews}}
             Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
@@ -132,13 +132,15 @@
             <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
         </div>
 
+        <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to buy</button>
+
         
 
         <media-slider [media]="product.media"></media-slider>
 
 
 
-        <div class="product-description" [innerHtml]="product.description"></div>
+        <div class="product-description" [innerHtml]="product.description" style="margin-top: 10px;"></div>
 
 
 

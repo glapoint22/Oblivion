@@ -10,7 +10,8 @@ import { Validation } from '../../classes/validation';
 })
 export class WriteReviewFormComponent extends Validation implements OnInit {
   public productId!: number;
-  public productImage!: Image;
+  public productImage!: string;
+  public productName!: string;
 
 
   ngOnInit(): void {
