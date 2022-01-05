@@ -5,24 +5,29 @@
 
         <div *ngIf="product.media.length > 1" class="media-list-container"
             [style.width.px]="product.media.length > 8 ? 72 : 52">
-            <div *ngFor="let media of product.media" class="media-thumbnail" (click)="onMediaClick(media)">
-                <img [src]="'images/' + media.image" [alt]="media.name" [title]="media.name">
+            <div *ngFor="let media of product.media" class="media-thumbnail" (mouseenter)="selectedMedia = media"
+                [title]="media.name" (click)="onMediaClick(media)"
+                [ngClass]="{'selected-thumbnail': media == selectedMedia}">
+                <img [src]="'images/' + media.thumbnail" [alt]="media.name">
+                <div class="play-icon" *ngIf="media.type == mediaType.Video">
+                    <i></i>
+                </div>
             </div>
         </div>
 
         <div class="media-container">
-            <div class="media-display">
-                <!-- Image -->
-                <img [src]="'images/' + selectedMedia.image"
-                    [title]="selectedMedia.name" [alt]="selectedMedia.name">
+            <div class="media-backdrop">
+                <img *ngFor="let media of product.media" [src]="'images/' + media.image" class="media"
+                    [ngClass]="{'selected-media': media == selectedMedia}"
+                    [style.cursor]="selectedMedia.type == mediaType.Video ? 'pointer' : 'default'"
+                    [style.width]="selectedMedia.type == mediaType.Video ? '100%': 'auto'"
+                    (click)="onMediaClick(media)">
 
-                <!-- Video -->
-                <!-- <div class="video-container">
-                    
-                    <div>
-                        <iframe #iframe frameborder="0" allowfullscreen></iframe>
-                    </div>
-                </div> -->
+
+                <div class="play-icon" *ngIf="selectedMedia.type == mediaType.Video" style="pointer-events: none;">
+                    <i></i>
+                </div>
+
             </div>
         </div>
 
@@ -68,7 +73,8 @@
                 <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
             </div>
 
-            <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to buy</button>
+            <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to
+                buy</button>
 
             <div class="product-description" [innerHtml]="product.description"></div>
 
@@ -132,9 +138,10 @@
             <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
         </div>
 
-        <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to buy</button>
+        <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to
+            buy</button>
 
-        
+
 
         <media-slider [media]="product.media"></media-slider>
 
@@ -145,7 +152,7 @@
 
 
 
-        
+
 
         <div class="buttons-container">
             <button class="purple-button" (click)="onAddToListClick()">

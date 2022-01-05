@@ -1,8 +1,9 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { MediaType } from '../../classes/enums';
 import { Media } from '../../classes/media';
 import { Product } from '../../classes/product';
 import { AddToListFormComponent } from '../../components/add-to-list-form/add-to-list-form.component';
+import { MediaPlayerComponent } from '../../components/media-player/media-player.component';
 import { ReportItemFormComponent } from '../../components/report-item-form/report-item-form.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -15,7 +16,7 @@ export class ProductInfoComponent implements OnChanges {
   public selectedMedia!: Media;
   public mediaType = MediaType;
   @Input() product!: Product;
-  @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
+  // @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
 
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
@@ -36,15 +37,7 @@ export class ProductInfoComponent implements OnChanges {
   }
 
 
-  onMediaClick(media: Media) {
-    this.selectedMedia = media;
-    if (media.type == MediaType.Video) {
-      this.iframe.nativeElement.src = media.video;
-    } else {
-      this.iframe.nativeElement.src = '';
-    }
 
-  }
 
   onVisitOfficialWebsiteClick() {
     // Navigate to the product page
@@ -63,7 +56,19 @@ export class ProductInfoComponent implements OnChanges {
   }
 
 
-  
+  async onMediaClick(media: Media) {
+    if (media.type != MediaType.Video) return;
+
+    const { MediaPlayerComponent } = await import('../../components/media-player/media-player.component');
+    const { MediaPlayerModule } = await import('../../components/media-player/media-player.module');
+
+    this.lazyLoadingService.getComponentAsync(MediaPlayerComponent, MediaPlayerModule, this.lazyLoadingService.container)
+      .then((mediaPlayer: MediaPlayerComponent) => {
+        mediaPlayer.media = this.product.media;
+        mediaPlayer.selectedVideo = this.selectedMedia;
+        mediaPlayer.selectedImage = this.product.media[0];
+      });
+  }
 
 
 

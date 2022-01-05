@@ -98,3 +98,29 @@
         content: "\e910";
     }
 }
+
+
+
+
+
+
+.play-icon {
+    position: absolute;
+    z-index: 10;
+    border: 1px solid #dadada;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(24, 24, 24, 0.75);
+    font-family: "play-icon";
+    cursor: pointer;
+
+    i {
+        color: #dadada;
+
+        &:before {
+            content: "\e916";
+        }
+    }
+}

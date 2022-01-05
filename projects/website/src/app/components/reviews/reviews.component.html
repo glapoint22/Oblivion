@@ -23,7 +23,8 @@
 
         <div class="profile-img-container" [title]="review.profileImage.name">
             <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-            <img [src]="'images/' + review.profileImage.url" [alt]="review.profileImage.name" class="profile-pic">
+            <img [src]="review.profileImage.url ? 'images/' + review.profileImage.url : 'assets/no-account-pic.png'"
+                [alt]="review.profileImage.name" class="profile-pic">
         </div>
 
 
@@ -74,5 +75,5 @@
     <button class="purple-button" (click)="onViewAllReviewsClick()" *ngIf="showButton">View all {{totalReviews}}
         reviews</button>
 
-        <paginator *ngIf="showPaginator" [pageCount]="pageCount" [currentPage]="currentPage"></paginator>
+    <paginator *ngIf="showPaginator" [pageCount]="pageCount" [currentPage]="currentPage"></paginator>
 </div>

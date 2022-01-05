@@ -28,11 +28,27 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     img {
-        max-width: 52px;
-        max-height: 52px;
+        max-width: 50px;
+        max-height: 50px;
     }
+
+    .play-icon {
+        
+        width: 25px;
+        height: 25px;
+
+        i {
+            font-size: 8px;
+            transform: translateX(1px);
+        }
+    }
+}
+
+.selected-thumbnail {
+    border: 1px solid $gold;
 }
 
 .media-container {
@@ -40,21 +56,47 @@
 }
 
 
+.media-backdrop {
+    
 
-.video-container {
-    position: absolute;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;
+    .play-icon {
+        
+        width: 70px;
+        height: 70px;
 
-    iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        i {
+            font-size: 30px;
+            transform: translateX(3px);
+        }
     }
 }
+
+
+.media {
+    display: none;
+    
+}
+
+
+.selected-media {
+    display: block;
+}
+
+
+// .video-container {
+//     position: absolute;
+//     width: 100%;
+//     height: 0;
+//     padding-bottom: 56.25%;
+
+//     iframe {
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         width: 100%;
+//         height: 100%;
+//     }
+// }
 
 
 

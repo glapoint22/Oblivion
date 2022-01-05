@@ -8,13 +8,14 @@ import {
 import { Observable, tap } from 'rxjs';
 import { Product } from '../../classes/product';
 import { DataService } from '../../services/data/data.service';
+import { VideoApiService } from '../../services/video-api/video-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductResolver implements Resolve<Product> {
 
-  constructor(private dataService: DataService, private router: Router, private location: Location) { }
+  constructor(private dataService: DataService, private router: Router, private location: Location, private videoApiService: VideoApiService) { }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Product> {
     const productId = route.paramMap.get('id');

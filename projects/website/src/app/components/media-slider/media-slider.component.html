@@ -5,9 +5,14 @@
         [scrollbarElement]="scrollbar" [changeCount]="changeCount" class="slider">
 
         <!-- Media -->
-        <div *ngFor="let media of media" class="media" [style.width.px]="sliderContainer.clientWidth">
-            <div class="media-display">
-                <img [src]="'images/' + media.image" [title]="media.name" [alt]="media.name">
+        <div *ngFor="let media of media" class="media" [style.width.px]="sliderContainer.clientWidth" (click)="onMediaClick(media)">
+            <div class="media-backdrop">
+                <img [src]="'images/' + media.image" [title]="media.name" [alt]="media.name"
+                    [style.width]="media.type == mediaType.Video ? '100%': 'auto'">
+
+                <div class="play-icon" *ngIf="media.type == mediaType.Video">
+                    <i></i>
+                </div>
             </div>
         </div>
     </div>

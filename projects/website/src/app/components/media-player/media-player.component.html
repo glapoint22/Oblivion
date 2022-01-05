@@ -1,0 +1,119 @@
+<div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <!-- Backdrop -->
+    <div class="backdrop" (click)="close()"></div>
+
+
+    <!-- Container -->
+    <div class="container">
+
+        <div class="media-player-base">
+
+            <div class="media-player-header">
+
+                <div class="media-player-buttons-container">
+                    <div class="media-player-button" (click)="isVideos = true; playVideo()"
+                        [ngClass]="{'selected-media-player-button': isVideos}">
+                        VIDEOS
+                    </div>
+                    <div class="media-player-button" (click)="isVideos = false; pauseVideo()"
+                        [ngClass]="{'selected-media-player-button': !isVideos}">
+                        IMAGES
+                    </div>
+                </div>
+
+                <div class="x" (click)="close()">X</div>
+            </div>
+
+            <div class="horizontal-line"></div>
+
+
+
+            <div class="flex-container">
+
+
+                <div class="thumbnails">
+
+                    <div class="thumbnail-scrollview">
+
+                        <ng-container *ngFor="let media of media | mediaFilter : isVideos">
+
+                            <div class="thumbnail-container" (click)="onThumbnailClick(media)">
+
+
+
+
+
+                                <div class="thumbnail"
+                                    [ngClass]="{'video-thumbnail': isVideos, 'image-thumbnail': !isVideos, 'selected-media': media == selectedVideo || media == selectedImage}">
+
+                                    <div class="thumbnail-image-container" [ngClass]="{'media-backdrop': !isVideos}">
+
+                                        <img [src]="'images/' + media.thumbnail">
+                                        <div class="play-icon" *ngIf="media.type == mediaType.Video"
+                                            style="pointer-events: none;">
+                                            <i></i>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+
+
+
+                                <div class="title">{{media.name}}</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <div class="media-container">
+                    <!-- Video -->
+                    <div class="video-container" [style.visibility]="isVideos ? 'visible': 'hidden'">
+                        <iframe #iframe frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                    </div>
+
+
+                    <!-- Image -->
+                    <div class="media-backdrop" [style.visibility]="!isVideos ? 'visible': 'hidden'">
+                        <img [src]="'images/' + selectedImage.image" >
+                    </div>
+                    
+                </div>
+            </div>
+
+
+            <div class="mobile-thumbnails" style="position: absolute; bottom: 10px;">
+                <ng-container *ngFor="let media of media | mediaFilter : isVideos">
+
+
+
+                    <div class="mobile-thumbnail" (click)="onThumbnailClick(media)"
+                        [ngClass]="{'video-thumbnail': isVideos, 'image-thumbnail': !isVideos, 'selected-media': media == selectedVideo || media == selectedImage}">
+
+                        <div class="thumbnail-image-container" [ngClass]="{'media-backdrop': !isVideos}">
+
+                            <img [src]="'images/' + media.thumbnail">
+                            <div class="play-icon" *ngIf="media.type == mediaType.Video" style="pointer-events: none;">
+                                <i></i>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                </ng-container>
+
+
+
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

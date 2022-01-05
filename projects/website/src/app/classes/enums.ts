@@ -44,3 +44,10 @@ export enum ReviewFilter {
     TwoStars = 'two-stars',
     OneStar = 'one-star'
 }
+
+
+export enum VideoType {
+    YouTube,
+    Vimeo,
+    Wistia
+}

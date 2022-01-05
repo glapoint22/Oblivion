@@ -18,7 +18,7 @@
     justify-content: center;
 }
 
-.media-display {
+.media-backdrop {
     width: 500px;
     height: 500px;
 
@@ -28,9 +28,25 @@
     }
 }
 
+// .play-icon {
+//     font-size: 60px;
+//     z-index: 10;
+// }
+
+
+.play-icon {
+        
+    width: 70px;
+    height: 70px;
+
+    i {
+        font-size: 30px;
+        transform: translateX(3px);
+    }
+}
 
 @media(max-width: 520px) {
-    .media-display {
+    .media-backdrop {
         width: 480px;
         height: 480px;
     
@@ -43,7 +59,7 @@
 
 
 @media(max-width: 500px) {
-    .media-display {
+    .media-backdrop {
         width: 460px;
         height: 460px;
     
@@ -56,7 +72,7 @@
 
 
 @media(max-width: 480px) {
-    .media-display {
+    .media-backdrop {
         width: 440px;
         height: 440px;
     
@@ -70,7 +86,7 @@
 
 
 @media(max-width: 460px) {
-    .media-display {
+    .media-backdrop {
         width: 420px;
         height: 420px;
     
@@ -84,7 +100,7 @@
 
 
 @media(max-width: 440px) {
-    .media-display {
+    .media-backdrop {
         width: 400px;
         height: 400px;
     
@@ -98,7 +114,7 @@
 
 
 @media(max-width: 420px) {
-    .media-display {
+    .media-backdrop {
         width: 380px;
         height: 380px;
     
@@ -111,7 +127,7 @@
 
 
 @media(max-width: 400px) {
-    .media-display {
+    .media-backdrop {
         width: 360px;
         height: 360px;
     
@@ -125,7 +141,7 @@
 
 
 @media(max-width: 380px) {
-    .media-display {
+    .media-backdrop {
         width: 340px;
         height: 340px;
     
@@ -138,7 +154,7 @@
 
 
 @media(max-width: 360px) {
-    .media-display {
+    .media-backdrop {
         width: 320px;
         height: 320px;
     
@@ -147,12 +163,24 @@
             max-height: 320px;
         }
     }
+
+
+    .play-icon {
+        
+        width: 50px;
+        height: 50px;
+    
+        i {
+            font-size: 20px;
+            transform: translateX(3px);
+        }
+    }
 }
 
 
 
 @media(max-width: 340px) {
-    .media-display {
+    .media-backdrop {
         width: 300px;
         height: 300px;
     
@@ -166,7 +194,7 @@
 
 
 @media(max-width: 320px) {
-    .media-display {
+    .media-backdrop {
         width: 280px;
         height: 280px;
     
@@ -180,7 +208,7 @@
 
 
 @media(max-width: 300px) {
-    .media-display {
+    .media-backdrop {
         width: 260px;
         height: 260px;
     
@@ -194,7 +222,7 @@
 
 
 @media(max-width: 280px) {
-    .media-display {
+    .media-backdrop {
         width: 240px;
         height: 240px;
     
@@ -207,7 +235,7 @@
 
 
 @media(max-width: 260px) {
-    .media-display {
+    .media-backdrop {
         width: 220px;
         height: 220px;
     
@@ -221,7 +249,7 @@
 
 
 @media(max-width: 240px) {
-    .media-display {
+    .media-backdrop {
         width: 200px;
         height: 200px;
     
