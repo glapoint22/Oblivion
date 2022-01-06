@@ -19,30 +19,35 @@
 }
 
 .media-thumbnail {
-    width: 52px;
-    height: 52px;
-    border: 1px solid #5a5a5a;
+    width: 62px;
+    height: 62px;
     box-sizing: border-box;
-    margin-bottom: 12px;
+    margin-bottom: 11px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    padding: 5px;
 
-    img {
-        max-width: 50px;
-        max-height: 50px;
-    }
+    .media-backdrop {
+        width: 52px;
+        height: 52px;
 
-    .play-icon {
+        img {
+            max-width: 50px;
+            max-height: 50px;
+        }
+
+        .play-icon {
         
-        width: 25px;
-        height: 25px;
-
-        i {
-            font-size: 8px;
-            transform: translateX(1px);
+            width: 25px;
+            height: 25px;
+    
+            i {
+                font-size: 8px;
+                transform: translateX(1px);
+            }
         }
     }
 }
@@ -82,6 +87,10 @@
     display: block;
 }
 
+
+.video-backdrop {
+    background: black;
+}
 
 // .video-container {
 //     position: absolute;

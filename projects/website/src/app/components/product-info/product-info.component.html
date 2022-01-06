@@ -4,19 +4,28 @@
     <div class="product-info-container-pc">
 
         <div *ngIf="product.media.length > 1" class="media-list-container"
-            [style.width.px]="product.media.length > 8 ? 72 : 52">
+            [style.width.px]="product.media.length > 8 ? 82 : 62">
+
             <div *ngFor="let media of product.media" class="media-thumbnail" (mouseenter)="selectedMedia = media"
                 [title]="media.name" (click)="onMediaClick(media)"
                 [ngClass]="{'selected-thumbnail': media == selectedMedia}">
-                <img [src]="'images/' + media.thumbnail" [alt]="media.name">
-                <div class="play-icon" *ngIf="media.type == mediaType.Video">
-                    <i></i>
+
+
+                <div class="media-backdrop" [ngClass]="{'video-backdrop': media.type == mediaType.Video}">
+
+                    <img [src]="'images/' + media.thumbnail" [alt]="media.name">
+                    <div class="play-icon" *ngIf="media.type == mediaType.Video">
+                        <i></i>
+                    </div>
+
                 </div>
+
+
             </div>
         </div>
 
         <div class="media-container">
-            <div class="media-backdrop">
+            <div class="media-backdrop" [ngClass]="{'video-backdrop': selectedMedia.type == mediaType.Video}">
                 <img *ngFor="let media of product.media" [src]="'images/' + media.image" class="media"
                     [ngClass]="{'selected-media': media == selectedMedia}"
                     [style.cursor]="selectedMedia.type == mediaType.Video ? 'pointer' : 'default'"
