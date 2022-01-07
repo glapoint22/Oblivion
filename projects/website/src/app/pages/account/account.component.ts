@@ -10,7 +10,7 @@ export class AccountComponent {
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
-  
+
 
   async onContactUsClick() {
     const { ContactUsFormComponent } = await import('../../components/contact-us-form/contact-us-form.component');

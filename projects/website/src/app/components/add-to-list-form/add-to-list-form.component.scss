@@ -1,5 +1,5 @@
 @import '../../../scss/mixins.scss';
-@include modal-values(350px, 325px, 365px);
+@include modal-values(350px, 405px, 445px);
 
 
 .product-container {
@@ -11,6 +11,11 @@
     font-weight: bold;
     color: #c0c0c0;
     margin-bottom: 12px;
+}
+
+.media-backdrop {
+    width: 150px;
+    height: 150px;
 }
 
 .img-container {
@@ -33,7 +38,7 @@
 .buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 22px;
+    margin-top: 13px;
 }
 
 
@@ -41,6 +46,19 @@
     max-width: 85px;
 }
 
+
+.radio-buttons-container {
+    border: 1px solid #343434;
+    padding: 0 10px 9px;
+    overflow: auto;
+    height: 104px;
+}
+
+.radio {
+    
+        margin-bottom: 0;
+        margin-top: 10px;
+}
 
 button {
     flex-shrink: 0;

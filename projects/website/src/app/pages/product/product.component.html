@@ -2,13 +2,13 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a routerLink="">Health & Fitness</a>
+        <a [routerLink]="'/browse/' + product.breadcrumb[0].urlName + '/' + product.breadcrumb[0].urlId">{{product.breadcrumb[0].name}}</a>
         <div></div>
 
-        <a routerLink="">Strength Training</a>
+        <a [routerLink]="'/browse/' + product.breadcrumb[1].urlName + '/' + product.breadcrumb[1].urlId">{{product.breadcrumb[1].name}}</a>
         <div></div>
 
-        <div>Isometrics Mass</div>
+        <div>{{product.name}}</div>
     </div>
 
 
@@ -17,7 +17,7 @@
 
 
     <!-- Price Points -->
-    <price-points [pricePoints]="product.pricePoints"></price-points>
+    <price-points [pricePoints]="product.pricePoints" [hoplink]="product.hoplink"></price-points>
 
 
     <!-- Sub products -->

@@ -1,0 +1,31 @@
+@import '../../../scss/variables';
+
+.container {
+    pointer-events: all;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    line-height: 1.5;
+}
+
+
+.page-content-container {
+    text-align: center;
+    margin: 16px;
+
+    img {
+        margin: 48px 0;
+        cursor: pointer;
+    }
+}
+
+.gold-text {
+    font-size: 60px;
+    font-weight: bold;
+    color: $gold
+}
+
+.white-text {
+    font-size: 32px;
+    margin-bottom: 16px;
+    color: #dadada;
+}

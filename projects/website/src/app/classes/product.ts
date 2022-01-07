@@ -2,6 +2,7 @@ import { AdditionalInfo } from "./additional-info";
 import { Collaborator } from "./collaborator";
 import { Image } from "./image";
 import { Media } from "./media";
+import { Niche } from "./niche";
 import { PricePoint } from "./price-point";
 import { RelatedProducts } from "./related-products";
 import { Subproduct } from "./subproduct";
@@ -31,4 +32,5 @@ export class Product {
     public fiveStars!: number;
     public pricePoints!: Array<PricePoint>;
     public relatedProducts!: RelatedProducts;
+    public breadcrumb!: Array<Niche>;
 }

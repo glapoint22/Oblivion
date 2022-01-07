@@ -1,12 +1,12 @@
 <header-footer>
     <div class="breadcrumb">
-        <a routerLink="">Health & Fitness</a>
+        <a [routerLink]="'/browse/' + product.breadcrumb[0].urlName + '/' + product.breadcrumb[0].urlId">{{product.breadcrumb[0].name}}</a>
         <div></div>
 
-        <a routerLink="">Strength Training</a>
+        <a [routerLink]="'/browse/' + product.breadcrumb[1].urlName + '/' + product.breadcrumb[1].urlId">{{product.breadcrumb[1].name}}</a>
         <div></div>
 
-        <a routerLink="">Isometrics Mass</a>
+        <a [routerLink]="'/' + product.urlName + '/' + product.urlId">{{product.name}}</a>
         <div></div>
 
         <div>Reviews</div>
@@ -33,7 +33,7 @@
                     <div class="review-summary-container">
                         <review-summary [product]="product"></review-summary>
 
-                        <button class="gold-round-button-lg">Write a
+                        <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a
                             Review</button>
                     </div>
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Image } from '../../classes/image';
 import { Validation } from '../../classes/validation';
+import { DataService } from '../../services/data/data.service';
 
 @Component({
   selector: 'write-review-form',
@@ -12,6 +13,9 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
   public productId!: number;
   public productImage!: string;
   public productName!: string;
+
+
+  constructor(private dataService: DataService) { super() }
 
 
   ngOnInit(): void {
@@ -31,7 +35,14 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
   onSubmit(): void {
     if (this.form.valid) {
-      console.log('Submit');
+      this.dataService.post('api/ProductReviews', {
+        productId: this.productId,
+        rating: this.form.get('rating')?.value,
+        title: this.form.get('title')?.value,
+        text: this.form.get('review')?.value
+      }, true).subscribe(() => {
+        this.close();
+      });
     }
   }
 

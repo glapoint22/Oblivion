@@ -6,6 +6,7 @@ import { Product } from '../../classes/product';
 import { Review } from '../../classes/review';
 import { ReportReviewFormComponent } from '../../components/report-review-form/report-review-form.component';
 import { ReviewsSideMenuComponent } from '../../components/reviews-side-menu/reviews-side-menu.component';
+import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -84,7 +85,8 @@ export class ReviewsComponent implements OnInit {
     private lazyLoadingService: LazyLoadingService,
     private router: Router,
     private route: ActivatedRoute,
-    private dataService: DataService
+    private dataService: DataService,
+    private accountService: AccountService
   ) { }
 
   ngOnInit(): void {
@@ -119,7 +121,7 @@ export class ReviewsComponent implements OnInit {
           const reviewsStart = this.reviewsPerPage * (this.currentPage - 1) + 1;
           const reviewsEnd = reviewsStart + this.reviews.length - 1;
 
-          this.showing = 'Showing ' + reviewsStart +  ' - ' + reviewsEnd + ' of ' + this.totalReviews + ' review' + (this.totalReviews > 1 ? 's' : '');
+          this.showing = 'Showing ' + reviewsStart + ' - ' + reviewsEnd + ' of ' + this.totalReviews + ' review' + (this.totalReviews > 1 ? 's' : '');
         } else {
           this.showing = 'Showing 0 results';
         }
@@ -132,14 +134,28 @@ export class ReviewsComponent implements OnInit {
 
 
 
-  async onReportReviewClick() {
-    const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
-    const { ReportReviewFormModule } = await import('../../components/report-review-form/report-review-form.module');
+  async onReportReviewClick(reviewId: number) {
+    if (this.accountService.customer) {
+      const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
+      const { ReportReviewFormModule } = await import('../../components/report-review-form/report-review-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ReportReviewFormComponent, ReportReviewFormModule, this.lazyLoadingService.container)
-      .then((reportReviewForm: ReportReviewFormComponent) => {
+      this.lazyLoadingService.getComponentAsync(ReportReviewFormComponent, ReportReviewFormModule, this.lazyLoadingService.container)
+        .then((reportReviewForm: ReportReviewFormComponent) => {
+          reportReviewForm.productId = this.product.id;
+          reportReviewForm.reviewId = reviewId;
+        });
+    } else {
+      this.logIn();
+    }
+  }
 
-      });
+
+  async logIn() {
+    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
+
+
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container);
   }
 
 

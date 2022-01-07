@@ -135,9 +135,6 @@ export class OrdersComponent implements AfterViewInit {
 
     this.lazyLoadingService.getComponentAsync(WriteReviewFormComponent, WriteReviewFormModule, this.lazyLoadingService.container)
       .then((writeReviewForm: WriteReviewFormComponent) => {
-        // writeReviewForm.productId = order.productId;
-        // writeReviewForm.productImage = order.products[0].image;
-
         writeReviewForm.productId = order.productId;
         writeReviewForm.productImage = order.products[0].image.url;
         writeReviewForm.productName = order.products[0].image.name;

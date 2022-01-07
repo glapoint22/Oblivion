@@ -26,12 +26,12 @@
 
                 <!-- Where is the issue -->
                 <div class="label">Where is the issue?</div>
-                <dropdown #whereDropdown [listItems]="listItems"></dropdown>
+                <dropdown #whereDropdown [listItems]="listItems" (onSelectedListItem)="type = $event.value[0].value"></dropdown>
 
 
                 <!-- What is the issue -->
                 <div class="label" style="margin-top: 22px;">What is the issue?</div>
-                <dropdown [listItems]="whereDropdown.selectedListItem.value"></dropdown>
+                <dropdown [listItems]="whereDropdown.selectedListItem.value" (onSelectedListItem)="type = $event.value"></dropdown>
 
 
 
@@ -39,7 +39,7 @@
 
                 <!-- Comments -->
                 <div class="label" style="margin-top: 22px;">Comments (optional):</div>
-                <textarea></textarea>
+                <textarea #textArea (input)="comments = textArea.value"></textarea>
 
                 <!-- Button Container -->
                 <div class="button-container">

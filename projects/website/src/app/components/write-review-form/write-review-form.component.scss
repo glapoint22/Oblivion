@@ -12,11 +12,16 @@
     margin-bottom: 12px;
 }
 
-.img-container {
+.media-backdrop {
     width: 150px;
     height: 150px;
     margin: auto;
     margin-bottom: 22px;
+}
+
+.img-container {
+    width: 150px;
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
+import { DataService } from '../../services/data/data.service';
 
 @Component({
   selector: 'report-item-form',
@@ -7,6 +8,9 @@ import { LazyLoad } from '../../classes/lazy-load';
   styleUrls: ['./report-item-form.component.scss']
 })
 export class ReportItemFormComponent extends LazyLoad {
+  public productId!: number;
+  public comments!: string;
+  public type: number = 2;
   public listItems = [
     {
       key: 'Product Name',
@@ -124,8 +128,17 @@ export class ReportItemFormComponent extends LazyLoad {
     }
   ];
 
+
+  constructor(private dataService: DataService) { super() }
+
   onSubmit() {
-    console.log('Submit!')
+    this.dataService.post('api/Notifications', {
+      productId: this.productId,
+      type: this.type,
+      comments: this.comments
+    }, true).subscribe(() => {
+      this.close();
+    });
   }
 
 }

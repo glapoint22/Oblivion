@@ -30,14 +30,27 @@
                     </div>
 
                     <div class="img-container">
-                        <img [src]="'images/' + product.media[0].image" [title]="product.media[0].name"
-                            [alt]="product.media[0].name">
+
+                        <div class="media-backdrop">
+                            <img [src]="'images/' + product.media[0].image" [title]="product.media[0].name"
+                                [alt]="product.media[0].name">
+                        </div>
+
+
                     </div>
 
                 </div>
 
-                <div class="label">Your Lists:</div>
-                <dropdown [listItems]="list"></dropdown>
+                <div class="label">Select Your List:</div>
+                <div class="radio-buttons-container">
+                    <ng-container *ngFor="let list of lists">
+                        <label class="radio" style="display: block;">
+                            <div>{{list.key}}</div>
+                            <input type="radio" name="list" [checked]="list == selectedList" (change)="selectedList = list">
+                            <span class="checkmark"></span>
+                        </label>
+                    </ng-container>
+                </div>
 
                 <div class="buttons">
 

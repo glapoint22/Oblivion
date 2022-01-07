@@ -21,7 +21,7 @@ export class ProductResolver implements Resolve<Product> {
     const productId = route.paramMap.get('id');
     const productName = route.paramMap.get('urlTitle');
 
-    return this.dataService.get<Product>('api/Products', [{ key: 'id', value: productId }], false)
+    return this.dataService.get<Product>('api/Products', [{ key: 'id', value: productId }], true)
       .pipe(tap((product: Product) => {
         if (!product) {
           this.router.navigate(['**'], { skipLocationChange: true });

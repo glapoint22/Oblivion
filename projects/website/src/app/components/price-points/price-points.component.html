@@ -54,7 +54,8 @@
                                 </div>
 
                                 <!-- Gold Button -->
-                                <button class="gold-round-button-lg">Visit offical website to buy</button>
+                                <button class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">Visit
+                                    offical website to buy</button>
 
                                 <!-- Additional Info -->
                                 <div *ngIf="pricePoint.additionalInfo && pricePoint.additionalInfo.length > 0"

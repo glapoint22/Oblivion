@@ -7,7 +7,7 @@
 
 
                 <div class="top-container-right">
-                    <div class="list-title-lg">{{selectedList.name}}</div>
+                    <div class="list-title">{{selectedList.name}}</div>
                     <div *ngIf="products && products.length > 0" class="dropdown-container">
                         <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event.value)">
                         </dropdown>

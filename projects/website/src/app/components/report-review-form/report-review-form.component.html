@@ -28,7 +28,7 @@
 
                 <!-- Email -->
                 <div class="label">Additional Comments (optional):</div>
-                <textarea></textarea>
+                <textarea #textArea (input)="comments = textArea.value"></textarea>
 
 
                 <!-- Button Container -->

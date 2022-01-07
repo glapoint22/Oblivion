@@ -8,6 +8,7 @@ import { PricePoint } from '../../classes/price-point';
 })
 export class PricePointsComponent {
   @Input() pricePoints!: Array<PricePoint>;
+  @Input() hoplink!: string;
   @ViewChild('sliderContainer') sliderContainer!: ElementRef<HTMLElement>;
   public pricePointGroups: Array<any> = [];
   private classSet!: boolean;
@@ -15,12 +16,9 @@ export class PricePointsComponent {
   public changeCount: number = 0;
 
   ngOnChanges() {
-    if (this.sliderContainer) {
-      this.classSet = false;
-      this.pricePointGroupsSet = false;
-      this.pricePointGroups = [];
-    }
-
+    this.classSet = false;
+    this.pricePointGroupsSet = false;
+    this.pricePointGroups = [];
   }
 
   ngDoCheck() {
@@ -91,7 +89,14 @@ export class PricePointsComponent {
 
       this.pricePointGroupsSet = true;
       this.changeCount++;
-      
+
     }
+  }
+
+
+
+  onVisitOfficialWebsiteClick() {
+    // Navigate to the product page
+    window.open(this.hoplink, '_blank');
   }
 }
