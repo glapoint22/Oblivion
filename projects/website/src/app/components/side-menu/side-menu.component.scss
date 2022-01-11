@@ -65,21 +65,10 @@
 
 
 
-@font-face {
-    font-family: 'arrow-left';
-    src: url('../../../assets/fonts/arrow-left.ttf');
-}
 
 
-.arrow-left
-{
-    font-family: 'arrow-left';
-    &::before {
-        content: "\e906";
-    }
 
-    margin-right: 5px;
-}
+
 
 
 @media(max-width: 900px) {

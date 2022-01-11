@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { delay } from 'rxjs';
 import { Niche } from '../../../classes/niche';
 import { Suggestion } from '../../../classes/suggestion';
@@ -47,7 +47,7 @@ export class HeaderComponent {
 
 
   ngAfterViewInit() {
-    this.searchInput.nativeElement.value = this.route.snapshot.queryParamMap.get('search') as string;
+    
     const nicheId = this.route.snapshot.queryParamMap.get('nicheId') as string;
     if (nicheId) {
       this.nicheService.getNiches()
@@ -56,6 +56,10 @@ export class HeaderComponent {
           this.selectedNiche = niches.find(x => x.urlId == nicheId) as Niche;
         });
     }
+
+    this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
+      this.searchInput.nativeElement.value = queryParams.get('search') as string;
+    });
   }
 
 
@@ -135,7 +139,7 @@ export class HeaderComponent {
       this.lazyLoadingService.getComponentAsync(SideMenuComponent, SideMenuModule, this.sideMenuContainer)
         .then((sideMenu: SideMenuComponent) => {
           this.sideMenu = sideMenu;
-          
+
         });
     } else {
       this.sideMenu.close();
@@ -275,5 +279,5 @@ export class HeaderComponent {
     }
   }
 
-  
+
 }

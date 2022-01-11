@@ -1,0 +1,23 @@
+<filter-container [caption]="'Niches'">
+    <niches-filter [niches]="filters.nichesFilter"></niches-filter>
+</filter-container>
+
+<filter-container [caption]="'Price'">
+    <price-filter [filter]="filters.priceFilter" [filterParmsSubject]="filterParmsSubject" [caption]="'Price'">
+    </price-filter>
+</filter-container>
+
+<ng-container *ngIf="filters.ratingFilter.options.length > 0">
+    <filter-container [caption]="'Customer Rating'">
+        <rating-filter [filter]="filters.ratingFilter" [filterParmsSubject]="filterParmsSubject"
+            [caption]="'Customer Rating'"></rating-filter>
+    </filter-container>
+</ng-container>
+
+
+<ng-container *ngFor="let filter of filters.customFilters">
+    <filter-container [caption]="filter.caption">
+        <custom-filter [filter]="filter" [filterParmsSubject]="filterParmsSubject" [caption]="filter.caption">
+        </custom-filter>
+    </filter-container>
+</ng-container>

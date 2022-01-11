@@ -1,0 +1,31 @@
+@import '../../../scss/mixins';
+@import '../../../scss/variables';
+
+.filter-container-header {
+    height: 38px;
+    background: #222222;
+    border: 1px solid #404040;
+}
+
+.caption-container {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.caption {
+    color: white;
+    font-weight: bold;
+}
+
+.arrow-container {
+    margin: 0 7px;
+    @include arrow-right (10px, 8px, $gold)
+}
+
+.filter-container-base {
+    background: #181818;
+    border-left: 1px solid #252525;
+    border-right: 1px solid #252525;
+}

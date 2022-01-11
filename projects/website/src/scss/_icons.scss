@@ -124,3 +124,14 @@
         }
     }
 }
+
+
+.arrow-left
+{
+    font-family: 'arrow-left';
+    &::before {
+        content: "\e906";
+    }
+
+    margin-right: 5px;
+}

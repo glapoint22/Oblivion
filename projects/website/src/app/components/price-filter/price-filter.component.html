@@ -1,0 +1,31 @@
+<div style="padding: 18px 13px 0;">
+
+    <form (ngSubmit)="onSubmit()" #priceForm="ngForm">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <div style="color: #b4b4b4; margin-right: 4px;">$</div>
+                <input required pattern="(\d+)?\.?(\d+)?" [(ngModel)]="min" name="min" #minNum="ngModel"
+                    [ngClass]="{'error-display': priceForm.submitted && !minNum.valid}" type="text">
+                <div style="color: #b4b4b4; margin: 0 7px;">to</div>
+                <div style="color: #b4b4b4; margin-right: 4px;">$</div>
+                <input required pattern="(\d+)?\.?(\d+)?" [(ngModel)]="max" name="max" #maxNum="ngModel"
+                    [ngClass]="{'error-display': priceForm.submitted && !maxNum.valid}" type="text">
+            </div>
+
+            <button type="submit" class="gold-round-button-sm">Go</button>
+        </div>
+        <div *ngIf="showClearPrice" class="clear-price" (click)="clearPrice()">Clear Price Range</div>
+    </form>
+
+
+    <div class="horizontal-line"></div>
+
+    <div *ngFor="let option of filter.options">
+        <label class="checkbox">
+            <div style="color: #dadada;">{{option.label}}</div>
+            <input #checkbox type="checkbox" (change)="onFilterClick(option.min + '-' + option.max)"
+                [value]="option.min + '-' + option.max">
+            <span class="checkmark"></span>
+        </label>
+    </div>
+</div>

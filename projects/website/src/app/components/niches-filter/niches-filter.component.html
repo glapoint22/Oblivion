@@ -1,0 +1,62 @@
+<div class="niche-container" *ngFor="let niche of niches.visible">
+
+    <!-- Back -->
+    <a routerLink="/search" [queryParams]="{search: this.route.snapshot.queryParams.search}"
+        *ngIf="route.snapshot.queryParams.categoryId || route.snapshot.queryParams.nicheId" class="back">
+        <i class="arrow-left"></i>
+        Back
+    </a>
+
+
+    <!-- Visible Niches -->
+    <a *ngIf="!route.snapshot.queryParams.categoryId" routerLink="/search" [queryParams]="getNicheQueryParams(niche)"
+        class="niche" [title]="niche.name">{{niche.name}}</a>
+    <div *ngIf="route.snapshot.queryParams.categoryId" class="niche text" [title]="niche.name">{{niche.name}}</div>
+
+
+    <!-- Visible Subniches -->
+    <ng-container *ngFor="let subniche of niche.subniches.visible">
+        <a *ngIf="!route.snapshot.queryParams.nicheId" routerLink="/search"
+            [queryParams]="getSubnicheQueryParams(subniche)" class="sub-niche" [title]="subniche.name">
+            {{subniche.name}}</a>
+
+        <div *ngIf="route.snapshot.queryParams.nicheId" class="sub-niche text" [title]="subniche.name">{{subniche.name}}
+        </div>
+    </ng-container>
+
+
+
+    <!-- Hidden Subniches -->
+    <ng-container *ngIf="niche.subniches.showHidden">
+        <a *ngFor="let subniche of niche.subniches.hidden" routerLink="/search"
+            [queryParams]="getSubnicheQueryParams(subniche)" class="sub-niche show"
+            [style.maxHeight.px]="!subniche.visible ? 0 : 28" [style.opacity]="!subniche.visible ? 0 : 1"
+            (transitionend)="subnichesTransitionend(subniche, niche.subniches)" [title]="subniche.name">
+            {{subniche.name}}
+        </a>
+    </ng-container>
+
+
+    <!-- Show more/less subniches -->
+    <div *ngIf="niche.subniches.hidden" class="show-more" (click)="seeAllFewerSubniches(niche.subniches)">
+        {{niche.subniches.hidden[0].visible ? 'Show less' : 'Show more'}}
+    </div>
+
+    <div class="horizontal-line"></div>
+</div>
+
+
+<!-- Hidden Niches -->
+<ng-container *ngIf="seeAllNiches">
+    <div class="show" *ngFor="let niche of niches.hidden" [style.maxHeight.px]="!niche.visible ? 0 : 28"
+        [style.opacity]="!niche.visible ? 0 : 1" (transitionend)="nichesTransitionend(niche)">
+        <a routerLink="/search" [queryParams]="getNicheQueryParams(niche)" class="niche"
+            [title]="niche.name">{{niche.name}}</a>
+    </div>
+</ng-container>
+
+
+<!-- Show more/less niches -->
+<div *ngIf="niches.hidden" class="show-all-container" (click)="seeAllFewerNiches()">
+    <div class="show-all">{{niches.hidden[0].visible ? 'Show less niches' : 'Show all niches'}}</div>
+</div>

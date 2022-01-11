@@ -1,0 +1,78 @@
+@import '../../../scss/variables';
+
+.niche-container {
+    padding-top: 5px;
+}
+
+.niche {
+    font-size: 15px;
+    font-weight: bold;
+    color: #cccccc;
+    line-height: 28px;
+    padding-left: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+}
+
+.sub-niche {
+    color: #dadada;
+    line-height: 28px;
+    padding-left: 48px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.show-more {
+    color: $gold;
+    line-height: 28px;
+    padding-left: 26px;
+    cursor: pointer;
+}
+
+.horizontal-line {
+    margin: 10px 0 5px;
+}
+
+
+.show-all-container {
+    padding: 5px 0;
+}
+
+.show-all {
+    color: $gold;
+    line-height: 28px;
+    padding-left: 13px;
+    cursor: pointer;
+}
+
+.show {
+    transition: max-height 0.25s ease-in-out, opacity 0.25s ease-in-out;
+}
+
+a {
+    display: block;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.text {
+    color: gray;
+    cursor: default;
+}
+
+.back {
+    color: $gold;
+    margin-left: 13px;
+    margin-top: 5px;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
