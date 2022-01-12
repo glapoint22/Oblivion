@@ -1,7 +1,5 @@
-<div style="padding: 13px;">
-    
-    
-    <div *ngFor="let option of filter.options" style="margin-bottom: 12px;">
+<div style="padding: 0 13px; padding-bottom: 0;">
+    <div *ngFor="let option of filter.options" class="option">
         <label class="checkbox">
             <input #checkbox type="checkbox" (change)="onFilterClick(option.id.toString())" [value]="option.id">
             <span class="checkmark"></span>
@@ -11,9 +9,4 @@
 
         <span style="margin-left: 5px; color: #b4b4b4;">& Up</span>
     </div>
-
-
-
-    
-
 </div>

@@ -1,12 +1,15 @@
 <!-- Header -->
-<div class="filter-container-header">
+<div class="filter-container-header" (click)="onClick(input)">
     <div class="caption-container">
+        <input #input type="checkbox" [checked]="expanded">
         <div class="arrow-container"></div>
         <div class="caption">{{caption}}</div>
     </div>
 </div>
 
 <!-- Base -->
-<div class="filter-container-base">
+<div #content class="filter-container-base" [ngStyle]="{'maxHeight.px': expanded ? contentMaxHeight : 0, 
+'paddingTop.px': expanded ? contentPadding : 0, 
+'paddingBottom.px': expanded ? contentPadding : 0}" (transitionend)="transitionend()">
     <ng-content></ng-content>
 </div>

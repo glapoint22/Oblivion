@@ -1,12 +1,9 @@
-<div style="padding: 13px">
-
-
-    <div *ngFor="let option of filter.options">
+<div style="padding: 0 13px; padding-bottom: 0;">
+    <div *ngFor="let option of filter.options" class="option">
         <label class="checkbox">
-            <div style="color: #dadada;">{{option.label}}</div>
+            <div>{{option.label}}</div>
             <input #checkbox type="checkbox" (change)="onFilterClick(option.id.toString())" [value]="option.id">
             <span class="checkmark"></span>
         </label>
     </div>
-
 </div>

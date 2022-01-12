@@ -1,4 +1,4 @@
-<div class="niche-container" *ngFor="let niche of niches.visible">
+<ng-container *ngFor="let niche of niches.visible; let i = index">
 
     <!-- Back -->
     <a routerLink="/search" [queryParams]="{search: this.route.snapshot.queryParams.search}"
@@ -42,8 +42,8 @@
         {{niche.subniches.hidden[0].visible ? 'Show less' : 'Show more'}}
     </div>
 
-    <div class="horizontal-line"></div>
-</div>
+    <div *ngIf="i != niches.visible.length - 1 || niches.hidden" class="horizontal-line"></div>
+</ng-container>
 
 
 <!-- Hidden Niches -->

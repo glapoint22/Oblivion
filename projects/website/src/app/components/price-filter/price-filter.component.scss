@@ -1,4 +1,23 @@
+@import '../../../scss/variables';
 
+.price-container {
+    padding: 0 13px;
+}
+
+.input-flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
+.input-label {
+    color: #b4b4b4;
+}
 
 input[type=text] {
     width: 45px;
@@ -22,12 +41,17 @@ input[type=text] {
 }
 
 .clear-price{
-    color: #dadada;
-    margin-top: 10px;
+    color: $gold;
+    margin-top: 15px;
     font-size: 13px;
     cursor: pointer;
-
+    text-decoration: underline;
+    
     &:hover {
-        text-decoration: underline;
+        color: lighten($gold, 10);
     }
+}
+
+.checkbox:last-child {
+    margin-bottom: 0;
 }

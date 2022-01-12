@@ -4,6 +4,7 @@ import { GridWidgetComponent } from './grid-widget.component';
 import { PaginatorModule } from '../paginator/paginator.module';
 import { ProductThumbnailModule } from '../product-thumbnail/product-thumbnail.module';
 import { FiltersPanelModule } from '../filters-panel/filters-panel.module';
+import { DropdownModule } from '../dropdown/dropdown.module';
 
 
 
@@ -13,7 +14,8 @@ import { FiltersPanelModule } from '../filters-panel/filters-panel.module';
     CommonModule,
     PaginatorModule,
     ProductThumbnailModule,
-    FiltersPanelModule
+    FiltersPanelModule,
+    DropdownModule
   ],
   exports: [GridWidgetComponent]
 })

@@ -1,0 +1,37 @@
+<div id="menuContainer" class="translate-start side-menu-container" [ngClass]="{'translate-end': show}"
+    (transitionend)="onHide()" tabindex="0">
+
+    <div class="side-menu-bar">
+        <div class="side-menu-x" (click)="close()">X</div>
+    </div>
+
+    <div class="side-menu-content-container">
+
+        <!-- Content -->
+        <div class="side-menu-content">
+
+            <!-- Sort -->
+            <filter-container [caption]="'Sort'">
+                <div style="padding: 10px;">
+                    <label class="radio" style="display: block;" *ngFor="let sortOption of sortOptions">
+                        <div>{{sortOption.key}}</div>
+                        <input type="radio" name="sort" [checked]="sortOption == selectedSortOption"
+                            (change)="onSortChange(sortOption)">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </filter-container>
+
+            <!-- Filters -->
+            <filters-panel [filters]="gridData.filters"></filters-panel>
+        </div>
+    </div>
+
+    <!-- Fixed container -->
+    <div class="fixed-container">
+        <div class="clear-all" (click)="clearAll()">Clear All</div>
+        <button class="gold-round-button-lg" (click)="close()">View Results</button>
+    </div>
+</div>
+
+<div class="side-menu-backdrop hide" [ngClass]="{'show': show}"></div>

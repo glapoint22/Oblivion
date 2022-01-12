@@ -1,32 +1,23 @@
-import { Directive, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { Directive, ElementRef, Input, OnChanges, QueryList, ViewChildren } from "@angular/core";
 import { Params, Router } from "@angular/router";
-import { BehaviorSubject } from "rxjs";
 import { FilterParam } from "./filter-param";
 import { PriceFilter } from "./price-filter";
 import { QueryFilter } from "./query-filter";
 
 @Directive()
-export class Filter<T extends QueryFilter | PriceFilter> implements OnInit {
+export class Filter<T extends QueryFilter | PriceFilter> implements OnChanges {
     @Input() filter!: T;
-    @Input() filterParmsSubject!: BehaviorSubject<Array<FilterParam>>;
-    @Input() caption!: string;
+    @Input() filterParams!: Array<FilterParam>;
     @ViewChildren('checkbox') checkboxes!: QueryList<ElementRef<HTMLInputElement>>;
-    public filterParams: Array<FilterParam> = [];
 
     constructor(private router: Router) { }
 
-    ngOnInit() {
-        this.filterParmsSubject
-            .subscribe((filterParams: Array<FilterParam>) => {
-                this.filterParams = filterParams;
-                this.setFilter();
-            });
+    ngOnChanges(): void {
+        if (this.filterParams.length > 0) this.setFilter();
     }
 
-
-
     onFilterClick(value: string) {
-        const filterParam = this.filterParams.find(x => x.caption == this.caption);
+        const filterParam = this.filterParams.find(x => x.caption == this.filter.caption);
 
         if (filterParam) {
             const optionIndex = filterParam.options.findIndex(x => x == value);
@@ -44,13 +35,15 @@ export class Filter<T extends QueryFilter | PriceFilter> implements OnInit {
         } else {
             // Add filter param
             this.filterParams.push({
-                caption: this.caption,
+                caption: this.filter.caption,
                 options: [value]
             });
         }
 
+        // This is used for the url
         const filterString = this.buildFilterString();
 
+        // Update the url with the new filter string
         this.updateUrl(filterString);
     }
 
@@ -59,6 +52,8 @@ export class Filter<T extends QueryFilter | PriceFilter> implements OnInit {
     buildFilterString(): string {
         let filterString: string = '';
 
+        // Build a string of filters
+        // Used for the url
         this.filterParams.forEach((filterParm: FilterParam) => {
             filterString += filterParm.caption + '|';
 
@@ -79,7 +74,8 @@ export class Filter<T extends QueryFilter | PriceFilter> implements OnInit {
 
 
     updateUrl(filterString: string) {
-        let params: Params = {
+        // Update the url with the filter string
+        const params: Params = {
             filters: filterString != '' ? filterString : null,
             page: null
         }
@@ -89,8 +85,9 @@ export class Filter<T extends QueryFilter | PriceFilter> implements OnInit {
 
 
     setFilter() {
-        const filterParam = this.filterParams.find(x => x.caption == this.caption);
+        const filterParam = this.filterParams.find(x => x.caption == this.filter.caption);
 
+        // This will check/uncheck each checkbox based on the data from the filter params array
         if (filterParam) {
             setTimeout(() => {
                 this.checkboxes.forEach((checkbox: ElementRef<HTMLInputElement>) => {

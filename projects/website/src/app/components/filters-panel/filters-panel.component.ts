@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { FilterParam } from '../../classes/filter-param';
 import { Filters } from '../../classes/filters';
 
@@ -11,34 +10,35 @@ import { Filters } from '../../classes/filters';
 })
 export class FiltersPanelComponent implements OnChanges {
   @Input() filters!: Filters;
-  public filterParmsSubject: BehaviorSubject<Array<FilterParam>> = new BehaviorSubject<Array<FilterParam>>([]);
+  public filterParams!: Array<FilterParam>;
 
   constructor(private route: ActivatedRoute) { }
 
   ngOnChanges() {
-    const filterParams: Array<FilterParam> = [];
+    this.filterParams = [];
+
+    // Get the filters from the url
     let filterString: string = this.route.snapshot.queryParams['filters'];
-    
+
+    // If we have filters
     if (filterString) {
       filterString = decodeURIComponent(filterString);
 
-      
-
+      // Create the filter params array
+      // Each filter will be split into its caption and options
       filterString.split('|')
         .forEach((value: string, index: number) => {
           if (value) {
             if (index % 2 == 0) {
-              filterParams.push({
+              this.filterParams.push({
                 caption: value,
                 options: []
               });
             } else {
-              filterParams[filterParams.length - 1].options = value.split(',');
+              this.filterParams[this.filterParams.length - 1].options = value.split(',');
             }
           }
         });
     }
-
-    this.filterParmsSubject.next(filterParams);
   }
 }

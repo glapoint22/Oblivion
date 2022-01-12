@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { SearchRoutingModule } from './search-routing.module';
 import { SearchComponent } from './search.component';
 import { HeaderFooterModule } from '../../components/header-footer/header-footer.module';
-import { GridWidgetModule } from '../../components/grid-widget/grid-widget.module';
 
 
 @NgModule({
@@ -12,8 +11,7 @@ import { GridWidgetModule } from '../../components/grid-widget/grid-widget.modul
   imports: [
     CommonModule,
     SearchRoutingModule,
-    HeaderFooterModule,
-    GridWidgetModule
+    HeaderFooterModule
   ]
 })
 export class SearchModule { }

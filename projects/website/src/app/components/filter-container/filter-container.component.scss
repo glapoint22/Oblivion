@@ -5,6 +5,7 @@
     height: 38px;
     background: #222222;
     border: 1px solid #404040;
+    cursor: pointer;
 }
 
 .caption-container {
@@ -21,11 +22,22 @@
 
 .arrow-container {
     margin: 0 7px;
-    @include arrow-right (10px, 8px, $gold)
+    @include arrow-right (10px, 8px, $gold);
+    transition: transform 0.25s ease-in-out;
 }
 
 .filter-container-base {
-    background: #181818;
+    background: #161616;
     border-left: 1px solid #252525;
     border-right: 1px solid #252525;
+    overflow: hidden;
+    transition: max-height 0.25s ease-in-out, padding-top 0.25s ease-in-out, padding-bottom 0.25s ease-in-out;
+}
+
+
+input {
+    display: none;
+    &:checked ~ .arrow-container {
+        transform: rotate(90deg);
+    }
 }

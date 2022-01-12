@@ -6,7 +6,6 @@ export class GridData {
     public totalProducts!: number;
     public filters!: Filters;
     public pageCount!: number;
-    public sortOptions: any;
     public productCountStart!: number;
     public productCountEnd!: number;
 }

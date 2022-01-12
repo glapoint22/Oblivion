@@ -1,104 +1,41 @@
 <div class="grid-widget-container">
 
     <ng-container *ngIf="gridData">
-        <!-- Filter Menu
-        <div *show="showFilterMenu" class="filter-menu fade-translate-start" transitionClass="fade-translate-end"
-            tabindex="0" (onHide)="showFilterMenu = false">
-
-            <div (mousedown)="$event.stopPropagation()">
-                Header
-                <div class="close-header">
-                    <div class="clear-filters" style="float: left; line-height: 30px;"
-                        *ngIf="route.snapshot.queryParams.filters" (click)="clearFilters()">Clear Filters</div>
-                    <button class="alt-button" style="margin-right: 10px; float: right;"
-                        (click)="showFilterMenu = false">Done</button>
-                </div>
-
-                Filters
-                <div class="background">
-
-                    Sort
-                    <filter-container [caption]="'Sort By'">
-                        <radio-button style="margin-bottom: 10px; display: block;"
-                            *ngFor="let sortOption of gridData.sortOptions; let i = index" [name]="'option'"
-                            [label]="sortOption.key" [checked]="i == getDefaultIndex()"
-                            (change)="selectedSortOption = sortOption; setSort()">
-                        </radio-button>
-                    </filter-container>
-
-
-                    Filters
-                    <filters-panel [filters]="gridData.filters"></filters-panel>
-                </div>
-            </div>
-        </div> -->
-
-
-
-        <!-- Grid -->
-        <!-- <div *ngIf="gridData.products"> -->
-
         <ng-container *ngIf="gridData.products.length > 0; else noMatch">
 
             <!-- Header -->
             <div class="header">
                 <div class="results">
-
-                    <div style="display: flex; margin-left: 10px;">
-                        <div>
-                            {{gridData.productCountStart}} - {{gridData.productCountEnd}} of
-                            {{gridData.totalProducts}}
-                            results
-                        </div>
-
-                        <div class="clear-filters" *ngIf="route.snapshot.queryParams.filters" (click)="clearFilters()">
-                            Clear Filters</div>
+                    <div style="color: #dadada;">
+                        {{gridData.productCountStart}} - {{gridData.productCountEnd}} of
+                        {{gridData.totalProducts}}
+                        results
                     </div>
 
-
+                    <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParams.filters"
+                        (click)="clearFilters()">Clear Filters</button>
                 </div>
 
                 <!-- Sort Options -->
-                <!-- <select class="show-md" [(ngModel)]="selectedSortOption" (change)="setSort()"
-                        style="margin-bottom: 10px; margin-right: 10px;">
-                        <option *ngFor="let sortOption of gridData.sortOptions" [ngValue]="sortOption">Sort by
-                            {{sortOption.key}}</option>
-                    </select> -->
+                <div class="dropdown-container">
+                    <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event)"
+                        [selectedListItem]="selectedSortOption"></dropdown>
+                </div>
 
-                <!-- Sort & Filter button -->
-                <!-- (click)="showFilterMenu = true;" -->
-                <button class="gold-rect-button">Sort & Filter</button>
+
+                <!-- Sort & Filters button -->
+                <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
             </div>
-
-
-
 
 
             <div class="grid-container">
 
                 <!-- Filters -->
-                <!-- <filters-panel [filters]="gridData.filters" class="show-md filters"></filters-panel> -->
-                <div style="width: 220px; margin-right: 20px; flex-shrink: 0; ">
+                <div class="filters-container">
                     <filters-panel [filters]="gridData.filters"></filters-panel>
-                    <!-- <filter-container [caption]="'Niches'">
-                        <niches-filter [niches]="gridData.filters.nichesFilter"></niches-filter>
-                    </filter-container>
-
-                    <filter-container [caption]="'Price'">
-                        <price-filter></price-filter>
-                    </filter-container>
-
-                    <filter-container [caption]="'Customer Rating'">
-                        <rating-filter></rating-filter>
-                    </filter-container>
-
-                    <filter-container [caption]="'Product Type'">
-                        <custom-filter></custom-filter>
-                    </filter-container> -->
                 </div>
 
-                <!-- Grid Container -->
-                <!-- <div class="grid-container"> -->
+                <!-- Grid -->
                 <div style="width: 100%;">
                     <div class="grid">
                         <div class="row">
@@ -109,13 +46,6 @@
                     </div>
                     <paginator [currentPage]="getPageNumber()" [pageCount]="gridData.pageCount"></paginator>
                 </div>
-
-
-
-                <!-- Paginator -->
-
-                <!-- </div> -->
-
             </div>
 
         </ng-container>
@@ -124,23 +54,17 @@
         <ng-template #noMatch>
             <div class="no-match">
 
-                <div style="display: flex;">
-                    <!-- <i class="fas fa-info-circle"></i> -->
-                    <div style="margin-left: 10px">
-
-
-                        <div style="font-weight: bold;">
-                            Sorry, we couldn't find a match for "{{route.snapshot.queryParams.search}}"
-                        </div>
-
-                        <ul>
-                            <li>Check your spelling</li>
-                            <li>Use different keywords and try again</li>
-                        </ul>
+                <div style="margin-left: 10px">
+                    <div style="font-weight: bold;">
+                        Sorry, we couldn't find a match for "{{route.snapshot.queryParams.search}}"
                     </div>
+
+                    <ul>
+                        <li>Check your spelling</li>
+                        <li>Use different keywords and try again</li>
+                    </ul>
                 </div>
             </div>
         </ng-template>
-        <!-- </div> -->
     </ng-container>
 </div>
