@@ -112,3 +112,83 @@
         @include arrow-up(24px, 12px, #161616);
     }
 }
+
+
+// ....................................................................Get Class Extension..................................................................
+@function get-class-extension($breakpoint-key) {
+    @return if(map-get($breakpoints, $breakpoint-key) == 0, "", "-#{$breakpoint-key}");
+}
+
+
+// ....................................................................Media Breakpoint..................................................................
+@mixin media-breakpoint($key) {
+    $breakpoint: map-get($breakpoints, $key);
+
+    // If the breakpoint is not zero, create the media query
+    @if $breakpoint != 0 {
+        @media (min-width: $breakpoint) {
+            @content;
+        }
+    } @else {
+        // Dont's create the media query, just use the content
+        @content;
+    }
+}
+
+// .......................................................................Make Columns......................................................................
+@mixin make-columns() {
+    $num-grid-columns: 12;
+
+    // Create the placeholder selector
+    %column {
+        // position: relative;
+        width: 100%;
+    }
+    
+    // Loop through the breakpoints
+    @each $key in map-keys($breakpoints) {
+        // This will be either an empty string or the breakpoint key (-xs)
+        $extension: get-class-extension($key);
+
+        // Create the column classes
+        @for $i from 1 through $num-grid-columns {
+            .col-#{$i}#{$extension} {
+                @extend %column;
+            }
+        }
+
+        
+        .col#{$extension}, .col-auto#{$extension} {
+            @extend %column;
+        }
+
+        
+        // Create the media queries for each column class
+        @include media-breakpoint($key) {
+            .col#{$extension}{
+                flex-basis: 0;
+                flex-grow: 1;
+                max-width: 100%;
+            }
+
+            .col-auto#{$extension} {
+                flex: 0 0 auto;
+                width: auto;
+                max-width: 100%;
+            }
+
+
+            @for $i from 1 through $num-grid-columns {
+                .col-#{$i}#{$extension} {
+                    flex: 0 0 percentage(math.div($i, $num-grid-columns));
+                    max-width: percentage(math.div($i, $num-grid-columns));
+                }
+
+                .flex-10 > .col-#{$i}#{$extension} {
+                    flex: 0 0 percentage(math.div($i, 10));
+                    max-width: percentage(math.div($i, 10));
+                }
+            }
+        }
+    }
+}

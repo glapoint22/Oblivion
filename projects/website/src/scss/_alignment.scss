@@ -1,0 +1,15 @@
+@each $key in map-keys($breakpoints) {
+    @include media-breakpoint($key) {
+        $extension: get-class-extension($key);
+
+        // Horizontal align
+        .horizontal-align-left#{$extension} { margin: 0; }
+        .horizontal-align-center#{$extension} { margin: 0 auto; }
+        .horizontal-align-right#{$extension} { margin: 0 0 0 auto; }
+
+        // Vertical align
+        .vertical-align-top#{$extension} { align-items: flex-start; }
+        .vertical-align-middle#{$extension} { align-items: center; }
+        .vertical-align-bottom#{$extension} { align-items: flex-end; }
+    }
+}
