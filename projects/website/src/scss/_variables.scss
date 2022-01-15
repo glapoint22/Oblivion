@@ -5,3 +5,33 @@ $selected-background-color: rgba(255, 0, 217, 0.35);
 $selected-text-color: white;
 $hover-background-color: rgba(255, 255, 255, 0.06);
 $hover-text-color: lighten(#b4b4b4, 6);
+
+$breakpoints: (
+    z: 0,
+    micro: 240px,
+    xxs: 320px,
+    xs: 480px,
+    sm: 600px,
+    md: 768px,
+    lg: 1024px,
+    xl: 1280px,
+    xxl: 1440px,
+    hd: 1600px
+);
+
+
+$spacers: (
+    0: 0,
+    4: 4px,
+    8: 8px,
+    12: 12px,
+    16: 16px,
+    20: 20px,
+    24: 24px,
+    28: 28px,
+    32: 32px,
+    36: 36px,
+    40: 40px,
+    44: 44px,
+    48: 48px
+);

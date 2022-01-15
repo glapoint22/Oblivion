@@ -1,0 +1,15 @@
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+}
+
+a {
+    width: 100%;
+    text-decoration: none;
+}

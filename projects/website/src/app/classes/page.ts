@@ -1,13 +1,25 @@
-import { Directive } from "@angular/core";
-import { Meta, Title } from "@angular/platform-browser";
+import { ContainerComponent } from "../components/container/container.component";
+import { Background } from "./background";
+import { Row } from "./row";
 
-@Directive()
 export class Page {
+    public background!: Background;
+    public rows!: Array<Row>;
+    public set container(containerComponent: ContainerComponent) {
 
-    constructor(private titleService: Title, private metaService: Meta) { }
+        if (this.rows && this.rows.length > 0) {
+            // Loop through the rows
+            this.rows.forEach((row: Row) => {
 
-    setPage(title: string, description: string): void {
-        this.titleService.setTitle('Niche Shack - ' + title);
-        this.metaService.addTag({ name: 'description', content: description });
+                // Create the row
+                containerComponent.createRow(row);
+            });
+        }
+    }
+
+
+    constructor(page: Page) {
+        this.background = page.background;
+        this.rows = page.rows;
     }
 }

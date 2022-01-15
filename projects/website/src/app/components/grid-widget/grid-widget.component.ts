@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GridData } from '../../classes/grid-data';
+import { GridWidget } from '../../classes/grid-widget';
 import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -11,7 +11,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   styleUrls: ['./grid-widget.component.scss']
 })
 export class GridWidgetComponent {
-  @Input() gridData!: GridData;
+  @Input() gridWidget!: GridWidget;
   public selectedSortOption!: KeyValue<string, string>;
   public sortOptions: Array<KeyValue<string, string>> = [
     {
@@ -48,7 +48,7 @@ export class GridWidgetComponent {
   ngOnChanges() {
     this.setSortOption();
     if (this.gridWidgetSideMenu) {
-      this.gridWidgetSideMenu.gridData = this.gridData;
+      this.gridWidgetSideMenu.gridWidget = this.gridWidget;
     }
   }
   
@@ -87,7 +87,7 @@ export class GridWidgetComponent {
     this.lazyLoadingService.getComponentAsync(GridWidgetSideMenuComponent, GridWidgetSideMenuModule, this.lazyLoadingService.container)
       .then((gridWidgetSideMenu: GridWidgetSideMenuComponent) => {
         this.gridWidgetSideMenu = gridWidgetSideMenu;
-        this.gridWidgetSideMenu.gridData = this.gridData;
+        this.gridWidgetSideMenu.gridWidget = this.gridWidget;
         this.gridWidgetSideMenu.sortOptions = this.sortOptions;
         this.gridWidgetSideMenu.selectedSortOption = this.selectedSortOption;
       });

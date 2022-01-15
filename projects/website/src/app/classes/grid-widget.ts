@@ -1,7 +1,7 @@
 import { Filters } from "./filters";
 import { Product } from "./product";
 
-export class GridData {
+export class GridWidget {
     public products!: Array<Product>;
     public totalProducts!: number;
     public filters!: Filters;

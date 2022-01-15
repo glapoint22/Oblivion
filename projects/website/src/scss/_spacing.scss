@@ -1,0 +1,27 @@
+@each $key in map-keys($breakpoints) {
+    @include media-breakpoint($key) {
+        $extension: get-class-extension($key);
+
+        // Positions
+        $top: top;
+        $right: right;
+        $bottom: bottom;
+        $left: left;
+
+        @each $size, $length in $spacers {
+            .padding-#{$size}#{$extension} { padding: $length; }
+            .padding-#{$top}-#{$size}#{$extension} {
+                padding-top: $length;
+            }
+            .padding-#{$right}-#{$size}#{$extension} {
+                padding-right: $length;
+            }
+            .padding-#{$bottom}-#{$size}#{$extension} {
+                padding-bottom: $length;
+            }
+            .padding-#{$left}-#{$size}#{$extension} {
+                padding-left: $length;
+            }
+        }
+    }
+}
