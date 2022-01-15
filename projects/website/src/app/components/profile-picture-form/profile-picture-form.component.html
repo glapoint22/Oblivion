@@ -1,15 +1,14 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="backdrop"></div>
+    <div class="backdrop" (click)="close()"></div>
 
 
     <!-- Container -->
     <div class="container">
 
         <!-- Base -->
-        <div class="base" style="width: 700px; height: 100%;
-    max-height: 585px;">
+        <div class="base">
 
             <!-- Header -->
             <div class="header">
@@ -23,45 +22,92 @@
             <div class="drop-shadow"></div>
 
 
-            <div
-                style="display: flex; height: 100%; justify-content: center; align-items: center; position: relative; overflow: hidden;">
+            <!-- Pic Container -->
+            <div #picContainer class="pic-container" (wheel)="onMouseWheel($event)">
 
+                <!-- Pic -->
+                <div class="pic-content" [ngStyle]="{'visibility': !picLoaded ? 'hidden' : 'visible'}">
+                    <img #pic (load)="onPicLoad()" (mousedown)="onPicDown($event)" (touchstart)="onPicTouch($event)">
+                    <div #circleOverlay class="circle-overlay"></div>
+                    <div *ngIf="dragMessageVisible" class="drag-message">
+                        <i class="move-icon"></i>
+                        <div class="drag-message-text">Drag to Reposition</div>
+                    </div>
 
+                </div>
 
-                <!-- <img src="assets/alita.png"> -->
-
-                <div style="
-                
-                
-                position: absolute;
-            
-            height: 100%; 
-            width: 300px;
-            max-height: 300px;
-            border-radius: 50%;
-            box-shadow: 0 0 0 300px rgba(22, 22, 22, 0.95);"></div>
-
+                <!-- Spinner -->
+                <div class="image-spinner-container" [ngStyle]="{'visibility': !picLoaded ? 'visible' : 'hidden'}">
+                    <div style="width: 50px; height: 50px; background: red; border-radius: 50%;"></div>
+                </div>
             </div>
 
 
+            <!-- Control Panel -->
+            <div class="control-panel-container">
+                <div class="top-border"></div>
+                <div class="control-panel">
 
+                    <!-- Zoom Container -->
+                    <div class="zoom-container">
 
-            <div style="height: 128px; flex-shrink: 0;">
+                        <!-- Minus Button -->
+                        <div class="minus-button" (click)="onMinusButtonClick()"
+                            [ngClass]="{'minus-button-disabled': minusButtonDisabled}" title="Zoom Out">
+                            <div class="h-line"></div>
+                        </div>
 
+                        <!-- Zoom Bar -->
+                        <div class="zoom-bar-container">
 
-                <div style="width: 100%; height: 1px; background: #282828;"></div>
+                            <!-- Track -->
+                            <div #zoomBar class="zoom-track-container" (mousedown)="onZoomBarDown($event)"
+                                (touchstart)="onZoomBarStart($event)">
+                                <div class="zoom-track"></div>
+                            </div>
 
-                <div style="display: flex; justify-content: space-between;">
+                            <!-- Handle -->
+                            <div class="zoom-handle-container">
+                                <div class="zoom-handle-tail" [style.width.px]="zoomHandle.offsetLeft"></div>
+                                <div #zoomHandle class="zoom-handle" (mousedown)="onZoomHandleDown($event)"
+                                    (touchstart)="onZoomHandleTouch($event)">
+                                </div>
+                            </div>
+                        </div>
 
-                    <button style="max-width: 173px;" class="dark-button" (click)="close()">Choose another
-                        image</button>
+                        <!-- Plus Button -->
+                        <div class="plus-button" (click)="onPlusButtonClick()"
+                            [ngClass]="{'plus-button-disabled': plusButtonDisabled}" title="Zoom In">
+                            <div class="v-line"></div>
+                            <div class="h-line"></div>
+                        </div>
+                    </div>
 
-                    <div class="button-container">
-                        <button style="flex-shrink: 0;" class="dark-button" (click)="close()">Cancel</button>
-                        <button style="flex-shrink: 0;" class="gold-rect-button" (click)="onSubmit()">Submit</button>
+                    <!-- Buttons -->
+                    <div class="buttons-container">
+                        <input #fileInput type="file" (change)="getImage(fileInput.files![0])">
+
+                        <!-- New Image Button -->
+                        <button class="dark-button new-image-button" (click)="onNewImageButtonClick(fileInput)"
+                            [disabled]="!picLoaded">
+                            New Image
+                        </button>
+
+                        <div class="button-container">
+                            <!-- Cancel Button -->
+                            <button class="dark-button cancel-button" (click)="close()">Cancel</button>
+
+                            <!-- Submit Button -->
+                            <button class="gold-rect-button submit-button" (click)="onSubmit()"
+                                [disabled]="!picLoaded">Submit</button>
+                        </div>
                     </div>
                 </div>
+            </div>
 
+            <!-- Cover -->
+            <div *ngIf="picMoveStartX || zoomHandleMoveStartPos" class="cover"
+                [ngStyle]="{'cursor': picMoveStartX != null ? 'move' : 'default' && zoomHandleMoveStartPos != null ? 'pointer' : 'default'}">
             </div>
         </div>
     </div>
