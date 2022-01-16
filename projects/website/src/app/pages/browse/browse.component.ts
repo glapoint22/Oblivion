@@ -29,7 +29,12 @@ export class BrowseComponent implements OnInit {
 
           this.dataService.post<Page>('api/Pages/Browse', queryParams)
             .subscribe((page: Page) => {
-              this.page = page;
+              if(!page) {
+                this.router.navigate(['**'], { skipLocationChange: true });
+              } else {
+                this.page = page;
+              }
+              
             });
         } else {
           if (!id) this.router.navigate(['**'], { skipLocationChange: true });

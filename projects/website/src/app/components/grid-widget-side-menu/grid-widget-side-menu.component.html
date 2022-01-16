@@ -13,9 +13,9 @@
             <!-- Sort -->
             <filter-container [caption]="'Sort'">
                 <div style="padding: 10px;">
-                    <label class="radio" style="display: block;" *ngFor="let sortOption of sortOptions">
+                    <label class="radio" style="display: block;" *ngFor="let sortOption of gridWidgetSideMenuService.sortOptions">
                         <div>{{sortOption.key}}</div>
-                        <input type="radio" name="sort" [checked]="sortOption == selectedSortOption"
+                        <input type="radio" name="sort" [checked]="sortOption == gridWidgetSideMenuService.selectedSortOption"
                             (change)="onSortChange(sortOption)">
                         <span class="checkmark"></span>
                     </label>
@@ -23,13 +23,12 @@
             </filter-container>
 
             <!-- Filters -->
-            <filters-panel [filters]="gridData.filters"></filters-panel>
+            <filters-panel [filters]="gridWidgetSideMenuService.filters"></filters-panel>
         </div>
     </div>
 
     <!-- Fixed container -->
     <div class="fixed-container">
-        <div class="clear-all" (click)="clearAll()">Clear All</div>
         <button class="gold-round-button-lg" (click)="close()">View Results</button>
     </div>
 </div>
