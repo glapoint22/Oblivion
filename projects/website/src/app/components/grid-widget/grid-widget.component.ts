@@ -7,8 +7,8 @@ import { GridWidgetData } from '../../classes/grid-widget-data';
 import { Product } from '../../classes/product';
 import { QueryParams } from '../../classes/query-params';
 import { Widget } from '../../classes/widget';
-import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
 import { DataService } from '../../services/data/data.service';
+import { GridWidgetSideMenuService } from '../../services/grid-widget-side-menu/grid-widget-side-menu.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
@@ -38,12 +38,17 @@ export class GridWidgetComponent extends Widget {
     }
   ]
 
-  private gridWidgetSideMenu!: GridWidgetSideMenuComponent;
   private currentId: string = '';
   private subscription!: Subscription;
 
 
-  constructor(public route: ActivatedRoute, private router: Router, private lazyLoadingService: LazyLoadingService, private dataService: DataService) { super() }
+  constructor(
+    public route: ActivatedRoute,
+    private router: Router,
+    private lazyLoadingService: LazyLoadingService,
+    private dataService: DataService,
+    private gridWidgetSideMenuService: GridWidgetSideMenuService
+  ) { super() }
 
   ngOnInit() {
     if (this.route.snapshot.queryParamMap.has('search')) {
@@ -65,6 +70,7 @@ export class GridWidgetComponent extends Widget {
           this.dataService.post<GridData>('api/Pages/Params', queryParams)
             .subscribe((gridData: GridData) => {
               this.gridData = gridData;
+              this.gridWidgetSideMenuService.filters = this.gridData.filters;
             });
         } else {
           this.currentId = params.get('search') || params.get('categoryId') || params.get('nicheId') as string;
@@ -76,16 +82,10 @@ export class GridWidgetComponent extends Widget {
 
   setWidget(gridWidgetData: GridWidgetData): void {
     this.gridData = gridWidgetData.gridData;
-
+    this.gridWidgetSideMenuService.filters = this.gridData.filters;
     super.setWidget(gridWidgetData);
   }
 
-  // ngOnChanges() {
-  //   this.setSortOption();
-  //   if (this.gridWidgetSideMenu) {
-  //     this.gridWidgetSideMenu.gridWidgetData = this.gridWidgetData;
-  //   }
-  // }
 
 
   clearFilters() {
@@ -120,11 +120,10 @@ export class GridWidgetComponent extends Widget {
     const { GridWidgetSideMenuModule } = await import('../../components/grid-widget-side-menu/grid-widget-side-menu.module');
 
     this.lazyLoadingService.getComponentAsync(GridWidgetSideMenuComponent, GridWidgetSideMenuModule, this.lazyLoadingService.container)
-      .then((gridWidgetSideMenu: GridWidgetSideMenuComponent) => {
-        this.gridWidgetSideMenu = gridWidgetSideMenu;
-        this.gridWidgetSideMenu.gridData = this.gridData;
-        this.gridWidgetSideMenu.sortOptions = this.sortOptions;
-        this.gridWidgetSideMenu.selectedSortOption = this.selectedSortOption;
+      .then(() => {
+        this.gridWidgetSideMenuService.filters = this.gridData.filters;
+        this.gridWidgetSideMenuService.sortOptions = this.sortOptions;
+        this.gridWidgetSideMenuService.selectedSortOption = this.selectedSortOption;
       });
   }
 

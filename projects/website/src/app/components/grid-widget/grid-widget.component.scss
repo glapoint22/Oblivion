@@ -12,14 +12,7 @@
     margin-bottom: 6px;
 }
 
-.results {
-    width: 220px;
-    white-space: nowrap;
-    display: flex;
-    height: 25px;
-    align-items: center;
-    justify-content: space-between;
-}
+
 
 
 
@@ -35,6 +28,7 @@
 
 .column {
     padding: 10px;
+    width: 100%;
 }
 
 
@@ -42,7 +36,7 @@
 .clear-filters {
     height: 22px;
     max-width: 81px;
-    margin-left: 5px;
+    margin-top: 5px;
     font-size: 12px;
 }
 
@@ -78,6 +72,10 @@
 @media (max-width: 767px) {
     .results {
         margin-left: 10px;
+    }
+
+    .grid-widget-container {
+        padding: 0;
     }
 }
 
