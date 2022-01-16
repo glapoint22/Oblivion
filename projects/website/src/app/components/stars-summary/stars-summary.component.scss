@@ -1,13 +1,13 @@
 .stars-summary-container {
     position: relative;
     display: inline-block;
+    cursor: pointer;
+}
 
-    // &:before {
-    //     content: "";
-    //     position: absolute;
-    //     left: 0;
-    //     right: 0;
-    //     top: 0;
-    //     bottom: -10px;
-    // }
+.rollover-container {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    bottom: -10px;
+    left: -10px;
 }

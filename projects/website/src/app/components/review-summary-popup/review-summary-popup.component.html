@@ -1,4 +1,4 @@
-<div #reviewSummaryPopupContainer (mouseleave)="onMouseLeave()" [style.top.px]="top" [style.left.px]="left" class="hide review-summary-popup-container"
+<div #reviewSummaryPopupContainer [style.top.px]="top" [style.left.px]="left" class="hide review-summary-popup-container"
     [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <div *ngIf="!aboveStars" class="stars-overlay" style="top: -2px; margin-bottom: 12px;" [style.left.px]="starsOverlayLeft"></div>
@@ -14,6 +14,7 @@
         </div>
 
         <div class="popup-content">
+            
             <review-summary #reviewSummary [product]="product"></review-summary>
 
             <div class="horizontal-line"></div>
