@@ -66,10 +66,11 @@
                     </div>
                 </div>
 
-                <div class="icon-container" title="Change Profile Picture" (click)="onChangeProfilePictureClick()">
+                <div class="icon-container" title="Change Profile Picture" (click)="onChangeProfilePictureClick(fileInput)">
                     <div class="pencil-icon"></div>
                 </div>
             </div>
         </div>
+        <input #fileInput type="file" (change)="onImageSelect(fileInput)">
     </div>
 </header-footer>

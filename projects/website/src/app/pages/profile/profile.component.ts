@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ProfilePictureFormComponent } from '../../components/profile-picture-form/profile-picture-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -36,10 +37,22 @@ export class ProfileComponent {
   }
 
 
-  async onChangeProfilePictureClick() {
+  onChangeProfilePictureClick(fileInput: HTMLInputElement) {
+    // Clear the picture select input (This is so the same filename can be re-entered again and again)
+    fileInput.value = '';
+    // Open the file explorer window
+    fileInput.click();
+  }
+
+
+
+  async onImageSelect(fileInput: HTMLInputElement) {
     const { ProfilePictureFormComponent } = await import('../../components/profile-picture-form/profile-picture-form.component');
     const { ProfilePictureFormModule } = await import('../../components/profile-picture-form/profile-picture-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ProfilePictureFormComponent, ProfilePictureFormModule, this.lazyLoadingService.container);
+    this.lazyLoadingService.getComponentAsync(ProfilePictureFormComponent, ProfilePictureFormModule, this.lazyLoadingService.container)
+    .then((profilePictureForm: ProfilePictureFormComponent) => {
+      profilePictureForm.imageFile = fileInput.files![0];
+    });
   }
 }

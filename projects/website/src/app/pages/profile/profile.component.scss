@@ -1,3 +1,8 @@
+.page-content-container {
+    position: relative;
+}
+
+
 .section {
     width: 100%;
     max-width: 780px;
@@ -54,6 +59,16 @@
     }
 }
 
+
+
+input {
+    position: absolute;
+    visibility: hidden;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
 
 
 
