@@ -58,9 +58,9 @@
                 </div>
 
                 <div class="horizontal-line"></div>
-
                 <ng-container *ngFor="let niche of subNiches">
-                    <a class="list-item" routerLink="{{'browse/' + niche.urlName + '/' + niche.urlId}}"
+                    <a class="list-item" routerLink="/browse"
+                        [queryParams]="{nicheName: niche.urlName, nicheId: niche.urlId}"
                         (mousedown)="$event.preventDefault()" (click)="close()">{{niche.name}}</a>
                 </ng-container>
             </ng-container>

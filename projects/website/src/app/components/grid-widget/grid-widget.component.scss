@@ -13,14 +13,19 @@
 }
 
 .results {
-    width: auto;
+    width: 220px;
     white-space: nowrap;
+    display: flex;
+    height: 25px;
+    align-items: center;
+    justify-content: space-between;
 }
 
 
 
 .grid-container {
     display: flex;
+    margin-bottom: 48px;
 }
 
 .grid {
@@ -35,10 +40,10 @@
 
 
 .clear-filters {
-    margin-bottom: 0;
-    margin-top: 5px;
-    height: 25px;
-    max-width: 90px;
+    height: 22px;
+    max-width: 81px;
+    margin-left: 5px;
+    font-size: 12px;
 }
 
 

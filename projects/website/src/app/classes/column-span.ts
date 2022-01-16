@@ -4,7 +4,7 @@ import { BreakpointType } from "./enums";
 export class ColumnSpan {
     constructor(private value: number) { }
 
-    addClasses(element: HTMLElement, breakpoints: Array<Breakpoint>) {
+    setClass(element: HTMLElement, breakpoints: Array<Breakpoint>) {
         let columnSpanBreakpoints: Array<Breakpoint> = [];
 
         if (breakpoints) columnSpanBreakpoints = breakpoints.filter(x => x.breakpointType == BreakpointType.ColumnSpan);

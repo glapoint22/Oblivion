@@ -1,8 +1,14 @@
 import { KeyValue } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GridWidget } from '../../classes/grid-widget';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { GridData } from '../../classes/grid-data';
+import { GridWidgetData } from '../../classes/grid-widget-data';
+import { Product } from '../../classes/product';
+import { QueryParams } from '../../classes/query-params';
+import { Widget } from '../../classes/widget';
 import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
+import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
@@ -10,8 +16,8 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   templateUrl: './grid-widget.component.html',
   styleUrls: ['./grid-widget.component.scss']
 })
-export class GridWidgetComponent {
-  @Input() gridWidget!: GridWidget;
+export class GridWidgetComponent extends Widget {
+  public gridData!: GridData;
   public selectedSortOption!: KeyValue<string, string>;
   public sortOptions: Array<KeyValue<string, string>> = [
     {
@@ -33,8 +39,11 @@ export class GridWidgetComponent {
   ]
 
   private gridWidgetSideMenu!: GridWidgetSideMenuComponent;
+  private currentId: string = '';
+  private subscription!: Subscription;
 
-  constructor(public route: ActivatedRoute, private router: Router, private lazyLoadingService: LazyLoadingService) { }
+
+  constructor(public route: ActivatedRoute, private router: Router, private lazyLoadingService: LazyLoadingService, private dataService: DataService) { super() }
 
   ngOnInit() {
     if (this.route.snapshot.queryParamMap.has('search')) {
@@ -43,15 +52,41 @@ export class GridWidgetComponent {
         value: 'best-match'
       });
     }
+
+
+    this.subscription = this.route.queryParamMap
+      .subscribe((params: ParamMap) => {
+        this.setSortOption();
+
+        if (params.get('search') == this.currentId || params.get('categoryId') == this.currentId || params.get('nicheId') == this.currentId) {
+          const queryParams = new QueryParams();
+          queryParams.set(params);
+
+          this.dataService.post<GridData>('api/Pages/Params', queryParams)
+            .subscribe((gridData: GridData) => {
+              this.gridData = gridData;
+            });
+        } else {
+          this.currentId = params.get('search') || params.get('categoryId') || params.get('nicheId') as string;
+          if (this.subscription) this.subscription.unsubscribe();
+        }
+      });
   }
 
-  ngOnChanges() {
-    this.setSortOption();
-    if (this.gridWidgetSideMenu) {
-      this.gridWidgetSideMenu.gridWidget = this.gridWidget;
-    }
+
+  setWidget(gridWidgetData: GridWidgetData): void {
+    this.gridData = gridWidgetData.gridData;
+
+    super.setWidget(gridWidgetData);
   }
-  
+
+  // ngOnChanges() {
+  //   this.setSortOption();
+  //   if (this.gridWidgetSideMenu) {
+  //     this.gridWidgetSideMenu.gridWidgetData = this.gridWidgetData;
+  //   }
+  // }
+
 
   clearFilters() {
     this.router.navigate([], {
@@ -87,9 +122,13 @@ export class GridWidgetComponent {
     this.lazyLoadingService.getComponentAsync(GridWidgetSideMenuComponent, GridWidgetSideMenuModule, this.lazyLoadingService.container)
       .then((gridWidgetSideMenu: GridWidgetSideMenuComponent) => {
         this.gridWidgetSideMenu = gridWidgetSideMenu;
-        this.gridWidgetSideMenu.gridWidget = this.gridWidget;
+        this.gridWidgetSideMenu.gridData = this.gridData;
         this.gridWidgetSideMenu.sortOptions = this.sortOptions;
         this.gridWidgetSideMenu.selectedSortOption = this.selectedSortOption;
       });
+  }
+
+  trackProduct(index: number, product: Product) {
+    return product.id;
   }
 }

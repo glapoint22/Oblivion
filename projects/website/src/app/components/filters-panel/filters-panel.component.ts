@@ -2,6 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterParam } from '../../classes/filter-param';
 import { Filters } from '../../classes/filters';
+import { QueryFilter } from '../../classes/query-filter';
 
 @Component({
   selector: 'filters-panel',
@@ -40,5 +41,9 @@ export class FiltersPanelComponent implements OnChanges {
           }
         });
     }
+  }
+
+  trackFilter(index: number, filter: QueryFilter) {
+    return filter.caption;
   }
 }

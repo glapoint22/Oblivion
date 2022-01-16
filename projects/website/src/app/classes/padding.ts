@@ -19,7 +19,7 @@ export class Padding {
     }
 
 
-    addClasses(element: HTMLElement, breakpoints: Array<Breakpoint>,) {
+    setClass(element: HTMLElement, breakpoints: Array<Breakpoint>,) {
         if (!breakpoints && (!this.top || !this.right || !this.bottom || !this.left)) return;
 
         let paddingTypes = [

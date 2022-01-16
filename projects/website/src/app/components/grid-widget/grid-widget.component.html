@@ -1,4 +1,4 @@
-<div class="grid-widget-container">
+<div #widget class="grid-widget-container">
 
     <ng-container *ngIf="gridData">
         <ng-container *ngIf="gridData.products.length > 0; else noMatch">
@@ -39,7 +39,7 @@
                 <div style="width: 100%;">
                     <div class="grid">
                         <div class="row">
-                            <div class="column" *ngFor="let product of gridData.products">
+                            <div class="column" *ngFor="let product of gridData.products; trackBy:trackProduct">
                                 <product-thumbnail [product]="product"></product-thumbnail>
                             </div>
                         </div>

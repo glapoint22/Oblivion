@@ -13,14 +13,22 @@ import { SubnichesFilter } from '../../classes/subniches-filter';
 export class NichesFilterComponent {
   @Input() niches!: NichesFilter;
   public seeAllNiches!: boolean;
+  public pathname!: string;
 
   constructor(public route: ActivatedRoute) { }
 
+  
 
   ngOnInit() {
-    this.route.queryParams.subscribe(() => {
-      this.seeAllNiches = false;
-    });
+    this.pathname = document.location.pathname;
+  }
+
+  ngOnChanges() {
+    if (this.seeAllNiches && this.niches.hidden) {
+      this.niches.hidden.forEach((niche: NicheFilter) => {
+        niche.visible = true;
+      });
+    }
   }
 
 
@@ -78,5 +86,14 @@ export class NichesFilterComponent {
     if (subniches.hidden[subniches.hidden.length - 1] == subniche && !subniche.visible) {
       subniches.showHidden = false;
     }
+  }
+
+  trackNiche(index: number, niche: NicheFilter) {
+    return niche.urlId;
+  }
+
+
+  trackSubniche(index: number, subniche: SubnicheFilter) {
+    return subniche.urlId;
   }
 }

@@ -9,7 +9,16 @@ import { WidgetType } from '../../classes/enums';
 import { Padding } from '../../classes/padding';
 import { Shadow } from '../../classes/shadow';
 import { Widget } from '../../classes/widget';
+import { WidgetData } from '../../classes/widget-data';
 import { ButtonWidgetComponent } from '../button-widget/button-widget.component';
+import { CarouselWidgetComponent } from '../carousel-widget/carousel-widget.component';
+import { ContainerWidgetComponent } from '../container-widget/container-widget.component';
+import { GridWidgetComponent } from '../grid-widget/grid-widget.component';
+import { ImageWidgetComponent } from '../image-widget/image-widget.component';
+import { LineWidgetComponent } from '../line-widget/line-widget.component';
+import { ProductSliderWidgetComponent } from '../product-slider-widget/product-slider-widget.component';
+import { TextWidgetComponent } from '../text-widget/text-widget.component';
+import { VideoWidgetComponent } from '../video-widget/video-widget.component';
 
 @Component({
   selector: '[column]',
@@ -22,9 +31,9 @@ export class ColumnComponent implements AfterViewInit {
   public border!: Border;
   public corners!: Corners;
   public shadow!: Shadow;
-  public padding!: Padding;
-  public columnSpan!: ColumnSpan;
-  public breakpoints!: Array<Breakpoint>;
+  private padding!: Padding;
+  private columnSpan!: ColumnSpan;
+  private breakpoints!: Array<Breakpoint>;
 
   constructor(private resolver: ComponentFactoryResolver) { }
 
@@ -32,8 +41,8 @@ export class ColumnComponent implements AfterViewInit {
     // Get the html column element
     const columnElement: HTMLElement = this.viewContainerRef.element.nativeElement.parentElement;
     
-    this.columnSpan.addClasses(columnElement.parentElement as HTMLElement, this.breakpoints);
-    this.padding.addClasses(columnElement, this.breakpoints);
+    this.columnSpan.setClass(columnElement.parentElement as HTMLElement, this.breakpoints);
+    this.padding.setClass(columnElement, this.breakpoints);
   }
 
 
@@ -48,13 +57,13 @@ export class ColumnComponent implements AfterViewInit {
   }
 
 
-  createWidget(widget: Widget): void {
-    const componentFactory = this.resolver.resolveComponentFactory(this.getWidget(widget.widgetType));
+  createWidget(widgetData: WidgetData): void {
+    const componentFactory = this.resolver.resolveComponentFactory(this.getWidget(widgetData.widgetType));
     const widgetComponentRef = this.viewContainerRef.createComponent(componentFactory);
     const widgetComponent = widgetComponentRef.instance;
 
     // Set the widget with the widget data
-    widgetComponent.setWidget(widget);
+    widgetComponent.setWidget(widgetData);
 
 
     // Detect changes
@@ -73,62 +82,52 @@ export class ColumnComponent implements AfterViewInit {
         break;
 
       // Text
-      // case WidgetType.Text:
-      //   widget = TextWidgetComponent;
-      //   break;
+      case WidgetType.Text:
+        widget = TextWidgetComponent;
+        break;
 
-      // // Image
-      // case WidgetType.Image:
-      //   widget = ImageWidgetComponent;
-      //   break;
-
-
-      // // Container
-      // case WidgetType.Container:
-      //   widget = ContainerWidgetComponent;
-      //   break;
+      // Image
+      case WidgetType.Image:
+        widget = ImageWidgetComponent;
+        break;
 
 
-      // // Line
-      // case WidgetType.Line:
-      //   widget = LineWidgetComponent;
-      //   break;
+      // Container
+      case WidgetType.Container:
+        widget = ContainerWidgetComponent;
+        break;
 
 
-      // // Video
-      // case WidgetType.Video:
-      //   widget = VideoWidgetComponent;
-      //   break;
+      // Line
+      case WidgetType.Line:
+        widget = LineWidgetComponent;
+        break;
 
 
-      // // Product Group
-      // case WidgetType.ProductGroup:
-      //   widget = ProductGroupWidgetComponent;
-      //   break;
+      // Video
+      case WidgetType.Video:
+        widget = VideoWidgetComponent;
+        break;
 
 
-      // // Shop
-      // case WidgetType.Shop:
-      //   widget = ShopWidgetComponent;
-      //   break;
-
-
-      // // Carousel
-      // case WidgetType.Carousel:
-      //   widget = CarouselWidgetComponent;
-      //   break;
-
-      // // Grid
-      // case WidgetType.Grid:
-      //   widget = GridWidgetComponent;
-      //   break;
+      // Product Slider
+      case WidgetType.ProductSlider:
+        widget = ProductSliderWidgetComponent;
+        break;
 
 
 
+      // Carousel
+      case WidgetType.Carousel:
+        widget = CarouselWidgetComponent;
+        break;
 
+      // Grid
+      case WidgetType.Grid:
+        widget = GridWidgetComponent;
+        break;
     }
 
     return widget;
   }
-
 }

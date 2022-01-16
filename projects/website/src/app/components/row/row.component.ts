@@ -22,10 +22,10 @@ export class RowComponent implements AfterViewInit {
   public border!: Border;
   public corners!: Corners;
   public shadow!: Shadow;
-  public padding!: Padding;
-  public verticalAlignment!: VerticalAlignment;
-  public breakpoints!: Array<Breakpoint>;
   public columnCount!: number;
+  private padding!: Padding;
+  private verticalAlignment!: VerticalAlignment;
+  private breakpoints!: Array<Breakpoint>;
 
   constructor(private resolver: ComponentFactoryResolver) { }
 
@@ -33,8 +33,8 @@ export class RowComponent implements AfterViewInit {
   ngAfterViewInit(): void {
       // Get the html row element
     const rowElement = this.viewContainerRef.element.nativeElement.parentElement;
-    this.padding.addClasses(rowElement, this.breakpoints);
-    this.verticalAlignment.addClasses(rowElement, this.breakpoints);
+    this.padding.setClass(rowElement, this.breakpoints);
+    this.verticalAlignment.setClass(rowElement, this.breakpoints);
   }
 
 

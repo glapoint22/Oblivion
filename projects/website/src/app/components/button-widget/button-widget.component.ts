@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Background } from '../../classes/background';
 import { Border } from '../../classes/border';
-import { ButtonWidget } from '../../classes/button-widget';
+import { ButtonWidgetData } from '../../classes/button-widget-data';
 import { Caption } from '../../classes/caption';
 import { Corners } from '../../classes/corners';
 import { LinkOption } from '../../classes/enums';
@@ -16,34 +16,32 @@ import { Widget } from '../../classes/widget';
   styleUrls: ['./button-widget.component.scss']
 })
 export class ButtonWidgetComponent extends Widget {
-  public background!: Background;
-  public border!: Border;
   public caption!: Caption;
   public corners!: Corners;
   public shadow!: Shadow;
-  public padding!: Padding;
   public link!: Link;
   public linkOption = LinkOption;
+  private background!: Background;
+  private border!: Border;
+  private padding!: Padding;
 
   // Background Hover & Active colors
-  public backgroundHoverColor!: string;
-  public backgroundActiveColor!: string;
+  private backgroundHoverColor!: string;
+  private backgroundActiveColor!: string;
 
   // Border Hover & Active colors
-  public borderHoverColor!: string;
-  public borderActiveColor!: string;
+  private borderHoverColor!: string;
+  private borderActiveColor!: string;
 
   // Text Hover & Active colors
-  public textHoverColor!: string;
-  public textActiveColor!: string;
-
-
+  private textHoverColor!: string;
+  private textActiveColor!: string;
   
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    this.padding.addClasses(this.widgetElement, this.breakpoints);
+    this.padding.setClass(this.widgetElement, this.breakpoints);
 
     // Create the button class and add it to the button element
     const buttonClassName = this.createClassName();
@@ -57,23 +55,23 @@ export class ButtonWidgetComponent extends Widget {
     document.head.appendChild(buttonStyles);
   }
 
-  setWidget(buttonWidget: ButtonWidget) {
+  setWidget(buttonWidgetData: ButtonWidgetData) {
     this.height = 40;
-    super.setWidget(buttonWidget);
+    this.background = buttonWidgetData.background;
+    this.border = buttonWidgetData.border;
+    this.caption = buttonWidgetData.caption;
+    this.corners = buttonWidgetData.corners;
+    this.shadow = buttonWidgetData.shadow;
+    this.link = buttonWidgetData.link;
+    this.backgroundHoverColor = buttonWidgetData.backgroundHoverColor;
+    this.backgroundActiveColor = buttonWidgetData.backgroundActiveColor;
+    this.borderHoverColor = buttonWidgetData.borderHoverColor;
+    this.borderActiveColor = buttonWidgetData.borderActiveColor;
+    this.textHoverColor = buttonWidgetData.textHoverColor;
+    this.textActiveColor = buttonWidgetData.textActiveColor;
+    this.padding = new Padding(buttonWidgetData.padding);
 
-    this.background = buttonWidget.background;
-    this.border = buttonWidget.border;
-    this.caption = buttonWidget.caption;
-    this.corners = buttonWidget.corners;
-    this.shadow = buttonWidget.shadow;
-    this.link = buttonWidget.link;
-    this.backgroundHoverColor = buttonWidget.backgroundHoverColor;
-    this.backgroundActiveColor = buttonWidget.backgroundActiveColor;
-    this.borderHoverColor = buttonWidget.borderHoverColor;
-    this.borderActiveColor = buttonWidget.borderActiveColor;
-    this.textHoverColor = buttonWidget.textHoverColor;
-    this.textActiveColor = buttonWidget.textActiveColor;
-    this.padding = new Padding(buttonWidget.padding);
+    super.setWidget(buttonWidgetData);
   }
 
 

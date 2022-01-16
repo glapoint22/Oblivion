@@ -5,9 +5,9 @@ import { Corners } from "./corners";
 import { Link } from "./link";
 import { Padding } from "./padding";
 import { Shadow } from "./shadow";
-import { Widget } from "./widget";
+import { WidgetData } from "./widget-data";
 
-export class ButtonWidget extends Widget {
+export class ButtonWidgetData extends WidgetData {
     public background!: Background;
     public border!: Border;
     public caption!: Caption;

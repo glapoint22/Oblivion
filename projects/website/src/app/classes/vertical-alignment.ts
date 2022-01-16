@@ -5,7 +5,7 @@ export class VerticalAlignment {
 
     constructor(private value: string) { }
 
-    addClasses(element: HTMLElement, breakpoints: Array<Breakpoint>) {
+    setClass(element: HTMLElement, breakpoints: Array<Breakpoint>) {
         if (!breakpoints && !this.value) return;
 
         let verticalAlignmentBreakpoints: Array<Breakpoint> = [];

@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { GridWidget } from '../../classes/grid-widget';
+import { GridData } from '../../classes/grid-data';
 import { LazyLoad } from '../../classes/lazy-load';
 
 @Component({
@@ -10,7 +10,7 @@ import { LazyLoad } from '../../classes/lazy-load';
   styleUrls: ['./grid-widget-side-menu.component.scss']
 })
 export class GridWidgetSideMenuComponent extends LazyLoad {
-  public gridWidget!: GridWidget;
+  public gridData!: GridData;
   public selectedSortOption!: KeyValue<string, string>;
   public sortOptions!: Array<KeyValue<string, string>>;
 

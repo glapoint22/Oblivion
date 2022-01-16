@@ -20,7 +20,7 @@
 
     <div class="horizontal-line"></div>
 
-    <div *ngFor="let option of filter.options">
+    <div *ngFor="let option of filter.options; trackBy:trackPriceFilterOption">
         <label class="checkbox">
             <div>{{option.label}}</div>
             <input #checkbox type="checkbox" (change)="onFilterClick(option.min + '-' + option.max)"

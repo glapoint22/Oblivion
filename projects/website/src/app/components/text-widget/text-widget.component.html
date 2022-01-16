@@ -1,0 +1,5 @@
+<div #widget class="text" [style.backgroundColor]="background.color ? background.color: null"
+    [style.maxWidth.px]="width ? width: null" [style.minHeight.px]="height" [ngStyle]="{ 'background-image': background.image && background.image.url ? 'url(images/' + background.image.url + ')' : null,
+'background-position': background.image ? background.image.position : null,
+'background-repeat': background.image ? background.image.repeat : null,
+'background-attachment': background.image ? background.image.attachment : null}"></div>

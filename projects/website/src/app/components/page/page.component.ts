@@ -11,12 +11,19 @@ export class PageComponent implements AfterViewInit, OnDestroy {
   @Input() page!: Page;
   @ViewChild('container', { static: false }) container!: ContainerComponent;
 
+  ngOnChanges() {
+    if (this.container) {
+      let page = new Page(this.page);
+      page.container = this.container;
+    }
+  }
+
   ngAfterViewInit(): void {
     let page = new Page(this.page);
     page.container = this.container;
 
     // Background color
-    if (page.background.color) {
+    if (page.background.color && page.background.color != '#00000000') {
       document.body.style.backgroundColor = page.background.color;
     }
 

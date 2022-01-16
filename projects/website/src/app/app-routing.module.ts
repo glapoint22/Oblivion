@@ -20,6 +20,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule)
   },
   {
+    path: 'browse',
+    loadChildren: () => import('./pages/browse/browse.module').then(m => m.BrowseModule)
+  },
+  {
     path: 'account',
     loadChildren: () => import('./pages/account/account.module').then(m => m.AccountModule),
     canLoad: [AccountGuard],

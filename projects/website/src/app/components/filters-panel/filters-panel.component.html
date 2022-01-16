@@ -14,7 +14,7 @@
 </ng-container>
 
 
-<div *ngFor="let filter of filters.customFilters" class="custom-filter-container">
+<div *ngFor="let filter of filters.customFilters; trackBy:trackFilter" class="custom-filter-container">
     <filter-container [caption]="filter.caption">
         <custom-filter [filter]="filter" [filterParams]="filterParams">
         </custom-filter>

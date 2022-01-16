@@ -1,66 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { CarouselBanner } from '../../classes/carousel-banner';
+import { CarouselWidgetData } from '../../classes/carousel-widget-data';
+import { LinkOption } from '../../classes/enums';
+import { Widget } from '../../classes/widget';
 
 @Component({
   selector: 'carousel-widget',
   templateUrl: './carousel-widget.component.html',
   styleUrls: ['./carousel-widget.component.scss']
 })
-export class CarouselWidgetComponent implements OnInit {
-  public banners: Array<any> = [
-    {
-      link: {
-        url: '/account'
-      },
-      image: {
-        url: 'Alita.png',
-        name: 'Alita'
-      }
-    },
-
-    {
-      link: {
-        url: '/trumpy-bear/fdsfasdfdl'
-      },
-      image: {
-        url: 'Trumpy.png',
-        name: 'Trumpy'
-      }
-    },
-
-    {
-      link: {
-        url: '/account/orders'
-      },
-      image: {
-        url: 'Stargate.png',
-        name: 'Stargate'
-      }
-    },
-
-    {
-      link: {
-        url: '/Buffy/fsdfas'
-      },
-      image: {
-        url: 'Buffy.png',
-        name: 'Buffy'
-      }
-    },
-
-    {
-      link: {
-        url: '/Landscape/fsdfas'
-      },
-      image: {
-        url: 'Landscape.png',
-        name: 'Landscape'
-      }
-    }
-  ]
-
-  constructor() { }
-
-  ngOnInit(): void {
+export class CarouselWidgetComponent extends Widget {
+  public banners!: Array<CarouselBanner>;
+  public linkOption = LinkOption;
+  
+  setWidget(carouselWidgetData: CarouselWidgetData): void {
+      this.banners = carouselWidgetData.banners;
+      super.setWidget(carouselWidgetData);
   }
-
 }

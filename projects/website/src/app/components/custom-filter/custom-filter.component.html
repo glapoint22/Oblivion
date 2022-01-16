@@ -1,5 +1,5 @@
 <div style="padding: 0 13px; padding-bottom: 0;">
-    <div *ngFor="let option of filter.options" class="option">
+    <div *ngFor="let option of filter.options; trackBy:trackFilterOption" class="option">
         <label class="checkbox">
             <div>{{option.label}}</div>
             <input #checkbox type="checkbox" (change)="onFilterClick(option.id.toString())" [value]="option.id">

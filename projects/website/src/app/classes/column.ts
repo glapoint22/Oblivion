@@ -4,11 +4,11 @@ import { Breakpoint } from "./breakpoint";
 import { Corners } from "./corners";
 import { Padding } from "./padding";
 import { Shadow } from "./shadow";
-import { Widget } from "./widget";
+import { WidgetData } from "./widget-data";
 
 export class Column {
     public width!: number;
-    public widgetData!: Widget;
+    public widgetData!: WidgetData;
     public background!: Background;
     public border!: Border;
     public corners!: Corners;

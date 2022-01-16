@@ -102,7 +102,7 @@ export enum WidgetType {
     Container,
     Line,
     Video,
-    ProductGroup,
+    ProductSlider,
     Shop,
     Carousel,
     Grid

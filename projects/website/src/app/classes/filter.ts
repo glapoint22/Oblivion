@@ -3,6 +3,7 @@ import { Params, Router } from "@angular/router";
 import { FilterParam } from "./filter-param";
 import { PriceFilter } from "./price-filter";
 import { QueryFilter } from "./query-filter";
+import { QueryFilterOption } from "./query-filter-option";
 
 @Directive()
 export class Filter<T extends QueryFilter | PriceFilter> implements OnChanges {
@@ -13,7 +14,7 @@ export class Filter<T extends QueryFilter | PriceFilter> implements OnChanges {
     constructor(private router: Router) { }
 
     ngOnChanges(): void {
-        if (this.filterParams.length > 0) this.setFilter();
+        this.setFilter();
     }
 
     onFilterClick(value: string) {
@@ -87,13 +88,15 @@ export class Filter<T extends QueryFilter | PriceFilter> implements OnChanges {
     setFilter() {
         const filterParam = this.filterParams.find(x => x.caption == this.filter.caption);
 
-        // This will check/uncheck each checkbox based on the data from the filter params array
-        if (filterParam) {
-            setTimeout(() => {
-                this.checkboxes.forEach((checkbox: ElementRef<HTMLInputElement>) => {
-                    checkbox.nativeElement.checked = filterParam.options.some(x => x == checkbox.nativeElement.value);
-                });
+        setTimeout(() => {
+            this.checkboxes.forEach((checkbox: ElementRef<HTMLInputElement>) => {
+                checkbox.nativeElement.checked = filterParam ? filterParam.options.some(x => x == checkbox.nativeElement.value) : false;
             });
-        }
+        });
+    }
+
+
+    trackFilterOption(index: number, filterOption: QueryFilterOption) {
+        return filterOption.id;
     }
 }

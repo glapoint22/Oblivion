@@ -2,10 +2,16 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a [routerLink]="'/browse/' + product.breadcrumb[0].urlName + '/' + product.breadcrumb[0].urlId">{{product.breadcrumb[0].name}}</a>
+
+        <!-- Category -->
+        <a routerLink="/browse"
+            [queryParams]="{categoryName: product.breadcrumb[0].urlName, categoryId: product.breadcrumb[0].urlId}">{{product.breadcrumb[0].name}}</a>
         <div></div>
 
-        <a [routerLink]="'/browse/' + product.breadcrumb[1].urlName + '/' + product.breadcrumb[1].urlId">{{product.breadcrumb[1].name}}</a>
+        <!-- Niche -->
+        <a routerLink="/browse"
+            [queryParams]="{nicheName: product.breadcrumb[1].urlName, nicheId: product.breadcrumb[1].urlId}">{{product.breadcrumb[1].name}}</a>
+            
         <div></div>
 
         <div>{{product.name}}</div>
@@ -27,8 +33,8 @@
     <!-- Related Products -->
     <div *ngIf="product.relatedProducts && product.relatedProducts.products && product.relatedProducts.products.length > 0"
         class="related-products-background">
-        <product-slider-widget [products]="product.relatedProducts.products"
-            [caption]="product.relatedProducts.caption"></product-slider-widget>
+        <product-slider-widget [products]="product.relatedProducts.products" [caption]="caption">
+        </product-slider-widget>
     </div>
 
 

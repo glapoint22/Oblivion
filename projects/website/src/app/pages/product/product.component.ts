@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Caption } from '../../classes/caption';
 import { Product } from '../../classes/product';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
@@ -12,12 +13,14 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class ProductComponent implements OnInit {
   public product!: Product;
+  public caption: Caption = new Caption();
 
   constructor(private route: ActivatedRoute, private lazyLoadingService: LazyLoadingService, private accountService: AccountService) { }
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.product = data.product;
+      this.caption.text = this.product.relatedProducts.caption;
     })
   }
 

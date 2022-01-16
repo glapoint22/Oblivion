@@ -1,22 +1,22 @@
-<ng-container *ngFor="let niche of niches.visible; let i = index">
+<ng-container *ngFor="let niche of niches.visible; let i = index; trackBy:trackNiche">
 
     <!-- Back -->
-    <a routerLink="/search" [queryParams]="{search: this.route.snapshot.queryParams.search}"
-        *ngIf="route.snapshot.queryParams.categoryId || route.snapshot.queryParams.nicheId" class="back">
+    <a [routerLink]="pathname" [queryParams]="{search: this.route.snapshot.queryParams.search}"
+        *ngIf="pathname != '/browse' && (route.snapshot.queryParams.categoryId || route.snapshot.queryParams.nicheId)" class="back">
         <i class="arrow-left"></i>
         Back
     </a>
 
 
     <!-- Visible Niches -->
-    <a *ngIf="!route.snapshot.queryParams.categoryId" routerLink="/search" [queryParams]="getNicheQueryParams(niche)"
+    <a *ngIf="!route.snapshot.queryParams.categoryId" [routerLink]="pathname" [queryParams]="getNicheQueryParams(niche)"
         class="niche" [title]="niche.name">{{niche.name}}</a>
     <div *ngIf="route.snapshot.queryParams.categoryId" class="niche text" [title]="niche.name">{{niche.name}}</div>
 
 
     <!-- Visible Subniches -->
-    <ng-container *ngFor="let subniche of niche.subniches.visible">
-        <a *ngIf="!route.snapshot.queryParams.nicheId" routerLink="/search"
+    <ng-container *ngFor="let subniche of niche.subniches.visible; trackBy:trackSubniche">
+        <a *ngIf="!route.snapshot.queryParams.nicheId" [routerLink]="pathname"
             [queryParams]="getSubnicheQueryParams(subniche)" class="sub-niche" [title]="subniche.name">
             {{subniche.name}}</a>
 
@@ -28,7 +28,7 @@
 
     <!-- Hidden Subniches -->
     <ng-container *ngIf="niche.subniches.showHidden">
-        <a *ngFor="let subniche of niche.subniches.hidden" routerLink="/search"
+        <a *ngFor="let subniche of niche.subniches.hidden; trackBy:trackSubniche" [routerLink]="pathname"
             [queryParams]="getSubnicheQueryParams(subniche)" class="sub-niche show"
             [style.maxHeight.px]="!subniche.visible ? 0 : 28" [style.opacity]="!subniche.visible ? 0 : 1"
             (transitionend)="subnichesTransitionend(subniche, niche.subniches)" [title]="subniche.name">
@@ -48,9 +48,9 @@
 
 <!-- Hidden Niches -->
 <ng-container *ngIf="seeAllNiches">
-    <div class="show" *ngFor="let niche of niches.hidden" [style.maxHeight.px]="!niche.visible ? 0 : 28"
+    <div class="show" *ngFor="let niche of niches.hidden; trackBy:trackNiche" [style.maxHeight.px]="!niche.visible ? 0 : 28"
         [style.opacity]="!niche.visible ? 0 : 1" (transitionend)="nichesTransitionend(niche)">
-        <a routerLink="/search" [queryParams]="getNicheQueryParams(niche)" class="niche"
+        <a [routerLink]="pathname" [queryParams]="getNicheQueryParams(niche)" class="niche"
             [title]="niche.name">{{niche.name}}</a>
     </div>
 </ng-container>

@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Filter } from '../../classes/filter';
 import { PriceFilter } from '../../classes/price-filter';
+import { PriceFilterOption } from '../../classes/price-filter-option';
 
 @Component({
   selector: 'price-filter',
@@ -75,5 +76,9 @@ export class PriceFilterComponent extends Filter<PriceFilter> {
     this.max = undefined;
     this.showClearPrice = false;
     if (this.priceForm) this.priceForm.resetForm();
+  }
+
+  trackPriceFilterOption(index: number, filterOption: PriceFilterOption) {
+    return filterOption.label;
   }
 }

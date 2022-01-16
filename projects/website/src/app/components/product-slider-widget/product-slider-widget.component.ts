@@ -1,14 +1,17 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Caption } from '../../classes/caption';
 import { Product } from '../../classes/product';
+import { ProductSliderWidgetData } from '../../classes/product-slider-widget-data';
+import { Widget } from '../../classes/widget';
 
 @Component({
   selector: 'product-slider-widget',
   templateUrl: './product-slider-widget.component.html',
   styleUrls: ['./product-slider-widget.component.scss']
 })
-export class ProductSliderWidgetComponent implements AfterViewInit {
+export class ProductSliderWidgetComponent extends Widget implements AfterViewInit {
   @Input() products!: Array<Product>;
-  @Input() caption!: string;
+  @Input() caption!: Caption;
   @ViewChild('sliderContainer') sliderContainer!: ElementRef<HTMLElement>;
   public productGroups: Array<any> = []
   public changeCount: number = 0;
@@ -19,6 +22,11 @@ export class ProductSliderWidgetComponent implements AfterViewInit {
       this.setProductGroups();
       this.changeCount++;
     };
+  }
+
+  setWidget(productSliderWidgetData: ProductSliderWidgetData) {
+    this.products = productSliderWidgetData.products;
+    this.caption = productSliderWidgetData.caption;
   }
 
   ngAfterViewInit() {

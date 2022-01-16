@@ -5,6 +5,15 @@ import { ContainerComponent } from '../container/container.component';
 import { RowComponent } from '../row/row.component';
 import { ColumnComponent } from '../column/column.component';
 import { ButtonWidgetComponent } from '../button-widget/button-widget.component';
+import { TextWidgetComponent } from '../text-widget/text-widget.component';
+import { ContainerWidgetComponent } from '../container-widget/container-widget.component';
+import { RouterModule } from '@angular/router';
+import { ImageWidgetComponent } from '../image-widget/image-widget.component';
+import { LineWidgetComponent } from '../line-widget/line-widget.component';
+import { VideoWidgetComponent } from '../video-widget/video-widget.component';
+import { ProductSliderWidgetModule } from '../product-slider-widget/product-slider-widget.module';
+import { CarouselWidgetModule } from '../carousel-widget/carousel-widget.module';
+import { GridWidgetModule } from '../grid-widget/grid-widget.module';
 
 
 
@@ -14,10 +23,19 @@ import { ButtonWidgetComponent } from '../button-widget/button-widget.component'
     ContainerComponent,
     RowComponent,
     ColumnComponent,
-    ButtonWidgetComponent
+    ButtonWidgetComponent,
+    TextWidgetComponent,
+    ContainerWidgetComponent,
+    ImageWidgetComponent,
+    LineWidgetComponent,
+    VideoWidgetComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule,
+    ProductSliderWidgetModule,
+    CarouselWidgetModule,
+    GridWidgetModule
   ],
   exports: [PageComponent]
 })

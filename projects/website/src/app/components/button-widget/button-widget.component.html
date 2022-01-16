@@ -8,7 +8,12 @@ corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px '
     [style.box-shadow]="shadow && shadow.enable ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
     [style.fontSize.px]="caption.fontSize">
 
-    <a *ngIf="link && link.url" [href]="link.url" [target]="link.selectedOption == linkOption.WebAddress ? '_blank' : '_self'">
+    <!-- Web address -->
+    <a *ngIf="link && link.url && link.selectedOption == linkOption.WebAddress" [href]="link.url" target="_blank">
+        {{caption.text}}</a>
+
+    <!-- local link -->
+    <a *ngIf="link && link.url && link.selectedOption != linkOption.WebAddress" [routerLink]="link.url">
         {{caption.text}}</a>
 
     <ng-container *ngIf="!link || !link.url">{{caption.text}}</ng-container>
