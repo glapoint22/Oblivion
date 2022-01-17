@@ -1,8 +1,5 @@
-<div #starsSummaryContainer (mouseenter)="onMouseenter()" class="stars-summary-container" style="cursor: pointer;">
+<div #starsSummaryContainer class="stars-summary-container" >
     <stars [rating]="product.rating"></stars>
 
-    <!-- <div style="cursor: default;">
-        <ng-template #reviewSummaryPopupContainer></ng-template>
-    </div> -->
-    
+    <div class="rollover-container" (mouseenter)="onMouseenter()" (mouseleave)="onMouseLeave()"></div>
 </div>
