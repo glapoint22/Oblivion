@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from '../../services/data/data.service';
 
 @Component({
   selector: 'account-list',
@@ -10,12 +9,11 @@ import { DataService } from '../../services/data/data.service';
 export class AccountListComponent {
   @Output() onClose: EventEmitter<void> = new EventEmitter();
 
-  constructor(private dataService: DataService, private accountService: AccountService) { }
+  constructor(private accountService: AccountService) { }
 
 
   onLogOutClick() {
-    this.dataService.get('api/Account/LogOut').subscribe();
-    this.accountService.customer = undefined;
+    this.accountService.logOut();
   }
 
   close() {
