@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Product } from '../../classes/product';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
@@ -12,6 +12,8 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class ReviewsPageComponent implements OnInit {
   public product!: Product;
+  private reviewsContainerElement!: HTMLElement;
+  private headerContainerElement!: HTMLElement;
 
 
 
@@ -19,6 +21,19 @@ export class ReviewsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.product = this.route.snapshot.parent?.data.product;
+  }
+
+  ngAfterViewInit() {
+    this.reviewsContainerElement = document.getElementsByClassName('reviews-container')[0] as HTMLElement;
+    this.headerContainerElement = document.getElementsByClassName('header-container')[0] as HTMLElement;
+
+    this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
+      // Scroll to the top of the reviews
+      if (queryParams.has('page')) {
+        const pos = this.reviewsContainerElement.offsetTop - this.headerContainerElement.getBoundingClientRect().height;
+        window.scrollTo(0, pos);
+      }
+    });
   }
 
 
@@ -43,8 +58,6 @@ export class ReviewsPageComponent implements OnInit {
     const { LogInFormComponent } = await import('../../components/log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../../components/log-in-form/log-in-form.module')
 
-
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container);
   }
-
 }
