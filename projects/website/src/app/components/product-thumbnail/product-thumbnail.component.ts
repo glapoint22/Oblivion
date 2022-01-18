@@ -1,7 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { Collaborator } from '../../classes/collaborator'
-import { Image } from '../../classes/image';
 import { Product } from '../../classes/product';
 
 @Component({
@@ -9,16 +7,12 @@ import { Product } from '../../classes/product';
   templateUrl: './product-thumbnail.component.html',
   styleUrls: ['./product-thumbnail.component.scss']
 })
-export class ProductThumbnailComponent implements OnInit {
+export class ProductThumbnailComponent {
   @Input() product!: Product;
 
   constructor(private router: Router) { }
 
-  ngOnInit(): void {
-  }
-
   onClick() {
     this.router.navigate([this.product.urlName, this.product.urlId]);
   }
-
 }

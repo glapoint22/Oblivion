@@ -12,19 +12,19 @@ export class DataService {
   constructor(private http: HttpClient, private cookieService: CookieService) { }
 
   get<T>(url: string, parameters?: Array<KeyValue<any, any>>, authorization?: boolean): Observable<T> {
-    return this.http.get<T>(url, { params: this.setParams(parameters), headers: this.setHeaders(authorization) });
+    return this.http.get<T>(url, { params: this.setParams(parameters), headers: authorization ? this.getHeaders() : new HttpHeaders() });
   }
 
   post<T>(url: string, body: any, authorization?: boolean): Observable<T> {
-    return this.http.post<T>(url, body, { headers: this.setHeaders(authorization) });
+    return this.http.post<T>(url, body, { headers: authorization ? this.getHeaders() : new HttpHeaders() });
   }
 
   put<T>(url: string, body: any, authorization?: boolean): Observable<T> {
-    return this.http.put<T>(url, body, { headers: this.setHeaders(authorization) });
+    return this.http.put<T>(url, body, { headers: authorization ? this.getHeaders() : new HttpHeaders() });
   }
 
   delete(url: string, params: any, authorization?: boolean) {
-    return this.http.delete(url, { params: params, headers: this.setHeaders(authorization) });
+    return this.http.delete(url, { params: params, headers: authorization ? this.getHeaders() : new HttpHeaders() });
   }
 
 
@@ -37,9 +37,7 @@ export class DataService {
   }
 
 
-  private setHeaders(authorization?: boolean): HttpHeaders | undefined {
-    if (!authorization) return undefined;
-
+  public getHeaders(): HttpHeaders | undefined {
     const accessToken = this.cookieService.getCookie('access');
 
     return new HttpHeaders({

@@ -14,10 +14,10 @@ export class CookieService {
       const cookieArray = document.cookie.split(';');
 
       // Find the cookie
-      const cookie = cookieArray.find(x => x.trim().substr(0, cookieName.length) == cookieName);
+      const cookie = cookieArray.find(x => x.trim().substring(0, cookieName.length) == cookieName);
 
       // get the content from the cookie
-      if (cookie) content = cookie.substr(cookie.indexOf('=') + 1);
+      if (cookie) content = cookie.substring(cookie.indexOf('=') + 1);
     }
 
     return content;

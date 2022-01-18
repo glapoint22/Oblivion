@@ -90,9 +90,6 @@ export class ReviewsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
-
-
     this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
       const currentPage = queryParams.has('page') ? Math.max(1, Number.parseInt(queryParams.get('page') as string)) : 1;
       const sort = queryParams.get('sort');
