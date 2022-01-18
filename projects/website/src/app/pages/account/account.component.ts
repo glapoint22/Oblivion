@@ -18,4 +18,12 @@ export class AccountComponent {
 
     this.lazyLoadingService.getComponentAsync(ContactUsFormComponent, ContactUsFormModule, this.lazyLoadingService.container);
   }
+
+
+  async onDeleteAccount() {
+    const { DeleteAccountPromptComponent } = await import('../../components/delete-account-prompt/delete-account-prompt.component');
+    const { DeleteAccountPromptModule } = await import('../../components/delete-account-prompt/delete-account-prompt.module')
+
+    this.lazyLoadingService.getComponentAsync(DeleteAccountPromptComponent, DeleteAccountPromptModule, this.lazyLoadingService.container);
+  }
 }

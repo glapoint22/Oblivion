@@ -11,7 +11,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   templateUrl: './email-verification-form.component.html',
   styleUrls: ['./email-verification-form.component.scss']
 })
-export class EmailVerificationFormComponent extends Validation implements OnInit {
+export class EmailVerificationFormComponent extends Validation implements OnInit  {
   @ViewChild('otpInput') otpInput!: ElementRef<HTMLInputElement>;
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
   @ViewChild('verificationForm') verificationForm!: ElementRef<HTMLFormElement>;

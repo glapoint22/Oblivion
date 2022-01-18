@@ -30,6 +30,10 @@ const routes: Routes = [
     canActivate: [AccountGuard]
   },
   {
+    path: 'about',
+    loadChildren: () => import('./pages/about-page/about-page.module').then(m => m.AboutPageModule),
+  },
+  {
     path: 'collaborate-list/:collaborateListId',
     loadChildren: () => import('./pages/collaborate-list/collaborate-list.module').then(m => m.CollaborateListModule),
     canLoad: [AccountGuard],
