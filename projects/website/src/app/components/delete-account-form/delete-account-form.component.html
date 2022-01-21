@@ -35,6 +35,8 @@
 
 
                 <form #verificationForm [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
+                    <div *ngIf="authentication.failure" class="error-text">Your password or the one-time password is incorrect.</div>
+
                     <!-- Password -->
                     <div class="label">Password:</div>
                     <div class="password-input-container">
@@ -72,16 +74,6 @@
                             </li>
                         </ul>
                     </ng-container>
-
-
-
-
-
-
-
-
-
-
 
 
                     <!-- Button Container -->

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
+import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
@@ -9,17 +10,27 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class DeleteAccountPromptComponent extends LazyLoad {
 
-  constructor(private lazyLoadingService: LazyLoadingService) {
+  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) {
     super();
   }
 
 
-  async onDeleteClick() {
-    this.close();
+  onDeleteClick() {
+    this.dataService.post('api/Account/CreateDeleteAccountOTP', {}, true)
+    .subscribe(() => {
+      this.openDeleteAccountForm();
+    });
+  }
+
+
+  async openDeleteAccountForm() {
     const { DeleteAccountFormComponent } = await import('../../components/delete-account-form/delete-account-form.component');
     const { DeleteAccountFormModule } = await import('../../components/delete-account-form/delete-account-form.module')
 
-    this.lazyLoadingService.getComponentAsync(DeleteAccountFormComponent, DeleteAccountFormModule, this.lazyLoadingService.container);
-  }
+    this.lazyLoadingService.getComponentAsync(DeleteAccountFormComponent, DeleteAccountFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.close();
 
+      });
+  }
 }

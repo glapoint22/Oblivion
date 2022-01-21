@@ -85,7 +85,7 @@
 
                     <!-- Buttons -->
                     <div class="buttons-container">
-                        <input #fileInput type="file" (change)="getImage(fileInput.files![0])">
+                        <input #fileInput type="file" (change)="onNewImageSelect(fileInput.files![0])">
 
                         <!-- New Image Button -->
                         <button class="dark-button new-image-button" (click)="onNewImageButtonClick(fileInput)"

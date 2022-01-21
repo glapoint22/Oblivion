@@ -30,7 +30,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.get('api/Account/NewEmail', [{ key: 'email', value: this.form.get('email')?.value }], true)
+      this.dataService.get('api/Account/CreateChangeEmailOTP', [{ key: 'email', value: this.form.get('email')?.value }], true)
         .subscribe(error => {
           if (error) {
             this.isError = true;

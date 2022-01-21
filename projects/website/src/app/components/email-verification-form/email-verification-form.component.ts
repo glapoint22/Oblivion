@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Authentication } from '../../classes/authentication';
 import { invalidPasswordValidator, Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
@@ -16,6 +17,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
   @ViewChild('verificationForm') verificationForm!: ElementRef<HTMLFormElement>;
   public email!: string;
+  public authentication: Authentication = new Authentication();
 
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private accountService: AccountService) { super() }
 
@@ -55,16 +57,20 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.put('api/Account/UpdateEmail', {
+      this.dataService.put<Authentication>('api/Account/ChangeEmail', {
         email: this.email,
         password: this.form.get('password')?.value,
-        token: this.form.get('otp')?.value
+        oneTimePassword: this.form.get('otp')?.value
       },
         true
-      ).subscribe(() => {
-        this.accountService.setCustomer();
-        this.close();
-        this.OpenSuccessPrompt();
+      ).subscribe((authentication: Authentication) => {
+        this.authentication.failure = authentication.failure;
+
+        if (!this.authentication.failure) {
+          this.accountService.setCustomer();
+          this.close();
+          this.OpenSuccessPrompt();
+        }
       });
     }
   }

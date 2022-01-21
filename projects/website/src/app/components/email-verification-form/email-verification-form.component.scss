@@ -1,4 +1,5 @@
 @import '../../../scss/mixins.scss';
+@import '../../../scss/variables';
 @include modal-values(350px, 385px, 425px);
 
 .emphasized-text {
@@ -7,4 +8,9 @@
 
 .password-input-container {
     margin-bottom: 22px;
+}
+
+.error-text {
+    color: $error-color;
+    margin-bottom: 20px;
 }

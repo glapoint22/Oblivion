@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { CircleOverlay } from '../../classes/circle-overlay';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
@@ -18,8 +19,8 @@ export class ProfilePictureFormComponent extends LazyLoad {
   private scaleValue: number = 1;
   private initialPicWidth!: number;
   private initialPicHeight!: number;
-  private pivot = { x: 0, y: 0 };
-  private scale = { left: 0, top: 0, width: 0, height: 0 };
+  private picScalingStart = { left: 0, top: 0, width: 0, height: 0 };
+  private circle: CircleOverlay = new CircleOverlay();
 
   public imageFile!: Blob;
   public picLoaded!: boolean;
@@ -29,7 +30,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
   public minusButtonDisabled: boolean = true;
   public zoomHandleMoveStartPos!: number | null;
   public plusButtonDisabled!: boolean;
-  public circle = { left: 0, top: 0, bottom: 0, right: 0, size: 0 };
+
 
   @ViewChild('zoomBar', { static: false }) zoomBar!: ElementRef<HTMLElement>;
   @ViewChild('picContainer', { static: false }) picContainer!: ElementRef<HTMLElement>;
@@ -62,7 +63,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
     this.minusButtonDisabled = true;
     this.zoomHandle.nativeElement.style.left = "0";
     this.SetZoomHandleBoundarys();
-    const size: number = this.getCircleOverlayDiameter();
+    this.circle.diameter = this.circle.getDiameter(this.picContainer.nativeElement, this.circleOverlay.nativeElement);
 
 
     // If the pic's origianl width is larger than its original height
@@ -71,9 +72,9 @@ export class ProfilePictureFormComponent extends LazyLoad {
       let ratio = this.pic.nativeElement.naturalWidth / this.pic.nativeElement.naturalHeight;
 
       // Redefine the dimensions of the pic
-      this.pic.nativeElement.style.height = size + "px";
-      this.pic.nativeElement.style.width = (size * ratio) + "px";
-      this.pic.nativeElement.style.top = ((this.picContainer.nativeElement.offsetHeight / 2) - (size / 2)) + "px";
+      this.pic.nativeElement.style.height = this.circle.diameter + "px";
+      this.pic.nativeElement.style.width = (this.circle.diameter * ratio) + "px";
+      this.pic.nativeElement.style.top = ((this.picContainer.nativeElement.offsetHeight / 2) - (this.circle.diameter / 2)) + "px";
       this.pic.nativeElement.style.left = ((this.picContainer.nativeElement.offsetWidth / 2) - (this.pic.nativeElement.offsetWidth / 2)) + "px";
 
       // But if the pic's origianl height is larger than its original width
@@ -83,9 +84,9 @@ export class ProfilePictureFormComponent extends LazyLoad {
       let ratio = this.pic.nativeElement.naturalHeight / this.pic.nativeElement.naturalWidth;
 
       // Redefine the dimensions of the pic
-      this.pic.nativeElement.style.width = size + "px";
-      this.pic.nativeElement.style.height = (size * ratio) + "px";
-      this.pic.nativeElement.style.left = ((this.picContainer.nativeElement.offsetWidth / 2) - (size / 2)) + "px";
+      this.pic.nativeElement.style.width = this.circle.diameter + "px";
+      this.pic.nativeElement.style.height = (this.circle.diameter * ratio) + "px";
+      this.pic.nativeElement.style.left = ((this.picContainer.nativeElement.offsetWidth / 2) - (this.circle.diameter / 2)) + "px";
       this.pic.nativeElement.style.top = ((this.picContainer.nativeElement.offsetHeight / 2) - (this.pic.nativeElement.offsetHeight / 2)) + "px";
     }
 
@@ -93,27 +94,18 @@ export class ProfilePictureFormComponent extends LazyLoad {
     this.initialPicWidth = this.pic.nativeElement.offsetWidth;
     this.initialPicHeight = this.pic.nativeElement.offsetHeight;
 
+
     // Set the pic scaling starting values
-    this.scale.left = this.pic.nativeElement.offsetLeft;
-    this.scale.top = this.pic.nativeElement.offsetTop;
-    this.scale.width = this.pic.nativeElement.offsetWidth;
-    this.scale.height = this.pic.nativeElement.offsetHeight;
-    this.pivot.x = ((this.picContainer.nativeElement.offsetWidth / 2) - this.scale.left) / this.scale.width;
-    this.pivot.y = ((this.picContainer.nativeElement.offsetHeight / 2) - this.scale.top) / this.scale.height;
+    this.picScalingStart.left = this.pic.nativeElement.offsetLeft;
+    this.picScalingStart.top = this.pic.nativeElement.offsetTop;
+    this.picScalingStart.width = this.pic.nativeElement.offsetWidth;
+    this.picScalingStart.height = this.pic.nativeElement.offsetHeight;
 
-    // Set the circle overlay size
-    this.circleOverlay.nativeElement.style.maxWidth = size + "px";
-    this.circleOverlay.nativeElement.style.maxHeight = size + "px";
-    this.circleOverlay.nativeElement.style.left = ((this.picContainer.nativeElement.offsetWidth / 2) - (this.circleOverlay.nativeElement.offsetWidth / 2)) + "px";
-    this.circleOverlay.nativeElement.style.top = ((this.picContainer.nativeElement.offsetHeight / 2) - (this.circleOverlay.nativeElement.offsetHeight / 2)) + "px";
-
-    // Set the circle overlay boundarys
-    this.circle.left = (this.picContainer.nativeElement.offsetWidth / 2) - (this.circleOverlay.nativeElement.offsetWidth / 2);
-    this.circle.top = (this.picContainer.nativeElement.offsetHeight / 2) - (this.circleOverlay.nativeElement.offsetHeight / 2);
-    this.circle.right = this.circle.left + this.circleOverlay.nativeElement.offsetWidth;
-    this.circle.bottom = this.circle.top + this.circleOverlay.nativeElement.offsetHeight;
-    this.circle.size = this.circleOverlay.nativeElement.offsetWidth;
+    this.circle.set(this.picContainer.nativeElement, this.pic.nativeElement);
   }
+
+
+
 
 
   onPicDown(e: MouseEvent) {
@@ -194,12 +186,12 @@ export class ProfilePictureFormComponent extends LazyLoad {
       // Set the boundarys
       this.setPicBoundarys();
 
-      this.scale.left = this.pic.nativeElement.offsetLeft;
-      this.scale.top = this.pic.nativeElement.offsetTop;
-      this.scale.width = this.pic.nativeElement.offsetWidth;
-      this.scale.height = this.pic.nativeElement.offsetHeight;
-      this.pivot.x = ((this.picContainer.nativeElement.offsetWidth / 2) - this.scale.left) / this.scale.width;
-      this.pivot.y = ((this.picContainer.nativeElement.offsetHeight / 2) - this.scale.top) / this.scale.height;
+      this.picScalingStart.left = this.pic.nativeElement.offsetLeft;
+      this.picScalingStart.top = this.pic.nativeElement.offsetTop;
+      this.picScalingStart.width = this.pic.nativeElement.offsetWidth;
+      this.picScalingStart.height = this.pic.nativeElement.offsetHeight;
+
+      this.circle.set(this.picContainer.nativeElement, this.pic.nativeElement);
     }
 
     // Move the zoom handle
@@ -247,12 +239,12 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
     // Reset the pic scaling starting values
     if (this.zoomHandle.nativeElement.offsetLeft == this.zoomBar.nativeElement.offsetLeft) {
-      this.scale.left = this.pic.nativeElement.offsetLeft;
-      this.scale.top = this.pic.nativeElement.offsetTop;
-      this.scale.width = this.pic.nativeElement.offsetWidth;
-      this.scale.height = this.pic.nativeElement.offsetHeight;
-      this.pivot.x = ((this.picContainer.nativeElement.offsetWidth / 2) - this.scale.left) / this.scale.width;
-      this.pivot.y = ((this.picContainer.nativeElement.offsetHeight / 2) - this.scale.top) / this.scale.height;
+      this.picScalingStart.left = this.pic.nativeElement.offsetLeft;
+      this.picScalingStart.top = this.pic.nativeElement.offsetTop;
+      this.picScalingStart.width = this.pic.nativeElement.offsetWidth;
+      this.picScalingStart.height = this.pic.nativeElement.offsetHeight;
+
+      this.circle.set(this.picContainer.nativeElement, this.pic.nativeElement);
     }
 
     // Right boundary
@@ -291,6 +283,29 @@ export class ProfilePictureFormComponent extends LazyLoad {
   }
 
 
+
+
+
+
+
+  getScaleLeft() {
+    const scaleSpeed = this.circle.percentCenter;
+    const scaleDistance = this.pic.nativeElement.offsetWidth - this.picScalingStart.width;
+    const scaleWidth = scaleDistance * scaleSpeed;
+    const scaleLeft = this.picScalingStart.left - scaleWidth;
+    return scaleLeft + "px";
+  }
+
+
+  getScaleTop() {
+    const scaleSpeed = this.circle.percentMiddle;
+    const scaleDistance = this.pic.nativeElement.offsetHeight - this.picScalingStart.height;
+    const scaleHeight = scaleDistance * scaleSpeed;
+    const scaleTop = this.picScalingStart.top - scaleHeight;
+    return scaleTop + "px";
+  }
+
+
   scalePic() {
     let zoomHandleLeft = this.zoomHandle.nativeElement.offsetLeft;
     let zoomBarWidth = 2.3 / (this.zoomBar.nativeElement.offsetWidth);
@@ -298,44 +313,10 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
     this.pic.nativeElement.style.width = (this.initialPicWidth * this.scaleValue) + "px";
     this.pic.nativeElement.style.height = (this.initialPicHeight * this.scaleValue) + "px";
-    this.pic.nativeElement.style.left = (this.scale.left - ((this.pic.nativeElement.offsetWidth - this.scale.width)) * this.pivot.x) + "px";
-    this.pic.nativeElement.style.top = (this.scale.top - ((this.pic.nativeElement.offsetHeight - this.scale.height)) * this.pivot.y) + "px";
+    this.pic.nativeElement.style.left = this.getScaleLeft();
+    this.pic.nativeElement.style.top = this.getScaleTop();
 
     this.setPicBoundarys();
-  }
-
-
-  getCircleOverlayDiameter(): number {
-    let circleOverlayDiameter: number;
-
-    // If the height of the pic container is less than its width
-    if (this.picContainer.nativeElement.offsetHeight < this.picContainer.nativeElement.offsetWidth) {
-      // And if its height is less than 300
-      if (this.picContainer.nativeElement.offsetHeight < 300) {
-        // Set the diameter of the circle overlay to the height of the pic container
-        circleOverlayDiameter = this.picContainer.nativeElement.offsetHeight;
-
-        // But if the height of the pic container is 300 or more
-      } else {
-        // Set the diameter of the circle overlay to 300
-        circleOverlayDiameter = 300;
-      }
-
-      // Or if the width of the pic container is less than its height
-    } else {
-
-      // And if its width is less than 300
-      if (this.picContainer.nativeElement.offsetWidth < 300) {
-        // Set the diameter of the circle overlay to the width of the pic container
-        circleOverlayDiameter = this.picContainer.nativeElement.offsetWidth;
-
-        // But if the width of the pic container is 300 or more
-      } else {
-        // Set the diameter of the circle overlay to 300
-        circleOverlayDiameter = 300;
-      }
-    }
-    return circleOverlayDiameter;
   }
 
 
@@ -348,6 +329,10 @@ export class ProfilePictureFormComponent extends LazyLoad {
   }
 
 
+  onNewImageSelect(image: Blob) {
+    this.imageFile = image;
+    this.getImage(this.imageFile);
+  }
 
 
   getImage(image: Blob) {
@@ -358,22 +343,18 @@ export class ProfilePictureFormComponent extends LazyLoad {
       this.pic.nativeElement.src = reader.result!.toString();
     };
 
-    window.setTimeout(() => {// Temp
-      reader.readAsDataURL(image);
-    }, 1000)
+    reader.readAsDataURL(image);
   }
-
 
 
   onSubmit() {
     const formData = new FormData()
     formData.append('newImage', this.imageFile);
-    formData.append('currentImage', !this.accountService.customer?.hasProfileImage ? '' :
-      this.accountService.customer?.profileImage.url.substring(this.accountService.customer?.profileImage.url.indexOf("/") + 1));
-    formData.append('width', Math.round(this.pic.nativeElement.clientWidth * this.scaleValue).toString());
-    formData.append('height', Math.round(this.pic.nativeElement.clientHeight * this.scaleValue).toString());
-    formData.append('cropLeft', Math.round(((this.pic.nativeElement.clientWidth * this.scaleValue) * this.pivot.x) - 150).toString());
-    formData.append('cropTop', Math.round(((this.pic.nativeElement.clientHeight * this.scaleValue) * this.pivot.y) - 150).toString());
+    formData.append('currentImage', !this.accountService.customer?.hasProfileImage ? '' : this.accountService.customer?.profileImage.url.substring(this.accountService.customer?.profileImage.url.indexOf("/") + 1));
+    formData.append('percentLeft', this.circle.percentLeft.toString());
+    formData.append('percentRight', this.circle.percentRight.toString());
+    formData.append('percentTop', this.circle.percentTop.toString());
+    formData.append('percentBottom', this.circle.percentBottom.toString());
 
     this.dataService.post('api/Account/ChangeProfilePicture', formData, true).subscribe(() => {
       this.accountService.setCustomer();
