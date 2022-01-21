@@ -30,7 +30,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
           name: this.form.get('listName')?.value,
           description: this.form.get('description')?.value
         },
-        true
+        { authorization: true }
       ).subscribe((list: List) => {
         this.close();
         this.onListCreated.emit(new List(

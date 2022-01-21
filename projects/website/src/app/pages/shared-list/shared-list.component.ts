@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ParamMap } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { List } from '../../classes/list';
-import { Product } from '../../classes/product';
+import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
+import { DataService } from '../../services/data/data.service';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { ListsComponent } from '../lists/lists.component';
 
 @Component({
@@ -11,20 +14,19 @@ import { ListsComponent } from '../lists/lists.component';
 })
 export class SharedListComponent extends ListsComponent implements OnInit {
 
+  constructor(
+    lazyLoadingService: LazyLoadingService,
+    dataService: DataService,
+    route: ActivatedRoute,
+    router: Router,
+    spinnerService: SpinnerService,
+    listIdResolver: ListIdResolver
+  ) { super(lazyLoadingService, dataService, route, router, spinnerService, listIdResolver) }
+
   ngOnInit() {
-    this.route.data.subscribe(data => {
+    this.route.parent?.data.subscribe(data => {
       this.products = data.sharedList.products;
       this.selectedList = new List(data.sharedList.id, data.sharedList.name);
     });
-
-    this.route.queryParamMap.subscribe((params: ParamMap) => {
-      this.dataService
-        .get<Array<Product>>('api/Lists/Products', [
-          { key: 'listId', value: this.selectedList.id },
-          { key: 'sort', value: params.get('sort') ? params.get('sort') : '' }
-        ], true).subscribe((products: Array<Product>) => {
-          this.products = products;
-        });
-    })
   }
 }

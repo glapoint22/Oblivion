@@ -4,6 +4,7 @@ import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { EmailVerificationFormComponent } from '../email-verification-form/email-verification-form.component';
 
 @Component({
@@ -14,7 +15,13 @@ import { EmailVerificationFormComponent } from '../email-verification-form/email
 export class ChangeEmailFormComponent extends Validation implements OnInit {
   public isError: boolean = false;
 
-  constructor(public accountService: AccountService, private dataService: DataService, private lazyLoadingService: LazyLoadingService) {
+  constructor
+    (
+      public accountService: AccountService,
+      private dataService: DataService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) {
     super();
   }
 
@@ -30,7 +37,8 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.get('api/Account/NewEmail', [{ key: 'email', value: this.form.get('email')?.value }], true)
+      this.spinnerService.show = true;
+      this.dataService.get('api/Account/NewEmail', [{ key: 'email', value: this.form.get('email')?.value }], { authorization: true })
         .subscribe(error => {
           if (error) {
             this.isError = true;
@@ -49,7 +57,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
     this.lazyLoadingService.getComponentAsync(EmailVerificationFormComponent, EmailVerificationFormModule, this.lazyLoadingService.container)
       .then((emailVerificationFormComponent: EmailVerificationFormComponent) => {
         emailVerificationFormComponent.email = this.form.get('email')?.value;
+        this.spinnerService.show = false;
       });
   }
-
 }

@@ -4,6 +4,7 @@ import { invalidPasswordValidator, Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -17,7 +18,13 @@ export class DeleteAccountFormComponent extends Validation {
   @ViewChild('verificationForm') verificationForm!: ElementRef<HTMLFormElement>;
   public email!: string;
 
-  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private accountService: AccountService) { super() }
+  constructor
+    (
+      private lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
+      private accountService: AccountService,
+      private spinnerService: SpinnerService
+    ) { super() }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -52,18 +59,20 @@ export class DeleteAccountFormComponent extends Validation {
       .then((successPromptComponent: SuccessPromptComponent) => {
         successPromptComponent.header = 'Successful Email Change';
         successPromptComponent.message = 'Your email has been successfully changed.';
+        this.spinnerService.show = false;
       });
   }
 
 
   onSubmit() {
     if (this.form.valid) {
+      this.spinnerService.show = true;
       this.dataService.put('api/Account/DeleteAccount', {
         email: this.email,
         password: this.form.get('password')?.value,
         token: this.form.get('otp')?.value
       },
-        true
+        { authorization: true }
       ).subscribe(() => {
         this.accountService.setCustomer();
         this.close();
@@ -71,5 +80,4 @@ export class DeleteAccountFormComponent extends Validation {
       });
     }
   }
-
 }

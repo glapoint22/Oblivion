@@ -1,15 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AccountGuard } from './guards/account/account.guard';
-import { SharedListResolver } from './guards/shared-list/shared-list.resolver';
+import { SharedListResolver } from './resolvers/shared-list/shared-list.resolver';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
+import { BrowseResolver } from './resolvers/browse/browse.resolver';
+import { CollaborateListResolver } from './resolvers/collaborate-list/collaborate-list.resolver';
+import { HomeResolver } from './resolvers/home/home.resolver';
 import { ProductResolver } from './resolvers/product/product.resolver';
+import { SearchResolver } from './resolvers/search/search.resolver';
 
 const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule),
-    pathMatch: 'full'
+    pathMatch: 'full',
+    resolve: {
+      page: HomeResolver
+    }
   },
   {
     path: 'home',
@@ -17,11 +24,19 @@ const routes: Routes = [
   },
   {
     path: 'search',
-    loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule)
+    loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule),
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    resolve: {
+      searchData: SearchResolver
+    }
   },
   {
     path: 'browse',
-    loadChildren: () => import('./pages/browse/browse.module').then(m => m.BrowseModule)
+    loadChildren: () => import('./pages/browse/browse.module').then(m => m.BrowseModule),
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    resolve: {
+      browseData: BrowseResolver
+    }
   },
   {
     path: 'account',
@@ -37,11 +52,15 @@ const routes: Routes = [
     path: 'collaborate-list/:collaborateListId',
     loadChildren: () => import('./pages/collaborate-list/collaborate-list.module').then(m => m.CollaborateListModule),
     canLoad: [AccountGuard],
-    canActivate: [AccountGuard]
+    canActivate: [AccountGuard],
+    resolve: {
+      listInfo: CollaborateListResolver
+    }
   },
   {
     path: 'shared-list/:listId',
     loadChildren: () => import('./pages/shared-list/shared-list.module').then(m => m.SharedListModule),
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     resolve: {
       sharedList: SharedListResolver
     }

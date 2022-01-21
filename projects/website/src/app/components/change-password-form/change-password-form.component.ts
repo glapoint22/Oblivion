@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { invalidPasswordValidator, matchPasswordValidator, Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -12,7 +13,11 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 })
 export class ChangePasswordFormComponent extends Validation implements OnInit {
 
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) {
+  constructor
+    (private dataService: DataService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) {
     super();
   }
 
@@ -36,7 +41,12 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.put('api/Account/UpdatePassword', { CurrentPassword: this.form.get('currentPassword')?.value, NewPassword: this.form.get('newPassword')?.value }, true)
+      this.spinnerService.show = true;
+      this.dataService
+        .put('api/Account/UpdatePassword', {
+          CurrentPassword: this.form.get('currentPassword')?.value,
+          NewPassword: this.form.get('newPassword')?.value
+        }, { authorization: true })
         .subscribe(() => {
           this.close();
           this.OpenSuccessPrompt();
@@ -53,6 +63,7 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
       .then((successPromptComponent: SuccessPromptComponent) => {
         successPromptComponent.header = 'Successful Password Change';
         successPromptComponent.message = 'Your password has been successfully changed.';
+        this.spinnerService.show = false;
       });
   }
 }

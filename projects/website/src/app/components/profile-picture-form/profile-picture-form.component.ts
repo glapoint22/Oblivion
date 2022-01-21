@@ -3,6 +3,7 @@ import { LazyLoad } from '../../classes/lazy-load';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -11,7 +12,13 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./profile-picture-form.component.scss']
 })
 export class ProfilePictureFormComponent extends LazyLoad {
-  constructor(private dataService: DataService, private accountService: AccountService, private lazyLoadingService: LazyLoadingService) {
+  constructor
+    (
+      private dataService: DataService,
+      private accountService: AccountService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) {
     super();
   }
 
@@ -353,9 +360,11 @@ export class ProfilePictureFormComponent extends LazyLoad {
   getImage(image: Blob) {
     const reader = new FileReader();
     this.picLoaded = false;
+    this.spinnerService.show = true;
 
     reader.onload = () => {
       this.pic.nativeElement.src = reader.result!.toString();
+      this.spinnerService.show = false;
     };
 
     window.setTimeout(() => {// Temp
@@ -366,6 +375,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
 
   onSubmit() {
+    this.spinnerService.show = true;
     const formData = new FormData()
     formData.append('newImage', this.imageFile);
     formData.append('currentImage', !this.accountService.customer?.hasProfileImage ? '' :
@@ -375,7 +385,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
     formData.append('cropLeft', Math.round(((this.pic.nativeElement.clientWidth * this.scaleValue) * this.pivot.x) - 150).toString());
     formData.append('cropTop', Math.round(((this.pic.nativeElement.clientHeight * this.scaleValue) * this.pivot.y) - 150).toString());
 
-    this.dataService.post('api/Account/ChangeProfilePicture', formData, true).subscribe(() => {
+    this.dataService.post('api/Account/ChangeProfilePicture', formData, { authorization: true }).subscribe(() => {
       this.accountService.setCustomer();
       this.close();
       this.OpenSuccessPrompt();
@@ -391,6 +401,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
       .then((successPromptComponent: SuccessPromptComponent) => {
         successPromptComponent.header = 'Successful Profile Picture Change';
         successPromptComponent.message = 'Your profile picture has been successfully changed.';
+        this.spinnerService.show = false;
       });
   }
 }

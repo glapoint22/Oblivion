@@ -9,6 +9,7 @@ import { ReviewsSideMenuComponent } from '../../components/reviews-side-menu/rev
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'reviews',
@@ -86,7 +87,8 @@ export class ReviewsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dataService: DataService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private spinnerService: SpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -123,6 +125,18 @@ export class ReviewsComponent implements OnInit {
           this.showing = 'Showing 0 results';
         }
 
+        // Set the scrollbar position if we are the reviews page
+        if (this.router.url.includes('reviews')) {
+          this.spinnerService.show = false;
+          if (queryParams.keys.some(key => key == 'sort' || key == 'filter' || key == 'page')) {
+            const reviewsContainerElement = document.getElementsByClassName('reviews-container')[0] as HTMLElement;
+            const headerContainerElement = document.getElementsByClassName('header-container')[0] as HTMLElement;
+            const pos = reviewsContainerElement.offsetTop - headerContainerElement.getBoundingClientRect().height;
+            window.scrollTo(0, pos);
+          } else {
+            window.scrollTo(0, 0);
+          }
+        }
       });
     });
   }
@@ -133,6 +147,7 @@ export class ReviewsComponent implements OnInit {
 
   async onReportReviewClick(reviewId: number) {
     if (this.accountService.customer) {
+      this.spinnerService.show = true;
       const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
       const { ReportReviewFormModule } = await import('../../components/report-review-form/report-review-form.module');
 
@@ -140,6 +155,7 @@ export class ReviewsComponent implements OnInit {
         .then((reportReviewForm: ReportReviewFormComponent) => {
           reportReviewForm.productId = this.product.id;
           reportReviewForm.reviewId = reviewId;
+          this.spinnerService.show = false;
         });
     } else {
       this.logIn();
@@ -148,11 +164,15 @@ export class ReviewsComponent implements OnInit {
 
 
   async logIn() {
+    this.spinnerService.show = true;
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container);
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.spinnerService.show = false;
+      });
   }
 
 
@@ -199,6 +219,7 @@ export class ReviewsComponent implements OnInit {
 
 
   async onHamburgerButtonClick() {
+    this.spinnerService.show = true;
     const { ReviewsSideMenuComponent } = await import('../../components/reviews-side-menu/reviews-side-menu.component');
     const { ReviewsSideMenuModule } = await import('../../components/reviews-side-menu/reviews-side-menu.module');
 
@@ -219,6 +240,8 @@ export class ReviewsComponent implements OnInit {
         reviewsSideMenu.onSortChange.subscribe((sort: KeyValue<string, string>) => {
           this.onSortChange(sort);
         });
+
+        this.spinnerService.show = false;
       });
   }
 }

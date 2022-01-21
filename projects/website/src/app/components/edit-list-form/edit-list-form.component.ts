@@ -32,7 +32,7 @@ export class EditListFormComponent extends Validation implements OnInit {
         id: this.list.id,
         name: this.form.get('listName')?.value,
         description: this.form.get('description')?.value
-      }, true).subscribe((list: List) => {
+      }, { authorization: true }).subscribe((list: List) => {
 
         // Assign the name and description to the list
         this.list.name = list.name;

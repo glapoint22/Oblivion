@@ -1,22 +1,23 @@
 import { KeyValue, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
 import { CreateListFormComponent } from '../../components/create-list-form/create-list-form.component';
 import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-side-menu.component';
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
+import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'lists',
   templateUrl: './lists.component.html',
   styleUrls: ['./lists.component.scss']
 })
-export class ListsComponent implements OnInit {
+export class ListsComponent implements OnInit, OnDestroy {
   public lists!: Array<List>;
   public selectedList!: List;
   public products!: Array<Product> | undefined;
@@ -29,7 +30,6 @@ export class ListsComponent implements OnInit {
     { key: 'Sort by Title', value: 'title' }
   ];
 
-
   public moveToList: Array<KeyValue<string, string>> = [];
 
   constructor(
@@ -37,60 +37,33 @@ export class ListsComponent implements OnInit {
     public dataService: DataService,
     public route: ActivatedRoute,
     private router: Router,
-    private location: Location
+    public spinnerService: SpinnerService,
+    private listIdResolver: ListIdResolver
   ) { }
 
 
 
 
   ngOnInit() {
-    // Get the lists
-    this.dataService.get<Array<List>>('api/Lists/', undefined, true)
-      .subscribe((lists: Array<List>) => {
-        this.lists = lists;
-
-        combineLatest([this.route.params,
-        this.route.queryParams], (params, queryParams) => ({
-          ...params, ...queryParams
-        })).subscribe(routeParams => {
-          if (routeParams.listId == this.route.snapshot.paramMap.get('listId')) {
-
-            // Get the listid from the url
-            const listId = this.route.snapshot.paramMap.get('listId');
-
-            if (listId) {
-              this.selectedList = lists.find(x => x.id == listId) as List;
-            }
+    this.route.parent?.data.subscribe(results => {
+      this.lists = results.listData.lists;
+      this.products = results.listData.products;
+      this.selectedList = results.listData.selectedList;
+      this.populateMoveToList();
+    });
+  }
 
 
-            if (!this.selectedList && listId) {
-              this.router.navigate(['**'], { skipLocationChange: true });
-              return;
-            }
-
-            if (this.selectedList) {
-              this.dataService
-                .get<Array<Product>>('api/Lists/Products', [
-                  { key: 'listId', value: this.selectedList.id },
-                  { key: 'sort', value: routeParams.sort ? routeParams.sort : '' }
-                ], true).subscribe((products: Array<Product>) => {
-                  this.products = products;
-                });
-            }
-
-          }
-        });
-        this.populateMoveToList();
-      });
+  setSelectedSortOption() {
+    const index = Math.max(0, this.sortOptions.findIndex(x => x.value == this.route.snapshot.queryParamMap.get('sort')));
+    return this.sortOptions[index];
   }
 
 
 
 
-
-
-
   async onHamburgerButtonClick() {
+    this.spinnerService.show = true;
     const { ListsSideMenuComponent } = await import('../../components/lists-side-menu/lists-side-menu.component');
     const { ListsSideMenuModule } = await import('../../components/lists-side-menu/lists-side-menu.module');
 
@@ -111,11 +84,13 @@ export class ListsComponent implements OnInit {
             this.onCreateNewListClick();
           });
 
+        this.spinnerService.show = false;
       });
   }
 
 
   async onRemoveItemClick(product: Product) {
+    this.spinnerService.show = true;
     const { RemoveItemPromptComponent } = await import('../../components/remove-item-prompt/remove-item-prompt.component');
     const { RemoveItemPromptModule } = await import('../../components/remove-item-prompt/remove-item-prompt.module');
 
@@ -126,23 +101,26 @@ export class ListsComponent implements OnInit {
         removeItemPromptComponent.onRemove.subscribe(() => {
           this.products?.splice(this.products.indexOf(product), 1);
         });
+        this.spinnerService.show = false;
       });
   }
 
 
   async onCreateNewListClick() {
+    this.spinnerService.show = true;
     const { CreateListFormComponent } = await import('../../components/create-list-form/create-list-form.component');
     const { CreateListFormModule } = await import('../../components/create-list-form/create-list-form.module');
 
     this.lazyLoadingService.getComponentAsync(CreateListFormComponent, CreateListFormModule, this.lazyLoadingService.container)
       .then((createListForm: CreateListFormComponent) => {
         createListForm.onListCreated.subscribe((list: List) => {
-          this.lists.unshift(list);
+          this.lists.push(list);
           this.selectedList = list;
           this.populateMoveToList();
           this.products = [];
-          this.location.replaceState("/account/lists/" + list.id);
+          this.router.navigateByUrl('/account/lists/' + list.id);
         });
+        this.spinnerService.show = false;
       });
   }
 
@@ -156,6 +134,7 @@ export class ListsComponent implements OnInit {
 
 
   async onMoveItem(toListKeyValue: KeyValue<any, any>, product: Product) {
+    this.spinnerService.show = true;
     const { MoveItemPromptComponent } = await import('../../components/move-item-prompt/move-item-prompt.component');
     const { MoveItemPromptModule } = await import('../../components/move-item-prompt/move-item-prompt.module');
 
@@ -169,7 +148,9 @@ export class ListsComponent implements OnInit {
           this.selectedList.totalItems--;
           const toList = this.lists.find(x => x.id == toListKeyValue.value) as List;
           toList.totalItems++;
-        })
+        });
+
+        this.spinnerService.show = false;
       })
   }
 
@@ -193,5 +174,10 @@ export class ListsComponent implements OnInit {
 
   onVisitOfficalWebsiteClick(hoplink: string) {
     window.open(hoplink, '_blank');
+  }
+
+
+  ngOnDestroy(): void {
+    this.listIdResolver.lists = null;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
 
@@ -20,8 +20,9 @@ export class ReportReviewFormComponent extends LazyLoad {
       reviewId: this.reviewId,
       type: 1,
       comments: this.comments
-    }, true).subscribe(() => {
-      this.close();
-    });
+    }, { authorization: true })
+      .subscribe(() => {
+        this.close();
+      });
   }
 }

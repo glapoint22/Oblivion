@@ -136,7 +136,10 @@ export class ReportItemFormComponent extends LazyLoad {
       productId: this.productId,
       type: this.type,
       comments: this.comments
-    }, true).subscribe(() => {
+    }, {
+      authorization: true,
+      showSpinner: true
+    }).subscribe(() => {
       this.close();
     });
   }

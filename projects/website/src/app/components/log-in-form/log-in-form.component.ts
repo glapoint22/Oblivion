@@ -4,6 +4,7 @@ import { invalidPasswordValidator, Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'log-in-form',
@@ -17,6 +18,7 @@ export class LogInFormComponent extends Validation implements OnInit {
     private dataService: DataService,
     private accountService: AccountService,
     private lazyLoadingService: LazyLoadingService,
+    private spinnerService: SpinnerService
   ) { super() }
 
   ngOnInit(): void {
@@ -49,19 +51,27 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   async onSignUpLinkClick() {
+    this.spinnerService.show = true;
     this.close();
     const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
     const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
 
-    this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container);
+    this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.spinnerService.show = false;
+      });
   }
 
 
   async onForgotPasswordLinkClick() {
+    this.spinnerService.show = true;
     this.close();
     const { ForgotPasswordFormComponent } = await import('../forgot-password-form/forgot-password-form.component');
     const { ForgotPasswordFormModule } = await import('../forgot-password-form/forgot-password-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ForgotPasswordFormComponent, ForgotPasswordFormModule, this.lazyLoadingService.container);
+    this.lazyLoadingService.getComponentAsync(ForgotPasswordFormComponent, ForgotPasswordFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.spinnerService.show = false;
+      });
   }
 }

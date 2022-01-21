@@ -35,10 +35,13 @@ export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
   onOpen() {
     if (this.selectedNicheName) {
       const nicheMenuElement: HTMLElement = document.getElementById('nicheMenu') as HTMLElement;
-      const nicheElement: HTMLElement = document.getElementById(this.selectedNicheName) as HTMLElement;
-      const offsetTop = nicheElement?.offsetTop;
 
-      nicheMenuElement.scrollTop = offsetTop;
+      if (nicheMenuElement) {
+        const nicheElement: HTMLElement = document.getElementById(this.selectedNicheName) as HTMLElement;
+        const offsetTop = nicheElement?.offsetTop;
+
+        nicheMenuElement.scrollTop = offsetTop;
+      }
     }
   }
 }

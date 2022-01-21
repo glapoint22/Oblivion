@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { AccountService } from './services/account/account.service';
 import { LazyLoadingService } from './services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from './services/spinner/spinner.service';
 import { VideoApiService } from './services/video-api/video-api.service';
 
 @Component({
@@ -16,7 +17,8 @@ export class AppComponent implements OnInit {
     private lazyLoadingService: LazyLoadingService,
     private accountService: AccountService,
     private videoApiService: VideoApiService,
-    private router: Router
+    private router: Router,
+    private spinnerService: SpinnerService
   ) { }
 
 
@@ -58,14 +60,21 @@ export class AppComponent implements OnInit {
     }
 
 
-    // Scroll to the top of each page when navigation ends
+    // Router Events
     this.router.events
-      .subscribe(event => {
-        if (event instanceof NavigationEnd) {
-          if (!event.url.includes('reviews') || !event.url.includes('page')) {
+      .subscribe(
+        (event: Event) => {
+
+          // Navigation Start
+          if (event instanceof NavigationStart) {
+            this.spinnerService.show = true;
+          }
+
+          // Navigation End
+          if (event instanceof NavigationEnd && !event.url.includes('reviews')) {
+            this.spinnerService.show = false;
             window.scrollTo(0, 0);
           }
-        }
-      });
+        });
   }
 }

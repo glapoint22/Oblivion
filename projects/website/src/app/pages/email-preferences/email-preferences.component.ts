@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { EmailPreferences } from '../../classes/email-preferences';
 import { SuccessPromptComponent } from '../../components/success-prompt/success-prompt.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'email-preferences',
@@ -14,16 +16,18 @@ export class EmailPreferencesComponent implements OnInit {
   private initialPreferences: EmailPreferences = new EmailPreferences();
   public allChecked!: boolean;
 
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
+  constructor
+    (
+      private dataService: DataService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService,
+      private route: ActivatedRoute
+    ) { }
 
   ngOnInit() {
-    this.dataService.get<EmailPreferences>('api/EmailPreferences', undefined, true)
-      .subscribe((preferences: EmailPreferences) => {
-        this.preferences = preferences;
-
-        this.setInitialPreferences();
-        this.setAllChecked();
-      })
+    this.preferences = this.route.snapshot.data.preferences;
+    this.setInitialPreferences();
+    this.setAllChecked();
   }
 
 
@@ -56,7 +60,8 @@ export class EmailPreferencesComponent implements OnInit {
 
 
   onSaveChangesClick() {
-    this.dataService.put('api/EmailPreferences', this.preferences, true).subscribe(() => {
+    this.spinnerService.show = true;
+    this.dataService.put('api/EmailPreferences', this.preferences, { authorization: true }).subscribe(() => {
       this.setInitialPreferences();
       this.OpenSuccessPrompt();
     });
@@ -81,6 +86,7 @@ export class EmailPreferencesComponent implements OnInit {
       .then((successPromptComponent: SuccessPromptComponent) => {
         successPromptComponent.header = 'Email Preferences';
         successPromptComponent.message = 'Your email preferences have been successfully updated.';
+        this.spinnerService.show = false;
       });
   }
 }

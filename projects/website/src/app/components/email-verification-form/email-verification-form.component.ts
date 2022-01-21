@@ -4,6 +4,7 @@ import { invalidPasswordValidator, Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -11,13 +12,19 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   templateUrl: './email-verification-form.component.html',
   styleUrls: ['./email-verification-form.component.scss']
 })
-export class EmailVerificationFormComponent extends Validation implements OnInit  {
+export class EmailVerificationFormComponent extends Validation implements OnInit {
   @ViewChild('otpInput') otpInput!: ElementRef<HTMLInputElement>;
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
   @ViewChild('verificationForm') verificationForm!: ElementRef<HTMLFormElement>;
   public email!: string;
 
-  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private accountService: AccountService) { super() }
+  constructor
+    (
+      private lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
+      private accountService: AccountService,
+      private spinnerService: SpinnerService
+    ) { super() }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -49,18 +56,20 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
       .then((successPromptComponent: SuccessPromptComponent) => {
         successPromptComponent.header = 'Successful Email Change';
         successPromptComponent.message = 'Your email has been successfully changed.';
+        this.spinnerService.show = false;
       });
   }
 
 
   onSubmit() {
     if (this.form.valid) {
+      this.spinnerService.show = true;
       this.dataService.put('api/Account/UpdateEmail', {
         email: this.email,
         password: this.form.get('password')?.value,
         token: this.form.get('otp')?.value
       },
-        true
+        { authorization: true }
       ).subscribe(() => {
         this.accountService.setCustomer();
         this.close();

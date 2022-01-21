@@ -18,7 +18,9 @@ export class NichesService {
   constructor(private dataService: DataService) { }
 
   getNiches(): Observable<Array<Niche>> {
-    if (this.niches) return of(this.niches);
+    if (this.niches) {
+      return of(this.niches);
+    }
 
     return this.dataService.get<Array<Niche>>('api/Categories')
       .pipe(tap(niches => {

@@ -23,7 +23,7 @@ export class RemoveItemPromptComponent extends LazyLoad {
       productId: this.product.id,
       collaboratorId: this.product.collaborator.id,
       listId: this.list.id
-    }, true).subscribe(() => {
+    }, { authorization: true }).subscribe(() => {
       this.onRemove.emit();
       this.close();
     });
