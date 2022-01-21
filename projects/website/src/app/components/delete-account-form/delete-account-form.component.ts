@@ -6,6 +6,7 @@ import { invalidPasswordValidator, Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 
@@ -15,8 +16,6 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./delete-account-form.component.scss']
 })
 export class DeleteAccountFormComponent extends Validation {
-  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private accountService: AccountService, private router: Router) { super() }
-
   public email!: string;
   public authentication: Authentication = new Authentication();
 
@@ -24,6 +23,14 @@ export class DeleteAccountFormComponent extends Validation {
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
   @ViewChild('verificationForm') verificationForm!: ElementRef<HTMLFormElement>;
 
+  constructor
+    (
+      private lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
+      private accountService: AccountService,
+      private spinnerService: SpinnerService,
+      private router: Router
+    ) { super() }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -56,17 +63,19 @@ export class DeleteAccountFormComponent extends Validation {
       .then((successPromptComponent: SuccessPromptComponent) => {
         successPromptComponent.header = 'Successful Account Deletion';
         successPromptComponent.message = 'Your account has been successfully deleted.';
+        this.spinnerService.show = false;
       });
   }
 
 
   onSubmit() {
     if (this.form.valid) {
+      this.spinnerService.show = true;
       this.dataService.put<Authentication>('api/Account/DeleteAccount', {
         password: this.form.get('password')?.value,
         oneTimePassword: this.form.get('otp')?.value
       },
-        true
+        {authorization: true}
       ).subscribe((authentication: Authentication) => {
         this.authentication.failure = authentication.failure;
 

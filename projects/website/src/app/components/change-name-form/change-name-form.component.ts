@@ -4,6 +4,7 @@ import { invalidNameValidator, Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -13,7 +14,13 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 })
 export class ChangeNameFormComponent extends Validation implements OnInit {
 
-  constructor(private accountService: AccountService, private dataService: DataService, private lazyLoadingService: LazyLoadingService) { super() }
+  constructor
+    (
+      private accountService: AccountService,
+      private dataService: DataService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) { super() }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -33,11 +40,12 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
+      this.spinnerService.show = true;
       this.dataService.put('api/Account/ChangeName', {
         firstName: this.form.get('firstName')?.value,
         lastName: this.form.get('lastName')?.value
       },
-        true
+        { authorization: true }
       ).subscribe(() => {
         this.accountService.setCustomer();
         this.close();
@@ -55,6 +63,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
       .then((successPromptComponent: SuccessPromptComponent) => {
         successPromptComponent.header = 'Successful Name Change';
         successPromptComponent.message = 'Your name has been successfully changed.';
+        this.spinnerService.show = false;
       });
   }
 }

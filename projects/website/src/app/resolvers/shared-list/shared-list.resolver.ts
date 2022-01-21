@@ -16,11 +16,16 @@ export class SharedListResolver implements Resolve<SharedList> {
   constructor(private dataService: DataService, private router: Router, private location: Location) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<SharedList> {
-    return this.dataService.get<SharedList>('api/Lists/List', [{ key: 'listId', value: route.paramMap.get('listId') }])
+
+    return this.dataService.get<SharedList>('api/Lists/List',
+      [
+        { key: 'listId', value: route.paramMap.get('listId') },
+        { key: 'sort', value: route.queryParamMap.get('sort') ? route.queryParamMap.get('sort') : '' }
+      ])
       .pipe(tap((sharedList: SharedList) => {
         if (!sharedList) {
           this.router.navigate(['**'], { skipLocationChange: true });
-          this.location.replaceState("/shared-list/" + route.paramMap.get('listId'));
+          this.location.replaceState(state.url);
         }
       }));
   }

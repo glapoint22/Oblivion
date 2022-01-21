@@ -1,35 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Page } from '../../classes/page';
-import { QueryParams } from '../../classes/query-params';
-import { DataService } from '../../services/data/data.service';
+import { SearchResolver } from '../../resolvers/search/search.resolver';
+import { GridWidgetService } from '../../services/grid-widget/grid-widget.service';
 
 @Component({
   selector: 'search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   public page!: Page;
-  private currentSearch!: string;
 
-  constructor(private route: ActivatedRoute, private dataService: DataService) { }
+  constructor
+    (
+      private route: ActivatedRoute,
+      private gridWidgetService: GridWidgetService,
+      private searchResolver: SearchResolver
+    ) { }
 
   ngOnInit(): void {
-    this.route.queryParamMap.subscribe((params: ParamMap) => {
-      const search = params.get('search');
-
-      if (search && search != this.currentSearch) {
-        this.currentSearch = search;
-
-        const queryParams = new QueryParams();
-        queryParams.set(params);
-          
-        this.dataService.post<Page>('api/Pages/Search', queryParams)
-          .subscribe((page: Page) => {
-            this.page = page;
-          });
+    this.route.parent?.data.subscribe(data => {
+      if (data.searchData.page) {
+        this.page = data.searchData.page;
+      } else {
+        this.gridWidgetService.gridData.next(data.searchData.gridData);
       }
     });
+  }
+
+
+
+  ngOnDestroy(): void {
+    this.searchResolver.currentSearch = null;
   }
 }

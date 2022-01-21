@@ -11,7 +11,7 @@ export class ListResolver implements Resolve<List> {
   constructor(private dataService: DataService, private router: Router) { }
 
   resolve(): Observable<List> {
-    return this.dataService.get<List>('api/Lists/FirstList', undefined, true)
+    return this.dataService.get<List>('api/Lists/FirstList', undefined, { authorization: true })
       .pipe(tap((list: List) => {
         if (list) {
           this.router.navigate(['account/lists', list.id]);

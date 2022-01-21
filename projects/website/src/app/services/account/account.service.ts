@@ -69,7 +69,7 @@ export class AccountService {
     this.refreshing = true;
 
     // Get a new refresh token
-    this.dataService.get('api/Account/Refresh', undefined, true)
+    this.dataService.get('api/Account/Refresh', undefined, { authorization: true })
       .subscribe((newRefreshToken: any) => {
         this.refreshTokenSet = true;
         this.waitForRefreshToken.next();
@@ -78,7 +78,7 @@ export class AccountService {
         if (newRefreshToken) {
           this.dataService.delete('api/Account/Refresh', {
             newRefreshToken: encodeURIComponent(newRefreshToken.value)
-          }, true).subscribe(() => {
+          }, { authorization: true }).subscribe(() => {
             this.refreshing = false;
           });
         }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Page } from '../../classes/page';
-import { DataService } from '../../services/data/data.service';
 
 @Component({
   selector: 'home',
@@ -10,12 +10,9 @@ import { DataService } from '../../services/data/data.service';
 export class HomeComponent implements OnInit {
   public page!: Page;
 
-  constructor(private dataService: DataService) { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.dataService.get<Page>('api/Home')
-      .subscribe((page: Page) => {
-        this.page = page;
-      });
+    this.page = this.route.snapshot.data.page;
   }
 }

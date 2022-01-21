@@ -9,6 +9,7 @@ import { AccountService } from '../../../services/account/account.service';
 import { DataService } from '../../../services/data/data.service';
 import { LazyLoadingService } from '../../../services/lazy-loading/lazy-loading.service';
 import { NichesService } from '../../../services/niches/niches.service';
+import { SpinnerService } from '../../../services/spinner/spinner.service';
 import { AccountMenuPopupComponent } from '../../account-menu-popup/account-menu-popup.component';
 import { NicheMenuPopupComponent } from '../../niche-menu-popup/niche-menu-popup.component';
 import { SideMenuComponent } from '../../side-menu/side-menu.component';
@@ -40,14 +41,15 @@ export class HeaderComponent {
     private dataService: DataService,
     private router: Router,
     private route: ActivatedRoute,
-    private nicheService: NichesService
+    private nicheService: NichesService,
+    private spinnerService: SpinnerService
   ) { }
 
 
 
 
   ngAfterViewInit() {
-    
+
     const nicheId = this.route.snapshot.queryParamMap.get('nicheId') as string;
     if (nicheId) {
       this.nicheService.getNiches()
@@ -64,20 +66,27 @@ export class HeaderComponent {
 
 
   async onSignUpClick(): Promise<void> {
+    this.spinnerService.show = true;
     const { SignUpFormComponent } = await import('../../sign-up-form/sign-up-form.component');
     const { SignUpFormModule } = await import('../../sign-up-form/sign-up-form.module');
 
-    this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container);
-
+    this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.spinnerService.show = false;
+      });
   }
 
 
 
   async onLoginClick(): Promise<void> {
+    this.spinnerService.show = true;
     const { LogInFormComponent } = await import('../../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../../log-in-form/log-in-form.module');
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container);
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.spinnerService.show = false;
+      });
   }
 
 
@@ -91,7 +100,6 @@ export class HeaderComponent {
         .then((accountMenuPopup: AccountMenuPopupComponent) => {
           this.accountMenuPopupComponent = accountMenuPopup;
         });
-
     }
     else {
       this.accountMenuPopupComponent.close();
@@ -118,9 +126,9 @@ export class HeaderComponent {
           this.nicheMenuPopup.onNicheMenuItemClick
             .subscribe((niche: Niche) => {
               this.selectedNiche = niche;
-
             });
         });
+
     } else {
       this.nicheMenuPopup.close();
     }
@@ -139,7 +147,6 @@ export class HeaderComponent {
       this.lazyLoadingService.getComponentAsync(SideMenuComponent, SideMenuModule, this.sideMenuContainer)
         .then((sideMenu: SideMenuComponent) => {
           this.sideMenu = sideMenu;
-
         });
     } else {
       this.sideMenu.close();

@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Validation } from '../../classes/validation';
 import { EmailSentPromptComponent } from '../../components/email-sent-prompt/email-sent-prompt.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'forgot-password-form',
@@ -12,7 +12,7 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 })
 export class ForgotPasswordFormComponent extends Validation implements OnInit {
 
-  constructor(private lazyLoadingService: LazyLoadingService) {super()}
+  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -34,22 +34,31 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
 
 
   async onLogInLinkClick() {
+    this.spinnerService.show = true;
     this.close();
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
-    
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container);
+
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.spinnerService.show = false;
+      });
+
   }
 
 
   async openEmailSentPrompt(email: string) {
+    this.spinnerService.show = true;
     const { EmailSentPromptComponent } = await import('../../components/email-sent-prompt/email-sent-prompt.component');
     const { EmailSentPromptModule } = await import('../../components/email-sent-prompt/email-sent-prompt.module');
-    
+
     this.lazyLoadingService.getComponentAsync(EmailSentPromptComponent, EmailSentPromptModule, this.lazyLoadingService.container)
-    .then((emailSentPrompt: EmailSentPromptComponent) => {
-      emailSentPrompt.email = email;
-    });
+      .then((emailSentPrompt: EmailSentPromptComponent) => {
+        emailSentPrompt.email = email;
+        this.spinnerService.show = false;
+      });
+
+
   }
 }

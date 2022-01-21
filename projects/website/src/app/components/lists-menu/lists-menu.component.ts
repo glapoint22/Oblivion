@@ -7,6 +7,7 @@ import { EditListFormComponent } from '../../components/edit-list-form/edit-list
 import { ManageCollaboratorsFormComponent } from '../../components/manage-collaborators-form/manage-collaborators-form.component';
 import { ShareListFormComponent } from '../../components/share-list-form/share-list-form.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'lists-menu',
@@ -20,10 +21,16 @@ export class ListsMenuComponent {
   @Input() selectedList!: List;
   @ViewChild('listSettingsPopupContainer', { read: ViewContainerRef }) listSettingsPopupContainer!: ViewContainerRef;
 
-  constructor(private lazyLoadingService: LazyLoadingService, private location: Location) {}
+  constructor
+    (
+      private lazyLoadingService: LazyLoadingService,
+      private location: Location,
+      private spinnerService: SpinnerService
+    ) { }
 
 
   async onEditListClick() {
+    this.spinnerService.show = true;
     const { EditListFormComponent } = await import('../../components/edit-list-form/edit-list-form.component');
     const { EditListFormModule } = await import('../../components/edit-list-form/edit-list-form.module');
 
@@ -40,12 +47,15 @@ export class ListsMenuComponent {
           listName?.setValue(this.selectedList.name);
           description?.setValue(this.selectedList.description);
         });
+
+        this.spinnerService.show = false;
       });
   }
 
 
 
   async onShareListClick() {
+    this.spinnerService.show = true;
     const { ShareListFormComponent } = await import('../../components/share-list-form/share-list-form.component');
     const { ShareListFormModule } = await import('../../components/share-list-form/share-list-form.module');
 
@@ -60,12 +70,15 @@ export class ListsMenuComponent {
         }
 
         shareListForm.list = this.selectedList;
+
+        this.spinnerService.show = false;
       });
   }
 
 
 
   async onManageCollaboratorsClick() {
+    this.spinnerService.show = true;
     const { ManageCollaboratorsFormComponent } = await import('../../components/manage-collaborators-form/manage-collaborators-form.component');
     const { ManageCollaboratorsFormModule } = await import('../../components/manage-collaborators-form/manage-collaborators-form.module');
 
@@ -78,6 +91,7 @@ export class ListsMenuComponent {
 
 
   async onDeleteListClick() {
+    this.spinnerService.show = true;
     const { DeleteListPromptComponent } = await import('../../components/delete-list-prompt/delete-list-prompt.component');
     const { DeleteListPromptModule } = await import('../../components/delete-list-prompt/delete-list-prompt.module');
 
@@ -94,6 +108,8 @@ export class ListsMenuComponent {
             this.location.replaceState("account/lists");
           }
         });
+
+        this.spinnerService.show = false;
       });
   }
 }

@@ -6,6 +6,7 @@ import { List } from '../../classes/list';
 import { ListPermissions } from '../../classes/list-permissions';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { ShareListFormComponent } from '../share-list-form/share-list-form.component';
 
 @Component({
@@ -37,11 +38,19 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   public allChecked!: boolean;
 
 
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { super(); }
+  constructor
+    (
+      private dataService: DataService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) { super(); }
 
 
   ngOnInit(): void {
-    this.dataService.get<Array<Collaborator>>('api/Lists/Collaborators', [{ key: 'listId', value: this.list.id }], true)
+    this.dataService.get<Array<Collaborator>>('api/Lists/Collaborators', [{ key: 'listId', value: this.list.id }], {
+      authorization: true,
+      showSpinner: true
+    })
       .subscribe((collaborators: Array<Collaborator>) => {
         this.collaborators = collaborators;
         if (collaborators.length > 0) {
@@ -104,7 +113,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   onApplyClick() {
-    this.dataService.put('api/Lists/UpdateCollaborators', this.updatedCollaborators, true)
+    this.dataService.put('api/Lists/UpdateCollaborators', this.updatedCollaborators, { authorization: true })
       .subscribe(() => {
         this.list.collaboratorCount = this.collaborators.length;
         this.close();
@@ -129,6 +138,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   async openShareList() {
+    this.spinnerService.show = true;
     this.close();
 
     const { ShareListFormComponent } = await import('../../components/share-list-form/share-list-form.component');
@@ -138,6 +148,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
       .then((shareListForm: ShareListFormComponent) => {
         shareListForm.shareListType = ShareListType.Both;
         shareListForm.list = this.list;
+        this.spinnerService.show = false;
       });
   }
 }

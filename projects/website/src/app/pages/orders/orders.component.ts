@@ -1,21 +1,21 @@
 import { KeyValue } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Order } from '../../classes/order';
 import { OrderProduct } from '../../classes/order-product';
-import { ProductOrders } from '../../classes/product-orders';
 import { QueriedOrderProduct } from '../../classes/queried-order-product';
 import { OrdersSideMenuComponent } from '../../components/orders-side-menu/orders-side-menu.component';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
-import { DataService } from '../../services/data/data.service';
+import { OrdersResolver } from '../../resolvers/orders/orders.resolver';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'orders',
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.scss']
 })
-export class OrdersComponent implements AfterViewInit {
+export class OrdersComponent implements OnInit, OnDestroy {
   public filters!: Array<KeyValue<string, string>>;
   public selectedFilter!: KeyValue<string, string>;
   public orders!: Array<Order>;
@@ -23,47 +23,33 @@ export class OrdersComponent implements AfterViewInit {
   public isSearch!: boolean;
   public searchTerm!: string;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router, private lazyLoadingService: LazyLoadingService) { }
-
-  ngAfterViewInit(): void {
-    // Get the filters
-    this.dataService.get<Array<KeyValue<string, string>>>('api/ProductOrders/Filters', undefined, true)
-      .subscribe((filters: Array<KeyValue<string, string>>) => {
-        this.filters = filters;
-
-        // Get the orders and products
-        this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
-          // Parameters we will pass to the server
-          let parameters: Array<KeyValue<string, string>> = [];
-
-          this.searchTerm = queryParams.get('orderSearch') as string;
-
-          if (this.searchTerm) {
-            this.isSearch = true;
-          } else {
-            this.isSearch = false;
-          }
-
-          // Get all the query params from the url and assign it to the parameters array
-          for (let i = 0; i < queryParams.keys.length; i++) {
-            parameters.push({ key: queryParams.keys[i], value: queryParams.get(queryParams.keys[i]) as string });
-          }
-
-          this.dataService.get<ProductOrders>('api/ProductOrders', parameters, true)
-            .subscribe((productOrders: ProductOrders) => {
-              this.orders = productOrders.orders;
-              this.products = productOrders.products;
-
-              if (this.orders) {
-                const index = Math.max(0, this.filters.findIndex(x => x.value == queryParams.get('filter')));
-                this.selectedFilter = this.filters[index];
-              }
-            });
-        });
-      });
+  constructor
+    (
+      private route: ActivatedRoute,
+      private router: Router,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService,
+      private ordersResolver: OrdersResolver
+    ) { }
 
 
+  ngOnInit(): void {
+    this.route.parent?.data.subscribe(data => {
+      this.filters = data.ordersData.filters;
+      this.orders = data.ordersData.orders;
+      this.products = data.ordersData.products;
+      this.searchTerm = data.ordersData.searchTerm;
+      this.selectedFilter = data.ordersData.selectedFilter;
+
+      if (this.searchTerm) {
+        this.isSearch = true;
+      } else {
+        this.isSearch = false;
+      }
+    })
   }
+
+
 
 
   onFilterChange(filter: KeyValue<string, string>) {
@@ -130,6 +116,7 @@ export class OrdersComponent implements AfterViewInit {
 
 
   async onWriteReviewClick(order: Order) {
+    this.spinnerService.show = true;
     const { WriteReviewFormComponent } = await import('../../components/write-review-form/write-review-form.component');
     const { WriteReviewFormModule } = await import('../../components/write-review-form/write-review-form.module');
 
@@ -138,6 +125,7 @@ export class OrdersComponent implements AfterViewInit {
         writeReviewForm.productId = order.productId;
         writeReviewForm.productImage = order.products[0].image.url;
         writeReviewForm.productName = order.products[0].image.name;
+        this.spinnerService.show = false;
       });
   }
 
@@ -146,6 +134,7 @@ export class OrdersComponent implements AfterViewInit {
 
 
   async onHamburgerButtonClick() {
+    this.spinnerService.show = true;
     const { OrdersSideMenuComponent } = await import('../../components/orders-side-menu/orders-side-menu.component');
     const { OrdersSideMenuModule } = await import('../../components/orders-side-menu/orders-side-menu.module');
 
@@ -157,7 +146,15 @@ export class OrdersComponent implements AfterViewInit {
         ordersSideMenu.onApply.subscribe((filter: KeyValue<string, string>) => {
           this.onFilterChange(filter);
         });
-      });
 
+        this.spinnerService.show = false;
+      });
+  }
+
+
+
+
+  ngOnDestroy(): void {
+    this.ordersResolver.filters = null;
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { invalidNameValidator, invalidPasswordValidator, Validation } from '../../classes/validation';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class CreateAccountFormComponent extends Validation implements OnInit {
 
-  constructor(private lazyLoadingService: LazyLoadingService) { super() }
+  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
 
 
   ngOnInit(): void {
@@ -46,10 +47,14 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
 
   async onLogInLinkClick() {
+    this.spinnerService.show = true;
     this.close();
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container);
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.spinnerService.show = false;
+      });
   }
 }

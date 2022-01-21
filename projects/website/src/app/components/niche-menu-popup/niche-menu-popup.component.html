@@ -1,4 +1,4 @@
-<div class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div *ngIf="niches" class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <div class="arrow-container" [style.left.px]="arrowPos">
         <div class="arrow"></div>

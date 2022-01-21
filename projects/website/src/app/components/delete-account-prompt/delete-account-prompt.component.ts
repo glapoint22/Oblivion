@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'delete-account-prompt',
@@ -10,13 +11,14 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class DeleteAccountPromptComponent extends LazyLoad {
 
-  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) {
+  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private spinnerService: SpinnerService) {
     super();
   }
 
 
   onDeleteClick() {
-    this.dataService.post('api/Account/CreateDeleteAccountOTP', {}, true)
+    this.spinnerService.show = true;
+    this.dataService.post('api/Account/CreateDeleteAccountOTP', {}, {authorization: true})
     .subscribe(() => {
       this.openDeleteAccountForm();
     });
@@ -30,7 +32,7 @@ export class DeleteAccountPromptComponent extends LazyLoad {
     this.lazyLoadingService.getComponentAsync(DeleteAccountFormComponent, DeleteAccountFormModule, this.lazyLoadingService.container)
       .then(() => {
         this.close();
-
+        this.spinnerService.show = false;
       });
   }
 }

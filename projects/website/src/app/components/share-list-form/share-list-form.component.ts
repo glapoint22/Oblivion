@@ -3,6 +3,7 @@ import { ShareListType } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -15,7 +16,7 @@ export class ShareListFormComponent extends LazyLoad {
   public ShareListType = ShareListType;
   public list!: List;
 
-  constructor(private lazyLoadingService: LazyLoadingService){
+  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) {
     super();
   }
 
@@ -83,13 +84,15 @@ export class ShareListFormComponent extends LazyLoad {
 
 
   async OpenSuccessPrompt() {
+    this.spinnerService.show = true;
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-    .then((successPromptComponent: SuccessPromptComponent)=> {
-      successPromptComponent.header = 'Link Coppied';
-      successPromptComponent.message = 'The link has been copied to the clipboard.';
-    });
+      .then((successPromptComponent: SuccessPromptComponent) => {
+        successPromptComponent.header = 'Link Coppied';
+        successPromptComponent.message = 'The link has been copied to the clipboard.';
+        this.spinnerService.show = false;
+      });
   }
 }

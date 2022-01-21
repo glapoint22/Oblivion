@@ -1,15 +1,14 @@
 import { KeyValue } from '@angular/common';
 import { Component } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GridData } from '../../classes/grid-data';
 import { GridWidgetData } from '../../classes/grid-widget-data';
 import { Product } from '../../classes/product';
-import { QueryParams } from '../../classes/query-params';
 import { Widget } from '../../classes/widget';
-import { DataService } from '../../services/data/data.service';
-import { GridWidgetSideMenuService } from '../../services/grid-widget-side-menu/grid-widget-side-menu.service';
+import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
+import { GridWidgetService } from '../../services/grid-widget/grid-widget.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'grid-widget',
@@ -18,7 +17,6 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class GridWidgetComponent extends Widget {
   public gridData!: GridData;
-  public selectedSortOption!: KeyValue<string, string>;
   public sortOptions: Array<KeyValue<string, string>> = [
     {
       key: 'Price: Low to High',
@@ -38,16 +36,14 @@ export class GridWidgetComponent extends Widget {
     }
   ]
 
-  private currentId: string = '';
-  private subscription!: Subscription;
-
+  private gridWidgetSideMenu!: GridWidgetSideMenuComponent;
 
   constructor(
     public route: ActivatedRoute,
     private router: Router,
     private lazyLoadingService: LazyLoadingService,
-    private dataService: DataService,
-    private gridWidgetSideMenuService: GridWidgetSideMenuService
+    private gridWidgetService: GridWidgetService,
+    private spinnerService: SpinnerService
   ) { super() }
 
   ngOnInit() {
@@ -57,33 +53,18 @@ export class GridWidgetComponent extends Widget {
         value: 'best-match'
       });
     }
-
-
-    this.subscription = this.route.queryParamMap
-      .subscribe((params: ParamMap) => {
-        this.setSortOption();
-
-        if (params.get('search') == this.currentId || params.get('categoryId') == this.currentId || params.get('nicheId') == this.currentId) {
-          const queryParams = new QueryParams();
-          queryParams.set(params);
-
-          this.dataService.post<GridData>('api/Pages/Params', queryParams)
-            .subscribe((gridData: GridData) => {
-              this.gridData = gridData;
-              this.gridWidgetSideMenuService.filters = this.gridData.filters;
-            });
-        } else {
-          this.currentId = params.get('search') || params.get('categoryId') || params.get('nicheId') as string;
-          if (this.subscription) this.subscription.unsubscribe();
-        }
-      });
   }
 
 
   setWidget(gridWidgetData: GridWidgetData): void {
     this.gridData = gridWidgetData.gridData;
-    this.gridWidgetSideMenuService.filters = this.gridData.filters;
+    if (this.gridWidgetSideMenu) this.gridWidgetSideMenu.filters = this.gridData.filters;
     super.setWidget(gridWidgetData);
+
+    this.gridWidgetService.gridData.subscribe((gridData: GridData) => {
+      this.gridData = gridData;
+      if (this.gridWidgetSideMenu) this.gridWidgetSideMenu.filters = this.gridData.filters;
+    });
   }
 
 
@@ -103,7 +84,7 @@ export class GridWidgetComponent extends Widget {
 
   setSortOption() {
     const index = Math.max(0, this.sortOptions.findIndex(x => x.value == this.route.snapshot.queryParams['sort']));
-    this.selectedSortOption = this.sortOptions[index];
+    return this.sortOptions[index];
   }
 
 
@@ -116,14 +97,16 @@ export class GridWidgetComponent extends Widget {
 
 
   async onHamburgerButtonClick() {
+    this.spinnerService.show = true;
     const { GridWidgetSideMenuComponent } = await import('../../components/grid-widget-side-menu/grid-widget-side-menu.component');
     const { GridWidgetSideMenuModule } = await import('../../components/grid-widget-side-menu/grid-widget-side-menu.module');
 
     this.lazyLoadingService.getComponentAsync(GridWidgetSideMenuComponent, GridWidgetSideMenuModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.gridWidgetSideMenuService.filters = this.gridData.filters;
-        this.gridWidgetSideMenuService.sortOptions = this.sortOptions;
-        this.gridWidgetSideMenuService.selectedSortOption = this.selectedSortOption;
+      .then((gridWidgetSideMenu: GridWidgetSideMenuComponent) => {
+        this.gridWidgetSideMenu = gridWidgetSideMenu;
+        gridWidgetSideMenu.sortOptions = this.sortOptions;
+        gridWidgetSideMenu.filters = this.gridData.filters;
+        this.spinnerService.show = false;
       });
   }
 

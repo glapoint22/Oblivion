@@ -1,8 +1,8 @@
 import { KeyValue } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Filters } from '../../classes/filters';
 import { LazyLoad } from '../../classes/lazy-load';
-import { GridWidgetSideMenuService } from '../../services/grid-widget-side-menu/grid-widget-side-menu.service';
 
 @Component({
   selector: 'grid-widget-side-menu',
@@ -10,8 +10,10 @@ import { GridWidgetSideMenuService } from '../../services/grid-widget-side-menu/
   styleUrls: ['./grid-widget-side-menu.component.scss']
 })
 export class GridWidgetSideMenuComponent extends LazyLoad {
+  public sortOptions!: Array<KeyValue<string, string>>;
+  public filters!: Filters;
 
-  constructor(private router: Router, public gridWidgetSideMenuService: GridWidgetSideMenuService) { super() }
+  constructor(private router: Router, private route: ActivatedRoute) { super() }
 
   onOpen() {
     document.getElementById('menuContainer')?.focus();
@@ -22,7 +24,10 @@ export class GridWidgetSideMenuComponent extends LazyLoad {
       queryParams: { sort: sortOption.value, page: null },
       queryParamsHandling: 'merge'
     });
+  }
 
-    this.gridWidgetSideMenuService.selectedSortOption = sortOption;
+  setSortOption() {
+    const index = Math.max(0, this.sortOptions.findIndex(x => x.value == this.route.snapshot.queryParams['sort']));
+    return this.sortOptions[index];
   }
 }

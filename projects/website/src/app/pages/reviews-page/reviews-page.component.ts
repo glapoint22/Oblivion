@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../classes/product';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'reviews-page',
@@ -12,33 +13,24 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class ReviewsPageComponent implements OnInit {
   public product!: Product;
-  private reviewsContainerElement!: HTMLElement;
-  private headerContainerElement!: HTMLElement;
 
 
-
-  constructor(private route: ActivatedRoute, private accountService: AccountService, private lazyLoadingService: LazyLoadingService) { }
+  constructor
+    (
+      private route: ActivatedRoute,
+      private accountService: AccountService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) { }
 
   ngOnInit(): void {
     this.product = this.route.snapshot.parent?.data.product;
   }
 
-  ngAfterViewInit() {
-    this.reviewsContainerElement = document.getElementsByClassName('reviews-container')[0] as HTMLElement;
-    this.headerContainerElement = document.getElementsByClassName('header-container')[0] as HTMLElement;
-
-    this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
-      // Scroll to the top of the reviews
-      if (queryParams.has('page')) {
-        const pos = this.reviewsContainerElement.offsetTop - this.headerContainerElement.getBoundingClientRect().height;
-        window.scrollTo(0, pos);
-      }
-    });
-  }
-
 
   async onWriteReviewClick() {
     if (this.accountService.customer) {
+      this.spinnerService.show = true;
       const { WriteReviewFormComponent } = await import('../../components/write-review-form/write-review-form.component');
       const { WriteReviewFormModule } = await import('../../components/write-review-form/write-review-form.module');
 
@@ -47,6 +39,7 @@ export class ReviewsPageComponent implements OnInit {
           writeReviewForm.productId = this.product.id;
           writeReviewForm.productImage = this.product.media[0].image;
           writeReviewForm.productName = this.product.name;
+          this.spinnerService.show = false;
         });
     } else {
       this.logIn();
@@ -55,9 +48,13 @@ export class ReviewsPageComponent implements OnInit {
 
 
   async logIn() {
+    this.spinnerService.show = true;
     const { LogInFormComponent } = await import('../../components/log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../../components/log-in-form/log-in-form.module')
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container);
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
+      .then(() => {
+        this.spinnerService.show = false;
+      });
   }
 }
