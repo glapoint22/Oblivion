@@ -5,7 +5,7 @@
 
 
     <!-- Container -->
-    <div class="container">
+    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
 
         <!-- Base -->
         <div class="base">
@@ -30,7 +30,8 @@
                         {{collaborator.name}}
                     </div>
 
-                    <div *ngIf="list.collaboratorCount == 0" style="    width: 100%;
+                    <!-- *ngIf="list.collaboratorCount == 0" -->
+                    <div  style="    width: 100%;
                     height: 100%;
                     display: flex;
                     justify-content: center;

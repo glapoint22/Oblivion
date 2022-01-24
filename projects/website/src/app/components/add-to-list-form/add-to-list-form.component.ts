@@ -18,6 +18,8 @@ export class AddToListFormComponent extends LazyLoad {
   public lists!: Array<KeyValue<string, string>>;
   public product!: Product;
   public selectedList!: KeyValue<string, string>;
+  public duplicateItemPrompt!: DuplicateItemPromptComponent;
+  public createListForm!: CreateListFormComponent;
 
   constructor
     (
@@ -47,6 +49,7 @@ export class AddToListFormComponent extends LazyLoad {
       listId: this.selectedList.value
     }, { authorization: true }).subscribe((isDuplicate: boolean) => {
       if (isDuplicate) {
+        this.fade();
         this.openDuplicateItemPrompt();
       } else {
         this.close();
@@ -63,16 +66,17 @@ export class AddToListFormComponent extends LazyLoad {
     this.lazyLoadingService.getComponentAsync(DuplicateItemPromptComponent, DuplicateItemPromptModule, this.lazyLoadingService.container)
       .then((duplicateItemPrompt: DuplicateItemPromptComponent) => {
         duplicateItemPrompt.list = this.selectedList.key;
-        duplicateItemPrompt.product = this.product.name;
+        duplicateItemPrompt.product = this.product;
+        duplicateItemPrompt.addToListForm = this;
         this.spinnerService.show = false;
       });
-    
   }
 
 
 
   async createList() {
     this.spinnerService.show = true;
+    this.fade();
     const { CreateListFormComponent } = await import('../../components/create-list-form/create-list-form.component');
     const { CreateListFormModule } = await import('../../components/create-list-form/create-list-form.module');
 
@@ -85,10 +89,23 @@ export class AddToListFormComponent extends LazyLoad {
           });
           this.selectedList = this.lists[this.lists.length - 1];
         });
-
+        createListForm.product = this.product;
+        createListForm.addToListForm = this;
         this.spinnerService.show = false;
       });
+  }
 
-    
+
+  close() {
+    super.close();
+    if (this.duplicateItemPrompt) {
+      this.duplicateItemPrompt.close();
+      this.duplicateItemPrompt.addToListForm.close();
+    }
+
+    if (this.createListForm) {
+      this.createListForm.close();
+      this.createListForm.addToListForm.close();
+    }
   }
 }

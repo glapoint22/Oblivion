@@ -1,10 +1,10 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="backdrop" (click)="close()"></div>
+    <div class="transparent-backdrop" (click)="close()"></div>
 
     <!-- Container -->
-    <div [ngClass]="{'both': shareListType == ShareListType.Both}"  class="container">
+    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut, 'both': shareListType == ShareListType.Both}">
 
         <!-- Base -->
         <div class="base" [ngClass]="{'max-width': shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate}">

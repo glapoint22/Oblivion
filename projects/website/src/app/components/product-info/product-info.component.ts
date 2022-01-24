@@ -26,6 +26,7 @@ export class ProductInfoComponent implements OnChanges {
   ngOnChanges() {
     this.selectedMedia = this.product.media[0];
   }
+  
 
   async onAddToListClick() {
     if (this.accountService.customer) {

@@ -3,6 +3,7 @@ import { AfterViewInit, Directive, ViewContainerRef, ViewRef } from "@angular/co
 @Directive()
 export class LazyLoad implements AfterViewInit {
     public show: boolean = false;
+    public fadeOut: boolean = false;
     public viewRef!: ViewRef;
     public container!: ViewContainerRef;
     public setTimeOut!: number;
@@ -25,6 +26,13 @@ export class LazyLoad implements AfterViewInit {
         window.clearTimeout(this.setTimeOut);
     }
 
+
+    fade() {
+        this.fadeOut = true;
+        window.clearTimeout(this.setTimeOut);
+    }
+
+    
     onHide() {
         if (!this.show) {
             const index = this.container.indexOf(this.viewRef);

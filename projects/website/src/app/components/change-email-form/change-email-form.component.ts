@@ -25,6 +25,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
     super();
   }
 
+  
   ngOnInit(): void {
     this.form = new FormGroup({
       email: new FormControl(this.accountService.customer?.email, [
@@ -45,19 +46,21 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
             this.spinnerService.show = false;
             return;
           }
+          this.fade();
           this.openEmailverificationForm();
         });
     }
   }
 
+
   async openEmailverificationForm() {
-    this.close();
     const { EmailVerificationFormComponent } = await import('../email-verification-form/email-verification-form.component');
     const { EmailVerificationFormModule } = await import('../email-verification-form/email-verification-form.module');
 
     this.lazyLoadingService.getComponentAsync(EmailVerificationFormComponent, EmailVerificationFormModule, this.lazyLoadingService.container)
-      .then((emailVerificationFormComponent: EmailVerificationFormComponent) => {
-        emailVerificationFormComponent.email = this.form.get('email')?.value;
+      .then((emailVerificationForm: EmailVerificationFormComponent) => {
+        emailVerificationForm.email = this.form.get('email')?.value;
+        emailVerificationForm.changeEmailForm = this;
         this.spinnerService.show = false;
       });
   }
