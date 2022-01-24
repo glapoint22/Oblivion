@@ -1,4 +1,5 @@
 @import '../../../scss/mixins.scss';
+@import '../../../scss/variables.scss';
 @include modal-values(350px, 497px, 590px);
 
 .content {
@@ -11,6 +12,11 @@
 
 .forgot-password {
     float: right;
+}
+
+.error-text {
+    color: $error-color;
+    margin-bottom: 20px;
 }
 
 @media (max-width: 300px) {

@@ -7,5 +7,5 @@ import { LazyLoad } from '../../classes/lazy-load';
   styleUrls: ['./email-sent-prompt.component.scss']
 })
 export class EmailSentPromptComponent extends LazyLoad {
-  public email: string = "";
+  public email!: string;
 }

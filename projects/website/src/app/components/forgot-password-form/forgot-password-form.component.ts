@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Validation } from '../../classes/validation';
 import { EmailSentPromptComponent } from '../../components/email-sent-prompt/email-sent-prompt.component';
+import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 
@@ -11,8 +12,14 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
   styleUrls: ['./forgot-password-form.component.scss']
 })
 export class ForgotPasswordFormComponent extends Validation implements OnInit {
+  public isError!: boolean;
 
-  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
+  constructor
+    (
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService,
+      private dataService: DataService
+    ) { super() }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -25,10 +32,19 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
 
 
   onSubmit() {
+    this.isError = false;
     if (this.form.valid) {
-      console.log('Submit');
-      this.close();
-      this.openEmailSentPrompt(this.form.get('email')?.value);
+      this.dataService.get<boolean>('api/Account/ForgetPassword', [{
+        key: 'email',
+        value: this.form.get('email')?.value
+      }]).subscribe((isError: boolean) => {
+        if (isError) {
+          this.isError = true;
+        } else {
+          this.close();
+          this.openEmailSentPrompt(this.form.get('email')?.value);
+        }
+      });
     }
   }
 

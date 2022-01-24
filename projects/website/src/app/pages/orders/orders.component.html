@@ -83,7 +83,7 @@
 
                             <div class="product-container" *ngFor="let product of order.products">
 
-                                <div class="image-container">
+                                <div class="image-container" (click)="onProductClick(product)">
                                     <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
                                         [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
                                         [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
@@ -173,7 +173,7 @@
                 <ng-container *ngFor="let product of products">
                     <div class="query-product">
 
-                        <div class="image-container">
+                        <div class="image-container" (click)="onProductClick(product)">
                             <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
                                 [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
                                 [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">

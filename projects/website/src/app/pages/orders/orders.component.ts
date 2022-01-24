@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Order } from '../../classes/order';
 import { OrderProduct } from '../../classes/order-product';
+import { Product } from '../../classes/product';
 import { QueriedOrderProduct } from '../../classes/queried-order-product';
 import { OrdersSideMenuComponent } from '../../components/orders-side-menu/orders-side-menu.component';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
@@ -152,6 +153,9 @@ export class OrdersComponent implements OnInit, OnDestroy {
   }
 
 
+  onProductClick(product: OrderProduct | QueriedOrderProduct) {
+    this.router.navigate([product.urlName, product.urlId]);
+  }
 
 
   ngOnDestroy(): void {

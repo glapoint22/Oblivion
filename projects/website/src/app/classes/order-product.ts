@@ -8,4 +8,6 @@ export class OrderProduct {
     public rebillFrequency!: string;
     public rebillAmount!: number;
     public paymentsRemaining!: number;
+    public urlName!: string;
+    public urlId!: string;
 }

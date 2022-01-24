@@ -42,6 +42,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
         .subscribe(error => {
           if (error) {
             this.isError = true;
+            this.spinnerService.show = false;
             return;
           }
           this.openEmailverificationForm();

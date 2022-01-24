@@ -7,5 +7,5 @@ import { LazyLoad } from '../../classes/lazy-load';
   styleUrls: ['./account-activation-prompt.component.scss']
 })
 export class AccountActivationPromptComponent extends LazyLoad {
-  public email: string = "trumpy@usa.com";
+  public email!: string;
 }

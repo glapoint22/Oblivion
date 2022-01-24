@@ -8,6 +8,7 @@ import { CollaborateListResolver } from './resolvers/collaborate-list/collaborat
 import { HomeResolver } from './resolvers/home/home.resolver';
 import { ProductResolver } from './resolvers/product/product.resolver';
 import { SearchResolver } from './resolvers/search/search.resolver';
+import { ResetPasswordResolver } from './resolvers/reset-password/reset-password.resolver';
 
 const routes: Routes = [
   {
@@ -47,6 +48,13 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: () => import('./pages/about-page/about-page.module').then(m => m.AboutPageModule),
+  },
+  {
+    path: 'reset-password',
+    loadChildren: () => import('./pages/reset-password/reset-password.module').then(m => m.ResetPasswordModule),
+    resolve: {
+      resetPassword: ResetPasswordResolver
+    }
   },
   {
     path: 'collaborate-list/:collaborateListId',

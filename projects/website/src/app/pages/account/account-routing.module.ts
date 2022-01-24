@@ -26,7 +26,7 @@ const routes: Routes = [
     path: 'lists',
     loadChildren: () => import('../../pages/lists/lists.module').then(m => m.ListsModule),
     resolve: {
-      lists: ListResolver,
+      listData: ListResolver,
     }
   },
   {

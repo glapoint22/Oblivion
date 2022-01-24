@@ -1,4 +1,5 @@
 @import '../../../scss/mixins.scss';
+@import '../../../scss/variables.scss';
 @include modal-values(350px, 405px, 445px);
 
 
@@ -62,6 +63,13 @@
 
 button {
     flex-shrink: 0;
+}
+
+.no-lists {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $gold;
 }
 
 @media(max-width: 285px) {

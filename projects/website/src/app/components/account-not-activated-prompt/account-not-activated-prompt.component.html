@@ -2,7 +2,6 @@
     <!-- Backdrop -->
     <div class="backdrop" (click)="close()"></div>
 
-
     <!-- Container -->
     <div class="container">
 
@@ -11,7 +10,7 @@
 
             <!-- Header -->
             <div class="header">
-                Account Activation
+                Account Not Activated
 
                 <!-- X -->
                 <div class="x" (click)="close()">X</div>
@@ -25,17 +24,17 @@
                 <div class="prompt-content">
 
                     <div class="img-container">
-                        <img src="assets/checkmark.png" alt="Checkmark">
+                        <img src="assets/info.png" alt="Info">
                     </div>
 
 
                     <!-- Message -->
                     <div class="message-text">
-                        <div>An email to activate your account has been sent to the following address:</div>
+                        <div>Your Niche Shack account has <span style="font-weight: bold; color: red">NOT</span> been activated. To activate your account, click on the "Activate Account" button in the email that was sent to:</div>
 
                         <div class="emphasized-text">{{email}}</div>
 
-                        <div>If you don’t see this email in your inbox, please check your junk or spam folder.</div>
+                        <div>If you don’t see this email in your inbox, please check your junk or spam folder or click on the "Resend email" button below and we'll send you another account activation email.</div>
                     </div>
 
                 </div>
@@ -43,6 +42,7 @@
                 <!-- Button Container -->
                 <div class="button-container">
                     <button class="dark-button" (click)="close()">Close</button>
+                    <button class="gold-rect-button" (click)="onResendEmailClick()">Resend email</button>
                 </div>
             </div>
 

@@ -31,6 +31,7 @@
                     <div class="right-line"></div>
                 </div>
 
+                <div *ngIf="noMatch" class="error-text">Your password and email do not match. Please try again.</div>
 
                 <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onLogIn()">
                     <!-- Email -->

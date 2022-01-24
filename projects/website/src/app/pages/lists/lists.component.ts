@@ -46,10 +46,14 @@ export class ListsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.parent?.data.subscribe(results => {
-      this.lists = results.listData.lists;
-      this.products = results.listData.products;
-      this.selectedList = results.listData.selectedList;
-      this.populateMoveToList();
+      if (results.listData) {
+        this.lists = results.listData.lists;
+        this.products = results.listData.products;
+        this.selectedList = results.listData.selectedList;
+        this.populateMoveToList();
+      } else {
+        this.lists = [];
+      }
     });
   }
 
@@ -174,6 +178,11 @@ export class ListsComponent implements OnInit, OnDestroy {
 
   onVisitOfficalWebsiteClick(hoplink: string) {
     window.open(hoplink, '_blank');
+  }
+
+
+  onProductClick(product: Product) {
+    this.router.navigate([product.urlName, product.urlId]);
   }
 
 

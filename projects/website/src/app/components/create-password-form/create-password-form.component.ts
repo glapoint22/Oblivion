@@ -8,8 +8,8 @@ import { invalidPasswordValidator, matchPasswordValidator, Validation } from '..
   styleUrls: ['./create-password-form.component.scss']
 })
 export class CreatePasswordFormComponent extends Validation implements OnInit {
-  public externalLoginProvider: string = 'Zuckabuck';
-  public email: string = 'trumpy@usa.com';
+  public externalLoginProvider!: string;
+  public email!: string;
 
   ngOnInit(): void {
     this.form = new FormGroup({

@@ -10,128 +10,122 @@
         <div class="page-content">
             <div class="page-title">Your Lists</div>
 
-
-            <!-- Top Container -->
-            <div class="top-container">
-                <div class="top-container-left"></div>
-
-
-                <div class="top-container-right">
-                    <div class="list-title">{{selectedList.name}}</div>
-                    <div *ngIf="products && products.length > 0" class="dropdown-container">
-                        <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event.value)"
-                            [selectedListItem]="setSelectedSortOption()">
-                        </dropdown>
-                    </div>
-
-                    <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
-
-                </div>
-            </div>
+            <ng-container *ngIf="lists && lists.length > 0">
+                <!-- Top Container -->
+                <div class="top-container">
+                    <div class="top-container-left"></div>
 
 
-            <!-- Bottom Container -->
-            <div class="bottom-container">
-                <div class="bottom-container-left">
-                    <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick($event)"
-                        (onCreateNewListClick)="onCreateNewListClick()"></lists-menu>
-                </div>
-
-
-                <div class="bottom-container-right">
-
-                    <div class="item-container" *ngFor="let product of products">
-
-                        <!-- Item Details -->
-                        <div class="item-details">
-                            <div class="item-image-container">
-                                <img [src]="'images/' + product.image.url" [title]="product.image.name"
-                                    [alt]="product.image.name">
-                            </div>
-
-                            <div class="item-info-container">
-                                <div class="item-title">{{product.name}}</div>
-                                <stars-summary [product]="product"></stars-summary>
-                                <div class="item-price">{{product.maxPrice ? product.minPrice + ' - ' +
-                                    product.maxPrice
-                                    : product.minPrice | currency:'USD'}}</div>
-                            </div>
-
+                    <div class="top-container-right">
+                        <div class="list-title">{{selectedList.name}}</div>
+                        <div *ngIf="products && products.length > 0" class="dropdown-container">
+                            <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event.value)"
+                                [selectedListItem]="setSelectedSortOption()">
+                            </dropdown>
                         </div>
 
-                        <div class="vertical-line"></div>
+                        <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
 
-                        <div class="horizontal-line"></div>
-
-                        <!-- Item Actions -->
-                        <div class="item-actions">
-                            <div class="profile-img-container" [title]="product.collaborator.image.name">
-                                <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-                                <img [src]="product.collaborator.image.url ? 'images/' + product.collaborator.image.url : 'assets/no-account-pic.png'"
-                                    [alt]="product.collaborator.image.name" class="profile-pic">
-                            </div>
-
-
-                            <div class="date">
-                                Added {{product.dateAdded}}
-                            </div>
-
-                            <div class="added-text">Added by {{product.collaborator.name}}</div>
-
-                            <div class="item-actions-button-container">
-                                <dropdown-button
-                                    [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.moveItem"
-                                    style="flex: 1;" [listItems]="moveToList"
-                                    (onSelectedListItem)="onMoveItem($event, product)">
-                                </dropdown-button>
-
-                                <button [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.removeItem"
-                                    style="flex: 1; max-width: inherit; margin-left: 10px;" class="dark-button"
-                                    (click)="onRemoveItemClick(product)">Remove</button>
-                            </div>
-
-                            <button class="gold-rect-button" (click)="onVisitOfficalWebsiteClick(product.hoplink)">Visit
-                                official
-                                website</button>
-
-                        </div>
-                    </div>
-
-                    <div style="width: 100%; text-align: center;" *ngIf="products && products.length == 0">
-                        <div class="horizontal-line"></div>
-                        <div class="no-items">
-
-                            0 items in this list
-                        </div>
-
-                        <div style="color: #ffba00;">
-                            To add items to this list, click on the “Add to List” button on any item’s detalis page
-                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</header-footer>
 
-<ng-container *ngIf="lists.length == 0">
-    <header-footer>
-        <div class="breadcrumb">
-            <a routerLink="/account">Your Account</a>
-            <div></div>
 
-            <div>Your Lists</div>
-        </div>
+                <!-- Bottom Container -->
+                <div class="bottom-container">
+                    <div class="bottom-container-left">
+                        <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick($event)"
+                            (onCreateNewListClick)="onCreateNewListClick()"></lists-menu>
+                    </div>
 
-        <div class="page-content-container">
-            <div class="page-content">
-                <div class="page-title">Your Lists</div>
+
+                    <div class="bottom-container-right">
+
+                        <div class="item-container" *ngFor="let product of products">
+
+                            <!-- Item Details -->
+                            <div class="item-details">
+                                <div class="item-image-container" (click)="onProductClick(product)">
+                                    <img [src]="'images/' + product.image.url" [title]="product.image.name"
+                                        [alt]="product.image.name">
+                                </div>
+
+                                <div class="item-info-container">
+                                    <div class="item-title">{{product.name}}</div>
+                                    <stars-summary [product]="product"></stars-summary>
+                                    <div class="item-price">{{product.maxPrice ? product.minPrice + ' - ' +
+                                        product.maxPrice
+                                        : product.minPrice | currency:'USD'}}</div>
+                                </div>
+
+                            </div>
+
+                            <div class="vertical-line"></div>
+
+                            <div class="horizontal-line"></div>
+
+                            <!-- Item Actions -->
+                            <div class="item-actions">
+                                <div class="profile-img-container" [title]="product.collaborator.image.name">
+                                    <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
+                                    <img [src]="product.collaborator.image.url ? 'images/' + product.collaborator.image.url : 'assets/no-account-pic.png'"
+                                        [alt]="product.collaborator.image.name" class="profile-pic">
+                                </div>
+
+
+                                <div class="date">
+                                    Added {{product.dateAdded}}
+                                </div>
+
+                                <div class="added-text">Added by {{product.collaborator.name}}</div>
+
+                                <div class="item-actions-button-container">
+                                    <dropdown-button
+                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.moveItem"
+                                        style="flex: 1;" [listItems]="moveToList"
+                                        (onSelectedListItem)="onMoveItem($event, product)">
+                                    </dropdown-button>
+
+                                    <button
+                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.removeItem"
+                                        style="flex: 1; max-width: inherit; margin-left: 10px;" class="dark-button"
+                                        (click)="onRemoveItemClick(product)">Remove</button>
+                                </div>
+
+                                <button class="gold-rect-button"
+                                    (click)="onVisitOfficalWebsiteClick(product.hoplink)">Visit
+                                    official
+                                    website</button>
+
+                            </div>
+                        </div>
+
+                        <div style="width: 100%; text-align: center;" *ngIf="products && products.length == 0">
+                            <div class="horizontal-line"></div>
+                            <div class="no-items">
+
+                                0 items in this list
+                            </div>
+
+                            <div style="color: #ffba00;">
+                                To add items to this list, click on the “Add to List” button on any item’s detalis page
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+
+
+
+            <!-- No Lists! -->
+            <ng-container *ngIf="!lists || lists.length == 0">
                 <div style="text-align: center;">
                     <div style="font-size: 16px; color: white; margin-bottom: 24px;">You currently have no lists.</div>
                     <button class="purple-button" (click)="onCreateNewListClick()"
                         style="width: 190px; max-width: inherit;">Create list</button>
                 </div>
-            </div>
+            </ng-container>
+
         </div>
-    </header-footer>
-</ng-container>
+    </div>
+</header-footer>

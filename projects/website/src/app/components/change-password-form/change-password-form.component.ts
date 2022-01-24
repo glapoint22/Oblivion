@@ -12,6 +12,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./change-password-form.component.scss']
 })
 export class ChangePasswordFormComponent extends Validation implements OnInit {
+  public isError!: boolean;
 
   constructor
     (private dataService: DataService,
@@ -43,11 +44,16 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
     if (this.form.valid) {
       this.spinnerService.show = true;
       this.dataService
-        .put('api/Account/UpdatePassword', {
+        .put<boolean>('api/Account/UpdatePassword', {
           CurrentPassword: this.form.get('currentPassword')?.value,
           NewPassword: this.form.get('newPassword')?.value
         }, { authorization: true })
-        .subscribe(() => {
+        .subscribe((isError: boolean) => {
+          if (isError) {
+            this.isError = true;
+            this.spinnerService.show = false;
+            return;
+          }
           this.close();
           this.OpenSuccessPrompt();
         });

@@ -1,0 +1,6 @@
+@import '../../../scss/mixins.scss';
+@include modal-values(350px, 205px, 245px);
+
+.emphasized-text {
+    margin: 20px 0;
+}
