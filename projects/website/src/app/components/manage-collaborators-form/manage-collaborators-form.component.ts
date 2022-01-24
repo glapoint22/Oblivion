@@ -139,7 +139,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
   async openShareList() {
     this.spinnerService.show = true;
-    this.close();
+    this.fade();
 
     const { ShareListFormComponent } = await import('../../components/share-list-form/share-list-form.component');
     const { ShareListFormModule } = await import('../../components/share-list-form/share-list-form.module');
@@ -148,6 +148,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
       .then((shareListForm: ShareListFormComponent) => {
         shareListForm.shareListType = ShareListType.Both;
         shareListForm.list = this.list;
+        shareListForm.manageCollaboratorsForm = this;
         this.spinnerService.show = false;
       });
   }

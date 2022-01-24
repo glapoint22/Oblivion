@@ -22,6 +22,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
       private spinnerService: SpinnerService
     ) { super() }
 
+
   ngOnInit(): void {
     this.form = new FormGroup({
       firstName: new FormControl(this.accountService.customer?.firstName, [
@@ -48,7 +49,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
         { authorization: true }
       ).subscribe(() => {
         this.accountService.setCustomer();
-        this.close();
+        this.fade();
         this.OpenSuccessPrompt();
       });
     }
@@ -60,9 +61,10 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-      .then((successPromptComponent: SuccessPromptComponent) => {
-        successPromptComponent.header = 'Successful Name Change';
-        successPromptComponent.message = 'Your name has been successfully changed.';
+      .then((successPrompt: SuccessPromptComponent) => {
+        successPrompt.header = 'Successful Name Change';
+        successPrompt.message = 'Your name has been successfully changed.';
+        successPrompt.changeNameForm = this;
         this.spinnerService.show = false;
       });
   }

@@ -7,6 +7,7 @@ import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { DeleteAccountPromptComponent } from '../delete-account-prompt/delete-account-prompt.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 
@@ -18,6 +19,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class DeleteAccountFormComponent extends Validation {
   public email!: string;
   public authentication: Authentication = new Authentication();
+  public deleteAccountPrompt!: DeleteAccountPromptComponent;
 
   @ViewChild('otpInput') otpInput!: ElementRef<HTMLInputElement>;
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
@@ -55,19 +57,6 @@ export class DeleteAccountFormComponent extends Validation {
   }
 
 
-  async OpenSuccessPrompt() {
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
-
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-      .then((successPromptComponent: SuccessPromptComponent) => {
-        successPromptComponent.header = 'Successful Account Deletion';
-        successPromptComponent.message = 'Your account has been successfully deleted.';
-        this.spinnerService.show = false;
-      });
-  }
-
-
   onSubmit() {
     if (this.form.valid) {
       this.spinnerService.show = true;
@@ -80,12 +69,32 @@ export class DeleteAccountFormComponent extends Validation {
         this.authentication.failure = authentication.failure;
 
         if (!this.authentication.failure) {
-          this.close();
+          this.fade();
           this.router.navigate(['home']);
           this.accountService.logOut();
           this.OpenSuccessPrompt();
         }
       });
     }
+  }
+
+
+  async OpenSuccessPrompt() {
+    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+      .then((successPrompt: SuccessPromptComponent) => {
+        successPrompt.header = 'Successful Account Deletion';
+        successPrompt.message = 'Your account has been successfully deleted.';
+        successPrompt.deleteAccountForm = this;
+        this.spinnerService.show = false;
+      });
+  }
+
+
+  close() {
+    super.close();
+    this.deleteAccountPrompt.close();
   }
 }

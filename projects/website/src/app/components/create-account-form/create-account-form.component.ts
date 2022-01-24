@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { invalidNameValidator, invalidPasswordValidator, Validation } from '../../classes/validation';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { LogInFormComponent } from '../log-in-form/log-in-form.component';
+import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
 
 
 @Component({
@@ -11,6 +13,7 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
   styleUrls: ['./create-account-form.component.scss']
 })
 export class CreateAccountFormComponent extends Validation implements OnInit {
+  public signUpForm!: SignUpFormComponent;
 
   constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
 
@@ -48,13 +51,20 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
   async onLogInLinkClick() {
     this.spinnerService.show = true;
-    this.close();
+    this.fade();
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then(() => {
+      .then((loginForm: LogInFormComponent) => {
+        loginForm.createAccountForm = this;
         this.spinnerService.show = false;
       });
+  }
+
+
+  close() {
+    super.close();
+    if (this.signUpForm) this.signUpForm.close();
   }
 }

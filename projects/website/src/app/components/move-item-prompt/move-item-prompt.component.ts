@@ -33,11 +33,13 @@ export class MoveItemPromptComponent extends LazyLoad {
       ToListId: this.toList.value
     }, { authorization: true })
       .subscribe((isDuplicate: boolean) => {
-        this.close();
-
+        
         if (!isDuplicate) {
+          this.close();
           this.onMove.emit();
+          this.spinnerService.show = false;
         } else {
+          this.fade();
           this.openDuplicateItemPrompt();
         }
 
@@ -52,7 +54,8 @@ export class MoveItemPromptComponent extends LazyLoad {
     this.lazyLoadingService.getComponentAsync(DuplicateItemPromptComponent, DuplicateItemPromptModule, this.lazyLoadingService.container)
       .then((duplicateItemPrompt: DuplicateItemPromptComponent) => {
         duplicateItemPrompt.list = this.toList.key;
-        duplicateItemPrompt.product = this.product.name;
+        duplicateItemPrompt.product = this.product;
+        duplicateItemPrompt.moveItemPrompt = this;
         this.spinnerService.show = false;
       });
   }

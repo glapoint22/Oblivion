@@ -6,6 +6,7 @@ import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { ChangeEmailFormComponent } from '../change-email-form/change-email-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -19,6 +20,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
   @ViewChild('verificationForm') verificationForm!: ElementRef<HTMLFormElement>;
   public email!: string;
   public authentication: Authentication = new Authentication();
+  public changeEmailForm!: ChangeEmailFormComponent;
 
   constructor
     (
@@ -27,6 +29,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
       private accountService: AccountService,
       private spinnerService: SpinnerService
     ) { super() }
+
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -41,25 +44,13 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
   }
 
 
+
   ngAfterViewInit() {
     super.ngAfterViewInit();
 
     this.otpInput.nativeElement.setAttribute('autocomplete', 'off');
     this.verificationForm.nativeElement.setAttribute('autocomplete', 'off');
     this.passwordInput.nativeElement.setAttribute('autocomplete', 'off');
-  }
-
-
-  async OpenSuccessPrompt() {
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
-
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-      .then((successPromptComponent: SuccessPromptComponent) => {
-        successPromptComponent.header = 'Successful Email Change';
-        successPromptComponent.message = 'Your email has been successfully changed.';
-        this.spinnerService.show = false;
-      });
   }
 
 
@@ -77,10 +68,30 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
 
         if (!this.authentication.failure) {
           this.accountService.setCustomer();
-          this.close();
+          this.fade();
           this.OpenSuccessPrompt();
         }
       });
     }
+  }
+
+
+  async OpenSuccessPrompt() {
+    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+      .then((successPrompt: SuccessPromptComponent) => {
+        successPrompt.header = 'Successful Email Change';
+        successPrompt.message = 'Your email has been successfully changed.';
+        successPrompt.emailVerificationForm = this;
+        this.spinnerService.show = false;
+      });
+  }
+
+
+  close() {
+    super.close();
+    this.changeEmailForm.close();
   }
 }

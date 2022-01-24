@@ -48,7 +48,7 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
           NewPassword: this.form.get('newPassword')?.value
         }, { authorization: true })
         .subscribe(() => {
-          this.close();
+          this.fade();
           this.OpenSuccessPrompt();
         });
     }
@@ -60,9 +60,10 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-      .then((successPromptComponent: SuccessPromptComponent) => {
-        successPromptComponent.header = 'Successful Password Change';
-        successPromptComponent.message = 'Your password has been successfully changed.';
+      .then((successPrompt: SuccessPromptComponent) => {
+        successPrompt.header = 'Successful Password Change';
+        successPrompt.message = 'Your password has been successfully changed.';
+        successPrompt.changePasswordForm = this;
         this.spinnerService.show = false;
       });
   }

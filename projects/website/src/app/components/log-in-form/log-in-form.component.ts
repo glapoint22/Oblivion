@@ -5,6 +5,9 @@ import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { CreateAccountFormComponent } from '../create-account-form/create-account-form.component';
+import { ForgotPasswordFormComponent } from '../forgot-password-form/forgot-password-form.component';
+import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
 
 @Component({
   selector: 'log-in-form',
@@ -13,6 +16,9 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
 })
 export class LogInFormComponent extends Validation implements OnInit {
   public isPersistent: boolean = true;
+  public createAccountForm!: CreateAccountFormComponent;
+  public forgotPasswordForm!: ForgotPasswordFormComponent;
+  public signUpForm!: SignUpFormComponent
 
   constructor(
     private dataService: DataService,
@@ -20,6 +26,7 @@ export class LogInFormComponent extends Validation implements OnInit {
     private lazyLoadingService: LazyLoadingService,
     private spinnerService: SpinnerService
   ) { super() }
+
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -33,7 +40,6 @@ export class LogInFormComponent extends Validation implements OnInit {
       ])
     });
   }
-
 
 
   onLogIn() {
@@ -52,12 +58,13 @@ export class LogInFormComponent extends Validation implements OnInit {
 
   async onSignUpLinkClick() {
     this.spinnerService.show = true;
-    this.close();
+    this.fade();
     const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
     const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
 
     this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container)
-      .then(() => {
+      .then((signUpForm: SignUpFormComponent) => {
+        signUpForm.logInForm = this;
         this.spinnerService.show = false;
       });
   }
@@ -65,13 +72,21 @@ export class LogInFormComponent extends Validation implements OnInit {
 
   async onForgotPasswordLinkClick() {
     this.spinnerService.show = true;
-    this.close();
+    this.fade();
     const { ForgotPasswordFormComponent } = await import('../forgot-password-form/forgot-password-form.component');
     const { ForgotPasswordFormModule } = await import('../forgot-password-form/forgot-password-form.module');
 
     this.lazyLoadingService.getComponentAsync(ForgotPasswordFormComponent, ForgotPasswordFormModule, this.lazyLoadingService.container)
-      .then(() => {
+      .then((forgotPasswordForm: ForgotPasswordFormComponent) => {
+        forgotPasswordForm.logInForm = this;
         this.spinnerService.show = false;
       });
+  }
+
+  close() {
+    super.close();
+    if (this.signUpForm) this.signUpForm.close();
+    if (this.createAccountForm) this.createAccountForm.close();
+    if (this.forgotPasswordForm) this.forgotPasswordForm.close();
   }
 }

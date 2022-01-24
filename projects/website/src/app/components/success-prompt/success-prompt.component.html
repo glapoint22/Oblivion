@@ -1,8 +1,16 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="backdrop" (click)="close()"></div>
-
+    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': 
+    !deleteAccountForm &&
+    !changeNameForm &&
+    !changePasswordForm &&
+    !emailVerificationForm &&
+    !profilePictureForm &&
+    !shareListForm &&
+    !reportReviewForm &&
+    !contactUsForm 
+    }"></div>
 
     <!-- Container -->
     <div class="container">

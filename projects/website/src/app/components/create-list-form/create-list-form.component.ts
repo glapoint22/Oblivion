@@ -1,9 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { List } from '../../classes/list';
+import { Product } from '../../classes/product';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
+import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
 
 @Component({
   selector: 'create-list-form',
@@ -11,9 +15,11 @@ import { DataService } from '../../services/data/data.service';
   styleUrls: ['./create-list-form.component.scss']
 })
 export class CreateListFormComponent extends Validation implements OnInit {
+  public addToListForm!: AddToListFormComponent;
+  public product!: Product;
   @Output() onListCreated: EventEmitter<List> = new EventEmitter();
 
-  constructor(private dataService: DataService, private accountService: AccountService) { super(); }
+  constructor(private dataService: DataService, private accountService: AccountService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super(); }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -32,7 +38,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
         },
         { authorization: true }
       ).subscribe((list: List) => {
-        this.close();
+        this._close();
         this.onListCreated.emit(new List(
           list.id,
           this.form.get('listName')?.value,
@@ -41,6 +47,29 @@ export class CreateListFormComponent extends Validation implements OnInit {
           this.accountService.customer?.profileImage
         ));
       });
+    }
+  }
+
+
+  async openAddToListForm() {
+    this.spinnerService.show = true;
+    const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
+    const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
+
+    this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
+      .then((addToListForm: AddToListFormComponent) => {
+        addToListForm.product = this.product;
+        addToListForm.createListForm = this;
+      });
+  }
+
+
+  _close() {
+    if(!this.addToListForm) {
+      super.close()
+    }else {
+      super.fade();
+      this.openAddToListForm();
     }
   }
 }

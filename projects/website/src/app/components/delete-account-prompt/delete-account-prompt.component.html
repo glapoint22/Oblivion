@@ -3,9 +3,8 @@
     <!-- Backdrop -->
     <div class="backdrop" (click)="close()"></div>
 
-
     <!-- Container -->
-    <div class="container">
+    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
 
         <!-- Base -->
         <div class="base">

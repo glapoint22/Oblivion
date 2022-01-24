@@ -1,11 +1,10 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="backdrop" (click)="close()"></div>
-
+    <div class="transparent-backdrop" (click)="_close()" [ngClass]="{'backdrop': !addToListForm}"></div>
 
     <!-- Container -->
-    <div class="container">
+    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
 
         <!-- Base -->
         <div class="base">
@@ -15,7 +14,7 @@
                 Create List
 
                 <!-- X -->
-                <div class="x" (click)="close()">X</div>
+                <div class="x" (click)="_close()">X</div>
             </div>
 
             <!-- Drop Shadow -->
@@ -48,7 +47,7 @@
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button type="button" class="dark-button" (click)="close()">Cancel</button>
+                    <button type="button" class="dark-button" (click)="_close()">Cancel</button>
                     <button type="submit" class="gold-rect-button">Submit</button>
                 </div>
             </form>
