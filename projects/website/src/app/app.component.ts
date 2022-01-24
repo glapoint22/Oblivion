@@ -26,6 +26,11 @@ export class AppComponent implements OnInit {
     this.lazyLoadingService.container = this.container;
     this.accountService.setCustomer();
 
+    if (this.accountService.customer) {
+      this.accountService.refresh();
+      this.accountService.startRefreshTokenTimer();
+    }
+
     const w = window as any;
 
     // Create the YouTube object

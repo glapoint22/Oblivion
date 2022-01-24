@@ -12,7 +12,6 @@ export class AccountService {
   public customer: Customer | undefined;
   public refreshTokenSet!: boolean;
   private waitForRefreshToken = new Subject<void>();
-  private timerRunning!: boolean;
   private interval!: number;
   public refreshing!: boolean;
 
@@ -25,9 +24,6 @@ export class AccountService {
       customerCookie = decodeURIComponent(customerCookie);
       const customerProperties = customerCookie.split(',');
       this.customer = new Customer(customerProperties[0], customerProperties[1], customerProperties[2], customerProperties[3]);
-
-      // If the refresh timer is not already running and we have both access and refresh cookies, start the timer
-      if (!this.timerRunning && document.cookie.includes('access') && document.cookie.includes('refresh')) this.startRefreshTokenTimer();
     }
   }
 
@@ -35,9 +31,6 @@ export class AccountService {
   public logOut() {
     // Stop the refresh timer
     window.clearInterval(this.interval);
-    this.timerRunning = false;
-
-
     this.customer = undefined;
 
     // If not in the middle of refreshing, log out
@@ -55,8 +48,6 @@ export class AccountService {
 
 
   public startRefreshTokenTimer() {
-    this.timerRunning = true;
-    this.refresh();
     this.interval = window.setInterval(() => {
       this.refresh();
       // 15 Minutes
@@ -72,15 +63,16 @@ export class AccountService {
     this.dataService.get('api/Account/Refresh', undefined, { authorization: true })
       .subscribe((newRefreshToken: any) => {
         this.refreshTokenSet = true;
+        this.refreshing = false;
         this.waitForRefreshToken.next();
 
-        // This will delete all refresh tokens from this user except the new one we just got
+        // If we received a new refresh token,
+        // Make a call to the server to delete all old refresh tokens
         if (newRefreshToken) {
-          this.dataService.delete('api/Account/Refresh', {
-            newRefreshToken: encodeURIComponent(newRefreshToken.value)
-          }, { authorization: true }).subscribe(() => {
-            this.refreshing = false;
-          });
+          this.dataService.delete('api/Account/Refresh', { newRefreshToken: encodeURIComponent(newRefreshToken.value) }, { authorization: true })
+            .subscribe();
+        } else {
+          this.logOut();
         }
       });
   }

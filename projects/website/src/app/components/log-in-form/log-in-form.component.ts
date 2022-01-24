@@ -50,6 +50,7 @@ export class LogInFormComponent extends Validation implements OnInit {
         isPersistent: this.isPersistent
       }).subscribe(() => {
         this.accountService.setCustomer();
+        this.accountService.startRefreshTokenTimer();
         this.close();
       })
     }
