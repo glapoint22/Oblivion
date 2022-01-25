@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ForgotPasswordFormComponent } from '../../components/forgot-password-form/forgot-password-form.component';
 import { LogInFormComponent } from '../../components/log-in-form/log-in-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
@@ -32,6 +33,7 @@ export class LogInComponent extends LogInFormComponent implements OnInit {
       )
   }
 
+  
   ngOnInit(): void {
     super.ngOnInit();
 

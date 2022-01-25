@@ -38,7 +38,7 @@ export class ReportReviewFormComponent extends LazyLoad {
 
     this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
       .then((successPrompt: SuccessPromptComponent) => {
-        successPrompt.header = 'Report Review Feedback';
+        successPrompt.header = 'Report Review';
         successPrompt.message = 'Thank you for your feedback.';
         successPrompt.reportReviewForm = this;
         this.spinnerService.show = false;

@@ -6,8 +6,10 @@ import { ContactUsFormComponent } from '../contact-us-form/contact-us-form.compo
 import { DeleteAccountFormComponent } from '../delete-account-form/delete-account-form.component';
 import { EmailVerificationFormComponent } from '../email-verification-form/email-verification-form.component';
 import { ProfilePictureFormComponent } from '../profile-picture-form/profile-picture-form.component';
+import { ReportItemFormComponent } from '../report-item-form/report-item-form.component';
 import { ReportReviewFormComponent } from '../report-review-form/report-review-form.component';
 import { ShareListFormComponent } from '../share-list-form/share-list-form.component';
+import { WriteReviewFormComponent } from '../write-review-form/write-review-form.component';
 
 @Component({
   selector: 'success-prompt',
@@ -25,6 +27,8 @@ export class SuccessPromptComponent extends LazyLoad {
   public shareListForm!: ShareListFormComponent;
   public reportReviewForm!: ReportReviewFormComponent;
   public contactUsForm!: ContactUsFormComponent;
+  public reportItemForm!: ReportItemFormComponent;
+  public writeReviewForm!: WriteReviewFormComponent;
 
   close() {
     super.close();
@@ -36,5 +40,7 @@ export class SuccessPromptComponent extends LazyLoad {
     if (this.shareListForm) this.shareListForm.close();
     if (this.reportReviewForm) this.reportReviewForm.close();
     if (this.contactUsForm) this.contactUsForm.close();
+    if (this.reportItemForm) this.reportItemForm.close();
+    if (this.writeReviewForm) this.writeReviewForm.close();
   }
 }

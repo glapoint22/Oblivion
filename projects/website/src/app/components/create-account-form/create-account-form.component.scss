@@ -1,9 +1,9 @@
 @import '../../../scss/mixins';
 @import '../../../scss/variables';
-@include modal-values(350px, 387px, 480px);
+@include modal-values(350px, 392px, 485px);
 
 .content {
-    padding-bottom: 15px;
+    padding-bottom: 20px;
 }
 
 .info-container {
