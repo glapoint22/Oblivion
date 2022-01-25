@@ -42,12 +42,15 @@ const routes: Routes = [
   {
     path: 'account',
     loadChildren: () => import('./pages/account/account.module').then(m => m.AccountModule),
-    // canLoad: [AccountGuard],
     canActivate: [AccountGuard]
   },
   {
     path: 'about',
     loadChildren: () => import('./pages/about-page/about-page.module').then(m => m.AboutPageModule),
+  },
+  {
+    path: 'error',
+    loadChildren: () => import('./pages/error/error.module').then(m => m.ErrorModule),
   },
   {
     path: 'reset-password',

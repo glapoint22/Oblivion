@@ -1,16 +1,33 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { KeyValue } from '@angular/common';
-import { Observable, tap } from 'rxjs';
+import { catchError, mergeMap, Observable, retryWhen, tap, throwError, timer } from 'rxjs';
 import { CookieService } from '../cookie/cookie.service';
 import { SpinnerService } from '../spinner/spinner.service';
+import { Event, NavigationStart, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
+  private url!: string;
 
-  constructor(private http: HttpClient, private cookieService: CookieService, private spinnerService: SpinnerService) { }
+  constructor
+    (
+      private http: HttpClient,
+      private cookieService: CookieService,
+      private spinnerService: SpinnerService,
+      private router: Router
+    ) {
+    // Router Events
+    this.router.events
+      .subscribe((event: Event) => {
+        // Navigation Start
+        if (event instanceof NavigationStart) {
+          if (event.url != '/error') this.url = event.url;
+        }
+      });
+  }
 
   // ------------------------------------------------------------Get-----------------------------------------------------
   get<T>(url: string, parameters?: Array<KeyValue<any, any>>, options?: {
@@ -22,14 +39,19 @@ export class DataService {
     if (options && options.showSpinner) this.spinnerService.show = true;
 
     return this.http.get<T>(url, { params: this.setParams(parameters), headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
-      .pipe(tap(() => {
-
-        // Hide spinner
-        if (options) {
-          if (options.showSpinner) this.spinnerService.show = false;
-        }
-      }));
+      .pipe(
+        tap(() => {
+          // Hide spinner
+          if (options) {
+            if (options.showSpinner) this.spinnerService.show = false;
+          }
+        }),
+        retryWhen(this.retryRequest()),
+        catchError(this.handleError())
+      );
   }
+
+
 
 
 
@@ -47,13 +69,17 @@ export class DataService {
 
 
     return this.http.post<T>(url, body, { headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
-      .pipe(tap(() => {
+      .pipe(
+        tap(() => {
 
-        // Hide spinner
-        if (options) {
-          if (options.showSpinner) this.spinnerService.show = false;
-        }
-      }));
+          // Hide spinner
+          if (options) {
+            if (options.showSpinner) this.spinnerService.show = false;
+          }
+        }),
+        retryWhen(this.retryRequest()),
+        catchError(this.handleError())
+      );
   }
 
 
@@ -67,13 +93,17 @@ export class DataService {
     showSpinner?: boolean
   }): Observable<T> {
     return this.http.put<T>(url, body, { headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
-      .pipe(tap(() => {
+      .pipe(
+        tap(() => {
 
-        // Hide spinner
-        if (options) {
-          if (options.showSpinner) this.spinnerService.show = false;
-        }
-      }));
+          // Hide spinner
+          if (options) {
+            if (options.showSpinner) this.spinnerService.show = false;
+          }
+        }),
+        retryWhen(this.retryRequest()),
+        catchError(this.handleError())
+      );
   }
 
 
@@ -87,13 +117,17 @@ export class DataService {
     showSpinner?: boolean
   }) {
     return this.http.delete(url, { params: params, headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
-      .pipe(tap(() => {
+      .pipe(
+        tap(() => {
 
-        // Hide spinner
-        if (options) {
-          if (options.showSpinner) this.spinnerService.show = false;
-        }
-      }));
+          // Hide spinner
+          if (options) {
+            if (options.showSpinner) this.spinnerService.show = false;
+          }
+        }),
+        retryWhen(this.retryRequest()),
+        catchError(this.handleError())
+      );
   }
 
 
@@ -124,5 +158,41 @@ export class DataService {
     return new HttpHeaders({
       Authorization: 'Bearer ' + accessToken
     });
+  }
+
+
+
+
+
+
+  // ------------------------------------------------------------Retry Request-----------------------------------------------------
+  retryRequest() {
+    const maxRetryAttempts = 3;
+    const duration = 1000;
+
+    return (errors: Observable<HttpErrorResponse>) => errors
+      .pipe(mergeMap((error: any, i: number) => {
+        const retryAttempts = i + 1;
+
+        if (retryAttempts > maxRetryAttempts) {
+          return error;
+        } else {
+          return timer(duration);
+        }
+      }));
+  }
+
+
+
+
+
+  // ------------------------------------------------------------Handle Error-----------------------------------------------------
+  handleError() {
+    return (error: HttpErrorResponse) => {
+      this.router.navigate(['error'], { skipLocationChange: true });
+      window.history.pushState('', '', this.url);
+
+      return throwError(() => error);
+    }
   }
 }

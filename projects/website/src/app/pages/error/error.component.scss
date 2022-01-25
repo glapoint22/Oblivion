@@ -1,0 +1,46 @@
+@import '../../../scss/variables';
+
+.error-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .error-page-content-container {
+        text-align: center;
+        margin: 20px;
+
+        img {
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+    }
+}
+
+.gold-round-button-lg {
+    max-width: 200px;
+    margin-bottom: 20px;
+}
+
+.oops {
+    font-size: 60px;
+    font-weight: bold;
+    color:$gold
+}
+
+.error {
+    font-size: 32px;
+    margin-bottom: 16px;
+    color: #dadada;
+}
+
+.or {
+    font-size: 32px;
+    margin-top: 10px;
+    margin-bottom: 8px;
+    color: #dadada
+}

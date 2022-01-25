@@ -37,14 +37,14 @@ export class AccountService {
     // If not in the middle of refreshing, log out
     if (!this.refreshing) {
       this.dataService.get('api/Account/LogOut').subscribe();
-      this.router.navigate(['/']);
+      this.router.navigate(['/log-in']);
     } else {
 
       // Wait for refreshing to end, then log out
       const subscription: Subscription = this.waitForRefreshToken.subscribe(() => {
         this.dataService.get('api/Account/LogOut').subscribe();
         subscription.unsubscribe();
-        this.router.navigate(['/']);
+        this.router.navigate(['/log-in']);
       });
     }
   }
