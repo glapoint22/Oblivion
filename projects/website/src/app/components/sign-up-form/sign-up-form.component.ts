@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LazyLoad } from '../../classes/lazy-load';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -10,9 +11,14 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
   templateUrl: './sign-up-form.component.html',
   styleUrls: ['./sign-up-form.component.scss']
 })
-export class SignUpFormComponent extends LazyLoad {
-  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
+export class SignUpFormComponent extends LazyLoad implements OnInit {
+  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService, private router: Router) { super() }
   public logInForm!: LogInFormComponent;
+  public isLoginPage!: boolean;
+
+  ngOnInit(): void {
+    this.isLoginPage = this.router.url.includes('log-in');
+  }
 
 
   async onCreateAccountButtonClick(): Promise<void> {

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Validation } from '../../classes/validation';
 import { EmailSentPromptComponent } from '../../components/email-sent-prompt/email-sent-prompt.component';
+import { LogInComponent } from '../../pages/log-in/log-in.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -15,15 +17,19 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 export class ForgotPasswordFormComponent extends Validation implements OnInit {
   public isError!: boolean;
   public logInForm!: LogInFormComponent;
+  public isLoginPage!: boolean;
 
   constructor
     (
       private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
-      private dataService: DataService
+      private dataService: DataService,
+      private router: Router
     ) { super() }
 
   ngOnInit(): void {
+    this.isLoginPage = this.router.url.includes('log-in');
+
     this.form = new FormGroup({
       email: new FormControl('', [
         Validators.required,

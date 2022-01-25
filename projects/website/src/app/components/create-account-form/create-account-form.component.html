@@ -99,7 +99,7 @@
 
 
             <!-- Footer -->
-            <div class="footer">
+            <div *ngIf="!isLoginPage" class="footer">
                 <div class="horizontal-groove-line"></div>
                 <span class="footer-text">Already a member? </span>
                 <span class="purple-text" (click)="onLogInLinkClick()">Log In</span>

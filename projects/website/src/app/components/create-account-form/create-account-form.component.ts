@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { invalidNameValidator, invalidPasswordValidator, Validation } from '../../classes/validation';
 import { AccountActivationPromptComponent } from '../../components/account-activation-prompt/account-activation-prompt.component';
 import { EmailExistsPromptComponent } from '../../components/email-exists-prompt/email-exists-prompt.component';
@@ -17,16 +18,21 @@ import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
 })
 export class CreateAccountFormComponent extends Validation implements OnInit {
   public signUpForm!: SignUpFormComponent;
+  public isLoginPage!: boolean;
 
   constructor
     (
       private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
-      private dataService: DataService
+      private dataService: DataService,
+      private router: Router
     ) { super() }
 
 
   ngOnInit(): void {
+    this.isLoginPage = this.router.url.includes('log-in');
+
+
     this.form = new FormGroup({
       firstName: new FormControl('', [
         Validators.required,
