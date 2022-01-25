@@ -1,0 +1,78 @@
+<!-- Logo -->
+<a routerLink="/home" title="Niche Shack Homepage">
+    <img src="assets/logo.png">
+</a>
+
+<div class="border">
+    <div style="padding: 20px;">
+        <external-login-providers [signInType]="'Log in'"></external-login-providers>
+
+        <!-- Or -->
+        <div class="lines-container">
+            <div class="left-line"></div>
+            <div class="text">OR</div>
+            <div class="right-line"></div>
+        </div>
+
+        <div *ngIf="noMatch" class="error-text">Your password and email do not match. Please try again.</div>
+
+        <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onLogIn()">
+            <!-- Email -->
+            <div class="label">Email:</div>
+            <input type="text" formControlName="email"
+                [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
+
+            <ng-container *ngIf="_form.submitted && form.controls.email.errors">
+                <ul>
+                    <li *ngFor="let message of getErrorMessages('email', 'Email')">
+                        {{message}}
+                    </li>
+                </ul>
+            </ng-container>
+
+            <!-- Password -->
+            <div class="label">Password:</div>
+            <div class="password-input-container">
+                <input type="password" formControlName="password"
+                    [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}"
+                    style="margin-bottom: 8px;">
+
+
+                <div class="show-hide-password-icon-container" showHidePassword>
+                    <i class="hide-password"></i>
+                </div>
+
+                <ng-container *ngIf="_form.submitted && form.controls.password.errors">
+                    <ul style="margin-top: -2px;">
+                        <li *ngFor="let message of getErrorMessages('password', 'Password')">
+                            {{message}}
+                        </li>
+                    </ul>
+                </ng-container>
+            </div>
+
+            <label class="checkbox">
+                <div style="color: #dadada;">Keep me logged in</div>
+                <input type="checkbox" (change)="isPersistent = !isPersistent" [checked]="isPersistent">
+                <span class="checkmark"></span>
+            </label>
+
+            <div class="purple-text forgot-password" (click)="onForgotPasswordLinkClick()">Forgot password?
+            </div>
+
+
+
+
+            <!-- Button -->
+            <button type="submit" class="gold-round-button-sm" style="margin-top: 10px;">Log In</button>
+        </form>
+    </div>
+
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="horizontal-groove-line"></div>
+        <span class="footer-text">Not a member yet? </span>
+        <span class="purple-text" (click)="onSignUpLinkClick()">Sign Up</span>
+    </div>
+</div>

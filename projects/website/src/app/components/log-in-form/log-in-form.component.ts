@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { invalidPasswordValidator, Validation } from '../../classes/validation';
 import { AccountNotActivatedPromptComponent } from '../../components/account-not-activated-prompt/account-not-activated-prompt.component';
 import { AccountService } from '../../services/account/account.service';
@@ -21,12 +22,14 @@ export class LogInFormComponent extends Validation implements OnInit {
   public forgotPasswordForm!: ForgotPasswordFormComponent;
   public signUpForm!: SignUpFormComponent;
   public noMatch!: boolean;
+  public returnUrl!: string;
 
   constructor(
     private dataService: DataService,
     private accountService: AccountService,
     private lazyLoadingService: LazyLoadingService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private router: Router
   ) { super() }
 
 
@@ -65,9 +68,10 @@ export class LogInFormComponent extends Validation implements OnInit {
           this.accountService.refreshTokenSet = true;
           this.accountService.startRefreshTokenTimer();
           this.close();
+          if(this.returnUrl) {
+            this.router.navigateByUrl(this.returnUrl);
+          }
         }
-
-
       })
     }
   }
