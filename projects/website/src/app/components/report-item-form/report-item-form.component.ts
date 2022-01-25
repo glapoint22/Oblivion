@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
+import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
   selector: 'report-item-form',
@@ -129,7 +132,7 @@ export class ReportItemFormComponent extends LazyLoad {
   ];
 
 
-  constructor(private dataService: DataService) { super() }
+  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
 
   onSubmit() {
     this.dataService.post('api/Notifications', {
@@ -140,8 +143,22 @@ export class ReportItemFormComponent extends LazyLoad {
       authorization: true,
       showSpinner: true
     }).subscribe(() => {
-      this.close();
+      this.fade();
+      this.openSuccessPrompt();
     });
   }
 
+
+  async openSuccessPrompt() {
+    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+      .then((successPrompt: SuccessPromptComponent) => {
+        successPrompt.header = 'Report Item';
+        successPrompt.message = 'Thank you for your feedback.';
+        successPrompt.reportItemForm = this;
+        this.spinnerService.show = false;
+      });
+  }
 }

@@ -50,13 +50,13 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
       ).subscribe(() => {
         this.accountService.setCustomer();
         this.fade();
-        this.OpenSuccessPrompt();
+        this.openSuccessPrompt();
       });
     }
   }
 
 
-  async OpenSuccessPrompt() {
+  async openSuccessPrompt() {
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

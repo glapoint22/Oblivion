@@ -103,17 +103,19 @@ export class LogInFormComponent extends Validation implements OnInit {
 
   async openAccountNotActivatedPrompt() {
     this.spinnerService.show = true;
-    this.close();
+    this.fade();
     const { AccountNotActivatedPromptComponent } = await import('../../components/account-not-activated-prompt/account-not-activated-prompt.component');
     const { AccountNotActivatedPromptModule } = await import('../../components/account-not-activated-prompt/account-not-activated-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(AccountNotActivatedPromptComponent, AccountNotActivatedPromptModule, this.lazyLoadingService.container)
       .then((accountNotActivatedPrompt: AccountNotActivatedPromptComponent) => {
         accountNotActivatedPrompt.email = this.form.get('email')?.value;
+        accountNotActivatedPrompt.logInForm = this;
         this.spinnerService.show = false;
       });
   }
 
+  
   close() {
     super.close();
     if (this.signUpForm) this.signUpForm.close();
