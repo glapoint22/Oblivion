@@ -42,7 +42,7 @@ const routes: Routes = [
   {
     path: 'account',
     loadChildren: () => import('./pages/account/account.module').then(m => m.AccountModule),
-    canLoad: [AccountGuard],
+    // canLoad: [AccountGuard],
     canActivate: [AccountGuard]
   },
   {
@@ -80,7 +80,10 @@ const routes: Routes = [
       product: ProductResolver
     }
   },
-
+  {
+    path: 'log-in',
+    loadChildren: () => import('./pages/log-in/log-in.module').then(m => m.LogInModule)
+  },
   { path: '**', component: PageNotFoundComponent }
 ];
 

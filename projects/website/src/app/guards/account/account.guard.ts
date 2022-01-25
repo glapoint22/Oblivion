@@ -6,28 +6,28 @@ import { AccountService } from '../../services/account/account.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AccountGuard implements CanLoad, CanActivate {
+export class AccountGuard implements CanActivate {
 
   constructor(private accountService: AccountService, private router: Router) { }
 
-  canLoad(
-    route: Route,
-    segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  // canLoad(
+  //   route: Route,
+  //   segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    if (!this.accountService.customer) {
-      this.router.navigate(['log-in']);
-      return false;
-    }
+  //   if (!this.accountService.customer) {
+  //     this.router.navigate(['log-in']);
+  //     return false;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     if (!this.accountService.customer) {
-      this.router.navigate(['log-in']);
+      this.router.navigate(['log-in'], { queryParams: { returnUrl: state.url }});
       return false;
     }
 

@@ -1,0 +1,26 @@
+@import '../../../scss/variables';
+
+img {
+    display: block;
+    margin: 20px auto;
+}
+
+.gold-round-button-sm {
+    max-width: none;
+}
+
+.forgot-password {
+    float: right;
+}
+
+.error-text {
+    color: $error-color;
+    margin-bottom: 20px;
+}
+
+.border {
+    max-width: 360px;
+    margin: auto;
+    margin-top: 20px; border: 1px solid $gold;
+    border-radius: 4px;
+}

@@ -1,5 +1,6 @@
 import { HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { Customer } from '../../classes/customer';
 import { CookieService } from '../cookie/cookie.service';
@@ -15,7 +16,7 @@ export class AccountService {
   private interval!: number;
   public refreshing!: boolean;
 
-  constructor(private cookieService: CookieService, private dataService: DataService) { }
+  constructor(private cookieService: CookieService, private dataService: DataService, private router: Router) { }
 
   public setCustomer() {
     let customerCookie = this.cookieService.getCookie('customer');
@@ -36,12 +37,14 @@ export class AccountService {
     // If not in the middle of refreshing, log out
     if (!this.refreshing) {
       this.dataService.get('api/Account/LogOut').subscribe();
+      this.router.navigate(['/']);
     } else {
 
       // Wait for refreshing to end, then log out
       const subscription: Subscription = this.waitForRefreshToken.subscribe(() => {
         this.dataService.get('api/Account/LogOut').subscribe();
         subscription.unsubscribe();
+        this.router.navigate(['/']);
       });
     }
   }
