@@ -10,6 +10,7 @@ import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'reviews',
@@ -143,9 +144,7 @@ export class ReviewsComponent implements OnInit {
 
 
 
-
-
-  async onReportReviewClick(reviewId: number) {
+  async onReportReviewClick(reviewId: number, logInForm: LogInFormComponent | null) {
     if (this.accountService.customer) {
       this.spinnerService.show = true;
       const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
@@ -155,25 +154,16 @@ export class ReviewsComponent implements OnInit {
         .then((reportReviewForm: ReportReviewFormComponent) => {
           reportReviewForm.productId = this.product.id;
           reportReviewForm.reviewId = reviewId;
+          reportReviewForm.logInForm = logInForm;
           this.spinnerService.show = false;
         });
     } else {
-      this.logIn();
+      this.logIn(reviewId);
     }
   }
 
 
-  async logIn() {
-    this.spinnerService.show = true;
-    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
-    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
-
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
-  }
 
 
 
@@ -241,6 +231,21 @@ export class ReviewsComponent implements OnInit {
           this.onSortChange(sort);
         });
 
+        this.spinnerService.show = false;
+      });
+  }
+
+
+  async logIn(reviewId: number) {
+    this.spinnerService.show = true;
+    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
+
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
+      .then((logInForm: LogInFormComponent) => {
+        logInForm.onRedirect.subscribe(() => {
+          this.onReportReviewClick(reviewId, logInForm);
+        });
         this.spinnerService.show = false;
       });
   }

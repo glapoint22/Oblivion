@@ -3,6 +3,7 @@ import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -11,9 +12,12 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./report-item-form.component.scss']
 })
 export class ReportItemFormComponent extends LazyLoad {
+  public isFromRedirect!: boolean;
   public productId!: number;
   public comments!: string;
   public type: number = 2;
+  public logInForm!: LogInFormComponent | null;
+
   public listItems = [
     {
       key: 'Product Name',
@@ -160,5 +164,11 @@ export class ReportItemFormComponent extends LazyLoad {
         successPrompt.reportItemForm = this;
         this.spinnerService.show = false;
       });
+  }
+
+
+  close() {
+    super.close();
+    if (this.logInForm) this.logInForm.close();
   }
 }

@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Caption } from '../../classes/caption';
 import { Product } from '../../classes/product';
+import { LogInFormComponent } from '../../components/log-in-form/log-in-form.component';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -40,7 +41,9 @@ export class ProductComponent implements OnInit {
   }
 
 
-  async onWriteReviewClick() {
+
+
+  async onWriteReviewClick(logInForm: LogInFormComponent | null) {
     if (this.accountService.customer) {
       this.spinnerService.show = true;
       const { WriteReviewFormComponent } = await import('../../components/write-review-form/write-review-form.component');
@@ -51,7 +54,7 @@ export class ProductComponent implements OnInit {
           writeReviewForm.productId = this.product.id;
           writeReviewForm.productImage = this.product.media[0].image;
           writeReviewForm.productName = this.product.name;
-
+          writeReviewForm.logInForm = logInForm;
           this.spinnerService.show = false;
         });
     } else {
@@ -67,7 +70,10 @@ export class ProductComponent implements OnInit {
 
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then(() => {
+      .then((logInForm: LogInFormComponent) => {
+        logInForm.onRedirect.subscribe(() => {
+          this.onWriteReviewClick(logInForm);
+        });
         this.spinnerService.show = false;
       });
   }

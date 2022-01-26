@@ -8,6 +8,7 @@ import { ReportItemFormComponent } from '../../components/report-item-form/repor
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'product-info',
@@ -19,45 +20,13 @@ export class ProductInfoComponent implements OnChanges {
   @Input() clientWidth!: number;
   public selectedMedia!: Media;
   public mediaType = MediaType;
-
+  
   constructor(private lazyLoadingService: LazyLoadingService, private accountService: AccountService, private spinnerService: SpinnerService) { }
 
 
   ngOnChanges() {
     this.selectedMedia = this.product.media[0];
   }
-  
-
-  async onAddToListClick() {
-    if (this.accountService.customer) {
-      this.spinnerService.show = true;
-      const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
-      const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
-
-      this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
-        .then((addToListForm: AddToListFormComponent) => {
-          addToListForm.product = this.product;
-        });
-    } else {
-      this.logIn();
-    }
-  }
-
-
-
-  async logIn() {
-    this.spinnerService.show = true;
-    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
-    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
-
-
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      })
-  }
-
-
 
 
   onVisitOfficialWebsiteClick() {
@@ -66,8 +35,26 @@ export class ProductInfoComponent implements OnChanges {
   }
 
 
-  async onReportItemClick() {
+  async onAddToListClick(logInForm: LogInFormComponent | null) {
+    if (this.accountService.customer) {
+      this.spinnerService.show = true;
+      const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
+      const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
 
+      this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
+        .then((addToListForm: AddToListFormComponent) => {
+          addToListForm.product = this.product;
+          addToListForm.logInForm = logInForm;
+        });
+    } else {
+      this.logIn(true);
+    }
+  }
+
+
+
+
+  async onReportItemClick(logInForm: LogInFormComponent | null) {
     if (this.accountService.customer) {
       this.spinnerService.show = true;
       const { ReportItemFormComponent } = await import('../../components/report-item-form/report-item-form.component');
@@ -76,13 +63,14 @@ export class ProductInfoComponent implements OnChanges {
       this.lazyLoadingService.getComponentAsync(ReportItemFormComponent, ReportItemFormModule, this.lazyLoadingService.container)
         .then((reportItemForm: ReportItemFormComponent) => {
           reportItemForm.productId = this.product.id;
+          reportItemForm.logInForm = logInForm;
           this.spinnerService.show = false;
         });
     } else {
-      this.logIn();
+      this.logIn(false);
     }
-
   }
+
 
 
   async onMediaClick(media: Media) {
@@ -99,5 +87,27 @@ export class ProductInfoComponent implements OnChanges {
         mediaPlayer.selectedImage = this.product.media[0];
         this.spinnerService.show = false;
       });
+  }
+
+
+
+
+  async logIn(isAddToList: boolean) {
+    this.spinnerService.show = true;
+    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
+
+
+    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
+      .then((logInForm: LogInFormComponent) => {
+        logInForm.onRedirect.subscribe(() => {
+          if(isAddToList) {
+            this.onAddToListClick(logInForm);
+          }else {
+            this.onReportItemClick(logInForm);
+          }
+        });
+        this.spinnerService.show = false;
+      })
   }
 }
