@@ -2,10 +2,12 @@
 
     <!-- Slider -->
     <div #slider slider [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton"
-        [scrollbarElement]="scrollbar" [changeCount]="changeCount" class="slider">
+        [scrollbarElement]="scrollbar" [changeCount]="changeCount" [scrollbarContainer]="scrollbarContainer"
+        class="slider">
 
         <!-- Media -->
-        <div *ngFor="let media of media" class="media" [style.width.px]="sliderContainer.clientWidth" (click)="onMediaClick(media)">
+        <div *ngFor="let media of media" class="media" [style.width.px]="sliderContainer.clientWidth"
+            (click)="onMediaClick(media)">
             <div class="media-backdrop">
                 <img [src]="'images/' + media.image" [title]="media.name" [alt]="media.name"
                     [style.width]="media.type == mediaType.Video ? '100%': 'auto'">
@@ -29,7 +31,7 @@
 </div>
 
 
-<div class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth">
+<div #scrollbarContainer class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth">
     <!-- Scroll Track -->
     <div class="scroll-track"></div>
 

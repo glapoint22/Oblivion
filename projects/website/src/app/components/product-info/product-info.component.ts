@@ -15,10 +15,10 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
   styleUrls: ['./product-info.component.scss']
 })
 export class ProductInfoComponent implements OnChanges {
+  @Input() product!: Product;
+  @Input() clientWidth!: number;
   public selectedMedia!: Media;
   public mediaType = MediaType;
-  @Input() product!: Product;
-
 
   constructor(private lazyLoadingService: LazyLoadingService, private accountService: AccountService, private spinnerService: SpinnerService) { }
 

@@ -12,6 +12,7 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
 })
 export class MediaSliderComponent implements OnChanges {
   @Input() media!: Array<Media>;
+  @Input() clientWidth!: number;
   public changeCount: number = 0;
   public mediaType = MediaType;
 

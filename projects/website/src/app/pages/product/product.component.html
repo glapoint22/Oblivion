@@ -11,7 +11,7 @@
         <!-- Niche -->
         <a routerLink="/browse"
             [queryParams]="{nicheName: product.breadcrumb[1].urlName, nicheId: product.breadcrumb[1].urlId}">{{product.breadcrumb[1].name}}</a>
-            
+
         <div></div>
 
         <div>{{product.name}}</div>
@@ -19,11 +19,12 @@
 
 
     <!-- Product Info -->
-    <product-info [product]="product"></product-info>
+    <product-info [product]="product" [clientWidth]="clientWidth"></product-info>
 
 
     <!-- Price Points -->
-    <price-points [pricePoints]="product.pricePoints" [hoplink]="product.hoplink"></price-points>
+    <price-points [pricePoints]="product.pricePoints" [hoplink]="product.hoplink" [clientWidth]="clientWidth">
+    </price-points>
 
 
     <!-- Sub products -->
@@ -33,7 +34,8 @@
     <!-- Related Products -->
     <div *ngIf="product.relatedProducts && product.relatedProducts.products && product.relatedProducts.products.length > 0"
         class="related-products-background">
-        <product-slider-widget [products]="product.relatedProducts.products" [caption]="caption">
+        <product-slider-widget [products]="product.relatedProducts.products" [caption]="caption"
+            [clientWidth]="clientWidth">
         </product-slider-widget>
     </div>
 

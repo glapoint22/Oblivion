@@ -9,6 +9,7 @@ import { PricePoint } from '../../classes/price-point';
 export class PricePointsComponent {
   @Input() pricePoints!: Array<PricePoint>;
   @Input() hoplink!: string;
+  @Input() clientWidth!: number; // Used for change
   @ViewChild('sliderContainer') sliderContainer!: ElementRef<HTMLElement>;
   public pricePointGroups: Array<any> = [];
   private classSet!: boolean;
