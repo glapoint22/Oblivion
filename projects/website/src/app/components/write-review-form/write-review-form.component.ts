@@ -5,6 +5,7 @@ import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -16,7 +17,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
   public productId!: number;
   public productImage!: string;
   public productName!: string;
-
+  public logInForm!: LogInFormComponent | null;
 
   constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
 
@@ -109,5 +110,11 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
     }
 
     return message
+  }
+
+
+  close() {
+    super.close();
+    if (this.logInForm) this.logInForm.close();
   }
 }

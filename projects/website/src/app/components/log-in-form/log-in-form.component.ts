@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { invalidPasswordValidator, Validation } from '../../classes/validation';
 import { AccountNotActivatedPromptComponent } from '../../components/account-not-activated-prompt/account-not-activated-prompt.component';
 import { AccountService } from '../../services/account/account.service';
@@ -23,6 +24,7 @@ export class LogInFormComponent extends Validation implements OnInit {
   public signUpForm!: SignUpFormComponent;
   public noMatch!: boolean;
   public returnUrl!: string;
+  public onRedirect = new Subject<void>();
 
   constructor(
     private dataService: DataService,
@@ -67,10 +69,20 @@ export class LogInFormComponent extends Validation implements OnInit {
           this.accountService.setCustomer();
           this.accountService.refreshTokenSet = true;
           this.accountService.startRefreshTokenTimer();
-          this.close();
+          
+          if(this.onRedirect.observed) {
+            this.fade();
+            this.onRedirect.next();
+
+          }else {
+            this.close();
+          }
+
           if(this.returnUrl) {
             this.router.navigateByUrl(this.returnUrl);
           }
+
+          
         }
       })
     }

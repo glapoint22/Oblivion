@@ -92,6 +92,17 @@
                 <span class="footer-text">Not a member yet? </span>
                 <span class="purple-text" (click)="onSignUpLinkClick()">Sign Up</span>
             </div>
+
+
+            <div *ngIf="onRedirect.observed" class="log-in-first">
+                Please log in first.
+            </div>
         </div>
+
+        
+
     </div>
+
+    
+
 </div>

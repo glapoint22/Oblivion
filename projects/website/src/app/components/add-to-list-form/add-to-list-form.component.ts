@@ -8,6 +8,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { CreateListFormComponent } from '../create-list-form/create-list-form.component';
 import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate-item-prompt.component';
+import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'add-to-list-form',
@@ -20,6 +21,7 @@ export class AddToListFormComponent extends LazyLoad {
   public selectedList!: KeyValue<string, string>;
   public duplicateItemPrompt!: DuplicateItemPromptComponent;
   public createListForm!: CreateListFormComponent;
+  public logInForm!: LogInFormComponent | null;
 
   constructor
     (
@@ -107,5 +109,7 @@ export class AddToListFormComponent extends LazyLoad {
       this.createListForm.close();
       this.createListForm.addToListForm.close();
     }
+
+    if (this.logInForm) this.logInForm.close();
   }
 }

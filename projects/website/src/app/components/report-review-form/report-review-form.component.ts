@@ -3,6 +3,7 @@ import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -14,6 +15,7 @@ export class ReportReviewFormComponent extends LazyLoad {
   public productId!: number;
   public reviewId!: number;
   public comments!: string;
+  public logInForm!: LogInFormComponent | null
 
   constructor(private dataService: DataService, private spinnerService: SpinnerService, private lazyLoadingService: LazyLoadingService) { super() }
 
@@ -43,5 +45,11 @@ export class ReportReviewFormComponent extends LazyLoad {
         successPrompt.reportReviewForm = this;
         this.spinnerService.show = false;
       });
+  }
+
+
+  close() {
+    super.close();
+    if (this.logInForm) this.logInForm.close();
   }
 }
