@@ -42,12 +42,14 @@
 
 
                     <div *ngIf="isSearch && products" class="search-match-text">
-                        {{products.length}} product{{products.length == 0 || products.length > 1 ? 's' : ''}} matching "{{searchTerm}}"
+                        {{products.length}} product{{products.length == 0 || products.length > 1 ? 's' : ''}} matching
+                        "{{searchTerm}}"
                     </div>
 
 
                     <div *ngIf="isSearch && orders" class="search-match-text">
-                        {{orders.length}} order{{orders.length == 0 || orders.length > 1 ? 's' : ''}} matching "{{searchTerm}}"
+                        {{orders.length}} order{{orders.length == 0 || orders.length > 1 ? 's' : ''}} matching
+                        "{{searchTerm}}"
                     </div>
 
 
@@ -84,9 +86,12 @@
                             <div class="product-container" *ngFor="let product of order.products">
 
                                 <div class="image-container" (click)="onProductClick(product)">
-                                    <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
-                                        [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
-                                        [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
+
+                                    <div class="media-backdrop">
+                                        <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
+                                            [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
+                                            [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
+                                    </div>
                                 </div>
 
                                 <div class="product-info">
@@ -96,10 +101,8 @@
                                     <div *ngIf="product.rebillFrequency" style="color: #b4b4b4;">Recurring -
                                         {{getRecurringText(product)}} {{product.rebillAmount | currency:'USD'}}
                                     </div>
-
                                 </div>
                             </div>
-
                         </div>
 
 
@@ -174,9 +177,12 @@
                     <div class="query-product">
 
                         <div class="image-container" (click)="onProductClick(product)">
-                            <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
-                                [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
-                                [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
+
+                            <div class="media-backdrop">
+                                <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
+                                    [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
+                                    [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
+                            </div>
                         </div>
 
                         <div class="product-info-container">

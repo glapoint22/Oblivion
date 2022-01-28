@@ -45,8 +45,11 @@
                             <!-- Item Details -->
                             <div class="item-details">
                                 <div class="item-image-container" (click)="onProductClick(product)">
-                                    <img [src]="'images/' + product.image.url" [title]="product.image.name"
-                                        [alt]="product.image.name">
+
+                                    <div class="media-backdrop">
+                                        <img [src]="'images/' + product.image.url" [title]="product.image.name"
+                                            [alt]="product.image.name">
+                                    </div>
                                 </div>
 
                                 <div class="item-info-container">
