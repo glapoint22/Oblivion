@@ -5,7 +5,7 @@
         <!-- Slider -->
         <div class="slider-container">
             <div #slider slider [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton"
-                [scrollbarElement]="scrollbar" [changeCount]="changeCount" class="slider">
+                [scrollbarElement]="scrollbar" [changeCount]="changeCount" [scrollbarContainer]="scrollbarContainer" class="slider">
 
                 <!-- Products -->
                 <div *ngFor="let pricePointGroup of pricePointGroups" class="price-point-group"
@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <div class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth">
+    <div #scrollbarContainer class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth">
         <!-- Scroll Track -->
         <div class="scroll-track"></div>
 

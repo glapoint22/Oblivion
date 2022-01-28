@@ -24,9 +24,9 @@ export class NichesFilterComponent {
   }
 
   ngOnChanges() {
-    if (this.seeAllNiches && this.niches.hidden) {
+    if (this.niches.hidden) {
       this.niches.hidden.forEach((niche: NicheFilter) => {
-        niche.visible = true;
+        niche.visible = this.seeAllNiches;
       });
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Caption } from '../../classes/caption';
 import { Product } from '../../classes/product';
@@ -16,6 +16,7 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
 export class ProductComponent implements OnInit {
   public product!: Product;
   public caption: Caption = new Caption();
+  public clientWidth!: number;
 
   constructor
     (
@@ -30,6 +31,8 @@ export class ProductComponent implements OnInit {
       this.product = data.product;
       this.caption.text = this.product.relatedProducts.caption;
     });
+
+    this.onWindowResize();
   }
 
   onVisitOfficialWebsiteClick() {
@@ -73,5 +76,11 @@ export class ProductComponent implements OnInit {
         });
         this.spinnerService.show = false;
       });
+  }
+
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.clientWidth = document.documentElement.clientWidth;
   }
 }

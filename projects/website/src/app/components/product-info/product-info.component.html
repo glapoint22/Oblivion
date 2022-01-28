@@ -1,7 +1,7 @@
 <div class="product-section">
 
     <!-- PC -->
-    <div class="product-info-container-pc">
+    <div *ngIf="clientWidth >= 1024" class="product-info-container-pc">
 
         <div *ngIf="product.media.length > 1" class="media-list-container"
             [style.width.px]="product.media.length > 8 ? 82 : 62">
@@ -109,7 +109,7 @@
 
 
     <!-- Mobile -->
-    <div class="product-info-container-mobile">
+    <div *ngIf="clientWidth < 1024" class="product-info-container-mobile">
         <div style="display: flex; align-items: center; justify-content: space-between;">
             <div class="social-media-container">
                 <div title="Share on Facebook">
@@ -152,7 +152,7 @@
 
 
 
-        <media-slider [media]="product.media"></media-slider>
+        <media-slider [media]="product.media" [clientWidth]="clientWidth"></media-slider>
 
 
 

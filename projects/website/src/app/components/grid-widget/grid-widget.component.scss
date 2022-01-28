@@ -65,7 +65,6 @@
     width: 220px;
     margin-right: 20px;
     flex-shrink: 0;
-    display: none;
 }
 
 
@@ -91,7 +90,7 @@
         display: none;
     }
 
-    .dropdown-container, .filters-container {
+    .dropdown-container {
         display: block;
     }
 }

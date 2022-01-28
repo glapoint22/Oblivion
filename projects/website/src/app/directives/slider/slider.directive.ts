@@ -7,6 +7,7 @@ export class SliderDirective implements AfterViewChecked {
   public sliderElement!: HTMLElement;
   public sliderSet!: boolean;
   @Input() scrollbarElement!: HTMLElement;
+  @Input() scrollbarContainer!: HTMLElement;
   @Input() leftArrowButtonElement!: HTMLElement;
   @Input() rightArrowButtonElement!: HTMLElement;
   @Input() changeCount!: number;
@@ -19,7 +20,6 @@ export class SliderDirective implements AfterViewChecked {
   private scrollbarPosition!: number;
   private transitionSpeed: number = 500;
   private scrollbarOffset!: number;
-  private scrollbarStartPosition!: number;
 
   constructor(el: ElementRef<HTMLElement>) {
     this.sliderElement = el.nativeElement;
@@ -28,71 +28,58 @@ export class SliderDirective implements AfterViewChecked {
 
 
   ngOnChanges() {
-    // Reset the slider values
-    if (this.sliderElement && this.sliderElement.childElementCount > 0) {
-      this.sliderPosition = 0;
-      this.sliderStartPosition = 0;
-      this.sliderStopPosition = 0;
-      this.scrollbarPosition = this.scrollbarStartPosition;
-      this.scrollbarOffset = 0;
-
-      if (this.scrollbarElement) {
-        this.scrollbarElement.removeEventListener('touchstart', this.onScrollbarStart);
-        this.scrollbarElement.removeEventListener('mousedown', this.onScrollbarStart);
-        this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
-        const scrollbarParentElement = this.scrollbarElement.parentElement as HTMLElement;
-        scrollbarParentElement.style.display = 'block';
-      }
-
-      if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
-        this.leftArrowButtonElement.removeEventListener('click', this.onLeftArrowClick);
-        this.rightArrowButtonElement.removeEventListener('click', this.onRightArrowClick);
-        this.leftArrowButtonElement.style.display = 'flex';
-        this.rightArrowButtonElement.style.display = 'flex';
-      }
-      this.initializeTransitions();
-      this.sliderSet = false;
-    }
+    this.sliderSet = false;
   }
 
+  ngAfterViewInit() {
+    if (this.scrollbarElement) {
+      this.scrollbarElement.addEventListener('touchstart', this.onScrollbarStart);
+      this.scrollbarElement.addEventListener('mousedown', this.onScrollbarStart);
+    }
+
+    if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
+      this.leftArrowButtonElement.addEventListener('click', this.onLeftArrowClick);
+      this.rightArrowButtonElement.addEventListener('click', this.onRightArrowClick);
+    }
+  }
 
   ngAfterViewChecked() {
     if (this.sliderElement.childElementCount > 0 && !this.sliderSet) {
       this.sliderSet = true;
+
+      this.sliderPosition = 0;
+      this.sliderStartPosition = 0;
+      this.sliderStopPosition = 0;
+
       this.containerWidth = this.sliderElement.parentElement?.clientWidth as number;
       this.sliderElement.style.left = '0';
 
       // Set the transitions to zero
       this.initializeTransitions();
 
+
       // If we have a scrollbar
       if (this.scrollbarElement) {
-        this.scrollbarStartPosition = this.scrollbarOffset = this.scrollbarElement.offsetLeft;
-        this.scrollbarPosition = this.scrollbarOffset;
-        this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
-        this.scrollbarElement.addEventListener('touchstart', this.onScrollbarStart);
-        this.scrollbarElement.addEventListener('mousedown', this.onScrollbarStart);
+        if (this.sliderElement.childElementCount < 2) {
+          this.scrollbarContainer.style.display = 'none';
+        } else {
+          this.scrollbarContainer.style.display = 'block';
+          this.scrollbarPosition = this.scrollbarOffset = this.scrollbarContainer.offsetLeft;
+          this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
+        }
       }
 
       // If we have arrows
       if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
-        this.leftArrowButtonElement.addEventListener('click', this.onLeftArrowClick);
-        this.rightArrowButtonElement.addEventListener('click', this.onRightArrowClick);
-        this.setLeftArrowVisibility();
-        this.setRightArrowVisibility();
-      }
-
-
-      // Check to see if we hide the scrollbar and arrow buttons
-      if (this.sliderElement.childElementCount < 2) {
-        if (this.scrollbarElement) {
-          const scrollbarParentElement = this.scrollbarElement.parentElement as HTMLElement;
-          scrollbarParentElement.style.display = 'none';
-        }
-
-        if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
+        if (this.sliderElement.childElementCount < 2) {
           this.leftArrowButtonElement.style.display = 'none';
           this.rightArrowButtonElement.style.display = 'none';
+        } else {
+          this.leftArrowButtonElement.style.display = 'flex';
+          this.rightArrowButtonElement.style.display = 'flex';
+
+          this.setLeftArrowVisibility();
+          this.setRightArrowVisibility();
         }
       }
     }

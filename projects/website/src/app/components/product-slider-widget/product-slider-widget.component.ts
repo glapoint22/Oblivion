@@ -12,12 +12,13 @@ import { Widget } from '../../classes/widget';
 export class ProductSliderWidgetComponent extends Widget implements AfterViewInit {
   @Input() products!: Array<Product>;
   @Input() caption!: Caption;
+  @Input() clientWidth!: number;
   @ViewChild('sliderContainer') sliderContainer!: ElementRef<HTMLElement>;
   public productGroups: Array<any> = []
   public changeCount: number = 0;
 
   ngOnChanges() {
-    if(this.sliderContainer) {
+    if (this.sliderContainer) {
       this.productGroups = [];
       this.setProductGroups();
       this.changeCount++;
@@ -27,6 +28,8 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
   setWidget(productSliderWidgetData: ProductSliderWidgetData) {
     this.products = productSliderWidgetData.products;
     this.caption = productSliderWidgetData.caption;
+
+    window.addEventListener('resize', this.onWindowResize);
   }
 
   ngAfterViewInit() {
@@ -44,5 +47,14 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
         this.productGroups[this.productGroups.length - 1].push(this.products[i]);
       }
     }
+  }
+
+
+  onWindowResize = () => {
+    this.ngOnChanges();
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('resize', this.onWindowResize);
   }
 }

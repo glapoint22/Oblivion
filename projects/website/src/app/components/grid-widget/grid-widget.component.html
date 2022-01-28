@@ -31,7 +31,7 @@
             <div class="grid-container">
 
                 <!-- Filters -->
-                <div class="filters-container">
+                <div *ngIf="clientWidth >= 768" class="filters-container">
                     <filters-panel [filters]="gridData.filters"></filters-panel>
                 </div>
 

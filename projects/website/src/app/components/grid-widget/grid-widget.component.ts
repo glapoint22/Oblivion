@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GridData } from '../../classes/grid-data';
 import { GridWidgetData } from '../../classes/grid-widget-data';
@@ -36,6 +36,8 @@ export class GridWidgetComponent extends Widget {
     }
   ]
 
+  public clientWidth!: number;
+
   private gridWidgetSideMenu!: GridWidgetSideMenuComponent;
 
   constructor(
@@ -53,6 +55,8 @@ export class GridWidgetComponent extends Widget {
         value: 'best-match'
       });
     }
+
+    this.onWindowResize();
   }
 
 
@@ -112,5 +116,10 @@ export class GridWidgetComponent extends Widget {
 
   trackProduct(index: number, product: Product) {
     return product.id;
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.clientWidth = document.documentElement.clientWidth;
   }
 }
