@@ -17,7 +17,6 @@ export class ReportItemFormComponent extends LazyLoad {
   public comments!: string;
   public type: number = 2;
   public logInForm!: LogInFormComponent | null;
-
   public listItems = [
     {
       key: 'Product Name',
@@ -154,6 +153,7 @@ export class ReportItemFormComponent extends LazyLoad {
 
 
   async openSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

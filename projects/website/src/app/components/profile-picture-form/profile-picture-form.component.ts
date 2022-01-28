@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CircleOverlay } from '../../classes/circle-overlay';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AccountService } from '../../services/account/account.service';
@@ -13,16 +13,6 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./profile-picture-form.component.scss']
 })
 export class ProfilePictureFormComponent extends LazyLoad {
-  constructor
-    (
-      private dataService: DataService,
-      private accountService: AccountService,
-      private lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService
-    ) {
-    super();
-  }
-
   private scaleValue: number = 1;
   private initialPicWidth!: number;
   private initialPicHeight!: number;
@@ -38,13 +28,21 @@ export class ProfilePictureFormComponent extends LazyLoad {
   public zoomHandleMoveStartPos!: number | null;
   public plusButtonDisabled!: boolean;
 
-
   @ViewChild('zoomBar', { static: false }) zoomBar!: ElementRef<HTMLElement>;
   @ViewChild('picContainer', { static: false }) picContainer!: ElementRef<HTMLElement>;
   @ViewChild('pic', { static: false }) pic!: ElementRef<HTMLImageElement>;
   @ViewChild('circleOverlay', { static: false }) circleOverlay!: ElementRef<HTMLElement>;
   @ViewChild('zoomHandle', { static: false }) zoomHandle!: ElementRef<HTMLElement>;
 
+  constructor
+    (
+      private dataService: DataService,
+      private accountService: AccountService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) {
+    super();
+  }
 
   onOpen() {
     this.getImage(this.imageFile);
@@ -375,6 +373,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
 
   async OpenSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

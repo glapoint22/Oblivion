@@ -32,6 +32,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
 
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       otp: new FormControl('', [
         Validators.required,
@@ -47,7 +48,6 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-
     this.otpInput.nativeElement.setAttribute('autocomplete', 'off');
     this.verificationForm.nativeElement.setAttribute('autocomplete', 'off');
     this.passwordInput.nativeElement.setAttribute('autocomplete', 'off');
@@ -77,6 +77,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
 
 
   async OpenSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -92,6 +93,6 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
 
   close() {
     super.close();
-    this.changeEmailForm.close();
+    if (this.changeEmailForm) this.changeEmailForm.close();
   }
 }

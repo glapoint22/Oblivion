@@ -17,11 +17,13 @@ export class SignUpFormComponent extends LazyLoad implements OnInit {
   public isLoginPage!: boolean;
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.isLoginPage = this.router.url.includes('log-in');
   }
 
 
   async onCreateAccountButtonClick(): Promise<void> {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { CreateAccountFormComponent } = await import('../create-account-form/create-account-form.component');
@@ -36,6 +38,7 @@ export class SignUpFormComponent extends LazyLoad implements OnInit {
 
 
   async onLogInLinkClick() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');

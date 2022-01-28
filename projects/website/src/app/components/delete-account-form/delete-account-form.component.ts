@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Authentication } from '../../classes/authentication';
@@ -16,7 +16,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   templateUrl: './delete-account-form.component.html',
   styleUrls: ['./delete-account-form.component.scss']
 })
-export class DeleteAccountFormComponent extends Validation {
+export class DeleteAccountFormComponent extends Validation implements OnInit {
   public email!: string;
   public authentication: Authentication = new Authentication();
   public deleteAccountPrompt!: DeleteAccountPromptComponent;
@@ -34,7 +34,9 @@ export class DeleteAccountFormComponent extends Validation {
       private router: Router
     ) { super() }
 
+
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       otp: new FormControl('', [
         Validators.required,
@@ -50,7 +52,6 @@ export class DeleteAccountFormComponent extends Validation {
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-
     this.otpInput.nativeElement.setAttribute('autocomplete', 'off');
     this.verificationForm.nativeElement.setAttribute('autocomplete', 'off');
     this.passwordInput.nativeElement.setAttribute('autocomplete', 'off');
@@ -64,7 +65,7 @@ export class DeleteAccountFormComponent extends Validation {
         password: this.form.get('password')?.value,
         oneTimePassword: this.form.get('otp')?.value
       },
-        {authorization: true}
+        { authorization: true }
       ).subscribe((authentication: Authentication) => {
         this.authentication.failure = authentication.failure;
 
@@ -80,6 +81,7 @@ export class DeleteAccountFormComponent extends Validation {
 
 
   async OpenSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -95,6 +97,6 @@ export class DeleteAccountFormComponent extends Validation {
 
   close() {
     super.close();
-    this.deleteAccountPrompt.close();
+    if (this.deleteAccountPrompt) this.deleteAccountPrompt.close();
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { DeleteAccountFormComponent } from '../../components/delete-account-form/delete-account-form.component';
 import { DataService } from '../../services/data/data.service';
@@ -17,20 +17,21 @@ export class DeleteAccountPromptComponent extends LazyLoad {
 
   onDeleteClick() {
     this.spinnerService.show = true;
-    this.dataService.post('api/Account/CreateDeleteAccountOTP', {}, {authorization: true})
-    .subscribe(() => {
-      this.openDeleteAccountForm();
-    });
+    this.dataService.post('api/Account/CreateDeleteAccountOTP', {}, { authorization: true })
+      .subscribe(() => {
+        this.fade();
+        this.openDeleteAccountForm();
+      });
   }
 
 
   async openDeleteAccountForm() {
+    document.removeEventListener("keydown", this.keyDown);
     const { DeleteAccountFormComponent } = await import('../../components/delete-account-form/delete-account-form.component');
     const { DeleteAccountFormModule } = await import('../../components/delete-account-form/delete-account-form.module')
 
     this.lazyLoadingService.getComponentAsync(DeleteAccountFormComponent, DeleteAccountFormModule, this.lazyLoadingService.container)
       .then((deleteAccountForm: DeleteAccountFormComponent) => {
-        this.fade();
         deleteAccountForm.deleteAccountPrompt = this;
         this.spinnerService.show = false;
       });

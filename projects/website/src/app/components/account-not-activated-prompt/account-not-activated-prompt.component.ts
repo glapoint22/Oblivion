@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AccountActivationPromptComponent } from '../../components/account-activation-prompt/account-activation-prompt.component';
 import { DataService } from '../../services/data/data.service';
@@ -22,6 +22,7 @@ export class AccountNotActivatedPromptComponent extends LazyLoad {
       private lazyLoadingService: LazyLoadingService
     ) { super() }
 
+
   onResendEmailClick() {
     this.spinnerService.show = true;
     this.dataService.get('api/Account/ResendAccountActivationEmail', [{ key: 'email', value: this.email }])
@@ -33,6 +34,7 @@ export class AccountNotActivatedPromptComponent extends LazyLoad {
 
 
   async openAccountActivationPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { AccountActivationPromptComponent } = await import('../../components/account-activation-prompt/account-activation-prompt.component');
     const { AccountActivationPromptModule } = await import('../../components/account-activation-prompt/account-activation-prompt.module');
 

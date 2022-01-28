@@ -27,6 +27,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
 
   
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       email: new FormControl(this.accountService.customer?.email, [
         Validators.required,
@@ -54,6 +55,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
 
 
   async openEmailverificationForm() {
+    document.removeEventListener("keydown", this.keyDown);
     const { EmailVerificationFormComponent } = await import('../email-verification-form/email-verification-form.component');
     const { EmailVerificationFormModule } = await import('../email-verification-form/email-verification-form.module');
 

@@ -1,8 +1,9 @@
 import { KeyValue } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
+import { AddToListPromptComponent } from '../../components/add-to-list-prompt/add-to-list-prompt.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -15,7 +16,7 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
   templateUrl: './add-to-list-form.component.html',
   styleUrls: ['./add-to-list-form.component.scss']
 })
-export class AddToListFormComponent extends LazyLoad {
+export class AddToListFormComponent extends LazyLoad implements OnInit {
   public lists!: Array<KeyValue<string, string>>;
   public product!: Product;
   public selectedList!: KeyValue<string, string>;
@@ -32,35 +33,37 @@ export class AddToListFormComponent extends LazyLoad {
 
 
   ngOnInit() {
+    super.ngOnInit();
     this.dataService.get<Array<KeyValue<string, string>>>('api/Lists/DropdownLists', undefined, {
       authorization: true,
       showSpinner: true
     })
       .subscribe((lists: Array<KeyValue<string, string>>) => {
         this.lists = lists;
-
         if (this.lists.length > 0) {
           this.selectedList = this.lists[0];
         }
       });
   }
 
+
   onSubmit() {
     this.dataService.post<boolean>('api/Lists/AddProduct', {
       productId: this.product.id,
       listId: this.selectedList.value
     }, { authorization: true }).subscribe((isDuplicate: boolean) => {
+      this.fade();
       if (isDuplicate) {
-        this.fade();
         this.openDuplicateItemPrompt();
       } else {
-        this.close();
+        this.openAddToListPrompt();
       }
     });
   }
 
 
   async openDuplicateItemPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     const { DuplicateItemPromptComponent } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.component');
     const { DuplicateItemPromptModule } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.module');
@@ -75,8 +78,25 @@ export class AddToListFormComponent extends LazyLoad {
   }
 
 
+  async openAddToListPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
+    this.spinnerService.show = true;
+    const { AddToListPromptComponent } = await import('../../components/add-to-list-prompt/add-to-list-prompt.component');
+    const { AddToListPromptModule } = await import('../../components/add-to-list-prompt/add-to-list-prompt.module');
+
+    this.lazyLoadingService.getComponentAsync(AddToListPromptComponent, AddToListPromptModule, this.lazyLoadingService.container)
+      .then((addToListPrompt: AddToListPromptComponent) => {
+        addToListPrompt.list = this.selectedList.key;
+        addToListPrompt.product = this.product;
+        addToListPrompt.addToListForm = this;
+        this.spinnerService.show = false;
+      });
+  }
+
+
 
   async createList() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { CreateListFormComponent } = await import('../../components/create-list-form/create-list-form.component');
@@ -104,12 +124,10 @@ export class AddToListFormComponent extends LazyLoad {
       this.duplicateItemPrompt.close();
       this.duplicateItemPrompt.addToListForm.close();
     }
-
     if (this.createListForm) {
       this.createListForm.close();
       this.createListForm.addToListForm.close();
     }
-
     if (this.logInForm) this.logInForm.close();
   }
 }

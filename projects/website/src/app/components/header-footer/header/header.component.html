@@ -21,7 +21,7 @@
     <div class="center-container">
 
 
-        <div tabindex="0" (blur)="nicheMenuPopup.close()" (keydown.escape)="nicheMenuPopup.close()"
+        <div tabindex="0" (blur)="nicheMenuPopup.close()"
             class="niches-button-container">
 
             <div class="niches-button" (click)="onNichesButtonClick()"
@@ -103,7 +103,7 @@
 
             <!-- Account profile pic -->
             <div tabindex="0" (blur)="accountMenuPopupComponent.close()"
-                (keydown.escape)="accountMenuPopupComponent.close()" style="outline: none;">
+                 style="outline: none;">
                 <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
                 <img [src]="accountService.customer.profileImage.url" class="profile-pic"
                     [title]="accountService.customer.profileImage.name"

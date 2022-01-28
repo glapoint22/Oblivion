@@ -23,6 +23,7 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       'currentPassword': new FormControl('', [
         Validators.required,
@@ -62,6 +63,7 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
 
 
   async OpenSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

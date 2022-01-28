@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CreatePasswordFormComponent } from '../../components/create-password-form/create-password-form.component';
 import { ProfilePictureFormComponent } from '../../components/profile-picture-form/profile-picture-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -10,6 +11,7 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent {
+  private zuckabuck: boolean = true;
 
   constructor
     (
@@ -46,13 +48,29 @@ export class ProfileComponent {
 
   async onChangePasswordClick() {
     this.spinnerService.show = true;
-    const { ChangePasswordFormComponent } = await import('../../components/change-password-form/change-password-form.component');
-    const { ChangePasswordFormModule } = await import('../../components/change-password-form/change-password-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ChangePasswordFormComponent, ChangePasswordFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+    // If user is changing their password
+    if (!this.zuckabuck) {
+      const { ChangePasswordFormComponent } = await import('../../components/change-password-form/change-password-form.component');
+      const { ChangePasswordFormModule } = await import('../../components/change-password-form/change-password-form.module');
+
+      this.lazyLoadingService.getComponentAsync(ChangePasswordFormComponent, ChangePasswordFormModule, this.lazyLoadingService.container)
+        .then(() => {
+          this.spinnerService.show = false;
+        });
+
+      // If user is creating their password because they've been signing into a zuckabuck
+    } else {
+      const { CreatePasswordFormComponent } = await import('../../components/create-password-form/create-password-form.component');
+      const { CreatePasswordFormModule } = await import('../../components/create-password-form/create-password-form.module');
+
+      this.lazyLoadingService.getComponentAsync(CreatePasswordFormComponent, CreatePasswordFormModule, this.lazyLoadingService.container)
+        .then((createPasswordForm: CreatePasswordFormComponent) => {
+          createPasswordForm.email = this.accountService.customer?.email!;
+          createPasswordForm.externalLoginProvider = "Zuckabuck";
+          this.spinnerService.show = false;
+        });
+    }
   }
 
 

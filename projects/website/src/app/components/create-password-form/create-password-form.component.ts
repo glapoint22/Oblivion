@@ -12,6 +12,7 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
   public email!: string;
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       'newPassword': new FormControl('', [
         Validators.required,
@@ -30,5 +31,4 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
       console.log('Submit');
     }
   }
-
 }

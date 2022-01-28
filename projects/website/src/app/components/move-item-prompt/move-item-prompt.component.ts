@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
@@ -22,7 +22,6 @@ export class MoveItemPromptComponent extends LazyLoad {
   constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) {
     super();
   }
-
 
   onMoveClick() {
     this.spinnerService.show = true;
@@ -48,6 +47,7 @@ export class MoveItemPromptComponent extends LazyLoad {
 
 
   async openDuplicateItemPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { DuplicateItemPromptComponent } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.component');
     const { DuplicateItemPromptModule } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.module');
 
