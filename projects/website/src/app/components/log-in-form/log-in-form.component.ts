@@ -36,6 +36,7 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       email: new FormControl('', [
         Validators.required,
@@ -81,8 +82,6 @@ export class LogInFormComponent extends Validation implements OnInit {
           if(this.returnUrl) {
             this.router.navigateByUrl(this.returnUrl);
           }
-
-          
         }
       })
     }
@@ -90,6 +89,7 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   async onSignUpLinkClick() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
@@ -104,6 +104,7 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   async onForgotPasswordLinkClick() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { ForgotPasswordFormComponent } = await import('../forgot-password-form/forgot-password-form.component');
@@ -118,6 +119,7 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   async openAccountNotActivatedPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { AccountNotActivatedPromptComponent } = await import('../../components/account-not-activated-prompt/account-not-activated-prompt.component');
@@ -131,7 +133,7 @@ export class LogInFormComponent extends Validation implements OnInit {
       });
   }
 
-  
+
   close() {
     super.close();
     if (this.signUpForm) this.signUpForm.close();

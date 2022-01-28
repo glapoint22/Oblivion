@@ -23,6 +23,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       rating: new FormControl('', [
         Validators.required
@@ -60,6 +61,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
 
   async openSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

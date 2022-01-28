@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { DataService } from '../../services/data/data.service';

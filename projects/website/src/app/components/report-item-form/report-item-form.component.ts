@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { DropdownComponent } from '../dropdown/dropdown.component';
 import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
@@ -17,6 +18,9 @@ export class ReportItemFormComponent extends LazyLoad {
   public comments!: string;
   public type: number = 2;
   public logInForm!: LogInFormComponent | null;
+
+  @ViewChild('whereDropdown') whereDropdown!: DropdownComponent;
+  @ViewChild('whatDropdown') whatDropdown!: DropdownComponent;
 
   public listItems = [
     {
@@ -154,6 +158,7 @@ export class ReportItemFormComponent extends LazyLoad {
 
 
   async openSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -164,6 +169,15 @@ export class ReportItemFormComponent extends LazyLoad {
         successPrompt.reportItemForm = this;
         this.spinnerService.show = false;
       });
+  }
+
+
+  keyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      if (!this.whereDropdown.showDropdownList && !this.whatDropdown.showDropdownList) {
+        this.close();
+      }
+    }
   }
 
 

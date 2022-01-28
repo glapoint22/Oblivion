@@ -35,6 +35,7 @@ export class ReportReviewFormComponent extends LazyLoad {
 
 
   async openSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

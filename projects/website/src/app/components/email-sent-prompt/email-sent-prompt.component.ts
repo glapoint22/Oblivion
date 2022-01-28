@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { ForgotPasswordFormComponent } from '../forgot-password-form/forgot-password-form.component';
 

@@ -30,6 +30,7 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.isLoginPage = this.router.url.includes('log-in');
 
 
@@ -75,6 +76,7 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
 
   async onLogInLinkClick() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
@@ -90,6 +92,7 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
 
   async openEmailExistsPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { EmailExistsPromptComponent } = await import('../../components/email-exists-prompt/email-exists-prompt.component');
@@ -104,9 +107,8 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
   }
 
 
-
-
   async openAccountActivationPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { AccountActivationPromptComponent } = await import('../../components/account-activation-prompt/account-activation-prompt.component');

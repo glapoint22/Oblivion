@@ -1,4 +1,4 @@
-<div class="dropdown-container" tabindex="0" (blur)="showDropdownList = false">
+<div class="dropdown-container" tabindex="0" (focus)="onDropdownFocus()" (blur)="onDropdownBlur()">
 
     <div class="dropdown-base" (click)="showDropdownList = !showDropdownList">
 

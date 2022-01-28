@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { CreateAccountFormComponent } from '../create-account-form/create-account-form.component';
 
@@ -10,7 +10,6 @@ import { CreateAccountFormComponent } from '../create-account-form/create-accoun
 export class EmailExistsPromptComponent extends LazyLoad { 
   public email!: string;
   public createAccountForm!: CreateAccountFormComponent;
-
 
   close() {
     super.close();

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AccountNotActivatedPromptComponent } from '../account-not-activated-prompt/account-not-activated-prompt.component';
 import { CreateAccountFormComponent } from '../create-account-form/create-account-form.component';

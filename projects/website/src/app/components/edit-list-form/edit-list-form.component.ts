@@ -16,13 +16,14 @@ export class EditListFormComponent extends Validation implements OnInit {
   constructor(private dataService: DataService) { super() }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       listName: new FormControl('', [Validators.required]),
       description: new FormControl('')
     });
-
     this.onInit.emit();
   }
+
 
   onSubmit() {
     if (this.form.valid) {

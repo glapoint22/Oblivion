@@ -22,6 +22,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
   constructor(private dataService: DataService, private accountService: AccountService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super(); }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       listName: new FormControl('', [Validators.required]),
       description: new FormControl('')
@@ -52,6 +53,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
 
 
   async openAddToListForm() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
     const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
@@ -64,10 +66,17 @@ export class CreateListFormComponent extends Validation implements OnInit {
   }
 
 
+  keyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      this._close();
+    }
+  }
+
+
   _close() {
-    if(!this.addToListForm) {
+    if (!this.addToListForm) {
       super.close()
-    }else {
+    } else {
       super.fade();
       this.openAddToListForm();
     }

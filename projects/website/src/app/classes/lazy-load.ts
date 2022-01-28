@@ -8,6 +8,10 @@ export class LazyLoad implements AfterViewInit {
     public container!: ViewContainerRef;
     public setTimeOut!: number;
 
+    ngOnInit(): void {
+        this.addEventListener();
+    }
+
     ngAfterViewInit(): void {
         this.open();
     }
@@ -22,6 +26,7 @@ export class LazyLoad implements AfterViewInit {
 
 
     close() {
+        document.removeEventListener("keydown", this.keyDown);
         this.show = false;
         window.clearTimeout(this.setTimeOut);
     }
@@ -32,7 +37,7 @@ export class LazyLoad implements AfterViewInit {
         window.clearTimeout(this.setTimeOut);
     }
 
-    
+
     onHide() {
         if (!this.show) {
             const index = this.container.indexOf(this.viewRef);
@@ -41,4 +46,16 @@ export class LazyLoad implements AfterViewInit {
     }
 
     onOpen(): void { }
+
+
+    addEventListener() {
+        document.addEventListener("keydown", this.keyDown);
+    }
+
+
+    keyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            this.close();
+        }
+    }
 }

@@ -31,7 +31,7 @@
 
                 <!-- What is the issue -->
                 <div class="label" style="margin-top: 22px;">What is the issue?</div>
-                <dropdown [listItems]="whereDropdown.selectedListItem.value" (onSelectedListItem)="type = $event.value"></dropdown>
+                <dropdown #whatDropdown [listItems]="whereDropdown.selectedListItem.value" (onSelectedListItem)="type = $event.value"></dropdown>
 
 
 

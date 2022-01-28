@@ -87,6 +87,7 @@ export class ShareListFormComponent extends LazyLoad {
 
 
   async OpenSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');

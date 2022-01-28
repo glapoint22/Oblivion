@@ -27,7 +27,9 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
       private router: Router
     ) { super() }
 
+
   ngOnInit(): void {
+    super.ngOnInit();
     this.isLoginPage = this.router.url.includes('log-in');
 
     this.form = new FormGroup({
@@ -58,6 +60,7 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
 
 
   async onLogInLinkClick() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
@@ -72,6 +75,7 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
 
 
   async openEmailSentPrompt(email: string) {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     const { EmailSentPromptComponent } = await import('../../components/email-sent-prompt/email-sent-prompt.component');
     const { EmailSentPromptModule } = await import('../../components/email-sent-prompt/email-sent-prompt.module');

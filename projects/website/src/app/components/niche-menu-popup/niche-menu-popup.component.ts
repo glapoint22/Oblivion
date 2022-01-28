@@ -19,6 +19,7 @@ export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
 
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.nichesService.getNiches()
       .subscribe((niches: Array<Niche>) => {
         this.niches = niches;

@@ -47,6 +47,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.dataService.get<Array<Collaborator>>('api/Lists/Collaborators', [{ key: 'listId', value: this.list.id }], {
       authorization: true,
       showSpinner: true
@@ -61,6 +62,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
         }
       });
   }
+
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
@@ -120,6 +122,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
       });
   }
 
+
   onRemoveClick() {
     this.selectedCollaborator.isRemoved = true;
     this.addToUpdatedCollaborators();
@@ -138,6 +141,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   async openShareList() {
+    document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
 

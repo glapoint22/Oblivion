@@ -16,6 +16,7 @@ export class ContactUsFormComponent extends Validation implements OnInit {
   constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       name: new FormControl('', [
         Validators.required,
@@ -49,6 +50,7 @@ export class ContactUsFormComponent extends Validation implements OnInit {
 
 
   async openSuccessPrompt() {
+    document.removeEventListener("keydown", this.keyDown);
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

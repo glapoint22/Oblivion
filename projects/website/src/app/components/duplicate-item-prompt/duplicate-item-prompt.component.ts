@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
 import { Product } from '../../classes/product';
@@ -19,6 +19,9 @@ export class DuplicateItemPromptComponent extends LazyLoad {
   close() {
     super.close();
     if (this.moveItemPrompt) this.moveItemPrompt.close();
-    if (this.addToListForm) this.addToListForm.fadeOut = false;
+    if (this.addToListForm) {
+      this.addToListForm.addEventListener();
+      this.addToListForm.fadeOut = false;
+    }
   }
 }
