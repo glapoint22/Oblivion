@@ -86,7 +86,7 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
 
     this.lazyLoadingService.getComponentAsync(AddToListPromptComponent, AddToListPromptModule, this.lazyLoadingService.container)
       .then((addToListPrompt: AddToListPromptComponent) => {
-        addToListPrompt.list = this.selectedList.key;
+        addToListPrompt.list = this.selectedList;
         addToListPrompt.product = this.product;
         addToListPrompt.addToListForm = this;
         this.spinnerService.show = false;
