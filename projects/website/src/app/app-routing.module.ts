@@ -62,7 +62,6 @@ const routes: Routes = [
   {
     path: 'collaborate-list/:collaborateListId',
     loadChildren: () => import('./pages/collaborate-list/collaborate-list.module').then(m => m.CollaborateListModule),
-    canLoad: [AccountGuard],
     canActivate: [AccountGuard],
     resolve: {
       listInfo: CollaborateListResolver
@@ -86,6 +85,10 @@ const routes: Routes = [
   {
     path: 'log-in',
     loadChildren: () => import('./pages/log-in/log-in.module').then(m => m.LogInModule)
+  },
+  {
+    path: 'activate-account',
+    loadChildren: () => import('./pages/activate-account/activate-account.module').then(m => m.ActivateAccountModule)
   },
   { path: '**', component: PageNotFoundComponent }
 ];
