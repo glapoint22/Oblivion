@@ -53,6 +53,7 @@
     width: 22px;
     height: 22px;
     pointer-events: all;
+    margin-top: 4px;
 }
 
 .niches-button {
@@ -212,7 +213,7 @@ input {
 
 .suggestion-list-backdrop {
     position: fixed;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.8);
     top: 79px;
     right: 0;
     bottom: 0;
@@ -297,44 +298,31 @@ input {
 
 
 @media(max-width: 800px) {
-    .niches-button-text {
-        max-width: 60px;
+    .header-container {
+        display: block;
+        padding: 0 10px;
+        height: 100px;
     }
-}
 
-@media(max-width: 700px) {
-    img, .profile-pic {
+    .center-container {
+        width: 100%;
+    }
+
+    .right-container {
         display: none;
     }
 
+    img {
+        width: 150px;
+    }
+
     .left-container {
-        width: auto;
-        margin-right: 0;
-        align-items: center;
-    }
-
-    .hamburger-button {
-        margin-right: 12px;
-    }
-
-    .niches-button-text {
-        max-width: 150px;
+        margin-top: 5px;
+        margin-bottom: 2px;
     }
 }
 
 
-@media(max-width: 600px) {
-    .niches-button-text {
-        max-width: 100px;
-    }
-}
-
-
-@media(max-width: 500px) {
-    .niches-button-text {
-        max-width: 60px;
-    }
-}
 
 
 @media(max-width: 450px) {
@@ -345,6 +333,7 @@ input {
     input {
         border-top-left-radius: 18px;
         border-bottom-left-radius: 18px;
+        padding-left: 17px;
     }
 
 

@@ -1,4 +1,4 @@
-<div id="menuContainer" class="translate-start side-menu-container" [ngClass]="{'translate-end': show}" (transitionend)="onHide()" tabindex="0" (blur)="close()">
+<div id="menuContainer" class="translate-start side-menu-container" [ngClass]="{'translate-end': show}" (transitionend)="onHide()">
 
     <div class="side-menu-bar">
         <div class="side-menu-x" (click)="close()">X</div>
@@ -9,10 +9,13 @@
         <!-- Content -->
         <div class="side-menu-content">
 
-            <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="close(); onListClick.emit($event)" (onCreateNewListClick)="onCreateNewListClick.emit()"></lists-menu>
+            <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick.emit($event)" (onCreateNewListClick)="onCreateNewListClick.emit()"></lists-menu>
 
         </div>
     </div>
-</div>
 
-<div class="side-menu-backdrop hide" [ngClass]="{'show': show}"></div>
+    <!-- Bottom Fixed container -->
+    <div class="bottom-fixed-container">
+        <button class="gold-round-button-lg" (click)="close()">View Results</button>
+    </div>
+</div>

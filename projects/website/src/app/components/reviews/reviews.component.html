@@ -16,7 +16,7 @@
 
     <button *ngIf="showButton" class="purple-button" style=" margin-bottom: 24px" (click)="onViewAllReviewsClick()">View
         all
-        {{totalReviews}} reviews</button>
+        {{product.totalReviews}} reviews</button>
 
 
     <div *ngFor="let review of reviews" class="review-container">
@@ -72,8 +72,9 @@
             </div>
         </div>
     </div>
-    <button class="purple-button" (click)="onViewAllReviewsClick()" *ngIf="showButton">View all {{totalReviews}}
+    <button class="purple-button" (click)="onViewAllReviewsClick()" *ngIf="showButton">View all {{product.totalReviews}}
         reviews</button>
 
-    <paginator *ngIf="showPaginator" [pageCount]="pageCount" [currentPage]="currentPage"></paginator>
+    <paginator *ngIf="showPaginator" [pageCount]="pageCount" [currentPage]="currentPage" [setScrollTo]="true">
+    </paginator>
 </div>

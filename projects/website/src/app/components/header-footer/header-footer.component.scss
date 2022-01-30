@@ -16,6 +16,12 @@
     }
 }
 
+@media(max-width: 800px) {
+    .page {
+        padding-top: 100px;
+    }
+}
+
 @media(max-width: 525px) {
     .page {
         padding-bottom: 271px;

@@ -17,9 +17,4 @@ export class ReviewsSideMenuComponent extends LazyLoad {
   @Output() onSortChange: EventEmitter<KeyValue<string, string>> = new EventEmitter();
   public sortList!: Array<KeyValue<string, string>>;
   public selectedSort!: KeyValue<string, string>;
-
-  onOpen() {
-    document.getElementById('menuContainer')?.focus();
-  }
-
 }

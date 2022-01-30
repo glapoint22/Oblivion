@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
           }
 
           // Navigation End
-          if (event instanceof NavigationEnd && !event.url.includes('reviews')) {
+          if (event instanceof NavigationEnd && !event.url.includes('scrollTo')) {
             this.spinnerService.show = false;
             window.scrollTo(0, 0);
           }

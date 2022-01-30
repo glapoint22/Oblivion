@@ -24,8 +24,7 @@
 
             <!-- No link -->
             <img *ngIf="!banner.link || !banner.link.url" [src]="'/images/' + banner.image.url"
-                [alt]="banner.image.name" [title]="banner.image.name" draggable="false"
-                (mousedown)="$event.preventDefault()">
+                [alt]="banner.image.name" [title]="banner.image.name" draggable="false">
         </div>
     </div>
 

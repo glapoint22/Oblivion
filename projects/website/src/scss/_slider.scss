@@ -52,6 +52,7 @@
 
     i {
         font-family: 'arrow-icons';
+        transform: translateX(-1px);
         &::before {
             content: "\e914";
         }
@@ -62,6 +63,7 @@
     right: 20px;
     i {
         font-family: 'arrow-icons';
+        transform: translateX(1px);
         &::before {
             content: "\e915";
         }
@@ -70,7 +72,6 @@
 
 .scrollbar-container {
     margin: auto;
-    // margin-bottom: 20px;
     height: 44px;
 }
 
@@ -115,11 +116,11 @@
 
 @media(max-width: 360px) {
     .left-arrow-button, .right-arrow-button {
-        width: 25px;
-        height: 25px;
+        width: 34px;
+        height: 34px;
     
         i {
-            font-size: 12px;
+            font-size: 16px;
         }
     }
 }

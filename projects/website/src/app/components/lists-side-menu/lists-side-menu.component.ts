@@ -12,8 +12,4 @@ export class ListsSideMenuComponent extends LazyLoad {
   @Output() onCreateNewListClick: EventEmitter<void> = new EventEmitter();
   public lists!: Array<List>;
   public selectedList!: List;
-  
-  onOpen() {
-    document.getElementById('menuContainer')?.focus();
-  }
 }

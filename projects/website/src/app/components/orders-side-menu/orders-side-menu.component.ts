@@ -12,9 +12,6 @@ export class OrdersSideMenuComponent extends LazyLoad {
   public filters!: Array<KeyValue<string, string>>;
   public selectedFilter!: KeyValue<string, string>;
 
-  onOpen() {
-    document.getElementById('menuContainer')?.focus();
-  }
-
+  
   
 }
