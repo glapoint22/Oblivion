@@ -1,3 +1,11 @@
+.side-menu-container {
+    max-width: 280px;
+}
+
+.side-menu-content-container {
+    bottom: 10px;
+}
+
 .list-item {
     height: 30px;
     padding-left: 20px;
@@ -43,9 +51,6 @@
     margin-bottom: 30px;
 }
 
-.account-container, .sign-up-container {
-    display: none;
-}
 
 
 .account-container .list-item-container {
@@ -64,21 +69,8 @@
 }
 
 
-
-
-
-
-
-
-
-@media(max-width: 900px) {
-    .sign-up-container {
-        display: block;
-    }
-}
-
-@media(max-width: 700px) {
-    .account-container {
-        display: block;
+@media(max-width: 360px) {
+    .side-menu-container {
+        max-width: none;
     }
 }
