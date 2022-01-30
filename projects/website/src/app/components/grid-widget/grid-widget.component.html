@@ -53,6 +53,21 @@
         <!-- No Match -->
         <ng-template #noMatch>
             <div class="no-match">
+                <a routerLink="/home" title="Niche Shack Homepage">
+                    <img src="assets/logo.png">
+                </a>
+        
+                <div class="gold-text">Sorry...</div>
+                <div class="white-text">We couldn't find a match for "{{route.snapshot.queryParams.search}}"</div>
+                <ul>
+                    <li>Check your spelling</li>
+                    <li>Use different keywords and try again</li>
+                </ul>
+            </div>
+            <!-- Logo -->
+        
+
+            <!-- <div class="no-match">
 
                 <div style="margin-left: 10px">
                     <div style="font-weight: bold;">
@@ -64,7 +79,7 @@
                         <li>Use different keywords and try again</li>
                     </ul>
                 </div>
-            </div>
+            </div> -->
         </ng-template>
     </ng-container>
 </div>

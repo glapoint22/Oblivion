@@ -46,13 +46,41 @@
 }
 
 .no-match {
-    margin-top: 10px;
-    color: #dadada;
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+
+    img {
+        margin-bottom: 32px;
+        cursor: pointer;
+    }
 
     ul {
-        padding-inline-start: 16px;
+        color: #dadada;
+        text-align: left;
+        margin: 0;
+        padding-left: 16px;
+        margin-bottom: 20px;
     }
 }
+
+.gold-text {
+    font-size: 60px;
+    font-weight: bold;
+    color: #ffba00;
+    margin-bottom: 20px;
+}
+
+.white-text {
+    font-size: 32px;
+    margin-bottom: 16px;
+    color: #dadada;
+    text-align: left;
+}
+
+
 
 .dropdown-container {
     width: 186px;

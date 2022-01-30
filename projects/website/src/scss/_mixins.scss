@@ -49,12 +49,16 @@
     }
 
     &:disabled {
-        background: linear-gradient(#6e6e6e, #2c2c2c);
-        color: #201f1e;
+        background: linear-gradient(rgba(255, 221, 127, 0.22), rgba(192, 141, 2, 0.22));
+        color: rgba(0, 0, 0, 0.5);
     }
 
     &:active {
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
+    }
+
+    &:focus {
+        outline: 1px solid #ffffff;
     }
 }
 

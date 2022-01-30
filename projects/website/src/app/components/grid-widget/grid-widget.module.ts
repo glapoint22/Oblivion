@@ -5,6 +5,7 @@ import { PaginatorModule } from '../paginator/paginator.module';
 import { ProductThumbnailModule } from '../product-thumbnail/product-thumbnail.module';
 import { FiltersPanelModule } from '../filters-panel/filters-panel.module';
 import { DropdownModule } from '../dropdown/dropdown.module';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -15,7 +16,8 @@ import { DropdownModule } from '../dropdown/dropdown.module';
     PaginatorModule,
     ProductThumbnailModule,
     FiltersPanelModule,
-    DropdownModule
+    DropdownModule,
+    RouterModule
   ],
   exports: [GridWidgetComponent]
 })

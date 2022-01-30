@@ -25,6 +25,10 @@
         border-color: lighten($border-color, 10);
         color: lighten($font-color, 10);
     }
+
+    &:focus {
+        outline: 1px solid #505050;
+    }
 }
 
 

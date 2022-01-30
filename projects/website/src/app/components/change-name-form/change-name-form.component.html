@@ -25,7 +25,7 @@
             <form class="content" [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
                 <!-- First Name -->
                 <div class="label"> First Name:</div>
-                <input type="text" formControlName="firstName"
+                <input #firstNameInput type="text" formControlName="firstName"
                     [ngClass]="{'error-border': _form.submitted && form.controls.firstName.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.firstName.errors">
@@ -38,7 +38,7 @@
 
                 <!-- Last Name -->
                 <div class="label">Last Name:</div>
-                <input type="text" formControlName="lastName"
+                <input #lastNameInput type="text" formControlName="lastName"
                     [ngClass]="{'error-border': _form.submitted && form.controls.lastName.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.lastName.errors">
@@ -52,7 +52,8 @@
                 <!-- Button Container -->
                 <div class="button-container">
                     <button type="button" class="dark-button" (click)="close()">Cancel</button>
-                    <button type="submit" class="gold-rect-button">Submit</button>
+                    <button type="submit" class="gold-rect-button" [disabled]="firstNameInput.value == accountService.customer?.firstName
+                    && lastNameInput.value == accountService.customer?.lastName">Submit</button>
                 </div>
             </form>
         </div>

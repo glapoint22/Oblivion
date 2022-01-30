@@ -24,6 +24,7 @@ $border: #505050;
         width: 13px;
         background-color: $background;
         border: 1px solid $border;
+        box-sizing: unset;
 
         &:after {
             content: "";

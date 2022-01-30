@@ -16,7 +16,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
 
   constructor
     (
-      private accountService: AccountService,
+      public accountService: AccountService,
       private dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
