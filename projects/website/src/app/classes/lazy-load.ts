@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ViewContainerRef, ViewRef } from "@angular/core";
+import { AfterViewInit, Directive, ElementRef, HostListener, ViewChild, ViewContainerRef, ViewRef } from "@angular/core";
 
 @Directive()
 export class LazyLoad implements AfterViewInit {
@@ -7,6 +7,12 @@ export class LazyLoad implements AfterViewInit {
     public viewRef!: ViewRef;
     public container!: ViewContainerRef;
     public setTimeOut!: number;
+    @ViewChild('base') base!: ElementRef<HTMLElement>;
+
+    @HostListener('window:resize')
+    onWindowResize() {
+        if (this.base) this.base.nativeElement.style.maxHeight = window.innerHeight + 'px';
+    }
 
     ngOnInit(): void {
         this.addEventListener();
@@ -14,6 +20,7 @@ export class LazyLoad implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.open();
+        if (this.base) this.base.nativeElement.style.maxHeight = window.innerHeight + 'px';
     }
 
 

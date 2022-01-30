@@ -1,12 +1,5 @@
-@import '../../../scss/mixins.scss';
 @import '../../../scss/variables';
 
-
-
-
-.both {
-    @include modal-values(350px, 303px, 343px);
-}
 
 .max-width {
     max-width: 350px;
