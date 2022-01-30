@@ -4,10 +4,10 @@
     <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': !manageCollaboratorsForm}"></div>
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut, 'both': shareListType == ShareListType.Both}">
+    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
 
         <!-- Base -->
-        <div class="base" [ngClass]="{'max-width': shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate}">
+        <div #base class="base" [ngClass]="{'max-width': shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate}">
 
             <!-- Header -->
             <div class="header">
