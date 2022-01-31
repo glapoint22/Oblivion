@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AccountActivationPromptComponent } from '../../components/account-activation-prompt/account-activation-prompt.component';
 import { DataService } from '../../services/data/data.service';
@@ -14,14 +15,21 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 export class AccountNotActivatedPromptComponent extends LazyLoad {
   public email!: string;
   public logInForm!: LogInFormComponent;
+  public isLoginPage!: boolean;
 
   constructor
     (
       private dataService: DataService,
       private spinnerService: SpinnerService,
-      private lazyLoadingService: LazyLoadingService
+      private lazyLoadingService: LazyLoadingService,
+      private router: Router
     ) { super() }
 
+
+  ngOnInit(): void {
+    super.ngOnInit();
+    this.isLoginPage = this.router.url.includes('log-in');
+  }
 
   onResendEmailClick() {
     this.spinnerService.show = true;

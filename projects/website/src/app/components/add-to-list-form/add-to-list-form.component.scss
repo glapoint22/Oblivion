@@ -37,7 +37,7 @@
 .buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 13px;
+    margin-top: 23px;
 }
 
 
@@ -51,7 +51,7 @@
     padding: 0 10px 9px;
     overflow: auto;
     height: 100%;
-    max-height: 104px;
+    max-height: 115px;
 }
 
 .radio {
@@ -65,10 +65,24 @@ button {
 }
 
 .no-lists {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: $gold;
+    margin: auto;
+    width: fit-content;
+    margin-bottom: 5px;
+    color: $error-color;
+}
+
+.one-list {
+    font-weight: bold;
+    color: #dadada;
+    margin: auto;
+    width: fit-content;
+    margin-bottom: 6px;
+}
+
+.prompt-value {
+    margin: auto;
+    width: fit-content;
+    // margin-bottom: 23px;
 }
 
 @media(max-width: 285px) {

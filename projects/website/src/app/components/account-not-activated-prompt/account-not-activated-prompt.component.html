@@ -1,6 +1,6 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()"></div>
+    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': isLoginPage}"></div>
 
     <!-- Container -->
     <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
@@ -30,7 +30,7 @@
 
                     <!-- Message -->
                     <div class="message-text">
-                        <div>Your Niche Shack account has <span style="font-weight: bold; color: red">NOT</span> been activated. To activate your account, click on the "Activate Account" button in the email that was sent to:</div>
+                        <div>Your Niche Shack account has <span style="font-weight: bold; color: red">NOT</span> been activated yet. To activate your account, click on the "Activate Account" button in the email that was sent to:</div>
 
                         <div class="emphasized-text">{{email}}</div>
 
