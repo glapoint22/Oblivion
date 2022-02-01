@@ -95,6 +95,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/log-in/log-in.module').then(m => m.LogInModule)
   },
   {
+    path: 'cookies-policy',
+    loadChildren: () => import('./pages/cookies-policy/cookies-policy.module').then(m => m.CookiesPolicyModule)
+  },
+  {
     path: 'activate-account',
     loadChildren: () => import('./pages/activate-account/activate-account.module').then(m => m.ActivateAccountModule)
   },
