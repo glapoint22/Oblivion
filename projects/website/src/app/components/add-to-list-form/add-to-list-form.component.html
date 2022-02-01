@@ -1,7 +1,8 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': !duplicateItemPrompt && !createListForm && !logInForm}"></div>
+    <div class="transparent-backdrop" (click)="close()"
+        [ngClass]="{'backdrop': !duplicateItemPrompt && !createListForm && !logInForm}"></div>
 
 
     <!-- Container -->
@@ -41,27 +42,53 @@
 
                 </div>
 
-                <div class="label">Select Your List:</div>
-                <div class="radio-buttons-container" [ngClass]="{'no-lists': !lists || lists.length == 0}">
-                    <ng-container *ngIf="lists && lists.length > 0">
-                        <ng-container *ngFor="let list of lists">
-                            <label class="radio" style="display: block;">
-                                <div>{{list.key}}</div>
-                                <input type="radio" name="list" [checked]="list == selectedList" (change)="selectedList = list">
-                                <span class="checkmark"></span>
-                            </label>
-                        </ng-container>
-                    </ng-container>
-                    
 
-                    <ng-container *ngIf="lists && lists.length == 0">
-                        <div>
-                            You currently have no lists.
+                <ng-container *ngIf="lists">
+
+
+
+                    <ng-container *ngIf="lists.length == 0">
+                        <div class="no-lists">
+                            You have no lists created.
                         </div>
-                        
                     </ng-container>
 
-                </div>
+
+                    <ng-container *ngIf="lists.length == 1">
+                        <div class="one-list">
+                            Add to your list:
+                        </div>
+                        <div class="prompt-value">{{lists[0].key}}</div>
+                    </ng-container>
+
+
+
+
+
+
+                    <ng-container *ngIf="lists.length > 1">
+                        <div class="label">Select Your List:</div>
+                        <div class="radio-buttons-container">
+                            <ng-container *ngFor="let list of lists">
+                                <label class="radio" style="display: block;">
+                                    <div>{{list.key}}</div>
+                                    <input type="radio" name="list" [checked]="list == selectedList"
+                                        (change)="selectedList = list">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+
+                </ng-container>
+
+
+
+
+
+
+
+
 
                 <div class="buttons">
 
@@ -69,7 +96,8 @@
 
                     <div class="button-container">
                         <button class="dark-button" (click)="close()">Cancel</button>
-                        <button class="gold-rect-button" (click)="onSubmit()" [disabled]="!lists || lists.length == 0">Submit</button>
+                        <button class="gold-rect-button" (click)="onSubmit()"
+                            [disabled]="!lists || lists.length == 0">Submit</button>
                     </div>
                 </div>
             </div>
