@@ -1,0 +1,43 @@
+h2 {
+    color: #dadada;
+}
+
+.contact-us {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a, .contact-us {
+    color: #c1c1c1;
+
+    &:hover {
+        color: lighten(#c1c1c1, 10);
+    }
+}
+
+.table-of-contents {
+    margin-bottom: 40px;
+
+    div {
+        line-height: 1.5;
+    }
+}
+
+.section {
+    margin: 60px 0;
+    color: #959595;
+    line-height: 1.4;
+
+    div {
+        margin-bottom: 20px;
+    }
+
+    span:not(.contact-us) {
+        font-weight: bold;
+        color: #b1b1b1;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}

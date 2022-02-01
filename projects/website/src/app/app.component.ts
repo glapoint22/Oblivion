@@ -1,5 +1,7 @@
+import { ViewportScroller } from '@angular/common';
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { Event, NavigationEnd, NavigationStart, Router, Scroll } from '@angular/router';
+import { filter } from 'rxjs';
 import { AccountService } from './services/account/account.service';
 import { LazyLoadingService } from './services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from './services/spinner/spinner.service';
@@ -18,7 +20,8 @@ export class AppComponent implements OnInit {
     private accountService: AccountService,
     private videoApiService: VideoApiService,
     private router: Router,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private viewportScroller: ViewportScroller
   ) { }
 
 
@@ -76,9 +79,23 @@ export class AppComponent implements OnInit {
           }
 
           // Navigation End
-          if (event instanceof NavigationEnd && !event.url.includes('scrollTo')) {
-            this.spinnerService.show = false;
-            window.scrollTo(0, 0);
+          else if (event instanceof NavigationEnd) {
+            if (!event.url.includes('#reviews-top'))
+              this.spinnerService.show = false;
+          }
+
+          // Scroll
+          else if (event instanceof Scroll) {
+            if (event.position) {
+              // backward navigation
+              this.viewportScroller.scrollToPosition(event.position);
+            } else if (event.anchor) {
+              // anchor navigation
+              this.viewportScroller.scrollToAnchor(event.anchor);
+            } else {
+              // forward navigation
+              this.viewportScroller.scrollToPosition([0, 0]);
+            }
           }
         });
   }

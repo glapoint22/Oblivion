@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { AccountGuard } from './guards/account/account.guard';
 import { SharedListResolver } from './resolvers/shared-list/shared-list.resolver';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
@@ -49,6 +49,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/about-page/about-page.module').then(m => m.AboutPageModule),
   },
   {
+    path: 'privacy-policy',
+    loadChildren: () => import('./pages/privacy-policy/privacy-policy.module').then(m => m.PrivacyPolicyModule),
+  },
+  {
+    path: 'terms',
+    loadChildren: () => import('./pages/terms/terms.module').then(m => m.TermsModule),
+  },
+  {
     path: 'error',
     loadChildren: () => import('./pages/error/error.module').then(m => m.ErrorModule),
   },
@@ -92,6 +100,7 @@ const routes: Routes = [
   },
   { path: '**', component: PageNotFoundComponent }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
