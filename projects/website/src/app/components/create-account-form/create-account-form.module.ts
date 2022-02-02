@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CreateAccountFormComponent } from './create-account-form.component';
 import { ShowHidePasswordModule } from '../../directives/show-hide-password/show-hide-password.module';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import { ShowHidePasswordModule } from '../../directives/show-hide-password/show
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ShowHidePasswordModule
+    ShowHidePasswordModule,
+    RouterModule
   ]
 })
 export class CreateAccountFormModule { }

@@ -4,6 +4,7 @@ import { Event, NavigationEnd, NavigationStart, Router, Scroll } from '@angular/
 import { filter } from 'rxjs';
 import { AccountService } from './services/account/account.service';
 import { LazyLoadingService } from './services/lazy-loading/lazy-loading.service';
+import { SocialMediaService } from './services/social-media/social-media.service';
 import { SpinnerService } from './services/spinner/spinner.service';
 import { VideoApiService } from './services/video-api/video-api.service';
 
@@ -21,7 +22,8 @@ export class AppComponent implements OnInit {
     private videoApiService: VideoApiService,
     private router: Router,
     private spinnerService: SpinnerService,
-    private viewportScroller: ViewportScroller
+    private viewportScroller: ViewportScroller,
+    private socialMediaService: SocialMediaService
   ) { }
 
 
@@ -34,11 +36,11 @@ export class AppComponent implements OnInit {
       this.accountService.startRefreshTokenTimer();
     }
 
-    const w = window as any;
+    const _window = window as any;
 
     // Create the YouTube object
-    w.onYouTubeIframeAPIReady = () => {
-      this.videoApiService.youTube = w.YT;
+    _window.onYouTubeIframeAPIReady = () => {
+      this.videoApiService.youTube = _window.YT;
     }
 
     const youTubeScriptTag = document.createElement('script');
@@ -53,7 +55,7 @@ export class AppComponent implements OnInit {
     document.head.appendChild(vimeoScriptTag);
 
     vimeoScriptTag.onload = () => {
-      this.videoApiService.vimeo = w.Vimeo;
+      this.videoApiService.vimeo = _window.Vimeo;
     }
 
 
@@ -64,8 +66,26 @@ export class AppComponent implements OnInit {
     document.head.appendChild(wistiaScriptTag);
 
     wistiaScriptTag.onload = () => {
-      this.videoApiService.wistia = w._wq || [];
+      this.videoApiService.wistia = _window._wq || [];
     }
+
+
+    // Facebook
+    _window.fbAsyncInit = () => {
+      _window.FB.init({
+        appId: this.socialMediaService.facebookAppId,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v12.0'
+      });
+    };
+
+    const facebookScriptTag = document.createElement('script');
+    facebookScriptTag.src = 'https://connect.facebook.net/en_US/sdk.js';
+    facebookScriptTag.async = true;
+    facebookScriptTag.defer = true;
+    facebookScriptTag.crossOrigin = 'anonymous';
+    document.head.appendChild(facebookScriptTag);
 
 
     // Router Events

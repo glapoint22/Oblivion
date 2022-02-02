@@ -36,3 +36,19 @@
     content: "\e24";
     }
 }
+
+
+a {
+    color: #c1c1c1;
+
+    &:hover {
+        color: lighten(#c1c1c1, 10);
+    }
+}
+
+.disclaimer {
+    color: #959595;
+    text-align: center;
+    font-size: 12px;
+    margin: 8px;
+}

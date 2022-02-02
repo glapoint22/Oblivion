@@ -7,6 +7,7 @@ import { MediaPlayerComponent } from '../../components/media-player/media-player
 import { ReportItemFormComponent } from '../../components/report-item-form/report-item-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
@@ -20,8 +21,14 @@ export class ProductInfoComponent implements OnChanges {
   @Input() clientWidth!: number;
   public selectedMedia!: Media;
   public mediaType = MediaType;
-  
-  constructor(private lazyLoadingService: LazyLoadingService, private accountService: AccountService, private spinnerService: SpinnerService) { }
+
+  constructor
+    (
+      private lazyLoadingService: LazyLoadingService,
+      private accountService: AccountService,
+      private spinnerService: SpinnerService,
+      public socialMediaService: SocialMediaService
+    ) { }
 
 
   ngOnChanges() {
@@ -101,9 +108,9 @@ export class ProductInfoComponent implements OnChanges {
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
       .then((logInForm: LogInFormComponent) => {
         logInForm.onRedirect.subscribe(() => {
-          if(isAddToList) {
+          if (isAddToList) {
             this.onAddToListClick(logInForm);
-          }else {
+          } else {
             this.onReportItemClick(logInForm);
           }
         });

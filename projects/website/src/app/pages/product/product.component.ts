@@ -6,6 +6,7 @@ import { LogInFormComponent } from '../../components/log-in-form/log-in-form.com
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
@@ -23,13 +24,15 @@ export class ProductComponent implements OnInit {
       private route: ActivatedRoute,
       private lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-      private spinnerService: SpinnerService
+      private spinnerService: SpinnerService,
+      private socialMediaService: SocialMediaService
     ) { }
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.product = data.product;
       this.caption.text = this.product.relatedProducts.caption;
+      this.socialMediaService.addMetaTags(this.product.name, this.product.description, this.product.media[0].image);
     });
 
     this.onWindowResize();
