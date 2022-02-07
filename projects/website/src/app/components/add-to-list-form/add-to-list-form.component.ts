@@ -9,7 +9,6 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { CreateListFormComponent } from '../create-list-form/create-list-form.component';
 import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate-item-prompt.component';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'add-to-list-form',
@@ -20,16 +19,13 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
   public lists!: Array<KeyValue<string, string>>;
   public product!: Product;
   public selectedList!: KeyValue<string, string>;
-  public duplicateItemPrompt!: DuplicateItemPromptComponent;
-  public createListForm!: CreateListFormComponent;
-  public logInForm!: LogInFormComponent | null;
 
   constructor
     (
+      lazyLoadingService: LazyLoadingService,
       private dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
-    ) { super(); }
+    ) { super(lazyLoadingService) }
 
 
   ngOnInit() {
@@ -40,11 +36,31 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
     })
       .subscribe((lists: Array<KeyValue<string, string>>) => {
         this.lists = lists;
+
+        // If there are lists available
         if (this.lists.length > 0) {
           this.selectedList = this.lists[0];
+
+          if (this.lists.length == 1) this.base.nativeElement.focus();
+
+          if (this.lists.length > 1) {
+            // Wait while the lists are being created in the view
+            window.setTimeout(() => {
+              // The tabElements array was already populated in ngAfterViewInit but the lists probably weren't available
+              // at that time, so we're updating tabElements again so that the lists can be in the array
+              this.tabElements = this.HTMLElements.toArray();
+              // Set focus to the first list
+              this.tabElements[0].nativeElement.focus();
+            }, 100);
+          }
+          // If there are NO lists
+        } else {
+          this.base.nativeElement.focus();
         }
       });
   }
+
+
 
 
   onSubmit() {
@@ -52,7 +68,6 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
       productId: this.product.id,
       listId: this.selectedList.value
     }, { authorization: true }).subscribe((isDuplicate: boolean) => {
-      this.fade();
       if (isDuplicate) {
         this.openDuplicateItemPrompt();
       } else {
@@ -63,23 +78,23 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
 
 
   async openDuplicateItemPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     this.spinnerService.show = true;
     const { DuplicateItemPromptComponent } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.component');
     const { DuplicateItemPromptModule } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(DuplicateItemPromptComponent, DuplicateItemPromptModule, this.lazyLoadingService.container)
       .then((duplicateItemPrompt: DuplicateItemPromptComponent) => {
-        duplicateItemPrompt.list = this.selectedList.key;
+        if (this.selectedList) duplicateItemPrompt.list = this.selectedList.key;
         duplicateItemPrompt.product = this.product;
-        duplicateItemPrompt.addToListForm = this;
+        duplicateItemPrompt.fromAddToListForm = true;
         this.spinnerService.show = false;
       });
   }
 
 
   async openAddToListPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     this.spinnerService.show = true;
     const { AddToListPromptComponent } = await import('../../components/add-to-list-prompt/add-to-list-prompt.component');
     const { AddToListPromptModule } = await import('../../components/add-to-list-prompt/add-to-list-prompt.module');
@@ -88,7 +103,6 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
       .then((addToListPrompt: AddToListPromptComponent) => {
         addToListPrompt.list = this.selectedList;
         addToListPrompt.product = this.product;
-        addToListPrompt.addToListForm = this;
         this.spinnerService.show = false;
       });
   }
@@ -96,9 +110,8 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
 
 
   async createList() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { CreateListFormComponent } = await import('../../components/create-list-form/create-list-form.component');
     const { CreateListFormModule } = await import('../../components/create-list-form/create-list-form.module');
 
@@ -112,22 +125,48 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
           this.selectedList = this.lists[this.lists.length - 1];
         });
         createListForm.product = this.product;
-        createListForm.addToListForm = this;
+        createListForm.fromAddToListForm = true;
         this.spinnerService.show = false;
       });
   }
 
 
-  close() {
-    super.close();
-    if (this.duplicateItemPrompt) {
-      this.duplicateItemPrompt.close();
-      this.duplicateItemPrompt.addToListForm.close();
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+
+    if (this.tabElements) {
+      for (let i = 0; i < this.tabElements.length; i++) {
+        if (this.tabElements[i].nativeElement == document.activeElement) {
+          if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
+            this.selectedList = this.lists[i];
+          }
+        }
+      }
     }
-    if (this.createListForm) {
-      this.createListForm.close();
-      this.createListForm.addToListForm.close();
+  }
+
+
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements) {
+      for (let i = 0; i < this.tabElements.length; i++) {
+        if (this.tabElements[i].nativeElement == document.activeElement) {
+          if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
+            if (this.selectedList != this.lists[i]) {
+              this.selectedList = this.lists[i];
+            } else {
+              this.onSubmit();
+            }
+          }
+          return;
+        }
+      }
+
+      if (this.tabElements[this.tabElements.length - 1].nativeElement != document.activeElement &&
+        this.tabElements[this.tabElements.length - 2].nativeElement != document.activeElement &&
+        this.tabElements[this.tabElements.length - 3].nativeElement != document.activeElement &&
+        this.lists.length > 0) {
+        this.onSubmit();
+      }
     }
-    if (this.logInForm) this.logInForm.close();
   }
 }

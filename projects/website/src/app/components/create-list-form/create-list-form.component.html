@@ -1,10 +1,10 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="_close()" [ngClass]="{'backdrop': !addToListForm}"></div>
+    <div class="backdrop" (click)="close()"></div>
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
         <div #base class="base">
@@ -14,7 +14,7 @@
                 Create List
 
                 <!-- X -->
-                <div class="x" (click)="_close()">X</div>
+                <div class="x" (click)="close()">X</div>
             </div>
 
             <!-- Drop Shadow -->
@@ -27,7 +27,7 @@
 
                 <!-- List Name -->
                 <div class="label">List Name:</div>
-                <input type="text" formControlName="listName"
+                <input #tabElement type="text" formControlName="listName" spellcheck="false"
                     [ngClass]="{'error-border': _form.submitted && form.controls.listName.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.listName.errors">
@@ -41,14 +41,14 @@
 
                 <!-- Comments -->
                 <div class="label">Brief Description (optional):</div>
-                <textarea formControlName="description"></textarea>
+                <textarea #tabElement formControlName="description"></textarea>
 
 
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button type="button" class="dark-button" (click)="_close()">Cancel</button>
-                    <button type="submit" class="gold-rect-button">Submit</button>
+                    <button #tabElement type="button" class="dark-button" (click)="close()">Cancel</button>
+                    <button #tabElement type="submit" class="gold-rect-button">Submit</button>
                 </div>
             </form>
         </div>

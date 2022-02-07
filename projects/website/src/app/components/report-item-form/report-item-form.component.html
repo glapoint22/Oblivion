@@ -1,14 +1,14 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': !logInForm}"></div>
+    <div class="backdrop" (click)="close()"></div>
 
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
-        <div #base class="base">
+        <div #base class="base" tabindex="-1">
 
             <!-- Header -->
             <div class="header">
@@ -26,12 +26,12 @@
 
                 <!-- Where is the issue -->
                 <div class="label">Where is the issue?</div>
-                <dropdown #whereDropdown [listItems]="listItems" (onSelectedListItem)="type = $event.value[0].value"></dropdown>
+                <dropdown #whereDropdown [listItems]="listItems" (onSelectedListItem)="type = $event.value[0].value; setWhatDropdownSelectedListItem()" (onGetTabElement)="whereTabElement = $event"></dropdown>
 
 
                 <!-- What is the issue -->
                 <div class="label" style="margin-top: 22px;">What is the issue?</div>
-                <dropdown #whatDropdown [listItems]="whereDropdown.selectedListItem.value" (onSelectedListItem)="type = $event.value"></dropdown>
+                <dropdown #whatDropdown [listItems]="whereDropdown.selectedListItem.value" (onSelectedListItem)="type = $event.value" (onGetTabElement)="whatTabElement = $event"></dropdown>
 
 
 
@@ -39,12 +39,12 @@
 
                 <!-- Comments -->
                 <div class="label" style="margin-top: 22px;">Comments (optional):</div>
-                <textarea #textArea (input)="comments = textArea.value"></textarea>
+                <textarea #tabElement (input)="comments = tabElement.value"></textarea>
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button class="dark-button" (click)="close()">Cancel</button>
-                    <button class="gold-rect-button" (click)="onSubmit()">Submit</button>
+                    <button #tabElement class="dark-button" (click)="close()">Cancel</button>
+                    <button #tabElement class="gold-rect-button" (click)="onSubmit()">Submit</button>
                 </div>
 
             </div>

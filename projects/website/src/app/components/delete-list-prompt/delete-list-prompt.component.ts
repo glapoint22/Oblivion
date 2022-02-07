@@ -1,7 +1,8 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { DataService } from '../../services/data/data.service';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'delete-list-prompt',
@@ -12,7 +13,18 @@ export class DeleteListPromptComponent extends LazyLoad {
   @Output() onDelete: EventEmitter<void> = new EventEmitter();
   public list!: List;
 
-  constructor(private dataService: DataService) { super(); }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private dataService: DataService
+    ) { super(lazyLoadingService) }
+
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
 
   onDeleteClick() {
     this.dataService.delete('api/Lists', { listId: this.list.id }, {

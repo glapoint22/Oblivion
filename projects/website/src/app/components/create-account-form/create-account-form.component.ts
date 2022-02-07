@@ -6,8 +6,6 @@ import { ActivateAccountFormComponent } from '../../components/activate-account-
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
-import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
 
 
 @Component({
@@ -16,22 +14,20 @@ import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
   styleUrls: ['./create-account-form.component.scss']
 })
 export class CreateAccountFormComponent extends Validation implements OnInit {
-  public signUpForm!: SignUpFormComponent;
   public isLoginPage!: boolean;
 
   constructor
     (
       dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+      lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
       private router: Router
-    ) { super(dataService) }
+    ) { super(dataService, lazyLoadingService) }
 
 
   ngOnInit(): void {
     super.ngOnInit();
     this.isLoginPage = this.router.url.includes('log-in');
-
 
     this.form = new FormGroup({
       firstName: new FormControl('', {
@@ -84,20 +80,20 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
     });
   }
 
-
-
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
 
 
   async onLogInLinkClick() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then((loginForm: LogInFormComponent) => {
-        loginForm.createAccountForm = this;
+      .then(() => {
         this.spinnerService.show = false;
       });
   }
@@ -121,8 +117,9 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
   }
 
 
-  close() {
-    super.close();
-    if (this.signUpForm) this.signUpForm.close();
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements && this.tabElements[5].nativeElement == document.activeElement) {
+      this.onLogInLinkClick();
+    }
   }
 }

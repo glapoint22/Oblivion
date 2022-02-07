@@ -19,10 +19,10 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
   constructor
     (
       dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+      lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
       private accountService: AccountService
-    ) { super(dataService) }
+    ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -42,6 +42,12 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
         updateOn: 'submit'
       })
     }, { validators: this.matchPasswordValidator });
+  }
+
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
   }
 
 

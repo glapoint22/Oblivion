@@ -1,4 +1,5 @@
 @import '../../../../scss/mixins';
+@import '../../../../scss/variables';
 
 .header-container {
     position: fixed;
@@ -46,6 +47,12 @@
     position: relative;
     pointer-events: none;
     outline: none;
+
+    &:focus {
+        .hamburger-button {
+            color: lighten($gold, 30);
+        }
+    }
 }
 
 .hamburger-button {

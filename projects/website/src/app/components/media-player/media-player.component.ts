@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MediaType, VideoType } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { Media } from '../../classes/media';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { VideoApiService } from '../../services/video-api/video-api.service';
 
 @Component({
@@ -21,7 +22,11 @@ export class MediaPlayerComponent extends LazyLoad {
   private vimeoPlayer: any;
   private wistiaPlayer: any;
 
-  constructor(private videoApiService: VideoApiService) { super() }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private videoApiService: VideoApiService
+    ) { super(lazyLoadingService) }
 
 
   ngAfterViewInit(): void {

@@ -19,9 +19,9 @@ export class ResetPasswordOneTimePasswordFormComponent extends Validation implem
   constructor
     (
       dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+      lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
-    ) { super(dataService) }
+    ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
     super.ngOnInit();

@@ -5,7 +5,7 @@
 
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
         <div #base class="base">
@@ -47,8 +47,8 @@
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button class="dark-button" (click)="close()">Cancel</button>
-                    <button class="gold-rect-button" (click)="onMoveClick()">Move</button>
+                    <button #tabElement class="dark-button" (click)="close()">Cancel</button>
+                    <button #tabElement class="gold-rect-button" (click)="onMoveClick()">Move</button>
                 </div>
             </div>
         </div>

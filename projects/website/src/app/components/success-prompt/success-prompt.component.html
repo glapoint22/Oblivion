@@ -1,24 +1,13 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': 
-    !deleteAccountForm &&
-    !changeNameForm &&
-    !changePasswordForm &&
-    !emailVerificationForm &&
-    !profilePictureForm &&
-    !shareListForm &&
-    !reportReviewForm &&
-    !contactUsForm &&
-    !reportItemForm &&
-    !writeReviewForm
-    }"></div>
+    <div class="backdrop" (click)="close()"></div>
 
     <!-- Container -->
     <div class="container">
 
         <!-- Base -->
-        <div #base class="base" style="max-width: 350px;">
+        <div #base class="base">
 
             <!-- Header -->
             <div class="header">
@@ -49,7 +38,7 @@
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button class="dark-button" (click)="close()">Close</button>
+                    <button #tabElement class="dark-button" (click)="close()">Close</button>
                 </div>
             </div>
         </div>

@@ -4,6 +4,16 @@
 }
 
 
+.list-item {
+    &:focus {
+        outline: 1px solid #808080;
+        outline-offset: -1px;
+    }
+
+    padding-right: 1px;
+}
+
+
 .remove-button-container {
     display: flex;
     justify-content: right;

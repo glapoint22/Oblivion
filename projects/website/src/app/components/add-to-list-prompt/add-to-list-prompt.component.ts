@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoad } from '../../classes/lazy-load';
 import { Product } from '../../classes/product';
-import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'add-to-list-prompt',
@@ -13,19 +13,22 @@ import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.com
 export class AddToListPromptComponent extends LazyLoad {
   public list!: KeyValue<string, string>;
   public product!: Product;
-  public addToListForm!: AddToListFormComponent;
 
-  constructor(private router: Router) { super() }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private router: Router
+    ) { super(lazyLoadingService) }
+
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
 
 
   onViewList() {
     this.router.navigate(['account', 'lists', this.list.value]);
     this.close();
-  }
-
-
-  close() {
-    super.close();
-    if (this.addToListForm) this.addToListForm.close();
   }
 }

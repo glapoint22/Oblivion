@@ -2,13 +2,14 @@ import { Directive } from "@angular/core";
 import { AbstractControl, AsyncValidatorFn, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { Observable } from "rxjs";
 import { DataService } from "../services/data/data.service";
+import { LazyLoadingService } from "../services/lazy-loading/lazy-loading.service";
 import { LazyLoad } from "./lazy-load";
 
 @Directive()
 export class Validation extends LazyLoad {
   public form!: FormGroup;
 
-  constructor(public dataService: DataService) { super() }
+  constructor(public dataService: DataService, lazyLoadingService: LazyLoadingService) { super(lazyLoadingService) }
 
 
   getErrorMessages(control: string, controlName: string): Array<string> {

@@ -142,7 +142,7 @@ export class ReviewsComponent implements OnInit {
 
 
 
-  async onReportReviewClick(reviewId: number, logInForm: LogInFormComponent | null) {
+  async onReportReviewClick(reviewId: number) {
     if (this.accountService.customer) {
       this.spinnerService.show = true;
       const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
@@ -152,7 +152,6 @@ export class ReviewsComponent implements OnInit {
         .then((reportReviewForm: ReportReviewFormComponent) => {
           reportReviewForm.productId = this.product.id;
           reportReviewForm.reviewId = reviewId;
-          reportReviewForm.logInForm = logInForm;
           this.spinnerService.show = false;
         });
     } else {
@@ -244,7 +243,7 @@ export class ReviewsComponent implements OnInit {
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
       .then((logInForm: LogInFormComponent) => {
         const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
-          this.onReportReviewClick(reviewId, logInForm);
+          this.onReportReviewClick(reviewId);
 
           subscription.unsubscribe();
         });

@@ -6,7 +6,6 @@ import { ResetPasswordOneTimePasswordFormComponent } from '../../components/rese
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'forgot-password-form',
@@ -14,16 +13,15 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
   styleUrls: ['./forgot-password-form.component.scss']
 })
 export class ForgotPasswordFormComponent extends Validation implements OnInit {
-  public logInForm!: LogInFormComponent;
   public isLoginPage!: boolean;
 
   constructor
     (
       dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+      lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
       private router: Router
-    ) { super(dataService) }
+    ) { super(dataService, lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -56,23 +54,27 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
 
 
 
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
 
   async onLogInLinkClick() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then((logInForm: LogInFormComponent) => {
-        logInForm.forgotPasswordForm = this;
+      .then(() => {
         this.spinnerService.show = false;
       });
   }
 
 
   async openResetPasswordOneTimePasswordForm(email: string) {
+    this.fade();
     this.spinnerService.show = true;
     const { ResetPasswordOneTimePasswordFormComponent } = await import('../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.component');
     const { ResetPasswordOneTimePasswordFormModule } = await import('../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.module');
@@ -85,8 +87,9 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
   }
 
 
-  close() {
-    super.close();
-    if (this.logInForm) this.logInForm.close();
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements && this.tabElements[2].nativeElement == document.activeElement) {
+      this.onLogInLinkClick();
+    }
   }
 }

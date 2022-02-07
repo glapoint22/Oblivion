@@ -17,16 +17,18 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
   public subNiches: Array<Niche> | undefined;
   public selectedNicheName!: string;
 
-  constructor(
-    private nicheService: NichesService,
-    public accountService: AccountService,
-    private lazyLoadingService: LazyLoadingService,
-    private dataService: DataService,
-    private spinnerService: SpinnerService
-  ) { super(); }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private nicheService: NichesService,
+      public accountService: AccountService,
+      private dataService: DataService,
+      private spinnerService: SpinnerService
+    ) { super(lazyLoadingService) }
 
 
   ngOnInit(): void {
+    this.addEventListeners();
     this.nicheService.getNiches()
       .subscribe((niches: Array<Niche>) => {
         this.niches = niches;

@@ -43,7 +43,7 @@ export class ProductInfoComponent implements OnChanges {
   }
 
 
-  async onAddToListClick(logInForm: LogInFormComponent | null) {
+  async onAddToListClick() {
     if (this.accountService.customer) {
       this.spinnerService.show = true;
       const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
@@ -52,7 +52,6 @@ export class ProductInfoComponent implements OnChanges {
       this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
         .then((addToListForm: AddToListFormComponent) => {
           addToListForm.product = this.product;
-          addToListForm.logInForm = logInForm;
         });
     } else {
       this.logIn(true);
@@ -62,7 +61,7 @@ export class ProductInfoComponent implements OnChanges {
 
 
 
-  async onReportItemClick(logInForm: LogInFormComponent | null) {
+  async onReportItemClick() {
     if (this.accountService.customer) {
       this.spinnerService.show = true;
       const { ReportItemFormComponent } = await import('../../components/report-item-form/report-item-form.component');
@@ -71,7 +70,6 @@ export class ProductInfoComponent implements OnChanges {
       this.lazyLoadingService.getComponentAsync(ReportItemFormComponent, ReportItemFormModule, this.lazyLoadingService.container)
         .then((reportItemForm: ReportItemFormComponent) => {
           reportItemForm.productId = this.product.id;
-          reportItemForm.logInForm = logInForm;
           this.spinnerService.show = false;
         });
     } else {
@@ -110,9 +108,9 @@ export class ProductInfoComponent implements OnChanges {
       .then((logInForm: LogInFormComponent) => {
         const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           if (isAddToList) {
-            this.onAddToListClick(logInForm);
+            this.onAddToListClick();
           } else {
-            this.onReportItemClick(logInForm);
+            this.onReportItemClick();
           }
 
           subscription.unsubscribe();

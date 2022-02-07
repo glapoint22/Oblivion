@@ -28,7 +28,6 @@
     cursor: pointer;
     font-size: 14px;
     // line-height: $height;
-
     &:disabled {
         cursor: default;
     }
@@ -57,8 +56,11 @@
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
     }
 
-    &:focus {
-        outline: 1px solid #ffffff;
+
+    // Not supported in safari
+    &:focus-visible {
+        outline: 1px solid #fff0c5;
+        outline-offset: 2px;
     }
 }
 

@@ -33,6 +33,16 @@
         }
     }
 
+    &:focus {
+        outline: none;
+        border-color: #fff300;
+        background: lighten(#181818, 4);
+        color: lighten(#dadada, 12);
+        & > .img-container {
+            filter: brightness(130%);
+        }
+    }
+
     .img-container {
         width: 49px;
         height: 100%;

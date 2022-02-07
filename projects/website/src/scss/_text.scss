@@ -24,4 +24,11 @@
     &:active {
         color: lighten($purple-text, 17);
     }
+
+
+    &:focus {
+        text-decoration: underline;
+        color: lighten($purple-text, 12);
+        outline: none;
+    }
 }

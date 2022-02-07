@@ -18,9 +18,9 @@ export class ResetPasswordFormComponent extends Validation {
   constructor
     (
       dataService: DataService,
+      lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
-      private lazyLoadingService: LazyLoadingService
-    ) { super(dataService) }
+    ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
     this.form = new FormGroup({

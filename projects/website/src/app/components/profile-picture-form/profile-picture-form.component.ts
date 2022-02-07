@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CircleOverlay } from '../../classes/circle-overlay';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AccountService } from '../../services/account/account.service';
@@ -36,13 +36,23 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
   constructor
     (
+      lazyLoadingService: LazyLoadingService,
       private dataService: DataService,
       private accountService: AccountService,
-      private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
     ) {
-    super();
+    super(lazyLoadingService);
   }
+
+
+  ngAfterViewInit(): void {
+    this.open();
+
+    if (this.HTMLElements.length > 0) {
+      this.tabElements = this.HTMLElements.toArray();
+    }
+  }
+
 
   onOpen() {
     this.getImage(this.imageFile);
@@ -366,14 +376,13 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
     this.dataService.post('api/Account/ChangeProfilePicture', formData, { authorization: true }).subscribe(() => {
       this.accountService.setCustomer();
-      this.fade();
       this.OpenSuccessPrompt();
     })
   }
 
 
   async OpenSuccessPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -381,8 +390,24 @@ export class ProfilePictureFormComponent extends LazyLoad {
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Successful Profile Picture Change';
         successPrompt.message = 'Your profile picture has been successfully changed.';
-        successPrompt.profilePictureForm = this;
         this.spinnerService.show = false;
       });
+  }
+
+  onArrowLeft(e: KeyboardEvent): void {
+    if (this.tabElements[1].nativeElement == document.activeElement) this.onMinusButtonClick();
+  }
+
+
+  onArrowRight(e: KeyboardEvent): void {
+    if (this.tabElements[1].nativeElement == document.activeElement) this.onPlusButtonClick();
+  }
+
+
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements) {
+      if (this.tabElements[0].nativeElement == document.activeElement) this.onMinusButtonClick();
+      if (this.tabElements[2].nativeElement == document.activeElement) this.onPlusButtonClick();
+    }
   }
 }

@@ -21,6 +21,10 @@ export class ReviewSummaryPopupComponent extends LazyLoad {
   @ViewChild('reviewSummaryPopupContainer') reviewSummaryPopupContainer!: ElementRef<HTMLElement>;
   @ViewChild('reviewSummary', { read: ReviewSummaryComponent }) reviewSummary!: ReviewSummaryComponent;
 
+  ngOnInit(): void {
+    this.addEventListeners();
+  }
+
   ngAfterViewInit() {
     super.ngAfterViewInit();
 

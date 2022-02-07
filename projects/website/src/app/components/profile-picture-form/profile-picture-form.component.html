@@ -5,10 +5,10 @@
 
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
-        <div class="base">
+        <div #base class="base">
 
             <!-- Header -->
             <div class="header">
@@ -35,11 +35,6 @@
                     </div>
 
                 </div>
-
-                <!-- Spinner -->
-                <!-- <div class="image-spinner-container" [ngStyle]="{'visibility': !picLoaded ? 'visible' : 'hidden'}">
-                    <div style="width: 50px; height: 50px; background: red; border-radius: 50%;"></div>
-                </div> -->
             </div>
 
 
@@ -52,10 +47,10 @@
                     <div class="zoom-container">
 
                         <!-- Minus Button -->
-                        <div class="minus-button" (click)="onMinusButtonClick()"
-                            [ngClass]="{'minus-button-disabled': minusButtonDisabled}" title="Zoom Out">
+                        <button #tabElement tabindex="-1" class="minus-button" (click)="onMinusButtonClick()"
+                            title="Zoom Out" [disabled]="minusButtonDisabled">
                             <div class="h-line"></div>
-                        </div>
+                        </button>
 
                         <!-- Zoom Bar -->
                         <div class="zoom-bar-container">
@@ -69,18 +64,18 @@
                             <!-- Handle -->
                             <div class="zoom-handle-container">
                                 <div class="zoom-handle-tail" [style.width.px]="zoomHandle.offsetLeft"></div>
-                                <div #zoomHandle class="zoom-handle" (mousedown)="onZoomHandleDown($event)"
-                                    (touchstart)="onZoomHandleTouch($event)">
+                                <div #tabElement tabindex="-1" #zoomHandle class="zoom-handle"
+                                    (mousedown)="onZoomHandleDown($event)" (touchstart)="onZoomHandleTouch($event)">
                                 </div>
                             </div>
                         </div>
 
                         <!-- Plus Button -->
-                        <div class="plus-button" (click)="onPlusButtonClick()"
-                            [ngClass]="{'plus-button-disabled': plusButtonDisabled}" title="Zoom In">
+                        <button #tabElement tabindex="-1" class="plus-button" (click)="onPlusButtonClick()"
+                            [disabled]="plusButtonDisabled" title="Zoom In">
                             <div class="v-line"></div>
                             <div class="h-line"></div>
-                        </div>
+                        </button>
                     </div>
 
                     <!-- Buttons -->
@@ -88,17 +83,17 @@
                         <input #fileInput type="file" (change)="onNewImageSelect(fileInput.files![0])">
 
                         <!-- New Image Button -->
-                        <button class="dark-button new-image-button" (click)="onNewImageButtonClick(fileInput)"
-                            [disabled]="!picLoaded">
+                        <button #tabElement class="dark-button new-image-button"
+                            (click)="onNewImageButtonClick(fileInput)" [disabled]="!picLoaded">
                             New Image
                         </button>
 
                         <div class="button-container">
                             <!-- Cancel Button -->
-                            <button class="dark-button cancel-button" (click)="close()">Cancel</button>
+                            <button #tabElement class="dark-button cancel-button" (click)="close()">Cancel</button>
 
                             <!-- Submit Button -->
-                            <button class="gold-rect-button submit-button" (click)="onSubmit()"
+                            <button #tabElement class="gold-rect-button submit-button" (click)="onSubmit()"
                                 [disabled]="!picLoaded">Submit</button>
                         </div>
                     </div>

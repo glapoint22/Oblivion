@@ -20,10 +20,10 @@ export class ActivateAccountFormComponent extends Validation {
   constructor
     (
       dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+      lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
       private spinnerService: SpinnerService
-    ) { super(dataService) }
+    ) { super(dataService, lazyLoadingService) }
 
 
   ngOnInit(): void {

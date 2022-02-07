@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { List } from '../../classes/list';
 import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'edit-list-form',
@@ -13,7 +14,11 @@ export class EditListFormComponent extends Validation implements OnInit {
   @Output() onInit: EventEmitter<void> = new EventEmitter();
   public list!: List;
 
-  constructor(dataService: DataService) { super(dataService) }
+  constructor
+    (
+      dataService: DataService,
+      lazyLoadingService: LazyLoadingService,
+    ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -25,6 +30,12 @@ export class EditListFormComponent extends Validation implements OnInit {
       description: new FormControl('')
     });
     this.onInit.emit();
+  }
+
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
   }
 
 

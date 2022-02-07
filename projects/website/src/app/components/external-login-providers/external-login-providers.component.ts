@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthService } from 'angularx-social-login';
 import { SocialUser } from '../../classes/social-user';
 import { DataService } from '../../services/data/data.service';
@@ -11,6 +11,8 @@ import { DataService } from '../../services/data/data.service';
 export class ExternalLoginProvidersComponent {
   @Input() signInType: string = '';
   @Output() onLogIn: EventEmitter<void> = new EventEmitter();
+  @Output() onGetExternalLoginProviders: EventEmitter<Array<ElementRef<HTMLElement>>> = new EventEmitter();
+  @ViewChildren('tabElement') HTMLElements!: QueryList<ElementRef<HTMLElement>>;
 
   constructor(private authService: SocialAuthService, private dataService: DataService) { }
 

@@ -4,7 +4,6 @@ import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -16,14 +15,13 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
   public productId!: number;
   public productImage!: string;
   public productName!: string;
-  public logInForm!: LogInFormComponent | null;
 
   constructor
     (
       dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+      lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
-    ) { super(dataService) }
+    ) { super(dataService, lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -45,6 +43,12 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
   }
 
 
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    this.base.nativeElement.focus();
+  }
+
+
   onSubmit(): void {
     if (this.form.valid) {
       this.spinnerService.show = true;
@@ -60,7 +64,6 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
         text: review
       }, { authorization: true })
         .subscribe(() => {
-          this.fade();
           this.openSuccessPrompt();
         });
     }
@@ -68,7 +71,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
 
   async openSuccessPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -76,7 +79,6 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Write a Review';
         successPrompt.message = 'Thank you for your feedback.';
-        successPrompt.writeReviewForm = this;
         this.spinnerService.show = false;
       });
   }
@@ -119,11 +121,5 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
     }
 
     return message
-  }
-
-
-  close() {
-    super.close();
-    if (this.logInForm) this.logInForm.close();
   }
 }

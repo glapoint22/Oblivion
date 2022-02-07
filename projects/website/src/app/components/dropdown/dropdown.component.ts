@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'dropdown',
@@ -11,6 +11,8 @@ export class DropdownComponent implements OnChanges {
   @Output() onSelectedListItem: EventEmitter<KeyValue<any, any>> = new EventEmitter();
   @Input() selectedListItem!: KeyValue<any, any>;
   public showDropdownList: boolean = false;
+  @ViewChild('tabElement') tabElement!: ElementRef<HTMLElement>;
+  @Output() onGetTabElement: EventEmitter<ElementRef<HTMLElement>> = new EventEmitter();
 
 
   ngOnChanges(): void {
@@ -19,6 +21,10 @@ export class DropdownComponent implements OnChanges {
     }
   }
 
+
+  ngAfterViewInit(): void {
+    this.onGetTabElement.emit(this.tabElement);
+  }
 
 
   onListItemClick(listItem: KeyValue<any, any>) {

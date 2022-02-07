@@ -1,10 +1,6 @@
 @import '../../../scss/variables';
 
 
-.max-width {
-    max-width: 350px;
-}
-
 .content-container {
     display: flex;
 }
@@ -69,6 +65,12 @@ img{
 
     &:hover {
         filter: brightness(1.5);
+    }
+
+    &:focus-visible {
+        outline: 1px solid #ffba00;
+        outline-offset: 3px;
+        border-radius: 1px;
     }
 }
 

@@ -15,17 +15,17 @@ import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.com
   styleUrls: ['./create-list-form.component.scss']
 })
 export class CreateListFormComponent extends Validation implements OnInit {
-  public addToListForm!: AddToListFormComponent;
   public product!: Product;
+  public fromAddToListForm!: boolean
   @Output() onListCreated: EventEmitter<List> = new EventEmitter();
 
   constructor
     (
       dataService: DataService,
+      lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-      private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
-    ) { super(dataService); }
+    ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -39,6 +39,12 @@ export class CreateListFormComponent extends Validation implements OnInit {
   }
 
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
+
   onSubmit() {
     if (this.form.valid) {
       this.dataService.post<List>('api/Lists',
@@ -48,7 +54,6 @@ export class CreateListFormComponent extends Validation implements OnInit {
         },
         { authorization: true }
       ).subscribe((list: List) => {
-        this._close();
         this.onListCreated.emit(new List(
           list.id,
           this.form.get('listName')?.value,
@@ -56,13 +61,14 @@ export class CreateListFormComponent extends Validation implements OnInit {
           list.collaborateId,
           this.accountService.customer?.profileImage
         ));
+        this.close();
       });
     }
   }
 
 
   async openAddToListForm() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     this.spinnerService.show = true;
     const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
     const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
@@ -70,23 +76,14 @@ export class CreateListFormComponent extends Validation implements OnInit {
     this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
       .then((addToListForm: AddToListFormComponent) => {
         addToListForm.product = this.product;
-        addToListForm.createListForm = this;
       });
   }
 
 
-  keyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      this._close();
-    }
-  }
-
-
-  _close() {
-    if (!this.addToListForm) {
-      super.close()
+  close() {
+    if (!this.fromAddToListForm) {
+      super.close();
     } else {
-      super.fade();
       this.openAddToListForm();
     }
   }
