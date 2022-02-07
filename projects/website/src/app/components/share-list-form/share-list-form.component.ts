@@ -4,7 +4,6 @@ import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { ManageCollaboratorsFormComponent } from '../manage-collaborators-form/manage-collaborators-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -16,11 +15,24 @@ export class ShareListFormComponent extends LazyLoad {
   public shareListType!: ShareListType;
   public ShareListType = ShareListType;
   public list!: List;
-  public manageCollaboratorsForm!: ManageCollaboratorsFormComponent;
 
-  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) {
-    super();
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) { super(lazyLoadingService) }
+
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+
+    if (this.shareListType == ShareListType.Both) {
+      if (this.tabElements) this.tabElements[0].nativeElement.focus();
+    }else {
+      this.base.nativeElement.focus();
+    }
   }
+
 
   onShareClick(socialType: string) {
     let pathName: string;
@@ -50,8 +62,6 @@ export class ShareListFormComponent extends LazyLoad {
         copyText.value = location.origin + pathName;
         copyText.select();
         navigator.clipboard.writeText(copyText.value);
-
-        this.fade();
         this.OpenSuccessPrompt();
     }
   }
@@ -87,7 +97,7 @@ export class ShareListFormComponent extends LazyLoad {
 
 
   async OpenSuccessPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     this.spinnerService.show = true;
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
@@ -96,14 +106,38 @@ export class ShareListFormComponent extends LazyLoad {
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Link Coppied';
         successPrompt.message = 'The link has been copied to the clipboard.';
-        successPrompt.shareListForm = this;
         this.spinnerService.show = false;
       });
   }
 
 
-  close() {
-    super.close();
-    if (this.manageCollaboratorsForm) this.manageCollaboratorsForm.close();
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+
+    if (this.tabElements) {
+      if (this.shareListType == ShareListType.Both) {
+        if (this.tabElements[0].nativeElement == document.activeElement) (this.tabElements[0].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
+        if (this.tabElements[1].nativeElement == document.activeElement) (this.tabElements[1].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
+      }
+    }
+  }
+
+
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements) {
+      if (this.shareListType == ShareListType.Both) {
+        if (this.tabElements[0].nativeElement == document.activeElement) (this.tabElements[0].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
+        if (this.tabElements[1].nativeElement == document.activeElement) (this.tabElements[1].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
+        if (this.tabElements[2].nativeElement == document.activeElement) this.onShareClick('Facebook');
+        if (this.tabElements[3].nativeElement == document.activeElement) this.onShareClick('Twitter');
+        if (this.tabElements[4].nativeElement == document.activeElement) this.onShareClick('Link');
+
+      } else {
+
+        if (this.tabElements[0].nativeElement == document.activeElement) this.onShareClick('Facebook');
+        if (this.tabElements[1].nativeElement == document.activeElement) this.onShareClick('Twitter');
+        if (this.tabElements[2].nativeElement == document.activeElement) this.onShareClick('Link');
+      }
+    }
   }
 }

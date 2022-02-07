@@ -1,11 +1,11 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': !signUpForm}"></div>
+    <div class="backdrop" (click)="close()"></div>
 
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
         <div #base class="base">
@@ -26,7 +26,7 @@
 
                 <!-- First Name -->
                 <div class="label"> First Name:</div>
-                <input type="text" formControlName="firstName"
+                <input #tabElement type="text" formControlName="firstName"
                     [ngClass]="{'error-border': _form.submitted && form.controls.firstName.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.firstName.errors">
@@ -39,7 +39,7 @@
 
                 <!-- Last Name -->
                 <div class="label">Last Name:</div>
-                <input type="text" formControlName="lastName"
+                <input #tabElement type="text" formControlName="lastName"
                     [ngClass]="{'error-border': _form.submitted && form.controls.lastName.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.lastName.errors">
@@ -54,7 +54,7 @@
 
                 <!-- Email -->
                 <div class="label">Email:</div>
-                <input type="text" formControlName="email"
+                <input #tabElement type="text" formControlName="email"
                     [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.email.errors">
@@ -68,7 +68,7 @@
                 <!-- Password -->
                 <div class="label">Password:</div>
                 <div class="password-input-container">
-                    <input type="password" formControlName="password"
+                    <input #tabElement type="password" formControlName="password"
                         [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}">
 
 
@@ -94,7 +94,7 @@
 
 
                 <!-- Button -->
-                <button type="submit" class="gold-round-button-sm">Create Your Account</button>
+                <button #tabElement type="submit" class="gold-round-button-sm">Create Your Account</button>
             </form>
 
 
@@ -102,7 +102,7 @@
             <div *ngIf="!isLoginPage" class="footer">
                 <div class="horizontal-groove-line"></div>
                 <span class="footer-text">Already a member? </span>
-                <span class="purple-text" (click)="onLogInLinkClick()">Log In</span>
+                <span #tabElement class="purple-text" (click)="onLogInLinkClick()" tabindex="-1">Log In</span>
             </div>
         </div>
     </div>

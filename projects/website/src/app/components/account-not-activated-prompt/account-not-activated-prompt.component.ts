@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AccountActivationPromptComponent } from '../../components/account-activation-prompt/account-activation-prompt.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'account-not-activated-prompt',
@@ -14,16 +13,15 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 })
 export class AccountNotActivatedPromptComponent extends LazyLoad {
   public email!: string;
-  public logInForm!: LogInFormComponent;
   public isLoginPage!: boolean;
 
   constructor
     (
+      lazyLoadingService: LazyLoadingService,
       private dataService: DataService,
       private spinnerService: SpinnerService,
-      private lazyLoadingService: LazyLoadingService,
       private router: Router
-    ) { super() }
+    ) { super(lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -31,32 +29,31 @@ export class AccountNotActivatedPromptComponent extends LazyLoad {
     this.isLoginPage = this.router.url.includes('log-in');
   }
 
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
+
   onResendEmailClick() {
     this.spinnerService.show = true;
     this.dataService.get('api/Account/ResendAccountActivationEmail', [{ key: 'email', value: this.email }])
       .subscribe(() => {
-        this.fade();
         this.openAccountActivationPrompt();
       });
   }
 
 
   async openAccountActivationPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { AccountActivationPromptComponent } = await import('../../components/account-activation-prompt/account-activation-prompt.component');
     const { AccountActivationPromptModule } = await import('../../components/account-activation-prompt/account-activation-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(AccountActivationPromptComponent, AccountActivationPromptModule, this.lazyLoadingService.container)
       .then((accountActivationPrompt: AccountActivationPromptComponent) => {
         accountActivationPrompt.email = this.email;
-        accountActivationPrompt.accountNotActivatedPrompt = this;
         this.spinnerService.show = false;
       });
-  }
-
-
-  close() {
-    super.close();
-    if (this.logInForm) this.logInForm.close();
   }
 }

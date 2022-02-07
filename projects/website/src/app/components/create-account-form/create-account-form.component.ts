@@ -7,8 +7,6 @@ import { EmailExistsPromptComponent } from '../../components/email-exists-prompt
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
-import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
 
 
 @Component({
@@ -17,22 +15,20 @@ import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
   styleUrls: ['./create-account-form.component.scss']
 })
 export class CreateAccountFormComponent extends Validation implements OnInit {
-  public signUpForm!: SignUpFormComponent;
   public isLoginPage!: boolean;
 
   constructor
     (
-      private lazyLoadingService: LazyLoadingService,
+      lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
       private dataService: DataService,
       private router: Router
-    ) { super() }
+    ) { super(lazyLoadingService) }
 
 
   ngOnInit(): void {
     super.ngOnInit();
     this.isLoginPage = this.router.url.includes('log-in');
-
 
     this.form = new FormGroup({
       firstName: new FormControl('', [
@@ -57,6 +53,12 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
   }
 
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
+
   onSubmit() {
     if (this.form.valid) {
       this.dataService.post('api/Account/Register', {
@@ -65,7 +67,7 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
         email: this.form.get('email')?.value,
         password: this.form.get('password')?.value
       }).subscribe((result: any) => {
-        if(result && result.failure) {
+        if (result && result.failure) {
           this.openEmailExistsPrompt();
         } else {
           this.openAccountActivationPrompt();
@@ -76,55 +78,50 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
 
   async onLogInLinkClick() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then((loginForm: LogInFormComponent) => {
-        loginForm.createAccountForm = this;
+      .then(() => {
         this.spinnerService.show = false;
       });
   }
-  
+
 
 
   async openEmailExistsPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { EmailExistsPromptComponent } = await import('../../components/email-exists-prompt/email-exists-prompt.component');
     const { EmailExistsPromptModule } = await import('../../components/email-exists-prompt/email-exists-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(EmailExistsPromptComponent, EmailExistsPromptModule, this.lazyLoadingService.container)
       .then((emailExistsPrompt: EmailExistsPromptComponent) => {
         emailExistsPrompt.email = this.form.get('email')?.value;
-        emailExistsPrompt.createAccountForm = this;
         this.spinnerService.show = false;
       });
   }
 
 
   async openAccountActivationPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { AccountActivationPromptComponent } = await import('../../components/account-activation-prompt/account-activation-prompt.component');
     const { AccountActivationPromptModule } = await import('../../components/account-activation-prompt/account-activation-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(AccountActivationPromptComponent, AccountActivationPromptModule, this.lazyLoadingService.container)
       .then((accountActivationPrompt: AccountActivationPromptComponent) => {
         accountActivationPrompt.email = this.form.get('email')?.value;
-        accountActivationPrompt.createAccountForm = this;
         this.spinnerService.show = false;
       });
   }
 
 
-  close() {
-    super.close();
-    if (this.signUpForm) this.signUpForm.close();
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements && this.tabElements[5].nativeElement == document.activeElement) {
+      this.onLogInLinkClick();
+    }
   }
 }

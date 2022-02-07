@@ -1,3 +1,12 @@
 .prompt-value {
     padding: 0 0 17px 0;
 }
+
+button {
+    &:nth-child(2) {
+        &:focus {
+            outline: 1px solid #fff0c5;
+            outline-offset: 2px;
+        }
+    }
+}

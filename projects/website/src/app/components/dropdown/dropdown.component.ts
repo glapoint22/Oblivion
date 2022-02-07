@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'dropdown',
@@ -11,16 +11,20 @@ export class DropdownComponent implements OnChanges {
   @Output() onSelectedListItem: EventEmitter<KeyValue<any, any>> = new EventEmitter();
   @Input() selectedListItem!: KeyValue<any, any>;
   public showDropdownList: boolean = false;
-  public submitedListItem!: KeyValue<any, any>;
+  @ViewChild('tabElement') tabElement!: ElementRef<HTMLElement>;
+  @Output() onGetTabElement: EventEmitter<ElementRef<HTMLElement>> = new EventEmitter();
 
 
   ngOnChanges(): void {
     if (this.listItems && !this.selectedListItem) {
       this.selectedListItem = this.listItems[0];
     }
-    if(!this.submitedListItem) this.submitedListItem = this.selectedListItem;
   }
 
+
+  ngAfterViewInit(): void {
+    this.onGetTabElement.emit(this.tabElement);
+  }
 
 
   onListItemClick(listItem: KeyValue<any, any>) {
@@ -57,7 +61,7 @@ export class DropdownComponent implements OnChanges {
       let index = Math.max(1, this.listItems.indexOf(this.selectedListItem));
       this.selectedListItem = this.listItems[index - 1];
       if (!this.showDropdownList) this.selectListItem();
-        e.preventDefault()
+      e.preventDefault()
     }
 
     if (e.key === 'ArrowDown') {
@@ -70,9 +74,6 @@ export class DropdownComponent implements OnChanges {
 
 
   selectListItem() {
-    if (this.submitedListItem != this.selectedListItem) {
-      this.onSelectedListItem.emit(this.selectedListItem);
-      this.submitedListItem = this.selectedListItem;
-    }
+    this.onSelectedListItem.emit(this.selectedListItem);
   }
 }

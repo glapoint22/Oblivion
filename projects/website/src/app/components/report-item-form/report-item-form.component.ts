@@ -1,10 +1,10 @@
+import { KeyValue } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { DropdownComponent } from '../dropdown/dropdown.component';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -17,8 +17,8 @@ export class ReportItemFormComponent extends LazyLoad {
   public productId!: number;
   public comments!: string;
   public type: number = 2;
-  public logInForm!: LogInFormComponent | null;
-
+  public whereTabElement!: ElementRef<HTMLElement>;
+  public whatTabElement!: ElementRef<HTMLElement>;
   @ViewChild('whereDropdown') whereDropdown!: DropdownComponent;
   @ViewChild('whatDropdown') whatDropdown!: DropdownComponent;
 
@@ -140,7 +140,30 @@ export class ReportItemFormComponent extends LazyLoad {
   ];
 
 
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
+      private spinnerService: SpinnerService
+    ) { super(lazyLoadingService) }
+
+
+  setWhatDropdownSelectedListItem() {
+    window.setTimeout(() => {
+      this.whatDropdown.selectedListItem = this.whatDropdown.listItems[0];
+    })
+  }
+
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.base.nativeElement.focus();
+    this.tabElements = [];
+    this.tabElements.push(this.whereTabElement)
+    this.tabElements.push(this.whatTabElement)
+    this.tabElements = this.tabElements.concat(this.HTMLElements.toArray());
+  }
+
 
   onSubmit() {
     this.dataService.post('api/Notifications', {
@@ -151,14 +174,13 @@ export class ReportItemFormComponent extends LazyLoad {
       authorization: true,
       showSpinner: true
     }).subscribe(() => {
-      this.fade();
       this.openSuccessPrompt();
     });
   }
 
 
   async openSuccessPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -166,23 +188,14 @@ export class ReportItemFormComponent extends LazyLoad {
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Report Item';
         successPrompt.message = 'Thank you for your feedback.';
-        successPrompt.reportItemForm = this;
         this.spinnerService.show = false;
       });
   }
 
 
-  keyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      if (!this.whereDropdown.showDropdownList && !this.whatDropdown.showDropdownList) {
-        this.close();
-      }
+  onEscape(): void {
+    if (!this.whereDropdown.showDropdownList && !this.whatDropdown.showDropdownList) {
+      this.close();
     }
-  }
-
-
-  close() {
-    super.close();
-    if (this.logInForm) this.logInForm.close();
   }
 }

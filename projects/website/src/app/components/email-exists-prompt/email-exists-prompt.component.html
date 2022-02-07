@@ -1,6 +1,6 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()"></div>
+    <div class="backdrop" (click)="close()"></div>
 
     <!-- Container -->
     <div class="container">
@@ -41,11 +41,9 @@
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button class="dark-button" (click)="close()">Close</button>
+                    <button #tabElement class="dark-button" (click)="close()">Close</button>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>

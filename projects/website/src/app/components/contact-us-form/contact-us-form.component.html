@@ -5,7 +5,7 @@
 
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
         <div #base class="base">
@@ -35,7 +35,7 @@
 
                 <!-- Name -->
                 <div class="label"> Name:</div>
-                <input type="text" formControlName="name"
+                <input #tabElement type="text" formControlName="name"
                     [ngClass]="{'error-border': _form.submitted && form.controls.name.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.name.errors">
@@ -51,7 +51,7 @@
 
                 <!-- Email -->
                 <div class="label">Email:</div>
-                <input type="text" formControlName="email"
+                <input #tabElement type="text" formControlName="email"
                     [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.email.errors">
@@ -66,7 +66,7 @@
 
                 <!-- Comments -->
                 <div class="label">Write your message:</div>
-                <textarea formControlName="message"
+                <textarea #tabElement formControlName="message"
                     [ngClass]="{'error-border': _form.submitted && form.controls.message.errors}"></textarea>
 
                 <ng-container *ngIf="_form.submitted && form.controls.message.errors">
@@ -79,8 +79,8 @@
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button type="button" class="dark-button" (click)="close()">Cancel</button>
-                    <button type="submit" class="gold-rect-button">Submit</button>
+                    <button #tabElement type="button" class="dark-button" (click)="close()">Cancel</button>
+                    <button #tabElement type="submit" class="gold-rect-button">Submit</button>
                 </div>
             </form>
         </div>

@@ -13,14 +13,13 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./change-name-form.component.scss']
 })
 export class ChangeNameFormComponent extends Validation implements OnInit {
-
   constructor
     (
+      lazyLoadingService: LazyLoadingService,
       public accountService: AccountService,
       private dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
-    ) { super() }
+    ) { super(lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -40,6 +39,12 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
   }
 
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
+
   onSubmit() {
     if (this.form.valid) {
       this.spinnerService.show = true;
@@ -50,7 +55,6 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
         { authorization: true }
       ).subscribe(() => {
         this.accountService.setCustomer();
-        this.fade();
         this.openSuccessPrompt();
       });
     }
@@ -58,7 +62,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
 
 
   async openSuccessPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -66,7 +70,6 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Successful Name Change';
         successPrompt.message = 'Your name has been successfully changed.';
-        successPrompt.changeNameForm = this;
         this.spinnerService.show = false;
       });
   }

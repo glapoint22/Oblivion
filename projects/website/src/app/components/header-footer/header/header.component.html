@@ -4,7 +4,7 @@
     <div class="left-container">
 
         <!-- Side Menu -->
-        <div tabindex="0" (blur)="sideMenu.close()" class="hamburger-button-container">
+        <div tabindex="0" (blur)="sideMenu ? sideMenu.close() : null" class="hamburger-button-container">
             <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
             <ng-template #sideMenuContainer></ng-template>
         </div>
@@ -21,7 +21,7 @@
     <div class="center-container">
 
 
-        <div tabindex="0" (blur)="nicheMenuPopup.close()"
+        <div tabindex="0" (blur)="nicheMenuPopup ? nicheMenuPopup.close() : null"
             class="niches-button-container">
 
             <div class="niches-button" (click)="onNichesButtonClick()"
@@ -102,7 +102,7 @@
             <a id="lists" class="links" routerLink="/account/lists">Lists</a>
 
             <!-- Account profile pic -->
-            <div tabindex="0" (blur)="accountMenuPopupComponent.close()"
+            <div tabindex="0" (blur)="accountMenuPopupComponent ? accountMenuPopupComponent.close() : null"
                  style="outline: none;">
                 <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
                 <img [src]="accountService.customer.profileImage.url" class="profile-pic"
@@ -115,7 +115,6 @@
                     <ng-template #accountMenuPopupContainer></ng-template>
                 </div>
             </div>
-
         </ng-container>
     </div>
 </div>

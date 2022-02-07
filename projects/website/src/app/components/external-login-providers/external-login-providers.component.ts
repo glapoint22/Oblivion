@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthService } from 'angularx-social-login';
 
 @Component({
@@ -7,9 +7,16 @@ import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, Micros
   styleUrls: ['./external-login-providers.component.scss']
 })
 export class ExternalLoginProvidersComponent {
-  constructor(private authService: SocialAuthService) { }
   @Input() signInType: string = '';
+  @Output() onGetExternalLoginProviders: EventEmitter<Array<ElementRef<HTMLElement>>> = new EventEmitter();
+  @ViewChildren('tabElement') HTMLElements!: QueryList<ElementRef<HTMLElement>>;
 
+
+  constructor(private authService: SocialAuthService) { }
+
+  ngAfterViewInit(): void {
+    this.onGetExternalLoginProviders.emit(this.HTMLElements.toArray());
+  }
 
   signInWithGoogle(): void {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID)

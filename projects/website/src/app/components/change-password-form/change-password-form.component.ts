@@ -15,12 +15,12 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
   public isError!: boolean;
 
   constructor
-    (private dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+    (
+      lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
       private spinnerService: SpinnerService
-    ) {
-    super();
-  }
+    ) { super(lazyLoadingService) }
+
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -41,6 +41,12 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
   }
 
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
+
   onSubmit() {
     if (this.form.valid) {
       this.spinnerService.show = true;
@@ -55,7 +61,6 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
             this.spinnerService.show = false;
             return;
           }
-          this.fade();
           this.OpenSuccessPrompt();
         });
     }
@@ -63,7 +68,7 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
 
 
   async OpenSuccessPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -71,7 +76,6 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Successful Password Change';
         successPrompt.message = 'Your password has been successfully changed.';
-        successPrompt.changePasswordForm = this;
         this.spinnerService.show = false;
       });
   }

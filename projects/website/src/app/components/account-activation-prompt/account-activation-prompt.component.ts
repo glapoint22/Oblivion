@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
-import { AccountNotActivatedPromptComponent } from '../account-not-activated-prompt/account-not-activated-prompt.component';
-import { CreateAccountFormComponent } from '../create-account-form/create-account-form.component';
 
 @Component({
   selector: 'account-activation-prompt',
@@ -10,13 +8,10 @@ import { CreateAccountFormComponent } from '../create-account-form/create-accoun
 })
 export class AccountActivationPromptComponent extends LazyLoad {
   public email!: string;
-  public accountNotActivatedPrompt!: AccountNotActivatedPromptComponent;
-  public createAccountForm!: CreateAccountFormComponent;
 
 
-  close() {
-    super.close();
-    if (this.accountNotActivatedPrompt) this.accountNotActivatedPrompt.close();
-    if (this.createAccountForm) this.createAccountForm.close();
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
   }
 }

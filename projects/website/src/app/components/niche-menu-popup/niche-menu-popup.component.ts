@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Niche } from '../../classes/niche';
 import { LazyLoad } from '../../classes/lazy-load';
 import { NichesService } from '../../services/niches/niches.service';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'niche-menu-popup',
@@ -15,11 +16,15 @@ export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
   public arrowPos!: number;
 
 
-  constructor(private nichesService: NichesService) { super() }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private nichesService: NichesService
+    ) { super(lazyLoadingService) }
 
 
   ngOnInit(): void {
-    super.ngOnInit();
+    this.addEventListeners();
     this.nichesService.getNiches()
       .subscribe((niches: Array<Niche>) => {
         this.niches = niches;

@@ -27,7 +27,8 @@
     }
 
     &:focus {
-        outline: 1px solid #505050;
+        outline: 1px solid #808080;
+        outline-offset: 2px;
     }
 }
 
@@ -87,6 +88,11 @@
         background: lighten($background-color, 10);
         border-color: lighten($border-color, 10);
         color: lighten($font-color, 10);
+    }
+
+    &:focus-visible {
+        outline: 1px solid rgb(185, 119, 185);
+        outline-offset: 2px;
     }
 }
 

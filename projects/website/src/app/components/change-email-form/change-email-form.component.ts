@@ -17,15 +17,13 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
 
   constructor
     (
+      lazyLoadingService: LazyLoadingService,
       public accountService: AccountService,
       private dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
-    ) {
-    super();
-  }
+    ) { super(lazyLoadingService) }
 
-  
+
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
@@ -34,6 +32,12 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
         Validators.email
       ])
     });
+  }
+
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
   }
 
 
@@ -47,7 +51,6 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
             this.spinnerService.show = false;
             return;
           }
-          this.fade();
           this.openEmailverificationForm();
         });
     }
@@ -55,14 +58,13 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
 
 
   async openEmailverificationForm() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { EmailVerificationFormComponent } = await import('../email-verification-form/email-verification-form.component');
     const { EmailVerificationFormModule } = await import('../email-verification-form/email-verification-form.module');
 
     this.lazyLoadingService.getComponentAsync(EmailVerificationFormComponent, EmailVerificationFormModule, this.lazyLoadingService.container)
       .then((emailVerificationForm: EmailVerificationFormComponent) => {
         emailVerificationForm.email = this.form.get('email')?.value;
-        emailVerificationForm.changeEmailForm = this;
         this.spinnerService.show = false;
       });
   }

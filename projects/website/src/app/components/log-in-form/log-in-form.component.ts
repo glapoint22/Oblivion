@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -8,9 +8,7 @@ import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { CreateAccountFormComponent } from '../create-account-form/create-account-form.component';
-import { ForgotPasswordFormComponent } from '../forgot-password-form/forgot-password-form.component';
-import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
+import { ExternalLoginProvidersComponent } from '../external-login-providers/external-login-providers.component';
 
 @Component({
   selector: 'log-in-form',
@@ -19,24 +17,40 @@ import { SignUpFormComponent } from '../sign-up-form/sign-up-form.component';
 })
 export class LogInFormComponent extends Validation implements OnInit {
   public isPersistent: boolean = true;
-  public createAccountForm!: CreateAccountFormComponent;
-  public forgotPasswordForm!: ForgotPasswordFormComponent;
-  public signUpForm!: SignUpFormComponent;
   public noMatch!: boolean;
   public returnUrl!: string;
   public onRedirect = new Subject<void>();
+  public checkbox!: HTMLInputElement;
+  public externalLoginProviders!: Array<ElementRef<HTMLElement>>
+  @ViewChild('externalLoginProvidersComponent') externalLoginProvidersComponent!: ExternalLoginProvidersComponent;
 
-  constructor(
-    private dataService: DataService,
-    private accountService: AccountService,
-    private lazyLoadingService: LazyLoadingService,
-    private spinnerService: SpinnerService,
-    private router: Router
-  ) { super() }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
+      private accountService: AccountService,
+      private spinnerService: SpinnerService,
+      private router: Router
+    ) { super(lazyLoadingService) }
 
 
   ngOnInit(): void {
     super.ngOnInit();
+    this.setForm();
+  }
+
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.base && this.tabElements) {
+      this.base.nativeElement.focus();
+      this.tabElements = this.externalLoginProviders;
+      this.tabElements = this.tabElements.concat(this.HTMLElements.toArray());
+    }
+  }
+
+
+  setForm() {
     this.form = new FormGroup({
       email: new FormControl('', [
         Validators.required,
@@ -70,16 +84,16 @@ export class LogInFormComponent extends Validation implements OnInit {
           this.accountService.setCustomer();
           this.accountService.refreshTokenSet = true;
           this.accountService.startRefreshTokenTimer();
-          
-          if(this.onRedirect.observed) {
+
+          if (this.onRedirect.observed) {
             this.fade();
             this.onRedirect.next();
 
-          }else {
+          } else {
             this.close();
           }
 
-          if(this.returnUrl) {
+          if (this.returnUrl) {
             this.router.navigateByUrl(this.returnUrl);
           }
         }
@@ -89,55 +103,64 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   async onSignUpLinkClick() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
     const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
 
     this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container)
-      .then((signUpForm: SignUpFormComponent) => {
-        signUpForm.logInForm = this;
+      .then(() => {
         this.spinnerService.show = false;
       });
   }
 
 
   async onForgotPasswordLinkClick() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { ForgotPasswordFormComponent } = await import('../forgot-password-form/forgot-password-form.component');
     const { ForgotPasswordFormModule } = await import('../forgot-password-form/forgot-password-form.module');
 
     this.lazyLoadingService.getComponentAsync(ForgotPasswordFormComponent, ForgotPasswordFormModule, this.lazyLoadingService.container)
-      .then((forgotPasswordForm: ForgotPasswordFormComponent) => {
-        forgotPasswordForm.logInForm = this;
+      .then(() => {
         this.spinnerService.show = false;
       });
   }
 
 
   async openAccountNotActivatedPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { AccountNotActivatedPromptComponent } = await import('../../components/account-not-activated-prompt/account-not-activated-prompt.component');
     const { AccountNotActivatedPromptModule } = await import('../../components/account-not-activated-prompt/account-not-activated-prompt.module');
 
     this.lazyLoadingService.getComponentAsync(AccountNotActivatedPromptComponent, AccountNotActivatedPromptModule, this.lazyLoadingService.container)
       .then((accountNotActivatedPrompt: AccountNotActivatedPromptComponent) => {
         accountNotActivatedPrompt.email = this.form.get('email')?.value;
-        accountNotActivatedPrompt.logInForm = this;
         this.spinnerService.show = false;
       });
   }
 
 
-  close() {
-    super.close();
-    if (this.signUpForm) this.signUpForm.close();
-    if (this.createAccountForm) this.createAccountForm.close();
-    if (this.forgotPasswordForm) this.forgotPasswordForm.close();
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+
+    if (this.tabElements) {
+      if (this.tabElements[6].nativeElement == document.activeElement) {
+        this.isPersistent = !this.isPersistent;
+      }
+    }
+  }
+
+
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements) {
+      if (this.tabElements && this.tabElements[0].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithGoogle();
+      if (this.tabElements && this.tabElements[1].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithFacebook();
+      if (this.tabElements && this.tabElements[2].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithMicrosoft();
+      if (this.tabElements && this.tabElements[3].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithAmazon();
+      if (this.tabElements[7].nativeElement == document.activeElement) this.onForgotPasswordLinkClick()
+      if (this.tabElements[9].nativeElement == document.activeElement) this.onSignUpLinkClick();
+    }
   }
 }

@@ -3,11 +3,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Validation } from '../../classes/validation';
 import { EmailSentPromptComponent } from '../../components/email-sent-prompt/email-sent-prompt.component';
-import { LogInComponent } from '../../pages/log-in/log-in.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'forgot-password-form',
@@ -16,16 +14,15 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 })
 export class ForgotPasswordFormComponent extends Validation implements OnInit {
   public isError!: boolean;
-  public logInForm!: LogInFormComponent;
   public isLoginPage!: boolean;
 
   constructor
     (
-      private lazyLoadingService: LazyLoadingService,
+      lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
       private dataService: DataService,
       private router: Router
-    ) { super() }
+    ) { super(lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -41,6 +38,12 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
   }
 
 
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
+
   onSubmit() {
     this.isError = false;
     if (this.form.valid) {
@@ -51,7 +54,6 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
         if (isError) {
           this.isError = true;
         } else {
-          this.fade();
           this.openEmailSentPrompt(this.form.get('email')?.value);
         }
       });
@@ -60,22 +62,20 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
 
 
   async onLogInLinkClick() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then((logInForm: LogInFormComponent) => {
-        logInForm.forgotPasswordForm = this;
+      .then(() => {
         this.spinnerService.show = false;
       });
   }
 
 
   async openEmailSentPrompt(email: string) {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     this.spinnerService.show = true;
     const { EmailSentPromptComponent } = await import('../../components/email-sent-prompt/email-sent-prompt.component');
     const { EmailSentPromptModule } = await import('../../components/email-sent-prompt/email-sent-prompt.module');
@@ -83,14 +83,14 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
     this.lazyLoadingService.getComponentAsync(EmailSentPromptComponent, EmailSentPromptModule, this.lazyLoadingService.container)
       .then((emailSentPrompt: EmailSentPromptComponent) => {
         emailSentPrompt.email = email;
-        emailSentPrompt.forgotPasswordForm = this;
         this.spinnerService.show = false;
       });
   }
 
 
-  close() {
-    super.close();
-    if (this.logInForm) this.logInForm.close();
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements && this.tabElements[2].nativeElement == document.activeElement) {
+      this.onLogInLinkClick();
+    }
   }
 }

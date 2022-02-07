@@ -1,19 +1,30 @@
 import { KeyValue } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Filters } from '../../classes/filters';
 import { LazyLoad } from '../../classes/lazy-load';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'grid-widget-side-menu',
   templateUrl: './grid-widget-side-menu.component.html',
   styleUrls: ['./grid-widget-side-menu.component.scss']
 })
-export class GridWidgetSideMenuComponent extends LazyLoad {
+export class GridWidgetSideMenuComponent extends LazyLoad implements OnInit {
   public sortOptions!: Array<KeyValue<string, string>>;
   public filters!: Filters;
 
-  constructor(private router: Router, private route: ActivatedRoute) { super() }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private router: Router,
+      private route: ActivatedRoute
+    ) { super(lazyLoadingService) }
+
+
+  ngOnInit(): void {
+    this.addEventListeners();
+  }
 
   onOpen() {
     document.getElementById('menuContainer')?.focus();

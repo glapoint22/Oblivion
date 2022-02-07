@@ -7,6 +7,8 @@ import { LazyLoad } from '../../classes/lazy-load';
 })
 export class LazyLoadingService {
   public container!: ViewContainerRef;
+  public showBackdrop!: boolean;
+  public backdropFadeIn!: boolean;
   
   constructor(private compiler: Compiler, private injector: Injector, private resolver: ComponentFactoryResolver) { }
 

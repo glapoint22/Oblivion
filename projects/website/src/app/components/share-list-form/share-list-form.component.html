@@ -1,13 +1,13 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': !manageCollaboratorsForm}"></div>
+    <div class="backdrop" (click)="close()"></div>
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
-        <div #base class="base" [ngClass]="{'max-width': shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate}">
+        <div #base class="base" tabindex="-1">
 
             <!-- Header -->
             <div class="header">
@@ -31,8 +31,8 @@
 
                         <label class="radio">
                             <div>Click one of the options on the right to share this list.</div>
-                            <input type="radio" name="share-list" checked="checked">
-                            <span class="checkmark"></span>
+                            <input type="radio" name="share-list" checked="checked" (change)="shareRadioButton.focus()">
+                            <span #tabElement #shareRadioButton class="checkmark" tabindex="-1"></span>
                         </label>
 
                         <div class="horizontal-line"></div>
@@ -41,8 +41,8 @@
 
                         <label class="radio">
                             <div>Click one of the options on the right to invite people to collaborate on this list.</div>
-                            <input id="collaborate" type="radio" name="share-list">
-                            <span class="checkmark"></span>
+                            <input id="collaborate" type="radio" name="share-list" (change)="inviteRadioButton.focus()">
+                            <span #tabElement #inviteRadioButton class="checkmark" tabindex="-1"></span>
                         </label>
 
                     </div>
@@ -50,11 +50,11 @@
                     <div class="vertical-line"></div>
 
                     <div class="vertical-share-container">
-                        <img src="assets/facebook-share.png" title="Share your list on Facebook"
+                        <img #tabElement tabindex="-1" src="assets/facebook-share.png" title="Share your list on Facebook"
                             alt="Share your list on Facebook" (click)="onShareClick('Facebook')">
-                        <img src="assets/twitter-share.png" title="Share your list on Twitter"
+                        <img #tabElement tabindex="-1" src="assets/twitter-share.png" title="Share your list on Twitter"
                             alt="Share your list on Twitter" (click)="onShareClick('Twitter')">
-                        <img src="assets/link.png" title="Share your list with this link"
+                        <img #tabElement tabindex="-1" src="assets/link.png" title="Share your list with this link"
                             alt="Share your list with this link" (click)="onShareClick('Link')">
                     </div>
                 </div>
@@ -69,11 +69,11 @@
                         <div class="option-description">{{shareListType == ShareListType.Share ? 'Click one of the options below to share this list.' : 'Click one of the options below to invite people to collaborate on this list.'}}</div>
 
                         <div class="horizontal-share-container">
-                            <img src="assets/facebook-share.png" title="Share your list on Facebook"
+                            <img #tabElement tabindex="-1" src="assets/facebook-share.png" title="Share your list on Facebook"
                                 alt="Share your list on Facebook" (click)="onShareClick('Facebook')">
-                            <img src="assets/twitter-share.png" title="Share your list on Twitter"
+                            <img #tabElement tabindex="-1" src="assets/twitter-share.png" title="Share your list on Twitter"
                                 alt="Share your list on Twitter" (click)="onShareClick('Twitter')">
-                            <img src="assets/link.png" title="Share your list with this link"
+                            <img #tabElement tabindex="-1" src="assets/link.png" title="Share your list with this link"
                                 alt="Share your list with this link" (click)="onShareClick('Link')">
                         </div>
                     </div>
@@ -82,7 +82,7 @@
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button class="dark-button" (click)="close()">Close</button>
+                    <button #tabElement class="dark-button" (click)="close()">Close</button>
                 </div>
             </div>
         </div>

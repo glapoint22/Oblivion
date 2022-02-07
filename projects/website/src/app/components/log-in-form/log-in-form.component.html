@@ -1,12 +1,13 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+    
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': !createAccountForm && !forgotPasswordForm && !signUpForm}"></div>
+    <div class="backdrop" (click)="close()"></div>
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
-        <div #base class="base">
+        <div #base class="base" tabindex="-1">
 
             <!-- Header -->
             <div class="header">
@@ -22,7 +23,7 @@
             <!-- Content -->
             <div class="content">
 
-                <external-login-providers [signInType]="'Log in'"></external-login-providers>
+                <external-login-providers #externalLoginProvidersComponent [signInType]="'Log in'" (onGetExternalLoginProviders)="externalLoginProviders = $event"></external-login-providers>
 
                 <!-- Or -->
                 <div class="lines-container">
@@ -36,7 +37,7 @@
                 <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onLogIn()">
                     <!-- Email -->
                     <div class="label">Email:</div>
-                    <input type="text" formControlName="email"
+                    <input #tabElement type="text" formControlName="email"
                         [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
 
                     <ng-container *ngIf="_form.submitted && form.controls.email.errors">
@@ -50,7 +51,7 @@
                     <!-- Password -->
                     <div class="label">Password:</div>
                     <div class="password-input-container">
-                        <input type="password" formControlName="password"
+                        <input #tabElement type="password" formControlName="password"
                             [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}"
                             style="margin-bottom: 8px;">
 
@@ -70,18 +71,18 @@
 
                     <label class="checkbox">
                         <div style="color: #dadada;">Keep me logged in</div>
-                        <input type="checkbox" (change)="isPersistent = !isPersistent" [checked]="isPersistent">
-                        <span class="checkmark"></span>
+                        <input type="checkbox" (change)="isPersistent = !isPersistent; checkbox.focus()" [checked]="isPersistent">
+                        <span #tabElement #checkbox class="checkmark" tabindex="-1"></span>
                     </label>
 
-                    <div class="purple-text forgot-password" (click)="onForgotPasswordLinkClick()">Forgot password?
+                    <div #tabElement class="purple-text forgot-password" (click)="onForgotPasswordLinkClick()" tabindex="-1">Forgot password?
                     </div>
 
 
 
 
                     <!-- Button -->
-                    <button type="submit" class="gold-round-button-sm" style="margin-top: 10px;">Log In</button>
+                    <button #tabElement type="submit" class="gold-round-button-sm" style="margin-top: 10px;">Log In</button>
                 </form>
             </div>
 
@@ -90,7 +91,7 @@
             <div class="footer">
                 <div class="horizontal-groove-line"></div>
                 <span class="footer-text">Not a member yet? </span>
-                <span class="purple-text" (click)="onSignUpLinkClick()">Sign Up</span>
+                <span #tabElement class="purple-text" (click)="onSignUpLinkClick()" tabindex="-1">Sign Up</span>
             </div>
 
 

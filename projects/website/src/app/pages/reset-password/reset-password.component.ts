@@ -19,12 +19,12 @@ export class ResetPasswordComponent extends Validation implements OnInit {
 
   constructor
     (
+      lazyLoadingService: LazyLoadingService,
       private route: ActivatedRoute,
       private dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
       private router: Router
-    ) { super() }
+    ) { super(lazyLoadingService) }
 
   ngOnInit(): void {
     this.token = this.route.snapshot.data.resetPassword.token;

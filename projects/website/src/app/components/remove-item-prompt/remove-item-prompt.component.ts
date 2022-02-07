@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
 import { DataService } from '../../services/data/data.service';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'remove-item-prompt',
@@ -14,9 +15,18 @@ export class RemoveItemPromptComponent extends LazyLoad {
   public list!: List;
   public product!: Product;
 
-  constructor(private dataService: DataService) {
-    super();
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private dataService: DataService
+    ) { super(lazyLoadingService) }
+
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
   }
+
 
   onRemoveClick() {
     this.dataService.delete('api/Lists/Product', {

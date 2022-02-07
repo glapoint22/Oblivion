@@ -26,9 +26,16 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
   }
 
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
+
   onSubmit() {
     if (this.form.valid) {
       console.log('Submit');
+      this.close();
     }
   }
 }

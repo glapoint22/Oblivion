@@ -3,7 +3,6 @@ import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -15,9 +14,20 @@ export class ReportReviewFormComponent extends LazyLoad {
   public productId!: number;
   public reviewId!: number;
   public comments!: string;
-  public logInForm!: LogInFormComponent | null
 
-  constructor(private dataService: DataService, private spinnerService: SpinnerService, private lazyLoadingService: LazyLoadingService) { super() }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
+      private spinnerService: SpinnerService
+    ) { super(lazyLoadingService) }
+
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
 
   onSubmit() {
     this.spinnerService.show = true;
@@ -28,14 +38,13 @@ export class ReportReviewFormComponent extends LazyLoad {
       comments: this.comments
     }, { authorization: true })
       .subscribe(() => {
-        this.fade();
         this.openSuccessPrompt();
       });
   }
 
 
   async openSuccessPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -43,14 +52,7 @@ export class ReportReviewFormComponent extends LazyLoad {
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Report Review';
         successPrompt.message = 'Thank you for your feedback.';
-        successPrompt.reportReviewForm = this;
         this.spinnerService.show = false;
       });
-  }
-
-
-  close() {
-    super.close();
-    if (this.logInForm) this.logInForm.close();
   }
 }

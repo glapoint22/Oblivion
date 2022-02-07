@@ -12,8 +12,12 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./contact-us-form.component.scss']
 })
 export class ContactUsFormComponent extends Validation implements OnInit {
-
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
+      private spinnerService: SpinnerService
+    ) { super(lazyLoadingService) }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -34,6 +38,12 @@ export class ContactUsFormComponent extends Validation implements OnInit {
   }
 
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+  }
+
+
   onSubmit() {
     if (this.form.valid) {
       this.spinnerService.show = true;
@@ -42,7 +52,6 @@ export class ContactUsFormComponent extends Validation implements OnInit {
         email: this.form.get('email')?.value,
         message: this.form.get('message')?.value
       }).subscribe(() => {
-        this.fade()
         this.openSuccessPrompt();
       });
     }
@@ -50,7 +59,7 @@ export class ContactUsFormComponent extends Validation implements OnInit {
 
 
   async openSuccessPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade()
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
@@ -58,7 +67,6 @@ export class ContactUsFormComponent extends Validation implements OnInit {
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Contact Us';
         successPrompt.message = 'Thank you for contacting Niche Shack.';
-        successPrompt.contactUsForm = this;
         this.spinnerService.show = false;
       });
   }

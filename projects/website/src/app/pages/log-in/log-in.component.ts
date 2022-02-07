@@ -16,26 +16,26 @@ export class LogInComponent extends LogInFormComponent implements OnInit {
 
   constructor
     (
+      lazyLoadingService: LazyLoadingService,
       dataService: DataService,
       accountService: AccountService,
-      lazyLoadingService: LazyLoadingService,
       spinnerService: SpinnerService,
       router: Router,
       private route: ActivatedRoute,
   ) {
     super
       (
+        lazyLoadingService,
         dataService,
         accountService,
-        lazyLoadingService,
         spinnerService,
         router
       )
   }
 
-  
+
   ngOnInit(): void {
-    super.ngOnInit();
+    this.setForm();
 
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';

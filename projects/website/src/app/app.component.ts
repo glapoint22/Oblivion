@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private container: ViewContainerRef,
-    private lazyLoadingService: LazyLoadingService,
+    public lazyLoadingService: LazyLoadingService,
     private accountService: AccountService,
     private videoApiService: VideoApiService,
     private router: Router,

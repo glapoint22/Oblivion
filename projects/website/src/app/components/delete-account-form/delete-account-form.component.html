@@ -1,9 +1,9 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()"></div>
+    <div class="backdrop" (click)="close()"></div>
 
     <!-- Container -->
-    <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
+    <div class="container">
 
         <!-- Base -->
         <div #base class="base">
@@ -34,16 +34,15 @@
                 </div>
 
 
-                <form #verificationForm [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
+                <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
                     <div *ngIf="authentication.failure" class="error-text">Your password or the one-time password is incorrect.</div>
 
                     <!-- Password -->
                     <div class="label">Password:</div>
                     <div class="password-input-container">
-                        <input #passwordInput type="password" formControlName="password"
+                        <input #tabElement type="password" formControlName="password"
                             [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}"
-                            style="margin-bottom: 8px;" autocomplete="off" readonly
-                            (focus)="passwordInput.removeAttribute('readonly')">
+                            style="margin-bottom: 8px;">
 
 
                         <div class="show-hide-password-icon-container" showHidePassword>
@@ -63,12 +62,11 @@
 
                     <!-- One-time Password -->
                     <div class="label">One-time Password:</div>
-                    <input #otpInput
+                    <input #tabElement
                         type="text"
                         formControlName="otp"
                         spellcheck="false"
-                        [ngClass]="{'error-border': _form.submitted && form.controls.otp.errors}" autocomplete="off"
-                        readonly (focus)="otpInput.removeAttribute('readonly')">
+                        [ngClass]="{'error-border': _form.submitted && form.controls.otp.errors}">
 
                     <ng-container *ngIf="_form.submitted && form.controls.otp.errors">
                         <ul>
@@ -81,8 +79,8 @@
 
                     <!-- Button Container -->
                     <div class="button-container">
-                        <button type="button" class="dark-button" (click)="close()">Cancel</button>
-                        <button type="submit" class="gold-rect-button">Submit</button>
+                        <button #tabElement type="button" class="dark-button" (click)="close()">Cancel</button>
+                        <button #tabElement type="submit" class="gold-rect-button">Submit</button>
                     </div>
                 </form>
             </div>

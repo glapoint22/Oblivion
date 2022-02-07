@@ -43,7 +43,7 @@ export class ProductComponent implements OnInit {
 
 
 
-  async onWriteReviewClick(logInForm: LogInFormComponent | null) {
+  async onWriteReviewClick() {
     if (this.accountService.customer) {
       this.spinnerService.show = true;
       const { WriteReviewFormComponent } = await import('../../components/write-review-form/write-review-form.component');
@@ -54,7 +54,6 @@ export class ProductComponent implements OnInit {
           writeReviewForm.productId = this.product.id;
           writeReviewForm.productImage = this.product.media[0].image;
           writeReviewForm.productName = this.product.name;
-          writeReviewForm.logInForm = logInForm;
           this.spinnerService.show = false;
         });
     } else {
@@ -72,7 +71,7 @@ export class ProductComponent implements OnInit {
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
       .then((logInForm: LogInFormComponent) => {
         logInForm.onRedirect.subscribe(() => {
-          this.onWriteReviewClick(logInForm);
+          this.onWriteReviewClick();
         });
         this.spinnerService.show = false;
       });

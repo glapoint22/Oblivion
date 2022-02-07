@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
@@ -19,9 +19,19 @@ export class MoveItemPromptComponent extends LazyLoad {
   public toList!: KeyValue<any, any>;
   @Output() onMove: EventEmitter<void> = new EventEmitter();
 
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) {
-    super();
+  constructor
+    (
+      lazyLoadingService: LazyLoadingService,
+      private dataService: DataService,
+      private spinnerService: SpinnerService
+    ) { super(lazyLoadingService) }
+
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    if (this.tabElements) this.tabElements[1].nativeElement.focus();
   }
+
 
   onMoveClick() {
     this.spinnerService.show = true;
@@ -32,22 +42,20 @@ export class MoveItemPromptComponent extends LazyLoad {
       ToListId: this.toList.value
     }, { authorization: true })
       .subscribe((isDuplicate: boolean) => {
-        
+
         if (!isDuplicate) {
           this.close();
           this.onMove.emit();
           this.spinnerService.show = false;
         } else {
-          this.fade();
           this.openDuplicateItemPrompt();
         }
-
       });
   }
 
 
   async openDuplicateItemPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
+    this.fade();
     const { DuplicateItemPromptComponent } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.component');
     const { DuplicateItemPromptModule } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.module');
 
@@ -55,7 +63,6 @@ export class MoveItemPromptComponent extends LazyLoad {
       .then((duplicateItemPrompt: DuplicateItemPromptComponent) => {
         duplicateItemPrompt.list = this.toList.key;
         duplicateItemPrompt.product = this.product;
-        duplicateItemPrompt.moveItemPrompt = this;
         this.spinnerService.show = false;
       });
   }

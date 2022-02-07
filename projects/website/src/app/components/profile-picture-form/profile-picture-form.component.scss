@@ -6,7 +6,8 @@
 
 
 .base {
-    width: 700px;
+    width: 100%;
+    max-width: 700px;
     height: 100%;
     max-height: 585px;
 }
@@ -123,6 +124,9 @@ img {
     height: 100%;
     align-items: center;
     justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
 
     .h-line {
         width: 14px;
@@ -130,22 +134,28 @@ img {
         background: #b4b4b4;
     }
     
-    &:hover:not(.minus-button-disabled) {
+    &:hover:not(&:disabled) {
         cursor: pointer;
         
         & .h-line {
             background: white;
         }
     }
-}
 
-.minus-button-disabled {
-    cursor: default;
-    & .h-line {
-        background: #2b2b2b;
+    &:focus-visible {
+        outline: none;
+        & .h-line {
+            background: white;
+        }
+    }
+
+    &:disabled {
+        cursor: default;
+        & .h-line {
+            background: #2b2b2b;
+        }
     }
 }
-
 
 
 .zoom-bar-container {
@@ -211,6 +221,12 @@ img {
         background: linear-gradient(to right, lighten(#787777, 10), lighten(#515151, 10));
         border: 1px solid lighten(#e1a500, 20);
     }
+
+    &:focus-visible {
+        outline: none;
+        background: linear-gradient(to right, lighten(#787777, 10), lighten(#515151, 10));
+        border: 1px solid lighten(#e1a500, 30);
+    }
 }
 
 
@@ -221,7 +237,9 @@ img {
     height: 100%;
     align-items: center;
     justify-content: center;
-    border-radius: 100%;
+    background: none;
+    border: none;
+    padding: 0;
 
     .v-line {
         width: 2px;
@@ -236,7 +254,7 @@ img {
         background: #b4b4b4;
     }
 
-    &:hover:not(.plus-button-disabled) {
+    &:hover:not(&:disabled) {
         cursor: pointer;
         
         & .v-line {
@@ -246,15 +264,27 @@ img {
             background: white;
         }
     }
-}
 
-.plus-button-disabled {
-    cursor: default;
-    & .v-line {
-        background: rgb(43, 43, 43);
+
+    &:focus-visible {
+        outline: none;
+
+        & .v-line {
+            background: white;
+        }
+        & .h-line {
+            background: white;
+        }
     }
-    & .h-line {
-        background: rgb(43, 43, 43);
+
+    &:disabled {
+        cursor: default;
+        & .v-line {
+            background: rgb(43, 43, 43);
+        }
+        & .h-line {
+            background: rgb(43, 43, 43);
+        }
     }
 }
 
