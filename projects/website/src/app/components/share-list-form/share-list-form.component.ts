@@ -20,7 +20,8 @@ export class ShareListFormComponent extends LazyLoad {
   constructor
     (
       lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService
+      private spinnerService: SpinnerService,
+      private socialMediaService: SocialMediaService
     ) { super(lazyLoadingService) }
 
 
@@ -29,7 +30,7 @@ export class ShareListFormComponent extends LazyLoad {
 
     if (this.shareListType == ShareListType.Both) {
       if (this.tabElements) this.tabElements[0].nativeElement.focus();
-    }else {
+    } else {
       this.base.nativeElement.focus();
     }
   }
