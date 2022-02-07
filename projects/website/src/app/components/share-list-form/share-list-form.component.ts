@@ -3,6 +3,7 @@ import { ShareListType } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
@@ -41,19 +42,19 @@ export class ShareListFormComponent extends LazyLoad {
 
     if (this.shareListType == ShareListType.Collaborate || (this.shareListType == ShareListType.Both && collaborateInput.checked)) {
       pathName = '/collaborate-list/' + this.list.collaborateId;
-      text = 'You\'re invited to help me with my list at NicheShack.com!';
+      text = 'You\'re invited to collaborate on list, ' + this.list.name + ':';
     } else {
       pathName = '/shared-list/' + this.list.id;
-      text = 'Check out my list at NicheShack.com!';
+      text = 'Check out my list, ' + this.list.name + ':';
     }
 
     switch (socialType) {
       case 'Facebook':
-        this.onFacebookClick(pathName, text);
+        this.socialMediaService.facebookShare(pathName, text);
         break;
 
       case 'Twitter':
-        this.onTwitterClick(pathName, text);
+        this.socialMediaService.twitterShare(pathName, text);
         break;
 
       case 'Link':
@@ -66,34 +67,6 @@ export class ShareListFormComponent extends LazyLoad {
     }
   }
 
-
-  onFacebookClick(url: string, quote?: string) {
-    // window['FB'].ui({
-    //   method: 'share',
-    //   href: location.origin + url,
-    //   quote: quote
-    // });
-  }
-
-  onTwitterClick(url: string, text: string) {
-    this.openWindow('https://twitter.com/intent/tweet?text=' + text + '&url=' + location.origin + url);
-  }
-
-  onPinterestClick(url: string, image: string, description: string) {
-    this.openWindow('https://www.pinterest.com/pin/create/button/?url=' + location.origin + url
-      + '&media=' + location.origin + '/images/' + image
-      + '&description=' + description)
-  }
-
-  openWindow(url: string) {
-    let width: number = 580;
-    let height: number = 360;
-    let horizontalCenter = (window.innerWidth - width) / 2;
-    let verticalCenter = (window.innerHeight - height) / 2;
-
-    window.open(url, '_blank', 'toolbar=yes,scrollbars=no,resizable=yes,top=' +
-      verticalCenter + ',left=' + horizontalCenter + ',width=' + width + ',height=' + height);
-  }
 
 
   async OpenSuccessPrompt() {

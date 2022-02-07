@@ -40,8 +40,11 @@ export class DropdownComponent implements OnChanges {
 
 
   onDropdownBlur() {
+    if (this.showDropdownList) {
+      this.selectListItem();
+    }
+
     this.showDropdownList = false;
-    this.selectListItem();
     document.removeEventListener("keydown", this.onKeyDown);
   }
 

@@ -114,7 +114,7 @@ export class ReviewsComponent implements OnInit {
         this.reviews = reviews.reviews;
         this.pageCount = reviews.pageCount;
         this.totalReviews = reviews.totalReviews;
-        this.showButton = this.router.url.indexOf('reviews') == -1 && this.product.totalReviews > 10;
+        this.showButton = !this.router.url.includes('/reviews') && this.product.totalReviews > 10;
 
         // Set the properties that display the starting and ending of reviews
         if (this.totalReviews > 0) {
@@ -126,16 +126,15 @@ export class ReviewsComponent implements OnInit {
           this.showing = 'Showing 0 results';
         }
 
-        // Scroll to top of page or scroll to top of reviews
-        this.spinnerService.show = false;
-        if (queryParams.keys.some(key => key == 'sort' || key == 'filter' || key == 'page')) {
+        // Scroll to top of reviews
+        if (this.route.snapshot.fragment == 'reviews-top') {
           const reviewsContainerElement = document.getElementsByClassName('reviews-container')[0] as HTMLElement;
           const headerContainerElement = document.getElementsByClassName('header-container')[0] as HTMLElement;
           const pos = reviewsContainerElement.offsetTop - headerContainerElement.getBoundingClientRect().height;
           window.scrollTo(0, pos);
-        } else {
-          window.scrollTo(0, 0);
         }
+
+        this.spinnerService.show = false;
       });
     });
   }
@@ -185,16 +184,18 @@ export class ReviewsComponent implements OnInit {
 
   onReviewFilterChange(reviewFilter: KeyValue<string, string>) {
     this.router.navigate([], {
-      queryParams: { filter: reviewFilter.value, scrollTo: true, page: null },
-      queryParamsHandling: 'merge'
+      queryParams: { filter: reviewFilter.value, page: null },
+      queryParamsHandling: 'merge',
+      fragment: 'reviews-top'
     });
   }
 
 
   onSortChange(sortFilter: KeyValue<string, string>) {
     this.router.navigate([], {
-      queryParams: { sort: sortFilter.value, scrollTo: true, page: null },
-      queryParamsHandling: 'merge'
+      queryParams: { sort: sortFilter.value, page: null },
+      queryParamsHandling: 'merge',
+      fragment: 'reviews-top'
     });
   }
 

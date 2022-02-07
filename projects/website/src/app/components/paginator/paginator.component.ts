@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 export class PaginatorComponent implements OnChanges {
   @Input() public pageCount!: number;
   @Input() public currentPage!: number;
-  @Input() public setScrollTo!: boolean;
+  @Input() public fragment!: string;
   public pages!: Array<number>;
 
   constructor(private router: Router) { }
@@ -43,8 +43,9 @@ export class PaginatorComponent implements OnChanges {
 
   setPage(page: number) {
     this.router.navigate([], {
-      queryParams: { page: page, scrollTo: this.setScrollTo ? true : null },
-      queryParamsHandling: 'merge'
+      queryParams: { page: page},
+      queryParamsHandling: 'merge',
+      fragment: this.fragment
     });
   }
 }

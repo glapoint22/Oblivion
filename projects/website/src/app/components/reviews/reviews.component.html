@@ -75,6 +75,6 @@
     <button class="purple-button" (click)="onViewAllReviewsClick()" *ngIf="showButton">View all {{product.totalReviews}}
         reviews</button>
 
-    <paginator *ngIf="showPaginator" [pageCount]="pageCount" [currentPage]="currentPage" [setScrollTo]="true">
+    <paginator *ngIf="showPaginator" [pageCount]="pageCount" [currentPage]="currentPage" [fragment]="'reviews-top'">
     </paginator>
 </div>

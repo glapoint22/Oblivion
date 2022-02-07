@@ -47,15 +47,18 @@
 
                 <div class="product-title">{{product.name}}</div>
                 <div class="social-media-container">
-                    <div title="Share on Facebook">
+                    <div title="Share on Facebook"
+                        (click)="socialMediaService.facebookShare('/' + product.urlName + '/' + product.urlId, product.name)">
                         <img src="assets/facebook-share.png" alt="Share on Facebook">
                     </div>
 
-                    <div title="Share on Twitter">
+                    <div title="Share on Twitter"
+                        (click)="socialMediaService.twitterShare('/' + product.urlName + '/' + product.urlId, product.name)">
                         <img src="assets/twitter-share.png" alt="Share on Twitter">
                     </div>
 
-                    <div title="Share on Pinterest">
+                    <div title="Share on Pinterest"
+                        (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.urlId, product.media[0].image, product.name)">
                         <img src="assets/pinterest-share.png" alt="Share on Pinterest">
                     </div>
                 </div>
