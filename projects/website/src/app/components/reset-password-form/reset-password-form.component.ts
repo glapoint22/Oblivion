@@ -1,61 +1,59 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { invalidPasswordValidator, matchPasswordValidator, Validation } from '../../classes/validation';
-import { SuccessPromptComponent } from '../../components/success-prompt/success-prompt.component';
+import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
-  selector: 'reset-password',
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.scss']
+  selector: 'reset-password-form',
+  templateUrl: './reset-password-form.component.html',
+  styleUrls: ['./reset-password-form.component.scss']
 })
-export class ResetPasswordComponent extends Validation implements OnInit {
-  private token!: string;
-  private email!: string;
-  public isError!: boolean;
+export class ResetPasswordFormComponent extends Validation {
+  public email!: string;
+  public oneTimePassword!: string;
 
   constructor
     (
-      private route: ActivatedRoute,
-      private dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+      dataService: DataService,
       private spinnerService: SpinnerService,
-      private router: Router
-    ) { super() }
+      private lazyLoadingService: LazyLoadingService
+    ) { super(dataService) }
 
   ngOnInit(): void {
-    this.token = this.route.snapshot.data.resetPassword.token;
-    this.email = this.route.snapshot.data.resetPassword.email;
-
     this.form = new FormGroup({
-      'newPassword': new FormControl('', [
-        Validators.required,
-        invalidPasswordValidator()
-      ]),
-      'confirmPassword': new FormControl('', [
-        Validators.required,
-        invalidPasswordValidator()
-      ])
-    }, { validators: matchPasswordValidator });
+      newPassword: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidPasswordValidator()
+        ],
+        updateOn: 'submit'
+      }),
+      confirmPassword: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidPasswordValidator()
+        ],
+        updateOn: 'submit'
+      })
+    }, {
+      validators: this.matchPasswordValidator,
+      updateOn: 'submit'
+    });
   }
 
-
   onSubmit() {
-    this.isError = false;
     if (this.form.valid) {
       this.spinnerService.show = true;
       this.dataService.post<boolean>('api/Account/ResetPassword', {
-        token: this.token,
         email: this.email,
-        password: this.form.get('newPassword')?.value
+        password: this.form.get('newPassword')?.value,
+        oneTimePassword: this.oneTimePassword
       }).subscribe((isError: boolean) => {
         if (isError) {
-          this.isError = true;
         } else {
-          this.router.navigate(['']);
           this.OpenSuccessPrompt();
         }
       });

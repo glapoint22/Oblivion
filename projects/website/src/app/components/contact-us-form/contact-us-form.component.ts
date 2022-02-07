@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { invalidNameValidator, Validation } from '../../classes/validation';
+import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -13,23 +13,35 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 })
 export class ContactUsFormComponent extends Validation implements OnInit {
 
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
+  constructor
+    (
+      dataService: DataService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) { super(dataService) }
 
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      name: new FormControl('', [
-        Validators.required,
-        invalidNameValidator(),
-        Validators.maxLength(40)
-      ]),
-      email: new FormControl('', [
-        Validators.required,
-        Validators.email
-      ]),
-      message: new FormControl('', [
-        Validators.required
-      ])
+      name: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidNameValidator(),
+          Validators.maxLength(40)
+        ],
+        updateOn: 'submit'
+      }),
+      email: new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.email
+        ],
+        updateOn: 'submit'
+      }),
+      message: new FormControl('', {
+        validators: Validators.required,
+        updateOn: 'submit'
+      })
     });
   }
 

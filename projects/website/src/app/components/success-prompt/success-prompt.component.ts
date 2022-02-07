@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
+import { AccountService } from '../../services/account/account.service';
 import { ChangeNameFormComponent } from '../change-name-form/change-name-form.component';
 import { ChangePasswordFormComponent } from '../change-password-form/change-password-form.component';
 import { ContactUsFormComponent } from '../contact-us-form/contact-us-form.component';
@@ -30,17 +31,27 @@ export class SuccessPromptComponent extends LazyLoad {
   public reportItemForm!: ReportItemFormComponent;
   public writeReviewForm!: WriteReviewFormComponent;
 
+  constructor(private accountService: AccountService) { super() }
+
   close() {
-    super.close();
-    if (this.deleteAccountForm) this.deleteAccountForm.close();
-    if (this.changeNameForm) this.changeNameForm.close();
-    if (this.changePasswordForm) this.changePasswordForm.close();
-    if (this.emailVerificationForm) this.emailVerificationForm.close();
-    if (this.profilePictureForm) this.profilePictureForm.close();
-    if (this.shareListForm) this.shareListForm.close();
-    if (this.reportReviewForm) this.reportReviewForm.close();
-    if (this.contactUsForm) this.contactUsForm.close();
-    if (this.reportItemForm) this.reportItemForm.close();
-    if (this.writeReviewForm) this.writeReviewForm.close();
+    // super.close();
+    // if (this.deleteAccountForm) this.deleteAccountForm.close();
+    // if (this.changeNameForm) this.changeNameForm.close();
+    // if (this.changePasswordForm) this.changePasswordForm.close();
+    // if (this.emailVerificationForm) this.emailVerificationForm.close();
+    // if (this.profilePictureForm) this.profilePictureForm.close();
+    // if (this.shareListForm) this.shareListForm.close();
+    // if (this.reportReviewForm) this.reportReviewForm.close();
+    // if (this.contactUsForm) this.contactUsForm.close();
+    // if (this.reportItemForm) this.reportItemForm.close();
+    // if (this.writeReviewForm) this.writeReviewForm.close();
+
+    if (this.accountService.onRedirect.observed) {
+      this.fade();
+      this.accountService.onRedirect.next();
+
+    } else {
+      super.close();
+    }
   }
 }

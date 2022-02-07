@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Validation } from '../../classes/validation';
-import { EmailSentPromptComponent } from '../../components/email-sent-prompt/email-sent-prompt.component';
-import { LogInComponent } from '../../pages/log-in/log-in.component';
+import { ResetPasswordOneTimePasswordFormComponent } from '../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -15,17 +14,16 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
   styleUrls: ['./forgot-password-form.component.scss']
 })
 export class ForgotPasswordFormComponent extends Validation implements OnInit {
-  public isError!: boolean;
   public logInForm!: LogInFormComponent;
   public isLoginPage!: boolean;
 
   constructor
     (
+      dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
-      private dataService: DataService,
       private router: Router
-    ) { super() }
+    ) { super(dataService) }
 
 
   ngOnInit(): void {
@@ -33,30 +31,30 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
     this.isLoginPage = this.router.url.includes('log-in');
 
     this.form = new FormGroup({
-      email: new FormControl('', [
-        Validators.required,
-        Validators.email
-      ])
+      email: new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.email
+        ],
+        asyncValidators: this.checkEmailAsync('api/Account/CheckEmail'),
+        updateOn: 'submit'
+      })
+    });
+
+    this.form.statusChanges.subscribe((status: string) => {
+      if (status == 'VALID') {
+        this.dataService.get('api/Account/ForgotPassword', [{
+          key: 'email',
+          value: this.form.get('email')?.value
+        }]).subscribe(() => {
+          this.fade();
+          this.openResetPasswordOneTimePasswordForm(this.form.get('email')?.value);
+        });
+      }
     });
   }
 
 
-  onSubmit() {
-    this.isError = false;
-    if (this.form.valid) {
-      this.dataService.get<boolean>('api/Account/ForgetPassword', [{
-        key: 'email',
-        value: this.form.get('email')?.value
-      }]).subscribe((isError: boolean) => {
-        if (isError) {
-          this.isError = true;
-        } else {
-          this.fade();
-          this.openEmailSentPrompt(this.form.get('email')?.value);
-        }
-      });
-    }
-  }
 
 
   async onLogInLinkClick() {
@@ -74,16 +72,14 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
   }
 
 
-  async openEmailSentPrompt(email: string) {
-    document.removeEventListener("keydown", this.keyDown);
+  async openResetPasswordOneTimePasswordForm(email: string) {
     this.spinnerService.show = true;
-    const { EmailSentPromptComponent } = await import('../../components/email-sent-prompt/email-sent-prompt.component');
-    const { EmailSentPromptModule } = await import('../../components/email-sent-prompt/email-sent-prompt.module');
+    const { ResetPasswordOneTimePasswordFormComponent } = await import('../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.component');
+    const { ResetPasswordOneTimePasswordFormModule } = await import('../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.module');
 
-    this.lazyLoadingService.getComponentAsync(EmailSentPromptComponent, EmailSentPromptModule, this.lazyLoadingService.container)
-      .then((emailSentPrompt: EmailSentPromptComponent) => {
+    this.lazyLoadingService.getComponentAsync(ResetPasswordOneTimePasswordFormComponent, ResetPasswordOneTimePasswordFormModule, this.lazyLoadingService.container)
+      .then((emailSentPrompt: ResetPasswordOneTimePasswordFormComponent) => {
         emailSentPrompt.email = email;
-        emailSentPrompt.forgotPasswordForm = this;
         this.spinnerService.show = false;
       });
   }

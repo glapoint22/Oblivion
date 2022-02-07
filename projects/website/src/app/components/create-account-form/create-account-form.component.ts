@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { invalidNameValidator, invalidPasswordValidator, Validation } from '../../classes/validation';
-import { AccountActivationPromptComponent } from '../../components/account-activation-prompt/account-activation-prompt.component';
-import { EmailExistsPromptComponent } from '../../components/email-exists-prompt/email-exists-prompt.component';
+import { Validation } from '../../classes/validation';
+import { ActivateAccountFormComponent } from '../../components/activate-account-form/activate-account-form.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -22,11 +21,11 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
   constructor
     (
+      dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService,
-      private dataService: DataService,
       private router: Router
-    ) { super() }
+    ) { super(dataService) }
 
 
   ngOnInit(): void {
@@ -35,44 +34,58 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
 
     this.form = new FormGroup({
-      firstName: new FormControl('', [
-        Validators.required,
-        invalidNameValidator(),
-        Validators.maxLength(40)
-      ]),
-      lastName: new FormControl('', [
-        Validators.required,
-        invalidNameValidator(),
-        Validators.maxLength(40)
-      ]),
-      email: new FormControl('', [
-        Validators.required,
-        Validators.email
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        invalidPasswordValidator()
-      ])
+      firstName: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidNameValidator(),
+          Validators.maxLength(40)
+        ],
+        updateOn: 'submit'
+      }),
+      lastName: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidNameValidator(),
+          Validators.maxLength(40)
+        ],
+        updateOn: 'submit'
+      }),
+      password: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidPasswordValidator()
+        ],
+        updateOn: 'submit'
+      }),
+      email: new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.email
+        ],
+        asyncValidators: this.validateEmailAsync('api/Account/ValidateEmail'),
+        updateOn: 'submit'
+      })
+    });
+
+    this.form.statusChanges.subscribe((status: string) => {
+      if (status == 'VALID') {
+        this.dataService.post('api/Account/SignUp', {
+          firstName: this.form.get('firstName')?.value,
+          lastName: this.form.get('lastName')?.value,
+          email: this.form.get('email')?.value,
+          password: this.form.get('password')?.value
+        }, {
+          showSpinner: true
+        }).subscribe(() => {
+          this.fade();
+          this.openAccountActivationForm();
+        });
+      }
     });
   }
 
 
-  onSubmit() {
-    if (this.form.valid) {
-      this.dataService.post('api/Account/Register', {
-        firstName: this.form.get('firstName')?.value,
-        lastName: this.form.get('lastName')?.value,
-        email: this.form.get('email')?.value,
-        password: this.form.get('password')?.value
-      }).subscribe((result: any) => {
-        if(result && result.failure) {
-          this.openEmailExistsPrompt();
-        } else {
-          this.openAccountActivationPrompt();
-        }
-      });
-    }
-  }
+
 
 
   async onLogInLinkClick() {
@@ -88,36 +101,21 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
         this.spinnerService.show = false;
       });
   }
-  
 
 
-  async openEmailExistsPrompt() {
+
+
+
+  async openAccountActivationForm() {
     document.removeEventListener("keydown", this.keyDown);
     this.spinnerService.show = true;
     this.fade();
-    const { EmailExistsPromptComponent } = await import('../../components/email-exists-prompt/email-exists-prompt.component');
-    const { EmailExistsPromptModule } = await import('../../components/email-exists-prompt/email-exists-prompt.module');
+    const { ActivateAccountFormComponent } = await import('../../components/activate-account-form/activate-account-form.component');
+    const { ActivateAccountFormModule } = await import('../../components/activate-account-form/activate-account-form.module');
 
-    this.lazyLoadingService.getComponentAsync(EmailExistsPromptComponent, EmailExistsPromptModule, this.lazyLoadingService.container)
-      .then((emailExistsPrompt: EmailExistsPromptComponent) => {
-        emailExistsPrompt.email = this.form.get('email')?.value;
-        emailExistsPrompt.createAccountForm = this;
-        this.spinnerService.show = false;
-      });
-  }
-
-
-  async openAccountActivationPrompt() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
-    this.fade();
-    const { AccountActivationPromptComponent } = await import('../../components/account-activation-prompt/account-activation-prompt.component');
-    const { AccountActivationPromptModule } = await import('../../components/account-activation-prompt/account-activation-prompt.module');
-
-    this.lazyLoadingService.getComponentAsync(AccountActivationPromptComponent, AccountActivationPromptModule, this.lazyLoadingService.container)
-      .then((accountActivationPrompt: AccountActivationPromptComponent) => {
-        accountActivationPrompt.email = this.form.get('email')?.value;
-        accountActivationPrompt.createAccountForm = this;
+    this.lazyLoadingService.getComponentAsync(ActivateAccountFormComponent, ActivateAccountFormModule, this.lazyLoadingService.container)
+      .then((ActivateAccountForm: ActivateAccountFormComponent) => {
+        ActivateAccountForm.email = this.form.get('email')?.value;
         this.spinnerService.show = false;
       });
   }

@@ -5,7 +5,7 @@
 
 <div class="border">
     <div style="padding: 20px;">
-        <external-login-providers [signInType]="'Log in'"></external-login-providers>
+        <external-login-providers [signInType]="'Log in'" (onLogIn)="setLogIn()"></external-login-providers>
 
         <!-- Or -->
         <div class="lines-container">
@@ -14,9 +14,7 @@
             <div class="right-line"></div>
         </div>
 
-        <div *ngIf="noMatch" class="error-text">Your password and email do not match. Please try again.</div>
-
-        <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onLogIn()">
+        <form [formGroup]="form" #_form="ngForm">
             <!-- Email -->
             <div class="label">Email:</div>
             <input type="text" formControlName="email"

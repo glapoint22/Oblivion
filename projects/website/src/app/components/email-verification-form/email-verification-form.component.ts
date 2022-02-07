@@ -1,7 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Authentication } from '../../classes/authentication';
-import { invalidPasswordValidator, Validation } from '../../classes/validation';
+import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -15,64 +14,55 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./email-verification-form.component.scss']
 })
 export class EmailVerificationFormComponent extends Validation implements OnInit {
-  @ViewChild('otpInput') otpInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('verificationForm') verificationForm!: ElementRef<HTMLFormElement>;
   public email!: string;
-  public authentication: Authentication = new Authentication();
   public changeEmailForm!: ChangeEmailFormComponent;
+  public emailResent!: boolean;
 
   constructor
     (
+      dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
-      private dataService: DataService,
       private accountService: AccountService,
       private spinnerService: SpinnerService
-    ) { super() }
+    ) { super(dataService) }
 
 
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      otp: new FormControl('', [
-        Validators.required,
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        invalidPasswordValidator()
-      ])
+      otp: new FormControl('', {
+        validators: Validators.required,
+        asyncValidators: this.validateOneTimePasswordAsync('api/Account/ValidateEmailChangeOneTimePassword'),
+        updateOn: 'submit'
+      }),
+      password: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidPasswordValidator()
+        ],
+        asyncValidators: this.validatePasswordAsync('api/Account/ValidatePassword'),
+        updateOn: 'submit'
+      })
     });
-  }
 
-
-
-  ngAfterViewInit() {
-    super.ngAfterViewInit();
-    this.otpInput.nativeElement.setAttribute('autocomplete', 'off');
-    this.verificationForm.nativeElement.setAttribute('autocomplete', 'off');
-    this.passwordInput.nativeElement.setAttribute('autocomplete', 'off');
-  }
-
-
-  onSubmit() {
-    if (this.form.valid) {
-      this.spinnerService.show = true;
-      this.dataService.put<Authentication>('api/Account/ChangeEmail', {
-        email: this.email,
-        password: this.form.get('password')?.value,
-        oneTimePassword: this.form.get('otp')?.value
-      },
-        { authorization: true }
-      ).subscribe((authentication: Authentication) => {
-        this.authentication.failure = authentication.failure;
-
-        if (!this.authentication.failure) {
+    this.form.statusChanges.subscribe((status: string) => {
+      if (status == 'VALID') {
+        this.dataService.put('api/Account/ChangeEmail', {
+          email: this.email,
+          password: this.form.get('password')?.value,
+          oneTimePassword: this.form.get('otp')?.value
+        },
+          {
+            authorization: true,
+            showSpinner: true
+          }
+        ).subscribe(() => {
           this.accountService.setCustomer();
           this.fade();
           this.OpenSuccessPrompt();
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
 
@@ -94,5 +84,21 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
   close() {
     super.close();
     if (this.changeEmailForm) this.changeEmailForm.close();
+  }
+
+  onResendEmailClick() {
+    this.dataService.get('api/Account/CreateChangeEmailOTP',
+      [{ key: 'email', value: this.email }],
+      {
+        showSpinner: true,
+        authorization: true
+      }
+    ).subscribe(() => {
+      this.emailResent = true;
+    });
+  }
+
+  onSubmit() {
+    this.emailResent = false;
   }
 }

@@ -1,6 +1,7 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
     <!-- Backdrop -->
-    <div class="transparent-backdrop" (click)="close()" [ngClass]="{'backdrop': !createAccountForm && !forgotPasswordForm && !signUpForm}"></div>
+    <div class="transparent-backdrop" (click)="close()"
+        [ngClass]="{'backdrop': !createAccountForm && !forgotPasswordForm && !signUpForm}"></div>
 
     <!-- Container -->
     <div class="fade-in container" [ngClass]="{'fade-out': fadeOut}">
@@ -22,7 +23,7 @@
             <!-- Content -->
             <div class="content">
 
-                <external-login-providers [signInType]="'Log in'"></external-login-providers>
+                <external-login-providers [signInType]="'Log in'" (onLogIn)="setLogIn()"></external-login-providers>
 
                 <!-- Or -->
                 <div class="lines-container">
@@ -31,9 +32,7 @@
                     <div class="right-line"></div>
                 </div>
 
-                <div *ngIf="noMatch" class="error-text">Your password and email do not match. Please try again.</div>
-
-                <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onLogIn()">
+                <form [formGroup]="form" #_form="ngForm">
                     <!-- Email -->
                     <div class="label">Email:</div>
                     <input type="text" formControlName="email"
@@ -94,15 +93,15 @@
             </div>
 
 
-            <div *ngIf="onRedirect.observed" class="log-in-first">
+            <div *ngIf="accountService.onRedirect.observed" class="log-in-first">
                 Please log in first.
             </div>
         </div>
 
-        
+
 
     </div>
 
-    
+
 
 </div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Product } from '../../classes/product';
 import { LogInFormComponent } from '../../components/log-in-form/log-in-form.component';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
@@ -57,8 +58,10 @@ export class ReviewsPageComponent implements OnInit {
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
       .then((logInForm: LogInFormComponent) => {
-        logInForm.onRedirect.subscribe(() => {
+        const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           this.onWriteReviewClick(logInForm);
+
+          subscription.unsubscribe();
         });
         this.spinnerService.show = false;
       });

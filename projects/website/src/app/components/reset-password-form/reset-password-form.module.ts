@@ -1,19 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { ResetPasswordRoutingModule } from './reset-password-routing.module';
-import { ResetPasswordComponent } from './reset-password.component';
+import { ResetPasswordFormComponent } from './reset-password-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ShowHidePasswordModule } from '../../directives/show-hide-password/show-hide-password.module';
 
 
+
 @NgModule({
-  declarations: [ResetPasswordComponent],
+  declarations: [ResetPasswordFormComponent],
   imports: [
     CommonModule,
-    ResetPasswordRoutingModule,
     ReactiveFormsModule,
     ShowHidePasswordModule
   ]
 })
-export class ResetPasswordModule { }
+export class ResetPasswordFormModule { }

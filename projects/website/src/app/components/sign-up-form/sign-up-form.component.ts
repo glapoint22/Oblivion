@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoad } from '../../classes/lazy-load';
+import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { CreateAccountFormComponent } from '../create-account-form/create-account-form.component';
@@ -12,9 +13,16 @@ import { LogInFormComponent } from '../log-in-form/log-in-form.component';
   styleUrls: ['./sign-up-form.component.scss']
 })
 export class SignUpFormComponent extends LazyLoad implements OnInit {
-  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService, private router: Router) { super() }
   public logInForm!: LogInFormComponent;
   public isLoginPage!: boolean;
+
+  constructor
+    (
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService,
+      private router: Router,
+      private accountService: AccountService
+    ) { super() }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -55,5 +63,19 @@ export class SignUpFormComponent extends LazyLoad implements OnInit {
   close() {
     super.close();
     if (this.logInForm) this.logInForm.close();
+  }
+
+
+
+  setLogIn() {
+    this.accountService.logIn();
+
+    if (this.accountService.onRedirect.observed) {
+      this.fade();
+      this.accountService.onRedirect.next();
+
+    } else {
+      this.close();
+    }
   }
 }

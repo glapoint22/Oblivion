@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { Observable, of, switchMap } from 'rxjs';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
@@ -13,44 +14,30 @@ import { EmailVerificationFormComponent } from '../email-verification-form/email
   styleUrls: ['./change-email-form.component.scss']
 })
 export class ChangeEmailFormComponent extends Validation implements OnInit {
-  public isError: boolean = false;
 
   constructor
     (
+      dataService: DataService,
       public accountService: AccountService,
-      private dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
     ) {
-    super();
+    super(dataService);
   }
 
-  
+
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      email: new FormControl(this.accountService.customer?.email, [
-        Validators.required,
-        Validators.email
-      ])
+      email: new FormControl(this.accountService.customer?.email, {
+        validators: [
+          Validators.required,
+          Validators.email
+        ],
+        asyncValidators: this.checkDuplicateEmail(),
+        updateOn: 'submit',
+      })
     });
-  }
-
-
-  onSubmit() {
-    if (this.form.valid) {
-      this.spinnerService.show = true;
-      this.dataService.get('api/Account/CreateChangeEmailOTP', [{ key: 'email', value: this.form.get('email')?.value }], { authorization: true })
-        .subscribe(error => {
-          if (error) {
-            this.isError = true;
-            this.spinnerService.show = false;
-            return;
-          }
-          this.fade();
-          this.openEmailverificationForm();
-        });
-    }
   }
 
 
@@ -65,5 +52,34 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
         emailVerificationForm.changeEmailForm = this;
         this.spinnerService.show = false;
       });
+  }
+
+
+  checkDuplicateEmail(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors> => {
+      if (control.pristine) return of();
+
+      return this.dataService.get('api/Account/CreateChangeEmailOTP',
+        [
+          {
+            key: 'email',
+            value: this.form.get('email')?.value
+          }
+        ],
+        {
+          authorization: true,
+          showSpinner: true
+        })
+        .pipe(switchMap((result: any) => {
+          // If it's not a duplicate email, open the email verification form
+          if (!result) {
+            this.fade();
+            this.openEmailverificationForm();
+            return of();
+          } else {
+            return of(result);
+          }
+        }));
+    };
   }
 }

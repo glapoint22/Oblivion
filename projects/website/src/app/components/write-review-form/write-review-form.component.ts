@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Image } from '../../classes/image';
 import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -19,21 +18,29 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
   public productName!: string;
   public logInForm!: LogInFormComponent | null;
 
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super() }
+  constructor
+    (
+      dataService: DataService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) { super(dataService) }
 
 
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      rating: new FormControl('', [
-        Validators.required
-      ]),
-      title: new FormControl('', [
-        Validators.required
-      ]),
-      review: new FormControl('', [
-        Validators.required
-      ])
+      rating: new FormControl('', {
+        validators: Validators.required,
+        updateOn: 'submit'
+      }),
+      title: new FormControl('', {
+        validators: Validators.required,
+        updateOn: 'submit'
+      }),
+      review: new FormControl('', {
+        validators: Validators.required,
+        updateOn: 'submit'
+      })
     });
   }
 

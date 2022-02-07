@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { invalidPasswordValidator, matchPasswordValidator, Validation } from '../../classes/validation';
+import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
@@ -12,54 +12,66 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./change-password-form.component.scss']
 })
 export class ChangePasswordFormComponent extends Validation implements OnInit {
-  public isError!: boolean;
 
   constructor
-    (private dataService: DataService,
+    (
+      dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
     ) {
-    super();
+    super(dataService);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      'currentPassword': new FormControl('', [
-        Validators.required,
-        invalidPasswordValidator()
-      ]),
-      'newPassword': new FormControl('', [
-        Validators.required,
-        invalidPasswordValidator()
-      ]),
-      'confirmPassword': new FormControl('', [
-        Validators.required,
-        invalidPasswordValidator()
-      ])
-    }, { validators: matchPasswordValidator });
+      newPassword: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidPasswordValidator()
+        ],
+        updateOn: 'submit'
+      }),
+      confirmPassword: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidPasswordValidator()
+        ],
+        updateOn: 'submit'
+      }),
+      currentPassword: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidPasswordValidator()
+        ],
+        asyncValidators: this.validatePasswordAsync('api/Account/ValidatePassword'),
+        updateOn: 'submit'
+      })
+    }, { validators: this.matchPasswordValidator });
+
+
+
+
+
+    this.form.statusChanges.subscribe((status: string) => {
+      if (status == 'VALID') {
+        this.dataService
+          .put('api/Account/UpdatePassword', {
+            CurrentPassword: this.form.get('currentPassword')?.value,
+            NewPassword: this.form.get('newPassword')?.value
+          }, {
+            authorization: true,
+            showSpinner: true
+          })
+          .subscribe(() => {
+            this.fade();
+            this.OpenSuccessPrompt();
+          });
+      }
+    });
   }
 
 
-  onSubmit() {
-    if (this.form.valid) {
-      this.spinnerService.show = true;
-      this.dataService
-        .put<boolean>('api/Account/UpdatePassword', {
-          CurrentPassword: this.form.get('currentPassword')?.value,
-          NewPassword: this.form.get('newPassword')?.value
-        }, { authorization: true })
-        .subscribe((isError: boolean) => {
-          if (isError) {
-            this.isError = true;
-            this.spinnerService.show = false;
-            return;
-          }
-          this.fade();
-          this.OpenSuccessPrompt();
-        });
-    }
-  }
 
 
   async OpenSuccessPrompt() {

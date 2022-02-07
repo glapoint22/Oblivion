@@ -10,7 +10,7 @@
 
             <!-- Header -->
             <div class="header">
-                Delete Account Verification
+                Activate Account
 
                 <!-- X -->
                 <div class="x" (click)="close()">X</div>
@@ -24,47 +24,20 @@
 
                 <!-- Message -->
                 <div class="message-text">
-                    <div>An email has been sent to the following address:</div>
+                    <div>An email with a one-time password has been sent to the following address:</div>
 
-                    <div class="emphasized-text">{{email}}</div> 
+                    <div class="emphasized-text">{{email}}</div>
 
-                    <div style="margin-bottom: 20px;">Please fill out the form below with your existing password and the
-                        one-time password you received via the email we just sent you. If you don’t see this email
-                        in your inbox, please check your junk or spam folder.</div>
+                    <div style="margin-bottom: 20px;">If you don’t see this email
+                        in your inbox, check your junk or spam folder. Please enter the one-time password into
+                        the field below.</div>
                 </div>
 
 
                 <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
-
-                    <!-- Password -->
-                    <div class="label">Password:</div>
-                    <div class="password-input-container">
-                        <input type="password" formControlName="password"
-                            [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}"
-                            style="margin-bottom: 8px;">
-
-
-                        <div class="show-hide-password-icon-container" showHidePassword>
-                            <i class="hide-password"></i>
-                        </div>
-
-                        <ng-container *ngIf="_form.submitted && form.controls.password.errors">
-                            <ul style="margin-top: -2px;">
-                                <li *ngFor="let message of getErrorMessages('password', 'Password')">
-                                    {{message}}
-                                </li>
-                            </ul>
-                        </ng-container>
-                    </div>
-
-
-
                     <!-- One-time Password -->
                     <div class="label">One-time Password:</div>
-                    <input
-                        type="text"
-                        formControlName="otp"
-                        spellcheck="false"
+                    <input #otpInput type="text" formControlName="otp" spellcheck="false"
                         [ngClass]="{'error-border': _form.submitted && form.controls.otp.errors}">
 
                     <ng-container *ngIf="_form.submitted && form.controls.otp.errors">
@@ -90,6 +63,8 @@
                             <button type="submit" class="gold-rect-button">Submit</button>
                         </div>
                     </div>
+
+
                 </form>
             </div>
         </div>

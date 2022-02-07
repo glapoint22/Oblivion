@@ -1,5 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthService } from 'angularx-social-login';
+import { SocialUser } from '../../classes/social-user';
+import { DataService } from '../../services/data/data.service';
 
 @Component({
   selector: 'external-login-providers',
@@ -7,26 +9,30 @@ import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, Micros
   styleUrls: ['./external-login-providers.component.scss']
 })
 export class ExternalLoginProvidersComponent {
-  constructor(private authService: SocialAuthService) { }
   @Input() signInType: string = '';
+  @Output() onLogIn: EventEmitter<void> = new EventEmitter();
 
+  constructor(private authService: SocialAuthService, private dataService: DataService) { }
 
   signInWithGoogle(): void {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID)
-      .then(socialUser => {
+      .then((socialUser: SocialUser) => {
+        this.signIn(socialUser);
       });
   }
 
   signInWithFacebook(): void {
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID)
-      .then(socialUser => {
+      .then((socialUser: SocialUser) => {
+        this.signIn(socialUser);
       });
   }
 
 
   signInWithMicrosoft(): void {
     this.authService.signIn(MicrosoftLoginProvider.PROVIDER_ID)
-      .then(socialUser => {
+      .then((socialUser: SocialUser) => {
+        this.signIn(socialUser);
       });
   }
 
@@ -34,7 +40,14 @@ export class ExternalLoginProvidersComponent {
 
   signInWithAmazon(): void {
     this.authService.signIn(AmazonLoginProvider.PROVIDER_ID)
-      .then(socialUser => {
+      .then((socialUser: SocialUser) => {
+        this.signIn(socialUser);
       });
+  }
+
+
+  signIn(socialUser: SocialUser) {
+    this.dataService.post('api/Account/ExternalLogin', socialUser, { showSpinner: true })
+      .subscribe(() => this.onLogIn.emit());
   }
 }

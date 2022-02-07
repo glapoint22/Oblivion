@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Caption } from '../../classes/caption';
 import { Product } from '../../classes/product';
 import { LogInFormComponent } from '../../components/log-in-form/log-in-form.component';
@@ -74,8 +75,10 @@ export class ProductComponent implements OnInit {
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
       .then((logInForm: LogInFormComponent) => {
-        logInForm.onRedirect.subscribe(() => {
+        const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           this.onWriteReviewClick(logInForm);
+
+          subscription.unsubscribe();
         });
         this.spinnerService.show = false;
       });

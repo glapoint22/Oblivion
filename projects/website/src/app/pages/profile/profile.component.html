@@ -43,7 +43,8 @@
             <div class="section" style="margin-bottom: 8px;">
                 <div class="property">
                     <div>Password:</div>
-                    <div>******</div>
+                    <div *ngIf="!this.accountService.customer?.externalLoginProvider || accountService.customer?.hasPassword">******</div>
+                    <div *ngIf="this.accountService.customer?.externalLoginProvider && !accountService.customer?.hasPassword" style="font-style: italic; font-size: 12px;">(No Password)</div>
                 </div>
 
                 <div class="icon-container" title="Change Password" (click)="onChangePasswordClick()">

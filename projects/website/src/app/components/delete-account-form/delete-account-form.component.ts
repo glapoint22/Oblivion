@@ -1,8 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Authentication } from '../../classes/authentication';
-import { invalidPasswordValidator, Validation } from '../../classes/validation';
+import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -18,65 +16,74 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 })
 export class DeleteAccountFormComponent extends Validation implements OnInit {
   public email!: string;
-  public authentication: Authentication = new Authentication();
   public deleteAccountPrompt!: DeleteAccountPromptComponent;
-
-  @ViewChild('otpInput') otpInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('verificationForm') verificationForm!: ElementRef<HTMLFormElement>;
+  public emailResent!: boolean;
 
   constructor
     (
+      dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
-      private dataService: DataService,
       private accountService: AccountService,
-      private spinnerService: SpinnerService,
-      private router: Router
-    ) { super() }
+      private spinnerService: SpinnerService
+    ) { super(dataService) }
 
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      otp: new FormControl('', [
-        Validators.required,
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        invalidPasswordValidator()
-      ])
-    });
+
     this.email = this.accountService.customer?.email!;
-  }
+
+    this.form = new FormGroup({
+      otp: new FormControl('', {
+        validators: Validators.required,
+        asyncValidators: this.validateOneTimePasswordAsync('api/Account/ValidateDeleteAccountOneTimePassword'),
+        updateOn: 'submit'
+      }),
+      password: new FormControl('', {
+        validators: [
+          Validators.required,
+          this.invalidPasswordValidator()
+        ],
+        asyncValidators: this.validatePasswordAsync('api/Account/ValidatePassword'),
+        updateOn: 'submit'
+      })
+    });
 
 
-  ngAfterViewInit() {
-    super.ngAfterViewInit();
-    this.otpInput.nativeElement.setAttribute('autocomplete', 'off');
-    this.verificationForm.nativeElement.setAttribute('autocomplete', 'off');
-    this.passwordInput.nativeElement.setAttribute('autocomplete', 'off');
+    this.form.statusChanges.subscribe((status: string) => {
+      if (status == 'VALID') {
+        this.dataService.put('api/Account/DeleteAccount', {
+          password: this.form.get('password')?.value,
+          oneTimePassword: this.form.get('otp')?.value
+        },
+          {
+            authorization: true,
+            showSpinner: true
+          }
+        ).subscribe(() => {
+          this.fade();
+          this.accountService.logOut();
+          this.OpenSuccessPrompt();
+        });
+      }
+    });
   }
 
 
   onSubmit() {
-    if (this.form.valid) {
-      this.spinnerService.show = true;
-      this.dataService.put<Authentication>('api/Account/DeleteAccount', {
-        password: this.form.get('password')?.value,
-        oneTimePassword: this.form.get('otp')?.value
-      },
-        { authorization: true }
-      ).subscribe((authentication: Authentication) => {
-        this.authentication.failure = authentication.failure;
+    this.emailResent = false;
+  }
 
-        if (!this.authentication.failure) {
-          this.fade();
-          this.router.navigate(['home']);
-          this.accountService.logOut();
-          this.OpenSuccessPrompt();
-        }
-      });
-    }
+
+  onResendEmailClick() {
+    this.dataService.post('api/Account/CreateDeleteAccountOTP', undefined,
+      {
+        showSpinner: true,
+        authorization: true
+      }
+    ).subscribe(() => {
+      this.emailResent = true;
+    });
   }
 
 

@@ -11,7 +11,6 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent {
-  private zuckabuck: boolean = true;
 
   constructor
     (
@@ -50,7 +49,7 @@ export class ProfileComponent {
     this.spinnerService.show = true;
 
     // If user is changing their password
-    if (!this.zuckabuck) {
+    if (!this.accountService.customer?.externalLoginProvider || this.accountService.customer.hasPassword) {
       const { ChangePasswordFormComponent } = await import('../../components/change-password-form/change-password-form.component');
       const { ChangePasswordFormModule } = await import('../../components/change-password-form/change-password-form.module');
 
@@ -67,7 +66,7 @@ export class ProfileComponent {
       this.lazyLoadingService.getComponentAsync(CreatePasswordFormComponent, CreatePasswordFormModule, this.lazyLoadingService.container)
         .then((createPasswordForm: CreatePasswordFormComponent) => {
           createPasswordForm.email = this.accountService.customer?.email!;
-          createPasswordForm.externalLoginProvider = "Zuckabuck";
+          createPasswordForm.externalLoginProvider = this.accountService.customer?.externalLoginProvider as string;
           this.spinnerService.show = false;
         });
     }

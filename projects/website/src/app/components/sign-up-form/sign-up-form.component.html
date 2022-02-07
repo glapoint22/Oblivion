@@ -22,7 +22,7 @@
             <!-- Content -->
             <div class="content">
 
-                <external-login-providers [signInType]="'Sign up'"></external-login-providers>
+                <external-login-providers [signInType]="'Sign up'" (onLogIn)="setLogIn()"></external-login-providers>
 
                 <!-- Or -->
                 <div class="lines-container">

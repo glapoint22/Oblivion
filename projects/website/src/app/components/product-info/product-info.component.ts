@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { MediaType } from '../../classes/enums';
 import { Media } from '../../classes/media';
 import { Product } from '../../classes/product';
@@ -107,14 +108,16 @@ export class ProductInfoComponent implements OnChanges {
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
       .then((logInForm: LogInFormComponent) => {
-        logInForm.onRedirect.subscribe(() => {
+        const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           if (isAddToList) {
             this.onAddToListClick(logInForm);
           } else {
             this.onReportItemClick(logInForm);
           }
+
+          subscription.unsubscribe();
         });
         this.spinnerService.show = false;
-      })
+      });
   }
 }

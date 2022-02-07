@@ -23,8 +23,7 @@
             
 
             <!-- Content -->
-            <form class="content" [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
-                <div *ngIf="isError" class="error-text">This email address is already linked to another Niche Shack account. Please provide a different email address.</div>
+            <form class="content" [formGroup]="form" #_form="ngForm">
 
                 <!-- Message -->
                 <div class="message-text">Enter a new email address below and we'll send a verification email to that
@@ -35,7 +34,7 @@
                 <!-- Email -->
                 <div class="label">Email:</div>
                 <input #emailInput type="text" formControlName="email"
-                    [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}" (input)="isError = false">
+                    [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.email.errors">
                     <ul>

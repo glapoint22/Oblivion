@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ExtraOptions, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AccountGuard } from './guards/account/account.guard';
 import { SharedListResolver } from './resolvers/shared-list/shared-list.resolver';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
@@ -8,7 +8,6 @@ import { CollaborateListResolver } from './resolvers/collaborate-list/collaborat
 import { HomeResolver } from './resolvers/home/home.resolver';
 import { ProductResolver } from './resolvers/product/product.resolver';
 import { SearchResolver } from './resolvers/search/search.resolver';
-import { ResetPasswordResolver } from './resolvers/reset-password/reset-password.resolver';
 
 const routes: Routes = [
   {
@@ -61,13 +60,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/error/error.module').then(m => m.ErrorModule),
   },
   {
-    path: 'reset-password',
-    loadChildren: () => import('./pages/reset-password/reset-password.module').then(m => m.ResetPasswordModule),
-    resolve: {
-      resetPassword: ResetPasswordResolver
-    }
-  },
-  {
     path: 'collaborate-list/:collaborateListId',
     loadChildren: () => import('./pages/collaborate-list/collaborate-list.module').then(m => m.CollaborateListModule),
     canActivate: [AccountGuard],
@@ -97,10 +89,6 @@ const routes: Routes = [
   {
     path: 'cookies-policy',
     loadChildren: () => import('./pages/cookies-policy/cookies-policy.module').then(m => m.CookiesPolicyModule)
-  },
-  {
-    path: 'activate-account',
-    loadChildren: () => import('./pages/activate-account/activate-account.module').then(m => m.ActivateAccountModule)
   },
   { path: '**', component: PageNotFoundComponent }
 ];

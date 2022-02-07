@@ -12,3 +12,22 @@
     color: $error-color;
     margin-bottom: 20px;
 }
+
+.purple-button {
+    float: left;
+}
+
+.email-sent {
+    color: #1ee41e;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+
+    span {
+        margin-left: 5px;
+    }
+}
+
+.button-container {
+    width: 100%;
+}

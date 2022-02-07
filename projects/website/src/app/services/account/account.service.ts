@@ -1,6 +1,6 @@
 import { HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { Customer } from '../../classes/customer';
 import { CookieService } from '../cookie/cookie.service';
@@ -15,8 +15,15 @@ export class AccountService {
   private waitForRefreshToken = new Subject<void>();
   private interval!: number;
   public refreshing!: boolean;
+  public onRedirect = new Subject<void>();
 
-  constructor(private cookieService: CookieService, private dataService: DataService, private router: Router) { }
+  constructor
+    (
+      private cookieService: CookieService,
+      private dataService: DataService,
+      private router: Router,
+      private route: ActivatedRoute
+    ) { }
 
   public setCustomer() {
     let customerCookie = this.cookieService.getCookie('customer');
@@ -24,7 +31,24 @@ export class AccountService {
     if (customerCookie) {
       customerCookie = decodeURIComponent(customerCookie);
       const customerProperties = customerCookie.split(',');
-      this.customer = new Customer(customerProperties[0], customerProperties[1], customerProperties[2], customerProperties[3]);
+      this.customer = new Customer(customerProperties[0], customerProperties[1], customerProperties[2], customerProperties[3], customerProperties[4], customerProperties[5] == 'True');
+    }
+  }
+
+
+  public logIn() {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+
+    this.setCustomer();
+    this.refreshTokenSet = true;
+    this.startRefreshTokenTimer();
+
+
+
+    if (returnUrl) {
+      this.router.navigateByUrl(returnUrl);
+    } else if (!this.onRedirect.observed) {
+      this.router.navigate(['/']);
     }
   }
 

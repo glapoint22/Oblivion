@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { invalidNameValidator, Validation } from '../../classes/validation';
+import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -16,26 +16,32 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
 
   constructor
     (
+      dataService: DataService,
       public accountService: AccountService,
-      private dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
       private spinnerService: SpinnerService
-    ) { super() }
+    ) { super(dataService) }
 
 
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      firstName: new FormControl(this.accountService.customer?.firstName, [
-        Validators.required,
-        invalidNameValidator(),
-        Validators.maxLength(40)
-      ]),
-      lastName: new FormControl(this.accountService.customer?.lastName, [
-        Validators.required,
-        invalidNameValidator(),
-        Validators.maxLength(40)
-      ])
+      firstName: new FormControl(this.accountService.customer?.firstName, {
+        validators: [
+          Validators.required,
+          this.invalidNameValidator(),
+          Validators.maxLength(40)
+        ],
+        updateOn: 'submit'
+      }),
+      lastName: new FormControl(this.accountService.customer?.lastName, {
+        validators: [
+          Validators.required,
+          this.invalidNameValidator(),
+          Validators.maxLength(40)
+        ],
+        updateOn: 'submit'
+      })
     });
   }
 

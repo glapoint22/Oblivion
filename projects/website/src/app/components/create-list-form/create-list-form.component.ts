@@ -19,12 +19,21 @@ export class CreateListFormComponent extends Validation implements OnInit {
   public product!: Product;
   @Output() onListCreated: EventEmitter<List> = new EventEmitter();
 
-  constructor(private dataService: DataService, private accountService: AccountService, private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { super(); }
+  constructor
+    (
+      dataService: DataService,
+      private accountService: AccountService,
+      private lazyLoadingService: LazyLoadingService,
+      private spinnerService: SpinnerService
+    ) { super(dataService); }
 
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      listName: new FormControl('', [Validators.required]),
+      listName: new FormControl('', {
+        validators: Validators.required,
+        updateOn: 'submit'
+      }),
       description: new FormControl('')
     });
   }

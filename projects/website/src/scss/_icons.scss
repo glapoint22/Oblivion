@@ -135,3 +135,12 @@
 
     margin-right: 5px;
 }
+
+
+.check-mark
+{
+    font-family: 'check-mark';
+    &::before {
+        content: "\e918";
+    }
+}

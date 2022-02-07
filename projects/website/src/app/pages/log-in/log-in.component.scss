@@ -24,3 +24,9 @@ img {
     margin-top: 20px; border: 1px solid $gold;
     border-radius: 4px;
 }
+
+@media (max-width: 300px) {
+    .forgot-password {
+        float: none;
+    }
+}

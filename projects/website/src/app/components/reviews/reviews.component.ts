@@ -1,6 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ReviewFilter } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { Review } from '../../classes/review';
@@ -242,8 +243,10 @@ export class ReviewsComponent implements OnInit {
 
     this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
       .then((logInForm: LogInFormComponent) => {
-        logInForm.onRedirect.subscribe(() => {
+        const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           this.onReportReviewClick(reviewId, logInForm);
+
+          subscription.unsubscribe();
         });
         this.spinnerService.show = false;
       });
