@@ -62,6 +62,7 @@ export class ResetPasswordFormComponent extends Validation {
 
 
   async OpenSuccessPrompt() {
+    this.fade();
     const { SuccessPromptComponent } = await import('../../components/success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../../components/success-prompt/success-prompt.module');
 

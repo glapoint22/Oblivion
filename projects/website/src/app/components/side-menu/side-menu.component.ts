@@ -37,8 +37,8 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
 
 
   async onLogInLinkClick() {
-    this.spinnerService.show = true;
     this.close();
+    this.spinnerService.show = true;
     const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
     const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
@@ -50,8 +50,8 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
 
 
   async onSignUpLinkClick() {
-    this.spinnerService.show = true;
     this.close();
+    this.spinnerService.show = true;
     const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
     const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
 

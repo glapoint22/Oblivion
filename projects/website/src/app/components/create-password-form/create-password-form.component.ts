@@ -64,7 +64,6 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
           authorization: true
         }).subscribe(() => {
           this.accountService.setCustomer();
-          this.fade();
           this.OpenSuccessPrompt();
         });
     }
@@ -72,6 +71,7 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
 
 
   async OpenSuccessPrompt() {
+    this.fade();
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

@@ -103,9 +103,8 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
 
   async openAccountActivationForm() {
-    document.removeEventListener("keydown", this.keyDown);
-    this.spinnerService.show = true;
     this.fade();
+    this.spinnerService.show = true;
     const { ActivateAccountFormComponent } = await import('../../components/activate-account-form/activate-account-form.component');
     const { ActivateAccountFormModule } = await import('../../components/activate-account-form/activate-account-form.module');
 

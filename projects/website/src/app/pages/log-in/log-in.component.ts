@@ -6,4 +6,11 @@ import { LogInFormComponent } from '../../components/log-in-form/log-in-form.com
   templateUrl: './log-in.component.html',
   styleUrls: ['./log-in.component.scss']
 })
-export class LogInComponent extends LogInFormComponent { }
+export class LogInComponent extends LogInFormComponent {
+
+  ngOnInit(): void {
+    this.setForm();
+  }
+
+  ngAfterViewInit(): void { }
+}

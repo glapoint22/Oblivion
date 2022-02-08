@@ -44,7 +44,6 @@ export class ActivateAccountFormComponent extends Validation {
         }, { showSpinner: true })
           .subscribe(() => {
             this.accountService.logIn();
-            this.fade();
             this.OpenSuccessPrompt();
           });
       }
@@ -58,6 +57,7 @@ export class ActivateAccountFormComponent extends Validation {
 
 
   async OpenSuccessPrompt() {
+    this.fade();
     const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
     const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 

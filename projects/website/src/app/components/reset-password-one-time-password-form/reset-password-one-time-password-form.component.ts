@@ -57,6 +57,7 @@ export class ResetPasswordOneTimePasswordFormComponent extends Validation implem
 
 
   async OpenResetPasswordForm() {
+    this.fade();
     const { ResetPasswordFormComponent } = await import('../reset-password-form/reset-password-form.component');
     const { ResetPasswordFormModule } = await import('../reset-password-form/reset-password-form.module');
 

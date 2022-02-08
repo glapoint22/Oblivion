@@ -16,6 +16,10 @@ export class ExternalLoginProvidersComponent {
 
   constructor(private authService: SocialAuthService, private dataService: DataService) { }
 
+  ngAfterViewInit(): void {
+    this.onGetExternalLoginProviders.emit(this.HTMLElements.toArray());
+  }
+
   signInWithGoogle(): void {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID)
       .then((socialUser: SocialUser) => {
