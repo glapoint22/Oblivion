@@ -32,18 +32,23 @@ export class DataService {
   // ------------------------------------------------------------Get-----------------------------------------------------
   get<T>(url: string, parameters?: Array<KeyValue<any, any>>, options?: {
     authorization?: boolean,
-    showSpinner?: boolean
+    startSpinner?: boolean,
+    endSpinner?: boolean,
+    startEndSpinner?: boolean
+
+
+    ,showSpinner?: boolean
   }): Observable<T> {
 
-    // Show spinner?
-    if (options && options.showSpinner) this.spinnerService.show = true;
+    // start spinner
+    if (options && (options.startSpinner || options?.startEndSpinner)) this.spinnerService.show = true;
 
     return this.http.get<T>(url, { params: this.setParams(parameters), headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
       .pipe(
         tap(() => {
-          // Hide spinner
+          // End spinner
           if (options) {
-            if (options.showSpinner) this.spinnerService.show = false;
+            if (options.endSpinner || options.startEndSpinner) this.spinnerService.show = false;
           }
         }),
         retryWhen(this.retryRequest()),
@@ -61,20 +66,24 @@ export class DataService {
   // ------------------------------------------------------------Post-----------------------------------------------------
   post<T>(url: string, body: any, options?: {
     authorization?: boolean,
-    showSpinner?: boolean
+    startSpinner?: boolean,
+    endSpinner?: boolean,
+    startEndSpinner?: boolean
+
+    ,showSpinner?: boolean
   }): Observable<T> {
 
-    // Show spinner?
-    if (options && options.showSpinner) this.spinnerService.show = true;
+    // start spinner
+    if (options && (options.startSpinner || options?.startEndSpinner)) this.spinnerService.show = true;
 
 
     return this.http.post<T>(url, body, { headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
       .pipe(
         tap(() => {
 
-          // Hide spinner
+          // End spinner
           if (options) {
-            if (options.showSpinner) this.spinnerService.show = false;
+            if (options.endSpinner || options.startEndSpinner) this.spinnerService.show = false;
           }
         }),
         retryWhen(this.retryRequest()),
@@ -90,15 +99,24 @@ export class DataService {
   // ------------------------------------------------------------Put-----------------------------------------------------
   put<T>(url: string, body: any, options?: {
     authorization?: boolean,
-    showSpinner?: boolean
+    startSpinner?: boolean,
+    endSpinner?: boolean,
+    startEndSpinner?: boolean
+
+
+    ,showSpinner?: boolean
   }): Observable<T> {
+
+    // start spinner
+    if (options && (options.startSpinner || options?.startEndSpinner)) this.spinnerService.show = true;
+
     return this.http.put<T>(url, body, { headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
       .pipe(
         tap(() => {
 
-          // Hide spinner
+          // End spinner
           if (options) {
-            if (options.showSpinner) this.spinnerService.show = false;
+            if (options.endSpinner || options.startEndSpinner) this.spinnerService.show = false;
           }
         }),
         retryWhen(this.retryRequest()),
@@ -114,15 +132,23 @@ export class DataService {
   // ------------------------------------------------------------Delete-----------------------------------------------------
   delete(url: string, params: any, options?: {
     authorization?: boolean,
-    showSpinner?: boolean
+    startSpinner?: boolean,
+    endSpinner?: boolean,
+    startEndSpinner?: boolean
+
+    ,showSpinner?: boolean
   }) {
+
+    // start spinner
+    if (options && (options.startSpinner || options?.startEndSpinner)) this.spinnerService.show = true;
+
     return this.http.delete(url, { params: params, headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
       .pipe(
         tap(() => {
 
-          // Hide spinner
+          // End spinner
           if (options) {
-            if (options.showSpinner) this.spinnerService.show = false;
+            if (options.endSpinner || options.startEndSpinner) this.spinnerService.show = false;
           }
         }),
         retryWhen(this.retryRequest()),
