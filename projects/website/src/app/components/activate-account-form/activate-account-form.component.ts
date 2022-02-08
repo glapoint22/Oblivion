@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
@@ -41,7 +41,7 @@ export class ActivateAccountFormComponent extends Validation {
         this.dataService.post('api/Account/ActivateAccount', {
           email: this.email,
           oneTimePassword: this.form.get('otp')?.value,
-        }, { showSpinner: true })
+        }, { startSpinner: true })
           .subscribe(() => {
             this.accountService.logIn();
             this.OpenSuccessPrompt();
@@ -74,7 +74,10 @@ export class ActivateAccountFormComponent extends Validation {
       return this.dataService.post('api/Account/ValidateActivateAccountOneTimePassword', {
         email: this.email,
         oneTimePassword: this.form.get('otp')?.value,
-      }, { showSpinner: true });
+      }, { startSpinner: true })
+        .pipe(tap((error: any) => {
+          if (error) this.spinnerService.show = false;
+        }))
     }
   }
 
@@ -86,7 +89,7 @@ export class ActivateAccountFormComponent extends Validation {
     this.dataService.get('api/Account/ResendAccountActivationEmail',
       [{ key: 'email', value: this.email }],
       {
-        showSpinner: true
+        startEndSpinner: true
       }
     ).subscribe(() => {
       this.emailResent = true;
