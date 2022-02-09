@@ -2,7 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ReviewFilter } from '../../classes/enums';
+import { ReviewFilter, SpinnerAction } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { Review } from '../../classes/review';
 import { ReportReviewFormComponent } from '../../components/report-review-form/report-review-form.component';
@@ -10,8 +10,6 @@ import { ReviewsSideMenuComponent } from '../../components/reviews-side-menu/rev
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'reviews',
@@ -89,8 +87,7 @@ export class ReviewsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dataService: DataService,
-    private accountService: AccountService,
-    private spinnerService: SpinnerService
+    private accountService: AccountService
   ) { }
 
   ngOnInit(): void {
@@ -111,7 +108,7 @@ export class ReviewsComponent implements OnInit {
         { key: 'page', value: currentPage },
         { key: 'sortBy', value: sort ? sort : '' },
         { key: 'filterBy', value: filter ? filter : '' }
-      ]).subscribe((reviews: any) => {
+      ], {spinnerAction: SpinnerAction.End}).subscribe((reviews: any) => {
         this.reviews = reviews.reviews;
         this.pageCount = reviews.pageCount;
         this.totalReviews = reviews.totalReviews;
@@ -134,8 +131,6 @@ export class ReviewsComponent implements OnInit {
           const pos = reviewsContainerElement.offsetTop - headerContainerElement.getBoundingClientRect().height;
           window.scrollTo(0, pos);
         }
-
-        this.spinnerService.show = false;
       });
     });
   }
@@ -144,16 +139,20 @@ export class ReviewsComponent implements OnInit {
 
   async onReportReviewClick(reviewId: number) {
     if (this.accountService.customer) {
-      this.spinnerService.show = true;
-      const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
-      const { ReportReviewFormModule } = await import('../../components/report-review-form/report-review-form.module');
+      this.lazyLoadingService.load(async () => {
+        const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
+        const { ReportReviewFormModule } = await import('../../components/report-review-form/report-review-form.module');
 
-      this.lazyLoadingService.getComponentAsync(ReportReviewFormComponent, ReportReviewFormModule, this.lazyLoadingService.container)
+        return {
+          component: ReportReviewFormComponent,
+          module: ReportReviewFormModule
+        }
+      }, SpinnerAction.StartEnd)
         .then((reportReviewForm: ReportReviewFormComponent) => {
           reportReviewForm.productId = this.product.id;
           reportReviewForm.reviewId = reviewId;
-          this.spinnerService.show = false;
         });
+
     } else {
       this.logIn(reviewId);
     }
@@ -208,11 +207,15 @@ export class ReviewsComponent implements OnInit {
 
 
   async onHamburgerButtonClick() {
-    this.spinnerService.show = true;
-    const { ReviewsSideMenuComponent } = await import('../../components/reviews-side-menu/reviews-side-menu.component');
-    const { ReviewsSideMenuModule } = await import('../../components/reviews-side-menu/reviews-side-menu.module');
+    this.lazyLoadingService.load(async () => {
+      const { ReviewsSideMenuComponent } = await import('../../components/reviews-side-menu/reviews-side-menu.component');
+      const { ReviewsSideMenuModule } = await import('../../components/reviews-side-menu/reviews-side-menu.module');
 
-    this.lazyLoadingService.getComponentAsync(ReviewsSideMenuComponent, ReviewsSideMenuModule, this.lazyLoadingService.container)
+      return {
+        component: ReviewsSideMenuComponent,
+        module: ReviewsSideMenuModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((reviewsSideMenu: ReviewsSideMenuComponent) => {
         reviewsSideMenu.filtersList = this.reviewFilterDropdownList;
         reviewsSideMenu.selectedFilter = this.selectedFilter;
@@ -221,33 +224,33 @@ export class ReviewsComponent implements OnInit {
           this.onReviewFilterChange(filter);
         });
 
-
-
         reviewsSideMenu.sortList = this.reviewSortDropdownList;
         reviewsSideMenu.selectedSort = this.selectedSort;
 
         reviewsSideMenu.onSortChange.subscribe((sort: KeyValue<string, string>) => {
           this.onSortChange(sort);
         });
-
-        this.spinnerService.show = false;
       });
   }
 
 
   async logIn(reviewId: number) {
-    this.spinnerService.show = true;
-    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
-    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
+    this.lazyLoadingService.load(async () => {
+      const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+      const { LogInFormModule } = await import('../log-in-form/log-in-form.module');
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then((logInForm: LogInFormComponent) => {
+      return {
+        component: LogInFormComponent,
+        module: LogInFormModule
+      }
+    }, SpinnerAction.StartEnd)
+      .then(() => {
         const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           this.onReportReviewClick(reviewId);
 
           subscription.unsubscribe();
         });
-        this.spinnerService.show = false;
+
       });
   }
 }

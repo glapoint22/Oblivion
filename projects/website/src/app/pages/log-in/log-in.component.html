@@ -14,7 +14,7 @@
             <div class="right-line"></div>
         </div>
 
-        <form [formGroup]="form" #_form="ngForm">
+        <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
             <!-- Email -->
             <div class="label">Email:</div>
             <input type="text" formControlName="email"
@@ -44,6 +44,14 @@
                     <ul style="margin-top: -2px;">
                         <li *ngFor="let message of getErrorMessages('password', 'Password')">
                             {{message}}
+                        </li>
+                    </ul>
+                </ng-container>
+
+                <ng-container *ngIf="notMatchError">
+                    <ul style="margin-top: -2px;">
+                        <li>
+                            Your password and email do not match. Please try again.
                         </li>
                     </ul>
                 </ng-container>

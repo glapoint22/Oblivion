@@ -1,11 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { AccountNotActivatedFormComponent } from '../account-not-activated-form/account-not-activated-form.component';
 import { ExternalLoginProvidersComponent } from '../external-login-providers/external-login-providers.component';
 
@@ -19,12 +18,12 @@ export class LogInFormComponent extends Validation implements OnInit {
   public checkbox!: HTMLInputElement;
   public externalLoginProviders!: Array<ElementRef<HTMLElement>>
   @ViewChild('externalLoginProvidersComponent') externalLoginProvidersComponent!: ExternalLoginProvidersComponent;
+  public notMatchError!: boolean;
 
   constructor(
     dataService: DataService,
     lazyLoadingService: LazyLoadingService,
-    public accountService: AccountService,
-    private spinnerService: SpinnerService
+    public accountService: AccountService
   ) { super(dataService, lazyLoadingService) }
 
 
@@ -58,30 +57,36 @@ export class LogInFormComponent extends Validation implements OnInit {
           Validators.required,
           this.invalidPasswordValidator()
         ],
-        asyncValidators: this.checkEmailPasswordAsync(),
         updateOn: 'submit'
       })
     });
+  }
 
-    this.form.statusChanges.subscribe((status: string) => {
-      if (status == 'VALID') {
-        this.dataService.post('api/Account/LogIn', {
-          email: this.form.get('email')?.value,
-          password: this.form.get('password')?.value,
-          isPersistent: this.isPersistent
-        }, {
-          showSpinner: true
-        }).subscribe((error: any) => {
-          if (!error) {
-            this.setLogIn();
+
+  onSubmit() {
+    this.notMatchError = false;
+    if (this.form.valid) {
+
+      this.dataService.post('api/Account/LogIn', {
+        email: this.form.get('email')?.value,
+        password: this.form.get('password')?.value,
+        isPersistent: this.isPersistent
+      }, {
+        spinnerAction: SpinnerAction.StartEnd
+      }).subscribe((error: any) => {
+        if (!error) {
+          this.setLogIn();
+        } else {
+          if (error.notEmailPasswordMatch) {
+            this.notMatchError = true;
           } else {
             this.openAccountNotActivatedForm();
           }
-        });
-      }
-    });
-  }
+        }
+      });
+    }
 
+  }
 
 
   setLogIn() {
@@ -99,40 +104,50 @@ export class LogInFormComponent extends Validation implements OnInit {
 
   async onSignUpLinkClick() {
     this.fade();
-    this.spinnerService.show = true;
-    const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
-    const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
 
-    this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+    this.lazyLoadingService.load(async () => {
+      const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
+      const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module');
+
+      return {
+        component: SignUpFormComponent,
+        module: SignUpFormModule
+      }
+    }, SpinnerAction.StartEnd);
+
   }
 
 
   async onForgotPasswordLinkClick() {
     this.fade();
-    this.spinnerService.show = true;
-    const { ForgotPasswordFormComponent } = await import('../forgot-password-form/forgot-password-form.component');
-    const { ForgotPasswordFormModule } = await import('../forgot-password-form/forgot-password-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ForgotPasswordFormComponent, ForgotPasswordFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+    this.lazyLoadingService.load(async () => {
+      const { ForgotPasswordFormComponent } = await import('../forgot-password-form/forgot-password-form.component');
+      const { ForgotPasswordFormModule } = await import('../forgot-password-form/forgot-password-form.module');
+
+      return {
+        component: ForgotPasswordFormComponent,
+        module: ForgotPasswordFormModule
+      }
+    }, SpinnerAction.StartEnd);
+
   }
 
 
   async openAccountNotActivatedForm() {
-    this.spinnerService.show = true;
     this.fade();
-    const { AccountNotActivatedFormComponent } = await import('../account-not-activated-form/account-not-activated-form.component');
-    const { AccountNotActivatedFormModule } = await import('../account-not-activated-form/account-not-activated-form.module');
 
-    this.lazyLoadingService.getComponentAsync(AccountNotActivatedFormComponent, AccountNotActivatedFormModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { AccountNotActivatedFormComponent } = await import('../account-not-activated-form/account-not-activated-form.component');
+      const { AccountNotActivatedFormModule } = await import('../account-not-activated-form/account-not-activated-form.module');
+
+      return {
+        component: AccountNotActivatedFormComponent,
+        module: AccountNotActivatedFormModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((accountNotActivatedPrompt: AccountNotActivatedFormComponent) => {
         accountNotActivatedPrompt.email = this.form.get('email')?.value;
-        this.spinnerService.show = false;
       });
   }
 
@@ -160,15 +175,15 @@ export class LogInFormComponent extends Validation implements OnInit {
   }
 
 
-  checkEmailPasswordAsync(): AsyncValidatorFn {
-    return (): Observable<ValidationErrors> => {
-      return this.dataService.post('api/Account/ValidateEmailPassword',
-        {
-          email: this.form.get('email')?.value,
-          password: this.form.get('password')?.value
-        }, {
-        showSpinner: true
-      });
-    };
-  }
+  // checkEmailPasswordAsync(): AsyncValidatorFn {
+  //   return (): Observable<ValidationErrors> => {
+  //     return this.dataService.post('api/Account/ValidateEmailPassword',
+  //       {
+  //         email: this.form.get('email')?.value,
+  //         password: this.form.get('password')?.value
+  //       }, {
+  //       showSpinner: true
+  //     });
+  //   };
+  // }
 }

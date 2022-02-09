@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -17,8 +17,7 @@ export class ContactUsFormComponent extends Validation implements OnInit {
     (
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService
-    ) { super(dataService, lazyLoadingService) }
+  ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -54,12 +53,11 @@ export class ContactUsFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.spinnerService.show = true;
       this.dataService.post('api/Notifications/Message', {
         name: this.form.get('name')?.value,
         email: this.form.get('email')?.value,
         message: this.form.get('message')?.value
-      }).subscribe(() => {
+      }, { spinnerAction: SpinnerAction.Start }).subscribe(() => {
         this.openSuccessPrompt();
       });
     }
@@ -68,14 +66,19 @@ export class ContactUsFormComponent extends Validation implements OnInit {
 
   async openSuccessPrompt() {
     this.fade()
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+      const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+      return {
+        component: SuccessPromptComponent,
+        module: SuccessPromptModule
+      }
+    }, SpinnerAction.End)
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Contact Us';
         successPrompt.message = 'Thank you for contacting Niche Shack.';
-        this.spinnerService.show = false;
       });
   }
 }

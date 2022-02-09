@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
 import { Observable, of, switchMap } from 'rxjs';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { EmailVerificationFormComponent } from '../email-verification-form/email-verification-form.component';
 
 @Component({
@@ -19,8 +19,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
     (
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
-      public accountService: AccountService,
-      private spinnerService: SpinnerService
+      public accountService: AccountService
     ) {
     super(dataService, lazyLoadingService);
   }
@@ -47,18 +46,23 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
   }
 
 
-  
+
 
 
   async openEmailverificationForm() {
     this.fade();
-    const { EmailVerificationFormComponent } = await import('../email-verification-form/email-verification-form.component');
-    const { EmailVerificationFormModule } = await import('../email-verification-form/email-verification-form.module');
 
-    this.lazyLoadingService.getComponentAsync(EmailVerificationFormComponent, EmailVerificationFormModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { EmailVerificationFormComponent } = await import('../email-verification-form/email-verification-form.component');
+      const { EmailVerificationFormModule } = await import('../email-verification-form/email-verification-form.module');
+
+      return {
+        component: EmailVerificationFormComponent,
+        module: EmailVerificationFormModule
+      }
+    }, SpinnerAction.End)
       .then((emailVerificationForm: EmailVerificationFormComponent) => {
         emailVerificationForm.email = this.form.get('email')?.value;
-        this.spinnerService.show = false;
       });
   }
 
@@ -76,7 +80,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
         ],
         {
           authorization: true,
-          showSpinner: true
+          spinnerAction: SpinnerAction.Start
         })
         .pipe(switchMap((result: any) => {
           // If it's not a duplicate email, open the email verification form

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
+import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -18,8 +18,7 @@ export class ReportReviewFormComponent extends LazyLoad {
   constructor
     (
       lazyLoadingService: LazyLoadingService,
-      private dataService: DataService,
-      private spinnerService: SpinnerService
+      private dataService: DataService
     ) { super(lazyLoadingService) }
 
 
@@ -30,13 +29,15 @@ export class ReportReviewFormComponent extends LazyLoad {
 
 
   onSubmit() {
-    this.spinnerService.show = true;
     this.dataService.post('api/Notifications', {
       productId: this.productId,
       reviewId: this.reviewId,
       type: 1,
       comments: this.comments
-    }, { authorization: true })
+    }, {
+      authorization: true,
+      spinnerAction: SpinnerAction.Start
+    })
       .subscribe(() => {
         this.openSuccessPrompt();
       });
@@ -45,14 +46,19 @@ export class ReportReviewFormComponent extends LazyLoad {
 
   async openSuccessPrompt() {
     this.fade();
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+      const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+      return {
+        component: SuccessPromptComponent,
+        module: SuccessPromptModule
+      }
+    }, SpinnerAction.End)
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Report Review';
         successPrompt.message = 'Thank you for your feedback.';
-        this.spinnerService.show = false;
       });
   }
 }

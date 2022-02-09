@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { Niche } from '../../classes/niche';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { NichesService } from '../../services/niches/niches.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'side-menu',
@@ -22,8 +22,7 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
       lazyLoadingService: LazyLoadingService,
       private nicheService: NichesService,
       public accountService: AccountService,
-      private dataService: DataService,
-      private spinnerService: SpinnerService
+      private dataService: DataService
     ) { super(lazyLoadingService) }
 
 
@@ -38,27 +37,31 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
 
   async onLogInLinkClick() {
     this.close();
-    this.spinnerService.show = true;
-    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
-    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+    this.lazyLoadingService.load(async () => {
+      const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+      const { LogInFormModule } = await import('../log-in-form/log-in-form.module');
+
+      return {
+        component: LogInFormComponent,
+        module: LogInFormModule
+      }
+    }, SpinnerAction.StartEnd);
   }
 
 
   async onSignUpLinkClick() {
     this.close();
-    this.spinnerService.show = true;
-    const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
-    const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module')
 
-    this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+    this.lazyLoadingService.load(async () => {
+      const { SignUpFormComponent } = await import('../sign-up-form/sign-up-form.component');
+      const { SignUpFormModule } = await import('../sign-up-form/sign-up-form.module');
+
+      return {
+        component: SignUpFormComponent,
+        module: SignUpFormModule
+      }
+    }, SpinnerAction.StartEnd);
   }
 
 

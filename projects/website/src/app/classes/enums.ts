@@ -130,3 +130,11 @@ export enum HorizontalAlign {
     Center = 'center',
     Right = 'right'
 }
+
+
+export enum SpinnerAction {
+    None,
+    Start,
+    End,
+    StartEnd
+}

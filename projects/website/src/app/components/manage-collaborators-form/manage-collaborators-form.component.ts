@@ -1,12 +1,11 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Collaborator } from '../../classes/collaborator';
-import { ShareListType } from '../../classes/enums';
+import { ShareListType, SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { ListPermissions } from '../../classes/list-permissions';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { ShareListFormComponent } from '../share-list-form/share-list-form.component';
 
 @Component({
@@ -37,8 +36,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   constructor
     (
       lazyLoadingService: LazyLoadingService,
-      private dataService: DataService,
-      private spinnerService: SpinnerService
+      private dataService: DataService
     ) { super(lazyLoadingService) }
 
 
@@ -46,7 +44,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
     super.ngOnInit();
     this.dataService.get<Array<Collaborator>>('api/Lists/Collaborators', [{ key: 'listId', value: this.list.id }], {
       authorization: true,
-      showSpinner: true
+      spinnerAction: SpinnerAction.End
     })
       .subscribe((collaborators: Array<Collaborator>) => {
         this.collaborators = collaborators;
@@ -174,15 +172,19 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
   async openShareList() {
     this.fade();
-    this.spinnerService.show = true;
-    const { ShareListFormComponent } = await import('../../components/share-list-form/share-list-form.component');
-    const { ShareListFormModule } = await import('../../components/share-list-form/share-list-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ShareListFormComponent, ShareListFormModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { ShareListFormComponent } = await import('../../components/share-list-form/share-list-form.component');
+      const { ShareListFormModule } = await import('../../components/share-list-form/share-list-form.module');
+
+      return {
+        component: ShareListFormComponent,
+        module: ShareListFormModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((shareListForm: ShareListFormComponent) => {
         shareListForm.shareListType = ShareListType.Both;
         shareListForm.list = this.list;
-        this.spinnerService.show = false;
       });
   }
 

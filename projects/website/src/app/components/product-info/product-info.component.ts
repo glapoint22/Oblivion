@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { MediaType } from '../../classes/enums';
+import { MediaType, SpinnerAction } from '../../classes/enums';
 import { Media } from '../../classes/media';
 import { Product } from '../../classes/product';
 import { AddToListFormComponent } from '../../components/add-to-list-form/add-to-list-form.component';
@@ -9,8 +9,6 @@ import { ReportItemFormComponent } from '../../components/report-item-form/repor
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
-import { LogInFormComponent } from '../log-in-form/log-in-form.component';
 
 @Component({
   selector: 'product-info',
@@ -27,7 +25,6 @@ export class ProductInfoComponent implements OnChanges {
     (
       private lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-      private spinnerService: SpinnerService,
       public socialMediaService: SocialMediaService
     ) { }
 
@@ -45,14 +42,19 @@ export class ProductInfoComponent implements OnChanges {
 
   async onAddToListClick() {
     if (this.accountService.customer) {
-      this.spinnerService.show = true;
-      const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
-      const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
+      this.lazyLoadingService.load(async () => {
+        const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
+        const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
 
-      this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
+        return {
+          component: AddToListFormComponent,
+          module: AddToListFormModule
+        }
+      }, SpinnerAction.Start)
         .then((addToListForm: AddToListFormComponent) => {
           addToListForm.product = this.product;
         });
+
     } else {
       this.logIn(true);
     }
@@ -63,15 +65,16 @@ export class ProductInfoComponent implements OnChanges {
 
   async onReportItemClick() {
     if (this.accountService.customer) {
-      this.spinnerService.show = true;
-      const { ReportItemFormComponent } = await import('../../components/report-item-form/report-item-form.component');
-      const { ReportItemFormModule } = await import('../../components/report-item-form/report-item-form.module');
+      this.lazyLoadingService.load(async () => {
+        const { ReportItemFormComponent } = await import('../../components/report-item-form/report-item-form.component');
+        const { ReportItemFormModule } = await import('../../components/report-item-form/report-item-form.module');
 
-      this.lazyLoadingService.getComponentAsync(ReportItemFormComponent, ReportItemFormModule, this.lazyLoadingService.container)
-        .then((reportItemForm: ReportItemFormComponent) => {
-          reportItemForm.productId = this.product.id;
-          this.spinnerService.show = false;
-        });
+        return {
+          component: ReportItemFormComponent,
+          module: ReportItemFormModule
+        }
+      }, SpinnerAction.StartEnd)
+        .then((reportItemForm: ReportItemFormComponent) => reportItemForm.productId = this.product.id);
     } else {
       this.logIn(false);
     }
@@ -82,16 +85,19 @@ export class ProductInfoComponent implements OnChanges {
   async onMediaClick(media: Media) {
     if (media.type != MediaType.Video) return;
 
-    this.spinnerService.show = true;
-    const { MediaPlayerComponent } = await import('../../components/media-player/media-player.component');
-    const { MediaPlayerModule } = await import('../../components/media-player/media-player.module');
+    this.lazyLoadingService.load(async () => {
+      const { MediaPlayerComponent } = await import('../../components/media-player/media-player.component');
+      const { MediaPlayerModule } = await import('../../components/media-player/media-player.module');
 
-    this.lazyLoadingService.getComponentAsync(MediaPlayerComponent, MediaPlayerModule, this.lazyLoadingService.container)
+      return {
+        component: MediaPlayerComponent,
+        module: MediaPlayerModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((mediaPlayer: MediaPlayerComponent) => {
         mediaPlayer.media = this.product.media;
         mediaPlayer.selectedVideo = this.selectedMedia;
         mediaPlayer.selectedImage = this.product.media[0];
-        this.spinnerService.show = false;
       });
   }
 
@@ -99,13 +105,16 @@ export class ProductInfoComponent implements OnChanges {
 
 
   async logIn(isAddToList: boolean) {
-    this.spinnerService.show = true;
-    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
-    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
+    this.lazyLoadingService.load(async () => {
+      const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+      const { LogInFormModule } = await import('../log-in-form/log-in-form.module');
 
-
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then((logInForm: LogInFormComponent) => {
+      return {
+        component: LogInFormComponent,
+        module: LogInFormModule
+      }
+    }, SpinnerAction.StartEnd)
+      .then(() => {
         const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           if (isAddToList) {
             this.onAddToListClick();
@@ -115,7 +124,6 @@ export class ProductInfoComponent implements OnChanges {
 
           subscription.unsubscribe();
         });
-        this.spinnerService.show = false;
       });
   }
 }

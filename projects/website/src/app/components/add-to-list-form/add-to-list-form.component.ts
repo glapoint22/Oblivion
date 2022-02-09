@@ -1,12 +1,12 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
 import { AddToListPromptComponent } from '../../components/add-to-list-prompt/add-to-list-prompt.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { CreateListFormComponent } from '../create-list-form/create-list-form.component';
 import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate-item-prompt.component';
 
@@ -24,15 +24,14 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
     (
       lazyLoadingService: LazyLoadingService,
       private dataService: DataService,
-      private spinnerService: SpinnerService
-    ) { super(lazyLoadingService) }
+  ) { super(lazyLoadingService) }
 
 
   ngOnInit() {
     super.ngOnInit();
     this.dataService.get<Array<KeyValue<string, string>>>('api/Lists/DropdownLists', undefined, {
       authorization: true,
-      showSpinner: true
+      spinnerAction: SpinnerAction.StartEnd
     })
       .subscribe((lists: Array<KeyValue<string, string>>) => {
         this.lists = lists;
@@ -67,7 +66,10 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
     this.dataService.post<boolean>('api/Lists/AddProduct', {
       productId: this.product.id,
       listId: this.selectedList.value
-    }, { authorization: true }).subscribe((isDuplicate: boolean) => {
+    }, {
+      authorization: true,
+      spinnerAction: SpinnerAction.Start
+    }).subscribe((isDuplicate: boolean) => {
       if (isDuplicate) {
         this.openDuplicateItemPrompt();
       } else {
@@ -79,31 +81,39 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
 
   async openDuplicateItemPrompt() {
     this.fade();
-    this.spinnerService.show = true;
-    const { DuplicateItemPromptComponent } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.component');
-    const { DuplicateItemPromptModule } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(DuplicateItemPromptComponent, DuplicateItemPromptModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { DuplicateItemPromptComponent } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.component');
+      const { DuplicateItemPromptModule } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.module');
+
+      return {
+        component: DuplicateItemPromptComponent,
+        module: DuplicateItemPromptModule
+      }
+    }, SpinnerAction.End)
       .then((duplicateItemPrompt: DuplicateItemPromptComponent) => {
         if (this.selectedList) duplicateItemPrompt.list = this.selectedList.key;
         duplicateItemPrompt.product = this.product;
         duplicateItemPrompt.fromAddToListForm = true;
-        this.spinnerService.show = false;
       });
   }
 
 
   async openAddToListPrompt() {
     this.fade();
-    this.spinnerService.show = true;
-    const { AddToListPromptComponent } = await import('../../components/add-to-list-prompt/add-to-list-prompt.component');
-    const { AddToListPromptModule } = await import('../../components/add-to-list-prompt/add-to-list-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(AddToListPromptComponent, AddToListPromptModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { AddToListPromptComponent } = await import('../../components/add-to-list-prompt/add-to-list-prompt.component');
+      const { AddToListPromptModule } = await import('../../components/add-to-list-prompt/add-to-list-prompt.module');
+
+      return {
+        component: AddToListPromptComponent,
+        module: AddToListPromptModule
+      }
+    }, SpinnerAction.End)
       .then((addToListPrompt: AddToListPromptComponent) => {
         addToListPrompt.list = this.selectedList;
         addToListPrompt.product = this.product;
-        this.spinnerService.show = false;
       });
   }
 
@@ -111,11 +121,16 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
 
   async createList() {
     this.fade();
-    this.spinnerService.show = true;
-    const { CreateListFormComponent } = await import('../../components/create-list-form/create-list-form.component');
-    const { CreateListFormModule } = await import('../../components/create-list-form/create-list-form.module');
 
-    this.lazyLoadingService.getComponentAsync(CreateListFormComponent, CreateListFormModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { CreateListFormComponent } = await import('../../components/create-list-form/create-list-form.component');
+      const { CreateListFormModule } = await import('../../components/create-list-form/create-list-form.module');
+
+      return {
+        component: CreateListFormComponent,
+        module: CreateListFormModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((createListForm: CreateListFormComponent) => {
         createListForm.onListCreated.subscribe((list: List) => {
           this.lists.push({
@@ -126,7 +141,6 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
         });
         createListForm.product = this.product;
         createListForm.fromAddToListForm = true;
-        this.spinnerService.show = false;
       });
   }
 

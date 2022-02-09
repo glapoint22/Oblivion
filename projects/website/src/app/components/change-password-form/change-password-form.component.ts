@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -17,7 +17,6 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
     (
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService
     ) {
     super(dataService, lazyLoadingService);
   }
@@ -78,14 +77,19 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
 
   async OpenSuccessPrompt() {
     this.fade();
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+      const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+      return {
+        component: SuccessPromptComponent,
+        module: SuccessPromptModule
+      }
+    }, SpinnerAction.End)
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Successful Password Change';
         successPrompt.message = 'Your password has been successfully changed.';
-        this.spinnerService.show = false;
       });
   }
 }
