@@ -121,7 +121,7 @@ export class HeaderComponent {
         .then((nicheMenuPopup: NicheMenuPopupComponent) => {
           this.nicheMenuPopup = nicheMenuPopup;
           this.nicheMenuPopup.selectedNicheName = this.selectedNiche ? this.selectedNiche.name : 'All Niches';
-          this.nicheMenuPopup.arrowPos = this.arrow.nativeElement.offsetLeft - 8;
+          this.nicheMenuPopup.arrow = this.arrow;
 
           this.nicheMenuPopup.onNicheMenuItemClick
             .subscribe((niche: Niche) => {

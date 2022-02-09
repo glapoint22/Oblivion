@@ -1,6 +1,8 @@
 <div *ngIf="niches" class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="arrow-container" [style.left.px]="arrowPos">
+    <div #arrowContainer class="arrow-container" [style.left.px]="this.arrow.nativeElement.offsetLeft - 8">
+
+        
         <div class="arrow"></div>
     </div>
 

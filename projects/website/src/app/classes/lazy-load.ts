@@ -24,6 +24,7 @@ export class LazyLoad implements AfterViewInit {
         if (this.base) this.base.nativeElement.style.maxHeight = window.innerHeight + 'px';
     }
 
+
     ngOnInit(): void {
         this.addEventListeners();
         if (!this.lazyLoadingService.showBackdrop) {
@@ -152,6 +153,10 @@ export class LazyLoad implements AfterViewInit {
 
     onArrowRight(e: KeyboardEvent): void { }
 
+    onArrowUp(e: KeyboardEvent): void { }
+
+    onArrowDown(e: KeyboardEvent): void { }
+
     keyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
             this.onEscape();
@@ -181,6 +186,14 @@ export class LazyLoad implements AfterViewInit {
 
         if (e.key === 'ArrowRight') {
             this.onArrowRight(e);
+        }
+
+        if (e.key === 'ArrowUp') {
+            this.onArrowUp(e);
+        }
+
+        if (e.key === 'ArrowDown') {
+            this.onArrowDown(e);
         }
     }
 
