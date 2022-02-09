@@ -1,5 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
+import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
@@ -34,15 +35,16 @@ export class MoveItemPromptComponent extends LazyLoad {
 
 
   onMoveClick() {
-    this.spinnerService.show = true;
     this.dataService.put<boolean>('api/lists/product', {
       ProductId: this.product.id,
       CollaboratorId: this.product.collaborator.id,
       FromListId: this.fromList.id,
       ToListId: this.toList.value
-    }, { authorization: true })
+    }, {
+      authorization: true,
+      spinnerAction: SpinnerAction.Start
+    })
       .subscribe((isDuplicate: boolean) => {
-
         if (!isDuplicate) {
           this.close();
           this.onMove.emit();
@@ -56,14 +58,19 @@ export class MoveItemPromptComponent extends LazyLoad {
 
   async openDuplicateItemPrompt() {
     this.fade();
-    const { DuplicateItemPromptComponent } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.component');
-    const { DuplicateItemPromptModule } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(DuplicateItemPromptComponent, DuplicateItemPromptModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { DuplicateItemPromptComponent } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.component');
+      const { DuplicateItemPromptModule } = await import('../../components/duplicate-item-prompt/duplicate-item-prompt.module');
+
+      return {
+        component: DuplicateItemPromptComponent,
+        module: DuplicateItemPromptModule
+      }
+    }, SpinnerAction.End)
       .then((duplicateItemPrompt: DuplicateItemPromptComponent) => {
         duplicateItemPrompt.list = this.toList.key;
         duplicateItemPrompt.product = this.product;
-        this.spinnerService.show = false;
       });
   }
 }

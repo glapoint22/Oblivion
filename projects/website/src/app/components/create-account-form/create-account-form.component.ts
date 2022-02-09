@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { ActivateAccountFormComponent } from '../../components/activate-account-form/activate-account-form.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 
 
 @Component({
@@ -20,7 +20,6 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
     (
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService,
       private router: Router
     ) { super(dataService, lazyLoadingService) }
 
@@ -71,7 +70,7 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
           email: this.form.get('email')?.value,
           password: this.form.get('password')?.value
         }, {
-          showSpinner: true
+          spinnerAction: SpinnerAction.Start
         }).subscribe(() => {
           this.fade();
           this.openAccountActivationForm();
@@ -88,14 +87,16 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
   async onLogInLinkClick() {
     this.fade();
-    this.spinnerService.show = true;
-    const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
-    const { LogInFormModule } = await import('../log-in-form/log-in-form.module')
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+    this.lazyLoadingService.load(async () => {
+      const { LogInFormComponent } = await import('../log-in-form/log-in-form.component');
+      const { LogInFormModule } = await import('../log-in-form/log-in-form.module');
+
+      return {
+        component: LogInFormComponent,
+        module: LogInFormModule
+      }
+    }, SpinnerAction.StartEnd);
   }
 
 
@@ -104,14 +105,18 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
   async openAccountActivationForm() {
     this.fade();
-    this.spinnerService.show = true;
-    const { ActivateAccountFormComponent } = await import('../../components/activate-account-form/activate-account-form.component');
-    const { ActivateAccountFormModule } = await import('../../components/activate-account-form/activate-account-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ActivateAccountFormComponent, ActivateAccountFormModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { ActivateAccountFormComponent } = await import('../../components/activate-account-form/activate-account-form.component');
+      const { ActivateAccountFormModule } = await import('../../components/activate-account-form/activate-account-form.module');
+
+      return {
+        component: ActivateAccountFormComponent,
+        module: ActivateAccountFormModule
+      }
+    }, SpinnerAction.End)
       .then((ActivateAccountForm: ActivateAccountFormComponent) => {
         ActivateAccountForm.email = this.form.get('email')?.value;
-        this.spinnerService.show = false;
       });
   }
 

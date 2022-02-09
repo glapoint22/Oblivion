@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, tap } from 'rxjs';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
@@ -41,7 +42,7 @@ export class ActivateAccountFormComponent extends Validation {
         this.dataService.post('api/Account/ActivateAccount', {
           email: this.email,
           oneTimePassword: this.form.get('otp')?.value,
-        }, { startSpinner: true })
+        }, { spinnerAction: SpinnerAction.Start })
           .subscribe(() => {
             this.accountService.logIn();
             this.OpenSuccessPrompt();
@@ -58,15 +59,19 @@ export class ActivateAccountFormComponent extends Validation {
 
   async OpenSuccessPrompt() {
     this.fade();
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
-      .then((successPrompt: SuccessPromptComponent) => {
-        successPrompt.header = 'Successful Account Activation';
-        successPrompt.message = 'Your account has been successfully Activated.';
-        this.spinnerService.show = false;
-      });
+    this.lazyLoadingService.load(async () => {
+      const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+      const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+      return {
+        component: SuccessPromptComponent,
+        module: SuccessPromptModule
+      }
+    }, SpinnerAction.End).then((successPrompt: SuccessPromptComponent) => {
+      successPrompt.header = 'Successful Account Activation';
+      successPrompt.message = 'Your account has been successfully Activated.';
+    });
   }
 
   validateOneTimePassword(): AsyncValidatorFn {
@@ -74,7 +79,7 @@ export class ActivateAccountFormComponent extends Validation {
       return this.dataService.post('api/Account/ValidateActivateAccountOneTimePassword', {
         email: this.email,
         oneTimePassword: this.form.get('otp')?.value,
-      }, { startSpinner: true })
+      }, { spinnerAction: SpinnerAction.Start })
         .pipe(tap((error: any) => {
           if (error) this.spinnerService.show = false;
         }))
@@ -89,7 +94,7 @@ export class ActivateAccountFormComponent extends Validation {
     this.dataService.get('api/Account/ResendAccountActivationEmail',
       [{ key: 'email', value: this.email }],
       {
-        startEndSpinner: true
+        spinnerAction: SpinnerAction.StartEnd
       }
     ).subscribe(() => {
       this.emailResent = true;

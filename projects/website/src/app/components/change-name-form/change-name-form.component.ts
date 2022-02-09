@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -18,8 +18,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
       public accountService: AccountService,
-      private spinnerService: SpinnerService
-    ) { super(dataService, lazyLoadingService) }
+  ) { super(dataService, lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -53,12 +52,14 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.spinnerService.show = true;
       this.dataService.put('api/Account/ChangeName', {
         firstName: this.form.get('firstName')?.value,
         lastName: this.form.get('lastName')?.value
       },
-        { authorization: true }
+        {
+          authorization: true,
+          spinnerAction: SpinnerAction.Start
+        }
       ).subscribe(() => {
         this.accountService.setCustomer();
         this.openSuccessPrompt();
@@ -69,14 +70,19 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
 
   async openSuccessPrompt() {
     this.fade();
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+      const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+      return {
+        component: SuccessPromptComponent,
+        module: SuccessPromptModule
+      }
+    }, SpinnerAction.End)
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Successful Name Change';
         successPrompt.message = 'Your name has been successfully changed.';
-        this.spinnerService.show = false;
       });
   }
 }

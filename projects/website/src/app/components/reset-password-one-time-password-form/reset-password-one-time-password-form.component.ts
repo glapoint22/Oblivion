@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -51,21 +52,29 @@ export class ResetPasswordOneTimePasswordFormComponent extends Validation implem
       return this.dataService.post('api/Account/ValidateResetPasswordOTP', {
         oneTimePassword: this.form.get('otp')?.value,
         email: this.email
-      }, { showSpinner: true })
+      }, { spinnerAction: SpinnerAction.Start })
+        .pipe(tap((result: any) => {
+          if (result && result.incorrectOneTimePassword) this.spinnerService.show = false;
+        }))
     };
   }
 
 
   async OpenResetPasswordForm() {
     this.fade();
-    const { ResetPasswordFormComponent } = await import('../reset-password-form/reset-password-form.component');
-    const { ResetPasswordFormModule } = await import('../reset-password-form/reset-password-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ResetPasswordFormComponent, ResetPasswordFormModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { ResetPasswordFormComponent } = await import('../reset-password-form/reset-password-form.component');
+      const { ResetPasswordFormModule } = await import('../reset-password-form/reset-password-form.module');
+
+      return {
+        component: ResetPasswordFormComponent,
+        module: ResetPasswordFormModule
+      }
+    }, SpinnerAction.End)
       .then((resetPasswordForm: ResetPasswordFormComponent) => {
         resetPasswordForm.email = this.email;
         resetPasswordForm.oneTimePassword = this.form.get('otp')?.value;
-        this.spinnerService.show = false;
       });
   }
 

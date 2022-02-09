@@ -1,13 +1,12 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
-import { ShareListType } from '../../classes/enums';
+import { ShareListType, SpinnerAction } from '../../classes/enums';
 import { List } from '../../classes/list';
 import { DeleteListPromptComponent } from '../../components/delete-list-prompt/delete-list-prompt.component';
 import { EditListFormComponent } from '../../components/edit-list-form/edit-list-form.component';
 import { ManageCollaboratorsFormComponent } from '../../components/manage-collaborators-form/manage-collaborators-form.component';
 import { ShareListFormComponent } from '../../components/share-list-form/share-list-form.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'lists-menu',
@@ -24,17 +23,20 @@ export class ListsMenuComponent {
   constructor
     (
       private lazyLoadingService: LazyLoadingService,
-      private location: Location,
-      private spinnerService: SpinnerService
+      private location: Location
     ) { }
 
 
   async onEditListClick() {
-    this.spinnerService.show = true;
-    const { EditListFormComponent } = await import('../../components/edit-list-form/edit-list-form.component');
-    const { EditListFormModule } = await import('../../components/edit-list-form/edit-list-form.module');
+    this.lazyLoadingService.load(async () => {
+      const { EditListFormComponent } = await import('../../components/edit-list-form/edit-list-form.component');
+      const { EditListFormModule } = await import('../../components/edit-list-form/edit-list-form.module');
 
-    this.lazyLoadingService.getComponentAsync(EditListFormComponent, EditListFormModule, this.lazyLoadingService.container)
+      return {
+        component: EditListFormComponent,
+        module: EditListFormModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((editListFormComponent: EditListFormComponent) => {
         editListFormComponent.list = this.selectedList;
 
@@ -48,18 +50,21 @@ export class ListsMenuComponent {
           description?.setValue(this.selectedList.description);
         });
 
-        this.spinnerService.show = false;
       });
   }
 
 
 
   async onShareListClick() {
-    this.spinnerService.show = true;
-    const { ShareListFormComponent } = await import('../../components/share-list-form/share-list-form.component');
-    const { ShareListFormModule } = await import('../../components/share-list-form/share-list-form.module');
+    this.lazyLoadingService.load(async () => {
+      const { ShareListFormComponent } = await import('../../components/share-list-form/share-list-form.component');
+      const { ShareListFormModule } = await import('../../components/share-list-form/share-list-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ShareListFormComponent, ShareListFormModule, this.lazyLoadingService.container)
+      return {
+        component: ShareListFormComponent,
+        module: ShareListFormModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((shareListForm: ShareListFormComponent) => {
         if (this.selectedList.isOwner || (this.selectedList.listPermissions.shareList && this.selectedList.listPermissions.inviteCollaborators)) {
           shareListForm.shareListType = ShareListType.Both;
@@ -70,19 +75,21 @@ export class ListsMenuComponent {
         }
 
         shareListForm.list = this.selectedList;
-
-        this.spinnerService.show = false;
       });
   }
 
 
 
   async onManageCollaboratorsClick() {
-    this.spinnerService.show = true;
-    const { ManageCollaboratorsFormComponent } = await import('../../components/manage-collaborators-form/manage-collaborators-form.component');
-    const { ManageCollaboratorsFormModule } = await import('../../components/manage-collaborators-form/manage-collaborators-form.module');
+    this.lazyLoadingService.load(async () => {
+      const { ManageCollaboratorsFormComponent } = await import('../../components/manage-collaborators-form/manage-collaborators-form.component');
+      const { ManageCollaboratorsFormModule } = await import('../../components/manage-collaborators-form/manage-collaborators-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ManageCollaboratorsFormComponent, ManageCollaboratorsFormModule, this.lazyLoadingService.container)
+      return {
+        component: ManageCollaboratorsFormComponent,
+        module: ManageCollaboratorsFormModule
+      }
+    }, SpinnerAction.Start)
       .then((manageCollaboratorsForm: ManageCollaboratorsFormComponent) => {
         manageCollaboratorsForm.list = this.selectedList;
       });
@@ -91,11 +98,15 @@ export class ListsMenuComponent {
 
 
   async onDeleteListClick() {
-    this.spinnerService.show = true;
-    const { DeleteListPromptComponent } = await import('../../components/delete-list-prompt/delete-list-prompt.component');
-    const { DeleteListPromptModule } = await import('../../components/delete-list-prompt/delete-list-prompt.module');
+    this.lazyLoadingService.load(async () => {
+      const { DeleteListPromptComponent } = await import('../../components/delete-list-prompt/delete-list-prompt.component');
+      const { DeleteListPromptModule } = await import('../../components/delete-list-prompt/delete-list-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(DeleteListPromptComponent, DeleteListPromptModule, this.lazyLoadingService.container)
+      return {
+        component: DeleteListPromptComponent,
+        module: DeleteListPromptModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((deleteListPrompt: DeleteListPromptComponent) => {
         deleteListPrompt.list = this.selectedList;
 
@@ -108,8 +119,6 @@ export class ListsMenuComponent {
             this.location.replaceState("account/lists");
           }
         });
-
-        this.spinnerService.show = false;
       });
   }
 }

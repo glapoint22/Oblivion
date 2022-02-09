@@ -1,9 +1,8 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { MediaType } from '../../classes/enums';
+import { MediaType, SpinnerAction } from '../../classes/enums';
 import { Media } from '../../classes/media';
 import { MediaPlayerComponent } from '../../components/media-player/media-player.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'media-slider',
@@ -16,7 +15,7 @@ export class MediaSliderComponent implements OnChanges {
   public changeCount: number = 0;
   public mediaType = MediaType;
 
-  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { }
+  constructor(private lazyLoadingService: LazyLoadingService) { }
 
   ngOnChanges(): void {
     this.changeCount++;
@@ -26,16 +25,19 @@ export class MediaSliderComponent implements OnChanges {
   async onMediaClick(media: Media) {
     if (media.type != MediaType.Video) return;
 
-    this.spinnerService.show = true;
-    const { MediaPlayerComponent } = await import('../../components/media-player/media-player.component');
-    const { MediaPlayerModule } = await import('../../components/media-player/media-player.module');
+    this.lazyLoadingService.load(async () => {
+      const { MediaPlayerComponent } = await import('../../components/media-player/media-player.component');
+      const { MediaPlayerModule } = await import('../../components/media-player/media-player.module');
 
-    this.lazyLoadingService.getComponentAsync(MediaPlayerComponent, MediaPlayerModule, this.lazyLoadingService.container)
+      return {
+        component: MediaPlayerComponent,
+        module: MediaPlayerModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((mediaPlayer: MediaPlayerComponent) => {
         mediaPlayer.media = this.media;
         mediaPlayer.selectedVideo = media;
         mediaPlayer.selectedImage = this.media[0];
-        this.spinnerService.show = false;
       });
   }
 }

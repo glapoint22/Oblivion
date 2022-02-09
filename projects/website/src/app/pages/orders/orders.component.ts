@@ -1,15 +1,14 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SpinnerAction } from '../../classes/enums';
 import { Order } from '../../classes/order';
 import { OrderProduct } from '../../classes/order-product';
-import { Product } from '../../classes/product';
 import { QueriedOrderProduct } from '../../classes/queried-order-product';
 import { OrdersSideMenuComponent } from '../../components/orders-side-menu/orders-side-menu.component';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { OrdersResolver } from '../../resolvers/orders/orders.resolver';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'orders',
@@ -29,7 +28,6 @@ export class OrdersComponent implements OnInit, OnDestroy {
       private route: ActivatedRoute,
       private router: Router,
       private lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService,
       private ordersResolver: OrdersResolver
     ) { }
 
@@ -117,16 +115,19 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
 
   async onWriteReviewClick(order: Order) {
-    this.spinnerService.show = true;
-    const { WriteReviewFormComponent } = await import('../../components/write-review-form/write-review-form.component');
-    const { WriteReviewFormModule } = await import('../../components/write-review-form/write-review-form.module');
+    this.lazyLoadingService.load(async () => {
+      const { WriteReviewFormComponent } = await import('../../components/write-review-form/write-review-form.component');
+      const { WriteReviewFormModule } = await import('../../components/write-review-form/write-review-form.module');
 
-    this.lazyLoadingService.getComponentAsync(WriteReviewFormComponent, WriteReviewFormModule, this.lazyLoadingService.container)
+      return {
+        component: WriteReviewFormComponent,
+        module: WriteReviewFormModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((writeReviewForm: WriteReviewFormComponent) => {
         writeReviewForm.productId = order.productId;
         writeReviewForm.productImage = order.products[0].image.url;
         writeReviewForm.productName = order.products[0].image.name;
-        this.spinnerService.show = false;
       });
   }
 
@@ -135,11 +136,15 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
 
   async onHamburgerButtonClick() {
-    this.spinnerService.show = true;
-    const { OrdersSideMenuComponent } = await import('../../components/orders-side-menu/orders-side-menu.component');
-    const { OrdersSideMenuModule } = await import('../../components/orders-side-menu/orders-side-menu.module');
+    this.lazyLoadingService.load(async () => {
+      const { OrdersSideMenuComponent } = await import('../../components/orders-side-menu/orders-side-menu.component');
+      const { OrdersSideMenuModule } = await import('../../components/orders-side-menu/orders-side-menu.module');
 
-    this.lazyLoadingService.getComponentAsync(OrdersSideMenuComponent, OrdersSideMenuModule, this.lazyLoadingService.container)
+      return {
+        component: OrdersSideMenuComponent,
+        module: OrdersSideMenuModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((ordersSideMenu: OrdersSideMenuComponent) => {
         ordersSideMenu.filters = this.filters;
         ordersSideMenu.selectedFilter = this.selectedFilter;
@@ -147,8 +152,6 @@ export class OrdersComponent implements OnInit, OnDestroy {
         ordersSideMenu.onApply.subscribe((filter: KeyValue<string, string>) => {
           this.onFilterChange(filter);
         });
-
-        this.spinnerService.show = false;
       });
   }
 

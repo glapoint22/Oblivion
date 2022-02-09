@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { SpinnerAction } from '../../../classes/enums';
 import { LazyLoadingService } from '../../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../../services/spinner/spinner.service';
 
 @Component({
   selector: 'footer',
@@ -9,16 +9,17 @@ import { SpinnerService } from '../../../services/spinner/spinner.service';
 })
 export class FooterComponent {
 
-  constructor(private lazyLoadingService: LazyLoadingService, private spinnerService: SpinnerService) { }
+  constructor(private lazyLoadingService: LazyLoadingService) { }
 
   async onContactUsClick() {
-    this.spinnerService.show = true;
-    const { ContactUsFormComponent } = await import('../../contact-us-form/contact-us-form.component');
-    const { ContactUsFormModule } = await import('../../contact-us-form/contact-us-form.module')
+    this.lazyLoadingService.load(async () => {
+      const { ContactUsFormComponent } = await import('../../contact-us-form/contact-us-form.component');
+      const { ContactUsFormModule } = await import('../../contact-us-form/contact-us-form.module');
 
-    this.lazyLoadingService.getComponentAsync(ContactUsFormComponent, ContactUsFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+      return {
+        component: ContactUsFormComponent,
+        module: ContactUsFormModule
+      }
+    }, SpinnerAction.StartEnd);
   }
 }

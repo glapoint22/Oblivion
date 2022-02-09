@@ -26,7 +26,7 @@ export class SpinnerComponent implements OnInit {
           this.showSpinner = false;
           window.setTimeout(() => {
             this.showComponent = false;
-          }, 400);
+          }, 500);
         }
       });
   }

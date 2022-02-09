@@ -1,12 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SpinnerAction } from '../../classes/enums';
 import { List } from '../../classes/list';
 import { Product } from '../../classes/product';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
 
 @Component({
@@ -24,8 +24,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-      private spinnerService: SpinnerService
-    ) { super(dataService, lazyLoadingService) }
+  ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -69,11 +68,16 @@ export class CreateListFormComponent extends Validation implements OnInit {
 
   async openAddToListForm() {
     this.fade();
-    this.spinnerService.show = true;
-    const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
-    const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
 
-    this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
+      const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
+
+      return {
+        component: AddToListFormComponent,
+        module: AddToListFormModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((addToListForm: AddToListFormComponent) => {
         addToListForm.product = this.product;
       });

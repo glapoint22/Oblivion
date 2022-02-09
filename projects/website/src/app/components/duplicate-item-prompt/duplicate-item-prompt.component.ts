@@ -3,7 +3,7 @@ import { LazyLoad } from '../../classes/lazy-load';
 import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
 import { Product } from '../../classes/product';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
+import { SpinnerAction } from '../../classes/enums';
 
 @Component({
   selector: 'duplicate-item-prompt',
@@ -15,11 +15,7 @@ export class DuplicateItemPromptComponent extends LazyLoad {
   public product!: Product;
   public fromAddToListForm!: boolean
 
-  constructor
-    (
-      lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService
-    ) { super(lazyLoadingService) }
+  constructor(lazyLoadingService: LazyLoadingService) { super(lazyLoadingService) }
 
 
   ngAfterViewInit() {
@@ -30,11 +26,16 @@ export class DuplicateItemPromptComponent extends LazyLoad {
 
   async openAddToListForm() {
     this.fade();
-    this.spinnerService.show = true;
-    const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
-    const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
 
-    this.lazyLoadingService.getComponentAsync(AddToListFormComponent, AddToListFormModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
+      const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
+
+      return {
+        component: AddToListFormComponent,
+        module: AddToListFormModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((addToListForm: AddToListFormComponent) => {
         addToListForm.product = this.product;
       });

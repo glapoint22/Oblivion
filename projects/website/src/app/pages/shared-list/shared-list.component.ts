@@ -21,7 +21,7 @@ export class SharedListComponent extends ListsComponent implements OnInit {
     router: Router,
     spinnerService: SpinnerService,
     listIdResolver: ListIdResolver
-  ) { super(lazyLoadingService, dataService, route, router, spinnerService, listIdResolver) }
+  ) { super(lazyLoadingService, dataService, route, router, listIdResolver) }
 
   ngOnInit() {
     this.route.parent?.data.subscribe(data => {

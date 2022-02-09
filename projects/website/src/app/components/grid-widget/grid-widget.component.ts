@@ -1,6 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SpinnerAction } from '../../classes/enums';
 import { GridData } from '../../classes/grid-data';
 import { GridWidgetData } from '../../classes/grid-widget-data';
 import { Product } from '../../classes/product';
@@ -8,7 +9,6 @@ import { Widget } from '../../classes/widget';
 import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
 import { GridWidgetService } from '../../services/grid-widget/grid-widget.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'grid-widget',
@@ -45,7 +45,6 @@ export class GridWidgetComponent extends Widget {
     private router: Router,
     private lazyLoadingService: LazyLoadingService,
     private gridWidgetService: GridWidgetService,
-    private spinnerService: SpinnerService
   ) { super() }
 
   ngOnInit() {
@@ -101,16 +100,19 @@ export class GridWidgetComponent extends Widget {
 
 
   async onHamburgerButtonClick() {
-    this.spinnerService.show = true;
-    const { GridWidgetSideMenuComponent } = await import('../../components/grid-widget-side-menu/grid-widget-side-menu.component');
-    const { GridWidgetSideMenuModule } = await import('../../components/grid-widget-side-menu/grid-widget-side-menu.module');
+    this.lazyLoadingService.load(async () => {
+      const { GridWidgetSideMenuComponent } = await import('../../components/grid-widget-side-menu/grid-widget-side-menu.component');
+      const { GridWidgetSideMenuModule } = await import('../../components/grid-widget-side-menu/grid-widget-side-menu.module');
 
-    this.lazyLoadingService.getComponentAsync(GridWidgetSideMenuComponent, GridWidgetSideMenuModule, this.lazyLoadingService.container)
+      return {
+        component: GridWidgetSideMenuComponent,
+        module: GridWidgetSideMenuModule
+      }
+    }, SpinnerAction.StartEnd)
       .then((gridWidgetSideMenu: GridWidgetSideMenuComponent) => {
         this.gridWidgetSideMenu = gridWidgetSideMenu;
         gridWidgetSideMenu.sortOptions = this.sortOptions;
         gridWidgetSideMenu.filters = this.gridData.filters;
-        this.spinnerService.show = false;
       });
   }
 

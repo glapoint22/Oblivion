@@ -1,5 +1,5 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
-    
+
     <!-- Backdrop -->
     <div class="backdrop" (click)="close()"></div>
 
@@ -23,7 +23,9 @@
             <!-- Content -->
             <div class="content">
 
-                <external-login-providers #externalLoginProvidersComponent [signInType]="'Log in'" (onLogIn)="setLogIn()" (onGetExternalLoginProviders)="externalLoginProviders = $event"></external-login-providers>
+                <external-login-providers #externalLoginProvidersComponent [signInType]="'Log in'"
+                    (onLogIn)="setLogIn()" (onGetExternalLoginProviders)="externalLoginProviders = $event">
+                </external-login-providers>
 
                 <!-- Or -->
                 <div class="lines-container">
@@ -32,7 +34,7 @@
                     <div class="right-line"></div>
                 </div>
 
-                <form [formGroup]="form" #_form="ngForm">
+                <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
                     <!-- Email -->
                     <div class="label">Email:</div>
                     <input #tabElement type="text" formControlName="email"
@@ -65,22 +67,34 @@
                                 </li>
                             </ul>
                         </ng-container>
+
+                        <ng-container *ngIf="notMatchError">
+                            <ul style="margin-top: -2px;">
+                                <li>
+                                    Your password and email do not match. Please try again.
+                                </li>
+                            </ul>
+                        </ng-container>
+
                     </div>
 
                     <label class="checkbox">
                         <div style="color: #dadada;">Keep me logged in</div>
-                        <input type="checkbox" (change)="isPersistent = !isPersistent; checkbox.focus()" [checked]="isPersistent">
+                        <input type="checkbox" (change)="isPersistent = !isPersistent; checkbox.focus()"
+                            [checked]="isPersistent">
                         <span #tabElement #checkbox class="checkmark" tabindex="-1"></span>
                     </label>
 
-                    <div #tabElement class="purple-text forgot-password" (click)="onForgotPasswordLinkClick()" tabindex="-1">Forgot password?
+                    <div #tabElement class="purple-text forgot-password" (click)="onForgotPasswordLinkClick()"
+                        tabindex="-1">Forgot password?
                     </div>
 
 
 
 
                     <!-- Button -->
-                    <button #tabElement type="submit" class="gold-round-button-sm" style="margin-top: 10px;">Log In</button>
+                    <button #tabElement type="submit" class="gold-round-button-sm" style="margin-top: 10px;">Log
+                        In</button>
                 </form>
             </div>
 

@@ -3,13 +3,13 @@ import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/cor
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { delay } from 'rxjs';
+import { SpinnerAction } from '../../../classes/enums';
 import { Niche } from '../../../classes/niche';
 import { Suggestion } from '../../../classes/suggestion';
 import { AccountService } from '../../../services/account/account.service';
 import { DataService } from '../../../services/data/data.service';
 import { LazyLoadingService } from '../../../services/lazy-loading/lazy-loading.service';
 import { NichesService } from '../../../services/niches/niches.service';
-import { SpinnerService } from '../../../services/spinner/spinner.service';
 import { AccountMenuPopupComponent } from '../../account-menu-popup/account-menu-popup.component';
 import { NicheMenuPopupComponent } from '../../niche-menu-popup/niche-menu-popup.component';
 import { SideMenuComponent } from '../../side-menu/side-menu.component';
@@ -41,8 +41,7 @@ export class HeaderComponent {
     private dataService: DataService,
     private router: Router,
     private route: ActivatedRoute,
-    private nicheService: NichesService,
-    private spinnerService: SpinnerService
+    private nicheService: NichesService
   ) { }
 
 
@@ -66,37 +65,45 @@ export class HeaderComponent {
 
 
   async onSignUpClick(): Promise<void> {
-    this.spinnerService.show = true;
-    const { SignUpFormComponent } = await import('../../sign-up-form/sign-up-form.component');
-    const { SignUpFormModule } = await import('../../sign-up-form/sign-up-form.module');
+    this.lazyLoadingService.load(async () => {
+      const { SignUpFormComponent } = await import('../../sign-up-form/sign-up-form.component');
+      const { SignUpFormModule } = await import('../../sign-up-form/sign-up-form.module');
 
-    this.lazyLoadingService.getComponentAsync(SignUpFormComponent, SignUpFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+      return {
+        component: SignUpFormComponent,
+        module: SignUpFormModule
+      }
+    }, SpinnerAction.StartEnd);
   }
 
 
 
   async onLoginClick(): Promise<void> {
-    this.spinnerService.show = true;
-    const { LogInFormComponent } = await import('../../log-in-form/log-in-form.component');
-    const { LogInFormModule } = await import('../../log-in-form/log-in-form.module');
+    this.lazyLoadingService.load(async () => {
+      const { LogInFormComponent } = await import('../../log-in-form/log-in-form.component');
+      const { LogInFormModule } = await import('../../log-in-form/log-in-form.module');
 
-    this.lazyLoadingService.getComponentAsync(LogInFormComponent, LogInFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+      return {
+        component: LogInFormComponent,
+        module: LogInFormModule
+      }
+    }, SpinnerAction.StartEnd);
+
   }
 
 
 
   async onProfilePicClick(): Promise<void> {
     if (this.accountMenuPopupContainer.length == 0) {
-      const { AccountMenuPopupComponent } = await import('../../account-menu-popup/account-menu-popup.component');
-      const { AccountMenuPopupModule } = await import('../../account-menu-popup/account-menu-popup.module');
+      this.lazyLoadingService.load(async () => {
+        const { AccountMenuPopupComponent } = await import('../../account-menu-popup/account-menu-popup.component');
+        const { AccountMenuPopupModule } = await import('../../account-menu-popup/account-menu-popup.module');
 
-      this.lazyLoadingService.getComponentAsync(AccountMenuPopupComponent, AccountMenuPopupModule, this.accountMenuPopupContainer)
+        return {
+          component: AccountMenuPopupComponent,
+          module: AccountMenuPopupModule
+        }
+      }, SpinnerAction.None, this.accountMenuPopupContainer)
         .then((accountMenuPopup: AccountMenuPopupComponent) => {
           this.accountMenuPopupComponent = accountMenuPopup;
         });
@@ -114,10 +121,15 @@ export class HeaderComponent {
 
   async onNichesButtonClick() {
     if (this.nicheMenuPopupContainer.length == 0) {
-      const { NicheMenuPopupComponent } = await import('../../niche-menu-popup/niche-menu-popup.component');
-      const { NicheMenuPopupModule } = await import('../../niche-menu-popup/niche-menu-popup.module');
+      this.lazyLoadingService.load(async () => {
+        const { NicheMenuPopupComponent } = await import('../../niche-menu-popup/niche-menu-popup.component');
+        const { NicheMenuPopupModule } = await import('../../niche-menu-popup/niche-menu-popup.module');
 
-      this.lazyLoadingService.getComponentAsync(NicheMenuPopupComponent, NicheMenuPopupModule, this.nicheMenuPopupContainer)
+        return {
+          component: NicheMenuPopupComponent,
+          module: NicheMenuPopupModule
+        }
+      }, SpinnerAction.None, this.nicheMenuPopupContainer)
         .then((nicheMenuPopup: NicheMenuPopupComponent) => {
           this.nicheMenuPopup = nicheMenuPopup;
           this.nicheMenuPopup.selectedNicheName = this.selectedNiche ? this.selectedNiche.name : 'All Niches';
@@ -141,13 +153,19 @@ export class HeaderComponent {
 
   async onHamburgerButtonClick() {
     if (this.sideMenuContainer.length == 0) {
-      const { SideMenuComponent } = await import('../../side-menu/side-menu.component');
-      const { SideMenuModule } = await import('../../side-menu/side-menu.module');
+      this.lazyLoadingService.load(async () => {
+        const { SideMenuComponent } = await import('../../side-menu/side-menu.component');
+        const { SideMenuModule } = await import('../../side-menu/side-menu.module');
 
-      this.lazyLoadingService.getComponentAsync(SideMenuComponent, SideMenuModule, this.sideMenuContainer)
+        return {
+          component: SideMenuComponent,
+          module: SideMenuModule
+        }
+      }, SpinnerAction.StartEnd)
         .then((sideMenu: SideMenuComponent) => {
           this.sideMenu = sideMenu;
         });
+
     } else {
       this.sideMenu.close();
     }

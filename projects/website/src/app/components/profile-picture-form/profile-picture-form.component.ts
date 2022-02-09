@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CircleOverlay } from '../../classes/circle-overlay';
+import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
@@ -365,7 +366,6 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
 
   onSubmit() {
-    this.spinnerService.show = true;
     const formData = new FormData()
     formData.append('newImage', this.imageFile);
     formData.append('currentImage', !this.accountService.customer?.hasProfileImage ? '' : this.accountService.customer?.profileImage.url.substring(this.accountService.customer?.profileImage.url.indexOf("/") + 1));
@@ -374,7 +374,10 @@ export class ProfilePictureFormComponent extends LazyLoad {
     formData.append('percentTop', this.circle.percentTop.toString());
     formData.append('percentBottom', this.circle.percentBottom.toString());
 
-    this.dataService.post('api/Account/ChangeProfilePicture', formData, { authorization: true }).subscribe(() => {
+    this.dataService.post('api/Account/ChangeProfilePicture', formData, {
+      authorization: true,
+      spinnerAction: SpinnerAction.Start
+    }).subscribe(() => {
       this.accountService.setCustomer();
       this.OpenSuccessPrompt();
     })
@@ -383,14 +386,19 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
   async OpenSuccessPrompt() {
     this.fade();
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+    
+    this.lazyLoadingService.load(async () => {
+      const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+      const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+      return {
+        component: SuccessPromptComponent,
+        module: SuccessPromptModule
+      }
+    }, SpinnerAction.End)
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Successful Profile Picture Change';
         successPrompt.message = 'Your profile picture has been successfully changed.';
-        this.spinnerService.show = false;
       });
   }
 

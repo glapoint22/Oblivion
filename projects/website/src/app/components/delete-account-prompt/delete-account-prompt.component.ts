@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
+import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
-import { DeleteAccountFormComponent } from '../../components/delete-account-form/delete-account-form.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'delete-account-prompt',
@@ -14,7 +13,6 @@ export class DeleteAccountPromptComponent extends LazyLoad {
   constructor
     (
       private dataService: DataService,
-      private spinnerService: SpinnerService,
       lazyLoadingService: LazyLoadingService
     ) { super(lazyLoadingService) }
 
@@ -26,8 +24,10 @@ export class DeleteAccountPromptComponent extends LazyLoad {
 
 
   onDeleteClick() {
-    this.spinnerService.show = true;
-    this.dataService.post('api/Account/CreateDeleteAccountOTP', {}, { authorization: true })
+    this.dataService.post('api/Account/CreateDeleteAccountOTP', {}, {
+      authorization: true,
+      spinnerAction: SpinnerAction.Start
+    })
       .subscribe(() => {
         this.openDeleteAccountForm();
       });
@@ -36,12 +36,15 @@ export class DeleteAccountPromptComponent extends LazyLoad {
 
   async openDeleteAccountForm() {
     this.fade();
-    const { DeleteAccountFormComponent } = await import('../../components/delete-account-form/delete-account-form.component');
-    const { DeleteAccountFormModule } = await import('../../components/delete-account-form/delete-account-form.module')
 
-    this.lazyLoadingService.getComponentAsync(DeleteAccountFormComponent, DeleteAccountFormModule, this.lazyLoadingService.container)
-      .then(() => {
-        this.spinnerService.show = false;
-      });
+    this.lazyLoadingService.load(async () => {
+      const { DeleteAccountFormComponent } = await import('../../components/delete-account-form/delete-account-form.component');
+      const { DeleteAccountFormModule } = await import('../../components/delete-account-form/delete-account-form.module');
+
+      return {
+        component: DeleteAccountFormComponent,
+        module: DeleteAccountFormModule
+      }
+    }, SpinnerAction.End);
   }
 }

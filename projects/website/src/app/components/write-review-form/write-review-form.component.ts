@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -19,8 +19,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
   constructor
     (
       dataService: DataService,
-      lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService
+      lazyLoadingService: LazyLoadingService
     ) { super(dataService, lazyLoadingService) }
 
 
@@ -51,7 +50,6 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.spinnerService.show = true;
       let review: string = this.form.get('review')?.value;
 
       // Replace every new line with a <BR> tag
@@ -62,7 +60,10 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
         rating: this.form.get('rating')?.value,
         title: this.form.get('title')?.value,
         text: review
-      }, { authorization: true })
+      }, {
+        authorization: true,
+        spinnerAction: SpinnerAction.Start
+      })
         .subscribe(() => {
           this.openSuccessPrompt();
         });
@@ -72,14 +73,19 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
   async openSuccessPrompt() {
     this.fade();
-    const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-    const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
 
-    this.lazyLoadingService.getComponentAsync(SuccessPromptComponent, SuccessPromptModule, this.lazyLoadingService.container)
+    this.lazyLoadingService.load(async () => {
+      const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
+      const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
+
+      return {
+        component: SuccessPromptComponent,
+        module: SuccessPromptModule
+      }
+    }, SpinnerAction.End)
       .then((successPrompt: SuccessPromptComponent) => {
         successPrompt.header = 'Write a Review';
         successPrompt.message = 'Thank you for your feedback.';
-        this.spinnerService.show = false;
       });
   }
 

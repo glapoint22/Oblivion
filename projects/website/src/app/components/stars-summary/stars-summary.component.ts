@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input, ViewChild} from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { SpinnerAction } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { ReviewSummaryPopupComponent } from '../../components/review-summary-popup/review-summary-popup.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -9,12 +10,12 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   styleUrls: ['./stars-summary.component.scss']
 })
 export class StarsSummaryComponent {
-  constructor(private lazyLoadingService: LazyLoadingService) { }
+  @Input() product!: Product;
+  @ViewChild('starsSummaryContainer') starsSummaryContainer!: ElementRef<HTMLElement>;
   private timeout!: number;
   private popupOpen!: boolean;
 
-  @Input() product!: Product;
-  @ViewChild('starsSummaryContainer') starsSummaryContainer!: ElementRef<HTMLElement>;
+  constructor(private lazyLoadingService: LazyLoadingService) { }
 
 
   onMouseenter() {
@@ -43,10 +44,17 @@ export class StarsSummaryComponent {
     const leftOffest = offScreenLeftDistance < 0 ? 0 : offScreenLeftDistance; // How far the popup needs to be moved to get it completely on the left side of the screen
     const rightOffest = offScreenRightDistance < 0 ? 0 : offScreenRightDistance + 20; // How far the popup needs to be moved to get it completely on the right side of the screen
     const bottomOffest = offScreenBottomDistance < 0 ? 0 : 279; // How far the popup needs to be moved to get it completely on the bottom of the screen (above stars or below stars)
-    const { ReviewSummaryPopupComponent } = await import('../../components/review-summary-popup/review-summary-popup.component');
-    const { ReviewSummaryPopupModule } = await import('../../components/review-summary-popup/review-summary-popup.module');
 
-    this.lazyLoadingService.getComponentAsync(ReviewSummaryPopupComponent, ReviewSummaryPopupModule, this.lazyLoadingService.container)
+    // Load the review summary popup
+    this.lazyLoadingService.load(async () => {
+      const { ReviewSummaryPopupComponent } = await import('../../components/review-summary-popup/review-summary-popup.component');
+      const { ReviewSummaryPopupModule } = await import('../../components/review-summary-popup/review-summary-popup.module');
+
+      return {
+        component: ReviewSummaryPopupComponent,
+        module: ReviewSummaryPopupModule
+      }
+    }, SpinnerAction.None)
       .then((reviewSummaryPopup: ReviewSummaryPopupComponent) => {
         this.popupOpen = true;
         reviewSummaryPopup.product = this.product;
@@ -55,7 +63,7 @@ export class StarsSummaryComponent {
         reviewSummaryPopup.left = (stars.left + window.scrollX) - 117 + leftOffest - rightOffest;
         reviewSummaryPopup.starsOverlayLeft = stars.left - reviewSummaryPopup.left + window.scrollX;
         reviewSummaryPopup.arrowLeft = (reviewSummaryPopup.starsOverlayLeft + 27) < 3 ? 3 : (reviewSummaryPopup.starsOverlayLeft + 27) > 283 ? 283 : (reviewSummaryPopup.starsOverlayLeft + 27);
-        reviewSummaryPopup.onClose.subscribe(()=> {
+        reviewSummaryPopup.onClose.subscribe(() => {
           this.popupOpen = false;
         })
       });
