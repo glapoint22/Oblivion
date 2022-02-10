@@ -1,4 +1,5 @@
-<div id="menuContainer" class="translate-start side-menu-container" [ngClass]="{'translate-end': show}" (transitionend)="onHide()">
+<div style="z-index: 998;" id="menuContainer" class="translate-start side-menu-container"
+    [ngClass]="{'translate-end': show}" (transitionend)="onHide()">
 
     <div class="side-menu-bar">
         <div class="side-menu-x" (click)="close()">X</div>
@@ -9,7 +10,8 @@
         <!-- Content -->
         <div class="side-menu-content">
 
-            <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick.emit($event)" (onCreateNewListClick)="onCreateNewListClick.emit()"></lists-menu>
+            <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick.emit($event)"
+                (onCreateNewListClick)="onCreateNewListClick.emit()"></lists-menu>
 
         </div>
     </div>

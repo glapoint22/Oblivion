@@ -56,11 +56,12 @@ export class AccountService {
   public logOut() {
     // Stop the refresh timer
     window.clearInterval(this.interval);
-    this.customer = undefined;
 
     // If not in the middle of refreshing, log out
     if (!this.refreshing) {
-      this.dataService.get('api/Account/LogOut').subscribe();
+      this.dataService.get('api/Account/LogOut').subscribe(()=> {
+        this.customer = undefined;
+      });
       this.router.navigate(['/log-in']);
     } else {
 

@@ -16,7 +16,7 @@ export class SuccessPromptComponent extends LazyLoad {
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+    this.setFocus(0);
   }
 
   close() {

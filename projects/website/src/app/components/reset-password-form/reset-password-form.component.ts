@@ -22,6 +22,7 @@ export class ResetPasswordFormComponent extends Validation {
     ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.form = new FormGroup({
       newPassword: new FormControl('', {
         validators: [
@@ -42,6 +43,13 @@ export class ResetPasswordFormComponent extends Validation {
       updateOn: 'submit'
     });
   }
+
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.setFocus(0);
+  }
+
 
   onSubmit() {
     if (this.form.valid) {

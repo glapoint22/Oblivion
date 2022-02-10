@@ -27,7 +27,7 @@ export class ShareListFormComponent extends LazyLoad {
     super.ngAfterViewInit();
 
     if (this.shareListType == ShareListType.Both) {
-      if (this.tabElements) this.tabElements[0].nativeElement.focus();
+      this.setFocus(0);
     } else {
       this.base.nativeElement.focus();
     }

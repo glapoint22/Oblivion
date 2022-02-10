@@ -69,7 +69,7 @@ export class DeleteAccountFormComponent extends Validation implements OnInit {
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+    this.setFocus(0);
   }
 
 

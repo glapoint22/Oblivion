@@ -61,7 +61,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
             // The tabElements array was already populated in ngAfterViewInit but the collaborators probably weren't available
             // at that time, so we're updating tabElements again so that the collaborators can be in the array
             this.tabElements = this.HTMLElements.toArray();
-            this.tabElements[0].nativeElement.focus();
+            this.setFocus(0);
           }, 100);
 
           // If there are no collaborators

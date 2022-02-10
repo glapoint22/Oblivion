@@ -72,6 +72,17 @@
     user-select: none;
 }
 
+.focused-list-item {
+    text-decoration: underline;
+    color: white;
+}
+
+
+.focused-dark-button {
+    outline: 1px solid #808080;
+    outline-offset: 2px;
+}
+
 
 @media(max-width: 360px) {
     .side-menu-container {

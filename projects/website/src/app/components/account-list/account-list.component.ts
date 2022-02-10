@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren } from '@angular/core';
 import { AccountService } from '../../services/account/account.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { AccountService } from '../../services/account/account.service';
 })
 export class AccountListComponent {
   @Output() onClose: EventEmitter<void> = new EventEmitter();
-
+  public focusedListItemId!: string;
   constructor(private accountService: AccountService) { }
 
 

@@ -1,6 +1,5 @@
 <router-outlet></router-outlet>
-<div *ngIf="lazyLoadingService.showBackdrop" class="hide" [ngClass]="{'show': lazyLoadingService.backdropFadeIn}"
-    style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0, 0, 0, 0.8); z-index: 999;"
+<div *ngIf="lazyLoadingService.showBackdrop" class="hide back-drop" [ngClass]="{'show': lazyLoadingService.backdropFadeIn}"
     (transitionend)="!lazyLoadingService.backdropFadeIn ? lazyLoadingService.showBackdrop = false : null"></div>
 
 

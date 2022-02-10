@@ -1,5 +1,5 @@
 <div class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
     <div class="popup-content">
-        <account-list (onClose)="close()"></account-list>
+        <account-list #accountList (onClose)="close()"></account-list>
     </div>
 </div>

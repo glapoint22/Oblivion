@@ -52,6 +52,12 @@ export class ActivateAccountFormComponent extends Validation {
   }
 
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.setFocus(0);
+  }
+
+
   onSubmit() {
     this.emailResent = false;
   }

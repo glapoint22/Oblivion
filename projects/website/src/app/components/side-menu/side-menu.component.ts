@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { Niche } from '../../classes/niche';
@@ -6,6 +7,7 @@ import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { NichesService } from '../../services/niches/niches.service';
+import { AccountListComponent } from '../account-list/account-list.component';
 
 @Component({
   selector: 'side-menu',
@@ -16,13 +18,19 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
   public niches!: Array<Niche>;
   public subNiches: Array<Niche> | undefined;
   public selectedNicheName!: string;
+  public focusedListItemId!: string;
+  public focusedSubListItemId: string = '0';
+  private index: number = -1;
+  private subIndex: number = 0;
+  @ViewChild('accountList') accountList!: AccountListComponent;
 
   constructor
     (
       lazyLoadingService: LazyLoadingService,
       private nicheService: NichesService,
       public accountService: AccountService,
-      private dataService: DataService
+      private dataService: DataService,
+      private router: Router
     ) { super(lazyLoadingService) }
 
 
@@ -32,6 +40,11 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
       .subscribe((niches: Array<Niche>) => {
         this.niches = niches;
       });
+  }
+
+
+  ngAfterViewInit(): void {
+    this.open();
   }
 
 
@@ -66,8 +79,10 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
 
 
 
-  onNicheClick(niche: Niche) {
+  onNicheClick(niche: Niche, nicheFocusId: string) {
     this.selectedNicheName = niche.name;
+    this.focusedListItemId = nicheFocusId;
+    this.index = parseInt(nicheFocusId);
 
     this.dataService.get<Array<Niche>>('api/Niches', [{ key: 'id', value: niche.id }])
       .subscribe((niches: Array<Niche>) => {
@@ -75,4 +90,124 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
       });
   }
 
+
+  onMainMenuButtonClick() {
+    this.subNiches = undefined;
+    this.subIndex = 0;
+    this.focusedSubListItemId = '0';
+  }
+
+
+  onSubNicheClick(niche: Niche) {
+    this.close();
+    this.router.navigate(['/browse'], {
+      queryParams: { nicheName: niche.urlName, nicheId: niche.urlId }
+    });
+  }
+
+
+  onTab(direction: number): void {
+    // Niches
+    if (!this.subNiches) {
+      this.index = this.index + (1 * direction);
+      if (this.index > (this.niches.length - 1) + 5) this.index = 0;
+      if (this.index < 0) this.index = (this.niches.length - 1) + 5;
+      this.focusedListItemId = this.index.toString();
+      this.accountList.focusedListItemId = this.focusedListItemId;
+
+      // Sub niches
+    } else {
+      this.subIndex = this.subIndex + (1 * direction);
+      if (this.subIndex > (this.subNiches.length - 1) + 1) this.subIndex = 0;
+      if (this.subIndex < 0) this.subIndex = (this.subNiches.length - 1) + 1;
+      this.focusedSubListItemId = this.subIndex.toString();
+    }
+  }
+
+
+  onArrowDown(e: KeyboardEvent): void {
+    e.preventDefault();
+
+    // Niches
+    if (!this.subNiches) {
+      this.index = this.index + 1;
+      if (this.index > (this.niches.length - 1) + 5) this.index = (this.niches.length - 1) + 5;
+      this.focusedListItemId = this.index.toString();
+      this.accountList.focusedListItemId = this.focusedListItemId;
+
+      // Sub niches
+    } else {
+      this.subIndex = this.subIndex + 1;
+      if (this.subIndex > (this.subNiches.length - 1) + 1) this.subIndex = (this.subNiches.length - 1) + 1;
+      this.focusedSubListItemId = this.subIndex.toString();
+    }
+  }
+
+
+  onArrowUp(e: KeyboardEvent): void {
+    e.preventDefault();
+
+    // Niches
+    if (!this.subNiches) {
+      this.index = this.index - 1;
+      if (this.index < 0) this.index = 0;
+      this.focusedListItemId = this.index.toString();
+      this.accountList.focusedListItemId = this.focusedListItemId;
+
+      // Sub niches
+    } else {
+      this.subIndex = this.subIndex - 1;
+      if (this.subIndex < 0) this.subIndex = 0;
+      this.focusedSubListItemId = this.subIndex.toString();
+    }
+  }
+
+
+  onEnter(e: KeyboardEvent): void {
+
+    if (!this.subNiches) {
+
+
+      if (this.index <= 5) {
+
+        switch (this.index) {
+          case 0:
+            this.router.navigate(['account']);
+            break;
+
+          case 1:
+            this.router.navigate(['account/orders']);
+            break;
+
+          case 2:
+            this.router.navigate(['account/lists']);
+            break;
+
+          case 3:
+            this.router.navigate(['account/profile']);
+            break;
+
+          case 4:
+            this.router.navigate(['account/email-preferences']);
+            break;
+
+          case 5:
+            this.accountList.onLogOutClick();
+            break;
+        }
+
+
+      } else {
+        this.onNicheClick(this.niches[this.index - 5], this.focusedListItemId);
+      }
+
+    } else {
+
+      if (this.subIndex == 0) {
+        this.onMainMenuButtonClick();
+      } else {
+        this.onSubNicheClick(this.subNiches[this.subIndex - 1]);
+      }
+    }
+  }
 }

@@ -49,7 +49,7 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
               // at that time, so we're updating tabElements again so that the lists can be in the array
               this.tabElements = this.HTMLElements.toArray();
               // Set focus to the first list
-              this.tabElements[0].nativeElement.focus();
+              this.setFocus(0);
             }, 100);
           }
           // If there are NO lists

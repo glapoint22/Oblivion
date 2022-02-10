@@ -42,6 +42,12 @@ export class ResetPasswordOneTimePasswordFormComponent extends Validation implem
   }
 
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.setFocus(0);
+  }
+
+
   onSubmit() {
     this.emailResent = false;
   }

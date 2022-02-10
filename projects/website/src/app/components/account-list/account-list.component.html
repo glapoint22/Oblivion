@@ -1,5 +1,6 @@
 <!-- Account -->
-<a class="list-item-container" (click)="close()" routerLink="account" (mousedown)="$event.preventDefault()">
+<a #item0 id="0" class="list-item-container" [ngClass]="{'focused-list-item': item0.id == focusedListItemId}"
+    (click)="close()" routerLink="account" (mousedown)="$event.preventDefault()">
     <div class="list-item-icon-container">
         <div class="account-icon icon"></div>
     </div>
@@ -10,7 +11,8 @@
 
 
 <!-- Orders -->
-<a class="list-item-container" (click)="close()" routerLink="account/orders" (mousedown)="$event.preventDefault()">
+<a #item1 id="1" class="list-item-container" [ngClass]="{'focused-list-item': item1.id == focusedListItemId}"
+    (click)="close()" routerLink="account/orders" (mousedown)="$event.preventDefault()">
     <div class="list-item-icon-container">
         <div class="orders-icon icon"></div>
     </div>
@@ -21,7 +23,8 @@
 
 
 <!-- Lists -->
-<a class="list-item-container" (click)="close()" routerLink="account/lists" (mousedown)="$event.preventDefault()">
+<a #item2 id="2" class="list-item-container" [ngClass]="{'focused-list-item': item2.id == focusedListItemId}"
+    (click)="close()" routerLink="account/lists" (mousedown)="$event.preventDefault()">
     <div class="list-item-icon-container">
         <div class="lists-icon icon"></div>
     </div>
@@ -33,7 +36,8 @@
 
 
 <!-- Profile -->
-<a class="list-item-container" (click)="close()" routerLink="account/profile" (mousedown)="$event.preventDefault()">
+<a #item3 id="3" class="list-item-container" [ngClass]="{'focused-list-item': item3.id == focusedListItemId}"
+    (click)="close()" routerLink="account/profile" (mousedown)="$event.preventDefault()">
     <div class="list-item-icon-container">
         <div class="profile-icon icon"></div>
     </div>
@@ -45,8 +49,8 @@
 
 
 <!-- Email Preferences -->
-<a class="list-item-container" (click)="close()" routerLink="account/email-preferences"
-    (mousedown)="$event.preventDefault()">
+<a #item4 id="4" class="list-item-container" [ngClass]="{'focused-list-item': item4.id == focusedListItemId}"
+    (click)="close()" routerLink="account/email-preferences" (mousedown)="$event.preventDefault()">
     <div class="list-item-icon-container">
         <div class="email-icon icon"></div>
     </div>
@@ -57,7 +61,8 @@
 
 
 <!-- Log Out -->
-<div class="list-item-container">
+<div #item5 id="5" class="list-item-container"
+    [ngClass]="{'focused-list-item': item5.id == focusedListItemId}">
     <div class="list-item-icon-container">
         <div class="log-out-icon icon"></div>
     </div>

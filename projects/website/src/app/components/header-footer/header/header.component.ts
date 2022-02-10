@@ -108,9 +108,6 @@ export class HeaderComponent {
           this.accountMenuPopupComponent = accountMenuPopup;
         });
     }
-    else {
-      this.accountMenuPopupComponent.close();
-    }
   }
 
 
@@ -161,14 +158,11 @@ export class HeaderComponent {
           component: SideMenuComponent,
           module: SideMenuModule
         }
-      }, SpinnerAction.StartEnd)
+      }, SpinnerAction.StartEnd, this.sideMenuContainer)
         .then((sideMenu: SideMenuComponent) => {
           this.sideMenu = sideMenu;
         });
-
-    } else {
-      this.sideMenu.close();
-    }
+    } 
   }
 
 
@@ -303,6 +297,4 @@ export class HeaderComponent {
       }
     }
   }
-
-
 }

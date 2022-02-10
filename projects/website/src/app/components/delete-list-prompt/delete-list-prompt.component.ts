@@ -22,7 +22,7 @@ export class DeleteListPromptComponent extends LazyLoad {
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+    this.setFocus(0);
   }
 
 

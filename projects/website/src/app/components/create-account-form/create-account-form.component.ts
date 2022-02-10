@@ -81,7 +81,7 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
-    if (this.tabElements) this.tabElements[0].nativeElement.focus();
+    this.setFocus(0);
   }
 
 

@@ -165,25 +165,20 @@ export class LogInFormComponent extends Validation implements OnInit {
 
   onEnter(e: KeyboardEvent): void {
     if (this.tabElements) {
-      if (this.tabElements && this.tabElements[0].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithGoogle();
-      if (this.tabElements && this.tabElements[1].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithFacebook();
-      if (this.tabElements && this.tabElements[2].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithMicrosoft();
-      if (this.tabElements && this.tabElements[3].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithAmazon();
+      if (this.tabElements[0].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithGoogle();
+      if (this.tabElements[1].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithFacebook();
+      if (this.tabElements[2].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithMicrosoft();
+      if (this.tabElements[3].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithAmazon();
+
+      if ((this.tabElements[4].nativeElement as HTMLInputElement).value.length > 0 &&
+        this.tabElements[4].nativeElement != document.activeElement &&
+        (this.tabElements[5].nativeElement as HTMLInputElement).value.length > 0) {
+        this.tabElements[5].nativeElement != document.activeElement &&
+          this.tabElements[8].nativeElement.focus();
+      }
+
       if (this.tabElements[7].nativeElement == document.activeElement) this.onForgotPasswordLinkClick()
       if (this.tabElements[9].nativeElement == document.activeElement) this.onSignUpLinkClick();
     }
   }
-
-
-  // checkEmailPasswordAsync(): AsyncValidatorFn {
-  //   return (): Observable<ValidationErrors> => {
-  //     return this.dataService.post('api/Account/ValidateEmailPassword',
-  //       {
-  //         email: this.form.get('email')?.value,
-  //         password: this.form.get('password')?.value
-  //       }, {
-  //       showSpinner: true
-  //     });
-  //   };
-  // }
 }

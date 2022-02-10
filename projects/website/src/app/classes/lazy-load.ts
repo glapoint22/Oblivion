@@ -32,7 +32,7 @@ export class LazyLoad implements AfterViewInit {
             window.setTimeout(() => {
                 this.lazyLoadingService.backdropFadeIn = true;
             }, 50)
-            
+
         }
     }
 
@@ -44,6 +44,20 @@ export class LazyLoad implements AfterViewInit {
 
         if (this.HTMLElements.length > 0) {
             this.tabElements = this.HTMLElements.toArray();
+        }
+    }
+
+
+    setFocus(index: number) {
+        if (this.tabElements) {
+            // If the tab element is an input text
+            if (this.tabElements[index].nativeElement instanceof HTMLInputElement) {
+                // Select the input text
+                (this.tabElements[index].nativeElement as HTMLInputElement).select();
+            } else {
+                // Set focus to that tab element
+                this.tabElements[index].nativeElement.focus();
+            }
         }
     }
 
@@ -118,8 +132,15 @@ export class LazyLoad implements AfterViewInit {
                         if (this.tabIndex > this.tabElements.length - 1) this.tabIndex = 0;
                         if (this.tabIndex < 0) this.tabIndex = this.tabElements.length - 1;
                     }
-                    // Set focus to that tab element
-                    this.tabElements[this.tabIndex].nativeElement.focus();
+
+                    // If the tab element is an input text
+                    if (this.tabElements[this.tabIndex].nativeElement instanceof HTMLInputElement) {
+                        // Select the input text
+                        (this.tabElements[this.tabIndex].nativeElement as HTMLInputElement).select();
+                    } else {
+                        // Set focus to that tab element
+                        this.tabElements[this.tabIndex].nativeElement.focus();
+                    }
                     break;
                 }
             }
@@ -134,7 +155,15 @@ export class LazyLoad implements AfterViewInit {
 
                     // Otherwise, just set focus to the first tab element
                 } else {
-                    this.tabElements[0].nativeElement.focus();
+
+                    // If the tab element is an input text
+                    if (this.tabElements[0].nativeElement instanceof HTMLInputElement) {
+                        // Select the input text
+                        (this.tabElements[0].nativeElement as HTMLInputElement).select();
+                    } else {
+                        // Set focus to that tab element
+                        this.tabElements[0].nativeElement.focus();
+                    }
                 }
             }
         }
