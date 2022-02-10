@@ -1,3 +1,5 @@
+@import '../../../scss/variables';
+
 .side-menu-container {
     max-width: 280px;
 }
@@ -13,7 +15,7 @@
 }
 
 .menu-section-name {
-    color: #dadada;
+    color: $gold;
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 7px;
@@ -35,7 +37,9 @@
     max-width: 188px;
 }
 
-
+.arrow-left {
+    color: $gold;
+}
 
 
 

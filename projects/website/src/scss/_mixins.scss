@@ -36,7 +36,7 @@
 
 
 @mixin gold-button ($width, $height, $radius) {
-    $gold-gradient-map: (light: #ffdc7f, dark: #c08d02);
+    
     color: black;
 
     @include button($width, $height, $radius);
@@ -61,6 +61,7 @@
     &:focus-visible {
         outline: 1px solid #fff0c5;
         outline-offset: 2px;
+        background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
     }
 }
 
