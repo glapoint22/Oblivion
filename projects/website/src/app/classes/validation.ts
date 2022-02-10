@@ -3,6 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormGroup, ValidationErrors, Validat
 import { Observable } from "rxjs";
 import { DataService } from "../services/data/data.service";
 import { LazyLoadingService } from "../services/lazy-loading/lazy-loading.service";
+import { SpinnerAction } from "./enums";
 import { LazyLoad } from "./lazy-load";
 
 @Directive()
@@ -87,7 +88,8 @@ export class Validation extends LazyLoad {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       return this.dataService.get(apiUrl,
         [{ key: 'email', value: control.value }], {
-        showSpinner: true
+        spinnerAction: SpinnerAction.Start,
+        endSpinnerWhen: (result: any) => result && result.duplicateEmail
       });
     };
   }
@@ -97,8 +99,9 @@ export class Validation extends LazyLoad {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       return this.dataService.get(apiUrl,
         [{ key: 'password', value: control.value }], {
-        showSpinner: true,
-        authorization: true
+        spinnerAction: SpinnerAction.Start,
+        authorization: true,
+        endSpinnerWhen: (result: any) => result && result.incorrectPassword
       });
     };
   }
@@ -108,7 +111,8 @@ export class Validation extends LazyLoad {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       return this.dataService.get(apiUrl,
         [{ key: 'oneTimePassword', value: control.value }], {
-        showSpinner: true,
+        spinnerAction: SpinnerAction.Start,
+        endSpinnerWhen: (result: any) => result && result.incorrectOneTimePassword,
         authorization: true
       });
     };
@@ -119,7 +123,8 @@ export class Validation extends LazyLoad {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       return this.dataService.get(apiUrl,
         [{ key: 'email', value: control.value }], {
-        showSpinner: true
+        spinnerAction: SpinnerAction.Start,
+        endSpinnerWhen: (result: any) => result && result.noEmail
       });
     };
   }

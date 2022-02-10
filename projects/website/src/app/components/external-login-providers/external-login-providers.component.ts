@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthService } from 'angularx-social-login';
+import { SpinnerAction } from '../../classes/enums';
 import { SocialUser } from '../../classes/social-user';
 import { DataService } from '../../services/data/data.service';
 
@@ -53,7 +54,7 @@ export class ExternalLoginProvidersComponent {
 
 
   signIn(socialUser: SocialUser) {
-    this.dataService.post('api/Account/ExternalLogin', socialUser, { showSpinner: true })
+    this.dataService.post('api/Account/ExternalLogin', socialUser, { spinnerAction: SpinnerAction.StartEnd })
       .subscribe(() => this.onLogIn.emit());
   }
 }

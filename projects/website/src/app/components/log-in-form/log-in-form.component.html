@@ -23,6 +23,10 @@
             <!-- Content -->
             <div class="content">
 
+                <div *ngIf="accountService.onRedirect.observed" class="log-in-first">
+                    You must first log in before you can perform this action. You will be redirected after completing the login process.
+                </div>
+
                 <external-login-providers #externalLoginProvidersComponent [signInType]="'Log in'"
                     (onLogIn)="setLogIn()" (onGetExternalLoginProviders)="externalLoginProviders = $event">
                 </external-login-providers>
@@ -52,7 +56,7 @@
                     <div class="label">Password:</div>
                     <div class="password-input-container">
                         <input #tabElement type="password" formControlName="password"
-                            [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}"
+                        [ngClass]="{'error-border': _form.submitted && (form.controls.password.errors || notMatchError)}"
                             style="margin-bottom: 8px;">
 
 
@@ -107,9 +111,7 @@
             </div>
 
 
-            <div *ngIf="accountService.onRedirect.observed" class="log-in-first">
-                Please log in first.
-            </div>
+            
         </div>
 
 

@@ -33,20 +33,20 @@ export class DataService {
   // ------------------------------------------------------------Get-----------------------------------------------------
   get<T>(url: string, parameters?: Array<KeyValue<any, any>>, options?: {
     authorization?: boolean,
-    spinnerAction?: SpinnerAction
-
-
-    , showSpinner?: boolean
+    spinnerAction?: SpinnerAction,
+    endSpinnerWhen?: (result: any) => boolean
   }): Observable<T> {
+
     // start spinner
     if (options && (options.spinnerAction == SpinnerAction.Start || options.spinnerAction == SpinnerAction.StartEnd)) this.spinnerService.show = true;
 
 
     return this.http.get<T>(url, { params: this.setParams(parameters), headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
       .pipe(
-        tap(() => {
+        tap((result) => {
           // End spinner
-          if (options && (options.spinnerAction == SpinnerAction.End || options.spinnerAction == SpinnerAction.StartEnd)) this.spinnerService.show = false;
+          if (options && (options.spinnerAction == SpinnerAction.End || options.spinnerAction == SpinnerAction.StartEnd ||
+            (options.endSpinnerWhen && options.endSpinnerWhen(result) == true))) this.spinnerService.show = false;
 
         }),
         retryWhen(this.retryRequest()),
@@ -64,9 +64,8 @@ export class DataService {
   // ------------------------------------------------------------Post-----------------------------------------------------
   post<T>(url: string, body: any, options?: {
     authorization?: boolean,
-    spinnerAction?: SpinnerAction
-
-    , showSpinner?: boolean
+    spinnerAction?: SpinnerAction,
+    endSpinnerWhen?: (result: any) => boolean
   }): Observable<T> {
 
     // start spinner
@@ -75,10 +74,11 @@ export class DataService {
 
     return this.http.post<T>(url, body, { headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
       .pipe(
-        tap(() => {
+        tap((result) => {
 
           // End spinner
-          if (options && (options.spinnerAction == SpinnerAction.End || options.spinnerAction == SpinnerAction.StartEnd)) this.spinnerService.show = false;
+          if (options && (options.spinnerAction == SpinnerAction.End || options.spinnerAction == SpinnerAction.StartEnd ||
+            (options.endSpinnerWhen && options.endSpinnerWhen(result) == true))) this.spinnerService.show = false;
         }),
         retryWhen(this.retryRequest()),
         catchError(this.handleError())
@@ -93,10 +93,8 @@ export class DataService {
   // ------------------------------------------------------------Put-----------------------------------------------------
   put<T>(url: string, body: any, options?: {
     authorization?: boolean,
-    spinnerAction?: SpinnerAction
-
-
-    , showSpinner?: boolean
+    spinnerAction?: SpinnerAction,
+    endSpinnerWhen?: (result: any) => boolean
   }): Observable<T> {
 
     // start spinner
@@ -104,10 +102,11 @@ export class DataService {
 
     return this.http.put<T>(url, body, { headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
       .pipe(
-        tap(() => {
+        tap((result) => {
 
           // End spinner
-          if (options && (options.spinnerAction == SpinnerAction.End || options.spinnerAction == SpinnerAction.StartEnd)) this.spinnerService.show = false;
+          if (options && (options.spinnerAction == SpinnerAction.End || options.spinnerAction == SpinnerAction.StartEnd ||
+            (options.endSpinnerWhen && options.endSpinnerWhen(result) == true))) this.spinnerService.show = false;
         }),
         retryWhen(this.retryRequest()),
         catchError(this.handleError())
@@ -122,9 +121,8 @@ export class DataService {
   // ------------------------------------------------------------Delete-----------------------------------------------------
   delete(url: string, params: any, options?: {
     authorization?: boolean,
-    spinnerAction?: SpinnerAction
-
-    , showSpinner?: boolean
+    spinnerAction?: SpinnerAction,
+    endSpinnerWhen?: (result: any) => boolean
   }) {
 
     // start spinner
@@ -132,10 +130,11 @@ export class DataService {
 
     return this.http.delete(url, { params: params, headers: options && options.authorization ? this.getHeaders() : new HttpHeaders() })
       .pipe(
-        tap(() => {
+        tap((result) => {
 
           // End spinner
-          if (options && (options.spinnerAction == SpinnerAction.End || options.spinnerAction == SpinnerAction.StartEnd)) this.spinnerService.show = false;
+          if (options && (options.spinnerAction == SpinnerAction.End || options.spinnerAction == SpinnerAction.StartEnd ||
+            (options.endSpinnerWhen && options.endSpinnerWhen(result) == true))) this.spinnerService.show = false;
         }),
         retryWhen(this.retryRequest()),
         catchError(this.handleError())

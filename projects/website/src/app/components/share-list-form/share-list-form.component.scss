@@ -46,6 +46,7 @@
     flex-direction: column;
     justify-content:space-evenly;
     align-items: center;
+    position: relative;
 }
 
 .horizontal-share-container {
@@ -56,6 +57,14 @@
     padding-top: 20px;
     padding-bottom: 7px;
     margin: auto;
+    position: relative;
+}
+
+.link-copied {
+    color: $success-color;
+    font-size: 11px;
+    text-align: center;
+    position: absolute;
 }
 
 img{

@@ -57,7 +57,7 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
             NewPassword: this.form.get('newPassword')?.value
           }, {
             authorization: true,
-            showSpinner: true
+            spinnerAction: SpinnerAction.Start
           })
           .subscribe(() => {
             this.fade();

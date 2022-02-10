@@ -21,7 +21,8 @@
             <div class="drop-shadow"></div>
 
             <!-- Content -->
-            <div [style]="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate ? 'overflow-y: visible;' : 'overflow-y: auto;'" class="content">
+            <div [style]="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate ? 'overflow-y: visible;' : 'overflow-y: auto;'"
+                class="content">
 
                 <div *ngIf="shareListType == ShareListType.Both" class="content-container">
 
@@ -31,7 +32,7 @@
 
                         <label class="radio">
                             <div>Click one of the options on the right to share this list.</div>
-                            <input type="radio" name="share-list" checked="checked" (change)="shareRadioButton.focus()">
+                            <input type="radio" name="share-list" checked="checked" (change)="shareRadioButton.focus(); linkCopied = false">
                             <span #tabElement #shareRadioButton class="checkmark" tabindex="-1"></span>
                         </label>
 
@@ -40,8 +41,9 @@
                         <div class="option-heading">Invite Collaborators</div>
 
                         <label class="radio">
-                            <div>Click one of the options on the right to invite people to collaborate on this list.</div>
-                            <input id="collaborate" type="radio" name="share-list" (change)="inviteRadioButton.focus()">
+                            <div>Click one of the options on the right to invite people to collaborate on this list.
+                            </div>
+                            <input id="collaborate" type="radio" name="share-list" (change)="inviteRadioButton.focus(); linkCopied = false">
                             <span #tabElement #inviteRadioButton class="checkmark" tabindex="-1"></span>
                         </label>
 
@@ -50,31 +52,40 @@
                     <div class="vertical-line"></div>
 
                     <div class="vertical-share-container">
-                        <img #tabElement tabindex="-1" src="assets/facebook-share.png" title="Share your list on Facebook"
-                            alt="Share your list on Facebook" (click)="onShareClick('Facebook')">
+                        <img #tabElement tabindex="-1" src="assets/facebook-share.png"
+                            title="Share your list on Facebook" alt="Share your list on Facebook"
+                            (click)="onShareClick('Facebook')">
                         <img #tabElement tabindex="-1" src="assets/twitter-share.png" title="Share your list on Twitter"
                             alt="Share your list on Twitter" (click)="onShareClick('Twitter')">
                         <img #tabElement tabindex="-1" src="assets/link.png" title="Share your list with this link"
                             alt="Share your list with this link" (click)="onShareClick('Link')">
+                        <div *ngIf="linkCopied" class="link-copied" style="bottom: 0;">Link Copied!</div>
                     </div>
                 </div>
 
 
-                <div *ngIf="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate" class="content-container">
+                <div *ngIf="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate"
+                    class="content-container">
 
                     <div style="max-width: 100%;" class="options-container">
 
-                        <div class="option-heading">{{shareListType == ShareListType.Share ? 'Share List With Others' : 'Invite Collaborators'}}</div>
+                        <div class="option-heading">{{shareListType == ShareListType.Share ? 'Share List With Others' :
+                            'Invite Collaborators'}}</div>
 
-                        <div class="option-description">{{shareListType == ShareListType.Share ? 'Click one of the options below to share this list.' : 'Click one of the options below to invite people to collaborate on this list.'}}</div>
+                        <div class="option-description">{{shareListType == ShareListType.Share ? 'Click one of the
+                            options below to share this list.' : 'Click one of the options below to invite people to
+                            collaborate on this list.'}}</div>
 
                         <div class="horizontal-share-container">
-                            <img #tabElement tabindex="-1" src="assets/facebook-share.png" title="Share your list on Facebook"
-                                alt="Share your list on Facebook" (click)="onShareClick('Facebook')">
-                            <img #tabElement tabindex="-1" src="assets/twitter-share.png" title="Share your list on Twitter"
-                                alt="Share your list on Twitter" (click)="onShareClick('Twitter')">
+                            <img #tabElement tabindex="-1" src="assets/facebook-share.png"
+                                title="Share your list on Facebook" alt="Share your list on Facebook"
+                                (click)="onShareClick('Facebook')">
+                            <img #tabElement tabindex="-1" src="assets/twitter-share.png"
+                                title="Share your list on Twitter" alt="Share your list on Twitter"
+                                (click)="onShareClick('Twitter')">
                             <img #tabElement tabindex="-1" src="assets/link.png" title="Share your list with this link"
                                 alt="Share your list with this link" (click)="onShareClick('Link')">
+                            <div *ngIf="linkCopied" class="link-copied" style="bottom: -10px; right: 0;">Link Copied!</div>
                         </div>
                     </div>
                 </div>
