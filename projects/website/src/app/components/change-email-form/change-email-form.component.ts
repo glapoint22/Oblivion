@@ -80,7 +80,8 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
         ],
         {
           authorization: true,
-          spinnerAction: SpinnerAction.Start
+          spinnerAction: SpinnerAction.Start,
+          endSpinnerWhen: (result: any) => result && result.duplicateEmail
         })
         .pipe(switchMap((result: any) => {
           // If it's not a duplicate email, open the email verification form

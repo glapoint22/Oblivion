@@ -6,7 +6,6 @@ import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -23,8 +22,7 @@ export class ActivateAccountFormComponent extends Validation {
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-      private spinnerService: SpinnerService
-    ) { super(dataService, lazyLoadingService) }
+  ) { super(dataService, lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -85,10 +83,10 @@ export class ActivateAccountFormComponent extends Validation {
       return this.dataService.post('api/Account/ValidateActivateAccountOneTimePassword', {
         email: this.email,
         oneTimePassword: this.form.get('otp')?.value,
-      }, { spinnerAction: SpinnerAction.Start })
-        .pipe(tap((error: any) => {
-          if (error) this.spinnerService.show = false;
-        }))
+      }, {
+        spinnerAction: SpinnerAction.Start,
+        endSpinnerWhen: (result: any) => result && result.incorrectOneTimePassword
+      });
     }
   }
 

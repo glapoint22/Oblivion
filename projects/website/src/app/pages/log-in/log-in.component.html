@@ -32,7 +32,7 @@
             <div class="label">Password:</div>
             <div class="password-input-container">
                 <input type="password" formControlName="password"
-                    [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}"
+                    [ngClass]="{'error-border': _form.submitted && (form.controls.password.errors || notMatchError)}"
                     style="margin-bottom: 8px;">
 
 

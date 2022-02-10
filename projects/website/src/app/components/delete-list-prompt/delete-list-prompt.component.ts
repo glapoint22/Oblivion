@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { DataService } from '../../services/data/data.service';
@@ -29,7 +30,7 @@ export class DeleteListPromptComponent extends LazyLoad {
   onDeleteClick() {
     this.dataService.delete('api/Lists', { listId: this.list.id }, {
       authorization: true,
-      showSpinner: true
+      spinnerAction: SpinnerAction.StartEnd
     })
       .subscribe(() => {
         this.onDelete.emit();

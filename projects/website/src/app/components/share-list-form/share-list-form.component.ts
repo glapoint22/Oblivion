@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { ShareListType, SpinnerAction } from '../../classes/enums';
+import { ShareListType } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
-import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
   selector: 'share-list-form',
@@ -15,6 +14,7 @@ export class ShareListFormComponent extends LazyLoad {
   public shareListType!: ShareListType;
   public ShareListType = ShareListType;
   public list!: List;
+  public linkCopied!: boolean;
 
   constructor
     (
@@ -39,6 +39,8 @@ export class ShareListFormComponent extends LazyLoad {
     let text: string;
     const collaborateInput = document.getElementById('collaborate') as HTMLInputElement;
 
+    this.linkCopied = false;
+
     if (this.shareListType == ShareListType.Collaborate || (this.shareListType == ShareListType.Both && collaborateInput.checked)) {
       pathName = '/collaborate-list/' + this.list.collaborateId;
       text = 'You\'re invited to collaborate on list, ' + this.list.name + ':';
@@ -62,29 +64,10 @@ export class ShareListFormComponent extends LazyLoad {
         copyText.value = location.origin + pathName;
         copyText.select();
         navigator.clipboard.writeText(copyText.value);
-        this.OpenSuccessPrompt();
+        this.linkCopied = true;
     }
   }
 
-
-
-  async OpenSuccessPrompt() {
-    this.fade();
-
-    this.lazyLoadingService.load(async () => {
-      const { SuccessPromptComponent } = await import('../success-prompt/success-prompt.component');
-      const { SuccessPromptModule } = await import('../success-prompt/success-prompt.module');
-
-      return {
-        component: SuccessPromptComponent,
-        module: SuccessPromptModule
-      }
-    }, SpinnerAction.StartEnd)
-      .then((successPrompt: SuccessPromptComponent) => {
-        successPrompt.header = 'Link Coppied';
-        successPrompt.message = 'The link has been copied to the clipboard.';
-      });
-  }
 
 
   onSpace(e: KeyboardEvent): void {

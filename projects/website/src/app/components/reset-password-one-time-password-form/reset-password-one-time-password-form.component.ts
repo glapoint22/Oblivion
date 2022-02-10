@@ -5,7 +5,6 @@ import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { ResetPasswordFormComponent } from '../reset-password-form/reset-password-form.component';
 
 @Component({
@@ -20,8 +19,7 @@ export class ResetPasswordOneTimePasswordFormComponent extends Validation implem
   constructor
     (
       dataService: DataService,
-      lazyLoadingService: LazyLoadingService,
-      private spinnerService: SpinnerService
+      lazyLoadingService: LazyLoadingService
     ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
@@ -58,10 +56,10 @@ export class ResetPasswordOneTimePasswordFormComponent extends Validation implem
       return this.dataService.post('api/Account/ValidateResetPasswordOTP', {
         oneTimePassword: this.form.get('otp')?.value,
         email: this.email
-      }, { spinnerAction: SpinnerAction.Start })
-        .pipe(tap((result: any) => {
-          if (result && result.incorrectOneTimePassword) this.spinnerService.show = false;
-        }))
+      }, {
+        spinnerAction: SpinnerAction.Start,
+        endSpinnerWhen: (result: any) => result && result.incorrectOneTimePassword
+      });
     };
   }
 
@@ -89,7 +87,7 @@ export class ResetPasswordOneTimePasswordFormComponent extends Validation implem
       key: 'email',
       value: this.email
     }], {
-      showSpinner: true
+      spinnerAction: SpinnerAction.StartEnd
     }).subscribe(() => {
       this.emailResent = true;
     });

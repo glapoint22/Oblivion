@@ -19,7 +19,7 @@ export class ListIdResolver implements Resolve<any> {
   constructor(private dataService: DataService, private router: Router, private location: Location) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    return this.getLits()
+    return this.getLits(route.paramMap.get('listId') as string)
       .pipe(
         mergeMap((lists: Array<List>) => {
           let selectedList: List | null = null;
@@ -63,12 +63,12 @@ export class ListIdResolver implements Resolve<any> {
 
 
 
-  getLits(): Observable<Array<List>> {
+  getLits(listId: string): Observable<Array<List>> {
     if (this.lists) {
       return of(this.lists);
     }
 
-    return this.dataService.get<Array<List>>('api/Lists/', undefined, { authorization: true })
+    return this.dataService.get<Array<List>>('api/Lists/', [{ key: 'firstList', value: listId }], { authorization: true })
       .pipe(tap((lists: Array<List>) => this.lists = lists));
   }
 }

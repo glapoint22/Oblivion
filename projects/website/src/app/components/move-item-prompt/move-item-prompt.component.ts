@@ -7,7 +7,6 @@ import { Product } from '../../classes/product';
 import { DuplicateItemPromptComponent } from '../../components/duplicate-item-prompt/duplicate-item-prompt.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'move-item-prompt',
@@ -23,8 +22,7 @@ export class MoveItemPromptComponent extends LazyLoad {
   constructor
     (
       lazyLoadingService: LazyLoadingService,
-      private dataService: DataService,
-      private spinnerService: SpinnerService
+      private dataService: DataService
     ) { super(lazyLoadingService) }
 
 
@@ -42,13 +40,13 @@ export class MoveItemPromptComponent extends LazyLoad {
       ToListId: this.toList.value
     }, {
       authorization: true,
-      spinnerAction: SpinnerAction.Start
+      spinnerAction: SpinnerAction.Start,
+      endSpinnerWhen: (isDuplicate: any) => !isDuplicate
     })
       .subscribe((isDuplicate: boolean) => {
         if (!isDuplicate) {
           this.close();
           this.onMove.emit();
-          this.spinnerService.show = false;
         } else {
           this.openDuplicateItemPrompt();
         }
