@@ -1,4 +1,4 @@
-import { BreakpointType } from "./enums";
+import { BreakpointType } from "./widget-enums";
 
 export class Breakpoint {
     public breakpointType!: BreakpointType;

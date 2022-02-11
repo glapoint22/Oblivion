@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { DetailProduct } from '../../classes/detail-product';
 import { SpinnerAction } from '../../classes/enums';
-import { Product } from '../../classes/product';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -13,7 +13,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   styleUrls: ['./reviews-page.component.scss']
 })
 export class ReviewsPageComponent implements OnInit {
-  public product!: Product;
+  public product!: DetailProduct;
 
 
   constructor

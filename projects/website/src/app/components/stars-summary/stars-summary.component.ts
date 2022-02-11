@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { SpinnerAction } from '../../classes/enums';
-import { Product } from '../../classes/product';
+import { SummaryProduct } from '../../classes/summary-product';
 import { ReviewSummaryPopupComponent } from '../../components/review-summary-popup/review-summary-popup.component';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -10,7 +10,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   styleUrls: ['./stars-summary.component.scss']
 })
 export class StarsSummaryComponent {
-  @Input() product!: Product;
+  @Input() product!: SummaryProduct;
   @ViewChild('starsSummaryContainer') starsSummaryContainer!: ElementRef<HTMLElement>;
   private timeout!: number;
   private popupOpen!: boolean;

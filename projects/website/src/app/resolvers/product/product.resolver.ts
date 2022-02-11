@@ -7,21 +7,21 @@ import {
   RouterStateSnapshot
 } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { Product } from '../../classes/product';
+import { DetailProduct } from '../../classes/detail-product';
 import { DataService } from '../../services/data/data.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductResolver implements Resolve<Product> {
+export class ProductResolver implements Resolve<DetailProduct> {
 
   constructor(private dataService: DataService, private router: Router, private location: Location) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Product> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<DetailProduct> {
     const productId = route.paramMap.get('id');
 
-    return this.dataService.get<Product>('api/Products', [{ key: 'id', value: productId }])
-      .pipe(tap((product: Product) => {
+    return this.dataService.get<DetailProduct>('api/Products', [{ key: 'id', value: productId }])
+      .pipe(tap((product: DetailProduct) => {
         if (!product) {
           this.router.navigate(['**'], { skipLocationChange: true });
           this.location.replaceState(state.url);

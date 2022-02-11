@@ -1,4 +1,4 @@
-import { LinkOption } from "./enums";
+import { LinkOption } from "./widget-enums";
 
 export class Link {
     public id!: number;

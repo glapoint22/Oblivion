@@ -1,4 +1,4 @@
-import { ComparisonOperatorType, LogicalOperatorType, QueryType } from "./enums";
+import { QueryType, LogicalOperatorType, ComparisonOperatorType } from "./widget-enums";
 
 export class Query {
     queryType!: QueryType;

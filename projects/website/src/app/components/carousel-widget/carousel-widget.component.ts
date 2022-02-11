@@ -1,8 +1,8 @@
 import { Component, HostListener } from '@angular/core';
 import { CarouselBanner } from '../../classes/carousel-banner';
 import { CarouselWidgetData } from '../../classes/carousel-widget-data';
-import { LinkOption } from '../../classes/enums';
 import { Widget } from '../../classes/widget';
+import { LinkOption } from '../../classes/widget-enums';
 
 @Component({
   selector: 'carousel-widget',

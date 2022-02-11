@@ -1,5 +1,3 @@
-@import '../../../scss/variables';
-
 .price-container {
     padding: 0 13px;
 }
@@ -41,14 +39,14 @@ input[type=text] {
 }
 
 .clear-price{
-    color: $gold;
+    color: #ffba00;
     margin-top: 15px;
     font-size: 13px;
     cursor: pointer;
     text-decoration: underline;
     
     &:hover {
-        color: lighten($gold, 10);
+        color: lighten(#ffba00, 10);
     }
 }
 

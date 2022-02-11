@@ -1,5 +1,3 @@
-@import '../../../scss/variables';
-
 .product-container {
     width: 100%;
     height: 100%;
@@ -43,12 +41,12 @@
     }
     
     div:last-child {
-        color: $gold;
+        color: #ffba00;
     }
 }
 
 .reviews {
-    color: $purple-text;
+    color: #e700c7;
     margin-bottom: 4px;
 }
 

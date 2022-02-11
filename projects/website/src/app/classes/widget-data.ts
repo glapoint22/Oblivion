@@ -1,5 +1,5 @@
 import { Breakpoint } from "./breakpoint";
-import { WidgetType } from "./enums";
+import { WidgetType } from "./widget-enums";
 
 export class WidgetData {
     public widgetType!: WidgetType;

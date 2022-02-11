@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReviewFilter } from '../../classes/enums';
-import { Product } from '../../classes/product';
+import { SummaryProduct } from '../../classes/summary-product';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   styleUrls: ['./review-summary.component.scss']
 })
 export class ReviewSummaryComponent implements OnChanges {
-  @Input() product!: Product;
+  @Input() product!: SummaryProduct;
   public percentages: Array<number> = new Array<number>(5);
   public reviewFilter = ReviewFilter;
 

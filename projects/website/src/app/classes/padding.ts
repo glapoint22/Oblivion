@@ -1,5 +1,5 @@
 import { Breakpoint } from "./breakpoint";
-import { BreakpointType } from "./enums";
+import { BreakpointType } from "./widget-enums";
 
 export class Padding {
     public constrain!: boolean;

@@ -1,6 +1,3 @@
-@import '../../../scss/mixins';
-
-
 .product-slider-container {
     overflow: hidden;
     margin: auto;
@@ -31,7 +28,7 @@
     width: fit-content;
 }
 
-.product-thumbnail-container {
+.product-summary-container {
     width: 234px;
     margin-right: 16px;
 }
@@ -76,7 +73,7 @@
         width: 234px
     }
 
-    .product-thumbnail-container {
+    .product-summary-container {
         margin-right: 20px;
     }
 

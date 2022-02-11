@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
-import { Product } from '../../classes/product';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerAction } from '../../classes/enums';
+import { SummaryProduct } from '../../classes/summary-product';
 
 @Component({
   selector: 'duplicate-item-prompt',
@@ -12,7 +12,7 @@ import { SpinnerAction } from '../../classes/enums';
 })
 export class DuplicateItemPromptComponent extends LazyLoad {
   public list!: string;
-  public product!: Product;
+  public product!: SummaryProduct;
   public fromAddToListForm!: boolean
 
   constructor(lazyLoadingService: LazyLoadingService) { super(lazyLoadingService) }

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Border } from '../../classes/border';
 import { Corners } from '../../classes/corners';
-import { LinkOption } from '../../classes/enums';
 import { Image } from '../../classes/image';
 import { ImageWidgetData } from '../../classes/image-widget-data';
 import { Link } from '../../classes/link';
 import { Shadow } from '../../classes/shadow';
 import { Widget } from '../../classes/widget';
+import { LinkOption } from '../../classes/widget-enums';
 
 @Component({
   selector: 'image-widget',

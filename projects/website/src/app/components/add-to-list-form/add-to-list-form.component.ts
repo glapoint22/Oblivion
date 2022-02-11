@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
-import { Product } from '../../classes/product';
+import { SummaryProduct } from '../../classes/summary-product';
 import { AddToListPromptComponent } from '../../components/add-to-list-prompt/add-to-list-prompt.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -17,7 +17,7 @@ import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate
 })
 export class AddToListFormComponent extends LazyLoad implements OnInit {
   public lists!: Array<KeyValue<string, string>>;
-  public product!: Product;
+  public product!: SummaryProduct;
   public selectedList!: KeyValue<string, string>;
 
   constructor

@@ -1,9 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Caption } from '../../classes/caption';
+import { DetailProduct } from '../../classes/detail-product';
 import { SpinnerAction } from '../../classes/enums';
-import { Product } from '../../classes/product';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -15,8 +14,7 @@ import { SocialMediaService } from '../../services/social-media/social-media.ser
   styleUrls: ['./product.component.scss']
 })
 export class ProductComponent implements OnInit {
-  public product!: Product;
-  public caption: Caption = new Caption();
+  public product!: DetailProduct;
   public clientWidth!: number;
 
   constructor
@@ -30,7 +28,6 @@ export class ProductComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.product = data.product;
-      this.caption.text = this.product.relatedProducts.caption;
       this.socialMediaService.addMetaTags(this.product.name, this.product.description, this.product.media[0].image);
     });
 

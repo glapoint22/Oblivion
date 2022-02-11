@@ -1,5 +1,5 @@
 import { Breakpoint } from "./breakpoint";
-import { BreakpointType, VerticalAlign } from "./enums";
+import { BreakpointType, VerticalAlign } from "./widget-enums";
 
 export class VerticalAlignment {
 

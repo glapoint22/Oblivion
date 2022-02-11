@@ -1,5 +1,4 @@
-@import '../../../scss/mixins';
-@import '../../../scss/variables';
+@use "sass:math";
 
 .filter-container-header {
     height: 38px;
@@ -22,7 +21,9 @@
 
 .arrow-container {
     margin: 0 7px;
-    @include arrow-right (10px, 8px, $gold);
+    border-top: math.div(10px, 2) solid transparent;
+    border-bottom: math.div(10px, 2) solid transparent;
+    border-left: 8px solid #ffba00;
     transition: transform 0.25s ease-in-out;
 }
 

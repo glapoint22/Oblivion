@@ -4,11 +4,11 @@ import { Border } from '../../classes/border';
 import { ButtonWidgetData } from '../../classes/button-widget-data';
 import { Caption } from '../../classes/caption';
 import { Corners } from '../../classes/corners';
-import { LinkOption } from '../../classes/enums';
 import { Link } from '../../classes/link';
 import { Padding } from '../../classes/padding';
 import { Shadow } from '../../classes/shadow';
 import { Widget } from '../../classes/widget';
+import { LinkOption } from '../../classes/widget-enums';
 
 @Component({
   selector: 'button-widget',

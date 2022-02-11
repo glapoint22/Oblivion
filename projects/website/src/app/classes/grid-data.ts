@@ -1,8 +1,8 @@
 import { Filters } from "./filters";
-import { Product } from "./product";
+import { SummaryProduct } from "./summary-product";
 
 export class GridData {
-    public products!: Array<Product>;
+    public products!: Array<SummaryProduct>;
     public totalProducts!: number;
     public filters!: Filters;
     public pageCount!: number;

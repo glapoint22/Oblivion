@@ -7,7 +7,7 @@ import {
 } from '@angular/router';
 import { forkJoin, map, mergeMap, Observable, of, tap } from 'rxjs';
 import { List } from '../../classes/list';
-import { Product } from '../../classes/product';
+import { ListProduct } from '../../classes/list-product';
 import { DataService } from '../../services/data/data.service';
 
 @Injectable({
@@ -41,7 +41,7 @@ export class ListIdResolver implements Resolve<any> {
 
           // Get the products
           const $products = this.dataService
-            .get<Array<Product>>('api/Lists/Products', [
+            .get<Array<ListProduct>>('api/Lists/Products', [
               { key: 'listId', value: selectedList.id },
               { key: 'sort', value: route.queryParamMap.has('sort') ? route.queryParamMap.get('sort') : '' }
             ], { authorization: true });

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Caption } from '../../classes/caption';
-import { Product } from '../../classes/product';
 import { ProductSliderWidgetData } from '../../classes/product-slider-widget-data';
+import { SummaryProduct } from '../../classes/summary-product';
 import { Widget } from '../../classes/widget';
 
 @Component({
@@ -10,12 +10,13 @@ import { Widget } from '../../classes/widget';
   styleUrls: ['./product-slider-widget.component.scss']
 })
 export class ProductSliderWidgetComponent extends Widget implements AfterViewInit {
-  @Input() products!: Array<Product>;
-  @Input() caption!: Caption;
+  @Input() products!: Array<SummaryProduct>;
+  @Input() text!: string;
   @Input() clientWidth!: number;
   @ViewChild('sliderContainer') sliderContainer!: ElementRef<HTMLElement>;
   public productGroups: Array<any> = []
   public changeCount: number = 0;
+  public caption: Caption = new Caption();
 
   ngOnChanges() {
     if (this.sliderContainer) {
@@ -23,6 +24,8 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
       this.setProductGroups();
       this.changeCount++;
     };
+
+    if(!this.caption.text) this.caption.text = this.text;
   }
 
   setWidget(productSliderWidgetData: ProductSliderWidgetData) {

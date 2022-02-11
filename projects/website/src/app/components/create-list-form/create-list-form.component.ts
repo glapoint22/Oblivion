@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SpinnerAction } from '../../classes/enums';
 import { List } from '../../classes/list';
-import { Product } from '../../classes/product';
+import { SummaryProduct } from '../../classes/summary-product';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { DataService } from '../../services/data/data.service';
@@ -15,7 +15,7 @@ import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.com
   styleUrls: ['./create-list-form.component.scss']
 })
 export class CreateListFormComponent extends Validation implements OnInit {
-  public product!: Product;
+  public product!: SummaryProduct;
   public fromAddToListForm!: boolean
   @Output() onListCreated: EventEmitter<List> = new EventEmitter();
 

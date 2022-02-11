@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SpinnerAction } from '../../classes/enums';
 import { List } from '../../classes/list';
-import { Product } from '../../classes/product';
+import { ListProduct } from '../../classes/list-product';
 import { CreateListFormComponent } from '../../components/create-list-form/create-list-form.component';
 import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-side-menu.component';
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
@@ -20,7 +20,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 export class ListsComponent implements OnInit, OnDestroy {
   public lists!: Array<List>;
   public selectedList!: List;
-  public products!: Array<Product> | undefined;
+  public products!: Array<ListProduct> | undefined;
 
   public sortOptions: Array<KeyValue<string, string>> = [
     { key: 'Sort by Date Added', value: 'date' },
@@ -92,7 +92,7 @@ export class ListsComponent implements OnInit, OnDestroy {
   }
 
 
-  async onRemoveItemClick(product: Product) {
+  async onRemoveItemClick(product: ListProduct) {
     this.lazyLoadingService.load(async () => {
       const { RemoveItemPromptComponent } = await import('../../components/remove-item-prompt/remove-item-prompt.component');
       const { RemoveItemPromptModule } = await import('../../components/remove-item-prompt/remove-item-prompt.module');
@@ -142,7 +142,7 @@ export class ListsComponent implements OnInit, OnDestroy {
   }
 
 
-  async onMoveItem(toListKeyValue: KeyValue<any, any>, product: Product) {
+  async onMoveItem(toListKeyValue: KeyValue<any, any>, product: ListProduct) {
     this.lazyLoadingService.load(async () => {
       const { MoveItemPromptComponent } = await import('../../components/move-item-prompt/move-item-prompt.component');
       const { MoveItemPromptModule } = await import('../../components/move-item-prompt/move-item-prompt.module');
@@ -188,7 +188,7 @@ export class ListsComponent implements OnInit, OnDestroy {
   }
 
 
-  onProductClick(product: Product) {
+  onProductClick(product: ListProduct) {
     this.router.navigate([product.urlName, product.urlId]);
   }
 

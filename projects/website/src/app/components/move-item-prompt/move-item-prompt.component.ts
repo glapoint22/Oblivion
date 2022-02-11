@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
-import { Product } from '../../classes/product';
+import { ListProduct } from '../../classes/list-product';
 import { DuplicateItemPromptComponent } from '../../components/duplicate-item-prompt/duplicate-item-prompt.component';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
@@ -14,7 +14,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   styleUrls: ['./move-item-prompt.component.scss']
 })
 export class MoveItemPromptComponent extends LazyLoad {
-  public product!: Product;
+  public product!: ListProduct;
   public fromList!: List;
   public toList!: KeyValue<any, any>;
   @Output() onMove: EventEmitter<void> = new EventEmitter();

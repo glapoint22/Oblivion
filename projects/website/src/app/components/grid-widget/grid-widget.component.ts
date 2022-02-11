@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SpinnerAction } from '../../classes/enums';
 import { GridData } from '../../classes/grid-data';
 import { GridWidgetData } from '../../classes/grid-widget-data';
-import { Product } from '../../classes/product';
+import { SummaryProduct } from '../../classes/summary-product';
 import { Widget } from '../../classes/widget';
 import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
 import { GridWidgetService } from '../../services/grid-widget/grid-widget.service';
@@ -116,7 +116,7 @@ export class GridWidgetComponent extends Widget {
       });
   }
 
-  trackProduct(index: number, product: Product) {
+  trackProduct(index: number, product: SummaryProduct) {
     return product.id;
   }
 

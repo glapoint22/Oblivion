@@ -18,8 +18,8 @@
                     <!-- Products -->
                     <div *ngFor="let productGroup of productGroups" [style.width.px]="sliderContainer.clientWidth"
                         class="product-group">
-                        <div class="product-thumbnail-container" *ngFor="let product of productGroup">
-                            <product-thumbnail [product]="product"></product-thumbnail>
+                        <div class="product-summary-container" *ngFor="let product of productGroup">
+                            <product-summary [product]="product"></product-summary>
                         </div>
                     </div>
                 </div>

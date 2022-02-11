@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ReviewFilter } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
-import { Product } from '../../classes/product';
+import { SummaryProduct } from '../../classes/summary-product';
 import { ReviewSummaryComponent } from '../review-summary/review-summary.component';
 
 @Component({
@@ -11,7 +11,7 @@ import { ReviewSummaryComponent } from '../review-summary/review-summary.compone
   styleUrls: ['./review-summary-popup.component.scss']
 })
 export class ReviewSummaryPopupComponent extends LazyLoad {
-  public product!: Product;
+  public product!: SummaryProduct;
   public top!: number;
   public left!: number
   public starsOverlayLeft!: number;

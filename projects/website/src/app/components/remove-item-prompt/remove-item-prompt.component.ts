@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
-import { Product } from '../../classes/product';
+import { ListProduct } from '../../classes/list-product';
 import { DataService } from '../../services/data/data.service';
 import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
@@ -13,7 +13,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 export class RemoveItemPromptComponent extends LazyLoad {
   @Output() onRemove: EventEmitter<void> = new EventEmitter();
   public list!: List;
-  public product!: Product;
+  public product!: ListProduct;
 
   constructor
     (

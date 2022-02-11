@@ -1,6 +1,6 @@
-import { Product } from "./product";
+import { SummaryProduct } from "./summary-product";
 
 export class RelatedProducts {
     public caption!: string;
-    public products!: Array<Product>;
+    public products!: Array<SummaryProduct>;
 }

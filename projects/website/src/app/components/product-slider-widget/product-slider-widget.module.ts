@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductSliderWidgetComponent } from './product-slider-widget.component';
 import { SliderModule } from '../../directives/slider/slider.module';
-import { ProductThumbnailModule } from '../product-thumbnail/product-thumbnail.module';
+import { ProductSummaryModule } from '../product-summary/product-summary.module';
 
 
 
@@ -11,7 +11,7 @@ import { ProductThumbnailModule } from '../product-thumbnail/product-thumbnail.m
   imports: [
     CommonModule,
     SliderModule,
-    ProductThumbnailModule
+    ProductSummaryModule
   ],
   exports: [ProductSliderWidgetComponent]
 })
