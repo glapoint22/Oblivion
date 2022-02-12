@@ -1,0 +1,128 @@
+@use "sass:math";
+
+// ....................................................................Get Class Extension..................................................................
+@function get-class-extension($breakpoint-key) {
+    @return if(map-get($breakpoints, $breakpoint-key) == 0, "", "-#{$breakpoint-key}");
+}
+
+
+// ....................................................................Media Breakpoint..................................................................
+@mixin media-breakpoint($key) {
+    $breakpoint: map-get($breakpoints, $key);
+
+    // If the breakpoint is not zero, create the media query
+    @if $breakpoint != 0 {
+        @media (min-width: $breakpoint) {
+            @content;
+        }
+    } @else {
+        // Dont's create the media query, just use the content
+        @content;
+    }
+}
+
+// .......................................................................Columns......................................................................
+$num-grid-columns: 12;
+
+// Create the placeholder selector
+%column {
+    width: 100%;
+}
+
+// Loop through the breakpoints
+@each $key in map-keys($breakpoints) {
+    // This will be either an empty string or the breakpoint key (-xs)
+    $extension: get-class-extension($key);
+
+    // Create the column classes
+    @for $i from 1 through $num-grid-columns {
+        .col-#{$i}#{$extension} {
+            @extend %column;
+        }
+    }
+
+    
+    .col#{$extension}, .col-auto#{$extension} {
+        @extend %column;
+    }
+
+    
+    // Create the media queries for each column class
+    @include media-breakpoint($key) {
+        .col#{$extension}{
+            flex-basis: 0;
+            flex-grow: 1;
+            max-width: 100%;
+        }
+
+        .col-auto#{$extension} {
+            flex: 0 0 auto;
+            width: auto;
+            max-width: 100%;
+        }
+
+
+        @for $i from 1 through $num-grid-columns {
+            .col-#{$i}#{$extension} {
+                flex: 0 0 percentage(math.div($i, $num-grid-columns));
+                max-width: percentage(math.div($i, $num-grid-columns));
+            }
+
+            .flex-10 > .col-#{$i}#{$extension} {
+                flex: 0 0 percentage(math.div($i, 10));
+                max-width: percentage(math.div($i, 10));
+            }
+        }
+    }
+}
+
+
+
+// .......................................................................Alignment......................................................................
+@each $key in map-keys($breakpoints) {
+    @include media-breakpoint($key) {
+        $extension: get-class-extension($key);
+
+        // Horizontal align
+        .horizontal-align-left#{$extension} { margin: 0; }
+        .horizontal-align-center#{$extension} { margin: 0 auto; }
+        .horizontal-align-right#{$extension} { margin: 0 0 0 auto; }
+
+        // Vertical align
+        .vertical-align-top#{$extension} { align-items: flex-start; }
+        .vertical-align-middle#{$extension} { align-items: center; }
+        .vertical-align-bottom#{$extension} { align-items: flex-end; }
+    }
+}
+
+
+
+
+// .......................................................................Spacing......................................................................
+@each $key in map-keys($breakpoints) {
+    @include media-breakpoint($key) {
+        $extension: get-class-extension($key);
+
+        // Positions
+        $top: top;
+        $right: right;
+        $bottom: bottom;
+        $left: left;
+
+        @each $size, $length in $spacers {
+            .padding-#{$size}#{$extension} { padding: $length; }
+            .padding-#{$top}-#{$size}#{$extension} {
+                padding-top: $length;
+            }
+            .padding-#{$right}-#{$size}#{$extension} {
+                padding-right: $length;
+            }
+            .padding-#{$bottom}-#{$size}#{$extension} {
+                padding-bottom: $length;
+            }
+            .padding-#{$left}-#{$size}#{$extension} {
+                padding-left: $length;
+            }
+        }
+    }
+}

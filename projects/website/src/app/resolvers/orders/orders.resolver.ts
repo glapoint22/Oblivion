@@ -5,9 +5,9 @@ import {
   ActivatedRouteSnapshot,
   ParamMap
 } from '@angular/router';
+import { DataService } from 'common';
 import { forkJoin, map, Observable, of, tap } from 'rxjs';
 import { ProductOrders } from '../../classes/product-orders';
-import { DataService } from '../../services/data/data.service';
 
 @Injectable({
   providedIn: 'root'

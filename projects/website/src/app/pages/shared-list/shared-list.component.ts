@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DataService, LazyLoadingService } from 'common';
 import { List } from '../../classes/list';
 import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { ListsComponent } from '../lists/lists.component';
 
 @Component({

@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Page } from '../../classes/page';
+import { GridWidgetService } from 'common';
+import { Page } from 'widgets';
 import { BrowseResolver } from '../../resolvers/browse/browse.resolver';
-import { GridWidgetService } from '../../services/grid-widget/grid-widget.service';
 
 @Component({
   selector: 'browse',

@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { LazyLoad } from '../../classes/lazy-load';
+import { DataService, LazyLoad, LazyLoadingService } from 'common';
 import { List } from '../../classes/list';
 import { ListProduct } from '../../classes/list-product';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'remove-item-prompt',

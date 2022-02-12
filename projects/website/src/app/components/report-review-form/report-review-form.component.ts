@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
-import { SpinnerAction } from '../../classes/enums';
-import { LazyLoad } from '../../classes/lazy-load';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({

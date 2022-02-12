@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { LazyLoad } from '../../classes/lazy-load';
+import { LazyLoad } from 'common';
 
 @Component({
   selector: 'reviews-side-menu',

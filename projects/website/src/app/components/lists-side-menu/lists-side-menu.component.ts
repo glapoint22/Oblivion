@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { LazyLoad } from '../../classes/lazy-load';
+import { LazyLoad } from 'common';
 import { List } from '../../classes/list';
 
 @Component({

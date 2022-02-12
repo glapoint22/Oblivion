@@ -1,11 +1,9 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { Collaborator } from '../../classes/collaborator';
-import { ShareListType, SpinnerAction } from '../../classes/enums';
-import { LazyLoad } from '../../classes/lazy-load';
+import { ShareListType } from '../../classes/enums';
 import { List } from '../../classes/list';
 import { ListPermissions } from '../../classes/list-permissions';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { ShareListFormComponent } from '../share-list-form/share-list-form.component';
 
 @Component({

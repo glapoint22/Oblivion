@@ -1,4 +1,4 @@
-import { Image } from "./image";
+import { Image } from "common";
 import { ListPermissions } from "./list-permissions";
 
 export class List {

@@ -1,8 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthService } from 'angularx-social-login';
-import { SpinnerAction } from '../../classes/enums';
+import { DataService, SpinnerAction } from 'common';
 import { SocialUser } from '../../classes/social-user';
-import { DataService } from '../../services/data/data.service';
 
 @Component({
   selector: 'external-login-providers',

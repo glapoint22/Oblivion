@@ -1,9 +1,9 @@
 @import './scss/variables';
-@import './scss//reset';
+@import './scss/reset';
 @import './scss/mixins';
 @import './scss/fonts';
 @import './scss/buttons';
-@import './scss/checkbox-radio';
+@import '../../../dist/common/scss/checkbox-radio.scss';
 @import './scss/forms';
 @import './scss/icons';
 @import './scss/lines';
@@ -17,6 +17,4 @@
 @import './scss/side-menu';
 @import './scss/product';
 @import './scss/slider';
-@import './scss/grid';
-@import './scss/spacing';
-@import './scss/alignment';
+@import '../../../dist/widgets/scss/widgets';

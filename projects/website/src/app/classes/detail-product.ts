@@ -1,10 +1,10 @@
+import { SummaryProduct } from "common";
 import { AdditionalInfo } from "./additional-info";
 import { Media } from "./media";
 import { Niche } from "./niche";
 import { PricePoint } from "./price-point";
 import { RelatedProducts } from "./related-products";
 import { Subproduct } from "./subproduct";
-import { SummaryProduct } from "./summary-product"
 
 export class DetailProduct extends SummaryProduct {
     public description!: string;

@@ -1,14 +1,13 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SpinnerAction } from '../../classes/enums';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { Order } from '../../classes/order';
 import { OrderProduct } from '../../classes/order-product';
 import { QueriedOrderProduct } from '../../classes/queried-order-product';
 import { OrdersSideMenuComponent } from '../../components/orders-side-menu/orders-side-menu.component';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { OrdersResolver } from '../../resolvers/orders/orders.resolver';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'orders',

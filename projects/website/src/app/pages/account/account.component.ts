@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { SpinnerAction } from '../../classes/enums';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { LazyLoadingService, SpinnerAction } from 'common';
 
 @Component({
   selector: 'account',

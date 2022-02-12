@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LazyLoad } from '../../classes/lazy-load';
+import { LazyLoad } from 'common';
 
 @Component({
   selector: 'email-sent-prompt',

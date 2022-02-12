@@ -36,27 +36,11 @@ export enum MediaType {
     Video,
 }
 
-export enum ReviewFilter {
-    AllStars = 'all-stars',
-    FiveStars = 'five-stars',
-    FourStars = 'four-stars',
-    ThreeStars = 'three-stars',
-    TwoStars = 'two-stars',
-    OneStar = 'one-star'
-}
+
 
 
 export enum VideoType {
     YouTube,
     Vimeo,
     Wistia
-}
-
-
-
-export enum SpinnerAction {
-    None,
-    Start,
-    End,
-    StartEnd
 }

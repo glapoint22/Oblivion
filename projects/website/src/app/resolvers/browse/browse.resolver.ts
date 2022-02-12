@@ -5,9 +5,9 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import { Observable, of, tap } from 'rxjs';
-import { QueryParams } from '../../classes/query-params';
-import { DataService } from '../../services/data/data.service';
 import { Location } from '@angular/common';
+import { DataService } from 'common';
+import { QueryParams } from 'widgets';
 
 
 @Injectable({

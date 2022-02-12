@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { SpinnerAction } from '../../classes/enums';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { CreatePasswordFormComponent } from '../../components/create-password-form/create-password-form.component';
 import { ProfilePictureFormComponent } from '../../components/profile-picture-form/profile-picture-form.component';
 import { AccountService } from '../../services/account/account.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'profile',

@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
+import { LazyLoad, LazyLoadingService } from 'common';
 import { ShareListType } from '../../classes/enums';
-import { LazyLoad } from '../../classes/lazy-load';
 import { List } from '../../classes/list';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({

@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import {
   Resolve
 } from '@angular/router';
+import { DataService } from 'common';
 import { Observable } from 'rxjs';
-import { Page } from '../../classes/page';
-import { DataService } from '../../services/data/data.service';
+import { Page } from 'widgets';
 
 @Injectable({
   providedIn: 'root'

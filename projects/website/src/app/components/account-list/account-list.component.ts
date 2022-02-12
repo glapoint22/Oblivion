@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { AccountService } from '../../services/account/account.service';
 
 @Component({

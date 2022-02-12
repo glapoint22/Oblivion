@@ -1,9 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LazyLoad } from '../../classes/lazy-load';
-import { SummaryProduct } from '../../classes/summary-product';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { LazyLoad, LazyLoadingService, SummaryProduct } from 'common';
 
 @Component({
   selector: 'add-to-list-prompt',

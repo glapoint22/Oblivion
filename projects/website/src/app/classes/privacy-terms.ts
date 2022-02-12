@@ -1,6 +1,5 @@
 import { Directive } from "@angular/core";
-import { LazyLoadingService } from "../services/lazy-loading/lazy-loading.service";
-import { SpinnerAction } from "./enums";
+import { LazyLoadingService, SpinnerAction } from "common";
 
 @Directive()
 export class PrivacyTerms {

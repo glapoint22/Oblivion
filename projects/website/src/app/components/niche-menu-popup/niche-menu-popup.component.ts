@@ -1,8 +1,7 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { LazyLoad, LazyLoadingService } from 'common';
 import { Niche } from '../../classes/niche';
-import { LazyLoad } from '../../classes/lazy-load';
 import { NichesService } from '../../services/niches/niches.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'niche-menu-popup',

@@ -1,10 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { SpinnerAction } from '../../classes/enums';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { AccountNotActivatedFormComponent } from '../account-not-activated-form/account-not-activated-form.component';
 import { ExternalLoginProvidersComponent } from '../external-login-providers/external-login-providers.component';
 

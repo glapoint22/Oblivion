@@ -1,4 +1,4 @@
-import { SummaryProduct } from "./summary-product";
+import { SummaryProduct } from "common";
 
 export class RelatedProducts {
     public caption!: string;

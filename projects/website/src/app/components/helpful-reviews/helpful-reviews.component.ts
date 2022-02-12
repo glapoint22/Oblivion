@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DataService } from 'common';
 import { HelpfulReviews } from '../../classes/helpful-reviews';
-import { DataService } from '../../services/data/data.service';
 
 @Component({
   selector: 'helpful-reviews',

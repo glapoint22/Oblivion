@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import {
   Resolve,
   ActivatedRouteSnapshot} from '@angular/router';
+import { DataService } from 'common';
 import { Observable } from 'rxjs';
-import { QueryParams } from '../../classes/query-params';
-import { DataService } from '../../services/data/data.service';
+import { QueryParams } from 'widgets';
 
 @Injectable({
   providedIn: 'root'

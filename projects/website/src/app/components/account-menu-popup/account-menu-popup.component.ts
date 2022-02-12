@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { LazyLoad } from '../../classes/lazy-load';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { LazyLoad, LazyLoadingService } from 'common';
 import { AccountListComponent } from '../account-list/account-list.component';
 
 @Component({

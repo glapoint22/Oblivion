@@ -3,6 +3,16 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "paths": {
+      "common": [
+        "dist/common/common",
+        "dist/common"
+      ],
+      "widgets": [
+        "dist/widgets/widgets",
+        "dist/widgets"
+      ]
+    },
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,

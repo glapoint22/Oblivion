@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
 import { DetailProduct } from '../../classes/detail-product';
-import { SpinnerAction } from '../../classes/enums';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'reviews-page',

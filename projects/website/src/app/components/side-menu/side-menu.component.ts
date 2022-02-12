@@ -1,11 +1,8 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { SpinnerAction } from '../../classes/enums';
-import { LazyLoad } from '../../classes/lazy-load';
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { Niche } from '../../classes/niche';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { NichesService } from '../../services/niches/niches.service';
 import { AccountListComponent } from '../account-list/account-list.component';
 

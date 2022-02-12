@@ -5,10 +5,10 @@ import {
   RouterStateSnapshot,
   ActivatedRouteSnapshot
 } from '@angular/router';
+import { DataService } from 'common';
 import { forkJoin, map, mergeMap, Observable, of, tap } from 'rxjs';
 import { List } from '../../classes/list';
 import { ListProduct } from '../../classes/list-product';
-import { DataService } from '../../services/data/data.service';
 
 @Injectable({
   providedIn: 'root'

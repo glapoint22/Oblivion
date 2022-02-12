@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Observable, of, switchMap } from 'rxjs';
-import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { EmailVerificationFormComponent } from '../email-verification-form/email-verification-form.component';
 
 @Component({

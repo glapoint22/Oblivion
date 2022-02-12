@@ -1,12 +1,8 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { SpinnerAction } from '../../classes/enums';
-import { LazyLoad } from '../../classes/lazy-load';
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
 import { List } from '../../classes/list';
-import { SummaryProduct } from '../../classes/summary-product';
 import { AddToListPromptComponent } from '../../components/add-to-list-prompt/add-to-list-prompt.component';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { CreateListFormComponent } from '../create-list-form/create-list-form.component';
 import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate-item-prompt.component';
 

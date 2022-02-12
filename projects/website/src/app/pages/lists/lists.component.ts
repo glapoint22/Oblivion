@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SpinnerAction } from '../../classes/enums';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { List } from '../../classes/list';
 import { ListProduct } from '../../classes/list-product';
 import { CreateListFormComponent } from '../../components/create-list-form/create-list-form.component';
@@ -9,8 +9,6 @@ import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-s
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
 import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'lists',

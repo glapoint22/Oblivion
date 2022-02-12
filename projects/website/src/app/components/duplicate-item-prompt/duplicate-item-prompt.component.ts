@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
-import { LazyLoad } from '../../classes/lazy-load';
+import { LazyLoad, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
 import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerAction } from '../../classes/enums';
-import { SummaryProduct } from '../../classes/summary-product';
 
 @Component({
   selector: 'duplicate-item-prompt',

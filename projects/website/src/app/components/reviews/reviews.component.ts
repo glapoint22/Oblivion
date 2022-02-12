@@ -1,15 +1,12 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { DataService, LazyLoadingService, ReviewFilter, SpinnerAction, SummaryProduct } from 'common';
 import { Subscription } from 'rxjs';
-import { ReviewFilter, SpinnerAction } from '../../classes/enums';
 import { Review } from '../../classes/review';
-import { SummaryProduct } from '../../classes/summary-product';
 import { ReportReviewFormComponent } from '../../components/report-review-form/report-review-form.component';
 import { ReviewsSideMenuComponent } from '../../components/reviews-side-menu/reviews-side-menu.component';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'reviews',
