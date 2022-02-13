@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
-import { Page } from '../../classes/page';
+import { PageContent } from '../../classes/page-content';
 import { ContainerComponent } from '../container/container.component';
 
 @Component({
@@ -8,18 +8,18 @@ import { ContainerComponent } from '../container/container.component';
   styleUrls: ['./page.component.scss']
 })
 export class PageComponent implements AfterViewInit, OnDestroy {
-  @Input() page!: Page;
+  @Input() pageContent!: PageContent;
   @ViewChild('container', { static: false }) container!: ContainerComponent;
 
   ngOnChanges() {
     if (this.container) {
-      let page = new Page(this.page);
+      let page = new PageContent(this.pageContent);
       page.container = this.container;
     }
   }
 
   ngAfterViewInit(): void {
-    let page = new Page(this.page);
+    let page = new PageContent(this.pageContent);
     page.container = this.container;
 
     // Background color

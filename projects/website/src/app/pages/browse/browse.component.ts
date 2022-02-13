@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GridWidgetService } from 'common';
-import { Page } from 'widgets';
+import { PageContent } from 'widgets';
 import { BrowseResolver } from '../../resolvers/browse/browse.resolver';
 
 @Component({
@@ -10,7 +10,7 @@ import { BrowseResolver } from '../../resolvers/browse/browse.resolver';
   styleUrls: ['./browse.component.scss']
 })
 export class BrowseComponent implements OnInit, OnDestroy {
-  public page!: Page;
+  public pageContent!: PageContent;
 
   constructor
     (
@@ -21,8 +21,8 @@ export class BrowseComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.parent?.data.subscribe(data => {
-      if (data.browseData.page) {
-        this.page = data.browseData.page;
+      if (data.browseData.pageContent) {
+        this.pageContent = data.browseData.pageContent;
       } else {
         this.gridWidgetService.gridData.next(data.browseData.gridData);
       }

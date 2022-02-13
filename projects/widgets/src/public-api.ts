@@ -19,7 +19,7 @@ export * from './lib/classes/image-widget-data';
 export * from './lib/classes/line-widget-data';
 export * from './lib/classes/link';
 export * from './lib/classes/padding';
-export * from './lib/classes/page';
+export * from './lib/classes/page-content';
 export * from './lib/classes/product-slider-widget-data';
 export * from './lib/classes/query';
 export * from './lib/classes/query-params';

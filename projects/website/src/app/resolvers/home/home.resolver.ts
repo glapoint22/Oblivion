@@ -4,16 +4,16 @@ import {
 } from '@angular/router';
 import { DataService } from 'common';
 import { Observable } from 'rxjs';
-import { Page } from 'widgets';
+import { PageContent } from 'widgets';
 
 @Injectable({
   providedIn: 'root'
 })
-export class HomeResolver implements Resolve<Page> {
+export class HomeResolver implements Resolve<PageContent> {
 
   constructor(private dataService: DataService) { }
 
-  resolve(): Observable<Page> {
-    return this.dataService.get<Page>('api/Home');
+  resolve(): Observable<PageContent> {
+    return this.dataService.get<PageContent>('api/Home');
   }
 }

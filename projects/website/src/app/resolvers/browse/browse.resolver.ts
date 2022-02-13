@@ -6,14 +6,14 @@ import {
 } from '@angular/router';
 import { Observable, of, tap } from 'rxjs';
 import { Location } from '@angular/common';
-import { DataService } from 'common';
-import { QueryParams } from 'widgets';
+import { DataService, GridData } from 'common';
+import { PageContent, QueryParams } from 'widgets';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class BrowseResolver implements Resolve<any> {
+export class BrowseResolver implements Resolve<PageContent | GridData> {
   public currentId!: string | null;
 
   constructor
@@ -23,7 +23,7 @@ export class BrowseResolver implements Resolve<any> {
       private location: Location
     ) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PageContent | GridData> {
     const id = route.queryParamMap.has('nicheId') ? route.queryParamMap.get('nicheId') : route.queryParamMap.get('categoryId');
     const queryParams = new QueryParams();
 
@@ -33,9 +33,9 @@ export class BrowseResolver implements Resolve<any> {
       this.currentId = id;
 
       // Return the page
-      return this.dataService.post('api/Pages/Browse', queryParams)
-        .pipe(tap(page => {
-          if (!page) {
+      return this.dataService.post<PageContent>('api/Pages/Browse', queryParams)
+        .pipe(tap((pageContent: PageContent) => {
+          if (!pageContent) {
             this.router.navigate(['**'], { skipLocationChange: true });
             this.location.replaceState(state.url);
           }

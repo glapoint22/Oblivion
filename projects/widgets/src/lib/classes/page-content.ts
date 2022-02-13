@@ -2,7 +2,7 @@ import { ContainerComponent } from "../components/container/container.component"
 import { Background } from "./background";
 import { Row } from "./row";
 
-export class Page {
+export class PageContent {
     public background!: Background;
     public rows!: Array<Row>;
     public set container(container: ContainerComponent) {
@@ -20,7 +20,7 @@ export class Page {
     }
 
 
-    constructor(page: Page) {
+    constructor(page: PageContent) {
         this.background = page.background;
         this.rows = page.rows;
     }
