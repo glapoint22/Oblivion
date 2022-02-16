@@ -5,6 +5,7 @@ import { ProductBuilderRoutingModule } from './product-builder-routing.module';
 import { ProductBuilderComponent } from './product-builder.component';
 import { ProductPropertiesModule } from '../../components/product-properties/product-properties.module';
 import { ProductHierarchyModule } from '../../components/product-hierarchy/product-hierarchy.module';
+import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { ProductHierarchyModule } from '../../components/product-hierarchy/produ
     CommonModule,
     ProductBuilderRoutingModule,
     ProductPropertiesModule,
-    ProductHierarchyModule
+    ProductHierarchyModule,
+    MenuBarModule
   ]
 })
 export class ProductBuilderModule { }

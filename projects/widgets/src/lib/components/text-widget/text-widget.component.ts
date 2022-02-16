@@ -12,7 +12,7 @@ import { Widget } from '../../classes/widget';
 export class TextWidgetComponent extends Widget implements AfterViewInit {
   public background!: Background;
   private htmlContent!: string;
-  private padding!: Padding;
+  private padding: Padding = new Padding();
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -24,7 +24,7 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
   setWidget(textWidgetData: TextWidgetData) {
     this.htmlContent = textWidgetData.htmlContent;
     this.background = textWidgetData.background;
-    this.padding = new Padding(textWidgetData.padding);
+    this.padding.setData(textWidgetData.padding);
 
     super.setWidget(textWidgetData);
   }

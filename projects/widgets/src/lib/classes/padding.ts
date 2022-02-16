@@ -2,19 +2,19 @@ import { Breakpoint } from "./breakpoint";
 import { BreakpointType } from "./widget-enums";
 
 export class Padding {
-    public constrain!: boolean;
-    public top!: string;
-    public right!: string;
-    public bottom!: string;
-    public left!: string;
+    public constrain: boolean = true;
+    public top: string = '0px';
+    public right: string = '0px';
+    public bottom: string = '0px';
+    public left: string = '0px';
 
-    constructor(padding: Padding) {
+    setData(padding: Padding) {
         if (padding) {
-            this.constrain = padding.constrain;
-            this.top = padding.top;
-            this.right = padding.right;
-            this.bottom = padding.bottom;
-            this.left = padding.left;
+            if (padding.constrain) this.constrain = padding.constrain;
+            if (padding.top) this.top = padding.top;
+            if (padding.right) this.right = padding.right;
+            if (padding.bottom) this.bottom = padding.bottom;
+            if (padding.left) this.left = padding.left;
         }
     }
 

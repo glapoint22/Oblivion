@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { PageContent } from '../../classes/page-content';
+import { Row } from '../../classes/row';
 import { ContainerComponent } from '../container/container.component';
 
 @Component({
@@ -13,33 +14,50 @@ export class PageComponent implements AfterViewInit, OnDestroy {
 
   ngOnChanges() {
     if (this.container) {
-      let page = new PageContent(this.pageContent);
-      page.container = this.container;
+      this.setPage();
     }
   }
 
   ngAfterViewInit(): void {
-    let page = new PageContent(this.pageContent);
-    page.container = this.container;
+    this.setPage();
+  }
 
-    // Background color
-    if (page.background.color && page.background.color != '#00000000') {
-      document.body.style.backgroundColor = page.background.color;
-    }
 
-    // Background image
-    if (page.background.image && page.background.image.url) {
-      // Image
-      document.body.style.backgroundImage = 'url(images/' + page.background.image.url + ')';
+  setPage() {
+    if (this.pageContent) {
+      if (this.pageContent.background) {
+        // Background color
+        if (this.pageContent.background.color && this.pageContent.background.color != '#00000000') {
+          document.body.style.backgroundColor = this.pageContent.background.color;
+        }
 
-      // Position
-      document.body.style.backgroundPosition = page.background.image.position;
+        // Background image
+        if (this.pageContent.background.image && this.pageContent.background.image.url) {
+          // Image
+          document.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.url + ')';
 
-      // Repeat
-      document.body.style.backgroundRepeat = page.background.image.repeat;
+          // Position
+          document.body.style.backgroundPosition = this.pageContent.background.image.position;
 
-      // Attachment
-      document.body.style.backgroundAttachment = page.background.image.attachment;
+          // Repeat
+          document.body.style.backgroundRepeat = this.pageContent.background.image.repeat;
+
+          // Attachment
+          document.body.style.backgroundAttachment = this.pageContent.background.image.attachment;
+        }
+      }
+
+      // This will create the widgets starting with the rows
+      if (this.pageContent.rows && this.pageContent.rows.length > 0) {
+        this.container.viewContainerRef.clear();
+
+        // Loop through the rows
+        this.pageContent.rows.forEach((row: Row) => {
+
+          // Create the row
+          this.container.createRow(row);
+        });
+      }
     }
   }
 

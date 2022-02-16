@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Background } from '../../classes/background';
 import { Border } from '../../classes/border';
 import { Breakpoint } from '../../classes/breakpoint';
@@ -23,11 +23,11 @@ export class RowComponent implements AfterViewInit {
   public corners!: Corners;
   public shadow!: Shadow;
   public columnCount!: number;
-  private padding!: Padding;
+  private padding: Padding = new Padding();
   private verticalAlignment!: VerticalAlignment;
   private breakpoints!: Array<Breakpoint>;
 
-  constructor(private resolver: ComponentFactoryResolver) { }
+  constructor(public resolver: ComponentFactoryResolver) { }
 
 
   ngAfterViewInit(): void {
@@ -46,13 +46,12 @@ export class RowComponent implements AfterViewInit {
     this.shadow = row.shadow;
     this.breakpoints = row.breakpoints;
     this.columnCount = row.columns.length;
-    this.padding = new Padding(row.padding);
+    this.padding.setData(row.padding);
     this.verticalAlignment = new VerticalAlignment(row.verticalAlignment);
   }
 
   createColumn(column: Column): void {
-    const componentFactory = this.resolver.resolveComponentFactory(ColumnComponent);
-    const columnComponentRef = this.viewContainerRef.createComponent(componentFactory);
+    const columnComponentRef = this.createColumnComponentRef();
     const columnComponent = columnComponentRef.instance;
 
     // Set the column with the column data
@@ -64,5 +63,10 @@ export class RowComponent implements AfterViewInit {
 
     // Create the widget
     columnComponent.createWidget(column.widgetData);
+  }
+
+  createColumnComponentRef(): ComponentRef<ColumnComponent> {
+    const componentFactory = this.resolver.resolveComponentFactory(ColumnComponent);
+    return this.viewContainerRef.createComponent(componentFactory);
   }
 }

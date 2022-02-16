@@ -16,14 +16,14 @@ import { LinkOption } from '../../classes/widget-enums';
   styleUrls: ['./button-widget.component.scss']
 })
 export class ButtonWidgetComponent extends Widget {
-  public caption!: Caption;
-  public corners!: Corners;
-  public shadow!: Shadow;
-  public link!: Link;
+  public caption: Caption = new Caption();
+  public corners: Corners = new Corners();
+  public shadow: Shadow = new Shadow();
+  public link: Link = new Link();
   public linkOption = LinkOption;
-  private background!: Background;
-  private border!: Border;
-  private padding!: Padding;
+  public background: Background = new Background();
+  public border: Border = new Border();
+  public padding: Padding = new Padding();
 
   // Background Hover & Active colors
   private backgroundHoverColor!: string;
@@ -36,7 +36,13 @@ export class ButtonWidgetComponent extends Widget {
   // Text Hover & Active colors
   private textHoverColor!: string;
   private textActiveColor!: string;
-  
+
+
+  ngOnInit() {
+    this.caption.text = 'Button';
+    this.background.color = '#808080';
+  }
+
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -57,19 +63,20 @@ export class ButtonWidgetComponent extends Widget {
 
   setWidget(buttonWidgetData: ButtonWidgetData) {
     this.height = 40;
-    this.background = buttonWidgetData.background;
-    this.border = buttonWidgetData.border;
-    this.caption = buttonWidgetData.caption;
-    this.corners = buttonWidgetData.corners;
-    this.shadow = buttonWidgetData.shadow;
-    this.link = buttonWidgetData.link;
-    this.backgroundHoverColor = buttonWidgetData.backgroundHoverColor;
-    this.backgroundActiveColor = buttonWidgetData.backgroundActiveColor;
-    this.borderHoverColor = buttonWidgetData.borderHoverColor;
-    this.borderActiveColor = buttonWidgetData.borderActiveColor;
-    this.textHoverColor = buttonWidgetData.textHoverColor;
-    this.textActiveColor = buttonWidgetData.textActiveColor;
-    this.padding = new Padding(buttonWidgetData.padding);
+    this.background.setData(buttonWidgetData.background);
+    this.border.setData(buttonWidgetData.border);
+    this.caption.setData(buttonWidgetData.caption);
+    this.corners.setData(buttonWidgetData.corners);
+    this.shadow.setData(buttonWidgetData.shadow);
+    this.link.setData(buttonWidgetData.link);
+    this.padding.setData(buttonWidgetData.padding);
+    this.backgroundHoverColor = buttonWidgetData.backgroundHoverColor ? buttonWidgetData.backgroundHoverColor : '#969696';
+    this.backgroundActiveColor = buttonWidgetData.backgroundActiveColor ? buttonWidgetData.backgroundActiveColor : '#878787';
+    this.borderHoverColor = buttonWidgetData.borderHoverColor ? buttonWidgetData.borderHoverColor : '#F0F0F0';
+    this.borderActiveColor = buttonWidgetData.borderActiveColor ? buttonWidgetData.borderActiveColor : '#DCDCDC';
+    this.textHoverColor = buttonWidgetData.textHoverColor ? buttonWidgetData.textHoverColor : '#FFFFFF';
+    this.textActiveColor = buttonWidgetData.textActiveColor ? buttonWidgetData.textActiveColor : '#E1E1E1';
+
 
     super.setWidget(buttonWidgetData);
   }
@@ -130,7 +137,7 @@ export class ButtonWidgetComponent extends Widget {
       (this.backgroundActiveColor || this.borderActiveColor || this.textActiveColor ?
         '\n.' + className + ':active {' +
         (this.backgroundHoverColor ? '\n\tbackground-color: ' + this.backgroundActiveColor + ';' : '') +
-        (this.borderActiveColor ? '\n\tborder-color: ' + this.borderActiveColor + ';' : '') +
+        (this.border && this.border.enable && this.borderActiveColor ? '\n\tborder-color: ' + this.borderActiveColor + ';' : '') +
         (this.textActiveColor ? '\n\tcolor: ' + this.textActiveColor + ';' : '') +
         '\n}' : '');
   }

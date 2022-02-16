@@ -1,9 +1,8 @@
 @import './scss/variables';
-@import './scss/reset';
+@import './scss/init';
 @import './scss/mixins';
 @import './scss/fonts';
 @import './scss/buttons';
-@import '../../../dist/common/scss/checkbox-radio.scss';
 @import './scss/forms';
 @import './scss/icons';
 @import './scss/lines';
@@ -17,4 +16,3 @@
 @import './scss/side-menu';
 @import './scss/product';
 @import './scss/slider';
-@import '../../../dist/widgets/scss/widgets';
