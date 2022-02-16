@@ -1,0 +1,31 @@
+<ng-container *ngIf="hierarchyItem && !hierarchyItem.hidden">
+
+
+
+    <div *ngIf="hierarchyItem.name" 
+        class="hierarchy"
+        [ngClass]="{'selected-hierarchy-item': hierarchyItem.selected}"
+        (click)="onHierarchyItemClick()">
+
+        <div [style.width.px]="(hierarchyItem.indentId * 40) + 5"></div>
+
+        <div class="arrow-container"
+            [ngClass]="{'no-arrow': !hierarchyItem.children && !isRoot, 'selected-arrow': hierarchyItem.selected}"
+            (mouseover)="overArrow = true"
+            (mouseout)="overArrow = false"
+            (click)="onArrowClick()">
+
+            <div class="arrow" [ngClass]="{'hierarchy-item-expanded': hierarchyItem.expanded == true}">
+            </div>
+        </div>
+
+        <div *ngIf="!hierarchyItem.children && !isRoot && hierarchyType == HierarchyType.Checkbox" style="color: #dadada;">Checkbox</div>
+        <div *ngIf="!hierarchyItem.children && !isRoot && hierarchyType == HierarchyType.EditableCheckbox" style="color: #dadada;">Editable Checkbox</div>
+
+        <div *ngIf="hierarchyItem.children || isRoot || (hierarchyType != HierarchyType.Checkbox && hierarchyType != HierarchyType.EditableCheckbox)" class="hierarchy-item-text" [ngClass]="{'selected-hierarchy-item-text': hierarchyItem.selected}">{{hierarchyItem.name}}</div>
+    </div>
+
+    <hierarchy-item *ngFor="let hierarchyItemChild of hierarchyItem.children" [rootHierarchyItem]="rootHierarchyItem" [hierarchyItem]="hierarchyItemChild" [hierarchyType]="hierarchyType"></hierarchy-item>
+
+
+</ng-container>

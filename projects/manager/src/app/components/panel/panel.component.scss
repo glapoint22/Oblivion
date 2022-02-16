@@ -1,0 +1,44 @@
+.title-bar {
+    height: 24px;
+    background-color: #343434;
+    border-top: 2px groove #444444;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    font-size: 12px;
+    user-select: none;
+}
+
+.content {
+    position: relative;
+    background-color: #2c2c2c;
+    border-left: 1px solid #343434;
+    border-right: 1px solid #343434;
+    border-bottom: 1px solid #343434;
+    padding: 0 10px;
+    overflow: hidden;
+    transition: max-height 0.25s ease-in-out, padding-top 0.25s ease-in-out, padding-bottom 0.25s ease-in-out;
+}
+
+.arrow {
+    color: #aaaaaa;
+    border-top: solid 3px transparent;
+    border-bottom: solid 3px transparent;
+    border-left: solid 6px;
+    display: inline-block;
+    margin: 0 7px;
+    transform: rotate(0);
+    transition: transform 0.25s ease-in-out;
+}
+
+input {
+    display: none;
+    &:checked ~ .arrow {
+        transform: rotate(90deg);
+    }
+}
+
+.rounded {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}

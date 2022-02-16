@@ -1,0 +1,124 @@
+<panel [title]="'Price'">
+
+
+
+
+    <div style="height: 635px; overflow-y: auto; padding: 0 10px; padding-right: 15px; margin: 0 -10px;">
+
+        <!-- ============================= PRICE TYPE RADIO BUTTONS ================================== -->
+
+        <div class="price-type-radio-buttons-container">
+
+            <div id="custom-input">
+                <label style="color: #bbbbbb;">
+                    Single Price
+                    <input type="radio" name="price-type" checked>
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+
+            <div id="custom-input">
+                <label style="color: #bbbbbb;">
+                    Multi Price
+                    <input type="radio" name="price-type">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+
+        </div>
+
+
+        <!-- ============================= Single Price ================================== -->
+
+        <div *ngIf="false" class="single-price-container">
+
+            <!-- Price -->
+            <div class="field-label">Price:</div>
+            <input id="single-price">
+        </div>
+
+
+        <!-- ============================= Multi Price ================================== -->
+
+        <div *ngIf="true" class="property-box-light">
+
+            <!-- Property Box Bar -->
+            <div class="property-box-bar">
+
+                <!-- Counter -->
+                <counter [itemCount]="3"></counter>
+
+                <!-- Icons -->
+                <div class="icons">
+                    <!-- Delete -->
+                    <div class="icon-container" title="Delete Media Item">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+
+                    <!-- Add -->
+                    <div class="icon-container" title="Add Media Item">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- <div *ngIf="product.price.length == 0" class="no-property">No price points available</div> -->
+
+
+            <!-- Fields Container -->
+            <div class="fields-container">
+
+
+                <!-- Header -->
+                <div class="field-label">Header:</div>
+                <input id="header-input" placeholder="BASIC - 1 BOTTLE">
+
+
+                <!-- Quantity -->
+                <div class="field-label">Quantity:</div>
+                <input id="quantity-input" placeholder="30 Day Supply">
+
+
+                <!-- Image -->
+                <div class="field-label">Image:</div>
+                <image-box></image-box>
+
+
+                <div style="height: 12px;"></div>
+
+
+                <!-- Unit Price -->
+                <div class="field-label">Unit Price:</div>
+                <input id="unit-price-input" placeholder="$50">
+
+
+                <!-- Unit -->
+                <div class="field-label">Unit:</div>
+                <input id="unit-input" placeholder="Bottle">
+
+
+                <!-- Strikethrough Price -->
+                <div class="field-label">Strikethrough Price:</div>
+                <input id="strikethrough-price-input" class="txt-22 strikethrough" placeholder="$200">
+
+
+                <!-- Total Price -->
+                <div class="field-label">Total Price:</div>
+                <input id="total-price-input" placeholder="$100">
+
+
+
+
+                <additional-info-properties></additional-info-properties>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+</panel>
