@@ -1,0 +1,82 @@
+<div class="property-box-light">
+
+    <!-- Icon bar -->
+    <div class="property-box-bar">
+
+         <!-- Counter -->
+        <!-- <counter #counter [itemCount]="host.additionalInfo ? host.additionalInfo.length: 0" (onItemChange)="onItemChange($event)"></counter> -->
+        <counter [itemCount]="3"></counter>
+            
+
+
+       <!-- Icons -->
+        <div class="icons">
+
+            <!-- Delete -->
+            <div class="icon-container" title="Delete">  <!-- [ngClass]="{'icon-disabled': !host.additionalInfo || host.additionalInfo.length == 0}" (click)="onDelete(counter)" -->
+                <i class="fas fa-trash-alt"></i>
+            </div>
+
+
+            <!-- Add -->
+            <div class="icon-container" title="Add"><!-- (click)="onAdd(counter)" -->
+                <i class="fas fa-plus-circle"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Content -->
+    <ng-container><!-- *ngIf="currentAdditionalInfo" -->
+
+        <!-- Radio Buttons -->
+        <div class="radio-buttons-container">
+            <!-- Shipping
+            <radio-button [name]="'info-type_' + GUID" [label]="'Shipping'" [checked]="!currentAdditionalInfo.isRecurring"
+                (change)="onShippingClick()"></radio-button>
+            Recurring
+            <radio-button [name]="'info-type_' + GUID" [label]="'Recurring'" [checked]="currentAdditionalInfo.isRecurring"
+                (change)="onRecurringClick()"></radio-button> -->
+
+
+                <div id="custom-input">
+                    <label style="color: #bbbbbb;">
+                        Shipping
+                        <input type="radio" name="info-type_" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+        
+        
+                <div id="custom-input">
+                    <label style="color: #bbbbbb;">
+                        Recurring
+                        <input type="radio" name="info-type_">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+
+
+        </div>
+
+        
+
+        <ng-container><!-- *ngIf="!warningPromptShowing" -->
+            <div style="background: #303030; border-top: 2px groove #444444; padding: 10px;">
+
+                <!-- Shipping -->
+                <ng-container *ngIf="false"><!-- *ngIf="!currentAdditionalInfo.isRecurring" -->
+                    <!-- <shipping [additionalInfo]="currentAdditionalInfo" (onUpdate)="update()"></shipping> -->
+                    <shipping-properties></shipping-properties>
+                </ng-container>
+
+                <!-- Recurring -->
+                <ng-container *ngIf="true"><!-- *ngIf="currentAdditionalInfo.isRecurring" -->
+                    <!-- <recurring-payment [recurringPayment]="currentAdditionalInfo.recurringPayment" (onUpdate)="update()"></recurring-payment> -->
+                    <recurring-payment-properties></recurring-payment-properties>
+                </ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>

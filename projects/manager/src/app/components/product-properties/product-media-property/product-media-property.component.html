@@ -1,0 +1,34 @@
+<panel [title]="'Media'">
+    <div *ngIf="true" class="property-box-light">
+
+        <!-- Property Box Bar -->
+        <div class="property-box-bar">
+
+            <!-- Counter -->
+            <counter [itemCount]="3"></counter>
+
+            <!-- Icons -->
+            <div class="icons">
+                <!-- Delete -->
+                <div class="icon-container" title="Delete Media Item">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+
+                <!-- Add -->
+                <div class="icon-container" title="Add Media Item">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="property-box-dark">
+            
+            
+            <!-- Image -->
+            <div class="img-container">
+                <img>
+                <div class="no-property">No media available</div>
+            </div>
+        </div>
+    </div>
+</panel>

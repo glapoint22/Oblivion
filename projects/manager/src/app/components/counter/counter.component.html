@@ -1,0 +1,15 @@
+<div class="container">
+
+    <!-- Left Arrow -->
+     <div class="arrow-container" (click)="onArrowClick(-1)">
+        <i class="fas fa-caret-left"></i>
+    </div>
+    
+    <!-- Text -->
+    <div class="text">{{currentIndex + (itemCount > 0 ? 1 : 0)}} / {{itemCount}}</div>
+    
+    <!-- Right Arrow -->
+    <div class="arrow-container" (click)="onArrowClick(1)">
+        <i class="fas fa-caret-right"></i>
+    </div>
+</div>

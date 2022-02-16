@@ -1,0 +1,32 @@
+<div class="property-box-dark">
+
+
+    <!-- Property Box Bar -->
+    <div class="property-box-bar">
+
+        <!-- Icons -->
+        <div class="icons">
+
+
+
+            <!-- Delete icon -->
+            <div *ngIf="!noDelete" class="icon-container" [ngClass]="{'icon-disabled': !image || !image.url}"
+                (click)="onDeleteImageClick()" title="Delete Image">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+
+            <!-- Media browser icon -->
+            <div class="icon-container" (click)="onClick()" title="Open Media Browser">
+                <i class="fas fa-image"></i>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Image -->
+    <div class="img-container">
+        <img *ngIf="image && image.url" [src]="'images/' + image.url" (load)="onLoad.emit()">
+        <div *ngIf="!image || !image.url" class="no-property">No image available</div>
+    </div>
+</div>
