@@ -1,0 +1,40 @@
+<div class="editor-container">
+    <div class="widget-bar">
+
+
+        <ng-container *ngIf="widgetService">
+            <div *ngFor="let widgetCursor of widgetService.widgetCursors" class="icon-container"
+                (mousedown)="onIconMousedown(widgetCursor)" [title]="widgetCursor.name">
+                <i [class]="widgetCursor.className"></i>
+            </div>
+        </ng-container>
+
+
+
+    </div>
+
+    <div style="    flex: 1;
+    border-top: 1px dashed #505050;
+    margin-top: 50px;
+    border-bottom: 1px dashed #505050;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;">
+
+        <div style="    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1600px;
+    border-left: 1px dashed #505050;
+    border-right: 1px dashed #505050;
+    padding-top: 50px;
+    padding-bottom: 50px; margin: 1px">
+
+            <iframe #iframe src="https://www.target.com/" style="width: 100%; height: 100%;" scrolling="no"
+                frameborder="0"></iframe>
+        </div>
+
+
+    </div>
+
+</div>

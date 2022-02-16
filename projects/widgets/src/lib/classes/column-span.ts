@@ -2,7 +2,7 @@ import { Breakpoint } from "./breakpoint";
 import { BreakpointType } from "./widget-enums";
 
 export class ColumnSpan {
-    constructor(private value: number) { }
+    constructor(private value: number = 12) { }
 
     setClass(element: HTMLElement, breakpoints: Array<Breakpoint>) {
         let columnSpanBreakpoints: Array<Breakpoint> = [];

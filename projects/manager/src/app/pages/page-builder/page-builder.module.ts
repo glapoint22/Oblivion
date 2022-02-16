@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { PageBuilderRoutingModule } from './page-builder-routing.module';
 import { PageBuilderComponent } from './page-builder.component';
-import { BuilderModule } from '../../components/builder/builder.module';
+import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
+import { EditorModule } from '../../components/editor/editor.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { BuilderModule } from '../../components/builder/builder.module';
   imports: [
     CommonModule,
     PageBuilderRoutingModule,
-    BuilderModule
+    MenuBarModule,
+    EditorModule
   ]
 })
 export class PageBuilderModule { }

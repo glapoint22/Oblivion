@@ -20,7 +20,7 @@ export class ContainerWidgetComponent extends Widget {
   public shadow!: Shadow;
   public background!: Background;
   public border!: Border;
-  private padding!: Padding;
+  private padding: Padding = new Padding();
   private rows!: Array<Row>;
 
 
@@ -46,7 +46,7 @@ export class ContainerWidgetComponent extends Widget {
     this.corners = containerWidgetData.corners;
     this.shadow = containerWidgetData.shadow;
     this.rows = containerWidgetData.rows;
-    this.padding = new Padding(containerWidgetData.padding);
+    this.padding.setData(containerWidgetData.padding);
 
     super.setWidget(containerWidgetData);
   }

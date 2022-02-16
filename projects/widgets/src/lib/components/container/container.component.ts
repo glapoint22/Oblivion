@@ -11,13 +11,12 @@ import { RowComponent } from '../row/row.component';
 export class ContainerComponent {
   @ViewChild('viewContainerRef', { read: ViewContainerRef }) viewContainerRef!: ViewContainerRef;
 
-  constructor(private resolver: ComponentFactoryResolver) { }
+  constructor(public resolver: ComponentFactoryResolver) { }
 
 
   createRow(row: Row): void {
     // Create the new row
-    const rowComponentFactory: ComponentFactory<RowComponent> = this.resolver.resolveComponentFactory(RowComponent);
-    const rowComponentRef: ComponentRef<RowComponent> = this.viewContainerRef.createComponent(rowComponentFactory);
+    const rowComponentRef = this.createRowComponentRef();
     const rowComponent = rowComponentRef.instance;
 
     // Set the row with the row data
@@ -32,5 +31,11 @@ export class ContainerComponent {
     row.columns.forEach((column: Column) => {
       rowComponent.createColumn(column);
     });
+  }
+
+
+  createRowComponentRef(): ComponentRef<RowComponent> {
+    const rowComponentFactory: ComponentFactory<RowComponent> = this.resolver.resolveComponentFactory(RowComponent);
+    return this.viewContainerRef.createComponent(rowComponentFactory);
   }
 }

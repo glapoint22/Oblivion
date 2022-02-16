@@ -1,0 +1,11 @@
+.row {
+    display: flex;
+    flex-wrap: wrap;
+
+    // &:hover {
+    //     outline: 1px solid orange;
+    // }
+
+    position: absolute;
+    width: 100%;
+}

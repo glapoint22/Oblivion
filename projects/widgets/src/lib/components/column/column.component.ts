@@ -22,7 +22,7 @@ export class ColumnComponent implements AfterViewInit {
   public border!: Border;
   public corners!: Corners;
   public shadow!: Shadow;
-  private padding!: Padding;
+  private padding: Padding = new Padding();
   private columnSpan!: ColumnSpan;
   private breakpoints!: Array<Breakpoint>;
 
@@ -44,7 +44,7 @@ export class ColumnComponent implements AfterViewInit {
     this.shadow = column.shadow;
     this.breakpoints = column.breakpoints;
     this.columnSpan = new ColumnSpan(column.columnSpan);
-    this.padding = new Padding(column.padding);
+    this.padding.setData(column.padding);
   }
 
 

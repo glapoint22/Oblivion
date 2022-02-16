@@ -1,7 +1,17 @@
 export class Corners {
-    public constrain!: boolean;
-    public topLeft!: number;
-    public topRight!: number;
-    public bottomLeft!: number;
-    public bottomRight!: number;
+    public constrain: boolean = true;
+    public topLeft: number = 0;
+    public topRight: number = 0;
+    public bottomLeft: number = 0;
+    public bottomRight: number = 0;
+
+    setData(corners: Corners) {
+        if (corners) {
+            if (corners.constrain) this.constrain = corners.constrain;
+            if (corners.topLeft) this.topLeft = corners.topLeft;
+            if (corners.topRight) this.topRight = corners.topRight;
+            if (corners.bottomLeft) this.bottomLeft = corners.bottomLeft;
+            if (corners.bottomRight) this.bottomRight = corners.bottomRight;
+        }
+    }
 }
