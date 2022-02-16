@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 import {
   Resolve,
   ActivatedRouteSnapshot} from '@angular/router';
+import { DataService, GridData } from 'common';
 import { Observable } from 'rxjs';
-import { QueryParams } from '../../classes/query-params';
-import { DataService } from '../../services/data/data.service';
+import { PageContent, QueryParams } from 'widgets';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SearchResolver implements Resolve<any> {
+export class SearchResolver implements Resolve<PageContent | GridData> {
   public currentSearch!: string | null;
 
   constructor(private dataService: DataService) { }
 
-  resolve(route: ActivatedRouteSnapshot): Observable<any> {
+  resolve(route: ActivatedRouteSnapshot): Observable<PageContent | GridData> {
     const search = route.queryParamMap.get('search');
     const queryParams = new QueryParams();
 

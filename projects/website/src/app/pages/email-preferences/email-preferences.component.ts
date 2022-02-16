@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { EmailPreferences } from '../../classes/email-preferences';
-import { SpinnerAction } from '../../classes/enums';
 import { SuccessPromptComponent } from '../../components/success-prompt/success-prompt.component';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'email-preferences',

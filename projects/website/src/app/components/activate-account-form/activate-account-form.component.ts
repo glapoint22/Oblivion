@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Observable, tap } from 'rxjs';
-import { SpinnerAction } from '../../classes/enums';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({

@@ -1,8 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { LazyLoad, LazyLoadingService } from 'common';
 import { MediaType, VideoType } from '../../classes/enums';
-import { LazyLoad } from '../../classes/lazy-load';
 import { Media } from '../../classes/media';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { VideoApiService } from '../../services/video-api/video-api.service';
 
 @Component({

@@ -1,11 +1,9 @@
 import { ViewportScroller } from '@angular/common';
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router, Scroll } from '@angular/router';
-import { filter } from 'rxjs';
+import { LazyLoadingService, SpinnerService } from 'common';
 import { AccountService } from './services/account/account.service';
-import { LazyLoadingService } from './services/lazy-loading/lazy-loading.service';
 import { SocialMediaService } from './services/social-media/social-media.service';
-import { SpinnerService } from './services/spinner/spinner.service';
 import { VideoApiService } from './services/video-api/video-api.service';
 
 @Component({

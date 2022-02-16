@@ -1,0 +1,21 @@
+.builder-container {
+    position: absolute;
+    display: flex;
+    left: 0;
+    top: 33px;
+    right: 0;
+    bottom: 0;
+}
+
+.widget-bar {
+    background: #363636; 
+    width: 34px;
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    flex-shrink: 0;
+    .icon-container {
+        margin-top: 14px;
+        font-size: 16px;
+    }
+}

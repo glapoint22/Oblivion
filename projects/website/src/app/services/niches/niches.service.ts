@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { DataService } from 'common';
 import { Observable, of, tap } from 'rxjs';
 import { Niche } from '../../classes/niche';
-import { DataService } from '../data/data.service';
 
 @Injectable({
   providedIn: 'root'

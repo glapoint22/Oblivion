@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Page } from '../../classes/page';
+import { PageContent } from 'widgets';
 
 @Component({
   selector: 'home',
@@ -8,11 +8,11 @@ import { Page } from '../../classes/page';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  public page!: Page;
+  public pageContent!: PageContent;
 
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.page = this.route.snapshot.data.page;
+    this.pageContent = this.route.snapshot.data.pageContent;
   }
 }

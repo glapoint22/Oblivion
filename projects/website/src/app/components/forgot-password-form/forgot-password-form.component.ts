@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SpinnerAction } from '../../classes/enums';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { ResetPasswordOneTimePasswordFormComponent } from '../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.component';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'forgot-password-form',

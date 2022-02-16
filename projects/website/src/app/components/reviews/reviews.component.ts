@@ -1,15 +1,12 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { DataService, LazyLoadingService, ReviewFilter, SpinnerAction, SummaryProduct } from 'common';
 import { Subscription } from 'rxjs';
-import { ReviewFilter, SpinnerAction } from '../../classes/enums';
-import { Product } from '../../classes/product';
 import { Review } from '../../classes/review';
 import { ReportReviewFormComponent } from '../../components/report-review-form/report-review-form.component';
 import { ReviewsSideMenuComponent } from '../../components/reviews-side-menu/reviews-side-menu.component';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'reviews',
@@ -17,7 +14,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
   styleUrls: ['./reviews.component.scss']
 })
 export class ReviewsComponent implements OnInit {
-  @Input() product!: Product;
+  @Input() product!: SummaryProduct;
   @Input() showPaginator: boolean = false;
   public reviews: Array<Review> = new Array<Review>();
   public selectedFilter!: KeyValue<string, string>;

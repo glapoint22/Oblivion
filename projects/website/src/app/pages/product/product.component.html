@@ -34,7 +34,7 @@
     <!-- Related Products -->
     <div *ngIf="product.relatedProducts && product.relatedProducts.products && product.relatedProducts.products.length > 0"
         class="related-products-background">
-        <product-slider-widget [products]="product.relatedProducts.products" [caption]="caption"
+        <product-slider-widget [products]="product.relatedProducts.products" [text]="product.relatedProducts.caption"
             [clientWidth]="clientWidth">
         </product-slider-widget>
     </div>

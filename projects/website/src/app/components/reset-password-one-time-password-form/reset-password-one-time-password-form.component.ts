@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Observable, tap } from 'rxjs';
-import { SpinnerAction } from '../../classes/enums';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { Observable } from 'rxjs';
 import { Validation } from '../../classes/validation';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { ResetPasswordFormComponent } from '../reset-password-form/reset-password-form.component';
 
 @Component({

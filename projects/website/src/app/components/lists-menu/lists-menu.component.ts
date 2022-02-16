@@ -1,12 +1,12 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
-import { ShareListType, SpinnerAction } from '../../classes/enums';
+import { LazyLoadingService, SpinnerAction } from 'common';
+import { ShareListType } from '../../classes/enums';
 import { List } from '../../classes/list';
 import { DeleteListPromptComponent } from '../../components/delete-list-prompt/delete-list-prompt.component';
 import { EditListFormComponent } from '../../components/edit-list-form/edit-list-form.component';
 import { ManageCollaboratorsFormComponent } from '../../components/manage-collaborators-form/manage-collaborators-form.component';
 import { ShareListFormComponent } from '../../components/share-list-form/share-list-form.component';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'lists-menu',

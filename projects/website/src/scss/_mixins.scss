@@ -1,23 +1,4 @@
-@use "sass:math";
-
-@mixin modal-values ($max-width, $max-height, $breakpoint) {
-    .base {
-        max-width: $max-width;
-    }
-    
-    .content {
-        max-height: $max-height;
-    }
-
-    @media (max-height: $breakpoint) {
-        .base {
-            top: 0; 
-            bottom: 0;
-            position: absolute;
-        }
-    }
-}
-
+@import '../../../../dist/common/scss/mixins';
 
 @mixin button ($width, $height, $radius) {
     border-radius: $radius;
@@ -27,7 +8,6 @@
     border: none;
     cursor: pointer;
     font-size: 14px;
-    // line-height: $height;
     &:disabled {
         cursor: default;
     }
@@ -62,140 +42,5 @@
         outline: 1px solid #fff0c5;
         outline-offset: 2px;
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
-    }
-}
-
-@mixin arrow-down ($width, $height, $color) {
-    border-left: math.div($width, 2) solid transparent;
-    border-right: math.div($width, 2) solid transparent;
-    border-top: $height solid $color;
-}
-
-
-@mixin arrow-up ($width, $height, $color) {
-    border-left: math.div($width, 2) solid transparent;
-    border-right: math.div($width, 2) solid transparent;
-    border-bottom: $height solid $color;
-}
-
-
-@mixin arrow-right ($width, $height, $color) {
-    border-top: math.div($width, 2) solid transparent;
-    border-bottom: math.div($width, 2) solid transparent;
-    border-left: $height solid $color;
-}
-
-@mixin arrow-left ($width, $height, $color) {
-    border-top: math.div($width, 2) solid transparent;
-    border-bottom: math.div($width, 2) solid transparent;
-    border-right: $height solid $color;
-}
-
-
-
-@mixin popup ($arrowPos) {
-    z-index: 1000;
-    position: absolute;
-    top: 12px;
-    background: #161616f2;
-    border-radius: 6px;
-    border: 1px solid #424242;
-    box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.5);
-    pointer-events: all;
-
-    // Arrow
-    &::before {
-        content: "";
-        position: absolute;
-        top: -13px;
-        left: $arrowPos;
-        @include arrow-up(26px, 13px, #5e5e5e);
-    }
-    &::after {
-        content: "";
-        position: absolute;
-        top: -12px;
-        left: $arrowPos + 1;
-        @include arrow-up(24px, 12px, #161616);
-    }
-}
-
-
-// ....................................................................Get Class Extension..................................................................
-@function get-class-extension($breakpoint-key) {
-    @return if(map-get($breakpoints, $breakpoint-key) == 0, "", "-#{$breakpoint-key}");
-}
-
-
-// ....................................................................Media Breakpoint..................................................................
-@mixin media-breakpoint($key) {
-    $breakpoint: map-get($breakpoints, $key);
-
-    // If the breakpoint is not zero, create the media query
-    @if $breakpoint != 0 {
-        @media (min-width: $breakpoint) {
-            @content;
-        }
-    } @else {
-        // Dont's create the media query, just use the content
-        @content;
-    }
-}
-
-// .......................................................................Make Columns......................................................................
-@mixin make-columns() {
-    $num-grid-columns: 12;
-
-    // Create the placeholder selector
-    %column {
-        // position: relative;
-        width: 100%;
-    }
-    
-    // Loop through the breakpoints
-    @each $key in map-keys($breakpoints) {
-        // This will be either an empty string or the breakpoint key (-xs)
-        $extension: get-class-extension($key);
-
-        // Create the column classes
-        @for $i from 1 through $num-grid-columns {
-            .col-#{$i}#{$extension} {
-                @extend %column;
-            }
-        }
-
-        
-        .col#{$extension}, .col-auto#{$extension} {
-            @extend %column;
-        }
-
-        
-        // Create the media queries for each column class
-        @include media-breakpoint($key) {
-            .col#{$extension}{
-                flex-basis: 0;
-                flex-grow: 1;
-                max-width: 100%;
-            }
-
-            .col-auto#{$extension} {
-                flex: 0 0 auto;
-                width: auto;
-                max-width: 100%;
-            }
-
-
-            @for $i from 1 through $num-grid-columns {
-                .col-#{$i}#{$extension} {
-                    flex: 0 0 percentage(math.div($i, $num-grid-columns));
-                    max-width: percentage(math.div($i, $num-grid-columns));
-                }
-
-                .flex-10 > .col-#{$i}#{$extension} {
-                    flex: 0 0 percentage(math.div($i, 10));
-                    max-width: percentage(math.div($i, 10));
-                }
-            }
-        }
     }
 }

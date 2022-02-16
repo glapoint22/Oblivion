@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Page } from '../../classes/page';
+import { GridWidgetService } from 'common';
+import { PageContent } from 'widgets';
 import { SearchResolver } from '../../resolvers/search/search.resolver';
-import { GridWidgetService } from '../../services/grid-widget/grid-widget.service';
 
 @Component({
   selector: 'search',
@@ -10,7 +10,7 @@ import { GridWidgetService } from '../../services/grid-widget/grid-widget.servic
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit, OnDestroy {
-  public page!: Page;
+  public pageContent!: PageContent;
 
   constructor
     (
@@ -21,8 +21,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.parent?.data.subscribe(data => {
-      if (data.searchData.page) {
-        this.page = data.searchData.page;
+      if (data.searchData.pageContent) {
+        this.pageContent = data.searchData.pageContent;
       } else {
         this.gridWidgetService.gridData.next(data.searchData.gridData);
       }

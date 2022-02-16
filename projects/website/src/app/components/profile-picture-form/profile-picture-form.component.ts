@@ -1,11 +1,7 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction, SpinnerService } from 'common';
 import { CircleOverlay } from '../../classes/circle-overlay';
-import { SpinnerAction } from '../../classes/enums';
-import { LazyLoad } from '../../classes/lazy-load';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
-import { SpinnerService } from '../../services/spinner/spinner.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({

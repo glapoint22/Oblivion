@@ -1,4 +1,4 @@
-import { Image } from "./image";
+import { Image } from "common";
 
 export class OrderProduct {
     public name!: string;

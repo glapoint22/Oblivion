@@ -1,0 +1,44 @@
+@use "sass:math";
+
+.filter-container-header {
+    height: 38px;
+    background: #222222;
+    border: 1px solid #404040;
+    cursor: pointer;
+}
+
+.caption-container {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.caption {
+    color: white;
+    font-weight: bold;
+}
+
+.arrow-container {
+    margin: 0 7px;
+    border-top: math.div(10px, 2) solid transparent;
+    border-bottom: math.div(10px, 2) solid transparent;
+    border-left: 8px solid #ffba00;
+    transition: transform 0.25s ease-in-out;
+}
+
+.filter-container-base {
+    background: #161616;
+    border-left: 1px solid #252525;
+    border-right: 1px solid #252525;
+    overflow: hidden;
+    transition: max-height 0.25s ease-in-out, padding-top 0.25s ease-in-out, padding-bottom 0.25s ease-in-out;
+}
+
+
+input {
+    display: none;
+    &:checked ~ .arrow-container {
+        transform: rotate(90deg);
+    }
+}

@@ -1,0 +1,55 @@
+.price-container {
+    padding: 0 13px;
+}
+
+.input-flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
+.input-label {
+    color: #b4b4b4;
+}
+
+input[type=text] {
+    width: 45px;
+    height: 22px;
+    margin-bottom: 0;
+}
+
+.gold-round-button-sm {
+    width: 44px;
+    height: 22px;
+    border-radius: 12px;
+    margin: 0;
+}
+
+.horizontal-line {
+    margin: 18px 0;
+}
+
+.error-display{
+    border: 1px solid red;
+}
+
+.clear-price{
+    color: #ffba00;
+    margin-top: 15px;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+    
+    &:hover {
+        color: lighten(#ffba00, 10);
+    }
+}
+
+.checkbox:last-child {
+    margin-bottom: 0;
+}

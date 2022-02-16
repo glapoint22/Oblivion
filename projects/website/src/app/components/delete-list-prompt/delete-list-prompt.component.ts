@@ -1,9 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { SpinnerAction } from '../../classes/enums';
-import { LazyLoad } from '../../classes/lazy-load';
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { List } from '../../classes/list';
-import { DataService } from '../../services/data/data.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'delete-list-prompt',

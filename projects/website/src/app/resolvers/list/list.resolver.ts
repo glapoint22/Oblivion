@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router, Resolve } from '@angular/router';
+import { DataService } from 'common';
 import { Observable, of, switchMap } from 'rxjs';
 import { List } from '../../classes/list';
-import { DataService } from '../../services/data/data.service';
 
 @Injectable({
   providedIn: 'root'

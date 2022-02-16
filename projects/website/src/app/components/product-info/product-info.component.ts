@@ -1,13 +1,13 @@
 import { Component, Input, OnChanges } from '@angular/core';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
-import { MediaType, SpinnerAction } from '../../classes/enums';
+import { DetailProduct } from '../../classes/detail-product';
+import { MediaType } from '../../classes/enums';
 import { Media } from '../../classes/media';
-import { Product } from '../../classes/product';
 import { AddToListFormComponent } from '../../components/add-to-list-form/add-to-list-form.component';
 import { MediaPlayerComponent } from '../../components/media-player/media-player.component';
 import { ReportItemFormComponent } from '../../components/report-item-form/report-item-form.component';
 import { AccountService } from '../../services/account/account.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { SocialMediaService } from '../../services/social-media/social-media.ser
   styleUrls: ['./product-info.component.scss']
 })
 export class ProductInfoComponent implements OnChanges {
-  @Input() product!: Product;
+  @Input() product!: DetailProduct;
   @Input() clientWidth!: number;
   public selectedMedia!: Media;
   public mediaType = MediaType;

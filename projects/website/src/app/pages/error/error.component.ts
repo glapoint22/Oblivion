@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { LazyLoadingService } from 'common';
 
 @Component({
   selector: 'error',

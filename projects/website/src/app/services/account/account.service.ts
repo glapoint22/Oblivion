@@ -1,10 +1,9 @@
 import { HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CookieService, DataService } from 'common';
 import { Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { Customer } from '../../classes/customer';
-import { CookieService } from '../cookie/cookie.service';
-import { DataService } from '../data/data.service';
 
 @Injectable({
   providedIn: 'root'

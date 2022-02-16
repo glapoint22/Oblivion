@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { LazyLoad } from '../../classes/lazy-load';
+import { LazyLoad, LazyLoadingService } from 'common';
 import { AccountService } from '../../services/account/account.service';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'success-prompt',

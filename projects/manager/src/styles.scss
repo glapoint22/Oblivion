@@ -35,7 +35,7 @@ input:not([type]) {
     cursor: pointer;
     margin-left: 5px;
 
-    &:active:not(.icon-disabled) {
+    &:active {
         color: lighten(#9e9e9e, 35%);
     }
 }

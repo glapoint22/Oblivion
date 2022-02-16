@@ -1,9 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LazyLoad } from '../../classes/lazy-load';
-import { Product } from '../../classes/product';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
+import { LazyLoad, LazyLoadingService, SummaryProduct } from 'common';
 
 @Component({
   selector: 'add-to-list-prompt',
@@ -12,7 +10,7 @@ import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.ser
 })
 export class AddToListPromptComponent extends LazyLoad {
   public list!: KeyValue<string, string>;
-  public product!: Product;
+  public product!: SummaryProduct;
 
   constructor
     (

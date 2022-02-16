@@ -1,10 +1,7 @@
 import { Directive } from "@angular/core";
 import { AbstractControl, AsyncValidatorFn, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from "common";
 import { Observable } from "rxjs";
-import { DataService } from "../services/data/data.service";
-import { LazyLoadingService } from "../services/lazy-loading/lazy-loading.service";
-import { SpinnerAction } from "./enums";
-import { LazyLoad } from "./lazy-load";
 
 @Directive()
 export class Validation extends LazyLoad {

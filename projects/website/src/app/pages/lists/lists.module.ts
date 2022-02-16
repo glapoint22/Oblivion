@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ListsRoutingModule } from './lists-routing.module';
 import { ListsComponent } from './lists.component';
 import { HeaderFooterModule } from '../../components/header-footer/header-footer.module';
-import { DropdownModule } from '../../components/dropdown/dropdown.module';
 import { DropdownButtonComponent } from '../../components/dropdown-button/dropdown-button.component';
 import { ListsMenuModule } from '../../components/lists-menu/lists-menu.module';
-import { StarsSummaryModule } from '../../components/stars-summary/stars-summary.module';
+import { DropdownModule, StarsSummaryModule } from 'common';
 
 
 @NgModule({

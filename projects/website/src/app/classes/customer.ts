@@ -1,4 +1,4 @@
-import { Image } from "./image";
+import { Image } from "common";
 
 export class Customer {
     public profileImage!: Image;

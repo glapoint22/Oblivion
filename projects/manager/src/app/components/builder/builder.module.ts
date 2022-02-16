@@ -8,6 +8,7 @@ import { BuilderComponent } from './builder.component';
   declarations: [BuilderComponent],
   imports: [
     CommonModule
-  ]
+  ],
+  exports: [BuilderComponent]
 })
 export class BuilderModule { }

@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { MediaType, SpinnerAction } from '../../classes/enums';
+import { LazyLoadingService, SpinnerAction } from 'common';
+import { MediaType } from '../../classes/enums';
 import { Media } from '../../classes/media';
 import { MediaPlayerComponent } from '../../components/media-player/media-player.component';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 
 @Component({
   selector: 'media-slider',

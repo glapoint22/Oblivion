@@ -2,9 +2,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { SpinnerModule } from 'common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ClientInterceptor } from './interceptors/client/client.interceptor';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
@@ -12,13 +12,13 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
   declarations: [
     AppComponent,
     PageNotFoundComponent,
-    SpinnerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    SpinnerModule
   ],
   providers: [
     {

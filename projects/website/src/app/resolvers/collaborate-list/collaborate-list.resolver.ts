@@ -3,8 +3,8 @@ import {
   Router, Resolve,
   ActivatedRouteSnapshot
 } from '@angular/router';
+import { DataService } from 'common';
 import { Observable, tap } from 'rxjs';
-import { DataService } from '../../services/data/data.service';
 
 @Injectable({
   providedIn: 'root'
