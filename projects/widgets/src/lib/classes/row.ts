@@ -20,6 +20,6 @@ export class Row {
 
     constructor(top: number, widgetType: WidgetType) {
         this.top = top;
-        this.columns.push(new Column(widgetType));
+        this.columns.push(new Column(12, widgetType));
     }
 }

@@ -1,5 +1,10 @@
 <!-- Container -->
-<div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;" (mouseup)="onContainerMouseup($event)">
+<div class="container" (mouseup)="onContainerMouseup($event)" (mousemove)="onContainerMousemove($event, rowIndicator)"
+    (mouseenter)="onContainerMouseEnter()" (mouseleave)="onContainerMouseLeave()">
+
+    <!-- Row Indicator -->
+    <div #rowIndicator class="row-indicator"></div>
+
     <ng-template #viewContainerRef>
         <!-- Rows go here -->
     </ng-template>

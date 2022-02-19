@@ -1,0 +1,52 @@
+@import '../../../../dist/widgets/scss/widgets';
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    position: absolute;
+    width: 100%;
+}
+
+
+// Column Indicator
+.column-indicator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    visibility: hidden;
+    background: red;
+
+    &:first-child {
+        left: 0;
+    }
+
+    &:last-child {
+        right: 0;
+    }
+
+    &:hover {
+        background: blue;
+    }
+}
+
+// row Indicator
+body {
+    &:not(.over-row) {
+        &#widget-cursor {
+            .container:hover .row-indicator {
+                width: 100%;
+                position: absolute;
+                height: 32px;
+                background: rgba(4, 114, 240, 0.10);
+                pointer-events: none;
+            }
+        }
+    }
+    
+    &#widget-cursor {
+        .row:hover .column-indicator {
+            visibility: visible;
+        }
+    }
+}

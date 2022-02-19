@@ -12,7 +12,8 @@
     [ngStyle]="{ 'background-image': background && background.image && background.image.url ? 'url(images/' + background.image.url + ')' : null,
                         'background-position': background && background.image ? background.image.position : null,
                         'background-repeat': background && background.image ? background.image.repeat : null,
-                        'background-attachment': background && background.image ? background.image.attachment : null}">
+                        'background-attachment': background && background.image ? background.image.attachment : null}"
+    (mouseup)="onMouseup()" (mousemove)="onMousemove()" (mouseleave)="onMouseleave()">
 
     <ng-template #viewContainerRef>
         <!-- Columns go here -->

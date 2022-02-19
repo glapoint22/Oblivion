@@ -1,5 +1,8 @@
-import { Component, Type } from '@angular/core';
-import { ColumnComponent, Widget, WidgetType } from 'widgets';
+import { Component, ComponentFactoryResolver, Type } from '@angular/core';
+import { Column, ColumnComponent, Widget, WidgetType } from 'widgets';
+import { WidgetCursorType } from '../../classes/enums';
+import { WidgetService } from '../../services/widget/widget.service';
+import { RowDevComponent } from '../row-dev/row-dev.component';
 
 @Component({
   selector: '[column-dev]',
@@ -7,6 +10,9 @@ import { ColumnComponent, Widget, WidgetType } from 'widgets';
   styleUrls: ['./column-dev.component.scss']
 })
 export class ColumnDevComponent extends ColumnComponent {
+  public rowComponent!: RowDevComponent;
+
+  constructor(resolver: ComponentFactoryResolver, private widgetService: WidgetService) { super(resolver) }
 
   // -----------------------------( GET WIDGET )------------------------------ \\
   async getWidget(widgetType: WidgetType) {
@@ -75,5 +81,22 @@ export class ColumnDevComponent extends ColumnComponent {
     }
 
     return widget;
+  }
+
+
+  onMouseenter() {
+    if (document.body.id == 'widget-cursor') {
+      this.widgetService.setWidgetCursorType(WidgetCursorType.Allowed);
+    }
+  }
+
+  onMouseleave() {
+    if (document.body.id == 'widget-cursor') {
+      this.widgetService.setWidgetCursorType(WidgetCursorType.NotAllowed);
+    }
+  }
+
+  onColumnIndicatorMouseup(addend: number) {
+    this.rowComponent.addColumn(addend, this.columnElement);
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageContent } from 'widgets';
-import { SelectedWidgetIcon } from '../../classes/selected-widget-icon';
+import { WidgetCursor } from '../../classes/widget-cursor';
 import { PageDevComponent } from '../../components/page-dev/page-dev.component';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -18,10 +18,19 @@ export class ViewportComponent implements OnInit {
   ngOnInit(): void {
     const _window = window as any;
 
+    // Assign widget service to a global variable so it can be accessed outside the iframe
     _window.widgetService = this.widgetService;
 
-    this.widgetService.$selectedWidgetIcon.subscribe((selectedWidgetIcon: SelectedWidgetIcon) => {
-      document.body.style.cursor = selectedWidgetIcon.cursor;
+    // Subscribe to widget cursor changes
+    this.widgetService.$widgetCursor.subscribe((widgetCursor: WidgetCursor) => {
+      document.body.style.cursor = widgetCursor.cursor;
+
+      // Assign widget cursor id to body for css
+      if (widgetCursor.widgetType) {
+        document.body.id = 'widget-cursor';
+      } else {
+        document.body.id = '';
+      }
     });
   }
 }

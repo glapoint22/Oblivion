@@ -1,0 +1,17 @@
+@import '../../../../dist/common/scss/reset';
+@import '../../../../dist/common/scss/checkbox-radio';
+
+input:not([type]) {
+    background: #262626;
+    border: 1px solid #444444;
+    border-radius: 4px;
+    color: white;
+    width: -webkit-fill-available;
+    height: 22px;
+    outline: none;
+    padding-left: 5px;
+
+    &:disabled {
+        opacity: 30%;
+    }
+}

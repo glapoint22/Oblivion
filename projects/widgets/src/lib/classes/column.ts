@@ -18,7 +18,8 @@ export class Column {
     public columnSpan!: number;
     public breakpoints!: Array<Breakpoint>;
 
-    constructor(widgetType: WidgetType) { 
+    constructor(columnSpan: number, widgetType: WidgetType) { 
         this.widgetData = new WidgetData(widgetType);
+        this.columnSpan = columnSpan;
     }
 }

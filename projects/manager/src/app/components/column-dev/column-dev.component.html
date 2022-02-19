@@ -1,4 +1,5 @@
-<div [style.border]="border && border.enable ? border.width + 'px ' + border.style + ' ' + border.color : null"
+<div style="position: relative;"
+    [style.border]="border && border.enable ? border.width + 'px ' + border.style + ' ' + border.color : null"
     [style.borderRadius]="
     corners && 
     (corners.topLeft > 0 ||
@@ -16,4 +17,10 @@
     <ng-template #viewContainerRef>
         <!-- Widgets go here -->
     </ng-template>
+
+    <div (mouseenter)="onMouseenter()" (mouseleave)="onMouseleave()" (mousemove)="$event.stopPropagation()">
+        <div class="column-indicator" (mouseup)="onColumnIndicatorMouseup(0)"></div>
+        <div class="column-indicator" (mouseup)="onColumnIndicatorMouseup(1)"></div>
+    </div>
+
 </div>
