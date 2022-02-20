@@ -9,4 +9,10 @@ export enum ItemSelectType {
 export enum HierarchyType {
     Checkbox,
     EditableCheckbox
+
+}
+
+export enum WidgetCursorType {
+    NotAllowed,
+    Allowed
 }

@@ -27,10 +27,8 @@ export class ContainerComponent {
     rowComponentRef.hostView.detectChanges();
 
 
-    // Loop through each column
-    row.columns.forEach((column: Column) => {
-      rowComponent.createColumn(column);
-    });
+    // Create the columns
+    rowComponent.createColumns(row.columns);
   }
 
 

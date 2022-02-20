@@ -31,7 +31,7 @@ export class RowComponent implements AfterViewInit {
 
 
   ngAfterViewInit(): void {
-      // Get the html row element
+    // Get the html row element
     const rowElement = this.viewContainerRef.element.nativeElement.parentElement;
     this.padding.setClass(rowElement, this.breakpoints);
     this.verticalAlignment.setClass(rowElement, this.breakpoints);
@@ -50,9 +50,18 @@ export class RowComponent implements AfterViewInit {
     this.verticalAlignment = new VerticalAlignment(row.verticalAlignment);
   }
 
-  createColumn(column: Column): void {
-    const columnComponentRef = this.createColumnComponentRef();
+  createColumns(columns: Array<Column>) {
+    columns.forEach((column: Column) => {
+      this.createColumn(column);
+    });
+  }
+
+  createColumn(column: Column, index?: number): void {
+    const componentFactory = this.resolver.resolveComponentFactory(ColumnComponent);
+    const columnComponentRef = this.viewContainerRef.createComponent(componentFactory);
     const columnComponent = columnComponentRef.instance;
+
+    columnComponent.columnElement = columnComponentRef.location.nativeElement;
 
     // Set the column with the column data
     columnComponent.setColumn(column);
@@ -63,10 +72,5 @@ export class RowComponent implements AfterViewInit {
 
     // Create the widget
     columnComponent.createWidget(column.widgetData);
-  }
-
-  createColumnComponentRef(): ComponentRef<ColumnComponent> {
-    const componentFactory = this.resolver.resolveComponentFactory(ColumnComponent);
-    return this.viewContainerRef.createComponent(componentFactory);
   }
 }

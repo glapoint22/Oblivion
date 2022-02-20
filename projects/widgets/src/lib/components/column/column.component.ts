@@ -22,18 +22,16 @@ export class ColumnComponent implements AfterViewInit {
   public border!: Border;
   public corners!: Corners;
   public shadow!: Shadow;
+  public columnElement!: HTMLElement;
   private padding: Padding = new Padding();
-  private columnSpan!: ColumnSpan;
+  public columnSpan!: ColumnSpan;
   private breakpoints!: Array<Breakpoint>;
 
   constructor(private resolver: ComponentFactoryResolver) { }
 
   ngAfterViewInit(): void {
-    // Get the html column element
-    const columnElement: HTMLElement = this.viewContainerRef.element.nativeElement.parentElement;
-
-    this.columnSpan.setClass(columnElement.parentElement as HTMLElement, this.breakpoints);
-    this.padding.setClass(columnElement, this.breakpoints);
+    this.columnSpan.setClass(this.columnElement, this.breakpoints);
+    this.padding.setClass(this.columnElement, this.breakpoints);
   }
 
 
