@@ -1,3 +1,33 @@
 <panel [title]="'Groups'">
-    
+
+    <div class="property-box-dark">
+
+
+        <!-- Property Box Bar -->
+        <div class="property-box-bar">
+
+            <!-- Icons -->
+            <div class="icons">
+
+                <!-- Delete icon -->
+                <div class="icon-container" (mouseover)="preventUnselect(true)" (mouseout)="preventUnselect(false)" (click)="onDelete()">
+                    <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
+                </div>
+
+                <!-- Edit icon -->
+                <div class="icon-container" (mouseover)="preventUnselect(true)" (mouseout)="preventUnselect(false)" (click)="onEdit()">
+                    <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
+                </div>
+
+                <!-- Add icon -->
+                <div class="icon-container" (click)="onAdd()">
+                    <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
+                </div>
+            </div>
+        </div>
+
+        <list [list]="groups" [listChange]="listChange" (onListUpdate)="trumpy($event)"></list>
+        
+    </div>
+
 </panel>

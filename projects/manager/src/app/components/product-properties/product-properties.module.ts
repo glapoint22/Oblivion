@@ -17,7 +17,7 @@ import { ProductDescriptionPropertyComponent } from './product-description-prope
 import { ProductSubproductsPropertyComponent } from './product-subproducts-property/product-subproducts-property.component';
 import { ProductKeywordsPropertyComponent } from './product-keywords-property/product-keywords-property.component';
 import { ProductGroupsPropertyComponent } from './product-groups-property/product-groups-property.component';
-import { HierarchyItemModule } from '../hierarchy/hierarchy-item/hierarchy-item.module';
+import { ListModule } from '../list/list.module';
 
 
 @NgModule({
@@ -41,7 +41,8 @@ import { HierarchyItemModule } from '../hierarchy/hierarchy-item/hierarchy-item.
     ProductGroupsPropertyComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    ListModule
   ],
   exports: [ProductPropertiesComponent]
 })
