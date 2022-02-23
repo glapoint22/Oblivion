@@ -17,6 +17,7 @@ import { ProductKeywordsPropertyComponent } from './product-keywords-property/pr
 import { ProductGroupsPropertyComponent } from './product-groups-property/product-groups-property.component';
 import { PanelModule } from '../panel/panel.module';
 import { ImageBoxModule } from '../image-box/image-box.module';
+import { ListModule } from '../List/list.module';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { ImageBoxModule } from '../image-box/image-box.module';
   imports: [
     CommonModule,
     PanelModule,
-    ImageBoxModule
+    ImageBoxModule,
+    ListModule
   ],
   exports: [ProductPropertiesComponent]
 })

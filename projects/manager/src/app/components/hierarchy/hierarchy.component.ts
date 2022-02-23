@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Hierarchy, HierarchyType } from '../../classes/hierarchy';
+import { Component, Input } from '@angular/core';
+import { HierarchyType } from '../../classes/enums';
+import { Hierarchy } from '../../classes/hierarchy';
 
 @Component({
   selector: 'hierarchy',
@@ -9,8 +10,4 @@ import { Hierarchy, HierarchyType } from '../../classes/hierarchy';
 export class HierarchyComponent {
   @Input() hierarchy!: Hierarchy
   @Input() hierarchyType!: HierarchyType;
-
-  ngOnInit(){
-    console.log(this.hierarchyType)
-  }
 }

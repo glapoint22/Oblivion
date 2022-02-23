@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { HierarchyType } from '../../../classes/hierarchy';
+import { HierarchyType } from '../../../classes/enums';
 import { HierarchyItem } from '../../../classes/hierarchy-item';
 
 @Component({
@@ -19,7 +19,7 @@ export class HierarchyItemComponent {
 
   
   ngOnInit() {
-    if (!this.hierarchyItem.name) this.rootHierarchyItem = this.hierarchyItem;
+    // if (!this.hierarchyItem.name) this.rootHierarchyItem = this.hierarchyItem;
   }
 
 
