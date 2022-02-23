@@ -1,14 +1,40 @@
+import { Color } from "./color";
+
 export class Shadow {
-    public enable: boolean = false;
+    public enabled: boolean = false;
     public x: number = 5;
     public y: number = 5;
     public blur: number = 5;
     public size: number = 5;
-    public color: string = 'rgba(0, 0, 0, 0.75)';
+
+    private _color!: string;
+    public get color(): string {
+        return this._color;
+    }
+    public set color(v: string) {
+        this._rgbColor = Color.hexToRGB(v);
+        this._color = v;
+    }
+
+
+
+    private _rgbColor!: Color;
+    public get rgbColor(): Color {
+        return this._rgbColor;
+    }
+    public set rgbColor(v: Color) {
+        this._color = v.toRGBString();
+        this._rgbColor = v;
+    }
+
+
+    constructor(color?: string) {
+        this.color = color ? color : '#000000bf';
+    }
 
     setData(shadow: Shadow) {
         if (shadow) {
-            if (shadow.enable) this.enable = shadow.enable;
+            if (shadow.enabled) this.enabled = shadow.enabled;
             if (shadow.x) this.x = shadow.x;
             if (shadow.y) this.y = shadow.y;
             if (shadow.blur) this.blur = shadow.blur;

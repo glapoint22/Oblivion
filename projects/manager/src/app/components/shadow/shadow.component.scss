@@ -1,0 +1,13 @@
+.property {
+    &:nth-child(3) .label { 
+        margin-left: 34px;
+    }
+
+    &:nth-child(4) .label { 
+        margin-left: 32px;
+    }
+
+    &:nth-child(5) .label { 
+        margin-left: 26px;
+    }
+}

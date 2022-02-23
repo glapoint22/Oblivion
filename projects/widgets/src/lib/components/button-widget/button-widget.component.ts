@@ -108,7 +108,7 @@ export class ButtonWidgetComponent extends Widget {
       (this.background.image && this.background.image.attachment ? '\n\tbackground-attachment: ' + this.background.image.attachment + ';' : '') +
 
       // Border
-      (this.border && this.border.enable ? '\n\tborder: ' + this.border.width + 'px ' + this.border.style + ' ' + this.border.color + ';' : '') +
+      (this.border && this.border.enabled ? '\n\tborder: ' + this.border.width + 'px ' + this.border.style + ' ' + this.border.color + ';' : '') +
 
 
       // Caption
@@ -129,7 +129,7 @@ export class ButtonWidgetComponent extends Widget {
       (this.backgroundHoverColor || this.borderHoverColor || this.textHoverColor ?
         '\n.' + className + ':hover {' +
         (this.backgroundHoverColor ? '\n\tbackground-color: ' + this.backgroundHoverColor + ';' : '') +
-        (this.border && this.border.enable && this.borderHoverColor ? '\n\tborder-color: ' + this.borderHoverColor + ';' : '') +
+        (this.border && this.border.enabled && this.borderHoverColor ? '\n\tborder-color: ' + this.borderHoverColor + ';' : '') +
         (this.textHoverColor ? '\n\tcolor: ' + this.textHoverColor + ';' : '') +
         '\n}' : '') +
 
@@ -137,7 +137,7 @@ export class ButtonWidgetComponent extends Widget {
       (this.backgroundActiveColor || this.borderActiveColor || this.textActiveColor ?
         '\n.' + className + ':active {' +
         (this.backgroundHoverColor ? '\n\tbackground-color: ' + this.backgroundActiveColor + ';' : '') +
-        (this.border && this.border.enable && this.borderActiveColor ? '\n\tborder-color: ' + this.borderActiveColor + ';' : '') +
+        (this.border && this.border.enabled && this.borderActiveColor ? '\n\tborder-color: ' + this.borderActiveColor + ';' : '') +
         (this.textActiveColor ? '\n\tcolor: ' + this.textActiveColor + ';' : '') +
         '\n}' : '');
   }

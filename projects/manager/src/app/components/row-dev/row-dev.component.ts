@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef } from '@angular/core';
+import { Component, ComponentFactoryResolver } from '@angular/core';
 import { Column, RowComponent } from 'widgets';
 import { WidgetCursorType } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';

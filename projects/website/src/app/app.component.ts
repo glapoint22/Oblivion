@@ -98,8 +98,7 @@ export class AppComponent implements OnInit {
 
           // Navigation End
           else if (event instanceof NavigationEnd) {
-            if (!event.url.includes('#reviews-top'))
-              this.spinnerService.show = false;
+            this.spinnerService.show = false;
           }
 
           // Scroll

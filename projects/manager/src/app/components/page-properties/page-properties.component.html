@@ -1,0 +1,59 @@
+<div class="properties">
+    <!-- Page type -->
+    <div class="property">
+        <div class="label" style="margin-right: 15px;">Type:</div>
+        <div style="width: 100%;">
+            <dropdown [listItems]="pageTypes">
+            </dropdown>
+        </div>
+    </div>
+
+
+    <!-- Page Name -->
+    <div class="property">
+        <div class="label" style="margin-right: 9px;">Name:</div>
+        <input [(ngModel)]="widgetService.page.pageContent.name">
+    </div>
+
+
+
+
+
+    <!-- <ng-container *ngIf="page.displayType == pageDisplayType.Browse || page.displayType == pageDisplayType.Search || page.displayType == pageDisplayType.Product"> -->
+    <div style="font-size: 12px;">Niches:</div>
+
+
+    <!-- Property Box -->
+    <div class="property-box-dark" style="position: relative;">
+
+
+        <div class="icons" style="background: #3b3b3b;">
+            <input>
+
+            <div class="icon-container">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+
+
+
+            <div class="icon-container">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+        </div>
+
+
+
+        <!-- <item-list #itemList [listItems]="page.referenceItems" [listOptions]="itemListOptions">
+            </item-list> -->
+
+
+
+        <div class="no-property">No
+            available</div>
+    </div>
+    <!-- </ng-container> -->
+
+
+    <!-- Background color & image -->
+    <background [background]="widgetService.page.pageContent.background" (onChange)="onBackgroundChange()"></background>
+</div>

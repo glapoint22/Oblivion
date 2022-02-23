@@ -1,7 +1,7 @@
 <div class="view-port">
-    <page-dev #page [pageContent]="pageContent"></page-dev>
+    <page-dev></page-dev>
 
-    <div>
+    <div *ngIf="widgetService.page.pageContent">
         <div class="vertical-dashed-line"></div>
         <div class="vertical-dashed-line"></div>
         <div class="horizontal-dashed-line"></div>

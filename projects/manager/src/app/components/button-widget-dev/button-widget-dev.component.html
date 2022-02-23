@@ -1,5 +1,6 @@
-<div #widget class="button" [style.backgroundColor]="background && background.color ? background.color: null"
-    [style.border]="border && border.enable ? border.width + 'px ' + border.style + ' ' + border.color : null"
+<div #widget class="button"
+    [style.backgroundColor]="background && background.color ? background.color: null"
+    [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
     [style.borderRadius]="
 corners && 
 (corners.topLeft > 0 ||
@@ -7,7 +8,7 @@ corners.topRight > 0 ||
 corners.bottomRight > 0 ||
 corners.bottomLeft > 0) ?
 corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
-    [style.box-shadow]="shadow && shadow.enable ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
+    [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
     [style.fontSize.px]="caption.fontSize" [style.paddingTop]="padding.top" [style.paddingRight]="padding.right"
     [style.paddingBottom]="padding.bottom" [style.paddingLeft]="padding.left" [style.maxWidth.px]="width ? width : null"
     [style.minHeight.px]="height" [ngStyle]="{ 'background-image': background.image && background.image.url ? 'url(images/' + background.image.url + ')' : null,
@@ -21,9 +22,15 @@ corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px '
         {{caption.text}}
     </div>
 
-    <div style="background: white; width: 8px;height: 8px;position: absolute;border-radius: 50%;top: -4px;left: -4px;z-index: 10;border: 1px solid #0985a9;"></div>
-    <div style="background: white; width: 8px;height: 8px;position: absolute;border-radius: 50%;top: -4px;right: -4px;z-index: 10;border: 1px solid #0985a9;"></div>
-    <div style="background: white; width: 8px;height: 8px;position: absolute;border-radius: 50%;bottom: -4px;left: -4px;z-index: 10;border: 1px solid #0985a9;"></div>
-    <div style="background: white; width: 8px;height: 8px;position: absolute;border-radius: 50%;bottom: -4px;right: -4px;z-index: 10;border: 1px solid #0985a9;"></div>
-    
+    <!-- Handles -->
+    <div *ngIf="widgetService.selectedWidget == this">
+        <div class="handle top-left"></div>
+        <div class="handle top"></div>
+        <div class="handle top-right"></div>
+        <div class="handle left"></div>
+        <div class="handle bottom-left"></div>
+        <div class="handle bottom" (mousedown)="onHandleMousedown()"></div>
+        <div class="handle bottom-right"></div>
+        <div class="handle right"></div>
+    </div>
 </div>

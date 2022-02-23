@@ -28,22 +28,22 @@ export class ContainerDevComponent extends ContainerComponent {
   }
 
   onContainerMousemove(event: MouseEvent, rowIndicator: HTMLElement) {
-    if(document.body.id == 'widget-cursor') {
+    if (document.body.id == 'widget-cursor') {
       rowIndicator.style.top = event.clientY - 4 + 'px';
     }
-    
+
   }
 
 
   onContainerMouseEnter() {
-    if(document.body.id == 'widget-cursor') {
+    if (document.body.id == 'widget-cursor') {
       this.widgetService.setWidgetCursorType(WidgetCursorType.Allowed)
     }
   }
 
 
   onContainerMouseLeave() {
-    if(document.body.id == 'widget-cursor') {
+    if (document.body.id == 'widget-cursor') {
       this.widgetService.setWidgetCursorType(WidgetCursorType.NotAllowed)
     }
   }
@@ -62,17 +62,14 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
   onRowMousedown = (mousedownEvent: MouseEvent) => {
+    // If a widget is being resized, return
+    if (this.widgetService.$widgetResize.getValue() != 'default') return;
+
     const rowElement = mousedownEvent.currentTarget as HTMLElement;
     const offset = mousedownEvent.clientY - rowElement.getBoundingClientRect().top;
 
-
-
     const onRowMousemove = (mousemoveEvent: MouseEvent) => {
-
       let newRowelementTop = Math.max(0, mousemoveEvent.clientY - offset);
-
-
-
 
       const otherRowElements = this.rowElements
         .filter(x => x != rowElement && x.getBoundingClientRect().bottom <= rowElement.getBoundingClientRect().top);

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ComponentRef, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { Background } from '../../classes/background';
 import { Border } from '../../classes/border';
 import { Breakpoint } from '../../classes/breakpoint';
@@ -27,7 +27,7 @@ export class ColumnComponent implements AfterViewInit {
   public columnSpan!: ColumnSpan;
   private breakpoints!: Array<Breakpoint>;
 
-  constructor(private resolver: ComponentFactoryResolver) { }
+  constructor(public resolver: ComponentFactoryResolver) { }
 
   ngAfterViewInit(): void {
     this.columnSpan.setClass(this.columnElement, this.breakpoints);
@@ -46,9 +46,9 @@ export class ColumnComponent implements AfterViewInit {
   }
 
 
-  async createWidget(widgetData: WidgetData): Promise<void> {
-    const componentFactory = this.resolver.resolveComponentFactory(await this.getWidget(widgetData.widgetType));
-    const widgetComponentRef = this.viewContainerRef.createComponent(componentFactory);
+  async createWidget(widgetData: WidgetData) {
+    // const componentFactory = this.resolver.resolveComponentFactory(await this.getWidget(widgetData.widgetType));
+    const widgetComponentRef =  await this.createWidgetComponentRef(widgetData)
     const widgetComponent = widgetComponentRef.instance;
 
     // Set the widget with the widget data
@@ -57,6 +57,14 @@ export class ColumnComponent implements AfterViewInit {
 
     // Detect changes
     widgetComponentRef.hostView.detectChanges();
+  }
+
+
+  async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
+    const componentFactory = this.resolver.resolveComponentFactory(await this.getWidget(widgetData.widgetType));
+    const widgetComponentRef = this.viewContainerRef.createComponent(componentFactory);
+
+    return widgetComponentRef;
   }
 
 

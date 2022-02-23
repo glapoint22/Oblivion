@@ -14,37 +14,19 @@ export class PageComponent implements AfterViewInit, OnDestroy {
 
   ngOnChanges() {
     if (this.container) {
-      this.setPage();
+      this.loadPage();
     }
   }
 
   ngAfterViewInit(): void {
-    this.setPage();
+    this.loadPage();
   }
 
 
-  setPage() {
+  loadPage() {
     if (this.pageContent) {
       if (this.pageContent.background) {
-        // Background color
-        if (this.pageContent.background.color && this.pageContent.background.color != '#00000000') {
-          document.body.style.backgroundColor = this.pageContent.background.color;
-        }
-
-        // Background image
-        if (this.pageContent.background.image && this.pageContent.background.image.url) {
-          // Image
-          document.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.url + ')';
-
-          // Position
-          document.body.style.backgroundPosition = this.pageContent.background.image.position;
-
-          // Repeat
-          document.body.style.backgroundRepeat = this.pageContent.background.image.repeat;
-
-          // Attachment
-          document.body.style.backgroundAttachment = this.pageContent.background.image.attachment;
-        }
+        this.setBackground();
       }
 
       // This will create the widgets starting with the rows
@@ -62,12 +44,42 @@ export class PageComponent implements AfterViewInit, OnDestroy {
   }
 
 
-  ngOnDestroy(): void {
-    // Reset the background
+  setBackground() {
+    if (this.pageContent.background.enabled) {
+      // Background color
+      if (this.pageContent.background.color) {
+        document.body.style.backgroundColor = this.pageContent.background.rgbColor.toRGBString();
+      }
+
+      // Background image
+      if (this.pageContent.background.image && this.pageContent.background.image.url) {
+        // Image
+        document.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.url + ')';
+
+        // Position
+        document.body.style.backgroundPosition = this.pageContent.background.image.position;
+
+        // Repeat
+        document.body.style.backgroundRepeat = this.pageContent.background.image.repeat;
+
+        // Attachment
+        document.body.style.backgroundAttachment = this.pageContent.background.image.attachment;
+      }
+    } else {
+      this.clearBackground();
+    }
+  }
+
+  clearBackground() {
     document.body.style.backgroundColor = '';
     document.body.style.backgroundImage = '';
     document.body.style.backgroundPosition = '';
     document.body.style.backgroundRepeat = '';
     document.body.style.backgroundAttachment = '';
+  }
+
+  ngOnDestroy(): void {
+    // Clear the background
+    this.clearBackground();
   }
 }

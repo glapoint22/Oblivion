@@ -1,5 +1,7 @@
 @import '../../../../dist/widgets/scss/widgets';
 
+$handle-size: 8px;
+
 .row {
     display: flex;
     flex-wrap: wrap;
@@ -47,6 +49,122 @@ body {
     &#widget-cursor {
         .row:hover .column-indicator {
             visibility: visible;
+        }
+    }
+}
+
+
+@mixin handle-circle {
+    background: white;
+    width: $handle-size;
+    height: $handle-size;
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid #0985a9;
+    box-sizing: border-box;
+}
+
+.handle {
+    z-index: 10;
+    position: absolute;
+
+
+    &.top-left,  &.top-right, &.bottom-left, &.bottom-right {
+        @include handle-circle();
+    }
+
+    &.top-left,  &.top-right {
+        top: -$handle-size * 0.5;
+    }
+
+    &.top-left, &.bottom-left {
+        left: -$handle-size * 0.5;
+    }
+    
+
+    &.top-right, &.right, &.bottom-right {
+        right: -$handle-size * 0.5;
+    }
+
+    &.bottom-left, &.bottom, &.bottom-right {
+        bottom: -$handle-size * 0.5;
+    }
+
+    &.top-left {
+        cursor: nw-resize;
+    }
+
+    &.top-right {
+        cursor: ne-resize;
+    }
+
+
+    &.bottom-left {
+        cursor: sw-resize;
+    }
+
+    &.bottom-right {
+        cursor: se-resize;
+    }
+
+    &.top, &.bottom {
+        left: $handle-size * 0.5;
+        right: $handle-size * 0.5;
+        height: $handle-size;
+        cursor: ns-resize;
+
+        &::after {
+            content: '';
+            @include handle-circle();
+            left: 50%;
+            transform: translateX(-$handle-size * 0.5);
+        }
+    }
+    
+    &.top {
+        top: -$handle-size * 0.5;
+
+        &::after {
+            top: 0;
+        }
+    }
+
+    &.bottom {
+        bottom: -$handle-size * 0.5;
+
+        &::after {
+            bottom: 0;
+        }
+    }
+
+
+    &.left, &.right {
+        top: $handle-size * 0.5;
+        bottom: $handle-size * 0.5;
+        width: $handle-size;
+        cursor: ew-resize;
+
+        &::after {
+            content: '';
+            @include handle-circle();
+            top: 50%;
+            transform: translateY(-$handle-size * 0.5);
+        }
+    }
+
+    &.left {
+        left: -$handle-size * 0.5;
+
+        &::after {
+            left: 0;
+        }
+    }
+
+    &.right {
+        right: -$handle-size * 0.5;
+
+        &::after {
+            right: 0;
         }
     }
 }

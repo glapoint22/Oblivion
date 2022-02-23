@@ -105,7 +105,7 @@ export class ReviewsComponent implements OnInit {
         { key: 'page', value: currentPage },
         { key: 'sortBy', value: sort ? sort : '' },
         { key: 'filterBy', value: filter ? filter : '' }
-      ], {spinnerAction: SpinnerAction.End}).subscribe((reviews: any) => {
+      ]).subscribe((reviews: any) => {
         this.reviews = reviews.reviews;
         this.pageCount = reviews.pageCount;
         this.totalReviews = reviews.totalReviews;

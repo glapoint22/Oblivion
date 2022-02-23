@@ -1,7 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { PageContent } from 'widgets';
+import { ApplicationRef, Component, OnInit } from '@angular/core';
 import { WidgetCursor } from '../../classes/widget-cursor';
-import { PageDevComponent } from '../../components/page-dev/page-dev.component';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -10,10 +8,8 @@ import { WidgetService } from '../../services/widget/widget.service';
   styleUrls: ['./viewport.component.scss']
 })
 export class ViewportComponent implements OnInit {
-  public pageContent!: PageContent;
-  @ViewChild('page') page!: PageDevComponent;
 
-  constructor(private widgetService: WidgetService) { }
+  constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { }
 
   ngOnInit(): void {
     const _window = window as any;
@@ -31,6 +27,10 @@ export class ViewportComponent implements OnInit {
       } else {
         document.body.id = '';
       }
+    });
+
+    this.widgetService.$update.subscribe(()=> {
+      this.appRef.tick();
     });
   }
 }

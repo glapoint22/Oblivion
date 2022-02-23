@@ -1,0 +1,26 @@
+.base {
+    width: 100%; 
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid #444444; 
+    cursor: pointer;
+}
+
+.alpha-background {
+    position: relative;
+    width: 100%; 
+    height: 20px;
+    border-radius: 3px;
+    background-color: #ffffff;
+    background-image: linear-gradient(45deg, #bbbbbb 30%, transparent 30%, transparent 70%, #bbbbbb 70%, #bbbbbb), linear-gradient(45deg, #bbbbbb 30%, transparent 30%, transparent 70%, #bbbbbb 70%, #bbbbbb);
+    background-size: 8px 8px;
+    background-position: 0 0, 4px 4px;
+}
+
+.swatch-color {
+    position: relative;
+    top: -20px;
+    width: 100%; 
+    height: 20px;
+    border-radius: 3px;
+}

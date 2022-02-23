@@ -1,4 +1,5 @@
 import { Component, DoCheck, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Image } from 'common';
 
 @Component({
   selector: 'image-box',
@@ -6,7 +7,7 @@ import { Component, DoCheck, EventEmitter, Input, OnChanges, Output } from '@ang
   styleUrls: ['./image-box.component.scss']
 })
 export class ImageBoxComponent implements OnChanges, DoCheck {
-  @Input() image!: any;//Image;
+  @Input() image!: Image;
   @Input() mediaType!: any; //MediaType
   @Input() noDelete!: boolean;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
@@ -38,10 +39,10 @@ export class ImageBoxComponent implements OnChanges, DoCheck {
   }
 
   deleteImage() {
-    this.image.id = 0;
-    this.image.url = null;
-    this.currentImage = null!;
-    this.onChange.emit();
+    // this.image.id = 0;
+    // this.image.url = null;
+    // this.currentImage = null!;
+    // this.onChange.emit();
   }
 
   onClick() { // sourceElement: HTMLElement

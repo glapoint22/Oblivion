@@ -1,14 +1,24 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { WidgetType } from 'widgets';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { Widget, WidgetType } from 'widgets';
 import { WidgetCursorType } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
+import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
+import { PageDevComponent } from '../../components/page-dev/page-dev.component';
+import { RowDevComponent } from '../../components/row-dev/row-dev.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WidgetService {
   public $widgetCursor: BehaviorSubject<WidgetCursor> = new BehaviorSubject<WidgetCursor>(new WidgetCursor());
+  public $widgetResize: BehaviorSubject<string> = new BehaviorSubject<string>('default');
+  public $pageChange: Subject<void> = new Subject<void>();
+  public $update: Subject<void> = new Subject<void>();
+  public page!: PageDevComponent;
+  public selectedRow!: RowDevComponent;
+  public selectedColumn!: ColumnDevComponent;
+  public selectedWidget!: Widget;
   private canvas!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
 
