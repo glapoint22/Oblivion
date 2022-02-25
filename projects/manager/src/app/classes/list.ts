@@ -1,13 +1,13 @@
-import { ElementRef } from "@angular/core";
+import { ElementRef, QueryList } from "@angular/core";
+import { Subject } from "rxjs";
 import { ItemComponent } from "../components/items/item/item.component";
 import { ItemSelectType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
 
 export class List {
-  public instanceId: any;
-  public itemComponents: Array<ItemComponent> = new Array<ItemComponent>();
-  public htmlItems: Array<ElementRef<HTMLElement>> = new Array<ElementRef<HTMLElement>>();
+  public sourceList!: Array<ListItem>;
+  public items!: QueryList<ItemComponent>;
   public selectedItem!: ItemComponent;
   public unselectedItem!: ItemComponent;
   public editableItem!: ItemComponent;
@@ -20,7 +20,8 @@ export class List {
   public preventUnselectionFromRightMousedown!: boolean;
   public newItem!: boolean;
   public options!: ListOptions;
-  public preventUnselect!: boolean;
+  public overButton!: boolean;
+  public onListUpdate = new Subject<ListUpdate>();
 
 
   addEventListeners() {
@@ -78,7 +79,7 @@ export class List {
     // If a list item is being edited or added
     if (this.editableItem != null) {
       // Evaluate the state of the edit and then act accordingly
-      this.evaluateEdit(this.editableItem);
+      this.evaluateEdit();
 
       // If a list item is NOT being edited
     } else {
@@ -90,16 +91,16 @@ export class List {
 
 
   setItemFocus(item: ItemComponent) {
+
     window.setTimeout(() => {
-      const itemIndex = this.itemComponents.indexOf(item);
 
       // Set focus to the html item with the specified index
-      this.htmlItems[itemIndex].nativeElement.focus();
+      item.htmlItem.nativeElement.focus();
 
 
       if (item == this.editableItem) {
         let range = document.createRange();
-        range.selectNodeContents(this.htmlItems[itemIndex].nativeElement);
+        range.selectNodeContents(this.items.find(x => x == item)?.htmlItem.nativeElement!);
         let sel = window.getSelection();
         sel!.removeAllRanges();
         sel!.addRange(range);
@@ -124,44 +125,60 @@ export class List {
         // // and the search popup is NOT open
         // && !this.popupService.searchPopup.show
         // // and we're NOT clicking on an icon button
-        && !this.preventUnselect
-      ) {
-        // Determine what happens when a list item loses focus 
-        this.setItemBlur(item);
+        && !this.overButton) {
+
+        // If an item is being edited or added
+        if (this.editableItem != null) {
+          // Evaluate the state of the edit and then act accordingly
+          this.evaluateEdit(null!, true);
+
+          // If an item is NOT being edited
+        } else {
+          // When a list item is deleted, it loses focus.
+          // This is to prevent the listeners from being removed when a list item gets deleted.
+          if (!this.itemDeletionPending
+            // Also, if a list item loses focus because of a right mouse down event, we don't want
+            // to clear the selections and remove the event listeners
+            && !this.preventUnselectionFromRightMousedown) {
+            // If a list item is NOT being deleted and there is no right mouse down event on a list item,
+            // then remove all listeners and selections
+            this.removeEventListeners();
+          }
+          // If a right mouse down event prevented the selections and listeners from being removed,
+          // then we can reset this back to false, because it alreday served its purpose
+          this.preventUnselectionFromRightMousedown = false;
+
+          // And if item(s) have been deleted,
+          // let it be known that item deletion is no longer pending
+          this.itemDeletionPending = false;
+
+          this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
+        }
+
+
       }
+
+      // But if we are clicking on an icon button and an item is in edit mode
+      if (this.overButton && this.editableItem != null) {
+        // Send the focus right back to the item that is in edit mode
+        this.setItemFocus(item)
+      }
+
+
     })
   }
 
+  getItemIndex(item: ItemComponent): number {
+    let index: number = -1;
 
-  setItemBlur(item: ItemComponent) {
-    // If an item is being edited or added
-    if (this.editableItem != null) {
-
-      // Evaluate the state of the edit and then act accordingly
-      this.evaluateEdit(item, null!, true);
-
-      // If an item is NOT being edited
-    } else {
-      // When a list item is deleted, it loses focus.
-      // This is to prevent the listeners from being removed when a list item gets deleted.
-      if (!this.itemDeletionPending
-        // Also, if a list item loses focus because of a right mouse down event, we don't want
-        // to clear the selections and remove the event listeners
-        && !this.preventUnselectionFromRightMousedown) {
-        // If a list item is NOT being deleted and there is no right mouse down event on a list item,
-        // then remove all listeners and selections
-        this.removeEventListeners();
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items.get(i) == item) {
+        index = i;
+        break;
       }
-      // If a right mouse down event prevented the selections and listeners from being removed,
-      // then we can reset this back to false, because it alreday served its purpose
-      this.preventUnselectionFromRightMousedown = false;
-
-      // And if item(s) have been deleted,
-      // let it be known that item deletion is no longer pending
-      this.itemDeletionPending = false;
     }
+    return index!;
   }
-
 
   onItemMousedown(item: ItemComponent, e?: MouseEvent) {
     // Initialize
@@ -187,6 +204,8 @@ export class List {
         this.setItemSelection(item);
       });
     }
+
+
   }
 
 
@@ -202,21 +221,23 @@ export class List {
       // Then define what the selection type is for each item
       this.setItemsSelectType();
 
-      // If an item is being edited and an item that is NOT being edited is selected
+      // If an item is being edited and another item that is NOT being edited is selected
     } else if (item != this.editableItem) {
 
-      const indexOfEditedItem = this.itemComponents.indexOf(this.editableItem);
-      const htmlEditedItem = this.htmlItems[indexOfEditedItem].nativeElement;
+      const htmlEditedItem = this.editableItem.htmlItem.nativeElement;
       const trimmedEditedItem = htmlEditedItem.textContent?.trim();
 
       // If the edited item has text written in it
       if (trimmedEditedItem!.length > 0) {
 
         // As long as the edited name is different from what it was before the edit
-        if (trimmedEditedItem != this.itemComponents[indexOfEditedItem].item.name) {
+        if (trimmedEditedItem != this.editableItem.name) {
 
           // Update the name property
-          this.itemComponents[indexOfEditedItem].item.name = trimmedEditedItem!;
+          this.editableItem.name = trimmedEditedItem!;
+
+          // Update the list
+          this.updateList(null!, this.editableItem);
         }
 
         // But if the item is empty
@@ -225,23 +246,19 @@ export class List {
         // If we were adding a new item
         if (this.newItem) {
 
-          // Remove the edited item from the itemComponents array
-          this.itemComponents.splice(indexOfEditedItem, 1);
-          // Remove the actual Item component from the DOM
-          htmlEditedItem.parentElement?.remove();
-          // Remove the edited item from htmlItems array
-          this.htmlItems.splice(indexOfEditedItem, 1);
+          // Remove the item
+          this.sourceList.splice(this.getItemIndex(this.editableItem), 1);
 
           // If we were NOT adding a new item
         } else {
 
           // Reset the item back to the way it was before the edit
-          htmlEditedItem.textContent = this.itemComponents[indexOfEditedItem].item.name;
+          htmlEditedItem.textContent = this.editableItem.name!;
         }
       }
 
-      this.itemComponents[indexOfEditedItem].selected = false;
-      this.itemComponents[indexOfEditedItem].selectType = null;
+      this.editableItem.selected = false;
+      this.editableItem.selectType = null;
       this.selectedItem = item;
       this.newItem = false;
       this.editableItem = null!;
@@ -264,49 +281,57 @@ export class List {
     } else {
       this.setSelectedItemsNoModifierKey(item);
     }
+
+    const itemSelectedCount = this.items.filter(x => x.selected == true).length;
+
+    if (itemSelectedCount > 1) {
+      this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: false });
+    } else {
+      this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
+    }
   }
 
 
   setItemsSelectType() {
     // If there is only one item in the list
-    if (this.itemComponents.length == 1) {
+    if (this.items.length == 1) {
       // Set the type to all
-      this.itemComponents[0].selectType = ItemSelectType.All;
+      this.items.get(0)!.selectType = ItemSelectType.All;
 
       // If there is more than one item
     } else {
 
       // First item
-      this.itemComponents[0].selectType = this.itemComponents[0].selected ? this.itemComponents[1].selected ? ItemSelectType.Top : this.itemComponents[1] == this.unselectedItem ? ItemSelectType.Top : ItemSelectType.All : null;
+      this.items.get(0)!.selectType = this.items.get(0)!.selected ? this.items.get(1)!.selected ? ItemSelectType.Top : this.items.get(1) == this.unselectedItem ? ItemSelectType.Top : ItemSelectType.All : null;
 
 
       // Every item in between
-      for (let i = 1; i < this.itemComponents.length - 1; i++) {
+      for (let i = 1; i < this.items.length - 1; i++) {
         // Set the select type based on the following:
-        this.itemComponents[i].selectType =
+        this.items.get(i)!.selectType =
 
           // If an item is marked as selected
-          this.itemComponents[i].selected ?
+          this.items.get(i)!.selected ?
 
             // If the item before is NOT selected and the item after IS selected
-            !this.itemComponents[i - 1].selected && this.itemComponents[i + 1].selected ?
+            !this.items.get(i - 1)!.selected && this.items.get(i + 1)!.selected ?
               ItemSelectType.Top :
 
               // If the item before IS selected and the item after is NOT selected
-              this.itemComponents[i - 1].selected && !this.itemComponents[i + 1].selected ?
+              this.items.get(i - 1)!.selected && !this.items.get(i + 1)!.selected ?
 
                 // And that item after is unselected with the unselect
-                this.itemComponents[i + 1] == this.unselectedItem ?
+                this.items.get(i + 1) == this.unselectedItem ?
                   ItemSelectType.Middle :
 
                   // But if its just NOT selected
                   ItemSelectType.Bottom :
 
                 // If the item before is NOT selected and the item after is also NOT selected
-                !this.itemComponents[i - 1].selected && !this.itemComponents[i + 1].selected ?
+                !this.items.get(i - 1)!.selected && !this.items.get(i + 1)!.selected ?
 
                   // And that item after is unselected with the unselect
-                  this.itemComponents[i + 1] == this.unselectedItem ?
+                  this.items.get(i + 1) == this.unselectedItem ?
                     ItemSelectType.Top :
 
                     // But if its just NOT selected
@@ -320,17 +345,18 @@ export class List {
       }
 
       // Last item
-      this.itemComponents[this.itemComponents.length - 1].selectType = this.itemComponents[this.itemComponents.length - 1].selected ? this.itemComponents[this.itemComponents.length - 2].selected ? ItemSelectType.Bottom : ItemSelectType.All : null;
+      this.items.get(this.items.length - 1)!.selectType = this.items.get(this.items.length - 1)!.selected ? this.items.get(this.items.length - 2)!.selected ? ItemSelectType.Bottom : ItemSelectType.All : null;
     }
   }
 
 
   setSelectedItemsShiftKey() {
     // Clear the selection for all items
-    this.itemComponents.forEach(x => x.selected = false);
+    this.items.forEach(x => x.selected = false);
 
-    const pivotItemIndex = this.itemComponents.indexOf(this.pivotItem);
-    const selectedItemIndex = this.itemComponents.indexOf(this.selectedItem);
+
+    const pivotItemIndex = this.getItemIndex(this.pivotItem);
+    const selectedItemIndex = this.getItemIndex(this.selectedItem);
 
     if (pivotItemIndex == -1 || selectedItemIndex == -1) return;
 
@@ -339,7 +365,7 @@ export class List {
 
       // Select all the items from the pivot down to the selection
       for (let i = pivotItemIndex; i <= selectedItemIndex; i++) {
-        this.itemComponents[i].selected = true;
+        this.items.get(i)!.selected = true;
       }
 
       // If the selection is before the pivot 
@@ -347,7 +373,7 @@ export class List {
 
       // Select all the items from the pivot up to the selection
       for (let i = pivotItemIndex; i >= selectedItemIndex; i--) {
-        this.itemComponents[i].selected = true;
+        this.items.get(i)!.selected = true;
       }
     }
   }
@@ -370,33 +396,27 @@ export class List {
       this.unselectedItem = null!;
       this.selectedItem = item;
     }
-    // Define the pivot index
+    // Define the pivot item
     this.pivotItem = item;
   }
 
 
   setSelectedItemsNoModifierKey(item: ItemComponent) {
     // Clear the selection for all items
-    this.itemComponents.forEach(x => x.selected = false);
+    this.items.forEach(x => x.selected = false);
     // Set the selected
     item.selected = true;
-    // Define the pivot index
+    // Define the pivot item
     this.pivotItem = item;
+
+    this.onListUpdate.next({ type: ListUpdateType.SelectedItem, id: item.id, index: this.getItemIndex(item), name: item.name });
   }
 
 
+
   onItemDoubleClick(item: ItemComponent) {
-    // If this list is set as being editable
-    if (this.options.isEditable &&
-      // And the shiftkey and the ctrlkey is NOT down
-      !this.shiftKeyDown && !this.ctrlKeyDown &&
-      // And no item in the list is currently being edited
-      !this.editableItem) {
-
-
-      this.editableItem = item;
-
-      this.setItemFocus(this.editableItem);
+    if (!this.shiftKeyDown && !this.ctrlKeyDown) {
+      this.onEditItem(item);
     }
   }
 
@@ -407,7 +427,7 @@ export class List {
     this.unselectedItem = null!;
     this.editableItem = null!;
 
-    this.itemComponents.forEach(x => {
+    this.items.forEach(x => {
       x.selected = false;
       x.selectType = null;
     })
@@ -417,180 +437,159 @@ export class List {
 
 
 
-  addItem(index: number) {
+  addItem(item: ItemComponent) {
+    // if (!this.newItem) {
     this.addEventListeners();
 
-    this.itemComponents.forEach(x => {
+    this.items.forEach(x => {
       if (x.selected) x.selected = false;
       if (x.selectType) x.SelectType = null!;
     })
 
 
     window.setTimeout(() => {
+      // If the list is editable
       if (this.options.isEditable) {
         this.newItem = true;
         this.selectedItem = null!;
         this.unselectedItem = null!;
-        this.editableItem = this.itemComponents[index];;
+        this.editableItem = item;
         this.setItemFocus(this.editableItem);
+        this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
 
+        // If the list is non-editable
       } else {
 
-        this.editableItem = null!;
-        this.unselectedItem = null!;
-        this.selectedItem = this.itemComponents[index];
-        this.setItemFocus(this.selectedItem);
+        this.selectItem(item);
       }
     });
-
+    // }
   }
 
+
+
+  selectItem(item: ItemComponent) {
+    window.setTimeout(() => {
+      item.selected = true;
+      this.selectedItem = item;
+      this.editableItem = null!;
+      this.unselectedItem = null!;
+      this.setItemFocus(this.selectedItem);
+    })
+  }
+
+
+
+  onEditItem(item: ItemComponent) {
+    if (this.options.isEditable && this.selectedItem) {
+      this.editableItem = item;
+      this.selectedItem = null!;
+
+      this.items.forEach(x => {
+        if (x.selected) x.selected = false;
+        if (x.selectType) x.SelectType = null!;
+      })
+      this.setItemFocus(this.editableItem);
+      this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
+    }
+  }
 
 
 
 
   editItem() {
-    this.editableItem = this.selectedItem;
-    this.selectedItem = null!;
-
-    this.itemComponents.forEach(x => {
-      if (x.selected) x.selected = false;
-      if (x.selectType) x.SelectType = null!;
-    })
-    this.setItemFocus(this.editableItem);
+    this.overButton = false;
+    this.onEditItem(this.selectedItem);
   }
 
 
 
-
-
   deleteItem() {
-    let itemCopy!: ItemComponent;
-    let deletedItem: ItemComponent;
-    let deletedItems: Array<ItemComponent> = [];
-
-    this.itemDeletionPending = true;
-
     // If an item is selected
-    if (this.selectedItem != null) {
-      const selectedItemIndex = this.itemComponents.indexOf(this.selectedItem);
+    if (this.selectedItem) {
+      let itemCopy!: ItemComponent;
+      let deletedItems: Array<ListItem> = new Array<ListItem>();
+
+      this.itemDeletionPending = true;
+
+
+      const selectedItemIndex = this.getItemIndex(this.selectedItem);
 
       // Loop through the list of items starting with the selected item
-      for (let i = selectedItemIndex + 1; i < this.itemComponents.length; i++) {
+      for (let i = selectedItemIndex + 1; i < this.items.length; i++) {
         // If we come across an item that is NOT selected
-        if (!this.itemComponents[i].selected) {
+        if (!this.items.get(i)!.selected) {
           // Make a copy of that item so that it can be used as the newly selected item when all the other items are deleted
-          itemCopy = this.itemComponents[i];
+          itemCopy = this.items.get(i)!;
           break;
         }
       }
-    }
 
-    // But if an item is unselected
-    if (this.unselectedItem != null) {
-      // Make a copy of that item so it can remain as the unselected item when all the other items are deleted
-      itemCopy = this.unselectedItem;
-    }
-
-
-
-    deletedItems = this.itemComponents.filter(x => x.selected);
-
-    let trumpy = deletedItems.map((x) => {
-      return { id: x.item.id, name: x.item.name }
-    })
-
-
-    let alita: ListUpdate = {
-      add: null!,
-      edit: null!,
-      delete: trumpy,
-      preventUnselect: null!
-    }
-
-    this.itemComponents[0].onListUpdate.emit(alita);
-
-    
-
-
-    
-
-
-    // Now delete all the selected items
-    do {
-      // Find an item in the list that is marked as selected
-      deletedItem = this.itemComponents.find(x => x.selected)!;
-      // As long as an item that is marked as selected is found
-      if (deletedItem != null) {
-        // Make a copy of all the items we're deleting so that the database can be updated accordingly
-        deletedItems.push(deletedItem);
-
-        // Clear the selection properties
-        // (In case the item is still being referenced i.e. in media List where a media item gets moved)
-        deletedItem.selected = false;
-        deletedItem.selectType = null;
-
-    // Remove the following:
-    const deletedItemIndex = this.itemComponents.indexOf(deletedItem);
-
-    // Remove the deleted item from the itemComponents array
-    this.itemComponents.splice(deletedItemIndex, 1);
-    // Remove the actual Item component from the DOM
-    this.htmlItems[deletedItemIndex].nativeElement.parentElement?.remove();
-    // Remove the deleted item from htmlItems array
-    this.htmlItems.splice(deletedItemIndex, 1);
+      //If an item is unselected
+      if (this.unselectedItem != null) {
+        // Make a copy of that item so it can remain as the unselected item when all the other items are deleted
+        itemCopy = this.unselectedItem;
       }
-    }
-    // Loop until all the items marked as selected are deleted
-    while (deletedItem != null);
+
+      // Gather all the selected items
+      let selectedItems = this.items.filter(x => x.selected);
+
+      // Update the list
+      this.updateList(selectedItems, null!);
+
+      // Loop through all the selected items
+      selectedItems.forEach(x => {
+        // Update the deleted items list with every item in the source list that has the same index as an item in the selected list
+        deletedItems.push(this.sourceList[this.getItemIndex(x)]);
+      })
+
+      // Loop through all the deleted items
+      deletedItems.forEach(() => {
+        // Get the index of the source list item that matches the item in the deleted list
+        let deletedItemIndex = this.sourceList.findIndex(a => deletedItems.find(b => a == b));
+        // Delete that source list item
+        this.sourceList.splice(deletedItemIndex, 1);
+      })
 
 
-    // If an item was selected
-    if (this.selectedItem != null) {
-      // And there is a next available list item that can be selected
-      if (itemCopy != null) {
+
+      // If an item was selected
+      if (this.selectedItem != null) {
+        // And there is a next available list item that can be selected
+        if (itemCopy != null) {
+          window.setTimeout(() => {
+            // Select that list item
+            this.selectedItem = itemCopy;
+            this.selectedItem.selected = true;
+            // Re-establish the pivot index
+            this.pivotItem = this.selectedItem;
+            // Set focus to that selected list item
+            this.setItemFocus(this.selectedItem);
+          }, 20);
+
+          // If there is NOT a next available list item that can be selected
+        } else {
+          // Make no list item marked as selected
+          this.selectedItem = null!;
+          // this.deleteIcon.isDisabled = true;
+          this.pivotItem = null!;
+          this.removeEventListeners();
+        }
+      }
+
+      // If a list item was unselected
+      if (this.unselectedItem != null) {
         window.setTimeout(() => {
-          // Select that list item
-          this.selectedItem = itemCopy;
-          this.selectedItem.selected = true;
+          // Unselect that list item again
+          this.unselectedItem = itemCopy;
+          // this.deleteIcon.isDisabled = true;
           // Re-establish the pivot index
-          this.pivotItem = this.selectedItem;
-          // Allow the selected item to be edited
-          // this.editIcon.isDisabled = false;
-          // Set focus to that selected list item
-          this.setItemFocus(this.selectedItem);
+          this.pivotItem = this.unselectedItem;
+          // Set focus to that unselected list item
+          this.setItemFocus(this.unselectedItem);
         }, 20);
-
-        // If there is NOT a next available list item that can be selected
-      } else {
-        // Make no list item marked as selected
-        this.selectedItem = null!;
-        // this.deleteIcon.isDisabled = true;
-        this.pivotItem = null!;
-        this.removeEventListeners();
       }
     }
-
-    // If a list item was unselected
-    if (this.unselectedItem != null) {
-      window.setTimeout(() => {
-        // Unselect that list item again
-        this.unselectedItem = itemCopy;
-        // this.deleteIcon.isDisabled = true;
-        // Re-establish the pivot index
-        this.pivotItem = this.unselectedItem;
-        // Set focus to that unselected list item
-        this.setItemFocus(this.unselectedItem);
-      }, 20);
-    }
-
-
-
-
-
-
-
-
   }
 
 
@@ -600,7 +599,7 @@ export class List {
     // If an item is being edited
     if (this.editableItem != null) {
       // Evaluate the state of the edit and then act accordingly
-      this.evaluateEdit(this.editableItem, true);
+      this.evaluateEdit(true);
 
       // If an item is NOT being edited
     } else {
@@ -612,21 +611,21 @@ export class List {
 
 
   arrowUp() {
-    let index: number = this.selectedItem != null ? this.itemComponents.indexOf(this.selectedItem) : this.itemComponents.indexOf(this.unselectedItem);
+    let index: number = this.selectedItem != null ? this.getItemIndex(this.selectedItem) : this.getItemIndex(this.unselectedItem);
 
     if (index > 0) {
       index--;
-      this.onItemMousedown(this.itemComponents[index]);
+      this.onItemMousedown(this.items.get(index)!);
     }
   }
 
 
   arrowDown() {
-    let index: number = this.selectedItem != null ? this.itemComponents.indexOf(this.selectedItem) : this.itemComponents.indexOf(this.unselectedItem);
+    let index: number = this.selectedItem != null ? this.getItemIndex(this.selectedItem) : this.getItemIndex(this.unselectedItem);
 
-    if (index < this.itemComponents.length - 1) {
+    if (index < this.items.length - 1) {
       index++;
-      this.onItemMousedown(this.itemComponents[index]);
+      this.onItemMousedown(this.items.get(index)!);
     }
   }
 
@@ -638,14 +637,13 @@ export class List {
     if (this.editableItem) {
 
       // Evaluate the state of the edit and then act accordingly
-      this.evaluateEdit(this.editableItem);
+      this.evaluateEdit();
     }
   }
 
 
-  evaluateEdit(item: ItemComponent, isEscape?: boolean, isBlur?: boolean) {
-    const indexOfEditedItem = this.itemComponents.indexOf(this.editableItem);
-    const htmlEditedItem = this.htmlItems[indexOfEditedItem].nativeElement;
+  evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
+    const htmlEditedItem = this.editableItem.htmlItem.nativeElement;
     const trimmedEditedItem = htmlEditedItem.textContent?.trim();
 
     // Set the focus to the edited item just in case it lost it on a mouse down
@@ -660,22 +658,19 @@ export class List {
         // If we were adding a new item
         if (this.newItem) {
 
-          // Remove the edited item from the itemComponents array
-          this.itemComponents.splice(indexOfEditedItem, 1);
-          // Remove the actual Item component from the DOM
-          htmlEditedItem.parentElement?.remove();
-          // Remove the edited item from htmlItems array
-          this.htmlItems.splice(indexOfEditedItem, 1);
+          // Remove the item
+          this.sourceList.splice(this.getItemIndex(this.editableItem), 1);
 
-          // If we were NOT adding a new list item
+          // If we were NOT adding a new item
         } else {
 
           // As long as the edited name is different from what it was before the edit
-          if (trimmedEditedItem != this.itemComponents[indexOfEditedItem].item.name) {
+          if (trimmedEditedItem != this.editableItem.name) {
 
             // Reset the item back to the way it was before the edit
-            htmlEditedItem.textContent = this.itemComponents[indexOfEditedItem].item.name;
+            htmlEditedItem.textContent = this.editableItem.name!;
           }
+          this.selectedItem = this.editableItem;
         }
 
         // If we did NOT press the (Escape) key
@@ -683,23 +678,20 @@ export class List {
       } else {
 
         // As long as the edited name is different from what it was before the edit
-        if (trimmedEditedItem != this.itemComponents[indexOfEditedItem].item.name) {
+        if (trimmedEditedItem != this.editableItem.name) {
 
           // Update the name property
-          this.itemComponents[indexOfEditedItem].item.name = trimmedEditedItem!;
+          this.editableItem.name = trimmedEditedItem!;
+          this.updateList(null!, this.editableItem);
         }
       }
-
       // Reset
-      this.selectedItem = this.editableItem;
       this.newItem = false;
+      this.selectedItem = this.editableItem;
       this.editableItem = null!;
-      this.pivotItem = this.selectedItem;
-      item.selected = true;
 
       // But if the item is empty
     } else {
-
 
       // If we pressed the (Escape) key or the item was (Blurred)
       if (isEscape || isBlur) {
@@ -707,35 +699,69 @@ export class List {
         // If we were adding a new item
         if (this.newItem) {
 
-          // Remove the edited item from the itemComponents array
-          this.itemComponents.splice(indexOfEditedItem, 1);
-          // Remove the actual Item component from the DOM
-          htmlEditedItem.parentElement?.remove();
-          // Remove the edited item from htmlItems array
-          this.htmlItems.splice(indexOfEditedItem, 1);
+          // Remove the item
+          this.sourceList.splice(this.getItemIndex(this.editableItem), 1);
+
 
           // If we were NOT adding a new list item
         } else {
 
           // Reset the item back to the way it was before the edit
-          htmlEditedItem.textContent = this.itemComponents[indexOfEditedItem].item.name;
+          htmlEditedItem.textContent = this.editableItem.name;
+
+          this.selectedItem = this.editableItem;
         }
 
         // Reset
-        this.selectedItem = this.editableItem;
         this.newItem = false;
         this.editableItem = null!;
-        this.pivotItem = this.selectedItem;
-        item.selected = true;
       }
+    }
+    this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
+  }
+
+
+  updateList(deletedItems?: Array<ItemComponent>, item?: ItemComponent) {
+    // If an item is being added or edited
+    if (item != null) {
+      const newItem = this.newItem;
+
+      // Update the source list with the new item information
+      this.sourceList[this.getItemIndex(item)] = { id: item.id, name: item.name }
+
+      // Sort the source list
+      this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+
+      // Select the item
+      window.setTimeout(() => {
+        const updatedItem = this.items.find(x => x.id == item.id);
+        const updatedIndex = this.getItemIndex(updatedItem!);
+        this.selectItem(updatedItem!);
+        this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: item.id, index: updatedIndex, name: item.name });
+      })
+
+
+      // If items are being deleted
+    } else {
+
+      this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, name: x.name } }) });
     }
   }
 }
 
 
-export class ListUpdate {
-  public add!: Array<ListItem>;
-  public edit!: Array<ListItem>;
-  public delete!: Array<ListItem>;
-  public preventUnselect!: boolean;
+export class ListUpdate extends ListItem {
+  public index?: number;
+  public type?: ListUpdateType;
+  public deletedItems?: Array<ListItem>;
+  public addDisabled?: boolean;
+  public editDisabled?: boolean;
+  public deleteDisabled?: boolean;
+}
+
+export enum ListUpdateType {
+  Add,
+  Edit,
+  Delete,
+  SelectedItem
 }

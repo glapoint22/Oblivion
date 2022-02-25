@@ -10,15 +10,15 @@
 
 
             <!-- Delete icon -->
-            <div *ngIf="!noDelete" class="icon-container" [ngClass]="{'icon-disabled': !image || !image.url}"
+            <button *ngIf="!noDelete" class="icon-button" [ngClass]="{'icon-disabled': !image || !image.url}"
                 (click)="onDeleteImageClick()" title="Delete Image">
                 <i class="fas fa-trash-alt"></i>
-            </div>
+            </button>
 
             <!-- Media browser icon -->
-            <div class="icon-container" (click)="onClick()" title="Open Media Browser">
+            <button class="icon-button" (click)="onClick()" title="Open Media Browser">
                 <i class="fas fa-image"></i>
-            </div>
+            </button>
         </div>
 
     </div>
