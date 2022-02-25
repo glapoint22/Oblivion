@@ -1,0 +1,15 @@
+<div class="container">
+    <!-- Left arrow button -->
+    <div class="arrow-button" (click)="updateValue(-1)">
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <!-- Input -->
+    <input #input (mousedown)="$event.preventDefault()" [value]="value" [ngClass]="{'edit-mode': inEditMode}"
+        (input)="onInput(input)">
+
+    <!-- Right arrow button -->
+    <div class="arrow-button" (click)="updateValue(1)">
+        <i class="fas fa-chevron-right"></i>
+    </div>
+</div>

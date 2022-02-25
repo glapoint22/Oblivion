@@ -1,0 +1,22 @@
+.properties {
+    width: 100%;
+    background: #343434;
+    padding: 10px;
+
+    .property {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        align-items: center;
+
+        .label {
+            font-size: 12px;
+            color: #aaaaaa;
+            margin-right: 10px;
+        }
+
+        input {
+            width: 100%;
+        }
+    }
+}

@@ -1,5 +1,5 @@
-import { Component, ComponentFactoryResolver, Type } from '@angular/core';
-import { Column, ColumnComponent, Widget, WidgetType } from 'widgets';
+import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angular/core';
+import { ColumnComponent, Widget, WidgetData, WidgetType } from 'widgets';
 import { WidgetCursorType } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { RowDevComponent } from '../row-dev/row-dev.component';
@@ -13,6 +13,26 @@ export class ColumnDevComponent extends ColumnComponent {
   public rowComponent!: RowDevComponent;
 
   constructor(resolver: ComponentFactoryResolver, private widgetService: WidgetService) { super(resolver) }
+
+
+  async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
+    const widgetComponentRef = await super.createWidgetComponentRef(widgetData);
+    
+    this.setSelectedWidget(widgetComponentRef.instance);
+    
+    widgetComponentRef.location.nativeElement.firstElementChild.addEventListener('mousedown', () => {
+      this.setSelectedWidget(widgetComponentRef.instance);
+    });
+
+    return widgetComponentRef;
+  }
+  
+  setSelectedWidget(widget: Widget) {
+    this.widgetService.selectedWidget = widget;
+    this.widgetService.selectedRow = this.rowComponent;
+    this.widgetService.selectedColumn = this;
+  }
+
 
   // -----------------------------( GET WIDGET )------------------------------ \\
   async getWidget(widgetType: WidgetType) {

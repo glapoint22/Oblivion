@@ -1,0 +1,20 @@
+.list-item {
+    height: 22px;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    color: #b4b4b4;
+    cursor: pointer;
+
+    &:hover:not(.selected-list-item) {
+        background: rgba(255, 187, 0, 0.08);
+        color: #dddddd;
+    }
+}
+
+.selected-list-item {
+    background: rgba(255, 187, 0, 0.1);
+    border: 1px solid rgba(255, 187, 0, 0.85);
+    color: white;
+    cursor: default;
+}

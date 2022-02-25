@@ -1,0 +1,124 @@
+.borders {
+    flex: 2;
+    height: 100%;
+    outline-width: 2px;
+    outline-offset: -2px;
+    cursor: pointer;
+}
+
+.borders-top {
+    @extend .borders;
+    outline-color: #656565;
+    &:hover:not(.selected-border) {
+        outline-color: lighten(#656565, 14%);
+    }
+}
+
+.borders-bottom {
+    @extend .borders;
+    outline-color: #484848;
+    &:hover:not(.selected-border):not(.selected-border-groove):not(.selected-border-ridge):not(.selected-border-inset):not(.selected-border-outset) {
+        outline-color: lighten(#484848, 14%);
+    }
+}
+
+
+.border-solid {
+    @extend .borders-top;
+    outline-style: solid;
+}
+
+.border-dotted {
+    @extend .borders-top;
+    outline-style: dotted;
+}
+
+.border-dashed {
+    @extend .borders-top;
+    outline-style: dashed;
+}
+
+.border-double {
+    @extend .borders-top;
+    outline-offset: -3px;
+    outline: 3px double #656565;
+}
+
+.border-groove {
+    @extend .borders-bottom;
+    outline-style: groove;
+    outline-color: #424141;
+    &:hover:not(.selected-border-groove) {
+        outline-color: lighten(#424141, 12%);
+    }
+}
+
+.border-ridge {
+    @extend .borders-bottom;
+    outline-style: ridge;
+}
+
+.border-inset {
+    @extend .borders-bottom;
+    outline-style: inset;
+}
+
+.border-outset {
+    @extend .borders-bottom;
+    outline-style: outset;
+}
+
+.spacer {
+    flex: 3;
+}
+
+.selected-border {
+    background-color: #0077e04d;
+    outline-color: #52adfb;
+}
+
+.selected-border-groove {
+    @extend .borders-bottom;
+    background-color: #0077e04d;
+    outline-style: solid;
+    outline-color: transparent;
+    box-shadow: inset -1px -1px #000000,
+                inset 1px 1px #000000,
+                inset 2px 2px #52adfb,
+                1px 1px #52adfb;
+}
+
+.selected-border-ridge {
+    @extend .borders-bottom;
+    background-color: #0077e04d;
+    outline-style: solid;
+    outline-color: transparent;
+    box-shadow: inset -1px -1px #52adfb,
+                inset 1px 1px #52adfb,
+                inset 2px 2px #000000,
+                1px 1px #000000;
+}
+
+
+.selected-border-inset {
+    @extend .borders-bottom;
+    background-color: #0077e04d;
+    outline-style: solid;
+    outline-color: transparent;
+    box-shadow: inset -1px -1px #52adfb,
+                inset 1px 1px #001c34,
+                inset 2px 2px #001c34,
+                1px 1px #52adfb;
+}
+
+
+.selected-border-outset {
+    @extend .borders-bottom;
+    background-color: #0077e04d;
+    outline-style: solid;
+    outline-color: transparent;
+    box-shadow: inset -1px -1px #000000,
+                inset 1px 1px #52adfb,
+                inset 2px 2px #52adfb,
+                1px 1px #000000;
+}

@@ -1,4 +1,5 @@
-import { AfterViewInit, ApplicationRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ApplicationRef, Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -9,11 +10,12 @@ import { WidgetService } from '../../services/widget/widget.service';
 })
 export class EditorComponent implements AfterViewInit {
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
+  @ViewChild('widgetInspectorContainer', { read: ViewContainerRef }) widgetInspectorContainer!: ViewContainerRef;
   public widgetService!: WidgetService;
   public showResizeCover!: boolean;
   public document = document;
 
-  constructor(private appRef: ApplicationRef) { }
+  constructor(private appRef: ApplicationRef, private lazyLoadingService: LazyLoadingService) { }
 
 
   ngAfterViewInit() {
@@ -22,10 +24,12 @@ export class EditorComponent implements AfterViewInit {
 
 
     this.iframe.nativeElement.onload = () => {
-      const _window = this.iframe.nativeElement.contentWindow as any;
+      const contentWindow = this.iframe.nativeElement.contentWindow as any;
 
       // This widget service is from the viewport in the iframe
-      this.widgetService = _window.widgetService;
+      this.widgetService = (window as any).widgetService = contentWindow.widgetService;
+
+      this.loadWidgetInspector();
 
       // Subscribe to widget cursor changes
       this.widgetService.$widgetCursor.subscribe((widgetCursor: WidgetCursor) => {
@@ -36,7 +40,27 @@ export class EditorComponent implements AfterViewInit {
           window.removeEventListener('mouseup', this.onMouseup);
         }
       });
+
+      this.widgetService.$widgetResize.subscribe((resizeCursor: string) => {
+        this.showResizeCover = resizeCursor != 'default' ? true : false;
+        document.body.style.cursor = resizeCursor;
+        this.appRef.tick();
+      });
     }
+  }
+
+  async loadWidgetInspector() {
+    this.lazyLoadingService.load(async () => {
+      const { WidgetInspectorComponent } = await import('../widget-inspector/widget-inspector.component');
+      const { WidgetInspectorModule } = await import('../widget-inspector/widget-inspector.module');
+
+      
+
+      return {
+        component: WidgetInspectorComponent,
+        module: WidgetInspectorModule
+      }
+    }, SpinnerAction.None, this.widgetInspectorContainer);
   }
 
 

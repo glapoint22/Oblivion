@@ -75,3 +75,12 @@ export enum HorizontalAlign {
     Center = 'center',
     Right = 'right'
 }
+
+
+export enum PageType {
+    Custom,
+    Home,
+    Browse,
+    Search,
+    Grid
+}

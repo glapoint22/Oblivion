@@ -1,8 +1,8 @@
 <div #container class="editor-container">
 
     <!-- Widget Bar -->
-    <div class="widget-bar">
-        <ng-container *ngIf="widgetService">
+    <div class="widget-bar" *ngIf="widgetService && widgetService.page.pageContent">
+        <ng-container>
             <button *ngFor="let widgetCursor of widgetService.widgetCursors" class="icon-button"
                 (mousedown)="onIconMousedown(widgetCursor)" [title]="widgetCursor.name">
                 <i [class]="widgetCursor.className"></i>
@@ -21,35 +21,49 @@
         <div #editorWindow class="editor-window" style="width: 1600px; height: 800px;">
 
             <!-- Dashed Lines -->
-            <div class="vertical-dashed-line"></div>
-            <div class="vertical-dashed-line"></div>
-            <div class="horizontal-dashed-line"></div>
-            <div class="horizontal-dashed-line"></div>
+            <ng-container *ngIf="widgetService && widgetService.page.pageContent">
+                <div class="vertical-dashed-line"></div>
+                <div class="vertical-dashed-line"></div>
+                <div class="horizontal-dashed-line"></div>
+                <div class="horizontal-dashed-line"></div>
+            </ng-container>
+
 
 
 
             <!-- Iframe -->
-            <iframe #iframe style="width: 100%; height: 100%; display: block;" scrolling="no" frameborder="0"></iframe>
+            <iframe id="iframe" #iframe style="width: 100%; height: 100%; display: block;" scrolling="no"
+                frameborder="0"></iframe>
 
             <!-- Horizontal Resizer -->
-            <div class="horizontal-resizer" [style.cursor]="document.body.style.cursor == 'default' ? 's-resize': ''"
+            <div *ngIf="widgetService && widgetService.page.pageContent" class="horizontal-resizer"
+                [style.cursor]="document.body.style.cursor == 'default' ? 's-resize': ''"
                 (mousedown)="onResizeMousedown(editorWindow)"></div>
         </div>
 
 
-        <!-- Left Resizer -->
-        <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft - 4"
-            (mousedown)="onResizeMousedown(editorWindow, -1)"
-            [style.cursor]="document.body.style.cursor == 'default' ? 'e-resize': ''"></div>
+        <ng-container *ngIf="widgetService && widgetService.page.pageContent">
+            <!-- Left Resizer -->
+            <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft - 4"
+                (mousedown)="onResizeMousedown(editorWindow, -1)"
+                [style.cursor]="document.body.style.cursor == 'default' ? 'e-resize': ''"></div>
 
-        <!-- Right Resizer -->
-        <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft + editorWindow.clientWidth - 5"
-            (mousedown)="onResizeMousedown(editorWindow, 1)"
-            [style.cursor]="document.body.style.cursor == 'default' ? 'e-resize': ''"></div>
+            <!-- Right Resizer -->
+            <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft + editorWindow.clientWidth - 5"
+                (mousedown)="onResizeMousedown(editorWindow, 1)"
+                [style.cursor]="document.body.style.cursor == 'default' ? 'e-resize': ''">
+            </div>
+        </ng-container>
+
     </div>
 
-    <!-- Inspector window -->
-    <div style="background: blue; width: 250px;"></div>
+    <!-- Widget Inspector -->
+    <div style="width: 100%; max-width: 250px;
+    background: #222222;
+    border: 1px solid #2a2a2a;">
+        <!-- <widget-inspector></widget-inspector> -->
+        <ng-template #widgetInspectorContainer></ng-template>
+    </div>
 
 </div>
 

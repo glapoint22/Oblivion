@@ -1,0 +1,132 @@
+.icons-container {
+    background: #3b3b3b;
+    height: 22px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.icon-container:first-child {
+    margin: 0;
+}
+
+
+.grooved-container {
+    border-top: 1px solid #292929;
+    border-bottom: 1px solid #3e3e3e;
+    width: 100%;
+    background: #343434;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 4px;
+    height: 48px;
+    overflow: hidden;
+
+    &:before {
+        content: '';
+        position: absolute;
+        top: 0px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #3e3e3e;
+    }
+
+    &:after {
+        content: '';
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #2a2a2a;
+    }
+}
+
+
+
+.grooved-container-bottom {
+    border-bottom: 1px solid #3e3e3e;
+    width: 100%;
+    background: #343434;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 4px;
+    height: 48px;
+
+    &:after {
+        content: '';
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #2a2a2a;
+    }
+}
+
+
+.button-center {
+    min-height: 22px;
+    border: 1px solid;
+    flex: 1;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    text-align: center;
+
+    &:not(.button-left) {
+        margin-left: 4px
+    }
+
+    &:not(.button-selected) {
+        border-color: #565656;
+        background: #464646;
+        color: #c8c8c8;
+        
+
+        &:hover:not(:disabled) {
+            background: #5e5e5e;
+            border-color: #6e6e6e;
+            color: #e2e2e2;
+            cursor: pointer;
+        }
+
+        &:active {
+            border-color: #424242;
+            background: #555555;
+            color: #b6b6b6;
+        }
+    }
+
+
+    &:disabled {
+        background: #5e5e5e48;
+        border-color: #6e6e6e34;
+        color: #e2e2e238;
+    }
+}
+
+.button-left {
+    @extend .button-center;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.button-right {
+    @extend .button-center;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.button-selected {
+    border-color: #52adfb;
+    background: #1f4363;
+    color: #ffffff;
+}

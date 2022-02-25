@@ -13,7 +13,7 @@ import { EditorModule } from '../../components/editor/editor.module';
     CommonModule,
     PageBuilderRoutingModule,
     MenuBarModule,
-    EditorModule
+    EditorModule,
   ]
 })
 export class PageBuilderModule { }

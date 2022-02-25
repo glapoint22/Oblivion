@@ -1,15 +1,15 @@
 <!-- Title bar -->
-<div class="title-bar" (click)="$event.stopPropagation(); click(input)" [ngClass]="{'rounded': rounded}">
+<div class="title-bar" (click)="click(input)">
     <!-- Arrow -->
     <input #input type="checkbox" [checked]="expanded">
     <div class="arrow"></div>
 
-    <!-- Checkbox -->
-    <div> <!-- *ngIf="enableableProperty" (click)="$event.stopPropagation()" -->
-        <!-- <checkbox [checked]="enableableProperty.enable"
-            (change)="enableableProperty.enable = !enableableProperty.enable; onEnableOptionClick.emit()"></checkbox> -->
-    </div>
-    
+
+    <label *ngIf="enabledProperty" class="checkbox" style="margin-bottom: 16px;" (click)="$event.stopPropagation()">
+        <input type="checkbox" (change)="enabledProperty.enabled = !enabledProperty.enabled; onChange.emit()">
+        <span class="checkmark"></span>
+    </label>
+
     <!-- Title -->
     <div>{{title}}</div>
 </div>
@@ -21,5 +21,5 @@
     <ng-content></ng-content>
 
     <!-- Disabled cover -->
-    <div *ngIf="enableableProperty && !enableableProperty.enable" class="property-cover"></div>
+    <div *ngIf="enabledProperty && !enabledProperty.enabled" class="property-cover"></div>
 </div>

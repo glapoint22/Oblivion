@@ -1,0 +1,56 @@
+<panel [title]="'Background'" [enabledProperty]="background" (onChange)="onChange.emit()">
+    <!-- color -->
+    <div class="property">
+        <div class="label">Color:</div>
+
+        <div style="flex: 1;">
+            <color-swatch [color]="background.rgbColor" (onChange)="onChange.emit()"></color-swatch>
+        </div>
+    </div>
+
+    <!-- Image Options -->
+    <ng-container *ngIf="background.image">
+        <div class="image-options-container">
+            <!-- Position -->
+            <div class="property">
+                <div class="label">Position</div>
+                <div style="flex: 1;">
+                    <dropdown [listItems]="positionOptions"></dropdown>
+                </div>
+            </div>
+
+
+
+
+            <!-- Repeat -->
+            <div class="property">
+                <div class="label">Repeat</div>
+                <div style="flex: 1;">
+                    <dropdown [listItems]="repeatOptions"></dropdown>
+                </div>
+            </div>
+
+
+
+
+
+            <!-- Attachment -->
+            <div class="property">
+                <div class="label">Attachment</div>
+                <div style="flex: 1;">
+                    <dropdown [listItems]="attachmentOptions"></dropdown>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+
+    <!-- Image label -->
+    <div class="property">
+        <div class="label">Image:</div>
+    </div>
+
+
+    <!-- Image -->
+    <image-box [image]="background.image"></image-box>
+</panel>

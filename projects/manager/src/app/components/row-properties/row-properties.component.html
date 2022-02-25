@@ -1,0 +1,11 @@
+<!-- Background -->
+<background [background]="widgetService.selectedRow.background" (onChange)="widgetService.$update.next()"></background>
+
+<!-- Border -->
+<border [border]="widgetService.selectedRow.border" (onChange)="widgetService.$update.next()"></border>
+
+<!-- Corners -->
+<corners [corners]="widgetService.selectedRow.corners" (onChange)="widgetService.$update.next()"></corners>
+
+<!-- Shadow -->
+<shadow [shadow]="widgetService.selectedRow.shadow" (onChange)="widgetService.$update.next()"></shadow>

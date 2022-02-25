@@ -18,10 +18,10 @@ import { ColumnComponent } from '../column/column.component';
 export class RowComponent implements AfterViewInit {
   @ViewChild('viewContainerRef', { read: ViewContainerRef }) viewContainerRef!: ViewContainerRef;
   public top!: number;
-  public background!: Background;
-  public border!: Border;
-  public corners!: Corners;
-  public shadow!: Shadow;
+  public background: Background = new Background();
+  public border: Border = new Border();
+  public corners: Corners = new Corners();
+  public shadow: Shadow = new Shadow();
   public columnCount!: number;
   private padding: Padding = new Padding();
   private verticalAlignment!: VerticalAlignment;
@@ -40,10 +40,10 @@ export class RowComponent implements AfterViewInit {
 
   setRow(row: Row) {
     this.top = row.top;
-    this.background = row.background;
-    this.border = row.border;
-    this.corners = row.corners;
-    this.shadow = row.shadow;
+    this.background.setData(row.background);
+    this.border.setData(row.border);
+    this.corners.setData(row.corners);
+    this.shadow.setData(row.shadow);
     this.breakpoints = row.breakpoints;
     this.columnCount = row.columns.length;
     this.padding.setData(row.padding);

@@ -1,5 +1,4 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { Column } from '../../classes/column';
 import { Row } from '../../classes/row';
 import { RowComponent } from '../row/row.component';
 

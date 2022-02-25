@@ -2,7 +2,7 @@
 
     <!-- No link -->
     <img *ngIf="(!link || !link.url) && image && image.url"
-        [style.border]="border && border.enable ? border.width + 'px ' + border.style + ' ' + border.color : null"
+        [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
         [style.borderRadius]="
             corners &&
             (corners.topLeft > 0 ||
@@ -10,7 +10,7 @@
             corners.bottomRight > 0 ||
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
-        [style.box-shadow]="shadow && shadow.enable ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
+        [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
         [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
 
 
@@ -18,7 +18,7 @@
 
     <!-- Link && link option is not web address -->
     <a *ngIf="image && image.url && link && link.url && link.selectedOption != linkOption.WebAddress" [routerLink]="link.url">
-        <img [style.border]="border && border.enable ? border.width + 'px ' + border.style + ' ' + border.color : null"
+        <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
             [style.borderRadius]="
             corners && 
             (corners.topLeft > 0 ||
@@ -26,14 +26,14 @@
             corners.bottomRight > 0 ||
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
-            [style.box-shadow]="shadow && shadow.enable ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
+            [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
             [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
     </a>
 
 
     <!-- Link && link option is web address -->
     <a *ngIf="image && image.url && link && link.url && link.selectedOption == linkOption.WebAddress" [href]="link.url" target="_blank">
-        <img [style.border]="border && border.enable ? border.width + 'px ' + border.style + ' ' + border.color : null"
+        <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
             [style.borderRadius]="
             corners && 
             (corners.topLeft > 0 ||
@@ -41,7 +41,7 @@
             corners.bottomRight > 0 ||
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
-            [style.box-shadow]="shadow && shadow.enable ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
+            [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
             [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
     </a>
 </div>

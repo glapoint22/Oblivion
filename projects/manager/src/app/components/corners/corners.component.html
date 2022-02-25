@@ -1,0 +1,45 @@
+<panel [title]="'Corners'">
+
+    <label class="checkbox">
+        <div>Constrain</div>
+        <input type="checkbox" [checked]="corners.constrain"
+            (change)="corners.constrain = !corners.constrain; onChange.emit()">
+        <span class="checkmark"></span>
+    </label>
+
+    <!-- Top Left -->
+    <div class="property">
+        <div class="label">Top Left</div>
+        <div style="flex: 1;">
+            <number-field [value]="corners.topLeft" (onValueChange)="onValueChange('topLeft', $event)"></number-field>
+        </div>
+    </div>
+
+    <!-- Top Right -->
+    <div class="property">
+        <div class="label">Top Right</div>
+        <div style="flex: 1;">
+            <number-field [value]="corners.topRight" (onValueChange)="onValueChange('topRight', $event)"></number-field>
+        </div>
+    </div>
+
+
+    <!-- Bottom Right -->
+    <div class="property">
+        <div class="label">Bottom Right</div>
+        <div style="flex: 1;">
+            <number-field [value]="corners.bottomRight" (onValueChange)="onValueChange('bottomRight', $event)">
+            </number-field>
+        </div>
+    </div>
+
+
+    <!-- Bottom Left -->
+    <div class="property">
+        <div class="label">Bottom Left</div>
+        <div style="flex: 1;">
+            <number-field [value]="corners.bottomLeft" (onValueChange)="onValueChange('bottomLeft', $event)">
+            </number-field>
+        </div>
+    </div>
+</panel>

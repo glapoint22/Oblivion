@@ -5,9 +5,7 @@ import { ProductPricePropertyComponent } from './product-price-property/product-
 import { AdditionalInfoPropertiesComponent } from './product-price-property/additional-info-properties/additional-info-properties.component';
 import { RecurringPaymentPropertiesComponent } from './product-price-property/additional-info-properties/recurring-payment-properties/recurring-payment-properties.component';
 import { ShippingPropertiesComponent } from './product-price-property/additional-info-properties/shipping-properties/shipping-properties.component';
-import { PanelComponent } from '../panel/panel.component';
 import { CounterComponent } from '../counter/counter.component';
-import { ImageBoxComponent } from '../image-box/image-box.component';
 import { ProductVendorPropertyComponent } from './product-vendor-property/product-vendor-property.component';
 import { ProductHoplinkPropertyComponent } from './product-hoplink-property/product-hoplink-property.component';
 import { ProductFiltersPropertyComponent } from './product-filters-property/product-filters-property.component';
@@ -17,7 +15,9 @@ import { ProductDescriptionPropertyComponent } from './product-description-prope
 import { ProductSubproductsPropertyComponent } from './product-subproducts-property/product-subproducts-property.component';
 import { ProductKeywordsPropertyComponent } from './product-keywords-property/product-keywords-property.component';
 import { ProductGroupsPropertyComponent } from './product-groups-property/product-groups-property.component';
-import { ListModule } from '../list/list.module';
+import { PanelModule } from '../panel/panel.module';
+import { ImageBoxModule } from '../image-box/image-box.module';
+import { ListModule } from '../List/list.module';
 
 
 @NgModule({
@@ -27,9 +27,7 @@ import { ListModule } from '../list/list.module';
     AdditionalInfoPropertiesComponent,
     RecurringPaymentPropertiesComponent,
     ShippingPropertiesComponent,
-    PanelComponent,
     CounterComponent,
-    ImageBoxComponent,
     ProductVendorPropertyComponent,
     ProductHoplinkPropertyComponent,
     ProductFiltersPropertyComponent,
@@ -42,6 +40,8 @@ import { ListModule } from '../list/list.module';
   ],
   imports: [
     CommonModule,
+    PanelModule,
+    ImageBoxModule,
     ListModule
   ],
   exports: [ProductPropertiesComponent]
