@@ -22,6 +22,7 @@ import { EditableListModule } from '../lists/editable-list/editable-list.module'
 import { CheckboxListModule } from '../lists/checkbox-list/checkbox-list.module';
 import { EditableCheckboxListModule } from '../lists/editable-checkbox-list/editable-checkbox-list.module';
 import { EditableArrowListModule } from '../lists/editable-arrow-list/editable-arrow-list.module';
+import { ArrowListModule } from '../lists/arrow-list/arrow-list.module';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { EditableArrowListModule } from '../lists/editable-arrow-list/editable-a
     EditableListModule,
     CheckboxListModule,
     EditableCheckboxListModule,
-    EditableArrowListModule
+    EditableArrowListModule,
+    ArrowListModule
   ],
   exports: [ProductPropertiesComponent]
 })

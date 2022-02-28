@@ -13,7 +13,7 @@
          (contextmenu)="$event.preventDefault()"
          (mousedown)="!list.overButton ? list.onItemMousedown(this, $event) : null"
          (blur)="list.onItemBlur(this)"
-         (dblclick)="list.onItemDoubleClick(this)"
+         (dblclick)="!list.overButton ? list.onItemDoubleClick(this) : null"
          [contentEditable]="this == list.editableItem"
          [ngClass]="{'selected-item': this == list.selectedItem,
                 'unselected-item': this == list.unselectedItem,

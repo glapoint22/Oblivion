@@ -1,8 +1,9 @@
 <div #htmlItem
-     class="item"
-     (contextmenu)="$event.preventDefault()"
-     (mousedown)="changeCheckbox()"
-     [ngClass]="{'selected-item': this == list.selectedItem,
+        class="item"
+        tabindex="-1"
+        (contextmenu)="$event.preventDefault()"
+        (blur)="list.onItemBlur(this)"
+        [ngClass]="{'selected-item': this == list.selectedItem,
             'unselected-item': this == list.unselectedItem,
             'edited-item': this == list.editableItem,
             'transparent-item': list.editableItem != null && list.editableItem != this,
@@ -11,12 +12,12 @@
             'selected-item-middle': this.selectType == SelectType.Middle,
             'selected-item-bottom': this.selectType == SelectType.Bottom}">
 
-    <label class="checkbox">
-        <input #checkbox type="checkbox"
-                [checked]="isChecked"
-                disabled = true>
-        <span class="checkmark"></span>
-    </label>
+    <div *ngIf="list.editableItem == null"
+        class="arrow-container"
+        (click)="list.onArrowClick(this)">
+
+        <div class="arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
+    </div>
 
     <div>{{name}}</div>
 </div>

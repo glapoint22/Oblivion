@@ -16,6 +16,15 @@
 }
 
 
+.selected-item {
+    .arrow-container {
+        .arrow {
+            border-left: 9px solid #cacaca;
+        }
+    }
+}
+
+
 .arrow-container {
     height: 100%;
     display: flex;

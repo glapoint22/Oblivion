@@ -2,7 +2,6 @@
 
     <div *ngIf="list.editableItem != null"
             class="disabled-arrow-container">
-
             <div class="disabled-arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
         </div>
 
@@ -23,15 +22,6 @@
                 'selected-item-middle': this.selectType == SelectType.Middle,
                 'selected-item-bottom': this.selectType == SelectType.Bottom}">
 
-        <!-- <label *ngIf="list.editableItem == null" class="checkbox" (mouseover)="list.overButton = true" (mouseout)="list.overButton = false">
-            <input type="checkbox"
-                    
-                    >
-            <span class="checkmark"></span>
-        </label> -->
-
-
-
         <div *ngIf="list.editableItem == null"
             class="arrow-container"
             (mouseover)="list.overButton = true"
@@ -40,10 +30,6 @@
 
             <div class="arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
         </div>
-
-
-
-
 
         <div>{{name}}</div>
     </div>
