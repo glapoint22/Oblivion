@@ -9,8 +9,7 @@ corners.bottomRight > 0 ||
 corners.bottomLeft > 0) ?
 corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
     [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
-    [style.fontSize.px]="caption.fontSize" [style.paddingTop]="padding.top" [style.paddingRight]="padding.right"
-    [style.paddingBottom]="padding.bottom" [style.paddingLeft]="padding.left" [style.maxWidth.px]="width ? width : null"
+    [style.fontSize.px]="caption.fontSize" [style.maxWidth.px]="width ? width : null"
     [style.minHeight.px]="height" [ngStyle]="{ 'background-image': background.image && background.image.url ? 'url(images/' + background.image.url + ')' : null,
                         'background-position': background.image ? background.image.position : null,
                         'background-repeat': background.image ? background.image.repeat : null,

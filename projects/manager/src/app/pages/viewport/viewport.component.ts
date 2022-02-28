@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, OnInit } from '@angular/core';
+import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -32,5 +32,10 @@ export class ViewportComponent implements OnInit {
     this.widgetService.$update.subscribe(()=> {
       this.appRef.tick();
     });
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.widgetService.setCurrentBreakpoint(window.innerWidth);
   }
 }

@@ -14,31 +14,39 @@ export class NumberFieldComponent implements OnChanges {
 
   ngOnChanges() {
     // Get the defualt index
-    if(this.values)
-    this.currentIndex = this.values.findIndex(x => x == this.value);
+    if (this.values)
+      this.currentIndex = this.values.findIndex(x => x == this.value);
   }
 
 
-  // updateValue(delta: number) {
-  //   // Get the current index based on the delta
-  //   this.currentIndex = Math.min(Math.max(0, this.currentIndex + delta), this.values.length - 1);
+  setValue(value: number) {
+    if (this.values && this.values.length > 0) {
+      this.currentIndex = this.values.findIndex(x => x == value);
+    }
 
-  //   // Update the value and emit
-  //   this.value = this.values[this.currentIndex];
-  //   this.onValueChange.emit(this.value);
-  // }
+    this.value = value;
+  }
+
 
   updateValue(delta: number) {
-    // This will update the value based on the delta
-    this.value = Math.max(0, this.value + delta);
+    if (this.values && this.values.length > 0) {
+      // Get the current index based on the delta
+      this.currentIndex = Math.min(Math.max(0, this.currentIndex + delta), this.values.length - 1);
 
-    // Emit the new value
+      // Update the value and emit
+      this.value = this.values[this.currentIndex];
+    } else {
+      // This will update the value based on the delta
+      this.value = Math.max(0, this.value + delta);
+    }
+
     this.onValueChange.emit(this.value);
   }
 
 
+
   onInput(input: HTMLInputElement) {
-    
+
 
     // Only accept numeric values
     !(/^[0-9]+$/ig).test(input.value) ? input.value = input.value.replace(/[^0-9]+$/ig, '') : null;
@@ -55,7 +63,7 @@ export class NumberFieldComponent implements OnChanges {
 
     // On Mouse Move
     let onMousemove = (e: MouseEvent) => {
-      if(this.inEditMode) return;
+      if (this.inEditMode) return;
       // Flag that we are using the slider
       usingSlider = true;
 
@@ -86,7 +94,7 @@ export class NumberFieldComponent implements OnChanges {
         let onkeydown = (keyboardEvent: any) => {
           // input.value = /^\d*$/.test(input.value);
 
-          
+
 
 
           // If escape or enter has been pressed
@@ -98,12 +106,12 @@ export class NumberFieldComponent implements OnChanges {
             // Enter has been pressed
             if (keyboardEvent.code == 'NumpadEnter' || keyboardEvent.code == 'Enter') {
               // Update and emit the value
-              if(!input.value) {
+              if (!input.value) {
                 this.value = 0;
               } else {
                 this.value = this.parseValue(input.value);
               }
-              
+
               this.onValueChange.emit(this.value);
             } else {
 
@@ -143,5 +151,5 @@ export class NumberFieldComponent implements OnChanges {
   }
 
 
-  
+
 }

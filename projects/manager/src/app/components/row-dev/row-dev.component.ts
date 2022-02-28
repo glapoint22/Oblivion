@@ -58,7 +58,7 @@ export class RowDevComponent extends RowComponent {
     this.columns.forEach((column: ColumnDevComponent) => {
       column.columnElement.className = '';
       column.columnSpan.value = columnSpan;
-      column.columnSpan.setClass(column.columnElement, []);
+      column.columnSpan.setClass(column.columnElement);
     });
 
 

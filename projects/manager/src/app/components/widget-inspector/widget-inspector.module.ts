@@ -16,6 +16,8 @@ import { BorderComponent } from '../border/border.component';
 import { NumberFieldModule } from '../number-field/number-field.module';
 import { CornersComponent } from '../corners/corners.component';
 import { ShadowComponent } from '../shadow/shadow.component';
+import { PaddingComponent } from '../padding/padding.component';
+import { VerticalAlignmentComponent } from '../vertical-alignment/vertical-alignment.component';
 
 
 
@@ -30,7 +32,9 @@ import { ShadowComponent } from '../shadow/shadow.component';
     ColorSwatchComponent,
     BorderComponent,
     CornersComponent,
-    ShadowComponent
+    ShadowComponent,
+    PaddingComponent,
+    VerticalAlignmentComponent
   ],
   imports: [
     CommonModule,

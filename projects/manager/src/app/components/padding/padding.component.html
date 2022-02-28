@@ -1,0 +1,78 @@
+<panel [title]="'Padding'">
+
+    <label class="checkbox">
+        <div>Constrain</div>
+        <input type="checkbox" [checked]="padding.constrain" (change)="onConstrainChange()">
+        <span class="checkmark"></span>
+    </label>
+
+    <!-- Top -->
+    <div style="display: flex;">
+        <div class="label">Top</div>
+        <div style="flex: 1;">
+            <number-field [values]="spacing" [value]="paddingTop"
+                (onValueChange)="onValueChange(paddingType.Top, $event)"></number-field>
+        </div>
+
+        <label class="checkbox">
+            <input #topBreakpointCheckbox type="checkbox"
+                (change)="onBreakpointCheckboxChange(topBreakpointCheckbox, paddingType.Top)"
+                [checked]="paddingTopChecked">
+            <span class="checkmark"></span>
+        </label>
+    </div>
+
+
+
+
+    <!-- Right -->
+    <div style="display: flex;">
+        <div class="label">right</div>
+        <div style="flex: 1;">
+            <number-field [values]="spacing" [value]="paddingRight"
+                (onValueChange)="onValueChange(paddingType.Right, $event)"></number-field>
+        </div>
+
+        <label class="checkbox">
+            <input #rightBreakpointCheckbox type="checkbox"
+                (change)="onBreakpointCheckboxChange(rightBreakpointCheckbox, paddingType.Right)"
+                [checked]="paddingRightChecked">
+            <span class="checkmark"></span>
+        </label>
+    </div>
+
+
+    <!-- Bottom -->
+    <div style="display: flex;">
+        <div class="label">bottom</div>
+        <div style="flex: 1;">
+            <number-field [values]="spacing" [value]="paddingBottom"
+                (onValueChange)="onValueChange(paddingType.Bottom, $event)"></number-field>
+        </div>
+
+        <label class="checkbox">
+            <input #bottomBreakpointCheckbox type="checkbox"
+                (change)="onBreakpointCheckboxChange(bottomBreakpointCheckbox, paddingType.Bottom)"
+                [checked]="paddingBottomChecked">
+            <span class="checkmark"></span>
+        </label>
+    </div>
+
+
+    <!-- Left -->
+    <div style="display: flex;">
+        <div class="label">left</div>
+        <div style="flex: 1;">
+            <number-field [values]="spacing" [value]="paddingLeft"
+                (onValueChange)="onValueChange(paddingType.Left, $event)"></number-field>
+        </div>
+
+        <label class="checkbox">
+            <input #leftBreakpointCheckbox type="checkbox"
+                (change)="onBreakpointCheckboxChange(leftBreakpointCheckbox, paddingType.Left)"
+                [checked]="paddingLeftChecked">
+            <span class="checkmark"></span>
+        </label>
+    </div>
+
+</panel>
