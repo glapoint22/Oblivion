@@ -1,8 +1,8 @@
 import { EditableArrowItemComponent } from "../components/items/editable-arrow-item/editable-arrow-item.component";
-import { EditableList } from "./editable-list";
+import { EditableListManager } from "./editable-list";
 import { ListUpdateType } from "./list";
 
-export class EditableArrowList extends EditableList {
+export class EditableArrowListManager extends EditableListManager {
 
     onArrowClick(item: EditableArrowItemComponent) {
         item.arrowDown = !item.arrowDown;

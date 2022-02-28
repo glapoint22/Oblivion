@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EditableCheckboxList } from '../../../classes/editable-checkbox-list';
+import { EditableCheckboxListManager } from '../../../classes/editable-checkbox-list';
 import { EditableItemComponent } from '../editable-item/editable-item.component';
 
 @Component({
@@ -8,6 +8,6 @@ import { EditableItemComponent } from '../editable-item/editable-item.component'
   styleUrls: ['../item/item.component.scss', '../editable-item/editable-item.component.scss', './editable-checkbox-item.component.scss']
 })
 export class EditableCheckboxItemComponent extends EditableItemComponent {
-  @Input() list!: EditableCheckboxList;
+  @Input() listManager!: EditableCheckboxListManager;
   public isChecked!: boolean;
 }

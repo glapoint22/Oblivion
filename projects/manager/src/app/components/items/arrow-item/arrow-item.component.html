@@ -1,20 +1,9 @@
 <div #htmlItem
-        class="item"
-        tabindex="-1"
-        (contextmenu)="$event.preventDefault()"
-        (blur)="list.onItemBlur(this)"
-        [ngClass]="{'selected-item': this == list.selectedItem,
-            'unselected-item': this == list.unselectedItem,
-            'edited-item': this == list.editableItem,
-            'transparent-item': list.editableItem != null && list.editableItem != this,
-            'selected-item-top': this.selectType == SelectType.Top,
-            'selected-item-all': this.selectType == SelectType.All,
-            'selected-item-middle': this.selectType == SelectType.Middle,
-            'selected-item-bottom': this.selectType == SelectType.Bottom}">
+    class="item"
+    (contextmenu)="$event.preventDefault()">
 
-    <div *ngIf="list.editableItem == null"
-        class="arrow-container"
-        (click)="list.onArrowClick(this)">
+    <div class="arrow-container"
+         (click)="listManager.onArrowClick(this)">
 
         <div class="arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
     </div>

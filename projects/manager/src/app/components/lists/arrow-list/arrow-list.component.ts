@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ArrowList } from '../../../classes/arrow-list';
+import { ArrowListManager } from '../../../classes/arrow-list';
 import { ListComponent } from '../list/list.component';
 
 @Component({
@@ -8,9 +8,9 @@ import { ListComponent } from '../list/list.component';
   styleUrls: ['./arrow-list.component.scss']
 })
 export class ArrowListComponent extends ListComponent {
-  public list!: ArrowList;
+  public listManager!: ArrowListManager;
 
   instantiate() {
-    this.list = new ArrowList();
+    this.listManager = new ArrowListManager();
   }
 }

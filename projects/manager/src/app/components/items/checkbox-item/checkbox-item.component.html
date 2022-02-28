@@ -1,15 +1,7 @@
 <div #htmlItem
      class="item"
      (contextmenu)="$event.preventDefault()"
-     (mousedown)="changeCheckbox()"
-     [ngClass]="{'selected-item': this == list.selectedItem,
-            'unselected-item': this == list.unselectedItem,
-            'edited-item': this == list.editableItem,
-            'transparent-item': list.editableItem != null && list.editableItem != this,
-            'selected-item-top': this.selectType == SelectType.Top,
-            'selected-item-all': this.selectType == SelectType.All,
-            'selected-item-middle': this.selectType == SelectType.Middle,
-            'selected-item-bottom': this.selectType == SelectType.Bottom}">
+     (mousedown)="changeCheckbox()">
 
     <label class="checkbox">
         <input #checkbox type="checkbox"

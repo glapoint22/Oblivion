@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { EditableArrowList } from '../../../classes/editable-arrow-list';
+import { Component } from '@angular/core';
+import { EditableArrowListManager } from '../../../classes/editable-arrow-list';
 import { EditableListComponent } from '../editable-list/editable-list.component';
 
 @Component({
@@ -8,9 +8,9 @@ import { EditableListComponent } from '../editable-list/editable-list.component'
   styleUrls: ['./editable-arrow-list.component.scss']
 })
 export class EditableArrowListComponent extends EditableListComponent {
-  public list!: EditableArrowList;
+  public listManager!: EditableArrowListManager;
 
   instantiate() {
-    this.list = new EditableArrowList();
+    this.listManager = new EditableArrowListManager();
   }
 }

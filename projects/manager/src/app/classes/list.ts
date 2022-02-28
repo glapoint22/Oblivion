@@ -5,7 +5,7 @@ import { ItemSelectType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
 
-export class List {
+export class ListManager {
   public sourceList!: Array<ListItem>;
   public items!: QueryList<ItemComponent>;
   public selectedItem!: ItemComponent;

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { List, ListUpdate } from '../../../classes/list';
+import { ListManager, ListUpdate } from '../../../classes/list';
 import { ListItem } from '../../../classes/list-item';
 import { ListOptions } from '../../../classes/list-options';
 import { ItemComponent } from '../../items/item/item.component';
@@ -10,7 +10,7 @@ import { ItemComponent } from '../../items/item/item.component';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
-  public list!: List;
+  public listManager!: ListManager;
   @Input() sourceList!: Array<ListItem>;
   @Output() onListUpdate: EventEmitter<ListUpdate> = new EventEmitter();
   @ViewChildren('item') items!: QueryList<ItemComponent>;
@@ -18,7 +18,7 @@ export class ListComponent implements OnInit {
   public options: ListOptions = {}
 
   instantiate() {
-    this.list = new List();
+    this.listManager = new ListManager();
   }
 
 
@@ -26,7 +26,7 @@ export class ListComponent implements OnInit {
     this.instantiate();
 
     // Wait for a list item to be returned from an add, edit, or delete
-    this.list.onListUpdate.subscribe((listUpdate) => {
+    this.listManager.onListUpdate.subscribe((listUpdate) => {
       this.onListUpdate.emit(listUpdate);
     });
   }
@@ -34,19 +34,19 @@ export class ListComponent implements OnInit {
 
 
   ngAfterViewInit() {
-    this.list.sourceList = this.sourceList;
-    this.list.items = this.items;
-    this.list.options = this.options;
+    this.listManager.sourceList = this.sourceList;
+    this.listManager.items = this.items;
+    this.listManager.options = this.options;
 
     // Set the edit icon button and the delete icon button as disabled
     window.setTimeout(() => {
-      this.list.onListUpdate.next({ editDisabled: true, deleteDisabled: true });
+      this.listManager.onListUpdate.next({ editDisabled: true, deleteDisabled: true });
     })
   }
 
 
   overButton(isOverButton: boolean) {
-    this.list.overButton = isOverButton;
+    this.listManager.overButton = isOverButton;
   }
 
 
@@ -61,7 +61,7 @@ export class ListComponent implements OnInit {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
 
     window.setTimeout(() => {
-      this.list.addItem(this.items.find(x => x.id == id)!);
+      this.listManager.addItem(this.items.find(x => x.id == id)!);
     })
   }
 
@@ -98,6 +98,6 @@ export class ListComponent implements OnInit {
 
 
   deleteItem() {
-    this.list.deleteItem();
+    this.listManager.deleteItem();
   }
 }

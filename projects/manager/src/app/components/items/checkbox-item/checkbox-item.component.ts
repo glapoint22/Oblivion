@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { CheckboxList } from '../../../classes/checkbox-list';
+import { CheckboxListManager } from '../../../classes/checkbox-list';
 import { ItemComponent } from '../item/item.component';
 
 @Component({
@@ -8,15 +8,13 @@ import { ItemComponent } from '../item/item.component';
   styleUrls: ['../item/item.component.scss', './checkbox-item.component.scss']
 })
 export class CheckboxItemComponent extends ItemComponent {
-  @Input() list!: CheckboxList;
+  @Input() listManager!: CheckboxListManager;
   public isChecked!: boolean;
   @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
-
 
   changeCheckbox() {
     this.isChecked = !this.isChecked;
     this.checkbox.nativeElement.checked = this.isChecked;
-
-    this.list.onCheckboxChange(this)
+    this.listManager.onCheckboxChange(this)
   }
 }

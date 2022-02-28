@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EditableArrowList } from '../../../classes/editable-arrow-list';
+import { EditableArrowListManager } from '../../../classes/editable-arrow-list';
 import { EditableItemComponent } from '../editable-item/editable-item.component';
 
 @Component({
@@ -8,6 +8,6 @@ import { EditableItemComponent } from '../editable-item/editable-item.component'
   styleUrls: ['../item/item.component.scss', '../editable-item/editable-item.component.scss', './editable-arrow-item.component.scss']
 })
 export class EditableArrowItemComponent extends EditableItemComponent {
-  @Input() list!: EditableArrowList;
+  @Input() listManager!: EditableArrowListManager;
   public arrowDown!: boolean;
 }

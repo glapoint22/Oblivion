@@ -1,7 +1,7 @@
 import { ItemComponent } from "../components/items/item/item.component";
-import { List } from "./list";
+import { ListManager } from "./list";
 
-export class EditableList extends List {
+export class EditableListManager extends ListManager {
     keydown(e: KeyboardEvent) {
         super.keydown(e);
         if (e.key === 'Enter') this.enter(e);
