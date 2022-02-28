@@ -1,4 +1,4 @@
 export class ListItem {
-    id!: number;
-    name!: string;
+    id?: number;
+    name?: string;
 }

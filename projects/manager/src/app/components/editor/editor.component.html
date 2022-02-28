@@ -3,10 +3,10 @@
     <!-- Widget Bar -->
     <div class="widget-bar" *ngIf="widgetService && widgetService.page.pageContent">
         <ng-container>
-            <div *ngFor="let widgetCursor of widgetService.widgetCursors" class="icon-container"
+            <button *ngFor="let widgetCursor of widgetService.widgetCursors" class="icon-button"
                 (mousedown)="onIconMousedown(widgetCursor)" [title]="widgetCursor.name">
                 <i [class]="widgetCursor.className"></i>
-            </div>
+            </button>
         </ng-container>
     </div>
 

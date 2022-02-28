@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { ListUpdate } from '../../../classes/list';
+import { Component, ViewChild } from '@angular/core';
+import { ListUpdate, ListUpdateType } from '../../../classes/list';
 import { ListItem } from '../../../classes/list-item';
+import { ListComponent } from '../../list/list.component';
 
 @Component({
   selector: 'product-groups-property',
@@ -8,7 +9,10 @@ import { ListItem } from '../../../classes/list-item';
   styleUrls: ['./product-groups-property.component.scss']
 })
 export class ProductGroupsPropertyComponent {
-  public listChange!: ListUpdate;
+  @ViewChild('list') list!: ListComponent;
+  public addDisabled!: boolean;
+  public editDisabled!: boolean;
+  public deleteDisabled!: boolean;
   public groups: Array<ListItem> = [
     {
       id: 1,
@@ -54,39 +58,93 @@ export class ProductGroupsPropertyComponent {
 
 
 
-  preventUnselect(isSet: boolean){
-    this.listChange = new ListUpdate();
-    this.listChange.preventUnselect = isSet;
+  onOverButton(isOverButton: boolean) {
+    this.list.overButton(isOverButton);
   }
 
 
   onAdd() {
-    this.groups.push({id: 11, name: 'trumpy'});
-    this.listChange = new ListUpdate();
-    this.listChange.add = [{
-      id:this.groups.length - 1,
-      name: 'trumpy'
-    }]
+    // Editable List
+    this.list.addItem();
+
+
+    // // Non-Editable List
+    // this.list.addItem(22, 'Group 5a');
+
+
+    // // Editable Hierarchy
+    // this.list.addItem(5);
+
+
+    // // Non-Editable Hierarchy
+    // this.list.addItem(5, 22, 'Group 5a');
   }
 
-  onDelete() {
-    this.listChange = new ListUpdate()
-    this.listChange.delete = [{
-      id: 0,
-      name: ''
-    }]
-  }
 
 
   onEdit() {
-    this.listChange = new ListUpdate()
-    this.listChange.edit = [{
-      id: 0,
-      name: ''
-    }]
+    this.list.editItem();
   }
 
-  trumpy(hello: any) {
-    console.log('result: ', hello)
+
+
+  onDelete() {
+    this.list.deleteItem();
+  }
+
+
+
+
+  onListUpdate(listUpdate: ListUpdate) {
+
+    // Add
+    if (listUpdate.type == ListUpdateType.Add) {
+      console.log("add")
+      //   this.dataService.post('api/Trumpy/Bear', {
+      //     name: listUpdate.name
+      //   },
+      //     {
+      //       spinnerAction: SpinnerAction.Start
+      //     }
+      //   ).subscribe((id: number) => {
+      //     this.groups[listUpdate.index!].id = id;
+      //   });
+    }
+
+
+
+    // Edit
+    if (listUpdate.type == ListUpdateType.Edit) {
+      console.log("edit")
+      // this.dataService.put('api/Trumpy/Bear', {
+      //   name: listUpdate.name,
+      //   id: listUpdate.id
+      // },
+      //   {
+      //     spinnerAction: SpinnerAction.Start
+      //   }
+      // ).subscribe();
+    }
+
+
+    // Delete
+    if (listUpdate.type == ListUpdateType.Delete) {
+      console.log("delete")
+      // this.dataService.delete('api/Trumpy/Bear', {
+      //   deletedItems: listUpdate.deletedItems
+      // },
+      //   {
+      //     spinnerAction: SpinnerAction.Start
+      //   }
+      // ).subscribe();
+    }
+
+    if (listUpdate.type == ListUpdateType.SelectedItem) {
+      console.log(listUpdate)
+    }
+
+    this.addDisabled = listUpdate.addDisabled!;
+    this.editDisabled = listUpdate.editDisabled!;
+    this.deleteDisabled = listUpdate.deleteDisabled!;
   }
 }

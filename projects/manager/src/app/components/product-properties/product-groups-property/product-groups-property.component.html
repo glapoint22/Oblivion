@@ -10,23 +10,23 @@
             <div class="icons">
 
                 <!-- Delete icon -->
-                <div class="icon-container" (mouseover)="preventUnselect(true)" (mouseout)="preventUnselect(false)" (click)="onDelete()">
+                <button class="icon-button" [ngClass]="{'icon-button-disabled': deleteDisabled}" (mouseover)="onOverButton(true)" (mouseout)="onOverButton(false)" (click)="onDelete()" [disabled]="deleteDisabled">
                     <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
-                </div>
+                </button>
 
                 <!-- Edit icon -->
-                <div class="icon-container" (mouseover)="preventUnselect(true)" (mouseout)="preventUnselect(false)" (click)="onEdit()">
+                <button class="icon-button" [ngClass]="{'icon-button-disabled': editDisabled}" (mouseover)="onOverButton(true)" (mouseout)="onOverButton(false)" (click)="onEdit()" [disabled]="editDisabled">
                     <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
-                </div>
+                </button>
 
                 <!-- Add icon -->
-                <div class="icon-container" (click)="onAdd()">
+                <button class="icon-button" [ngClass]="{'icon-button-disabled': addDisabled}" (click)="onAdd()" [disabled]="addDisabled">
                     <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
-                </div>
+                </button>
             </div>
         </div>
 
-        <list [list]="groups" [listChange]="listChange" (onListUpdate)="trumpy($event)"></list>
+        <list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></list>
         
     </div>
 
