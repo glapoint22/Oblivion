@@ -18,7 +18,7 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
     super.ngAfterViewInit();
 
     this.widgetElement.innerHTML = this.htmlContent;
-    this.padding.setClass(this.widgetElement, this.breakpoints);
+    this.padding.setClasses(this.widgetElement);
   }
 
   setWidget(textWidgetData: TextWidgetData) {

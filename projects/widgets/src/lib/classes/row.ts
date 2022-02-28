@@ -1,10 +1,10 @@
 import { Background } from "./background";
 import { Border } from "./border";
-import { Breakpoint } from "./breakpoint";
 import { Column } from "./column";
 import { Corners } from "./corners";
 import { Padding } from "./padding";
 import { Shadow } from "./shadow";
+import { VerticalAlignment } from "./vertical-alignment";
 import { WidgetType } from "./widget-enums";
 
 export class Row {
@@ -15,8 +15,7 @@ export class Row {
     public corners!: Corners;
     public shadow!: Shadow;
     public padding!: Padding;
-    public verticalAlignment!: string;
-    public breakpoints!: Array<Breakpoint>;
+    public verticalAlignment!: VerticalAlignment;
 
     constructor(top: number, widgetType: WidgetType) {
         this.top = top;

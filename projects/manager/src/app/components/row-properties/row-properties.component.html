@@ -1,11 +1,18 @@
 <!-- Background -->
-<background [background]="widgetService.selectedRow.background" (onChange)="widgetService.$update.next()"></background>
+<background [background]="background" (onChange)="update()"></background>
 
 <!-- Border -->
-<border [border]="widgetService.selectedRow.border" (onChange)="widgetService.$update.next()"></border>
+<border [border]="border" (onChange)="update()"></border>
 
 <!-- Corners -->
-<corners [corners]="widgetService.selectedRow.corners" (onChange)="widgetService.$update.next()"></corners>
+<corners [corners]="corners" (onChange)="update()"></corners>
 
 <!-- Shadow -->
-<shadow [shadow]="widgetService.selectedRow.shadow" (onChange)="widgetService.$update.next()"></shadow>
+<shadow [shadow]="shadow" (onChange)="update()"></shadow>
+
+<!-- Padding -->
+<padding [padding]="padding" (onChange)="padding.setClasses(widgetService.selectedRow.rowElement); update()"></padding>
+
+<!-- Vertical Alignment -->
+<vertical-alignment [verticalAlignment]="verticalAlignment"
+    (onChange)="verticalAlignment.setClasses(widgetService.selectedRow.rowElement); update()"></vertical-alignment>

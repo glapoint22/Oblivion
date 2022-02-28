@@ -27,7 +27,7 @@ export class ContainerWidgetComponent extends Widget {
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    this.padding.setClass(this.widgetElement, this.breakpoints);
+    this.padding.setClasses(this.widgetElement);
 
     if (this.rows && this.rows.length > 0) {
       // Loop through the rows

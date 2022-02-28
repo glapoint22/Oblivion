@@ -47,7 +47,7 @@ export class ButtonWidgetComponent extends Widget {
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    this.padding.setClass(this.widgetElement, this.breakpoints);
+    this.padding.setClasses(this.widgetElement);
 
     // Create the button class and add it to the button element
     const buttonClassName = this.createClassName();

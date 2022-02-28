@@ -1,88 +1,36 @@
-import { Breakpoint } from "./breakpoint";
-import { BreakpointType } from "./widget-enums";
+import { PaddingValue } from "./padding-value";
 
 export class Padding {
-    public constrain: boolean = true;
-    public top: string = '0px';
-    public right: string = '0px';
-    public bottom: string = '0px';
-    public left: string = '0px';
+    public constrain!: boolean;
+    public values: Array<PaddingValue> = []
+
 
     setData(padding: Padding) {
         if (padding) {
-            if (padding.constrain) this.constrain = padding.constrain;
-            if (padding.top) this.top = padding.top;
-            if (padding.right) this.right = padding.right;
-            if (padding.bottom) this.bottom = padding.bottom;
-            if (padding.left) this.left = padding.left;
+            if (padding.values) this.values = padding.values;
         }
     }
 
 
-    setClass(element: HTMLElement, breakpoints: Array<Breakpoint>,) {
-        if (!breakpoints && (!this.top || !this.right || !this.bottom || !this.left)) return;
+    setClasses(element: HTMLElement) {
+        // Get a list of all current padding classes
+        const classes = element.className.match(/padding-[a-z\-]+[0-9]+[\-a-z]*/g);
 
-        let paddingTypes = [
-            'PaddingTop',
-            'PaddingRight',
-            'PaddingBottom',
-            'PaddingLeft'
-        ];
-
-        // Loop through each of the padding types
-        paddingTypes.forEach((paddingType: string) => {
-            let paddingBreakpoints: Array<Breakpoint> = [];
-
-
-            if (breakpoints) paddingBreakpoints = breakpoints.filter(x => x.breakpointType == (<any>BreakpointType)[paddingType]);
-
-
-            // If there any breakpoints for this padding type
-            // Add the classes with the screen size
-            if (paddingBreakpoints.length > 0) {
-                paddingBreakpoints.forEach((breakpoint: Breakpoint) => {
-                    element.classList.add(this.getClassName(breakpoint.breakpointType) + '-' +
-                        breakpoint.value.substr(0, breakpoint.value.length - 2) +
-                        '-' + breakpoint.screenSize.toLowerCase());
-                });
-
-                // There are no breakpoints for this padding type
-                // Add the classes without the screen size
-            } else if (this.top || this.right || this.bottom || this.left) {
-                let paddingValue = (<any>this)[paddingType.substring(7).toLowerCase()];
-
-                // Only add class if value is not zero
-                if (paddingValue && paddingValue != '0px') {
-                    element.classList.add(this.getClassName((<any>BreakpointType)[paddingType]) + '-' +
-                        paddingValue.substr(0, paddingValue.length - 2));
-                }
-            }
+        // Remove the padding classes
+        classes?.forEach(x => {
+            element.classList.remove(x);
         });
-    }
+
+        // Add the new classes
+        this.values.forEach((value: PaddingValue) => {
+            if (value.padding > 0 || value.breakpoint) element.classList.add(value.paddingType + '-' + value.padding +
+                (value.breakpoint ? '-' + value.breakpoint : ''));
+        });
 
 
-    private getClassName(breakpointType: BreakpointType): string {
-        let className: string = '';
-
-        switch (breakpointType) {
-            case BreakpointType.PaddingTop:
-                className = 'padding-top';
-                break;
-
-            case BreakpointType.PaddingRight:
-                className = 'padding-right';
-                break;
-
-
-            case BreakpointType.PaddingBottom:
-                className = 'padding-bottom';
-                break;
-
-            case BreakpointType.PaddingLeft:
-                className = 'padding-left';
-                break;
-        }
-
-        return className;
+        // if (this.top && (this.top.padding > 0 || this.top.breakpoint)) element.classList.add(this.top.paddingType + '-' + this.top.padding + (this.top.breakpoint ? '-' + this.top.breakpoint : ''));
+        // if (this.right && (this.right.padding > 0 || this.right.breakpoint)) element.classList.add(this.right.paddingType + '-' + this.right.padding + (this.right.breakpoint ? '-' + this.right.breakpoint : ''));
+        // if (this.bottom && (this.bottom.padding > 0 || this.bottom.breakpoint)) element.classList.add(this.bottom.paddingType + '-' + this.bottom.padding + (this.bottom.breakpoint ? '-' + this.bottom.breakpoint : ''));
+        // if (this.left && (this.left.padding > 0 || this.left.breakpoint)) element.classList.add(this.left.paddingType + '-' + this.left.padding + (this.left.breakpoint ? '-' + this.left.breakpoint : ''));
     }
 }

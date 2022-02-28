@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ComponentFactoryResolver, ComponentRef, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { Background } from '../../classes/background';
 import { Border } from '../../classes/border';
-import { Breakpoint } from '../../classes/breakpoint';
 import { Column } from '../../classes/column';
 import { ColumnSpan } from '../../classes/column-span';
 import { Corners } from '../../classes/corners';
@@ -25,13 +24,12 @@ export class ColumnComponent implements AfterViewInit {
   public columnElement!: HTMLElement;
   private padding: Padding = new Padding();
   public columnSpan!: ColumnSpan;
-  private breakpoints!: Array<Breakpoint>;
 
   constructor(public resolver: ComponentFactoryResolver) { }
 
   ngAfterViewInit(): void {
-    this.columnSpan.setClass(this.columnElement, this.breakpoints);
-    this.padding.setClass(this.columnElement, this.breakpoints);
+    this.columnSpan.setClass(this.columnElement);
+    this.padding.setClasses(this.columnElement);
   }
 
 
@@ -40,7 +38,6 @@ export class ColumnComponent implements AfterViewInit {
     this.border = column.border;
     this.corners = column.corners;
     this.shadow = column.shadow;
-    this.breakpoints = column.breakpoints;
     this.columnSpan = new ColumnSpan(column.columnSpan);
     this.padding.setData(column.padding);
   }

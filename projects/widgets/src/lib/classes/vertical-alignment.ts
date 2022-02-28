@@ -1,48 +1,29 @@
-import { Breakpoint } from "./breakpoint";
-import { BreakpointType, VerticalAlign } from "./widget-enums";
+import { VerticalAlignmentValue } from "./vertical-alignment-value";
 
 export class VerticalAlignment {
+    public values!: Array<VerticalAlignmentValue>;
 
-    constructor(private value: string) { }
-
-    setClass(element: HTMLElement, breakpoints: Array<Breakpoint>) {
-        if (!breakpoints && !this.value) return;
-
-        let verticalAlignmentBreakpoints: Array<Breakpoint> = [];
-
-        if (breakpoints) verticalAlignmentBreakpoints = breakpoints.filter(x => x.breakpointType == BreakpointType.VerticalAlignment);
-
-        // If there are any breakpoints, add each breakpoint class 
-        if (verticalAlignmentBreakpoints.length > 0) {
-            verticalAlignmentBreakpoints.forEach((breakpoint: Breakpoint) => {
-                element.classList.add(this.getClassName(breakpoint.value) + '-' + breakpoint.screenSize.toLowerCase());
-            });
-
-            // We have no breakpoints, add a single class
-        } else if (this.value) {
-            if (this.value != VerticalAlign.Top) element.classList.add(this.getClassName(this.value));
+    setData(verticalAlignment: VerticalAlignment) {
+        if (verticalAlignment) {
+            if (verticalAlignment.values) this.values = verticalAlignment.values;
         }
     }
 
 
-
-    private getClassName(value: string): string {
-        let className: string = '';
-
-        switch (value) {
-            case VerticalAlign.Top:
-                className = 'vertical-align-top';
-                break;
-
-            case VerticalAlign.Middle:
-                className = 'vertical-align-middle';
-                break;
-
-            case VerticalAlign.Bottom:
-                className = 'vertical-align-bottom';
-                break;
+    setClasses(element: HTMLElement) {
+        // Get a list of all current vertical align classes
+        const classes = element.className.match(/vertical-align-[a-z\-]*/g);
+        
+        // Remove the vertical align classes
+        classes?.forEach(x => {
+            element.classList.remove(x);
+        });
+        
+        // Add the new classes
+        if (this.values && this.values.length > 0) {
+            this.values.forEach((value: VerticalAlignmentValue) => {
+                element.classList.add(value.verticalAlignmentType + (value.breakpoint ? '-' + value.breakpoint : ''));
+            });
         }
-
-        return className;
     }
 }

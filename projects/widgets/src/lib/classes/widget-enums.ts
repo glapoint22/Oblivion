@@ -28,16 +28,6 @@ export enum LogicalOperatorType {
     Or
 }
 
-export enum BreakpointType {
-    PaddingTop = 1,
-    PaddingRight,
-    PaddingBottom,
-    PaddingLeft,
-    HorizontalAlignment,
-    VerticalAlignment,
-    Visibility,
-    ColumnSpan
-}
 
 
 export enum WidgetType {
@@ -63,10 +53,10 @@ export enum LinkOption {
 }
 
 
-export enum VerticalAlign {
-    Top = 'flex-start',
-    Middle = 'center',
-    Bottom = 'flex-end'
+export enum VerticalAlignmentType {
+    Top = 'vertical-align-top',
+    Middle = 'vertical-align-middle',
+    Bottom = 'vertical-align-bottom'
 }
 
 
@@ -76,6 +66,13 @@ export enum HorizontalAlign {
     Right = 'right'
 }
 
+
+export enum PaddingType {
+    Top = 'padding-top',
+    Right = 'padding-right',
+    Bottom = 'padding-bottom',
+    Left = 'padding-left'
+}
 
 export enum PageType {
     Custom,

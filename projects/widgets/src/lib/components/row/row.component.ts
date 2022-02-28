@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
 import { Background } from '../../classes/background';
 import { Border } from '../../classes/border';
-import { Breakpoint } from '../../classes/breakpoint';
 import { Column } from '../../classes/column';
 import { Corners } from '../../classes/corners';
 import { Padding } from '../../classes/padding';
+import { PaddingValue } from '../../classes/padding-value';
 import { Row } from '../../classes/row';
 import { Shadow } from '../../classes/shadow';
 import { VerticalAlignment } from '../../classes/vertical-alignment';
+import { PaddingType } from '../../classes/widget-enums';
 import { ColumnComponent } from '../column/column.component';
 
 @Component({
@@ -18,23 +19,25 @@ import { ColumnComponent } from '../column/column.component';
 export class RowComponent implements AfterViewInit {
   @ViewChild('viewContainerRef', { read: ViewContainerRef }) viewContainerRef!: ViewContainerRef;
   public top!: number;
+  public columnCount!: number;
   public background: Background = new Background();
   public border: Border = new Border();
   public corners: Corners = new Corners();
   public shadow: Shadow = new Shadow();
-  public columnCount!: number;
-  private padding: Padding = new Padding();
-  private verticalAlignment!: VerticalAlignment;
-  private breakpoints!: Array<Breakpoint>;
+  public padding: Padding = new Padding();
+  public verticalAlignment: VerticalAlignment = new VerticalAlignment();
+  public rowElement!: HTMLElement;
 
   constructor(public resolver: ComponentFactoryResolver) { }
 
 
   ngAfterViewInit(): void {
     // Get the html row element
-    const rowElement = this.viewContainerRef.element.nativeElement.parentElement;
-    this.padding.setClass(rowElement, this.breakpoints);
-    this.verticalAlignment.setClass(rowElement, this.breakpoints);
+    this.rowElement = this.viewContainerRef.element.nativeElement.parentElement;
+
+    // Set the classes
+    this.padding.setClasses(this.rowElement);
+    this.verticalAlignment.setClasses(this.rowElement);
   }
 
 
@@ -44,10 +47,9 @@ export class RowComponent implements AfterViewInit {
     this.border.setData(row.border);
     this.corners.setData(row.corners);
     this.shadow.setData(row.shadow);
-    this.breakpoints = row.breakpoints;
-    this.columnCount = row.columns.length;
     this.padding.setData(row.padding);
-    this.verticalAlignment = new VerticalAlignment(row.verticalAlignment);
+    this.verticalAlignment.setData(row.verticalAlignment);
+    this.columnCount = row.columns.length;
   }
 
   createColumns(columns: Array<Column>) {
