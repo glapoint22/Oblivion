@@ -1,7 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { ListUpdate, ListUpdateType } from '../../../classes/list';
 import { ListItem } from '../../../classes/list-item';
-import { ListComponent } from '../../list/list.component';
+import { CheckboxListComponent } from '../../lists/checkbox-list/checkbox-list.component';
+import { EditableCheckboxListComponent } from '../../lists/editable-checkbox-list/editable-checkbox-list.component';
+import { ListComponent } from '../../lists/list/list.component';
 
 @Component({
   selector: 'product-groups-property',
@@ -9,7 +11,7 @@ import { ListComponent } from '../../list/list.component';
   styleUrls: ['./product-groups-property.component.scss']
 })
 export class ProductGroupsPropertyComponent {
-  @ViewChild('list') list!: ListComponent;
+  @ViewChild('list') list!: EditableCheckboxListComponent;
   public addDisabled!: boolean;
   public editDisabled!: boolean;
   public deleteDisabled!: boolean;
@@ -82,9 +84,9 @@ export class ProductGroupsPropertyComponent {
 
 
 
-  onEdit() {
-    this.list.editItem();
-  }
+  // onEdit() {
+  //   this.list.editItem();
+  // }
 
 
 
@@ -140,8 +142,16 @@ export class ProductGroupsPropertyComponent {
     }
 
     if (listUpdate.type == ListUpdateType.SelectedItem) {
+      // console.log(listUpdate)
+    }
+
+
+
+    if(listUpdate.type == ListUpdateType.CheckboxChange) {
+
       console.log(listUpdate)
     }
+
 
     this.addDisabled = listUpdate.addDisabled!;
     this.editDisabled = listUpdate.editDisabled!;

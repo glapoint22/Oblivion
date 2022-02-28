@@ -4,6 +4,8 @@
     (contextmenu)="$event.preventDefault()"
     (mousedown)="list.onItemMousedown(this, $event)"
     (blur)="list.onItemBlur(this)"
+    (dblclick)="list.onItemDoubleClick(this)"
+    [contentEditable]="this == list.editableItem"
     [ngClass]="{'selected-item': this == list.selectedItem,
                 'unselected-item': this == list.unselectedItem,
                 'edited-item': this == list.editableItem,

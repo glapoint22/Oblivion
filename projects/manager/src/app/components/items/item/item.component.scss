@@ -13,88 +13,76 @@
         background: rgba(255, 187, 0, 0.08);
         color: #dddddd;
     }
+}
 
-    &.selected-item:not(.transparent-item):not(.edited-item) {
-        background: rgba(255, 187, 0, 0.1);
-        border-style: double;
-        border-color: rgba(255, 187, 0, 0.85);
+
+
+
+.selected-item:not(.transparent-item):not(.edited-item) {
+    background: rgba(255, 187, 0, 0.1);
+    border-style: double;
+    border-color: rgba(255, 187, 0, 0.85);
+    color: white;
+}
+
+
+.unselected-item:not(.transparent-item):not(.edited-item) {
+    border-style: double;
+    border-color: rgba(255, 187, 0, 0.85);
+    color: #aaaaaa;
+
+    &:hover {
+        background: rgba(255, 187, 0, 0.02);
+    }
+}
+
+.selected-item-top {
+    background: rgba(255, 187, 0, 0.05);
+    color: #cfcfcf;
+    border-top-style: double;
+    border-top-color: rgba(255, 187, 0, 0.25);
+    border-left-style: double;
+    border-left-color: rgba(255, 187, 0, 0.25);
+    border-right-style: double;
+    border-right-color: rgba(255, 187, 0, 0.25);
+    &:hover:not(.edited-item){
+        background: rgba(255, 187, 0, 0.08);
         color: white;
     }
+}
 
-    &.unselected-item:not(.transparent-item):not(.edited-item) {
-        border-style: double;
-        border-color: rgba(255, 187, 0, 0.85);
-        color: #aaaaaa;
-
-        &:hover {
-            background: rgba(255, 187, 0, 0.02);
-        }
+.selected-item-middle {
+    background: rgba(255, 187, 0, 0.05);
+    color: #cfcfcf;
+    border-left-style: double;
+    border-left-color: rgba(255, 187, 0, 0.25);
+    border-right-style: double;
+    border-right-color: rgba(255, 187, 0, 0.25);
+    &:hover:not(.edited-item){
+        background: rgba(255, 187, 0, 0.08);
+        color: white;
     }
+}
 
-    &.selected-item-top {
-        background: rgba(255, 187, 0, 0.05);
-        color: #cfcfcf;
-        border-top-style: double;
-        border-top-color: rgba(255, 187, 0, 0.25);
-        border-left-style: double;
-        border-left-color: rgba(255, 187, 0, 0.25);
-        border-right-style: double;
-        border-right-color: rgba(255, 187, 0, 0.25);
-        &:hover:not(.edited-item){
-            background: rgba(255, 187, 0, 0.08);
-            color: white;
-        }
-    }
-
-    &.selected-item-middle {
-        background: rgba(255, 187, 0, 0.05);
-        color: #cfcfcf;
-        border-left-style: double;
-        border-left-color: rgba(255, 187, 0, 0.25);
-        border-right-style: double;
-        border-right-color: rgba(255, 187, 0, 0.25);
-        &:hover:not(.edited-item){
-            background: rgba(255, 187, 0, 0.08);
-            color: white;
-        }
-    }
-
-    &.selected-item-bottom {
-        background: rgba(255, 187, 0, 0.05);
-        color: #cfcfcf;
-        border-left-style: double;
-        border-left-color: rgba(255, 187, 0, 0.25);
-        border-right-style: double;
-        border-right-color: rgba(255, 187, 0, 0.25);
-        border-bottom-style: double;
-        border-bottom-color: rgba(255, 187, 0, 0.25);
-        &:hover:not(.edited-item){
-            background: rgba(255, 187, 0, 0.08);
-            color: white;
-        }
-    }
-
-    
-    &.selected-item-all {
-        background: rgba(255, 187, 0, 0.05);
-        border-style: double;
-        border-color: rgba(255, 187, 0, 0.25);
-        color: #cfcfcf;
-    }
-
-    &.edited-item {
-        background: #2b2b2b;
-        border-style: double;
-        border-color: rgba(255, 187, 0, 0.25);
-        color: #cccccc;
-        outline: none;
-    }
-    &.transparent-item {
-        color: rgba(170, 170, 170, 0.2)
+.selected-item-bottom {
+    background: rgba(255, 187, 0, 0.05);
+    color: #cfcfcf;
+    border-left-style: double;
+    border-left-color: rgba(255, 187, 0, 0.25);
+    border-right-style: double;
+    border-right-color: rgba(255, 187, 0, 0.25);
+    border-bottom-style: double;
+    border-bottom-color: rgba(255, 187, 0, 0.25);
+    &:hover:not(.edited-item){
+        background: rgba(255, 187, 0, 0.08);
+        color: white;
     }
 }
 
 
-::selection {
-    background: rgba(255, 187, 0, 0.308);
+.selected-item-all {
+    background: rgba(255, 187, 0, 0.05);
+    border-style: double;
+    border-color: rgba(255, 187, 0, 0.25);
+    color: #cfcfcf;
 }

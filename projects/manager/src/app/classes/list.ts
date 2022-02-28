@@ -46,15 +46,15 @@ export class List {
 
 
   onKeyDown = (e: KeyboardEvent) => {
+    this.keydown(e);
+  }
+
+
+  keydown(e: KeyboardEvent) {
     if (e.key === 'Delete') this.deleteItem(); // thisOptions.onDeleteItem.apply(thisOptions.currentObj);
     if (e.key === 'Escape') this.escape();
     if (e.key === 'ArrowUp') this.arrowUp();
     if (e.key === 'ArrowDown') this.arrowDown();
-
-    if (this.options.isEditable) {
-      if (e.key === 'Enter') this.enter(e);
-    }
-
 
     // if (thisOptions == null || thisOptions.multiSelect == null || thisOptions.multiSelect) {
     if (e.key === 'Control') this.ctrlKeyDown = true;
@@ -159,7 +159,7 @@ export class List {
       }
 
       // But if we are clicking on an icon button and an item is in edit mode
-      if (this.overButton && this.editableItem != null) {
+      if (this.overButton) {
         // Send the focus right back to the item that is in edit mode
         this.setItemFocus(item)
       }
@@ -414,13 +414,6 @@ export class List {
 
 
 
-  onItemDoubleClick(item: ItemComponent) {
-    if (!this.shiftKeyDown && !this.ctrlKeyDown) {
-      this.onEditItem(item);
-    }
-  }
-
-
   removeFocus() {
     this.pivotItem = null!;
     this.selectedItem = null!;
@@ -434,11 +427,14 @@ export class List {
   }
 
 
+  setAddItem(item: ItemComponent) {
+    this.selectItem(item);
+  }
+
 
 
 
   addItem(item: ItemComponent) {
-    // if (!this.newItem) {
     this.addEventListeners();
 
     this.items.forEach(x => {
@@ -448,22 +444,8 @@ export class List {
 
 
     window.setTimeout(() => {
-      // If the list is editable
-      if (this.options.isEditable) {
-        this.newItem = true;
-        this.selectedItem = null!;
-        this.unselectedItem = null!;
-        this.editableItem = item;
-        this.setItemFocus(this.editableItem);
-        this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
-
-        // If the list is non-editable
-      } else {
-
-        this.selectItem(item);
-      }
+      this.setAddItem(item);
     });
-    // }
   }
 
 
@@ -477,31 +459,6 @@ export class List {
       this.setItemFocus(this.selectedItem);
     })
   }
-
-
-
-  onEditItem(item: ItemComponent) {
-    if (this.options.isEditable && this.selectedItem) {
-      this.editableItem = item;
-      this.selectedItem = null!;
-
-      this.items.forEach(x => {
-        if (x.selected) x.selected = false;
-        if (x.selectType) x.SelectType = null!;
-      })
-      this.setItemFocus(this.editableItem);
-      this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
-    }
-  }
-
-
-
-
-  editItem() {
-    this.overButton = false;
-    this.onEditItem(this.selectedItem);
-  }
-
 
 
   deleteItem() {
@@ -641,6 +598,10 @@ export class List {
     }
   }
 
+  isChecked(item: ItemComponent) {
+
+  }
+
 
   evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
     const htmlEditedItem = this.editableItem.htmlItem.nativeElement;
@@ -682,6 +643,8 @@ export class List {
 
           // Update the name property
           this.editableItem.name = trimmedEditedItem!;
+          // Check to see if the edited item was checked (for editable checkbox items)
+          this.isChecked(this.editableItem);
           this.updateList(null!, this.editableItem);
         }
       }
@@ -740,7 +703,6 @@ export class List {
         this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: item.id, index: updatedIndex, name: item.name });
       })
 
-
       // If items are being deleted
     } else {
 
@@ -757,11 +719,15 @@ export class ListUpdate extends ListItem {
   public addDisabled?: boolean;
   public editDisabled?: boolean;
   public deleteDisabled?: boolean;
+  public isChecked?: boolean;
+  public arrowDown?: boolean;
 }
 
 export enum ListUpdateType {
   Add,
   Edit,
   Delete,
-  SelectedItem
+  SelectedItem,
+  CheckboxChange,
+  ArrowClicked
 }

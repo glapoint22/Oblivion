@@ -2,7 +2,6 @@
 
     <div class="property-box-dark">
 
-
         <!-- Property Box Bar -->
         <div class="property-box-bar">
 
@@ -15,9 +14,9 @@
                 </button>
 
                 <!-- Edit icon -->
-                <button class="icon-button" [ngClass]="{'icon-button-disabled': editDisabled}" (mouseover)="onOverButton(true)" (mouseout)="onOverButton(false)" (click)="onEdit()" [disabled]="editDisabled">
+                <!-- <button class="icon-button" [ngClass]="{'icon-button-disabled': editDisabled}" (mouseover)="onOverButton(true)" (mouseout)="onOverButton(false)" (click)="onEdit()" [disabled]="editDisabled">
                     <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
-                </button>
+                </button> -->
 
                 <!-- Add icon -->
                 <button class="icon-button" [ngClass]="{'icon-button-disabled': addDisabled}" (click)="onAdd()" [disabled]="addDisabled">
@@ -25,9 +24,10 @@
                 </button>
             </div>
         </div>
-
-        <list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></list>
-        
+        <!-- <list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></list> -->
+        <!-- <editable-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></editable-list> -->
+        <!-- <checkbox-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></checkbox-list> -->
+        <!-- <editable-checkbox-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></editable-checkbox-list> -->
+        <editable-arrow-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></editable-arrow-list>
     </div>
-
 </panel>

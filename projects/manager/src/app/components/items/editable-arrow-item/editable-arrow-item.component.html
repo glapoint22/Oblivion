@@ -1,0 +1,50 @@
+<div class="item-container">
+
+    <div *ngIf="list.editableItem != null"
+            class="disabled-arrow-container">
+
+            <div class="disabled-arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
+        </div>
+
+    <div #htmlItem
+         class="item"
+         tabindex="-1"
+         (contextmenu)="$event.preventDefault()"
+         (mousedown)="!list.overButton ? list.onItemMousedown(this, $event) : null"
+         (blur)="list.onItemBlur(this)"
+         (dblclick)="!list.overButton ? list.onItemDoubleClick(this) : null"
+         [contentEditable]="this == list.editableItem"
+         [ngClass]="{'selected-item': this == list.selectedItem,
+                'unselected-item': this == list.unselectedItem,
+                'edited-item': this == list.editableItem,
+                'transparent-item': list.editableItem != null && list.editableItem != this,
+                'selected-item-top': this.selectType == SelectType.Top,
+                'selected-item-all': this.selectType == SelectType.All,
+                'selected-item-middle': this.selectType == SelectType.Middle,
+                'selected-item-bottom': this.selectType == SelectType.Bottom}">
+
+        <!-- <label *ngIf="list.editableItem == null" class="checkbox" (mouseover)="list.overButton = true" (mouseout)="list.overButton = false">
+            <input type="checkbox"
+                    
+                    >
+            <span class="checkmark"></span>
+        </label> -->
+
+
+
+        <div *ngIf="list.editableItem == null"
+            class="arrow-container"
+            (mouseover)="list.overButton = true"
+            (mouseout)="list.overButton = false"
+            (click)="list.onArrowClick(this)">
+
+            <div class="arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
+        </div>
+
+
+
+
+
+        <div>{{name}}</div>
+    </div>
+</div>

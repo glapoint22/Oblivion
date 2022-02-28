@@ -2,7 +2,6 @@ import { MenuOption } from "./menu-option";
 
 export class ListOptions {
     currentObj?: Object;
-    isEditable?: boolean;
     allowDelete?: boolean;
     onAddItem?: Function;
     onEditItem?: Function;

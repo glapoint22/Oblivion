@@ -15,8 +15,7 @@
             (mouseout)="overArrow = false"
             (click)="onArrowClick()">
 
-            <div class="arrow" [ngClass]="{'hierarchy-item-expanded': hierarchyItem.expanded == true}">
-            </div>
+            <div class="arrow" [ngClass]="{'hierarchy-item-expanded': hierarchyItem.expanded == true}"></div>
         </div>
 
         <div *ngIf="!hierarchyItem.children && !isRoot && hierarchyType == HierarchyType.Checkbox" style="color: #dadada;">Checkbox</div>
