@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ArrowListManager } from '../../../classes/arrow-list';
+import { ArrowListManager } from '../../../classes/arrow-list-manager';
 import { ListComponent } from '../list/list.component';
 
 @Component({

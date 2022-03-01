@@ -1,6 +1,6 @@
 import { EditableArrowItemComponent } from "../components/items/editable-arrow-item/editable-arrow-item.component";
-import { EditableListManager } from "./editable-list";
-import { ListUpdateType } from "./list";
+import { EditableListManager } from "./editable-list-manager";
+import { ListUpdateType } from "./list-manager";
 
 export class EditableArrowListManager extends EditableListManager {
 

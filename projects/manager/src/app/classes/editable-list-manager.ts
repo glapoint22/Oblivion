@@ -1,5 +1,5 @@
 import { ItemComponent } from "../components/items/item/item.component";
-import { ListManager } from "./list";
+import { ListManager } from "./list-manager";
 
 export class EditableListManager extends ListManager {
     keydown(e: KeyboardEvent) {

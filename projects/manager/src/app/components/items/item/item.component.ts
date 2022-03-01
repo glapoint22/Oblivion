@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { ItemSelectType } from '../../../classes/enums';
-import { ListManager } from '../../../classes/list';
+import { ListManager } from '../../../classes/list-manager';
 
 @Component({
   selector: 'item',

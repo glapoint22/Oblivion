@@ -1,5 +1,5 @@
 import { ArrowItemComponent } from "../components/items/arrow-item/arrow-item.component";
-import { ListManager, ListUpdateType } from "./list";
+import { ListManager, ListUpdateType } from "./list-manager";
 
 export class ArrowListManager extends ListManager {
     onArrowClick(item: ArrowItemComponent) {

@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditableCheckboxListComponent } from './editable-checkbox-list.component';
-import { EditableCheckboxItemComponent } from '../../items/editable-checkbox-item/editable-checkbox-item.component';
+import { EditableCheckboxItemModule } from '../../items/editable-checkbox-item/editable-checkbox-item.module';
 
 
 
 @NgModule({
-  declarations: [EditableCheckboxListComponent, EditableCheckboxItemComponent],
+  declarations: [EditableCheckboxListComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    EditableCheckboxItemModule
   ],
   exports:[EditableCheckboxListComponent]
 })

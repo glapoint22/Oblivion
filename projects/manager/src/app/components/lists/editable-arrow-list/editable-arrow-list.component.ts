@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EditableArrowListManager } from '../../../classes/editable-arrow-list';
+import { EditableArrowListManager } from '../../../classes/editable-arrow-list-manager';
 import { EditableListComponent } from '../editable-list/editable-list.component';
 
 @Component({

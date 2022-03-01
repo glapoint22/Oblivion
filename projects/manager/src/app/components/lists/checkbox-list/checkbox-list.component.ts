@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CheckboxListManager } from '../../../classes/checkbox-list';
+import { CheckboxListManager } from '../../../classes/checkbox-list-manager';
 import { ListComponent } from '../list/list.component';
 
 @Component({

@@ -1,5 +1,5 @@
 import { CheckboxItemComponent } from "../components/items/checkbox-item/checkbox-item.component";
-import { ListManager, ListUpdateType } from "./list";
+import { ListManager, ListUpdateType } from "./list-manager";
 
 export class CheckboxListManager extends ListManager {
     

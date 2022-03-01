@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EditableListManager } from '../../../classes/editable-list';
+import { EditableListManager } from '../../../classes/editable-list-manager';
 import { ListOptions } from '../../../classes/list-options';
 import { ListComponent } from '../list/list.component';
 

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { ListUpdate, ListUpdateType } from '../../../classes/list';
+import { ListUpdate, ListUpdateType } from '../../../classes/list-manager';
 import { ListItem } from '../../../classes/list-item';
 import { CheckboxListComponent } from '../../lists/checkbox-list/checkbox-list.component';
 import { EditableCheckboxListComponent } from '../../lists/editable-checkbox-list/editable-checkbox-list.component';

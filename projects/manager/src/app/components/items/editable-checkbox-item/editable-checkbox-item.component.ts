@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EditableCheckboxListManager } from '../../../classes/editable-checkbox-list';
+import { EditableCheckboxListManager } from '../../../classes/editable-checkbox-list-manager';
 import { EditableItemComponent } from '../editable-item/editable-item.component';
 
 @Component({

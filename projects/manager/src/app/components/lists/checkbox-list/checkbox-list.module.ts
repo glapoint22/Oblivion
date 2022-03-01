@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CheckboxListComponent } from './checkbox-list.component';
-import { CheckboxItemComponent } from '../../items/checkbox-item/checkbox-item.component';
+import { CheckboxItemModule } from '../../items/checkbox-item/checkbox-item.module';
 
 
 
 @NgModule({
-  declarations: [CheckboxListComponent, CheckboxItemComponent],
+  declarations: [CheckboxListComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    CheckboxItemModule
   ],
   exports: [
     CheckboxListComponent

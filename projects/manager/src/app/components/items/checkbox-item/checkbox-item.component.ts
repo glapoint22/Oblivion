@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { CheckboxListManager } from '../../../classes/checkbox-list';
+import { CheckboxListManager } from '../../../classes/checkbox-list-manager';
 import { ItemComponent } from '../item/item.component';
 
 @Component({

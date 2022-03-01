@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { ListManager, ListUpdate } from '../../../classes/list';
+import { ListManager, ListUpdate } from '../../../classes/list-manager';
 import { ListItem } from '../../../classes/list-item';
 import { ListOptions } from '../../../classes/list-options';
 import { ItemComponent } from '../../items/item/item.component';
