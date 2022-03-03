@@ -1,18 +1,34 @@
+import { ColumnSpanValue } from "./column-span-value";
 
 export class ColumnSpan {
-    constructor(public value: number = 12) { }
+    public values: Array<ColumnSpanValue> = []
 
-    setClass(element: HTMLElement) {
-        // let columnSpanBreakpoints: Array<Breakpoint> = [];
+    constructor(columnSpan?: number) {
+        if (columnSpan) this.values.push(new ColumnSpanValue(columnSpan));
+    }
 
-        // if (breakpoints) columnSpanBreakpoints = breakpoints.filter(x => x.breakpointType == BreakpointType.ColumnSpan);
 
-        // if (columnSpanBreakpoints.length > 0) {
-        //     columnSpanBreakpoints.forEach((breakpoint: Breakpoint) => {
-        //         element.classList.add('col-' + breakpoint.value + '-' + breakpoint.screenSize.toLowerCase());
-        //     });
-        // } else if (this.value) {
-            element.classList.add('col-' + this.value);
-        // }
+    setData(columnSpan: ColumnSpan) {
+        if (columnSpan) {
+            if (columnSpan.values) this.values = columnSpan.values;
+        }
+    }
+
+
+
+    setClasses(element: HTMLElement) {
+        // Get a list of all current column span classes
+        const classes = element.className.match(/col-[0-9]+[\-a-z]*/g);
+
+        // Remove the column span classes
+        classes?.forEach(x => {
+            element.classList.remove(x);
+        });
+
+        // Add the new classes
+        this.values.forEach((value: ColumnSpanValue) => {
+            element.classList.add('col-' + value.span +
+                (value.breakpoint ? '-' + value.breakpoint : ''));
+        });
     }
 }

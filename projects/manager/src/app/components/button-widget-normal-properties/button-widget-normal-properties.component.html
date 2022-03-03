@@ -1,0 +1,17 @@
+<!-- Background -->
+<background [background]="buttonWidget.background" (onChange)="update()"></background>
+
+<!-- Border -->
+<border [border]="buttonWidget.border" (onChange)="update()"></border>
+
+<!-- Corners -->
+<corners [corners]="buttonWidget.corners" (onChange)="update()"></corners>
+
+<!-- Shadow -->
+<shadow [shadow]="buttonWidget.shadow" (onChange)="update()"></shadow>
+
+<!-- Padding -->
+<padding [padding]="buttonWidget.padding" (onChange)="buttonWidget.padding.setClasses(buttonWidget.widgetElement); update()"></padding>
+
+<!-- Column Span -->
+<column-span [column]="widgetService.selectedColumn" (onChange)="widgetService.selectedColumn.columnSpan.setClasses(widgetService.selectedColumn.columnElement); update()"></column-span>

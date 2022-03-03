@@ -6,7 +6,7 @@
 
 
     <label *ngIf="enabledProperty" class="checkbox" style="margin-bottom: 16px;" (click)="$event.stopPropagation()">
-        <input type="checkbox" (change)="enabledProperty.enabled = !enabledProperty.enabled; onChange.emit()">
+        <input type="checkbox" (change)="enabledProperty.enabled = !enabledProperty.enabled; onChange.emit()" [checked]="enabledProperty.enabled">
         <span class="checkmark"></span>
     </label>
 

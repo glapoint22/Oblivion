@@ -1,9 +1,16 @@
 import { PaddingValue } from "./padding-value";
+import { PaddingType } from "./widget-enums";
 
 export class Padding {
     public constrain!: boolean;
-    public values: Array<PaddingValue> = []
+    public values: Array<PaddingValue> = Array<PaddingValue>();
 
+    constructor() {
+        this.values.push(new PaddingValue(PaddingType.Top, 0));
+        this.values.push(new PaddingValue(PaddingType.Right, 0));
+        this.values.push(new PaddingValue(PaddingType.Bottom, 0));
+        this.values.push(new PaddingValue(PaddingType.Left, 0));
+    }
 
     setData(padding: Padding) {
         if (padding) {
@@ -26,11 +33,5 @@ export class Padding {
             if (value.padding > 0 || value.breakpoint) element.classList.add(value.paddingType + '-' + value.padding +
                 (value.breakpoint ? '-' + value.breakpoint : ''));
         });
-
-
-        // if (this.top && (this.top.padding > 0 || this.top.breakpoint)) element.classList.add(this.top.paddingType + '-' + this.top.padding + (this.top.breakpoint ? '-' + this.top.breakpoint : ''));
-        // if (this.right && (this.right.padding > 0 || this.right.breakpoint)) element.classList.add(this.right.paddingType + '-' + this.right.padding + (this.right.breakpoint ? '-' + this.right.breakpoint : ''));
-        // if (this.bottom && (this.bottom.padding > 0 || this.bottom.breakpoint)) element.classList.add(this.bottom.paddingType + '-' + this.bottom.padding + (this.bottom.breakpoint ? '-' + this.bottom.breakpoint : ''));
-        // if (this.left && (this.left.padding > 0 || this.left.breakpoint)) element.classList.add(this.left.paddingType + '-' + this.left.padding + (this.left.breakpoint ? '-' + this.left.breakpoint : ''));
     }
 }

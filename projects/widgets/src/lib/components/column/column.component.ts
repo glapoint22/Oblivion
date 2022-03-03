@@ -17,35 +17,34 @@ import { WidgetType } from '../../classes/widget-enums';
 })
 export class ColumnComponent implements AfterViewInit {
   @ViewChild('viewContainerRef', { read: ViewContainerRef }) viewContainerRef!: ViewContainerRef;
-  public background!: Background;
-  public border!: Border;
-  public corners!: Corners;
-  public shadow!: Shadow;
+  public background: Background = new Background();
+  public border: Border = new Border();
+  public corners: Corners = new Corners();
+  public shadow: Shadow = new Shadow();
+  public padding: Padding = new Padding();
+  public columnSpan: ColumnSpan = new ColumnSpan();
   public columnElement!: HTMLElement;
-  private padding: Padding = new Padding();
-  public columnSpan!: ColumnSpan;
 
   constructor(public resolver: ComponentFactoryResolver) { }
 
   ngAfterViewInit(): void {
-    this.columnSpan.setClass(this.columnElement);
+    this.columnSpan.setClasses(this.columnElement);
     this.padding.setClasses(this.columnElement);
   }
 
 
   setColumn(column: Column) {
-    this.background = column.background;
-    this.border = column.border;
-    this.corners = column.corners;
-    this.shadow = column.shadow;
-    this.columnSpan = new ColumnSpan(column.columnSpan);
+    this.background.setData(column.background);
+    this.border.setData(column.border);
+    this.corners.setData(column.corners);
+    this.shadow.setData(column.shadow);
     this.padding.setData(column.padding);
+    this.columnSpan.setData(column.columnSpan);
   }
 
 
   async createWidget(widgetData: WidgetData) {
-    // const componentFactory = this.resolver.resolveComponentFactory(await this.getWidget(widgetData.widgetType));
-    const widgetComponentRef =  await this.createWidgetComponentRef(widgetData)
+    const widgetComponentRef = await this.createWidgetComponentRef(widgetData)
     const widgetComponent = widgetComponentRef.instance;
 
     // Set the widget with the widget data

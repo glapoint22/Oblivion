@@ -23,3 +23,9 @@ export enum PropertyView {
     Column,
     Widget
 }
+
+export enum ButtonState {
+    Normal,
+    Hover,
+    Active
+}

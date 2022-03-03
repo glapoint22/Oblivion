@@ -18,6 +18,11 @@ import { CornersComponent } from '../corners/corners.component';
 import { ShadowComponent } from '../shadow/shadow.component';
 import { PaddingComponent } from '../padding/padding.component';
 import { VerticalAlignmentComponent } from '../vertical-alignment/vertical-alignment.component';
+import { HorizontalAlignmentComponent } from '../horizontal-alignment/horizontal-alignment.component';
+import { ButtonWidgetPropertiesComponent } from '../button-widget-properties/button-widget-properties.component';
+import { ButtonWidgetNormalPropertiesComponent } from '../button-widget-normal-properties/button-widget-normal-properties.component';
+import { ButtonColorComponent } from '../button-color/button-color.component';
+import { ColumnSpanComponent } from '../column-span/column-span.component';
 
 
 
@@ -34,7 +39,12 @@ import { VerticalAlignmentComponent } from '../vertical-alignment/vertical-align
     CornersComponent,
     ShadowComponent,
     PaddingComponent,
-    VerticalAlignmentComponent
+    VerticalAlignmentComponent,
+    HorizontalAlignmentComponent,
+    ButtonWidgetPropertiesComponent,
+    ButtonWidgetNormalPropertiesComponent,
+    ButtonColorComponent,
+    ColumnSpanComponent
   ],
   imports: [
     CommonModule,

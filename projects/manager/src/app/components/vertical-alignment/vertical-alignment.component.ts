@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { VerticalAlignmentType, VerticalAlignment, VerticalAlignmentValue } from 'widgets';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -7,12 +7,13 @@ import { WidgetService } from '../../services/widget/widget.service';
   templateUrl: './vertical-alignment.component.html',
   styleUrls: ['./vertical-alignment.component.scss']
 })
-export class VerticalAlignmentComponent implements OnInit {
+export class VerticalAlignmentComponent implements OnInit, OnChanges {
   @Input() verticalAlignment!: VerticalAlignment;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
   public selectedVerticalAlignmentType: VerticalAlignmentType = VerticalAlignmentType.Top;
   public verticalAlignmentType = VerticalAlignmentType;
+  public isBreakpointCheckboxChecked: boolean = false;
 
   constructor(private widgetServce: WidgetService) { }
 
@@ -23,6 +24,10 @@ export class VerticalAlignmentComponent implements OnInit {
         this.setSelectedVerticalAlignmentType();
       }
     });
+  }
+
+  ngOnChanges(): void {
+    this.setSelectedVerticalAlignmentType();
   }
 
 
@@ -38,7 +43,8 @@ export class VerticalAlignmentComponent implements OnInit {
       // Assign the selected vertical alignment
       if (verticalAlignmentValue) {
         this.selectedVerticalAlignmentType = verticalAlignmentValue.verticalAlignmentType
-        this.checkbox.nativeElement.checked = true;
+        if (this.checkbox) this.checkbox.nativeElement.checked = true;
+        this.isBreakpointCheckboxChecked = true;
       }
 
 
@@ -57,94 +63,59 @@ export class VerticalAlignmentComponent implements OnInit {
 
 
       // Uncheck the checkbox
-      this.checkbox.nativeElement.checked = false;
+      if (this.checkbox) this.checkbox.nativeElement.checked = false;
+      this.isBreakpointCheckboxChecked = false;
     }
   }
 
 
-
-
-
-  onClick(verticalAlignType: VerticalAlignmentType) {
+  createValue(verticalAlignType: VerticalAlignmentType): VerticalAlignmentValue {
     let verticalAlignmentValue: VerticalAlignmentValue = new VerticalAlignmentValue();
 
     verticalAlignmentValue.verticalAlignmentType = verticalAlignType;
-
-    // If we have no values, create an empty array
-    if (!this.verticalAlignment.values || !this.verticalAlignment.values.some(x => x.breakpoint)) {
-      this.verticalAlignment.values = [];
-    } else {
-
-      // Find any values with the current breakpoint or a value without a breakpoint
-      const index = this.verticalAlignment.values.findIndex(x => x.breakpoint == this.widgetServce.currentBreakpoint || x.breakpoint == null);
-
-      // If found, delete that value
-      if (index != -1) {
-        this.verticalAlignment.values.splice(index, 1);
-      }
-
-      // If the breakpoint checkbox is checked, assign the current breakpoint
-      if (this.checkbox.nativeElement.checked) {
-        verticalAlignmentValue.breakpoint = this.widgetServce.currentBreakpoint;
-      }
-    }
-
-    // Push the new value and assign the value to the selected vertical alignment
-    this.verticalAlignment.values.push(verticalAlignmentValue);
     this.selectedVerticalAlignmentType = verticalAlignType;
+    this.verticalAlignment.values.push(verticalAlignmentValue);
+
+    return verticalAlignmentValue;
+  }
+
+
+  onClick(verticalAlignType: VerticalAlignmentType) {
+    const verticalAlignmentValue = this.verticalAlignment.values.find(x => x.breakpoint == this.widgetServce.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string)) || x.breakpoint == null);
+
+    if (verticalAlignmentValue) {
+      verticalAlignmentValue.verticalAlignmentType = verticalAlignType;
+      this.selectedVerticalAlignmentType = verticalAlignType;
+    } else {
+      this.createValue(verticalAlignType);
+    }
 
     this.onChange.emit();
   }
 
 
-  onCheckboxChange() {
-    // If the breakpoint checkbox is checked
-    if (this.checkbox.nativeElement.checked) {
+  onCheckboxChange(breakpointCheckbox: HTMLInputElement) {
+    this.isBreakpointCheckboxChecked = breakpointCheckbox.checked;
 
-      // If we have no values, create an empty array
-      if (!this.verticalAlignment.values || this.verticalAlignment.values.length == 0) {
-        this.verticalAlignment.values = [];
+    let verticalAlignmentValue = this.verticalAlignment.values.find(x => x.verticalAlignmentType == this.selectedVerticalAlignmentType);
 
-        // Create the new value with the current breakpoint
-        this.verticalAlignment.values.push({
-          verticalAlignmentType: this.selectedVerticalAlignmentType,
-          breakpoint: this.widgetServce.currentBreakpoint
-        });
-
-      } else {
-
-        // Find the current value
-        const verticalAlignmentValue = this.verticalAlignment.values.find(x => x.verticalAlignmentType == this.selectedVerticalAlignmentType);
-
-        // If found, assign the current breakpoint
-        if (verticalAlignmentValue) {
-          verticalAlignmentValue.breakpoint = this.widgetServce.currentBreakpoint;
-        } else {
-          // If not found, create a new value with the current breakpoint
-          this.verticalAlignment.values.push({
-            verticalAlignmentType: this.selectedVerticalAlignmentType,
-            breakpoint: this.widgetServce.currentBreakpoint
-          });
-        }
+    if (breakpointCheckbox.checked) {
+      if (!verticalAlignmentValue) {
+        verticalAlignmentValue = this.createValue(this.selectedVerticalAlignmentType);
       }
 
-      // The breakpoint checkbox is not checked
+      verticalAlignmentValue.breakpoint = this.widgetServce.currentBreakpoint;
     } else {
+      if (verticalAlignmentValue) {
+        verticalAlignmentValue.breakpoint = null;
 
-      // Get the index of the selected value
-      const index = this.verticalAlignment.values.findIndex(x => x.verticalAlignmentType == this.selectedVerticalAlignmentType);
+        const index = this.verticalAlignment.values.findIndex(x => !x.breakpoint && x != verticalAlignmentValue);
 
-      // If found delete the value
-      if (index != -1) {
-        this.verticalAlignment.values.splice(index, 1);
-
-        // We have have values, set the selected vertical alignment
-        if (this.verticalAlignment.values.length > 0) {
-          this.setSelectedVerticalAlignmentType();
-        } else {
-          // Select the default
-          this.selectedVerticalAlignmentType = VerticalAlignmentType.Top;
+        if (index != -1) {
+          this.verticalAlignment.values.splice(index, 1);
         }
+
+        this.setSelectedVerticalAlignmentType();
       }
     }
 

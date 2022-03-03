@@ -60,10 +60,10 @@ export enum VerticalAlignmentType {
 }
 
 
-export enum HorizontalAlign {
-    Left = 'left',
-    Center = 'center',
-    Right = 'right'
+export enum HorizontalAlignmentType {
+    Left = 'horizontal-align-left',
+    Center = 'horizontal-align-center',
+    Right = 'horizontal-align-right'
 }
 
 

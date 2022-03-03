@@ -1,18 +1,18 @@
 <!-- Background -->
-<background [background]="background" (onChange)="update()"></background>
+<background [background]="widgetService.selectedRow.background" (onChange)="update()"></background>
 
 <!-- Border -->
-<border [border]="border" (onChange)="update()"></border>
+<border [border]="widgetService.selectedRow.border" (onChange)="update()"></border>
 
 <!-- Corners -->
-<corners [corners]="corners" (onChange)="update()"></corners>
+<corners [corners]="widgetService.selectedRow.corners" (onChange)="update()"></corners>
 
 <!-- Shadow -->
-<shadow [shadow]="shadow" (onChange)="update()"></shadow>
+<shadow [shadow]="widgetService.selectedRow.shadow" (onChange)="update()"></shadow>
 
 <!-- Padding -->
-<padding [padding]="padding" (onChange)="padding.setClasses(widgetService.selectedRow.rowElement); update()"></padding>
+<padding [padding]="widgetService.selectedRow.padding" (onChange)="widgetService.selectedRow.padding.setClasses(widgetService.selectedRow.rowElement); update()"></padding>
 
 <!-- Vertical Alignment -->
-<vertical-alignment [verticalAlignment]="verticalAlignment"
-    (onChange)="verticalAlignment.setClasses(widgetService.selectedRow.rowElement); update()"></vertical-alignment>
+<vertical-alignment [verticalAlignment]="widgetService.selectedRow.verticalAlignment"
+    (onChange)="widgetService.selectedRow.verticalAlignment.setClasses(widgetService.selectedRow.rowElement); update()"></vertical-alignment>

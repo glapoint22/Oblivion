@@ -1,7 +1,7 @@
 import { VerticalAlignmentValue } from "./vertical-alignment-value";
 
 export class VerticalAlignment {
-    public values!: Array<VerticalAlignmentValue>;
+    public values: Array<VerticalAlignmentValue> = [];
 
     setData(verticalAlignment: VerticalAlignment) {
         if (verticalAlignment) {

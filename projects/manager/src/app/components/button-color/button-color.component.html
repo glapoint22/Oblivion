@@ -1,0 +1,27 @@
+<div style="padding: 5px; background: #343434">
+    <!-- Background -->
+    <div class="property">
+        <div class="label">Background</div>
+        <div style="flex: 1;">
+            <color-swatch [color]="backgroundColor" (onChange)="widgetService.$update.next()"></color-swatch>
+        </div>
+    </div>
+
+
+    <!-- Border -->
+    <div class="property">
+        <div class="label">Border</div>
+        <div style="flex: 1;">
+            <color-swatch [color]="borderColor" (onChange)="widgetService.$update.next()"></color-swatch>
+        </div>
+    </div>
+
+
+    <!-- Text -->
+    <div class="property">
+        <div class="label">Text</div>
+        <div style="flex: 1;">
+            <color-swatch [color]="textColor" (onChange)="widgetService.$update.next()"></color-swatch>
+        </div>
+    </div>
+</div>

@@ -8,7 +8,7 @@ import { Link } from '../../classes/link';
 import { Padding } from '../../classes/padding';
 import { Shadow } from '../../classes/shadow';
 import { Widget } from '../../classes/widget';
-import { LinkOption } from '../../classes/widget-enums';
+import { LinkOption, WidgetType } from '../../classes/widget-enums';
 
 @Component({
   selector: 'button-widget',
@@ -26,21 +26,22 @@ export class ButtonWidgetComponent extends Widget {
   public padding: Padding = new Padding();
 
   // Background Hover & Active colors
-  private backgroundHoverColor!: string;
-  private backgroundActiveColor!: string;
+  public backgroundHoverColor: string = '#969696';
+  public backgroundActiveColor: string = '#878787';
 
   // Border Hover & Active colors
-  private borderHoverColor!: string;
-  private borderActiveColor!: string;
+  public borderHoverColor: string = '#f0f0f0';
+  public borderActiveColor: string = '#dcdcdc';
 
   // Text Hover & Active colors
-  private textHoverColor!: string;
-  private textActiveColor!: string;
+  public textHoverColor: string = '#ffffff';
+  public textActiveColor: string = '#e1e1e1';
 
 
   ngOnInit() {
     this.caption.text = 'Button';
     this.background.color = '#808080';
+    this.type = WidgetType.Button;
   }
 
 
@@ -70,12 +71,12 @@ export class ButtonWidgetComponent extends Widget {
     this.shadow.setData(buttonWidgetData.shadow);
     this.link.setData(buttonWidgetData.link);
     this.padding.setData(buttonWidgetData.padding);
-    this.backgroundHoverColor = buttonWidgetData.backgroundHoverColor ? buttonWidgetData.backgroundHoverColor : '#969696';
-    this.backgroundActiveColor = buttonWidgetData.backgroundActiveColor ? buttonWidgetData.backgroundActiveColor : '#878787';
-    this.borderHoverColor = buttonWidgetData.borderHoverColor ? buttonWidgetData.borderHoverColor : '#F0F0F0';
-    this.borderActiveColor = buttonWidgetData.borderActiveColor ? buttonWidgetData.borderActiveColor : '#DCDCDC';
-    this.textHoverColor = buttonWidgetData.textHoverColor ? buttonWidgetData.textHoverColor : '#FFFFFF';
-    this.textActiveColor = buttonWidgetData.textActiveColor ? buttonWidgetData.textActiveColor : '#E1E1E1';
+    this.backgroundHoverColor = buttonWidgetData.backgroundHoverColor ? buttonWidgetData.backgroundHoverColor : this.backgroundHoverColor;
+    this.backgroundActiveColor = buttonWidgetData.backgroundActiveColor ? buttonWidgetData.backgroundActiveColor : this.backgroundActiveColor;
+    this.borderHoverColor = buttonWidgetData.borderHoverColor ? buttonWidgetData.borderHoverColor : this.borderHoverColor;
+    this.borderActiveColor = buttonWidgetData.borderActiveColor ? buttonWidgetData.borderActiveColor : this.borderActiveColor;
+    this.textHoverColor = buttonWidgetData.textHoverColor ? buttonWidgetData.textHoverColor : this.textHoverColor;
+    this.textActiveColor = buttonWidgetData.textActiveColor ? buttonWidgetData.textActiveColor : this.textActiveColor;
 
 
     super.setWidget(buttonWidgetData);

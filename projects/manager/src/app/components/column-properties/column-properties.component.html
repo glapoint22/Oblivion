@@ -1,1 +1,18 @@
-<p>column-properties works!</p>
+<!-- Background -->
+<background [background]="widgetService.selectedColumn.background" (onChange)="update()"></background>
+
+<!-- Border -->
+<border [border]="widgetService.selectedColumn.border" (onChange)="update()"></border>
+
+<!-- Corners -->
+<corners [corners]="widgetService.selectedColumn.corners" (onChange)="update()"></corners>
+
+<!-- Shadow -->
+<shadow [shadow]="widgetService.selectedColumn.shadow" (onChange)="update()"></shadow>
+
+<!-- Padding -->
+<padding [padding]="widgetService.selectedColumn.padding" (onChange)="widgetService.selectedColumn.padding.setClasses(widgetService.selectedColumn.columnElement); update()"></padding>
+
+<!-- Horizontal Alignment -->
+<horizontal-alignment [horizontalAlignment]="widgetService.selectedWidget.horizontalAlignment"
+    (onChange)="widgetService.selectedWidget.horizontalAlignment.setClasses(widgetService.selectedWidget.widgetElement); update()"></horizontal-alignment>

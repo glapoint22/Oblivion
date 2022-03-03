@@ -1,5 +1,5 @@
 import { Component, ComponentFactoryResolver } from '@angular/core';
-import { Column, RowComponent } from 'widgets';
+import { Column, ColumnSpan, RowComponent } from 'widgets';
 import { WidgetCursorType } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
@@ -56,9 +56,8 @@ export class RowDevComponent extends RowComponent {
     const widgetType = this.widgetService.$widgetCursor.getValue().widgetType;
 
     this.columns.forEach((column: ColumnDevComponent) => {
-      column.columnElement.className = '';
-      column.columnSpan.value = columnSpan;
-      column.columnSpan.setClass(column.columnElement);
+      column.columnSpan = new ColumnSpan(columnSpan);
+      column.columnSpan.setClasses(column.columnElement);
     });
 
 
