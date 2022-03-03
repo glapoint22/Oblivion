@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EditableList } from '../../../classes/editable-list';
+import { EditableListManager } from '../../../classes/editable-list-manager';
 import { ItemComponent } from '../item/item.component';
 
 @Component({
@@ -8,5 +8,5 @@ import { ItemComponent } from '../item/item.component';
   styleUrls: ['../item/item.component.scss', './editable-item.component.scss']
 })
 export class EditableItemComponent extends ItemComponent {
-  @Input() list!: EditableList;
+  @Input() listManager!: EditableListManager;
  }

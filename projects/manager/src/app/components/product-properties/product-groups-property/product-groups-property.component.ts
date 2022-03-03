@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { ListUpdate, ListUpdateType } from '../../../classes/list';
+import { ListUpdate, ListUpdateType } from '../../../classes/list-manager';
 import { ListItem } from '../../../classes/list-item';
 import { CheckboxListComponent } from '../../lists/checkbox-list/checkbox-list.component';
 import { EditableCheckboxListComponent } from '../../lists/editable-checkbox-list/editable-checkbox-list.component';
@@ -11,7 +11,7 @@ import { ListComponent } from '../../lists/list/list.component';
   styleUrls: ['./product-groups-property.component.scss']
 })
 export class ProductGroupsPropertyComponent {
-  @ViewChild('list') list!: EditableCheckboxListComponent;
+  @ViewChild('list') list!: ListComponent;
   public addDisabled!: boolean;
   public editDisabled!: boolean;
   public deleteDisabled!: boolean;
@@ -66,12 +66,12 @@ export class ProductGroupsPropertyComponent {
 
 
   onAdd() {
-    // Editable List
-    this.list.addItem();
+    // // Editable List
+    // this.list.addItem();
 
 
-    // // Non-Editable List
-    // this.list.addItem(22, 'Group 5a');
+    // Non-Editable List
+    this.list.addItem(22, 'Group 5a');
 
 
     // // Editable Hierarchy

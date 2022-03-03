@@ -1,6 +1,6 @@
 <div class="item-container">
 
-    <label *ngIf="list.editableItem != null" class="checkbox disabled-checkbox">
+    <label *ngIf="listManager.editableItem != null" class="checkbox disabled-checkbox">
         <input class="disabled-input"
                type="checkbox"
                [checked]="isChecked">
@@ -11,23 +11,23 @@
          class="item"
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
-         (mousedown)="!list.overButton ? list.onItemMousedown(this, $event) : null"
-         (blur)="list.onItemBlur(this)"
-         (dblclick)="list.onItemDoubleClick(this)"
-         [contentEditable]="this == list.editableItem"
-         [ngClass]="{'selected-item': this == list.selectedItem,
-                'unselected-item': this == list.unselectedItem,
-                'edited-item': this == list.editableItem,
-                'transparent-item': list.editableItem != null && list.editableItem != this,
+         (mousedown)="!listManager.overButton ? listManager.onItemMousedown(this, $event) : null"
+         (blur)="listManager.onItemBlur(this)"
+         (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(this) : null"
+         [contentEditable]="this == listManager.editableItem"
+         [ngClass]="{'selected-item': this == listManager.selectedItem,
+                'unselected-item': this == listManager.unselectedItem,
+                'edited-item': this == listManager.editableItem,
+                'transparent-item': listManager.editableItem != null && listManager.editableItem != this,
                 'selected-item-top': this.selectType == SelectType.Top,
                 'selected-item-all': this.selectType == SelectType.All,
                 'selected-item-middle': this.selectType == SelectType.Middle,
                 'selected-item-bottom': this.selectType == SelectType.Bottom}">
 
-        <label *ngIf="list.editableItem == null" class="checkbox" (mouseover)="list.overButton = true" (mouseout)="list.overButton = false">
+        <label *ngIf="listManager.editableItem == null" class="checkbox" (mouseover)="listManager.overButton = true" (mouseout)="listManager.overButton = false">
             <input type="checkbox"
                     [checked]="isChecked"
-                    (change)="list.onCheckboxChange(this)">
+                    (change)="listManager.onCheckboxChange(this)">
             <span class="checkmark"></span>
         </label>
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EditableCheckboxList } from '../../../classes/editable-checkbox-list';
+import { EditableCheckboxListManager } from '../../../classes/editable-checkbox-list-manager';
 import { EditableListComponent } from '../editable-list/editable-list.component';
 
 @Component({
@@ -8,9 +8,9 @@ import { EditableListComponent } from '../editable-list/editable-list.component'
   styleUrls: ['./editable-checkbox-list.component.scss']
 })
 export class EditableCheckboxListComponent extends EditableListComponent { 
-  public list!: EditableCheckboxList;
+  public listManager!: EditableCheckboxListManager;
 
   instantiate() {
-    this.list = new EditableCheckboxList();
+    this.listManager = new EditableCheckboxListManager();
   }
 }

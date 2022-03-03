@@ -1,0 +1,37 @@
+.item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+}
+
+.arrow-container {
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 14px;
+    cursor: default;
+
+
+    &:hover:not(.no-arrow):not(.selected-arrow) {
+        
+        div {
+            border-left-color: lighten(#727272, 30);
+        }
+    }
+}
+
+
+
+
+.arrow {
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 9px solid #727272;
+}
+
+
+.arrow-down {
+    transform: rotate(90deg);
+}

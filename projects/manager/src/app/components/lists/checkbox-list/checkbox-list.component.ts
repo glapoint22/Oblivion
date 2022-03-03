@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CheckboxList } from '../../../classes/checkbox-list';
+import { CheckboxListManager } from '../../../classes/checkbox-list-manager';
 import { ListComponent } from '../list/list.component';
 
 @Component({
@@ -8,9 +8,9 @@ import { ListComponent } from '../list/list.component';
   styleUrls: ['./checkbox-list.component.scss']
 })
 export class CheckboxListComponent extends ListComponent {
-  public list!: CheckboxList;
+  public listManager!: CheckboxListManager;
 
   instantiate() {
-    this.list = new CheckboxList();
+    this.listManager = new CheckboxListManager();
   }
 }

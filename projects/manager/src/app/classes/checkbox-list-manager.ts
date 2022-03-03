@@ -1,7 +1,7 @@
 import { CheckboxItemComponent } from "../components/items/checkbox-item/checkbox-item.component";
-import { List, ListUpdateType } from "./list";
+import { ListManager, ListUpdateType } from "./list-manager";
 
-export class CheckboxList extends List {
+export class CheckboxListManager extends ListManager {
     
     onCheckboxChange(item: CheckboxItemComponent) {
         this.onListUpdate.next({ type: ListUpdateType.CheckboxChange, id: item.id, index: this.getItemIndex(item), name: item.name, isChecked: item.isChecked });

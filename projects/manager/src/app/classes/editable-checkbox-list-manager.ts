@@ -1,8 +1,8 @@
 import { EditableCheckboxItemComponent } from "../components/items/editable-checkbox-item/editable-checkbox-item.component";
-import { EditableList } from "./editable-list";
-import { ListUpdateType } from "./list";
+import { EditableListManager } from "./editable-list-manager";
+import { ListUpdateType } from "./list-manager";
 
-export class EditableCheckboxList extends EditableList {
+export class EditableCheckboxListManager extends EditableListManager {
     
     onCheckboxChange(item: EditableCheckboxItemComponent) {
         item.isChecked = !item.isChecked;

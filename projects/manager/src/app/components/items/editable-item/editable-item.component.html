@@ -2,14 +2,14 @@
     class="item" 
     tabindex="-1"
     (contextmenu)="$event.preventDefault()"
-    (mousedown)="list.onItemMousedown(this, $event)"
-    (blur)="list.onItemBlur(this)"
-    (dblclick)="list.onItemDoubleClick(this)"
-    [contentEditable]="this == list.editableItem"
-    [ngClass]="{'selected-item': this == list.selectedItem,
-                'unselected-item': this == list.unselectedItem,
-                'edited-item': this == list.editableItem,
-                'transparent-item': list.editableItem != null && list.editableItem != this,
+    (mousedown)="listManager.onItemMousedown(this, $event)"
+    (blur)="listManager.onItemBlur(this)"
+    (dblclick)="listManager.onItemDoubleClick(this)"
+    [contentEditable]="this == listManager.editableItem"
+    [ngClass]="{'selected-item': this == listManager.selectedItem,
+                'unselected-item': this == listManager.unselectedItem,
+                'edited-item': this == listManager.editableItem,
+                'transparent-item': listManager.editableItem != null && listManager.editableItem != this,
                 'selected-item-top': this.selectType == SelectType.Top,
                 'selected-item-all': this.selectType == SelectType.All,
                 'selected-item-middle': this.selectType == SelectType.Middle,
