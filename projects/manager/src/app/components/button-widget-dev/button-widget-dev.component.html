@@ -15,7 +15,7 @@ corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px '
                         'background-repeat': background.image ? background.image.repeat : null,
                         'background-attachment': background.image ? background.image.attachment : null}">
 
-    <div [style.fontFamily]="caption.font" [style.fontSize.px]="caption.fontSize"
+    <div [style.fontFamily]="caption.font.value" [style.fontSize]="caption.fontSize.value"
         [style.fontWeight]="caption.fontWeight" [style.fontStyle]="caption.fontStyle"
         [style.textDecoration]="caption.textDecoration" [style.color]="getTextColor()" style="text-align: center;">
         {{caption.text}}

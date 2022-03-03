@@ -23,6 +23,7 @@ import { ButtonWidgetPropertiesComponent } from '../button-widget-properties/but
 import { ButtonWidgetNormalPropertiesComponent } from '../button-widget-normal-properties/button-widget-normal-properties.component';
 import { ButtonColorComponent } from '../button-color/button-color.component';
 import { ColumnSpanComponent } from '../column-span/column-span.component';
+import { CaptionComponent } from '../caption/caption.component';
 
 
 
@@ -44,7 +45,8 @@ import { ColumnSpanComponent } from '../column-span/column-span.component';
     ButtonWidgetPropertiesComponent,
     ButtonWidgetNormalPropertiesComponent,
     ButtonColorComponent,
-    ColumnSpanComponent
+    ColumnSpanComponent,
+    CaptionComponent
   ],
   imports: [
     CommonModule,

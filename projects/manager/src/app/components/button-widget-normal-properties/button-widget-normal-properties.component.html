@@ -15,3 +15,6 @@
 
 <!-- Column Span -->
 <column-span [column]="widgetService.selectedColumn" (onChange)="widgetService.selectedColumn.columnSpan.setClasses(widgetService.selectedColumn.columnElement); update()"></column-span>
+
+<!-- Caption -->
+<caption-property [caption]="buttonWidget.caption" (onChange)="update()"></caption-property>

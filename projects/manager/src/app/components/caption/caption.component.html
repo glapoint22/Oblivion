@@ -1,0 +1,63 @@
+<panel [title]="'Caption'">
+    <!-- Caption -->
+    <div class="property">
+        <div class="label">Text</div>
+        <input class="txt-20" [(ngModel)]="caption.text" (input)="onChange.emit()">
+    </div>
+
+    <!-- Font -->
+    <div class="property">
+        <div class="label">Font</div>
+        <div style="flex: 1;">
+            <select [(ngModel)]="caption.font" (change)="onChange.emit()">
+                <option *ngFor="let fontOption of caption.fontOptions" [ngValue]="fontOption">
+                    {{fontOption.key}}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Font Size -->
+    <div class="property">
+        <div class="label">Font Size</div>
+        <div style="flex: 1;">
+            <select [(ngModel)]="caption.fontSize" (change)="onChange.emit()">
+                <option *ngFor="let fontSize of caption.fontSizes" [ngValue]="fontSize">
+                    {{fontSize.key}}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Font Style -->
+    <div class="property">
+        <div class="label">Style</div>
+        <div style="flex: 1; display: flex; justify-content: space-between;">
+
+            <!-- Bold -->
+            <div class="style-icon" [ngClass]="{'selected': caption.fontWeight == 'bold'}"
+                (click)="caption.fontWeight = caption.fontWeight == 'normal' ? 'bold' : 'normal'; onChange.emit()">
+                <i class="fas fa-bold"></i>
+            </div>
+
+            <!-- Italic -->
+            <div class="style-icon" [ngClass]="{'selected': caption.fontStyle == 'italic'}"
+                (click)="caption.fontStyle = caption.fontStyle == 'normal' ? 'italic' : 'normal'; onChange.emit()">
+                <i class="fas fa-italic"></i>
+            </div>
+
+            <!-- Underline -->
+            <div class="style-icon" [ngClass]="{'selected': caption.textDecoration == 'underline'}"
+                (click)="caption.textDecoration = caption.textDecoration == 'none' ? 'underline' : 'none'; onChange.emit()">
+                <i class="fas fa-underline"></i>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Font Color -->
+    <div class="property">
+        <div class="label">Color</div>
+        <div style="flex: 1;">
+            <color-swatch [color]="caption.rgbColor" (onChange)="onChange.emit()"></color-swatch>
+        </div>
+    </div>
+</panel>
