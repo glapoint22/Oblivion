@@ -31,4 +31,11 @@ export enum ListUpdateType {
     SelectedItem,
     CheckboxChange,
     ArrowClicked
-  }
+}
+
+
+export enum ButtonState {
+    Normal,
+    Hover,
+    Active
+}

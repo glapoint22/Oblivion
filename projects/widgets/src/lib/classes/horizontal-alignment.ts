@@ -1,47 +1,29 @@
-import { HorizontalAlign } from "./widget-enums";
+import { HorizontalAlignmentValue } from "./horizontal-alignment-value";
 
 export class HorizontalAlignment {
+    public values: Array<HorizontalAlignmentValue> = [];
 
-    constructor(private value: string) { }
-
-    setClass(element: HTMLElement) {
-        // if (!breakpoints && !this.value) return;
-
-        // let horizontalAlignmentBreakpoints: Array<Breakpoint> = [];
-
-        // if (breakpoints) horizontalAlignmentBreakpoints = breakpoints.filter(x => x.breakpointType == BreakpointType.HorizontalAlignment);
-
-        // // If there are any breakpoints, add each breakpoint class 
-        // if (horizontalAlignmentBreakpoints.length > 0) {
-        //     horizontalAlignmentBreakpoints.forEach((breakpoint: Breakpoint) => {
-        //         element.classList.add(this.getClassName(breakpoint.value) + '-' + breakpoint.screenSize.toLowerCase());
-        //     });
-
-        //     // We have no breakpoints, add a single class
-        // } else if (this.value) {
-        //     if (this.value != HorizontalAlign.Left) element.classList.add(this.getClassName(this.value));
-        // }
+    setData(horizontalAlignment: HorizontalAlignment) {
+        if (horizontalAlignment) {
+            if (horizontalAlignment.values) this.values = horizontalAlignment.values;
+        }
     }
 
 
+    setClasses(element: HTMLElement) {
+        // Get a list of all current horizontal align classes
+        const classes = element.className.match(/horizontal-align-[a-z\-]*/g);
 
-    // public getClassName(value: string): string {
-    //     let className: string = '';
+        // Remove the horizontal align classes
+        classes?.forEach(x => {
+            element.classList.remove(x);
+        });
 
-    //     switch (value) {
-    //         case HorizontalAlign.Left:
-    //             className = 'horizontal-align-left';
-    //             break;
-
-    //         case HorizontalAlign.Center:
-    //             className = 'horizontal-align-center';
-    //             break;
-
-    //         case HorizontalAlign.Right:
-    //             className = 'horizontal-align-right';
-    //             break;
-    //     }
-
-    //     return className;
-    // }
+        // Add the new classes
+        if (this.values && this.values.length > 0) {
+            this.values.forEach((value: HorizontalAlignmentValue) => {
+                element.classList.add(value.horizontalAlignmentType + (value.breakpoint ? '-' + value.breakpoint : ''));
+            });
+        }
+    }
 }

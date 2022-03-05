@@ -24,7 +24,7 @@
 
         <!-- Breakpoint checkbox -->
         <label class="checkbox">
-            <input #checkbox type="checkbox" (change)="onCheckboxChange()">
+            <input #checkbox type="checkbox" (change)="onCheckboxChange(checkbox)" [checked]="isBreakpointCheckboxChecked">
             <span class="checkmark"></span>
         </label>
     </div>

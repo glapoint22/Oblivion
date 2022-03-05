@@ -1,6 +1,6 @@
 <div #widget class="button"
-    [style.backgroundColor]="background && background.color ? background.color: null"
-    [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
+    [style.backgroundColor]="getBackgroundColor()"
+    [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + getBorderColor() : null"
     [style.borderRadius]="
 corners && 
 (corners.topLeft > 0 ||
@@ -8,16 +8,16 @@ corners.topRight > 0 ||
 corners.bottomRight > 0 ||
 corners.bottomLeft > 0) ?
 corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
-    [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.color : null"
+    [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
     [style.fontSize.px]="caption.fontSize" [style.maxWidth.px]="width ? width : null"
     [style.minHeight.px]="height" [ngStyle]="{ 'background-image': background.image && background.image.url ? 'url(images/' + background.image.url + ')' : null,
                         'background-position': background.image ? background.image.position : null,
                         'background-repeat': background.image ? background.image.repeat : null,
                         'background-attachment': background.image ? background.image.attachment : null}">
 
-    <div [style.fontFamily]="caption.font" [style.fontSize.px]="caption.fontSize"
+    <div [style.fontFamily]="caption.font.value" [style.fontSize]="caption.fontSize.value"
         [style.fontWeight]="caption.fontWeight" [style.fontStyle]="caption.fontStyle"
-        [style.textDecoration]="caption.textDecoration" [style.color]="caption.color" style="text-align: center;">
+        [style.textDecoration]="caption.textDecoration" [style.color]="getTextColor()" style="text-align: center;">
         {{caption.text}}
     </div>
 
