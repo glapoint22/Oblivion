@@ -8,13 +8,9 @@
     display: flex;
     align-items: center;
     padding-left: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
-
-.edited-item {
-    text-indent: -2px;
-    margin-left: 5px;
-}
-
 
 .selected-item {
     .arrow-container {
@@ -26,11 +22,12 @@
 
 
 .arrow-container {
-    height: 100%;
     display: flex;
+    width: 20px;
+    height: 100%;
     justify-content: flex-start;
     align-items: center;
-    width: 14px;
+    padding-left: 5px;
     cursor: default;
 
 
@@ -58,13 +55,12 @@
 
 
 .disabled-arrow-container {
-    height: 100%;
     display: flex;
+    height: 100%;
     justify-content: flex-start;
     align-items: center;
-    width: 14px;
     cursor: default;
-    padding-left: 6px;
+    padding-left: 11px;
 }
 
 

@@ -1,9 +1,10 @@
-import { ElementRef, QueryList } from "@angular/core";
+import { QueryList } from "@angular/core";
 import { Subject } from "rxjs";
 import { ItemComponent } from "../components/items/item/item.component";
-import { ItemSelectType } from "./enums";
+import { ItemSelectType, ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
+import { ListUpdate } from "./list-update";
 
 export class ListManager {
   public sourceList!: Array<ListItem>;
@@ -472,6 +473,8 @@ export class ListManager {
 
       const selectedItemIndex = this.getItemIndex(this.selectedItem);
 
+      console.log(selectedItemIndex)
+
       // Loop through the list of items starting with the selected item
       for (let i = selectedItemIndex + 1; i < this.items.length; i++) {
         // If we come across an item that is NOT selected
@@ -640,7 +643,6 @@ export class ListManager {
 
         // As long as the edited name is different from what it was before the edit
         if (trimmedEditedItem != this.editableItem.name) {
-
           // Update the name property
           this.editableItem.name = trimmedEditedItem!;
           // Check to see if the edited item was checked (for editable checkbox items)
@@ -709,25 +711,4 @@ export class ListManager {
       this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, name: x.name } }) });
     }
   }
-}
-
-
-export class ListUpdate extends ListItem {
-  public index?: number;
-  public type?: ListUpdateType;
-  public deletedItems?: Array<ListItem>;
-  public addDisabled?: boolean;
-  public editDisabled?: boolean;
-  public deleteDisabled?: boolean;
-  public isChecked?: boolean;
-  public arrowDown?: boolean;
-}
-
-export enum ListUpdateType {
-  Add,
-  Edit,
-  Delete,
-  SelectedItem,
-  CheckboxChange,
-  ArrowClicked
 }

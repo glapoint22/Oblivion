@@ -24,8 +24,8 @@
                 </button>
             </div>
         </div>
-        <list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></list>
-        <!-- <editable-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></editable-list> -->
+        <!-- <list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></list> -->
+        <editable-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></editable-list>
         <!-- <checkbox-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></checkbox-list> -->
         <!-- <editable-checkbox-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></editable-checkbox-list> -->
         <!-- <arrow-list #list [sourceList]="groups" (onListUpdate)="onListUpdate($event)"></arrow-list> -->

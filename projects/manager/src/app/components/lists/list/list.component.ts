@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { ListManager, ListUpdate } from '../../../classes/list-manager';
+import { ListManager } from '../../../classes/list-manager';
 import { ListItem } from '../../../classes/list-item';
 import { ListOptions } from '../../../classes/list-options';
 import { ItemComponent } from '../../items/item/item.component';
+import { ListUpdate } from '../../../classes/list-update';
 
 @Component({
   selector: 'list',
@@ -24,6 +25,7 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     this.instantiate();
+    this.listManager.sourceList = this.sourceList;
 
     // Wait for a list item to be returned from an add, edit, or delete
     this.listManager.onListUpdate.subscribe((listUpdate) => {
@@ -34,7 +36,7 @@ export class ListComponent implements OnInit {
 
 
   ngAfterViewInit() {
-    this.listManager.sourceList = this.sourceList;
+    
     this.listManager.items = this.items;
     this.listManager.options = this.options;
 
@@ -55,8 +57,8 @@ export class ListComponent implements OnInit {
 
   addItem(id?: number, name?: string) {
     // Add the new item to the source list
+    
     this.sourceList.push({ id: id, name: name });
-
     // Sort the list
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
 

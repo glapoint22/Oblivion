@@ -1,9 +1,9 @@
-<div class="item-container">
+<div class="item-container" >
 
-    <div *ngIf="listManager.editableItem != null"
-            class="disabled-arrow-container">
-            <div class="disabled-arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
-        </div>
+    <div *ngIf="listManager.editableItem != null" class="disabled-arrow-container">
+        <div [style.width.px]="levelID ? levelID * 35 : 0"></div>
+        <div class="disabled-arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
+    </div>
 
     <div #htmlItem
          class="item"
@@ -22,15 +22,22 @@
                 'selected-item-middle': this.selectType == SelectType.Middle,
                 'selected-item-bottom': this.selectType == SelectType.Bottom}">
 
-        <div *ngIf="listManager.editableItem == null"
-            class="arrow-container"
-            (mouseover)="listManager.overButton = true"
-            (mouseout)="listManager.overButton = false"
-            (click)="listManager.onArrowClick(this)">
+        <ng-container *ngIf="listManager.editableItem == null">
+            <!-- Indent -->
+            <div [style.width.px]="levelID ? levelID * 35 : 0"></div>
 
-            <div class="arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
-        </div>
+            <!-- Arrow -->
+            <div class="arrow-container"
+                (mouseover)="listManager.overButton = true"
+                (mouseout)="listManager.overButton = false"
+                (click)="listManager.onArrowClick(this)">
+                <div class="arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
+            </div>
+        </ng-container>
 
-        <div>{{name}}</div>
+        
+
+        <!-- Name -->
+        <div style="text-indent: 0;">{{name}}</div>
     </div>
 </div>

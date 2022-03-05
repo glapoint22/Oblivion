@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ProductBuilderRoutingModule } from './product-builder-routing.module';
 import { ProductBuilderComponent } from './product-builder.component';
 import { ProductPropertiesModule } from '../../components/product-properties/product-properties.module';
-import { ProductHierarchyModule } from '../../components/product-hierarchy/product-hierarchy.module';
 import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
+import { NicheHierarchyModule } from '../../components/niche-hierarchy/niche-hierarchy.module';
 
 
 @NgModule({
@@ -16,7 +15,7 @@ import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
     CommonModule,
     ProductBuilderRoutingModule,
     ProductPropertiesModule,
-    ProductHierarchyModule,
+    NicheHierarchyModule,
     MenuBarModule
   ]
 })

@@ -23,3 +23,12 @@ export enum PropertyView {
     Column,
     Widget
 }
+
+export enum ListUpdateType {
+    Add,
+    Edit,
+    Delete,
+    SelectedItem,
+    CheckboxChange,
+    ArrowClicked
+  }

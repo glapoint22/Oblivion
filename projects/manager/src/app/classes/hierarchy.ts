@@ -1,9 +1,7 @@
-import { HierarchyItem } from "./hierarchy-item";
+import { ListItem } from "./list-item";
 
-export class Hierarchy {
-    id!: number;
-    name!: string;
-    indentId!: number;
+export class Hierarchy extends ListItem {
+    levelID!: number;
     hidden?: boolean;
-    children!: Array<HierarchyItem>;
+    arrowDown?: boolean;
 }

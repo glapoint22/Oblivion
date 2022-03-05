@@ -1,18 +1,28 @@
-<div #htmlItem 
-    class="item" 
-    tabindex="-1"
-    (contextmenu)="$event.preventDefault()"
-    (mousedown)="listManager.onItemMousedown(this, $event)"
-    (blur)="listManager.onItemBlur(this)"
-    (dblclick)="listManager.onItemDoubleClick(this)"
-    [contentEditable]="this == listManager.editableItem"
-    [ngClass]="{'selected-item': this == listManager.selectedItem,
-                'unselected-item': this == listManager.unselectedItem,
-                'edited-item': this == listManager.editableItem,
-                'transparent-item': listManager.editableItem != null && listManager.editableItem != this,
-                'selected-item-top': this.selectType == SelectType.Top,
-                'selected-item-all': this.selectType == SelectType.All,
-                'selected-item-middle': this.selectType == SelectType.Middle,
-                'selected-item-bottom': this.selectType == SelectType.Bottom}">
-    {{name}}
+<div class="item-container">
+
+    <div *ngIf="listManager.editableItem != null">
+        <div [style.width.px]="levelID ? (levelID * 35) + 22 : 0"></div>
+    </div>
+
+    <div #htmlItem 
+        class="item" 
+        tabindex="-1"
+        (contextmenu)="$event.preventDefault()"
+        (mousedown)="listManager.onItemMousedown(this, $event)"
+        (blur)="listManager.onItemBlur(this)"
+        (dblclick)="listManager.onItemDoubleClick(this)"
+        [contentEditable]="this == listManager.editableItem"
+        [ngClass]="{'selected-item': this == listManager.selectedItem,
+                    'unselected-item': this == listManager.unselectedItem,
+                    'edited-item': this == listManager.editableItem,
+                    'transparent-item': listManager.editableItem != null && listManager.editableItem != this,
+                    'selected-item-top': this.selectType == SelectType.Top,
+                    'selected-item-all': this.selectType == SelectType.All,
+                    'selected-item-middle': this.selectType == SelectType.Middle,
+                    'selected-item-bottom': this.selectType == SelectType.Bottom}">
+
+        <div *ngIf="listManager.editableItem == null" [style.width.px]="levelID ? (levelID * 35) + 22 : 0"></div>
+
+        <div>{{name}}</div>
+    </div>
 </div>

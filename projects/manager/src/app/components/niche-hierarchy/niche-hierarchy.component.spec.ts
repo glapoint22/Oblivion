@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HierarchyItemComponent } from './hierarchy-item.component';
+import { NicheHierarchyComponent } from './niche-hierarchy.component';
 
-describe('HierarchyItemComponent', () => {
-  let component: HierarchyItemComponent;
-  let fixture: ComponentFixture<HierarchyItemComponent>;
+describe('NicheHierarchyComponent', () => {
+  let component: NicheHierarchyComponent;
+  let fixture: ComponentFixture<NicheHierarchyComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HierarchyItemComponent ]
+      declarations: [ NicheHierarchyComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HierarchyItemComponent);
+    fixture = TestBed.createComponent(NicheHierarchyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

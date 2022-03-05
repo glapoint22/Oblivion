@@ -1,6 +1,6 @@
 import { EditableCheckboxItemComponent } from "../components/items/editable-checkbox-item/editable-checkbox-item.component";
 import { EditableListManager } from "./editable-list-manager";
-import { ListUpdateType } from "./list-manager";
+import { ListUpdateType } from "./enums";
 
 export class EditableCheckboxListManager extends EditableListManager {
     
