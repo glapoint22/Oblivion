@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CheckboxListManager } from '../../../classes/checkbox-list-manager';
 import { ItemComponent } from '../item/item.component';
 
@@ -9,12 +9,4 @@ import { ItemComponent } from '../item/item.component';
 })
 export class CheckboxItemComponent extends ItemComponent {
   @Input() listManager!: CheckboxListManager;
-  public isChecked!: boolean;
-  @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
-
-  changeCheckbox() {
-    this.isChecked = !this.isChecked;
-    this.checkbox.nativeElement.checked = this.isChecked;
-    this.listManager.onCheckboxChange(this)
-  }
 }

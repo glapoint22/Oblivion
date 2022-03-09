@@ -9,5 +9,4 @@ import { ItemComponent } from '../item/item.component';
 })
 export class EditableItemComponent extends ItemComponent {
   @Input() listManager!: EditableListManager;
-  @Input() levelID!: number;
  }

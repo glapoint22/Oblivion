@@ -8,11 +8,14 @@ import { ListManager } from '../../../classes/list-manager';
   styleUrls: ['./item.component.scss']
 })
 export class ItemComponent {
-  public selected!: boolean;
-  public selectType!: ItemSelectType | null;
-  public SelectType = ItemSelectType;
-  @Input() listManager!: ListManager;
   @Input() id!: number;
-  @Input() name!: string;
+  @Input() listManager!: ListManager;
   @ViewChild('htmlItem') htmlItem!: ElementRef<HTMLElement>;
+
+  ngAfterViewInit() {
+    window.setTimeout(()=> {
+      this.listManager.getListItem(this).htmlItem = this.htmlItem;
+    })
+    
+  }
 }

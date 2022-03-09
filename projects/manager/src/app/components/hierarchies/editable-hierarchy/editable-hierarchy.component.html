@@ -1,6 +1,6 @@
-<ng-container *ngFor="let child of hierarchy">
-    <ng-container *ngIf="!child.hidden">
-        <editable-arrow-item *ngIf="listManager.hasChildren(child) || child.levelID == 0" #item  [listManager]="listManager" [id]="child.id!" [name]="child.name!" [arrowDown]="child.arrowDown!" [levelID]="child.levelID"></editable-arrow-item>
-        <editable-item *ngIf="!listManager.hasChildren(child) && child.levelID != 0" #item  [listManager]="listManager" [id]="child.id!" [name]="child.name!" [levelID]="child.levelID"></editable-item>
+<ng-container *ngFor="let hierarchyItem of sourceList">
+    <ng-container *ngIf="!hierarchyItem.hidden">
+        <editable-arrow-item *ngIf="listManager.hasChildren(hierarchyItem) || hierarchyItem.hierarchyGroupID == 0 || hierarchyItem.isParent" [id]="hierarchyItem.id" [listManager]="listManager"></editable-arrow-item>
+        <editable-item *ngIf="!listManager.hasChildren(hierarchyItem) && hierarchyItem.hierarchyGroupID != 0 && !hierarchyItem.isParent" [id]="hierarchyItem.id" [listManager]="listManager"></editable-item>
     </ng-container>
 </ng-container>

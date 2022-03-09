@@ -7,22 +7,28 @@ import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
 
 export class ListManager {
-  public sourceList!: Array<ListItem>;
-  public items!: QueryList<ItemComponent>;
-  public selectedItem!: ItemComponent;
-  public unselectedItem!: ItemComponent;
-  public editableItem!: ItemComponent;
-  public currentFocusedItem!: Element;
-  public pivotItem!: ItemComponent;
-  public shiftKeyDown!: boolean;
-  public ctrlKeyDown!: boolean;
-  public eventListenersAdded!: boolean;
-  public itemDeletionPending!: boolean
-  public preventUnselectionFromRightMousedown!: boolean;
-  public newItem!: boolean;
-  public options!: ListOptions;
-  public overButton!: boolean;
-  public onListUpdate = new Subject<ListUpdate>();
+  sourceList!: Array<ListItem>;
+  selectedItem!: ListItem;
+  unselectedItem!: ListItem;
+  editableItem!: ListItem;
+  currentFocusedItem!: Element;
+  pivotItem!: ListItem;
+  shiftKeyDown!: boolean;
+  ctrlKeyDown!: boolean;
+  eventListenersAdded!: boolean;
+  itemDeletionPending!: boolean
+  preventUnselectionFromRightMousedown!: boolean;
+  newItem!: boolean;
+  options!: ListOptions;
+  overButton!: boolean;
+  SelectType = ItemSelectType;
+  onListUpdate = new Subject<ListUpdate>();
+
+
+  getListItem(item: ItemComponent): ListItem {
+    const listItem: ListItem = this.sourceList.find(x => x.id == item.id)!;
+    return listItem;
+  }
 
 
   addEventListeners() {
@@ -91,17 +97,15 @@ export class ListManager {
   }
 
 
-  setItemFocus(item: ItemComponent) {
-
+  setItemFocus(listItem: ListItem) {
     window.setTimeout(() => {
 
       // Set focus to the html item with the specified index
-      item.htmlItem.nativeElement.focus();
+      if (listItem) listItem.htmlItem!.nativeElement.focus();
 
-
-      if (item == this.editableItem) {
+      if (listItem && listItem == this.editableItem) {
         let range = document.createRange();
-        range.selectNodeContents(this.items.find(x => x == item)?.htmlItem.nativeElement!);
+        range.selectNodeContents(listItem.htmlItem!.nativeElement!);
         let sel = window.getSelection();
         sel!.removeAllRanges();
         sel!.addRange(range);
@@ -117,8 +121,9 @@ export class ListManager {
   }
 
 
-  onItemBlur(item: ItemComponent) {
+  onItemBlur(listItem: ListItem) {
     window.setTimeout(() => {
+
       // As long as a list item isn't losing focus becaus another list item is receiving focus
       if (document.activeElement != this.currentFocusedItem
         // and the context menu is NOT open
@@ -152,8 +157,6 @@ export class ListManager {
           // And if item(s) have been deleted,
           // let it be known that item deletion is no longer pending
           this.itemDeletionPending = false;
-
-          this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
         }
 
 
@@ -162,26 +165,27 @@ export class ListManager {
       // But if we are clicking on an icon button and an item is in edit mode
       if (this.overButton) {
         // Send the focus right back to the item that is in edit mode
-        this.setItemFocus(item)
+        this.setItemFocus(listItem)
       }
+
+
+
+
+      window.setTimeout(() => {
+        if (this.editableItem == null) {
+          const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
+          if (itemSelectedCount == 0) this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
+          if (itemSelectedCount == 1) this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
+        }
+      }, 30)
 
 
     })
   }
 
-  getItemIndex(item: ItemComponent): number {
-    let index: number = -1;
 
-    for (let i = 0; i < this.items.length; i++) {
-      if (this.items.get(i) == item) {
-        index = i;
-        break;
-      }
-    }
-    return index!;
-  }
+  onItemComponentMousedown(listItem: ListItem, e?: MouseEvent) {
 
-  onItemMousedown(item: ItemComponent, e?: MouseEvent) {
     // Initialize
     this.preventUnselectionFromRightMousedown = false;
 
@@ -189,9 +193,11 @@ export class ListManager {
     if (e != null && e.button == 2) {
 
       // Check to see if this item is already selected
-      if (item.selected) {
+      if (listItem.selected) {
+
         // And as long as that selected item is not the current focused item
-        if (this.currentFocusedItem != document.activeElement) {
+        if (listItem.htmlItem?.nativeElement != document.activeElement) {
+
           // Prevent it from being unselected
           this.preventUnselectionFromRightMousedown = true;
         }
@@ -202,30 +208,30 @@ export class ListManager {
     if (!this.preventUnselectionFromRightMousedown) {
       window.setTimeout(() => {
         this.currentFocusedItem = document.activeElement!;
-        this.setItemSelection(item);
+        this.setItemSelection(listItem);
       });
     }
-
-
   }
 
 
-  setItemSelection(item: ItemComponent) {
+
+
+  setItemSelection(listItem: ListItem) {
     // If an item is NOT being edited
     if (this.editableItem == null) {
 
       this.addEventListeners();
-      this.selectedItem = item;
+      this.selectedItem = listItem;
       this.unselectedItem = null!;
       // Define what items are selected
-      this.setSelectedItems(item);
+      this.setSelectedItems(listItem);
       // Then define what the selection type is for each item
       this.setItemsSelectType();
 
       // If an item is being edited and another item that is NOT being edited is selected
-    } else if (item != this.editableItem) {
+    } else if (listItem != this.editableItem) {
 
-      const htmlEditedItem = this.editableItem.htmlItem.nativeElement;
+      const htmlEditedItem = this.editableItem.htmlItem!.nativeElement;
       const trimmedEditedItem = htmlEditedItem.textContent?.trim();
 
       // If the edited item has text written in it
@@ -248,7 +254,7 @@ export class ListManager {
         if (this.newItem) {
 
           // Remove the item
-          this.sourceList.splice(this.getItemIndex(this.editableItem), 1);
+          this.sourceList.splice(this.sourceList.indexOf(this.editableItem), 1);
 
           // If we were NOT adding a new item
         } else {
@@ -259,8 +265,8 @@ export class ListManager {
       }
 
       this.editableItem.selected = false;
-      this.editableItem.selectType = null;
-      this.selectedItem = item;
+      this.editableItem.selectType = null!;
+      this.selectedItem = listItem;
       this.newItem = false;
       this.editableItem = null!;
       this.pivotItem = this.selectedItem;
@@ -269,70 +275,75 @@ export class ListManager {
   }
 
 
-  setSelectedItems(item: ItemComponent) {
+  setSelectedItems(listItem: ListItem) {
     // If the shift key is down
     if (this.shiftKeyDown) {
       this.setSelectedItemsShiftKey();
 
       // If the ctrl key is down 
     } else if (this.ctrlKeyDown) {
-      this.setSelectedItemsCtrlKey(item);
+      this.setSelectedItemsCtrlKey(listItem);
 
       // If NO modifier key is down
     } else {
-      this.setSelectedItemsNoModifierKey(item);
+      this.setSelectedItemsNoModifierKey(listItem);
     }
 
-    const itemSelectedCount = this.items.filter(x => x.selected == true).length;
+    const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
 
     if (itemSelectedCount > 1) {
       this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: false });
     } else {
-      this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
+
+      if (this.unselectedItem) {
+        this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
+      } else {
+        this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
+      }
     }
   }
 
 
   setItemsSelectType() {
     // If there is only one item in the list
-    if (this.items.length == 1) {
+    if (this.sourceList.length == 1) {
       // Set the type to all
-      this.items.get(0)!.selectType = ItemSelectType.All;
+      this.sourceList[0].selectType = ItemSelectType.All;
 
       // If there is more than one item
     } else {
 
       // First item
-      this.items.get(0)!.selectType = this.items.get(0)!.selected ? this.items.get(1)!.selected ? ItemSelectType.Top : this.items.get(1) == this.unselectedItem ? ItemSelectType.Top : ItemSelectType.All : null;
+      this.sourceList[0].selectType = this.sourceList[0].selected ? this.sourceList[1].selected ? ItemSelectType.Top : this.sourceList[1] == this.unselectedItem ? ItemSelectType.Top : ItemSelectType.All : null!;
 
 
       // Every item in between
-      for (let i = 1; i < this.items.length - 1; i++) {
+      for (let i = 1; i < this.sourceList.length - 1; i++) {
         // Set the select type based on the following:
-        this.items.get(i)!.selectType =
+        this.sourceList[i].selectType =
 
           // If an item is marked as selected
-          this.items.get(i)!.selected ?
+          this.sourceList[i].selected ?
 
             // If the item before is NOT selected and the item after IS selected
-            !this.items.get(i - 1)!.selected && this.items.get(i + 1)!.selected ?
+            !this.sourceList[i - 1].selected && this.sourceList[i + 1].selected ?
               ItemSelectType.Top :
 
               // If the item before IS selected and the item after is NOT selected
-              this.items.get(i - 1)!.selected && !this.items.get(i + 1)!.selected ?
+              this.sourceList[i - 1].selected && !this.sourceList[i + 1].selected ?
 
                 // And that item after is unselected with the unselect
-                this.items.get(i + 1) == this.unselectedItem ?
+                this.sourceList[i + 1] == this.unselectedItem ?
                   ItemSelectType.Middle :
 
                   // But if its just NOT selected
                   ItemSelectType.Bottom :
 
                 // If the item before is NOT selected and the item after is also NOT selected
-                !this.items.get(i - 1)!.selected && !this.items.get(i + 1)!.selected ?
+                !this.sourceList[i - 1].selected && !this.sourceList[i + 1].selected ?
 
                   // And that item after is unselected with the unselect
-                  this.items.get(i + 1) == this.unselectedItem ?
+                  this.sourceList[i + 1] == this.unselectedItem ?
                     ItemSelectType.Top :
 
                     // But if its just NOT selected
@@ -342,22 +353,22 @@ export class ListManager {
                   ItemSelectType.Middle :
 
             // If an item is NOT selected
-            null;
+            null!;
       }
 
       // Last item
-      this.items.get(this.items.length - 1)!.selectType = this.items.get(this.items.length - 1)!.selected ? this.items.get(this.items.length - 2)!.selected ? ItemSelectType.Bottom : ItemSelectType.All : null;
+      this.sourceList[this.sourceList.length - 1].selectType = this.sourceList[this.sourceList.length - 1].selected ? this.sourceList[this.sourceList.length - 2].selected ? ItemSelectType.Bottom : ItemSelectType.All : null!;
     }
   }
 
 
   setSelectedItemsShiftKey() {
     // Clear the selection for all items
-    this.items.forEach(x => x.selected = false);
+    this.sourceList.forEach(x => x.selected = false);
 
 
-    const pivotItemIndex = this.getItemIndex(this.pivotItem);
-    const selectedItemIndex = this.getItemIndex(this.selectedItem);
+    const pivotItemIndex = this.sourceList.indexOf(this.pivotItem);
+    const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
 
     if (pivotItemIndex == -1 || selectedItemIndex == -1) return;
 
@@ -366,7 +377,7 @@ export class ListManager {
 
       // Select all the items from the pivot down to the selection
       for (let i = pivotItemIndex; i <= selectedItemIndex; i++) {
-        this.items.get(i)!.selected = true;
+        this.sourceList[i].selected = true;
       }
 
       // If the selection is before the pivot 
@@ -374,43 +385,43 @@ export class ListManager {
 
       // Select all the items from the pivot up to the selection
       for (let i = pivotItemIndex; i >= selectedItemIndex; i--) {
-        this.items.get(i)!.selected = true;
+        this.sourceList[i].selected = true;
       }
     }
   }
 
 
-  setSelectedItemsCtrlKey(item: ItemComponent) {
+  setSelectedItemsCtrlKey(listItem: ListItem) {
     // If the item we are pressing down on is already selected
-    if (item.selected) {
+    if (listItem.selected) {
 
       // Set that item as unselected
-      item.selected = false;
-      this.unselectedItem = item;
+      listItem.selected = false;
+      this.unselectedItem = listItem;
       this.selectedItem = null!;
 
       // If the item we are pressing down on is NOT yet selected
     } else {
 
       // Select that item
-      item.selected = true;
+      listItem.selected = true;
       this.unselectedItem = null!;
-      this.selectedItem = item;
+      this.selectedItem = listItem;
     }
     // Define the pivot item
-    this.pivotItem = item;
+    this.pivotItem = listItem;
   }
 
 
-  setSelectedItemsNoModifierKey(item: ItemComponent) {
+  setSelectedItemsNoModifierKey(listItem: ListItem) {
     // Clear the selection for all items
-    this.items.forEach(x => x.selected = false);
+    this.sourceList.forEach(x => x.selected = false);
     // Set the selected
-    item.selected = true;
+    listItem.selected = true;
     // Define the pivot item
-    this.pivotItem = item;
+    this.pivotItem = listItem;
 
-    this.onListUpdate.next({ type: ListUpdateType.SelectedItem, id: item.id, index: this.getItemIndex(item), name: item.name });
+    this.onListUpdate.next({ type: ListUpdateType.SelectedItem, id: listItem.id, index: this.sourceList.findIndex(x => x.id == listItem?.id), name: listItem.name });
   }
 
 
@@ -421,40 +432,38 @@ export class ListManager {
     this.unselectedItem = null!;
     this.editableItem = null!;
 
-    this.items.forEach(x => {
+    this.sourceList.forEach(x => {
       x.selected = false;
-      x.selectType = null;
+      x.selectType = null!;
     })
   }
 
 
-  setAddItem(item: ItemComponent) {
-    this.selectItem(item);
-  }
 
 
 
 
-  addItem(item: ItemComponent) {
+
+  addItem(listItem: ListItem) {
     this.addEventListeners();
 
-    this.items.forEach(x => {
-      if (x.selected) x.selected = false;
-      if (x.selectType) x.SelectType = null!;
+    this.sourceList.forEach(x => {
+      x.selected = false;
+      x.selectType = null!;
     })
 
 
     window.setTimeout(() => {
-      this.setAddItem(item);
+      this.selectItem(listItem);
     });
   }
 
 
 
-  selectItem(item: ItemComponent) {
+  selectItem(listItem: ListItem) {
     window.setTimeout(() => {
-      item.selected = true;
-      this.selectedItem = item;
+      listItem.selected = true;
+      this.selectedItem = listItem;
       this.editableItem = null!;
       this.unselectedItem = null!;
       this.setItemFocus(this.selectedItem);
@@ -463,24 +472,22 @@ export class ListManager {
 
 
   deleteItem() {
-    // If an item is selected
-    if (this.selectedItem) {
-      let itemCopy!: ItemComponent;
+    // If an item is selected or unselected
+    if (this.selectedItem || this.unselectedItem) {
+      let itemCopy!: ListItem;
       let deletedItems: Array<ListItem> = new Array<ListItem>();
 
       this.itemDeletionPending = true;
 
 
-      const selectedItemIndex = this.getItemIndex(this.selectedItem);
-
-      console.log(selectedItemIndex)
+      const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
 
       // Loop through the list of items starting with the selected item
-      for (let i = selectedItemIndex + 1; i < this.items.length; i++) {
+      for (let i = selectedItemIndex + 1; i < this.sourceList.length; i++) {
         // If we come across an item that is NOT selected
-        if (!this.items.get(i)!.selected) {
+        if (!this.sourceList[i].selected) {
           // Make a copy of that item so that it can be used as the newly selected item when all the other items are deleted
-          itemCopy = this.items.get(i)!;
+          itemCopy = this.sourceList[i];
           break;
         }
       }
@@ -492,7 +499,7 @@ export class ListManager {
       }
 
       // Gather all the selected items
-      let selectedItems = this.items.filter(x => x.selected);
+      let selectedItems = this.sourceList.filter(x => x.selected);
 
       // Update the list
       this.updateList(selectedItems, null!);
@@ -500,7 +507,7 @@ export class ListManager {
       // Loop through all the selected items
       selectedItems.forEach(x => {
         // Update the deleted items list with every item in the source list that has the same index as an item in the selected list
-        deletedItems.push(this.sourceList[this.getItemIndex(x)]);
+        deletedItems.push(this.sourceList[this.sourceList.indexOf(x)]);
       })
 
       // Loop through all the deleted items
@@ -533,6 +540,7 @@ export class ListManager {
           this.selectedItem = null!;
           // this.deleteIcon.isDisabled = true;
           this.pivotItem = null!;
+          this.overButton = false;
           this.removeEventListeners();
         }
       }
@@ -571,21 +579,21 @@ export class ListManager {
 
 
   arrowUp() {
-    let index: number = this.selectedItem != null ? this.getItemIndex(this.selectedItem) : this.getItemIndex(this.unselectedItem);
+    let index: number = this.selectedItem != null ? this.sourceList.indexOf(this.selectedItem) : this.sourceList.indexOf(this.unselectedItem);
 
     if (index > 0) {
       index--;
-      this.onItemMousedown(this.items.get(index)!);
+      this.onItemComponentMousedown(this.sourceList[index]);
     }
   }
 
 
   arrowDown() {
-    let index: number = this.selectedItem != null ? this.getItemIndex(this.selectedItem) : this.getItemIndex(this.unselectedItem);
+    let index: number = this.selectedItem != null ? this.sourceList.indexOf(this.selectedItem) : this.sourceList.indexOf(this.unselectedItem);
 
-    if (index < this.items.length - 1) {
+    if (index < this.sourceList.length - 1) {
       index++;
-      this.onItemMousedown(this.items.get(index)!);
+      this.onItemComponentMousedown(this.sourceList[index]);
     }
   }
 
@@ -601,13 +609,11 @@ export class ListManager {
     }
   }
 
-  isChecked(item: ItemComponent) {
 
-  }
 
 
   evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
-    const htmlEditedItem = this.editableItem.htmlItem.nativeElement;
+    const htmlEditedItem = this.editableItem.htmlItem!.nativeElement;
     const trimmedEditedItem = htmlEditedItem.textContent?.trim();
 
     // Set the focus to the edited item just in case it lost it on a mouse down
@@ -623,7 +629,7 @@ export class ListManager {
         if (this.newItem) {
 
           // Remove the item
-          this.sourceList.splice(this.getItemIndex(this.editableItem), 1);
+          this.sourceList.splice(this.sourceList.indexOf(this.editableItem), 1);
 
           // If we were NOT adding a new item
         } else {
@@ -645,14 +651,12 @@ export class ListManager {
         if (trimmedEditedItem != this.editableItem.name) {
           // Update the name property
           this.editableItem.name = trimmedEditedItem!;
-          // Check to see if the edited item was checked (for editable checkbox items)
-          this.isChecked(this.editableItem);
           this.updateList(null!, this.editableItem);
         }
       }
-      // Reset
       this.newItem = false;
       this.selectedItem = this.editableItem;
+      this.selectedItem.selected = true;
       this.editableItem = null!;
 
       // But if the item is empty
@@ -665,7 +669,7 @@ export class ListManager {
         if (this.newItem) {
 
           // Remove the item
-          this.sourceList.splice(this.getItemIndex(this.editableItem), 1);
+          this.sourceList.splice(this.sourceList.indexOf(this.editableItem), 1);
 
 
           // If we were NOT adding a new list item
@@ -682,27 +686,26 @@ export class ListManager {
         this.editableItem = null!;
       }
     }
-    this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
   }
 
 
-  updateList(deletedItems?: Array<ItemComponent>, item?: ItemComponent) {
+  sort(listItem?: ListItem) { 
+    this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+  }
+
+
+  updateList(deletedItems?: Array<ListItem>, listItem?: ListItem) {
     // If an item is being added or edited
-    if (item != null) {
+    if (listItem != null) {
       const newItem = this.newItem;
 
-      // Update the source list with the new item information
-      this.sourceList[this.getItemIndex(item)] = { id: item.id, name: item.name }
-
       // Sort the source list
-      this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+      this.sort(listItem);
 
-      // Select the item
       window.setTimeout(() => {
-        const updatedItem = this.items.find(x => x.id == item.id);
-        const updatedIndex = this.getItemIndex(updatedItem!);
-        this.selectItem(updatedItem!);
-        this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: item.id, index: updatedIndex, name: item.name });
+        const listItemIndex = this.sourceList.findIndex(x => x.id == listItem?.id);
+        this.selectItem(this.sourceList[listItemIndex]);
+        this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: listItem.id, index: listItemIndex, name: listItem.name });
       })
 
       // If items are being deleted

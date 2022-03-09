@@ -3,10 +3,10 @@
     (contextmenu)="$event.preventDefault()">
 
     <div class="arrow-container"
-         (click)="listManager.onArrowClick(this)">
+         (click)="listManager.onArrowClick(listManager.getListItem(this))">
 
-        <div class="arrow" [ngClass]="{'arrow-down': this.arrowDown}"></div>
+        <div class="arrow" [ngClass]="{'arrow-down': listManager.getListItem(this).arrowDown}"></div>
     </div>
 
-    <div>{{name}}</div>
+    {{listManager.getListItem(this).name}}
 </div>

@@ -9,5 +9,4 @@ import { EditableItemComponent } from '../editable-item/editable-item.component'
 })
 export class EditableCheckboxItemComponent extends EditableItemComponent {
   @Input() listManager!: EditableCheckboxListManager;
-  public isChecked!: boolean;
 }

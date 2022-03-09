@@ -1,3 +1,47 @@
 <div class="niche-hierarchy-container">
-    <editable-hierarchy #hierarchy [hierarchy]="niches" (onListUpdate)="onListUpdate($event)"></editable-hierarchy>
+
+    <div class="property-box-dark" style="height: 100%;">
+
+        <!-- Property Box Bar -->
+        <div class="property-box-bar">
+
+            <!-- Icons -->
+            <div class="icons">
+
+                <!-- Delete icon -->
+                <button class="icon-button"
+                        [ngClass]="{'icon-button-disabled': listUpdate.deleteDisabled}"
+                        (mouseover)="hierarchy.overButton = true"
+                        (mouseout)="hierarchy.overButton = false"
+                        (click)="hierarchy.deleteItem()"
+                        [disabled]="listUpdate.deleteDisabled">
+                    <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
+                </button>
+
+                <!-- Edit icon -->
+                <button class="icon-button"
+                        [ngClass]="{'icon-button-disabled': listUpdate.editDisabled}"
+                        (mouseover)="hierarchy.overButton = true"
+                        (mouseout)="hierarchy.overButton = false"
+                        (click)="hierarchy.editItem()"
+                        [disabled]="listUpdate.editDisabled">
+                    <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
+                </button>
+
+                <!-- Add icon -->
+                <button class="icon-button"
+                        [ngClass]="{'icon-button-disabled': listUpdate.addDisabled}"
+                        (mouseover)="hierarchy.overButton = true"
+                        (mouseout)="hierarchy.overButton = false"
+                        (click)="hierarchy.addItem(isParent)"
+                        [disabled]="listUpdate.addDisabled">
+                    <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
+                </button>
+            </div>
+        </div>
+        
+        <editable-hierarchy #hierarchy [sourceList]="niches" (onListUpdate)="listUpdate = $event"></editable-hierarchy>
+    </div>
+
+    
 </div>

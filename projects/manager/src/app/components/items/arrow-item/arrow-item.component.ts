@@ -9,5 +9,4 @@ import { ItemComponent } from '../item/item.component';
 })
 export class ArrowItemComponent extends ItemComponent {
   @Input() listManager!: ArrowListManager;
-  public arrowDown!: boolean;
 }

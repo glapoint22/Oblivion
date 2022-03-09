@@ -9,6 +9,4 @@ import { EditableItemComponent } from '../editable-item/editable-item.component'
 })
 export class EditableArrowItemComponent extends EditableItemComponent {
   @Input() listManager!: EditableArrowListManager;
-  @Input() arrowDown!: boolean;
-  @Input() levelID!: number;
 }

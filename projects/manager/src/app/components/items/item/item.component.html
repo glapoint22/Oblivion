@@ -2,13 +2,14 @@
     class="item" 
     tabindex="-1"
     (contextmenu)="$event.preventDefault()"
-    (mousedown)="listManager.onItemMousedown(this, $event)"
-    (blur)="listManager.onItemBlur(this)"
-    [ngClass]="{'selected-item': this == listManager.selectedItem,
-                'unselected-item': this == listManager.unselectedItem,
-                'selected-item-top': this.selectType == SelectType.Top,
-                'selected-item-all': this.selectType == SelectType.All,
-                'selected-item-middle': this.selectType == SelectType.Middle,
-                'selected-item-bottom': this.selectType == SelectType.Bottom}">
-    {{name}}
+    (mousedown)="listManager.onItemComponentMousedown(listManager.getListItem(this), $event)"
+    (blur)="listManager.onItemBlur(listManager.getListItem(this))"
+    [ngClass]="{'selected-item': listManager.getListItem(this) == listManager.selectedItem,
+                'unselected-item': listManager.getListItem(this) == listManager.unselectedItem,
+                'selected-item-top': listManager.getListItem(this).selectType == listManager.SelectType.Top,
+                'selected-item-all': listManager.getListItem(this).selectType == listManager.SelectType.All,
+                'selected-item-middle': listManager.getListItem(this).selectType == listManager.SelectType.Middle,
+                'selected-item-bottom': listManager.getListItem(this).selectType == listManager.SelectType.Bottom}">
+                
+    {{listManager.getListItem(this).name}}
 </div>

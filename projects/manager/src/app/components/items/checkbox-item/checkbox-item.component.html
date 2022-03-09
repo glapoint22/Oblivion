@@ -1,14 +1,14 @@
 <div #htmlItem
      class="item"
      (contextmenu)="$event.preventDefault()"
-     (mousedown)="changeCheckbox()">
+     (mousedown)="listManager.onCheckboxChange(listManager.getListItem(this))">
 
     <label class="checkbox">
-        <input #checkbox type="checkbox"
-                [checked]="isChecked"
+        <input type="checkbox"
+                [checked]="listManager.getListItem(this).isChecked"
                 disabled = true>
         <span class="checkmark"></span>
     </label>
 
-    <div>{{name}}</div>
+    {{listManager.getListItem(this).name}}
 </div>

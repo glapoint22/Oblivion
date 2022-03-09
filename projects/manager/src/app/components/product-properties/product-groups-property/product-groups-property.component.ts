@@ -5,6 +5,10 @@ import { EditableCheckboxListComponent } from '../../lists/editable-checkbox-lis
 import { ListComponent } from '../../lists/list/list.component';
 import { ListUpdate } from '../../../classes/list-update';
 import { ListUpdateType } from '../../../classes/enums';
+import { EditableListComponent } from '../../lists/editable-list/editable-list.component';
+import { ArrowListComponent } from '../../lists/arrow-list/arrow-list.component';
+import { ListOptions } from '../../../classes/list-options';
+import { EditableArrowListComponent } from '../../lists/editable-arrow-list/editable-arrow-list.component';
 
 @Component({
   selector: 'product-groups-property',
@@ -12,7 +16,7 @@ import { ListUpdateType } from '../../../classes/enums';
   styleUrls: ['./product-groups-property.component.scss']
 })
 export class ProductGroupsPropertyComponent {
-  @ViewChild('list') list!: ListComponent;
+  @ViewChild('list') list!: EditableListComponent;
   public addDisabled!: boolean;
   public editDisabled!: boolean;
   public deleteDisabled!: boolean;
@@ -59,20 +63,26 @@ export class ProductGroupsPropertyComponent {
     }
   ]
 
-
-
-  onOverButton(isOverButton: boolean) {
-    this.list.overButton(isOverButton);
+  ngAfterViewInit() {
+    this.list.options = {
+      addDisabled: false,
+      editDisabled: true,
+      deleteDisabled: true
+    }
   }
+
+  // onOverButton(isOverButton: boolean) {
+  //   this.list.overButton(isOverButton);
+  // }
 
 
   onAdd() {
-    // // Editable List
-    // this.list.addItem();
+    // Editable List
+    this.list.addItem();
 
 
     // Non-Editable List
-    this.list.addItem(22, 'Group 5a');
+    // this.list.addItem(22, 'Group 5a');
 
 
     // // Editable Hierarchy
