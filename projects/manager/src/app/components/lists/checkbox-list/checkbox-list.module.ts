@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CheckboxListComponent } from './checkbox-list.component';
-import { CheckboxItemModule } from '../../items/checkbox-item/checkbox-item.module';
+import { CheckboxListItemModule } from '../../items/checkbox-list-item/checkbox-list-item.module';
 
 
 
@@ -9,7 +9,7 @@ import { CheckboxItemModule } from '../../items/checkbox-item/checkbox-item.modu
   declarations: [CheckboxListComponent],
   imports: [
     CommonModule,
-    CheckboxItemModule
+    CheckboxListItemModule
   ],
   exports: [
     CheckboxListComponent

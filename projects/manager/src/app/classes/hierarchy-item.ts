@@ -1,6 +1,7 @@
-import { Hierarchy } from "./hierarchy";
+import { ListItem } from "./list-item";
 
-export class HierarchyItem extends Hierarchy {
-    expanded?: boolean;
-    selected?: boolean;
+export class HierarchyItem extends ListItem {
+    hidden?: boolean;
+    arrowDown?: boolean;
+    isParent?: boolean;
 }

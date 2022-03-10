@@ -24,6 +24,16 @@ export enum PropertyView {
     Widget
 }
 
+export enum ListUpdateType {
+    Add,
+    Edit,
+    Delete,
+    SelectedItem,
+    CheckboxChange,
+    ArrowClicked
+}
+
+
 export enum ButtonState {
     Normal,
     Hover,

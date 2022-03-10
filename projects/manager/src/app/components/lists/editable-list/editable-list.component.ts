@@ -18,15 +18,15 @@ export class EditableListComponent extends ListComponent {
 
 
   addItem() {
-    this.sourceList.unshift({ id: 0, name: '' });
+    this.sourceList.unshift({ id: -1, name: '' });
 
     window.setTimeout(() => {
-      this.listManager.addItem(this.items.find(x => x.name == '')!);
+      this.listManager.setAddItem(this.sourceList[0]);
     })
   }
 
 
   editItem() {
-    this.listManager.editItem();
+    this.listManager.setEditItem(this.listManager.selectedItem);
   }
 }
