@@ -5,6 +5,7 @@ import { RowDevComponent } from '../row-dev/row-dev.component';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
 import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev.component';
+import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
 
 
 
@@ -14,7 +15,8 @@ import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev
     ContainerDevComponent,
     RowDevComponent,
     ColumnDevComponent,
-    ButtonWidgetDevComponent
+    ButtonWidgetDevComponent,
+    TextWidgetDevComponent
   ],
   imports: [
     CommonModule
