@@ -15,16 +15,16 @@ export class ListComponent implements OnInit {
   @Input() sourceList!: Array<ListItem>;
   @Output() onListUpdate: EventEmitter<ListUpdate> = new EventEmitter();
 
-  
-  private _overButton! : boolean;
-  public get overButton() : boolean {
+
+  private _overButton!: boolean;
+  public get overButton(): boolean {
     return this._overButton;
   }
-  public set overButton(v : boolean) {
+  public set overButton(v: boolean) {
     this._overButton = v;
     this.listManager.overButton = v;
   }
-  
+
 
 
   instantiate() {
@@ -35,7 +35,6 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
     this.instantiate();
     this.listManager.sourceList = this.sourceList;
-    this.listManager.options = this.options = {addDisabled: false, editDisabled: true, deleteDisabled: true};
 
     this.listManager.onListUpdate.subscribe((listUpdate) => {
       this.onListUpdate.emit(listUpdate);
@@ -46,7 +45,7 @@ export class ListComponent implements OnInit {
 
   ngAfterViewInit() {
     window.setTimeout(() => {
-      this.listManager.onListUpdate.next({ addDisabled: this.options.addDisabled, editDisabled: this.options.editDisabled, deleteDisabled: this.options.deleteDisabled });
+      this.listManager.onListUpdate.next({ addDisabled: this.listManager.addDisabled, editDisabled: this.listManager.editDisabled, deleteDisabled: this.listManager.deleteDisabled });
     })
   }
 

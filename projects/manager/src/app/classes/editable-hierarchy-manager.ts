@@ -41,7 +41,7 @@ export class EditableHierarchyManager extends EditableListManager {
     onArrowClick(hierarchyItem: HierarchyItem) {
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
         this.showHide(this.sourceList.findIndex(x => x.id == hierarchyItem.id));
-        this.setListUpdate(hierarchyItem);
+        this.onListUpdate.next({ type: ListUpdateType.ArrowClicked, id: hierarchyItem.id, index: this.sourceList.indexOf(hierarchyItem), name: hierarchyItem.name, arrowDown: hierarchyItem.arrowDown, addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
     }
 
 
@@ -182,38 +182,9 @@ export class EditableHierarchyManager extends EditableListManager {
         this.sourceList.splice(hierarchyItemIndex, 1);
         this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent } as HierarchyItem);
 
-        // And because we removed the selected hierarchy item we lost our event listeners so we have to put them back
+        // And because we removed the selected hierarchy item, we lost our event listeners, so we have to put them back
         window.setTimeout(() => {
             this.addEventListeners();
         }, 35)
-    }
-
-
-    setListUpdate(hierarchyItem: HierarchyItem) {
-        let addDisabled!: boolean;
-        let editDisabled!: boolean;
-        let deleteDisabled!: boolean;
-        const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
-
-        if (itemSelectedCount == 0) {
-            addDisabled = false;
-            editDisabled = true;
-            deleteDisabled = true;
-
-        } else {
-
-            if (itemSelectedCount > 1) {
-                addDisabled = false;
-                editDisabled = true;
-                deleteDisabled = false;
-
-            } else {
-
-                addDisabled = false;
-                editDisabled = false;
-                deleteDisabled = false;
-            }
-        }
-        this.onListUpdate.next({ type: ListUpdateType.ArrowClicked, id: hierarchyItem.id, index: this.sourceList.indexOf(hierarchyItem), name: hierarchyItem.name, arrowDown: hierarchyItem.arrowDown, addDisabled: addDisabled, editDisabled: editDisabled, deleteDisabled: deleteDisabled });
     }
 }

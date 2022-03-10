@@ -1,4 +1,3 @@
-import { QueryList } from "@angular/core";
 import { Subject } from "rxjs";
 import { ListItemComponent } from "../components/items/list-item/list-item.component";
 import { ItemSelectType, ListUpdateType } from "./enums";
@@ -22,6 +21,9 @@ export class ListManager {
   options!: ListOptions;
   overButton!: boolean;
   SelectType = ItemSelectType;
+  addDisabled: boolean = false;
+  editDisabled: boolean = true;
+  deleteDisabled: boolean = true;
   onListUpdate = new Subject<ListUpdate>();
 
 
@@ -77,6 +79,30 @@ export class ListManager {
   onKeyUp = (e: KeyboardEvent) => {
     if (e.key === 'Control') this.ctrlKeyDown = false;
     if (e.key === 'Shift') this.shiftKeyDown = false;
+  }
+
+
+  setAddEditDelete() {
+    const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
+
+    if (itemSelectedCount == 0) {
+      this.addDisabled = false;
+      this.editDisabled = true;
+      this.deleteDisabled = true;
+    }
+
+    if (itemSelectedCount == 1) {
+      this.addDisabled = false;
+      this.editDisabled = false;
+      this.deleteDisabled = false;
+    }
+
+    if (itemSelectedCount > 1) {
+      this.addDisabled = false;
+      this.editDisabled = true;
+      this.deleteDisabled = false;
+    }
+    this.onListUpdate.next({ addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
   }
 
 
@@ -173,9 +199,7 @@ export class ListManager {
 
       window.setTimeout(() => {
         if (this.editableItem == null) {
-          const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
-          if (itemSelectedCount == 0) this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
-          if (itemSelectedCount == 1) this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
+          this.setAddEditDelete();
         }
       }, 30)
 
@@ -244,7 +268,7 @@ export class ListManager {
           this.editableItem.name = trimmedEditedItem!;
 
           // Update the list
-          this.updateList(null!, this.editableItem);
+          this.updateList(this.editableItem);
         }
 
         // But if the item is empty
@@ -289,10 +313,7 @@ export class ListManager {
       this.setSelectedItemsNoModifierKey(listItem);
     }
 
-    const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
-    if (itemSelectedCount == 0) this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
-    if (itemSelectedCount == 1) this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
-    if (itemSelectedCount > 1) this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: false });
+    this.setAddEditDelete();
   }
 
 
@@ -502,10 +523,10 @@ export class ListManager {
       // Get all the items that are going to be deleted
       let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
       // Get the item that will be selected after all items are deleted 
-      let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete();
+      let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete(deletedItems);
 
       // Update the list
-      this.updateList(deletedItems, null!);
+      this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, name: x.name } }) });
 
       // Loop through all the deleted items
       deletedItems.forEach(() => {
@@ -570,9 +591,7 @@ export class ListManager {
       this.removeEventListeners();
     }
 
-    const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
-    if (itemSelectedCount == 0) this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
-    if (itemSelectedCount == 1) this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
+    this.setAddEditDelete();
   }
 
 
@@ -649,7 +668,7 @@ export class ListManager {
         if (trimmedEditedItem != this.editableItem.name) {
           // Update the name property
           this.editableItem.name = trimmedEditedItem!;
-          this.updateList(null!, this.editableItem);
+          this.updateList(this.editableItem);
         }
       }
       this.newItem = false;
@@ -692,24 +711,16 @@ export class ListManager {
   }
 
 
-  updateList(deletedItems?: Array<ListItem>, listItem?: ListItem) {
-    // If an item is being added or edited
-    if (listItem != null) {
-      const newItem = this.newItem;
+  updateList(listItem?: ListItem) {
+    const newItem = this.newItem;
 
-      // Sort the source list
-      this.sort(listItem);
+    // Sort the source list
+    this.sort(listItem);
 
-      window.setTimeout(() => {
-        const listItemIndex = this.sourceList.findIndex(x => x.id == listItem?.id);
-        this.selectItem(this.sourceList[listItemIndex]);
-        this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: listItem.id, index: listItemIndex, name: listItem.name });
-      })
-
-      // If items are being deleted
-    } else {
-
-      this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, name: x.name } }) });
-    }
+    window.setTimeout(() => {
+      const listItemIndex = this.sourceList.findIndex(x => x.id == listItem?.id);
+      this.selectItem(this.sourceList[listItemIndex]);
+      this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: listItem!.id, index: listItemIndex, name: listItem!.name });
+    })
   }
 }

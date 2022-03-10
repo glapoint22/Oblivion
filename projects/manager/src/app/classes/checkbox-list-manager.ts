@@ -12,15 +12,6 @@ export class CheckboxListManager extends ListManager {
 
     onCheckboxChange(listItem: CheckboxListItem) {
         listItem.isChecked = !listItem.isChecked;
-        this.onListUpdate.next({
-            type: ListUpdateType.CheckboxChange,
-            id: listItem.id,
-            index: this.sourceList.indexOf(listItem),
-            name: listItem.name,
-            isChecked: listItem.isChecked,
-            addDisabled: true,
-            editDisabled: true,
-            deleteDisabled: true
-        });
+        this.onListUpdate.next({ type: ListUpdateType.CheckboxChange, id: listItem.id, index: this.sourceList.indexOf(listItem), name: listItem.name, isChecked: listItem.isChecked, addDisabled: true, editDisabled: true, deleteDisabled: true });
     }
 }

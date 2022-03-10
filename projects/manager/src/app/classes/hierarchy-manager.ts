@@ -12,15 +12,6 @@ export class HierarchyManager extends ListManager {
 
     onArrowClick(hierarchyItem: HierarchyItem) {
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
-        this.onListUpdate.next({
-            type: ListUpdateType.ArrowClicked,  
-            id: hierarchyItem.id,
-            index: this.sourceList.indexOf(hierarchyItem),
-            name: hierarchyItem.name,
-            arrowDown: hierarchyItem.arrowDown,
-            addDisabled: true,
-            editDisabled: true,
-            deleteDisabled: true
-        });
+        this.onListUpdate.next({ type: ListUpdateType.ArrowClicked, id: hierarchyItem.id, index: this.sourceList.indexOf(hierarchyItem), name: hierarchyItem.name, arrowDown: hierarchyItem.arrowDown, addDisabled: true, editDisabled: true, deleteDisabled: true });
     }
 }
