@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EditableArrowListManager } from '../../../classes/editable-arrow-list-manager';
+import { EditableHierarchyManager } from '../../../classes/editable-hierarchy-manager';
 import { EditableListComponent } from '../editable-list/editable-list.component';
 
 @Component({
@@ -8,9 +8,9 @@ import { EditableListComponent } from '../editable-list/editable-list.component'
   styleUrls: ['./editable-arrow-list.component.scss']
 })
 export class EditableArrowListComponent extends EditableListComponent {
-  public listManager!: EditableArrowListManager;
+  public listManager!: EditableHierarchyManager;
 
   instantiate() {
-    this.listManager = new EditableArrowListManager();
+    this.listManager = new EditableHierarchyManager();
   }
 }

@@ -1,0 +1,36 @@
+<div class="item-container">
+
+    <label *ngIf="listManager.editableItem != null" class="checkbox disabled-checkbox">
+        <input class="disabled-input"
+               type="checkbox"
+               [checked]="listManager.getItem(this).isChecked">
+        <span class="disabled-checkmark"></span>
+    </label>
+
+    <div #htmlItem
+         class="item"
+         tabindex="-1"
+         (contextmenu)="$event.preventDefault()"
+         (mousedown)="!listManager.overButton ? listManager.onItemComponentMousedown(listManager.getItem(this), $event) : null"
+         (blur)="listManager.onItemBlur(listManager.getItem(this))"
+         (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(listManager.getItem(this)) : null"
+         [contentEditable]="listManager.getItem(this) == listManager.editableItem"
+         [ngClass]="{'selected-item': listManager.getItem(this) == listManager.selectedItem,
+                'unselected-item': listManager.getItem(this) == listManager.unselectedItem,
+                'edited-item': listManager.getItem(this) == listManager.editableItem,
+                'transparent-item': listManager.editableItem != null && listManager.editableItem != listManager.getItem(this),
+                'selected-item-top': listManager.getItem(this).selectType == listManager.SelectType.Top,
+                'selected-item-all': listManager.getItem(this).selectType == listManager.SelectType.All,
+                'selected-item-middle': listManager.getItem(this).selectType == listManager.SelectType.Middle,
+                'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom}">
+
+        <label *ngIf="listManager.editableItem == null" class="checkbox" (mouseover)="listManager.overButton = true" (mouseout)="listManager.overButton = false">
+            <input type="checkbox"
+                    [checked]="listManager.getItem(this).isChecked"
+                    (change)="listManager.onCheckboxChange(listManager.getItem(this))">
+            <span class="checkmark"></span>
+        </label>
+
+        {{listManager.getItem(this).name}}
+    </div>
+</div>

@@ -1,11 +1,11 @@
-import { EditableCheckboxItemComponent } from "../components/items/editable-checkbox-item/editable-checkbox-item.component";
+import { EditableCheckboxListItemComponent } from "../components/items/editable-checkbox-list-item/editable-checkbox-list-item.component";
 import { CheckboxListItem } from "./checkbox-list-item";
 import { EditableListManager } from "./editable-list-manager";
 import { ListUpdateType } from "./enums";
 
 export class EditableCheckboxListManager extends EditableListManager {
 
-    getListItem(item: EditableCheckboxItemComponent): CheckboxListItem {
+    getItem(item: EditableCheckboxListItemComponent): CheckboxListItem {
         const listItem: CheckboxListItem = this.sourceList.find(x => x.id == item.id) as CheckboxListItem;
         return listItem;
     }

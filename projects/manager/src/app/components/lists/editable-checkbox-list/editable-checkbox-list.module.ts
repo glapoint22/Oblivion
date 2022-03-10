@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditableCheckboxListComponent } from './editable-checkbox-list.component';
-import { EditableCheckboxItemModule } from '../../items/editable-checkbox-item/editable-checkbox-item.module';
+import { EditableCheckboxListItemModule } from '../../items/editable-checkbox-list-item/editable-checkbox-list-item.module';
 
 
 
@@ -9,7 +9,7 @@ import { EditableCheckboxItemModule } from '../../items/editable-checkbox-item/e
   declarations: [EditableCheckboxListComponent],
   imports: [
     CommonModule,
-    EditableCheckboxItemModule
+    EditableCheckboxListItemModule
   ],
   exports:[EditableCheckboxListComponent]
 })

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ArrowListComponent } from './arrow-list.component';
-import { ArrowItemModule } from '../../items/arrow-item/arrow-item.module';
+import { HierarchyItemModule } from '../../items/hierarchy-item/hierarchy-item.module';
 
 
 
@@ -9,7 +9,7 @@ import { ArrowItemModule } from '../../items/arrow-item/arrow-item.module';
   declarations: [ArrowListComponent],
   imports: [
     CommonModule,
-    ArrowItemModule
+    HierarchyItemModule
   ],
   exports: [ArrowListComponent]
 })

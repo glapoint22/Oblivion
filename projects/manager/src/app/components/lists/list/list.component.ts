@@ -60,7 +60,7 @@ export class ListComponent implements OnInit {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
 
     window.setTimeout(() => {
-      this.listManager.addItem(this.sourceList.find(x => x.id == id)!);
+      this.listManager.setAddItem(this.sourceList.find(x => x.id == id)!);
     })
   }
 
@@ -68,6 +68,6 @@ export class ListComponent implements OnInit {
 
 
   deleteItem() {
-    this.listManager.deleteItem();
+    this.listManager.setDeleteItem();
   }
 }

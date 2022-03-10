@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditableHierarchyComponent } from './editable-hierarchy.component';
-import { EditableArrowItemModule } from '../../items/editable-arrow-item/editable-arrow-item.module';
-import { EditableItemModule } from '../../items/editable-item/editable-item.module';
+import { EditableHierarchyItemModule } from '../../items/editable-hierarchy-item/editable-hierarchy-item.module';
+import { EditableListItemModule } from '../../items/editable-list-item/editable-list-item.module';
 
 
 
@@ -10,8 +10,8 @@ import { EditableItemModule } from '../../items/editable-item/editable-item.modu
   declarations: [EditableHierarchyComponent],
   imports: [
     CommonModule,
-    EditableArrowItemModule,
-    EditableItemModule
+    EditableHierarchyItemModule,
+    EditableListItemModule
   ],
   exports: [EditableHierarchyComponent]
 })

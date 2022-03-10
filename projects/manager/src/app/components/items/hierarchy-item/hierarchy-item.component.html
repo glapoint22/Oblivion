@@ -1,0 +1,12 @@
+<div #htmlItem
+    class="item"
+    (contextmenu)="$event.preventDefault()">
+
+    <div class="arrow-container"
+         (click)="listManager.onArrowClick(listManager.getItem(this))">
+
+        <div class="arrow" [ngClass]="{'arrow-down': listManager.getItem(this).arrowDown}"></div>
+    </div>
+
+    {{listManager.getItem(this).name}}
+</div>

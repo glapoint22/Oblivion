@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { EditableArrowListManager } from '../../../classes/editable-arrow-list-manager';
-import { Hierarchy } from '../../../classes/hierarchy';
+import { EditableHierarchyManager } from '../../../classes/editable-hierarchy-manager';
+import { HierarchyItem } from '../../../classes/hierarchy-item';
 import { EditableListComponent } from '../../lists/editable-list/editable-list.component';
 
 @Component({
@@ -9,11 +9,11 @@ import { EditableListComponent } from '../../lists/editable-list/editable-list.c
   styleUrls: ['./editable-hierarchy.component.scss']
 })
 export class EditableHierarchyComponent extends EditableListComponent {
-  public listManager!: EditableArrowListManager;
-  @Input() sourceList!: Array<Hierarchy>;
+  public listManager!: EditableHierarchyManager;
+  @Input() sourceList!: Array<HierarchyItem>;
 
   instantiate() {
-    this.listManager = new EditableArrowListManager();
+    this.listManager = new EditableHierarchyManager();
   }
 
 
@@ -29,7 +29,7 @@ export class EditableHierarchyComponent extends EditableListComponent {
         hierarchyGroupID = this.listManager.selectedItem.hierarchyGroupID! + 1;
 
         // Rotate the selected hierarchy item's arrow in the down position if it's not already
-        if (!(this.listManager.selectedItem as Hierarchy).arrowDown) {
+        if (!(this.listManager.selectedItem as HierarchyItem).arrowDown) {
           this.listManager.onArrowClick(this.sourceList[this.sourceList.indexOf(this.listManager.selectedItem)]);
         }
 
@@ -47,7 +47,7 @@ export class EditableHierarchyComponent extends EditableListComponent {
 
 
     window.setTimeout(() => {
-      this.listManager.addItem(this.sourceList[this.sourceList.findIndex(x => x.id == -1)]);
+      this.listManager.setAddItem(this.sourceList[this.sourceList.findIndex(x => x.id == -1)]);
     })
   }
 }

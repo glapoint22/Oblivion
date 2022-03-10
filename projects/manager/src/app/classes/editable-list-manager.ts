@@ -8,7 +8,7 @@ export class EditableListManager extends ListManager {
     }
 
 
-    addItem(listItem: ListItem) {
+    setAddItem(listItem: ListItem) {
         this.overButton = false;
         this.addEventListeners();
 
@@ -31,7 +31,7 @@ export class EditableListManager extends ListManager {
 
 
 
-    editItem(listItem: ListItem) {
+    setEditItem(listItem: ListItem) {
         if (listItem) {
             this.overButton = false;
             this.editableItem = listItem;
@@ -50,7 +50,7 @@ export class EditableListManager extends ListManager {
 
     onItemDoubleClick(listItem: ListItem) {
         if (!this.shiftKeyDown && !this.ctrlKeyDown) {
-            this.editItem(listItem);
+            this.setEditItem(listItem);
         }
     }
 }

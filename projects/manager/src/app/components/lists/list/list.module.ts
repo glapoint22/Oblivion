@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListComponent } from './list.component';
-import { ItemModule } from '../../items/item/item.module';
+import { ListItemModule } from '../../items/list-item/list-item.module';
 
 
 
@@ -9,7 +9,7 @@ import { ItemModule } from '../../items/item/item.module';
   declarations: [ListComponent],
   imports: [
     CommonModule,
-    ItemModule
+    ListItemModule
   ],
   exports: [
     ListComponent

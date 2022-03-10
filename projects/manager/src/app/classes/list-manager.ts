@@ -1,6 +1,6 @@
 import { QueryList } from "@angular/core";
 import { Subject } from "rxjs";
-import { ItemComponent } from "../components/items/item/item.component";
+import { ListItemComponent } from "../components/items/list-item/list-item.component";
 import { ItemSelectType, ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
@@ -25,8 +25,8 @@ export class ListManager {
   onListUpdate = new Subject<ListUpdate>();
 
 
-  getListItem(item: ItemComponent): ListItem {
-    const listItem: ListItem = this.sourceList.find(x => x.id == item.id)!;
+  getItem(itemComponent: ListItemComponent): ListItem {
+    const listItem: ListItem = this.sourceList.find(x => x.id == itemComponent.id)!;
     return listItem;
   }
 
@@ -58,7 +58,7 @@ export class ListManager {
 
 
   keydown(e: KeyboardEvent) {
-    if (e.key === 'Delete') this.deleteItem(); // thisOptions.onDeleteItem.apply(thisOptions.currentObj);
+    if (e.key === 'Delete') this.setDeleteItem(); // thisOptions.onDeleteItem.apply(thisOptions.currentObj);
     if (e.key === 'Escape') this.escape();
     if (e.key === 'ArrowUp') this.arrowUp();
     if (e.key === 'ArrowDown') this.arrowDown();
@@ -444,7 +444,7 @@ export class ListManager {
 
 
 
-  addItem(listItem: ListItem) {
+  setAddItem(listItem: ListItem) {
     this.addEventListeners();
 
     this.sourceList.forEach(x => {
@@ -471,7 +471,7 @@ export class ListManager {
   }
 
 
-  deleteItem() {
+  setDeleteItem() {
     // If an item is selected or unselected
     if (this.selectedItem || this.unselectedItem) {
       let itemCopy!: ListItem;
@@ -575,6 +575,10 @@ export class ListManager {
       // Then remove all listeners and selections
       this.removeEventListeners();
     }
+
+    const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
+    if (itemSelectedCount == 0) this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
+    if (itemSelectedCount == 1) this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
   }
 
 
@@ -689,7 +693,7 @@ export class ListManager {
   }
 
 
-  sort(listItem?: ListItem) { 
+  sort(listItem?: ListItem) {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
   }
 

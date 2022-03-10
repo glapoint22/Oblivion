@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Hierarchy } from '../../classes/hierarchy';
+import { HierarchyItem } from '../../classes/hierarchy-item';
 
 @Component({
   selector: 'product-builder',
@@ -7,7 +7,7 @@ import { Hierarchy } from '../../classes/hierarchy';
   styleUrls: ['./product-builder.component.scss']
 })
 export class ProductBuilderComponent {
-  public niches: Array<Hierarchy> =
+  public niches: Array<HierarchyItem> =
     [
       {
         id: 1,
