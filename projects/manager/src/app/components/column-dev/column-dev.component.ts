@@ -17,16 +17,16 @@ export class ColumnDevComponent extends ColumnComponent {
 
   async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
     const widgetComponentRef = await super.createWidgetComponentRef(widgetData);
-    
+
     this.setSelectedWidget(widgetComponentRef.instance);
-    
+
     widgetComponentRef.location.nativeElement.firstElementChild.addEventListener('mousedown', () => {
       this.setSelectedWidget(widgetComponentRef.instance);
     });
 
     return widgetComponentRef;
   }
-  
+
   setSelectedWidget(widget: Widget) {
     this.widgetService.selectedWidget = widget;
     this.widgetService.selectedRow = this.rowComponent;
@@ -46,10 +46,10 @@ export class ColumnDevComponent extends ColumnComponent {
         break;
 
       // Text
-      // case WidgetType.Text:
-      //   const { TextWidgetComponent } = await import('../text-widget/text-widget.component');
-      //   widget = TextWidgetComponent;
-      //   break;
+      case WidgetType.Text:
+        const { TextWidgetDevComponent } = await import('../text-widget-dev/text-widget-dev.component');
+        widget = TextWidgetDevComponent;
+        break;
 
       // // Image
       // case WidgetType.Image:

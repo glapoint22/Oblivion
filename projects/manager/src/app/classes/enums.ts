@@ -29,3 +29,8 @@ export enum ButtonState {
     Hover,
     Active
 }
+
+export enum SelectedElementOnDeletion {
+    Previous,
+    Next
+}

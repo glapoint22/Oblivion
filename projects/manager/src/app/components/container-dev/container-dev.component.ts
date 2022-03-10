@@ -54,7 +54,7 @@ export class ContainerDevComponent extends ContainerComponent {
     const rowComponentRef: ComponentRef<RowDevComponent> = this.viewContainerRef.createComponent(rowComponentFactory);
     const rowElement: HTMLElement = rowComponentRef.location.nativeElement.firstElementChild;
 
-    rowElement.addEventListener('mousedown', this.onRowMousedown);
+    // rowElement.addEventListener('mousedown', this.onRowMousedown);
     this.rowElements.push(rowElement);
 
     return rowComponentRef;
