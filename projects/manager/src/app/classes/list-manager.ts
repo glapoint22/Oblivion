@@ -290,17 +290,9 @@ export class ListManager {
     }
 
     const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
-
-    if (itemSelectedCount > 1) {
-      this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: false });
-    } else {
-
-      if (this.unselectedItem) {
-        this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
-      } else {
-        this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
-      }
-    }
+    if (itemSelectedCount == 0) this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: true });
+    if (itemSelectedCount == 1) this.onListUpdate.next({ addDisabled: false, editDisabled: false, deleteDisabled: false });
+    if (itemSelectedCount > 1) this.onListUpdate.next({ addDisabled: false, editDisabled: true, deleteDisabled: false });
   }
 
 
@@ -471,44 +463,49 @@ export class ListManager {
   }
 
 
+  getDeletedItems(selectedItems: Array<ListItem>): Array<ListItem> {
+    let deletedItems: Array<ListItem> = new Array<ListItem>();
+
+    // Loop through all the selected items
+    selectedItems.forEach(x => {
+      // Update the deleted items list with every item in the source list that has the same index as an item in the selected list
+      deletedItems.push(this.sourceList[this.sourceList.indexOf(x)]);
+    })
+    return deletedItems;
+  }
+
+
+  getNextSelectedItemAfterDelete(deletedItems?: Array<ListItem>): ListItem {
+    let nextSelectedItem!: ListItem;
+    const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
+
+    // Loop through the list of items starting with the item that follows the selected item
+    for (let i = selectedItemIndex + 1; i < this.sourceList.length; i++) {
+      // If we come across an item that is NOT selected
+      if (!this.sourceList[i].selected) {
+        // Make a copy of that item so that it can be used as the newly selected item when all the other items are deleted
+        nextSelectedItem = this.sourceList[i];
+        break;
+      }
+    }
+    return nextSelectedItem;
+  }
+
+
   setDeleteItem() {
-    // If an item is selected or unselected
-    if (this.selectedItem || this.unselectedItem) {
-      let itemCopy!: ListItem;
-      let deletedItems: Array<ListItem> = new Array<ListItem>();
-
+    // If an item is selected
+    if (this.sourceList.filter(x => x.selected).length > 0) {
+      // Mark as deletion pending
       this.itemDeletionPending = true;
-
-
-      const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
-
-      // Loop through the list of items starting with the selected item
-      for (let i = selectedItemIndex + 1; i < this.sourceList.length; i++) {
-        // If we come across an item that is NOT selected
-        if (!this.sourceList[i].selected) {
-          // Make a copy of that item so that it can be used as the newly selected item when all the other items are deleted
-          itemCopy = this.sourceList[i];
-          break;
-        }
-      }
-
-      //If an item is unselected
-      if (this.unselectedItem != null) {
-        // Make a copy of that item so it can remain as the unselected item when all the other items are deleted
-        itemCopy = this.unselectedItem;
-      }
-
       // Gather all the selected items
-      let selectedItems = this.sourceList.filter(x => x.selected);
+      let selectedItems: Array<ListItem> = this.sourceList.filter(x => x.selected);
+      // Get all the items that are going to be deleted
+      let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
+      // Get the item that will be selected after all items are deleted 
+      let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete();
 
       // Update the list
-      this.updateList(selectedItems, null!);
-
-      // Loop through all the selected items
-      selectedItems.forEach(x => {
-        // Update the deleted items list with every item in the source list that has the same index as an item in the selected list
-        deletedItems.push(this.sourceList[this.sourceList.indexOf(x)]);
-      })
+      this.updateList(deletedItems, null!);
 
       // Loop through all the deleted items
       deletedItems.forEach(() => {
@@ -518,15 +515,13 @@ export class ListManager {
         this.sourceList.splice(deletedItemIndex, 1);
       })
 
-
-
       // If an item was selected
       if (this.selectedItem != null) {
         // And there is a next available list item that can be selected
-        if (itemCopy != null) {
+        if (nextSelectedItem != null) {
           window.setTimeout(() => {
             // Select that list item
-            this.selectedItem = itemCopy;
+            this.selectedItem = nextSelectedItem;
             this.selectedItem.selected = true;
             // Re-establish the pivot index
             this.pivotItem = this.selectedItem;
@@ -538,7 +533,6 @@ export class ListManager {
         } else {
           // Make no list item marked as selected
           this.selectedItem = null!;
-          // this.deleteIcon.isDisabled = true;
           this.pivotItem = null!;
           this.overButton = false;
           this.removeEventListeners();
@@ -549,7 +543,7 @@ export class ListManager {
       if (this.unselectedItem != null) {
         window.setTimeout(() => {
           // Unselect that list item again
-          this.unselectedItem = itemCopy;
+          this.unselectedItem = nextSelectedItem;
           // this.deleteIcon.isDisabled = true;
           // Re-establish the pivot index
           this.pivotItem = this.unselectedItem;

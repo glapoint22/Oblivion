@@ -23,8 +23,9 @@ export class EditableHierarchyComponent extends EditableListComponent {
       let index: number;
       let hierarchyGroupID: number;
 
-      // If the selected hierarchy item has children
-      if (this.listManager.hasChildren(this.listManager.selectedItem)) {
+
+      // If the selected hierarchy item has children or that selected hierarchy item belongs to the top level group or it is marked as a parent
+      if (this.listManager.hasChildren(this.listManager.selectedItem) || this.listManager.selectedItem.hierarchyGroupID == 0 || (this.listManager.selectedItem as HierarchyItem).isParent) {
         index = this.sourceList.indexOf(this.listManager.selectedItem) + 1;
         hierarchyGroupID = this.listManager.selectedItem.hierarchyGroupID! + 1;
 
@@ -33,8 +34,9 @@ export class EditableHierarchyComponent extends EditableListComponent {
           this.listManager.onArrowClick(this.sourceList[this.sourceList.indexOf(this.listManager.selectedItem)]);
         }
 
-        // If the selected hierarchy item does NOT have children
+        // If the selected hierarchy item does NOT have children and that selected hierarchy item does NOT belong to the top level group and it is NOT marked as a parent
       } else {
+
         index = this.listManager.getIndexOfHierarchyItemParent(this.listManager.selectedItem) + 1;
         hierarchyGroupID = this.listManager.selectedItem.hierarchyGroupID!;
       }

@@ -11,6 +11,33 @@ export class EditableHierarchyManager extends EditableListManager {
     }
 
 
+    getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem): number {
+        let parentHierarchyIndex!: number;
+        const hierarchyItemIndex = this.sourceList.indexOf(hierarchyItem);
+
+        for (let i = hierarchyItemIndex; i >= 0; i--) {
+            if (this.sourceList[i].hierarchyGroupID! < this.sourceList[hierarchyItemIndex].hierarchyGroupID!) {
+                parentHierarchyIndex = i;
+                break;
+            }
+        }
+        return parentHierarchyIndex;
+    }
+
+
+    hasChildren(hierarchyItem: HierarchyItem): boolean {
+        const index = this.sourceList.indexOf(hierarchyItem);
+
+        if (index == this.sourceList.length - 1) return false;
+
+        if (this.sourceList[index! + 1].hierarchyGroupID! > this.sourceList[index!].hierarchyGroupID!) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     onArrowClick(hierarchyItem: HierarchyItem) {
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
         this.showHide(this.sourceList.findIndex(x => x.id == hierarchyItem.id));
@@ -57,74 +84,50 @@ export class EditableHierarchyManager extends EditableListManager {
         }
     }
 
+    getDeletedItems(selectedItems: Array<HierarchyItem>): Array<HierarchyItem> {
+        let deletedItems: Array<HierarchyItem> = new Array<HierarchyItem>();
 
-    setListUpdate(hierarchyItem: HierarchyItem) {
-        let addDisabled!: boolean;
-        let editDisabled!: boolean;
-        let deleteDisabled!: boolean;
-        const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
+        // Loop through all the selected items
+        selectedItems.forEach(x => {
+            const startingIndex = this.sourceList.indexOf(x);
 
-        if (itemSelectedCount == 0) {
-            addDisabled = false;
-            editDisabled = true;
-            deleteDisabled = true;
+            // For each selected item get its children
+            for (let i = startingIndex; i < this.sourceList.length; i++) {
+                if (i != startingIndex && this.sourceList[i].hierarchyGroupID! <= x.hierarchyGroupID!) break;
 
-        } else {
-
-            if (itemSelectedCount > 1) {
-                addDisabled = false;
-                editDisabled = true;
-                deleteDisabled = false;
-
-            } else {
-
-                addDisabled = false;
-                editDisabled = false;
-                deleteDisabled = false;
+                // As long as the selected item or any of its children are NOT yet in the deleted items list
+                if (deletedItems.indexOf(this.sourceList[i]) == -1) {
+                    // Add it to the deleted items list
+                    deletedItems.push(this.sourceList[i]);
+                }
             }
-        }
-
-        this.onListUpdate.next({
-            type: ListUpdateType.ArrowClicked,
-            id: hierarchyItem.id,
-            index: this.sourceList.indexOf(hierarchyItem),
-            name: hierarchyItem.name,
-            arrowDown: hierarchyItem.arrowDown,
-            addDisabled: addDisabled,
-            editDisabled: editDisabled,
-            deleteDisabled: deleteDisabled
         });
+
+        return deletedItems;
     }
 
 
-    hasChildren(hierarchyItem: HierarchyItem): boolean {
-        const index = this.sourceList.indexOf(hierarchyItem);
+    getNextSelectedItemAfterDelete(deletedItems: Array<HierarchyItem>): HierarchyItem {
+        let nextSelectedItem!: HierarchyItem;
+        const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
 
-        if (index == this.sourceList.length - 1) return false;
+        // Loop through the list of items starting with the item that follows the selected item
+        for (let i = selectedItemIndex + 1; i < this.sourceList.length; i++) {
+            // If we come across an item that is NOT selected
+            if (!this.sourceList[i].selected) {
 
-        if (this.sourceList[index! + 1].hierarchyGroupID! > this.sourceList[index!].hierarchyGroupID!) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem): number {
-        let parentHierarchyIndex!: number;
-        const hierarchyItemIndex = this.sourceList.indexOf(hierarchyItem);
-
-        for (let i = hierarchyItemIndex; i >= 0; i--) {
-            if (this.sourceList[i].hierarchyGroupID! < this.sourceList[hierarchyItemIndex].hierarchyGroupID!) {
-                parentHierarchyIndex = i;
-                break;
+                // And as long as that item is NOT on the deleted items list
+                if (deletedItems.indexOf(this.sourceList[i]) == -1) {
+                    // Make a copy of that item so that it can be used as the newly selected item when all the other items are deleted
+                    nextSelectedItem = this.sourceList[i];
+                    break;
+                }
             }
         }
-        return parentHierarchyIndex;
+        return nextSelectedItem;
     }
 
 
-    
 
 
     sort(hierarchyItem: HierarchyItem) {
@@ -180,8 +183,37 @@ export class EditableHierarchyManager extends EditableListManager {
         this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent } as HierarchyItem);
 
         // And because we removed the selected hierarchy item we lost our event listeners so we have to put them back
-        window.setTimeout(()=> {
+        window.setTimeout(() => {
             this.addEventListeners();
-        },35)
+        }, 35)
+    }
+
+
+    setListUpdate(hierarchyItem: HierarchyItem) {
+        let addDisabled!: boolean;
+        let editDisabled!: boolean;
+        let deleteDisabled!: boolean;
+        const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
+
+        if (itemSelectedCount == 0) {
+            addDisabled = false;
+            editDisabled = true;
+            deleteDisabled = true;
+
+        } else {
+
+            if (itemSelectedCount > 1) {
+                addDisabled = false;
+                editDisabled = true;
+                deleteDisabled = false;
+
+            } else {
+
+                addDisabled = false;
+                editDisabled = false;
+                deleteDisabled = false;
+            }
+        }
+        this.onListUpdate.next({ type: ListUpdateType.ArrowClicked, id: hierarchyItem.id, index: this.sourceList.indexOf(hierarchyItem), name: hierarchyItem.name, arrowDown: hierarchyItem.arrowDown, addDisabled: addDisabled, editDisabled: editDisabled, deleteDisabled: deleteDisabled });
     }
 }
