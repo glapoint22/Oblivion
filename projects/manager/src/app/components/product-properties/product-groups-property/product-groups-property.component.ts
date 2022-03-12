@@ -1,14 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { ListItem } from '../../../classes/list-item';
 import { CheckboxListComponent } from '../../lists/checkbox-list/checkbox-list.component';
-import { EditableCheckboxListComponent } from '../../lists/editable-checkbox-list/editable-checkbox-list.component';
-import { ListComponent } from '../../lists/list/list.component';
 import { ListUpdate } from '../../../classes/list-update';
 import { ListUpdateType } from '../../../classes/enums';
-import { EditableListComponent } from '../../lists/editable-list/editable-list.component';
-import { ArrowListComponent } from '../../lists/arrow-list/arrow-list.component';
+import { HierarchyListComponent } from '../../lists/hierarchy-list/hierarchy-list.component';
 import { ListOptions } from '../../../classes/list-options';
-import { EditableArrowListComponent } from '../../lists/editable-arrow-list/editable-arrow-list.component';
+import { ListComponent } from '../../lists/list/list.component';
 
 @Component({
   selector: 'product-groups-property',
@@ -16,7 +13,7 @@ import { EditableArrowListComponent } from '../../lists/editable-arrow-list/edit
   styleUrls: ['./product-groups-property.component.scss']
 })
 export class ProductGroupsPropertyComponent {
-  @ViewChild('list') list!: EditableListComponent;
+  @ViewChild('list') list!: ListComponent;
   public addDisabled!: boolean;
   public editDisabled!: boolean;
   public deleteDisabled!: boolean;
@@ -64,11 +61,11 @@ export class ProductGroupsPropertyComponent {
   ]
 
   ngAfterViewInit() {
-    this.list.options = {
-      addDisabled: false,
-      editDisabled: true,
-      deleteDisabled: true
-    }
+    // this.list.options = {
+    //   addDisabled: false,
+    //   editDisabled: true,
+    //   deleteDisabled: true
+    // }
   }
 
   // onOverButton(isOverButton: boolean) {
@@ -78,7 +75,7 @@ export class ProductGroupsPropertyComponent {
 
   onAdd() {
     // Editable List
-    this.list.addItem();
+    this.list.add();
 
 
     // Non-Editable List
@@ -102,7 +99,7 @@ export class ProductGroupsPropertyComponent {
 
 
   onDelete() {
-    this.list.deleteItem();
+    this.list.delete();
   }
 
 

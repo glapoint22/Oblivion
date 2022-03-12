@@ -11,7 +11,7 @@
          class="item"
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
-         (mousedown)="!listManager.overButton ? listManager.onItemComponentMousedown(listManager.getItem(this), $event) : null"
+         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemComponentMousedown(listManager.getItem(this), $event) : null) : listManager.onCheckboxChange(listManager.getItem(this))"
          (blur)="listManager.onItemBlur(listManager.getItem(this))"
          (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(listManager.getItem(this)) : null"
          [contentEditable]="listManager.getItem(this) == listManager.editableItem"
@@ -27,10 +27,11 @@
         <label *ngIf="listManager.editableItem == null" class="checkbox" (mouseover)="listManager.overButton = true" (mouseout)="listManager.overButton = false">
             <input type="checkbox"
                     [checked]="listManager.getItem(this).isChecked"
-                    (change)="listManager.onCheckboxChange(listManager.getItem(this))">
+                    (change)="listManager.selectable ? listManager.onCheckboxChange(listManager.getItem(this)) : null"
+                    [disabled] = "!listManager.selectable"
+                    >
             <span class="checkmark"></span>
         </label>
-
         {{listManager.getItem(this).name}}
     </div>
 </div>

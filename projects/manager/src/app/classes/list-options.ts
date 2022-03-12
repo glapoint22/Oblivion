@@ -1,7 +1,7 @@
-import { MenuOption } from "./menu-option";
-
 export class ListOptions {
-    addDisabled?: boolean;
-    editDisabled?: boolean;
-    deleteDisabled?: boolean;
+    editable?: boolean;
+    selectable?: boolean;
+    unselectable?: boolean;
+    deletable?: boolean;
+    multiselectable?: boolean;
 }

@@ -34,7 +34,13 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     this.instantiate();
+
     this.listManager.sourceList = this.sourceList;
+    if (this.options.editable != null) this.listManager.editable = this.options.editable;
+    if (this.options.selectable != null) this.listManager.selectable = this.options.selectable;
+    if (this.options.unselectable != null) this.listManager.unselectable = this.options.unselectable;
+    if (this.options.deletable != null) this.listManager.deletable = this.options.deletable;
+    if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
 
     this.listManager.onListUpdate.subscribe((listUpdate) => {
       this.onListUpdate.emit(listUpdate);
@@ -51,22 +57,48 @@ export class ListComponent implements OnInit {
 
 
 
-  addItem(id?: number, name?: string) {
-    // Add the new item to the source list
-    this.sourceList.push({ id: id!, name: name! });
+  add(id?: number, name?: string) {
 
-    // Sort the list
-    this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+    // NOT Editable
+    if(!this.listManager.editable) {
 
-    window.setTimeout(() => {
-      this.listManager.setAddItem(this.sourceList.find(x => x.id == id)!);
-    })
+      // Add the new item to the source list
+      this.sourceList.push({ id: id!, name: name! });
+
+      // Sort the list
+      this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+
+      window.setTimeout(() => {
+        this.listManager.setAddItem(this.sourceList.find(x => x.id == id)!);
+      })
+
+
+      // Editable
+    } else {
+
+
+      this.sourceList.unshift({ id: -1, name: '' });
+
+      window.setTimeout(() => {
+        this.listManager.setAddItem(this.sourceList[0]);
+      })
+    }
   }
 
 
 
 
-  deleteItem() {
+  delete() {
     this.listManager.setDeleteItem();
+  }
+
+
+
+
+
+
+
+  edit() {
+    this.listManager.setEditItem(this.listManager.selectedItem);
   }
 }

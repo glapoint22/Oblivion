@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ArrowListComponent } from './arrow-list.component';
+import { CheckboxItemComponent } from './checkbox-item.component';
 
-describe('ArrowListComponent', () => {
-  let component: ArrowListComponent;
-  let fixture: ComponentFixture<ArrowListComponent>;
+describe('CheckboxItemComponent', () => {
+  let component: CheckboxItemComponent;
+  let fixture: ComponentFixture<CheckboxItemComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ArrowListComponent ]
+      declarations: [ CheckboxItemComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ArrowListComponent);
+    fixture = TestBed.createComponent(CheckboxItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

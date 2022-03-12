@@ -24,6 +24,11 @@ export class ListManager {
   addDisabled: boolean = false;
   editDisabled: boolean = true;
   deleteDisabled: boolean = true;
+  editable: boolean = false;
+  selectable: boolean = true;
+  unselectable: boolean = true;
+  deletable: boolean = true;
+  multiselectable: boolean = true;
   onListUpdate = new Subject<ListUpdate>();
 
 
@@ -65,10 +70,10 @@ export class ListManager {
     if (e.key === 'ArrowUp') this.arrowUp();
     if (e.key === 'ArrowDown') this.arrowDown();
 
-    // if (thisOptions == null || thisOptions.multiSelect == null || thisOptions.multiSelect) {
-    if (e.key === 'Control') this.ctrlKeyDown = true;
-    if (e.key === 'Shift') this.shiftKeyDown = true;
-    // }
+    if (this.multiselectable) {
+      if (e.key === 'Control') this.ctrlKeyDown = true;
+      if (e.key === 'Shift') this.shiftKeyDown = true;
+    }
 
     // ****** Add shortcut key functionality here i.e ctrl + e ******
   }
@@ -118,7 +123,7 @@ export class ListManager {
     } else {
 
       // Then remove all listeners and selections
-      this.removeEventListeners();
+      if (this.unselectable) this.removeEventListeners();
     }
   }
 
@@ -174,7 +179,9 @@ export class ListManager {
             && !this.preventUnselectionFromRightMousedown) {
             // If a list item is NOT being deleted and there is no right mouse down event on a list item,
             // then remove all listeners and selections
-            this.removeEventListeners();
+
+            if (this.unselectable) this.removeEventListeners();
+
           }
           // If a right mouse down event prevented the selections and listeners from being removed,
           // then we can reset this back to false, because it alreday served its purpose
@@ -184,12 +191,10 @@ export class ListManager {
           // let it be known that item deletion is no longer pending
           this.itemDeletionPending = false;
         }
-
-
       }
 
       // But if we are clicking on an icon button and an item is in edit mode
-      if (this.overButton) {
+      if (this.overButton || !this.unselectable) {
         // Send the focus right back to the item that is in edit mode
         this.setItemFocus(listItem)
       }
@@ -229,7 +234,7 @@ export class ListManager {
     }
 
     // As long as we're not right clicking on an item that's already selected
-    if (!this.preventUnselectionFromRightMousedown) {
+    if (!this.preventUnselectionFromRightMousedown && this.selectable) {
       window.setTimeout(() => {
         this.currentFocusedItem = document.activeElement!;
         this.setItemSelection(listItem);
@@ -409,9 +414,12 @@ export class ListManager {
     if (listItem.selected) {
 
       // Set that item as unselected
-      listItem.selected = false;
-      this.unselectedItem = listItem;
-      this.selectedItem = null!;
+      if (this.unselectable) {
+        listItem.selected = false;
+        this.unselectedItem = listItem;
+        this.selectedItem = null!;
+      }
+
 
       // If the item we are pressing down on is NOT yet selected
     } else {
@@ -466,9 +474,26 @@ export class ListManager {
     })
 
 
-    window.setTimeout(() => {
-      this.selectItem(listItem);
-    });
+
+
+    if (!this.editable) {
+
+      window.setTimeout(() => {
+        this.selectItem(listItem);
+      });
+
+
+    } else {
+
+      this.newItem = true;
+      this.overButton = false;
+      this.selectedItem = null!;
+      this.unselectedItem = null!;
+      this.editableItem = listItem;
+      this.setItemFocus(this.editableItem);
+      this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
+    }
+
   }
 
 
@@ -482,6 +507,38 @@ export class ListManager {
       this.setItemFocus(this.selectedItem);
     })
   }
+
+
+
+
+
+
+  setEditItem(listItem: ListItem) {
+    if (listItem && this.editable) {
+      this.addEventListeners();
+      this.overButton = false;
+      this.editableItem = listItem;
+      this.selectedItem = null!;
+
+      this.sourceList.forEach(x => {
+        if (x.selected) x.selected = false;
+        if (x.selectType) x.selectType = null!;
+      })
+      this.setItemFocus(this.editableItem);
+      this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
+    }
+  }
+
+
+
+  onItemDoubleClick(listItem: ListItem) {
+    if (!this.shiftKeyDown && !this.ctrlKeyDown) {
+      this.setEditItem(listItem);
+    }
+  }
+
+
+
 
 
   getDeletedItems(selectedItems: Array<ListItem>): Array<ListItem> {
@@ -515,7 +572,7 @@ export class ListManager {
 
   setDeleteItem() {
     // If an item is selected
-    if (this.sourceList.filter(x => x.selected).length > 0) {
+    if (this.sourceList.filter(x => x.selected).length > 0 && this.deletable) {
       // Mark as deletion pending
       this.itemDeletionPending = true;
       // Gather all the selected items
@@ -588,7 +645,7 @@ export class ListManager {
     } else {
 
       // Then remove all listeners and selections
-      this.removeEventListeners();
+      if (this.unselectable) this.removeEventListeners();
     }
 
     this.setAddEditDelete();
@@ -657,7 +714,6 @@ export class ListManager {
             // Reset the item back to the way it was before the edit
             htmlEditedItem.textContent = this.editableItem.name!;
           }
-          this.selectedItem = this.editableItem;
         }
 
         // If we did NOT press the (Escape) key
@@ -672,8 +728,11 @@ export class ListManager {
         }
       }
       this.newItem = false;
-      this.selectedItem = this.editableItem;
-      this.selectedItem.selected = true;
+      if (this.selectable) {
+        this.selectedItem = this.editableItem;
+        this.selectedItem.selected = true;
+      }
+
       this.editableItem = null!;
 
       // But if the item is empty
@@ -695,7 +754,7 @@ export class ListManager {
           // Reset the item back to the way it was before the edit
           htmlEditedItem.textContent = this.editableItem.name;
 
-          this.selectedItem = this.editableItem;
+          if (this.selectable) this.selectedItem = this.editableItem;
         }
 
         // Reset

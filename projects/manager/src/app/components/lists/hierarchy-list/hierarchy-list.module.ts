@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ArrowListComponent } from './arrow-list.component';
+import { HierarchyListComponent } from './hierarchy-list.component';
 import { HierarchyItemModule } from '../../items/hierarchy-item/hierarchy-item.module';
 
 
 
 @NgModule({
-  declarations: [ArrowListComponent],
+  declarations: [HierarchyListComponent],
   imports: [
     CommonModule,
     HierarchyItemModule
   ],
-  exports: [ArrowListComponent]
+  exports: [HierarchyListComponent]
 })
-export class ArrowListModule { }
+export class HierarchyListModule { }

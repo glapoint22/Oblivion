@@ -1,20 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HierarchyComponent } from './hierarchy.component';
 
-import { EditableHierarchyComponent } from './editable-hierarchy.component';
-
-describe('EditableHierarchyComponent', () => {
-  let component: EditableHierarchyComponent;
-  let fixture: ComponentFixture<EditableHierarchyComponent>;
+describe('HierarchyComponent', () => {
+  let component: HierarchyComponent;
+  let fixture: ComponentFixture<HierarchyComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EditableHierarchyComponent ]
+      declarations: [ HierarchyComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditableHierarchyComponent);
+    fixture = TestBed.createComponent(HierarchyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
