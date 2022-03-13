@@ -33,9 +33,4 @@ export class NicheHierarchyComponent {
       // console.log(v.hasChildren)
     }
   }
-
-
-
-
-
 }

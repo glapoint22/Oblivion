@@ -24,7 +24,7 @@ export class ListManager {
   addDisabled: boolean = false;
   editDisabled: boolean = true;
   deleteDisabled: boolean = true;
-  editable: boolean = true;
+  editable: boolean = false;
   selectable: boolean = true;
   unselectable: boolean = true;
   deletable: boolean = true;
