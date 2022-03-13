@@ -1,0 +1,6 @@
+<ng-container *ngFor="let hierarchyItem of sourceList">
+    <ng-container *ngIf="!hierarchyItem.hidden">
+        <hierarchy-item *ngIf="listManager.hasChildren(hierarchyItem) || hierarchyItem.hierarchyGroupID == 0 || hierarchyItem.isParent" [id]="hierarchyItem.id" [listManager]="listManager"></hierarchy-item>
+        <checkbox-item *ngIf="!listManager.hasChildren(hierarchyItem) && hierarchyItem.hierarchyGroupID != 0 && !hierarchyItem.isParent" [id]="hierarchyItem.id" [listManager]="listManager"></checkbox-item>
+    </ng-container>
+</ng-container>

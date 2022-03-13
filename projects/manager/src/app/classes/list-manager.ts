@@ -24,7 +24,7 @@ export class ListManager {
   addDisabled: boolean = false;
   editDisabled: boolean = true;
   deleteDisabled: boolean = true;
-  editable: boolean = false;
+  editable: boolean = true;
   selectable: boolean = true;
   unselectable: boolean = true;
   deletable: boolean = true;
@@ -67,6 +67,7 @@ export class ListManager {
   keydown(e: KeyboardEvent) {
     if (e.key === 'Delete') this.setDeleteItem(); // thisOptions.onDeleteItem.apply(thisOptions.currentObj);
     if (e.key === 'Escape') this.escape();
+    if (e.key === 'Enter') this.enter(e);
     if (e.key === 'ArrowUp') this.arrowUp();
     if (e.key === 'ArrowDown') this.arrowDown();
 
@@ -732,7 +733,7 @@ export class ListManager {
         this.selectedItem = this.editableItem;
         this.selectedItem.selected = true;
       }
-
+      
       this.editableItem = null!;
 
       // But if the item is empty
@@ -764,7 +765,7 @@ export class ListManager {
     }
   }
 
-
+  
   sort(listItem?: ListItem) {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
   }

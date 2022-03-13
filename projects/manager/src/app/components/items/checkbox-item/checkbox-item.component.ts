@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CheckboxListManager } from '../../../classes/checkbox-list-manager';
+import { CheckboxHierarchyManager } from '../../../classes/checkbox-hierarchy-manager';
 import { ListItemComponent } from '../list-item/list-item.component';
 
 @Component({
@@ -8,5 +8,5 @@ import { ListItemComponent } from '../list-item/list-item.component';
   styleUrls: ['../list-item/list-item.component.scss', './checkbox-item.component.scss']
 })
 export class CheckboxItemComponent extends ListItemComponent {
-  @Input() listManager!: CheckboxListManager;
+  @Input() listManager!: CheckboxHierarchyManager;
 }

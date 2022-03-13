@@ -40,7 +40,16 @@ export class HierarchyManager extends ListManager {
     onArrowClick(hierarchyItem: HierarchyItem) {
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
         this.showHide(this.sourceList.findIndex(x => x.id == hierarchyItem.id));
-        this.onListUpdate.next({ type: ListUpdateType.ArrowClicked, id: hierarchyItem.id, index: this.sourceList.indexOf(hierarchyItem), name: hierarchyItem.name, arrowDown: hierarchyItem.arrowDown, addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
+        this.onListUpdate.next({ type: ListUpdateType.ArrowClicked,
+                                 id: hierarchyItem.id,
+                                 index: this.sourceList.indexOf(hierarchyItem),
+                                 name: hierarchyItem.name,
+                                 arrowDown: hierarchyItem.arrowDown,
+                                 addDisabled: this.addDisabled,
+                                 editDisabled: this.editDisabled,
+                                 deleteDisabled: this.deleteDisabled,
+                                 hasChildren: this.hasChildren(hierarchyItem)
+                                });
     }
 
 

@@ -26,7 +26,11 @@ export class NicheHierarchyComponent {
     }
 
     if (v.type == ListUpdateType.Delete) {
-      console.log(v.deletedItems)
+      // console.log(v.deletedItems)
+    }
+
+    if (v.type == ListUpdateType.ArrowClicked) {
+      // console.log(v.hasChildren)
     }
   }
 

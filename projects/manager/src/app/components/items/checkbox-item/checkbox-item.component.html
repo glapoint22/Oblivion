@@ -1,11 +1,18 @@
 <div class="item-container">
 
-    <label *ngIf="listManager.editableItem != null" class="checkbox disabled-checkbox">
-        <input class="disabled-input"
-               type="checkbox"
-               [checked]="listManager.getItem(this).isChecked">
-        <span class="disabled-checkmark"></span>
-    </label>
+    <ng-container *ngIf="listManager.editableItem != null">
+
+        <div [style.width.px]="listManager.getItem(this).hierarchyGroupID ? (listManager.getItem(this).hierarchyGroupID! * 35) + 10 : 0"></div>
+
+        <label class="checkbox disabled-checkbox">
+            
+            <input class="disabled-input"
+                type="checkbox"
+                [checked]="listManager.getItem(this).isChecked">
+            <span class="disabled-checkmark"></span>
+        </label>
+
+    </ng-container>
 
     <div #htmlItem
          class="item"
@@ -24,14 +31,23 @@
                 'selected-item-middle': listManager.getItem(this).selectType == listManager.SelectType.Middle,
                 'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom}">
 
-        <label *ngIf="listManager.editableItem == null" class="checkbox" (mouseover)="listManager.overButton = true" (mouseout)="listManager.overButton = false">
-            <input type="checkbox"
-                    [checked]="listManager.getItem(this).isChecked"
-                    (change)="listManager.selectable ? listManager.onCheckboxChange(listManager.getItem(this)) : null"
-                    [disabled] = "!listManager.selectable"
-                    >
-            <span class="checkmark"></span>
-        </label>
+
+        <ng-container *ngIf="listManager.editableItem == null">
+
+            <div [style.width.px]="listManager.getItem(this).hierarchyGroupID ? listManager.getItem(this).hierarchyGroupID! * 35 : 0"></div>
+
+            <label class="checkbox"
+                   (mouseover)="listManager.overButton = true"
+                   (mouseout)="listManager.overButton = false">
+
+                <input type="checkbox"
+                        [checked]="listManager.getItem(this).isChecked"
+                        (change)="listManager.selectable ? listManager.onCheckboxChange(listManager.getItem(this)) : null"
+                        [disabled] = "!listManager.selectable">
+                <span class="checkmark"></span>
+            </label>
+
+        </ng-container>
         {{listManager.getItem(this).name}}
     </div>
 </div>

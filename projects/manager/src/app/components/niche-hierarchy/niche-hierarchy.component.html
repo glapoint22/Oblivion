@@ -40,7 +40,8 @@
             </div>
         </div>
         
-        <hierarchy #hierarchy [sourceList]="niches" (onListUpdate)="listUpdate = $event"></hierarchy>
+        <!-- <hierarchy #hierarchy [sourceList]="niches" (onListUpdate)="listUpdate = $event"></hierarchy> -->
+        <checkbox-hierarchy #hierarchy [sourceList]="niches" (onListUpdate)="listUpdate = $event"></checkbox-hierarchy>
     </div>
 
     

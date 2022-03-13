@@ -76,7 +76,6 @@ export class ListComponent implements OnInit {
       // Editable
     } else {
 
-
       this.sourceList.unshift({ id: -1, name: '' });
 
       window.setTimeout(() => {

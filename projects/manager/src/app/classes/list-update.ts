@@ -12,4 +12,5 @@ export class ListUpdate {
   deleteDisabled?: boolean;
   isChecked?: boolean;
   arrowDown?: boolean;
+  hasChildren?: boolean;
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NicheHierarchyComponent } from './niche-hierarchy.component';
 import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
+import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
 
 
 
@@ -9,7 +10,8 @@ import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
   declarations: [NicheHierarchyComponent],
   imports: [
     CommonModule,
-    HierarchyModule
+    HierarchyModule,
+    CheckboxHierarchyModule
   ],
   exports: [NicheHierarchyComponent]
 })
