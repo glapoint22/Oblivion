@@ -4,6 +4,8 @@ import { ItemSelectType, ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
+import { LazyLoadingService, SpinnerAction } from 'common';
+import { ContextMenuComponent } from "../components/context-menu/context-menu.component";
 
 export class ListManager {
   sourceList!: Array<ListItem>;
@@ -30,6 +32,11 @@ export class ListManager {
   deletable: boolean = true;
   multiselectable: boolean = true;
   onListUpdate = new Subject<ListUpdate>();
+
+  contextMenu!: ContextMenuComponent
+
+
+  constructor(public lazyLoadingService: LazyLoadingService) { }
 
 
   getItem(itemComponent: ListItemComponent): ListItem {
@@ -214,13 +221,35 @@ export class ListManager {
   }
 
 
+  async openContextMenu(e: MouseEvent) {
+    this.lazyLoadingService.load(async () => {
+      const { ContextMenuComponent } = await import('../components/context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../components/context-menu/context-menu.module');
+
+      
+
+      return {
+        component: ContextMenuComponent,
+        module: ContextMenuModule
+      }
+    }, SpinnerAction.None).then((contextMenu: ContextMenuComponent)=> {
+      this.contextMenu = contextMenu;
+      contextMenu.xPos = e.clientX;
+      contextMenu.yPos = e.clientY;
+    });
+  }
+
+
   onItemComponentMousedown(listItem: ListItem, e?: MouseEvent) {
+    if(this.contextMenu) this.contextMenu.container.clear();
 
     // Initialize
     this.preventUnselectionFromRightMousedown = false;
 
     // If this item is being selected from a right mouse down
     if (e != null && e.button == 2) {
+
+      this.openContextMenu(e);
 
       // Check to see if this item is already selected
       if (listItem.selected) {
@@ -733,7 +762,7 @@ export class ListManager {
         this.selectedItem = this.editableItem;
         this.selectedItem.selected = true;
       }
-      
+
       this.editableItem = null!;
 
       // But if the item is empty
@@ -765,7 +794,7 @@ export class ListManager {
     }
   }
 
-  
+
   sort(listItem?: ListItem) {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
   }

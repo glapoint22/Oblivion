@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { LazyLoadingService } from 'common';
 import { HierarchyItem } from '../../../classes/hierarchy-item';
 import { HierarchyManager } from '../../../classes/hierarchy-manager';
 import { ListComponent } from '../../lists/list/list.component';
@@ -12,8 +13,12 @@ export class HierarchyComponent extends ListComponent {
   public listManager!: HierarchyManager;
   @Input() sourceList!: Array<HierarchyItem>;
 
+  constructor(lazyLoadingService: LazyLoadingService) {
+    super(lazyLoadingService)
+  }
+
   instantiate() {
-    this.listManager = new HierarchyManager();
+    this.listManager = new HierarchyManager(this.lazyLoadingService);
   }
 
 

@@ -3,6 +3,7 @@ import { ListManager } from '../../../classes/list-manager';
 import { ListItem } from '../../../classes/list-item';
 import { ListOptions } from '../../../classes/list-options';
 import { ListUpdate } from '../../../classes/list-update';
+import { LazyLoadingService } from 'common';
 
 @Component({
   selector: 'list',
@@ -14,6 +15,8 @@ export class ListComponent implements OnInit {
   public options: ListOptions = new ListOptions();
   @Input() sourceList!: Array<ListItem>;
   @Output() onListUpdate: EventEmitter<ListUpdate> = new EventEmitter();
+
+  constructor(public lazyLoadingService: LazyLoadingService) {}
 
 
   private _overButton!: boolean;
@@ -28,7 +31,7 @@ export class ListComponent implements OnInit {
 
 
   instantiate() {
-    this.listManager = new ListManager();
+    this.listManager = new ListManager(this.lazyLoadingService);
   }
 
 
