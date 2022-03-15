@@ -1,11 +1,10 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { ItemSelectType } from '../../../classes/enums';
 import { ListManager } from '../../../classes/list-manager';
 
 @Component({
   selector: 'list-item',
   templateUrl: './list-item.component.html',
-  styleUrls: ['./list-item.component.scss']
+  styleUrls: ['../list-item/list-item.component.scss']
 })
 export class ListItemComponent {
   @Input() id!: number;
@@ -16,6 +15,5 @@ export class ListItemComponent {
     window.setTimeout(()=> {
       this.listManager.getItem(this).htmlItem = this.htmlItem;
     })
-    
   }
-}
+ }

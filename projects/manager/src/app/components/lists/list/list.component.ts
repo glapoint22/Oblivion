@@ -3,6 +3,7 @@ import { ListManager } from '../../../classes/list-manager';
 import { ListItem } from '../../../classes/list-item';
 import { ListOptions } from '../../../classes/list-options';
 import { ListUpdate } from '../../../classes/list-update';
+import { LazyLoadingService } from 'common';
 
 @Component({
   selector: 'list',
@@ -15,27 +16,34 @@ export class ListComponent implements OnInit {
   @Input() sourceList!: Array<ListItem>;
   @Output() onListUpdate: EventEmitter<ListUpdate> = new EventEmitter();
 
-  
-  private _overButton! : boolean;
-  public get overButton() : boolean {
+  constructor(public lazyLoadingService: LazyLoadingService) {}
+
+
+  private _overButton!: boolean;
+  public get overButton(): boolean {
     return this._overButton;
   }
-  public set overButton(v : boolean) {
+  public set overButton(v: boolean) {
     this._overButton = v;
     this.listManager.overButton = v;
   }
-  
+
 
 
   instantiate() {
-    this.listManager = new ListManager();
+    this.listManager = new ListManager(this.lazyLoadingService);
   }
 
 
   ngOnInit(): void {
     this.instantiate();
+
     this.listManager.sourceList = this.sourceList;
-    this.listManager.options = this.options = {addDisabled: false, editDisabled: true, deleteDisabled: true};
+    if (this.options.editable != null) this.listManager.editable = this.options.editable;
+    if (this.options.selectable != null) this.listManager.selectable = this.options.selectable;
+    if (this.options.unselectable != null) this.listManager.unselectable = this.options.unselectable;
+    if (this.options.deletable != null) this.listManager.deletable = this.options.deletable;
+    if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
 
     this.listManager.onListUpdate.subscribe((listUpdate) => {
       this.onListUpdate.emit(listUpdate);
@@ -46,28 +54,53 @@ export class ListComponent implements OnInit {
 
   ngAfterViewInit() {
     window.setTimeout(() => {
-      this.listManager.onListUpdate.next({ addDisabled: this.options.addDisabled, editDisabled: this.options.editDisabled, deleteDisabled: this.options.deleteDisabled });
+      this.listManager.onListUpdate.next({ addDisabled: this.listManager.addDisabled, editDisabled: this.listManager.editDisabled, deleteDisabled: this.listManager.deleteDisabled });
     })
   }
 
 
 
-  addItem(id?: number, name?: string) {
-    // Add the new item to the source list
-    this.sourceList.push({ id: id!, name: name! });
+  add(id?: number, name?: string) {
 
-    // Sort the list
-    this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+    // NOT Editable
+    if(!this.listManager.editable) {
 
-    window.setTimeout(() => {
-      this.listManager.setAddItem(this.sourceList.find(x => x.id == id)!);
-    })
+      // Add the new item to the source list
+      this.sourceList.push({ id: id!, name: name! });
+
+      // Sort the list
+      this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+
+      window.setTimeout(() => {
+        this.listManager.setAddItem(this.sourceList.find(x => x.id == id)!);
+      })
+
+
+      // Editable
+    } else {
+
+      this.sourceList.unshift({ id: -1, name: '' });
+
+      window.setTimeout(() => {
+        this.listManager.setAddItem(this.sourceList[0]);
+      })
+    }
   }
 
 
 
 
-  deleteItem() {
+  delete() {
     this.listManager.setDeleteItem();
+  }
+
+
+
+
+
+
+
+  edit() {
+    this.listManager.setEditItem(this.listManager.selectedItem);
   }
 }

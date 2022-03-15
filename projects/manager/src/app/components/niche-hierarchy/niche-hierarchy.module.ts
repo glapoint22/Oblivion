@@ -1,15 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NicheHierarchyComponent } from './niche-hierarchy.component';
-import { EditableHierarchyModule } from '../hierarchies/editable-hierarchy/editable-hierarchy.module';
-
+import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
 
 
 @NgModule({
   declarations: [NicheHierarchyComponent],
   imports: [
     CommonModule,
-    EditableHierarchyModule
+    HierarchyModule
   ],
   exports: [NicheHierarchyComponent]
 })

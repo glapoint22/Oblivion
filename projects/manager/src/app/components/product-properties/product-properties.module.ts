@@ -17,12 +17,9 @@ import { ProductKeywordsPropertyComponent } from './product-keywords-property/pr
 import { ProductGroupsPropertyComponent } from './product-groups-property/product-groups-property.component';
 import { PanelModule } from '../panel/panel.module';
 import { ImageBoxModule } from '../image-box/image-box.module';
-import { ListModule } from '../lists/list/list.module';
-import { EditableListModule } from '../lists/editable-list/editable-list.module';
 import { CheckboxListModule } from '../lists/checkbox-list/checkbox-list.module';
-import { EditableCheckboxListModule } from '../lists/editable-checkbox-list/editable-checkbox-list.module';
-import { EditableArrowListModule } from '../lists/editable-arrow-list/editable-arrow-list.module';
-import { ArrowListModule } from '../lists/arrow-list/arrow-list.module';
+import { HierarchyListModule } from '../lists/hierarchy-list/hierarchy-list.module';
+import { ListModule } from '../lists/list/list.module';
 
 
 @NgModule({
@@ -48,11 +45,8 @@ import { ArrowListModule } from '../lists/arrow-list/arrow-list.module';
     PanelModule,
     ImageBoxModule,
     ListModule,
-    EditableListModule,
     CheckboxListModule,
-    EditableCheckboxListModule,
-    EditableArrowListModule,
-    ArrowListModule
+    HierarchyListModule
   ],
   exports: [ProductPropertiesComponent]
 })

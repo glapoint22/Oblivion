@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewContainerRef } from '@angular/core';
+import { LazyLoadingService } from 'common';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  constructor(private container: ViewContainerRef, public lazyLoadingService: LazyLoadingService) {
+    
+  }
   
+
+  ngOnInit() {
+    this.lazyLoadingService.container = this.container;
+  }
 }

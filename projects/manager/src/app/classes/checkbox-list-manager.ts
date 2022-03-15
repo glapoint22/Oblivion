@@ -1,26 +1,27 @@
-import { CheckboxListItemComponent } from "../components/items/checkbox-list-item/checkbox-list-item.component";
+import { CheckboxHierarchyManager } from "./checkbox-hierarchy-manager";
 import { CheckboxListItem } from "./checkbox-list-item";
-import { ListUpdateType } from "./enums";
-import { ListManager } from "./list-manager";
 
-export class CheckboxListManager extends ListManager {
+export class CheckboxListManager extends CheckboxHierarchyManager {
 
-    getItem(item: CheckboxListItemComponent): CheckboxListItem {
-        const listItem: CheckboxListItem = this.sourceList.find(x => x.id == item.id) as CheckboxListItem;
-        return listItem;
-    }
+    sort(listItem: CheckboxListItem) {
+        // Sort
+        this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
 
-    onCheckboxChange(listItem: CheckboxListItem) {
-        listItem.isChecked = !listItem.isChecked;
-        this.onListUpdate.next({
-            type: ListUpdateType.CheckboxChange,
-            id: listItem.id,
-            index: this.sourceList.indexOf(listItem),
-            name: listItem.name,
-            isChecked: listItem.isChecked,
-            addDisabled: true,
-            editDisabled: true,
-            deleteDisabled: true
-        });
+        // If a new item is being added to the list
+        if (this.newItem) {
+            // Get the index of where the sorted item now resides
+            const listItemIndex = this.sourceList.findIndex(x => x.id == listItem?.id);
+
+            // Remove the new item because the checkbox appears to the right of the list name
+            this.sourceList.splice(listItemIndex, 1);
+
+            // Re-add the item to the list
+            this.sourceList.splice(listItemIndex, 0, { id: listItem.id, name: listItem.name });
+
+            // And because we removed the new list item, we lost our event listeners, so we have to put them back
+            window.setTimeout(() => {
+                this.addEventListeners();
+            }, 35)
+        }
     }
 }

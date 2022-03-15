@@ -13,7 +13,7 @@
                         [ngClass]="{'icon-button-disabled': listUpdate.deleteDisabled}"
                         (mouseover)="hierarchy.overButton = true"
                         (mouseout)="hierarchy.overButton = false"
-                        (click)="hierarchy.deleteItem()"
+                        (click)="hierarchy.delete()"
                         [disabled]="listUpdate.deleteDisabled">
                     <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
                 </button>
@@ -23,7 +23,7 @@
                         [ngClass]="{'icon-button-disabled': listUpdate.editDisabled}"
                         (mouseover)="hierarchy.overButton = true"
                         (mouseout)="hierarchy.overButton = false"
-                        (click)="hierarchy.editItem()"
+                        (click)="hierarchy.edit()"
                         [disabled]="listUpdate.editDisabled">
                     <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
                 </button>
@@ -33,15 +33,13 @@
                         [ngClass]="{'icon-button-disabled': listUpdate.addDisabled}"
                         (mouseover)="hierarchy.overButton = true"
                         (mouseout)="hierarchy.overButton = false"
-                        (click)="hierarchy.addItem(isParent)"
+                        (click)="hierarchy.add(isParent)"
                         [disabled]="listUpdate.addDisabled">
                     <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
                 </button>
             </div>
         </div>
         
-        <editable-hierarchy #hierarchy [sourceList]="niches" (onListUpdate)="listUpdate = $event"></editable-hierarchy>
+        <hierarchy #hierarchy [sourceList]="niches" (onListUpdate)="listUpdate = $event"></hierarchy>
     </div>
-
-    
 </div>
