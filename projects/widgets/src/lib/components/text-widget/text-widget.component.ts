@@ -168,8 +168,85 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
             nodeType: NodeType.Li,
             children: [
               {
-                nodeType: NodeType.Text,
-                text: 'Alita'
+                nodeType: NodeType.Span,
+                styles: [
+                  {
+                    style: 'color',
+                    value: '#00ff00'
+                  }
+                ],
+                children: [
+                  {
+                    nodeType: NodeType.Text,
+                    text: 'A'
+                  },
+                  {
+                    nodeType: NodeType.Span,
+                    styles: [
+                      {
+                        style: 'color',
+                        value: '#ff0000'
+                      }
+                    ],
+                    children: [
+                      {
+                        nodeType: NodeType.Text,
+                        text: 'l'
+                      },
+
+
+
+                      {
+                        nodeType: NodeType.Span,
+                        styles: [
+                          {
+                            style: 'color',
+                            value: '#0000ff'
+                          }
+                        ],
+                        children: [
+                          {
+                            nodeType: NodeType.Text,
+                            text: 'i'
+                          },
+                          {
+                            nodeType: NodeType.Span,
+                            styles: [
+                              {
+                                style: 'color',
+                                value: '#ff00ff'
+                              }
+                            ],
+                            children: [
+                              {
+                                nodeType: NodeType.Text,
+                                text: 't'
+                              },
+                              {
+                                nodeType: NodeType.Span,
+                                styles: [
+                                  {
+                                    style: 'color',
+                                    value: '#00ffff'
+                                  }
+                                ],
+                                children: [
+                                  {
+                                    nodeType: NodeType.Text,
+                                    text: 'a!'
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+
+
+
+                    ]
+                  }
+                ]
               }
             ]
           },
@@ -177,8 +254,19 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
             nodeType: NodeType.Li,
             children: [
               {
-                nodeType: NodeType.Text,
-                text: 'Battle'
+                nodeType: NodeType.Span,
+                styles: [
+                  {
+                    style: 'color',
+                    value: '#ffff00'
+                  }
+                ],
+                children: [
+                  {
+                    nodeType: NodeType.Text,
+                    text: 'Battle'
+                  }
+                ]
               }
             ]
           },
@@ -186,18 +274,51 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
             nodeType: NodeType.Li,
             children: [
               {
-                nodeType: NodeType.Text,
-                text: 'Angel'
+                nodeType: NodeType.Ol,
+                children: [
+                  {
+                    nodeType: NodeType.Li,
+                    children: [
+                      {
+                        nodeType: NodeType.Span,
+                        styles: [
+                          {
+                            style: 'font-weight',
+                            value: 'bold'
+                          }
+                        ],
+                        children: [
+                          {
+                            nodeType: NodeType.Text,
+                            text: 'Trumpy'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    nodeType: NodeType.Li,
+                    children: [
+                      {
+                        nodeType: NodeType.Span,
+                        styles: [
+                          {
+                            style: 'color',
+                            value: '#ff0000'
+                          }
+                        ],
+                        children: [
+                          {
+                            nodeType: NodeType.Text,
+                            text: 'Alita'
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
-          }
-        ]
-      },
-      {
-        nodeType: NodeType.Div,
-        children: [
-          {
-            nodeType: NodeType.Br
           }
         ]
       },
@@ -206,7 +327,91 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
         children: [
           {
             nodeType: NodeType.Text,
-            text: 'Hello'
+            text: 'MAGA!'
+          }
+        ]
+      },
+      {
+        nodeType: NodeType.Div,
+        children: [
+          {
+            nodeType: NodeType.Span,
+            styles: [
+              {
+                style: 'color',
+                value: '#ff0000'
+              }
+            ],
+            children: [
+              {
+                nodeType: NodeType.Text,
+                text: 'H'
+              }
+            ]
+          },
+
+          {
+            nodeType: NodeType.Span,
+            styles: [
+              {
+                style: 'color',
+                value: '#00ff00'
+              }
+            ],
+            children: [
+              {
+                nodeType: NodeType.Text,
+                text: 'e'
+              }
+            ]
+          },
+
+          {
+            nodeType: NodeType.Span,
+            styles: [
+              {
+                style: 'color',
+                value: '#0000ff'
+              }
+            ],
+            children: [
+              {
+                nodeType: NodeType.Text,
+                text: 'l'
+              }
+            ]
+          },
+
+          {
+            nodeType: NodeType.Span,
+            styles: [
+              {
+                style: 'color',
+                value: '#ff00ff'
+              }
+            ],
+            children: [
+              {
+                nodeType: NodeType.Text,
+                text: 'l'
+              }
+            ]
+          },
+
+          {
+            nodeType: NodeType.Span,
+            styles: [
+              {
+                style: 'color',
+                value: '#00ffff'
+              }
+            ],
+            children: [
+              {
+                nodeType: NodeType.Text,
+                text: 'o'
+              }
+            ]
           }
         ]
       },
@@ -244,8 +449,19 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
             nodeType: NodeType.Li,
             children: [
               {
-                nodeType: NodeType.Text,
-                text: 'Third Item'
+                nodeType: NodeType.Span,
+                styles: [
+                  {
+                    style: 'color',
+                    value: '#ff00ff'
+                  }
+                ],
+                children: [
+                  {
+                    nodeType: NodeType.Text,
+                    text: 'Third Item'
+                  }
+                ]
               }
             ]
           }
