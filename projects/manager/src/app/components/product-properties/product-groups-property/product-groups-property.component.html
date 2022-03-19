@@ -39,6 +39,6 @@
                 </button>
             </div>
         </div>
-        <list #list [sourceList]="productGroups" (onListUpdate)="listUpdate = $event"></list>
+        <list #list [sourceList]="productGroups" [options]="listOptions" (onListUpdate)="listUpdate = $event"></list>
     </div>
 </panel>

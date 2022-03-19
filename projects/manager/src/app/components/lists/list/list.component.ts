@@ -12,11 +12,10 @@ import { LazyLoadingService } from 'common';
 })
 export class ListComponent implements OnInit {
   public listManager!: ListManager;
-  public options: ListOptions = new ListOptions();
   @Input() sourceList!: Array<ListItem>;
+  @Input() options: ListOptions = new ListOptions();
   @Output() onListUpdate: EventEmitter<ListUpdate> = new EventEmitter();
-
-  constructor(public lazyLoadingService: LazyLoadingService) {}
+  constructor(public lazyLoadingService: LazyLoadingService) { }
 
 
   private _overButton!: boolean;
@@ -39,11 +38,9 @@ export class ListComponent implements OnInit {
     this.instantiate();
 
     this.listManager.sourceList = this.sourceList;
-    if (this.options.editable != null) this.listManager.editable = this.options.editable;
-    if (this.options.selectable != null) this.listManager.selectable = this.options.selectable;
-    if (this.options.unselectable != null) this.listManager.unselectable = this.options.unselectable;
-    if (this.options.deletable != null) this.listManager.deletable = this.options.deletable;
-    if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
+
+
+
 
     this.listManager.onListUpdate.subscribe((listUpdate) => {
       this.onListUpdate.emit(listUpdate);
@@ -53,7 +50,20 @@ export class ListComponent implements OnInit {
 
 
   ngAfterViewInit() {
+
     window.setTimeout(() => {
+
+
+      if (this.options) {
+        this.listManager.options = this.options;
+        if (this.options.editable != null) this.listManager.editable = this.options.editable;
+        if (this.options.selectable != null) this.listManager.selectable = this.options.selectable;
+        if (this.options.unselectable != null) this.listManager.unselectable = this.options.unselectable;
+        if (this.options.deletable != null) this.listManager.deletable = this.options.deletable;
+        if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
+      }
+
+
       this.listManager.onListUpdate.next({ addDisabled: this.listManager.addDisabled, editDisabled: this.listManager.editDisabled, deleteDisabled: this.listManager.deleteDisabled });
     })
   }
@@ -63,7 +73,7 @@ export class ListComponent implements OnInit {
   add(id?: number, name?: string) {
 
     // NOT Editable
-    if(!this.listManager.editable) {
+    if (!this.listManager.editable) {
 
       // Add the new item to the source list
       this.sourceList.push({ id: id!, name: name! });
@@ -88,19 +98,18 @@ export class ListComponent implements OnInit {
   }
 
 
-
-
-  delete() {
-    this.listManager.setDeleteItem();
+  edit() {
+    this.listManager.setEditItem(this.listManager.selectedItem);
   }
 
 
 
+  delete() {
+    this.listManager.setDelete();
+  }
 
 
-
-
-  edit() {
-    this.listManager.setEditItem(this.listManager.selectedItem);
+  openPrompt() {
+    this.listManager.openPrompt();
   }
 }

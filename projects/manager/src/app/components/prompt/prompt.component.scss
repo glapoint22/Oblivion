@@ -1,0 +1,129 @@
+.backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.base {
+    width: 400px;
+    background: #1b1b1b;
+    border: 1px solid #2b2b2b;
+    border-radius: 7px;
+    user-select: none;
+}
+
+.header {
+    height: 30px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    color: #d4d4d4;
+    background: linear-gradient(rgb(26, 26, 26), rgb(16, 16, 16));
+}
+
+.x {
+    cursor: pointer;
+
+    &:hover {
+        color: white;
+    }
+}
+
+.drop-shadow {
+    height: 1px;
+    background: rgb(12, 12, 12);
+}
+
+.content {
+    padding: 12px 10px 10px;
+}
+
+
+.message {
+    padding-left: 10px;
+    margin-bottom: 40px;
+    font-size: 15px;
+    color: #c9c9c9;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.gold-button {
+    width: fit-content;
+    height: 30px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    padding: 1px 18px 0;
+    margin-left: 10px;
+    background: linear-gradient(#fedb7d, #c28f06);
+
+    &:hover {
+        background: linear-gradient(lighten(#fedb7d, 6), lighten(#c28f06, 6));
+    }
+
+    &:active {
+        background: linear-gradient(lighten(#fedb7d, 10), lighten(#c28f06, 10));
+    }
+}
+
+.dark-button {
+    width: fit-content;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #3d3d3d;
+    cursor: pointer;
+    background: #282828;
+    padding: 0 18px;
+    margin-left: 10px;
+    color: #b4b4b4;
+
+    &:hover {
+        background: lighten(#282828, 6);
+        border-color: lighten(#3d3d3d, 6);
+        color: lighten(#b4b4b4, 6);
+    }
+
+    &:active {
+        background: lighten(#282828, 10);
+        border-color: lighten(#3d3d3d, 10);
+        color: lighten(#b4b4b4, 10);
+    }
+}
+
+
+.purple-button {
+    width: fit-content;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #8a0077;
+    cursor: pointer;
+    background: #680059;
+    padding: 1px 18px 0;
+    color: #dadada;
+
+    &:hover {
+        background: lighten(#680059, 6);
+        border-color: lighten(#8a0077, 11);
+        color: lighten(#dadada, 6);
+    }
+
+    &:active {
+        background: lighten(#680059, 10);
+        border-color: lighten(#8a0077, 15);
+        color: lighten(#dadada, 10);
+    }
+}

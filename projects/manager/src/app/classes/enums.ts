@@ -28,6 +28,7 @@ export enum ListUpdateType {
     Add,
     Edit,
     Delete,
+    DeletePrompt,
     SelectedItem,
     CheckboxChange,
     ArrowClicked
@@ -43,4 +44,9 @@ export enum ButtonState {
 export enum SelectedElementOnDeletion {
     Previous,
     Next
+}
+
+export enum MenuOptionType {
+    MenuItem,
+    Divider
 }

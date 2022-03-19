@@ -6,6 +6,8 @@ import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { ContextMenuComponent } from "../components/context-menu/context-menu.component";
+import { MenuOption } from "./menu-option";
+import { PromptComponent } from "../components/prompt/prompt.component";
 
 export class ListManager {
   sourceList!: Array<ListItem>;
@@ -32,9 +34,9 @@ export class ListManager {
   deletable: boolean = true;
   multiselectable: boolean = true;
   onListUpdate = new Subject<ListUpdate>();
-
   contextMenu!: ContextMenuComponent
-
+  contextMenuOpen!: boolean;
+  deletePromptOpen!: boolean;
 
   constructor(public lazyLoadingService: LazyLoadingService) { }
 
@@ -57,12 +59,20 @@ export class ListManager {
 
 
   removeEventListeners() {
-    this.removeFocus();
-    this.eventListenersAdded = false;
-    window.removeEventListener('keyup', this.onKeyUp);
-    window.removeEventListener('keydown', this.onKeyDown);
-    // window.removeEventListener('mousedown', this.onMouseDown); // For context menu
-    window.removeEventListener('blur', this.onInnerWindowBlur);
+    if (this.contextMenu && this.contextMenu.container.length > 0) {
+      this.contextMenu.container.clear();
+      window.setTimeout(() => {
+        this.contextMenuOpen = false;
+      })
+      this.setItemFocus(this.selectedItem)
+    } else {
+      this.removeFocus();
+      this.eventListenersAdded = false;
+      window.removeEventListener('keyup', this.onKeyUp);
+      window.removeEventListener('keydown', this.onKeyDown);
+      // window.removeEventListener('mousedown', this.onMouseDown); // For context menu
+      window.removeEventListener('blur', this.onInnerWindowBlur);
+    }
   }
 
 
@@ -72,7 +82,7 @@ export class ListManager {
 
 
   keydown(e: KeyboardEvent) {
-    if (e.key === 'Delete') this.setDeleteItem(); // thisOptions.onDeleteItem.apply(thisOptions.currentObj);
+    if (e.key === 'Delete') this.setDelete(); // thisOptions.onDeleteItem.apply(thisOptions.currentObj);
     if (e.key === 'Escape') this.escape();
     if (e.key === 'Enter') this.enter(e);
     if (e.key === 'ArrowUp') this.arrowUp();
@@ -122,16 +132,18 @@ export class ListManager {
   onInnerWindowBlur = () => {
     // * When the focus gets set to something that is outside the inner-window * \\
 
-    // If a list item is being edited or added
-    if (this.editableItem != null) {
-      // Evaluate the state of the edit and then act accordingly
-      this.evaluateEdit();
+    if (!this.deletePromptOpen) {
+      // If a list item is being edited or added
+      if (this.editableItem != null) {
+        // Evaluate the state of the edit and then act accordingly
+        this.evaluateEdit();
 
-      // If a list item is NOT being edited
-    } else {
+        // If a list item is NOT being edited
+      } else {
 
-      // Then remove all listeners and selections
-      if (this.unselectable) this.removeEventListeners();
+        // Then remove all listeners and selections
+        if (this.unselectable) this.removeEventListeners();
+      }
     }
   }
 
@@ -139,7 +151,7 @@ export class ListManager {
   setItemFocus(listItem: ListItem) {
     window.setTimeout(() => {
 
-      // Set focus to the html item with the specified index
+      // Set focus to the html item of the list item
       if (listItem) listItem.htmlItem!.nativeElement.focus();
 
       if (listItem && listItem == this.editableItem) {
@@ -187,9 +199,7 @@ export class ListManager {
             && !this.preventUnselectionFromRightMousedown) {
             // If a list item is NOT being deleted and there is no right mouse down event on a list item,
             // then remove all listeners and selections
-
             if (this.unselectable) this.removeEventListeners();
-
           }
           // If a right mouse down event prevented the selections and listeners from being removed,
           // then we can reset this back to false, because it alreday served its purpose
@@ -207,41 +217,18 @@ export class ListManager {
         this.setItemFocus(listItem)
       }
 
-
-
-
       window.setTimeout(() => {
         if (this.editableItem == null) {
           this.setAddEditDelete();
         }
       }, 30)
-
-
     })
   }
 
 
-  async openContextMenu(e: MouseEvent) {
-    this.lazyLoadingService.load(async () => {
-      const { ContextMenuComponent } = await import('../components/context-menu/context-menu.component');
-      const { ContextMenuModule } = await import('../components/context-menu/context-menu.module');
-
-      
-
-      return {
-        component: ContextMenuComponent,
-        module: ContextMenuModule
-      }
-    }, SpinnerAction.None).then((contextMenu: ContextMenuComponent)=> {
-      this.contextMenu = contextMenu;
-      contextMenu.xPos = e.clientX;
-      contextMenu.yPos = e.clientY;
-    });
-  }
-
-
   onItemComponentMousedown(listItem: ListItem, e?: MouseEvent) {
-    if(this.contextMenu) this.contextMenu.container.clear();
+    if (this.contextMenu) this.contextMenu.container.clear();
+    this.contextMenuOpen = false;
 
     // Initialize
     this.preventUnselectionFromRightMousedown = false;
@@ -249,7 +236,7 @@ export class ListManager {
     // If this item is being selected from a right mouse down
     if (e != null && e.button == 2) {
 
-      this.openContextMenu(e);
+      if (this.options && this.options.menu) this.openContextMenu(e);
 
       // Check to see if this item is already selected
       if (listItem.selected) {
@@ -476,6 +463,17 @@ export class ListManager {
   }
 
 
+  selectItem(listItem: ListItem) {
+    window.setTimeout(() => {
+      listItem.selected = true;
+      this.selectedItem = listItem;
+      this.editableItem = null!;
+      this.unselectedItem = null!;
+      this.setItemFocus(this.selectedItem);
+    })
+  }
+
+
 
   removeFocus() {
     this.pivotItem = null!;
@@ -491,10 +489,6 @@ export class ListManager {
 
 
 
-
-
-
-
   setAddItem(listItem: ListItem) {
     this.addEventListeners();
 
@@ -502,9 +496,6 @@ export class ListManager {
       x.selected = false;
       x.selectType = null!;
     })
-
-
-
 
     if (!this.editable) {
 
@@ -528,20 +519,6 @@ export class ListManager {
 
 
 
-  selectItem(listItem: ListItem) {
-    window.setTimeout(() => {
-      listItem.selected = true;
-      this.selectedItem = listItem;
-      this.editableItem = null!;
-      this.unselectedItem = null!;
-      this.setItemFocus(this.selectedItem);
-    })
-  }
-
-
-
-
-
 
   setEditItem(listItem: ListItem) {
     if (listItem && this.editable) {
@@ -560,47 +537,38 @@ export class ListManager {
   }
 
 
+  setDelete() {
+    // If a delete prompt is being used with this list
+    if (this.options && this.options.deletePrompt) {
+      this.overButton = false;
+      this.itemDeletionPending = true;
 
-  onItemDoubleClick(listItem: ListItem) {
-    if (!this.shiftKeyDown && !this.ctrlKeyDown) {
-      this.setEditItem(listItem);
-    }
-  }
+      // If the delete prompt has NOT been opened yet
+      if (!this.deletePromptOpen) {
+        // Gather all the selected items
+        let selectedItems: Array<ListItem> = this.sourceList.filter(x => x.selected);
+        // Get all the items that are going to be deleted
+        let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
+        // Send the delete info back so it can be used for the prompt message
+        this.onListUpdate.next({ type: ListUpdateType.DeletePrompt, deletedItems: deletedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.id == x?.id), name: x.name } }) });
+        // Open the prompt
+        this.openPrompt();
 
-
-
-
-
-  getDeletedItems(selectedItems: Array<ListItem>): Array<ListItem> {
-    let deletedItems: Array<ListItem> = new Array<ListItem>();
-
-    // Loop through all the selected items
-    selectedItems.forEach(x => {
-      // Update the deleted items list with every item in the source list that has the same index as an item in the selected list
-      deletedItems.push(this.sourceList[this.sourceList.indexOf(x)]);
-    })
-    return deletedItems;
-  }
-
-
-  getNextSelectedItemAfterDelete(deletedItems?: Array<ListItem>): ListItem {
-    let nextSelectedItem!: ListItem;
-    const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
-
-    // Loop through the list of items starting with the item that follows the selected item
-    for (let i = selectedItemIndex + 1; i < this.sourceList.length; i++) {
-      // If we come across an item that is NOT selected
-      if (!this.sourceList[i].selected) {
-        // Make a copy of that item so that it can be used as the newly selected item when all the other items are deleted
-        nextSelectedItem = this.sourceList[i];
-        break;
+        // If the delete prompt is open, then delete the item(s)
+      } else {
+        this.delete();
       }
+
+      // If a delete prompt is NOT being used with this list, then just delete the item(s)
+    } else {
+      this.delete();
     }
-    return nextSelectedItem;
   }
 
 
-  setDeleteItem() {
+
+
+  delete() {
     // If an item is selected
     if (this.sourceList.filter(x => x.selected).length > 0 && this.deletable) {
       // Mark as deletion pending
@@ -613,7 +581,7 @@ export class ListManager {
       let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete(deletedItems);
 
       // Update the list
-      this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, name: x.name } }) });
+      this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.id == x?.id), name: x.name } }) });
 
       // Loop through all the deleted items
       deletedItems.forEach(() => {
@@ -663,22 +631,63 @@ export class ListManager {
   }
 
 
+  getDeletedItems(selectedItems: Array<ListItem>): Array<ListItem> {
+    let deletedItems: Array<ListItem> = new Array<ListItem>();
+
+    // Loop through all the selected items
+    selectedItems.forEach(x => {
+      // Update the deleted items list with every item in the source list that has the same index as an item in the selected list
+      deletedItems.push(this.sourceList[this.sourceList.indexOf(x)]);
+    })
+    return deletedItems;
+  }
+
+
+  getNextSelectedItemAfterDelete(deletedItems?: Array<ListItem>): ListItem {
+    let nextSelectedItem!: ListItem;
+    const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
+
+    // Loop through the list of items starting with the item that follows the selected item
+    for (let i = selectedItemIndex + 1; i < this.sourceList.length; i++) {
+      // If we come across an item that is NOT selected
+      if (!this.sourceList[i].selected) {
+        // Make a copy of that item so that it can be used as the newly selected item when all the other items are deleted
+        nextSelectedItem = this.sourceList[i];
+        break;
+      }
+    }
+    return nextSelectedItem;
+  }
+
+
+
+  onItemDoubleClick(listItem: ListItem) {
+    if (!this.shiftKeyDown && !this.ctrlKeyDown) {
+      this.setEditItem(listItem);
+    }
+  }
+
+
 
 
   escape() {
-    // If an item is being edited
-    if (this.editableItem != null) {
-      // Evaluate the state of the edit and then act accordingly
-      this.evaluateEdit(true);
+    if (!this.deletePromptOpen) {
 
-      // If an item is NOT being edited
-    } else {
+      // If an item is being edited
+      if (this.editableItem != null) {
+        // Evaluate the state of the edit and then act accordingly
+        this.evaluateEdit(true);
 
-      // Then remove all listeners and selections
-      if (this.unselectable) this.removeEventListeners();
+        // If an item is NOT being edited
+      } else {
+
+
+        // Then remove all listeners and selections
+        if (this.unselectable) this.removeEventListeners();
+      }
+
+      this.setAddEditDelete();
     }
-
-    this.setAddEditDelete();
   }
 
 
@@ -777,7 +786,6 @@ export class ListManager {
           // Remove the item
           this.sourceList.splice(this.sourceList.indexOf(this.editableItem), 1);
 
-
           // If we were NOT adding a new list item
         } else {
 
@@ -800,7 +808,7 @@ export class ListManager {
   }
 
 
-  updateList(listItem?: ListItem) {
+  updateList(listItem: ListItem) {
     const newItem = this.newItem;
 
     // Sort the source list
@@ -810,6 +818,63 @@ export class ListManager {
       const listItemIndex = this.sourceList.findIndex(x => x.id == listItem?.id);
       this.selectItem(this.sourceList[listItemIndex]);
       this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: listItem!.id, index: listItemIndex, name: listItem!.name });
+    })
+  }
+
+
+  async openContextMenu(e: MouseEvent) {
+    this.lazyLoadingService.load(async () => {
+      const { ContextMenuComponent } = await import('../components/context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../components/context-menu/context-menu.module');
+
+      return {
+        component: ContextMenuComponent,
+        module: ContextMenuModule
+      }
+    }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
+      this.contextMenu = contextMenu;
+      this.contextMenuOpen = true;
+      contextMenu.xPos = e.clientX;
+      contextMenu.yPos = e.clientY;
+      contextMenu.parentObj = this.options.menu?.parentObj!;
+      contextMenu.options = this.options.menu?.menuOptions!;
+      contextMenu.overMenu.subscribe((overMenu: boolean) => {
+        this.overButton = overMenu;
+      })
+    });
+  }
+
+
+  async openPrompt() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../components/prompt/prompt.component');
+      const { PromptModule } = await import('../components/prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      this.deletePromptOpen = true;
+
+      window.setTimeout(()=> {
+        this.contextMenuOpen = false;
+      })
+      
+
+      prompt.parentObj = this.options.deletePrompt?.parentObj!;
+      prompt.title = this.options.deletePrompt?.title!;
+      prompt.message = this.options.deletePrompt?.message!;
+      prompt.primaryButton = this.options.deletePrompt?.primaryButton!;
+      prompt.secondaryButton = this.options.deletePrompt?.secondaryButton!;
+      prompt.tertiaryButton = this.options.deletePrompt?.tertiaryButton!;
+      prompt.onClose.subscribe(() => {
+        // Wait a frame so escape key event knows the prompt is open
+        window.setTimeout(() => {
+          this.deletePromptOpen = false;
+        })
+        this.setItemFocus(this.selectedItem);
+      })
     })
   }
 }

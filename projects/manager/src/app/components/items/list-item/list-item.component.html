@@ -19,7 +19,8 @@
                     'selected-item-top': listManager.getItem(this).selectType == listManager.SelectType.Top,
                     'selected-item-all': listManager.getItem(this).selectType == listManager.SelectType.All,
                     'selected-item-middle': listManager.getItem(this).selectType == listManager.SelectType.Middle,
-                    'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom}">
+                    'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom,
+                    'no-hover': listManager.contextMenuOpen}">
 
         <div *ngIf="listManager.editableItem == null" [style.width.px]="listManager.getItem(this).hierarchyGroupID ? (listManager.getItem(this).hierarchyGroupID! * 35) + 22 : 0"></div>
 
