@@ -1,9 +1,16 @@
+import { NodeType } from "widgets";
+import { Range } from "./range";
 import { Element } from "./element";
 import { SelectedElement } from "./selected-element";
 
 export class SpanElement extends Element {
 
-    create(parent: HTMLElement): void {
+    constructor() {
+        super();
+        this.nodeType = NodeType.Span;
+    }
+
+    createHtml(parent: HTMLElement): void {
         const spanElement = document.createElement('span');
 
         this.setHtmlElement(spanElement, parent);
@@ -13,9 +20,9 @@ export class SpanElement extends Element {
 
     setSelectedElement(offset: number): SelectedElement {
         if (offset == 0) {
-            return this.getFirstTextElement().setSelectedElement(offset);
+            return this.getFirstChild().setSelectedElement(offset);
         } else {
-            return this.getLastTextElement().setSelectedElement(offset);
+            return this.getLastChild().setSelectedElement(offset);
         }
     }
 
@@ -24,11 +31,37 @@ export class SpanElement extends Element {
         let selectedElement!: SelectedElement;
 
         if (key == 'Delete') {
-            const element = this.getFirstTextElement();
+            const element = this.getFirstChild();
 
             selectedElement = element.onKeydown(key, offset);
         }
 
         return selectedElement;
     }
+
+
+    createElement(): Element {
+        return new SpanElement();
+    }
+
+
+    // copyElement(parent: Element, range?: CopyElementRange): Element | null {
+    //     if (range && range.topParentId == this.id) range.inRange = true;
+
+    //     if (!range || range.inRange) {
+    //         const spanElement = new SpanElement();
+
+    //         spanElement.parent = parent;
+    //         spanElement.styles = this.styles;
+    //         this.children.forEach((child: Element) => {
+    //             const copiedElement = child.copyElement(spanElement);
+
+    //             if (copiedElement) spanElement.children.push(copiedElement);
+    //         });
+
+    //         return spanElement;
+    //     }
+
+    //     return null;
+    // }
 }

@@ -18,6 +18,8 @@ export class Text {
     private commonAncestorElement!: Element;
 
     constructor(textData: Array<TextData>, private htmlElement: HTMLElement) {
+        this.parentElement.isRoot = true;
+
         textData.forEach((data: TextData) => {
             this.parentElement.children.push(this.createElement(data, this.parentElement));
         });
@@ -45,7 +47,7 @@ export class Text {
 
     // ---------------------------------------------------------Create Html------------------------------------------------------------------
     private createHtml(element: Element, parent: HTMLElement) {
-        element.create(parent);
+        element.createHtml(parent);
     }
 
 
@@ -111,7 +113,29 @@ export class Text {
         let selectedElement!: SelectedElement;
 
         if (this.range.collapsed) {
-            selectedElement = this.startElement.onKeydown(key, this.range.startOffset);
+            switch (key) {
+                case 'Backspace':
+                    selectedElement = this.startElement.onBackspace(this.range.startOffset);
+                    break;
+
+                case 'Enter':
+                    selectedElement = this.startElement.onEnter(this.range.startOffset);
+                    break;
+
+                case 'Delete':
+                    selectedElement = this.startElement.onDelete(this.range.startOffset);
+                    break;
+
+                case 'Tab':
+                    // selectedElement = this.startElement.onTab(this.range.startOffset);
+                    break;
+
+                default:
+                    selectedElement = this.startElement.onKeydown(key, this.range.startOffset);
+                    break;
+            }
+
+
 
             this.render();
 
@@ -129,11 +153,9 @@ export class Text {
 
     // ---------------------------------------------------------Get Key------------------------------------------------------------------
     getKey(event: KeyboardEvent): string | null {
-        if (event.key != 'Backspace' && event.key != 'Enter' && event.key != 'Delete') {
-            if (!/^(?:\w|\W){1}$/.test(event.key) || event.ctrlKey) return null;
-        }
+        if (event.key == 'Backspace' || event.key == 'Enter' || event.key == 'Delete' || event.key == 'Tab') return event.key;
 
-        if (event.key == ' ') return '\u00A0';
+        if (!/^(?:\w|\W){1}$/.test(event.key) || event.ctrlKey) return null;
 
         return event.key;
     }
@@ -250,10 +272,7 @@ export class Text {
 
         // Anchor
         else if (data.nodeType == NodeType.A) {
-            const anchorElement = new AnchorElement();
-            anchorElement.link = data.link as string;
-
-            element = anchorElement;
+            element = new AnchorElement(data.link as string);
         }
 
 

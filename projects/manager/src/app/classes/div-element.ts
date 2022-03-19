@@ -1,51 +1,47 @@
-import { BreakElement } from "./break-element";
+import { NodeType } from "widgets";
 import { Element } from "./element";
 import { SelectedElement } from "./selected-element";
-import { TextElement } from "./text-element";
 
 export class DivElement extends Element {
 
-    create(parent: HTMLElement): void {
+    constructor() {
+        super();
+        this.nodeType = NodeType.Div;
+    }
+
+    // copyElement(parent: Element): Element {
+    //     const divElement = new DivElement();
+
+    //     divElement.parent = parent;
+    //     divElement.styles = this.styles;
+    //     this.children.forEach((child: Element) => {
+    //         divElement.children.push(child.copyElement(divElement));
+    //     });
+
+    //     return divElement;
+    // }
+
+
+
+    createElement(): Element {
+        return new DivElement();
+    }
+
+
+    createHtml(parent: HTMLElement): void {
         const divElement = document.createElement('div');
 
         this.setHtmlElement(divElement, parent);
     }
 
+
     onKeydown(key: string, offset: number): SelectedElement {
-        let selectedElement!: SelectedElement;
-
-        // if (key == 'Backspace' || key == 'Delete') {
-        //     return this.parent.deleteChild(this);
-        // } else {
-        //     const textElement = new TextElement(key);
-
-        //     textElement.parent = this;
-        //     this.children[0] = textElement;
-        //     selectedElement = textElement.setSelectedElement(1);
-        // }
-        
-        return selectedElement;
+        throw new Error("Method not implemented.");
     }
 
 
-    // deleteChild(child: Element): SelectedElement {
-    //     if (this.children.length == 1 && !(child instanceof BreakElement)) {
-    //         this.children[0] = new BreakElement();
-
-    //         return this.setSelectedElement(0);
-    //     }
-
-    //     return super.deleteChild(child);
-    // }
-
 
     setSelectedElement(offset: number): SelectedElement {
-        if(this.children[0] instanceof BreakElement) {
-            return new SelectedElement(this.id, 0);
-        } else if (offset == 0) {
-            return this.getFirstTextElement().setSelectedElement(offset);
-        } else {
-            return this.getLastTextElement().setSelectedElement(offset);
-        }
+        return new SelectedElement(this.id, 0);
     }
 }
