@@ -1,20 +1,15 @@
 import { NodeType } from "widgets";
 import { Element } from "./element";
-import { SelectedElement } from "./selected-element";
 
 export class OrderedListElement extends Element {
 
-    constructor() {
-        super();
+    constructor(parent: Element) {
+        super(parent);
         this.nodeType = NodeType.Ol;
     }
 
-    setSelectedElement(offset: number): SelectedElement {
-        throw new Error("Method not implemented.");
-    }
-    onKeydown(key: string, offset: number): SelectedElement {
-        throw new Error("Method not implemented.");
-    }
+
+
     createHtml(parent: HTMLElement): void {
         const orderedListElement = document.createElement('ol');
 
@@ -22,20 +17,9 @@ export class OrderedListElement extends Element {
     }
 
 
-    createElement(): Element {
-        return new OrderedListElement();
+
+
+    createElement(parent: Element): Element {
+        return new OrderedListElement(parent);
     }
-
-    // copyElement(parent: Element): Element {
-    //     const orderedListElement = new OrderedListElement();
-
-    //     orderedListElement.parent = parent;
-    //     orderedListElement.styles = this.styles;
-    //     this.children.forEach((child: Element) => {
-    //         orderedListElement.children.push(child.copyElement(orderedListElement));
-    //     });
-
-    //     return orderedListElement;
-    // }
-
 }

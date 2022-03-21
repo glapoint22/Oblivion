@@ -1,20 +1,17 @@
 import { NodeType } from "widgets";
 import { Element } from "./element";
 import { SelectedElement } from "./selected-element";
+import { TextElement } from "./text-element";
 
 export class ListItemElement extends Element {
 
-    constructor() {
-        super();
+    constructor(parent: Element) {
+        super(parent);
         this.nodeType = NodeType.Li;
     }
 
-    setSelectedElement(offset: number): SelectedElement {
-        return new SelectedElement(this.id, 0);
-    }
-    onKeydown(key: string, offset: number): SelectedElement {
-        throw new Error("Method not implemented.");
-    }
+
+
     createHtml(parent: HTMLElement): void {
         const listItemElement = document.createElement('li');
 
@@ -22,20 +19,18 @@ export class ListItemElement extends Element {
     }
 
 
-    createElement(): Element {
-        return new ListItemElement();
+    createElement(parent: Element): Element {
+        return new ListItemElement(parent);
     }
 
-    // copyElement(parent: Element): Element {
-    //     const listItemElement = new ListItemElement();
 
-    //     listItemElement.parent = parent;
-    //     listItemElement.styles = this.styles;
-    //     this.children.forEach((child: Element) => {
-    //         listItemElement.children.push(child.copyElement(listItemElement));
-    //     });
+    onKeydown(key: string, offset: number): SelectedElement {
+        const child = this.getFirstChild();
+        const parent = child.parent;
 
-    //     return listItemElement;
-    // }
+        parent.children = [];
+        parent.children.push(new TextElement(parent, key));
 
+        return super.onKeydown(key, 1);
+    }
 }

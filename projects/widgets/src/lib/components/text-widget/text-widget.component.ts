@@ -271,48 +271,43 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
             ]
           },
           {
-            nodeType: NodeType.Li,
+            nodeType: NodeType.Ul,
             children: [
               {
-                nodeType: NodeType.Ol,
+                nodeType: NodeType.Li,
                 children: [
                   {
-                    nodeType: NodeType.Li,
+                    nodeType: NodeType.Span,
+                    styles: [
+                      {
+                        style: 'font-weight',
+                        value: 'bold'
+                      }
+                    ],
                     children: [
                       {
-                        nodeType: NodeType.Span,
-                        styles: [
-                          {
-                            style: 'font-weight',
-                            value: 'bold'
-                          }
-                        ],
-                        children: [
-                          {
-                            nodeType: NodeType.Text,
-                            text: 'Trumpy'
-                          }
-                        ]
+                        nodeType: NodeType.Text,
+                        text: 'Trumpy'
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                nodeType: NodeType.Li,
+                children: [
                   {
-                    nodeType: NodeType.Li,
+                    nodeType: NodeType.Span,
+                    styles: [
+                      {
+                        style: 'color',
+                        value: '#ff0000'
+                      }
+                    ],
                     children: [
                       {
-                        nodeType: NodeType.Span,
-                        styles: [
-                          {
-                            style: 'color',
-                            value: '#ff0000'
-                          }
-                        ],
-                        children: [
-                          {
-                            nodeType: NodeType.Text,
-                            text: 'Alita'
-                          }
-                        ]
+                        nodeType: NodeType.Text,
+                        text: 'Alita'
                       }
                     ]
                   }

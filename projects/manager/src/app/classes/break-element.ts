@@ -4,34 +4,26 @@ import { SelectedElement } from "./selected-element";
 
 export class BreakElement extends Element {
 
-    constructor() {
-        super();
+    constructor(parent: Element) {
+        super(parent);
         this.nodeType = NodeType.Br;
     }
 
-    onKeydown(key: string, offset: number): SelectedElement {
-        throw new Error("Method not implemented.");
-    }
+
     createHtml(parent: HTMLElement): void {
         const breakElement = document.createElement('br');
 
-        parent.appendChild(breakElement);
+        this.setHtmlElement(breakElement, parent);
     }
 
     setSelectedElement(offset: number): SelectedElement {
-        return new SelectedElement(this.parent.id, 0);
+        const container = this.getContainer();
+
+        return container.setSelectedElement(0);
     }
 
 
-    createElement(): Element {
-        return new BreakElement();
+    createElement(parent: Element): Element {
+        return new BreakElement(parent);
     }
-
-
-    // copyElement(parent: Element): Element {
-    //     const breakElement = new BreakElement();
-    //     breakElement.parent = parent;
-
-    //     return breakElement;
-    // }
 }

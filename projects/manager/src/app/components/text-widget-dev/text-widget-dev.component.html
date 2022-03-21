@@ -7,7 +7,7 @@
 
 
     <div #textElement style="color: white; outline: none; cursor: text; background: rgb(51, 51, 51);"
-        [style.minHeight.px]="height" contenteditable="true" (mousedown)="text.onMousedown()" (keyup)="text.onKeyup($event)"
+        [style.minHeight.px]="height" contenteditable="true" spellcheck="false" (mousedown)="text.onMousedown()" (keyup)="text.onKeyup($event)"
         (keydown)="text.onKeydown($event)" (paste)="text.onPaste($event)"></div>
 
 
