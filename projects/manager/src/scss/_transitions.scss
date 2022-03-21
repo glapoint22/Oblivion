@@ -1,0 +1,17 @@
+.hide {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.show {
+    opacity: 1;
+}
+
+.translate-start {
+    transform: translate(-100%, 0);
+    transition: transform 0.2s;
+}
+
+.translate-end {
+    transform: translate(0, 0);
+}

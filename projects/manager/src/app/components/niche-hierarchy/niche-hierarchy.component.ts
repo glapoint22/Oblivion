@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { ListUpdateType } from '../../classes/enums';
+import { Component, Input, ViewChild } from '@angular/core';
+import { ListUpdateType, MenuOptionType } from '../../classes/enums';
 import { HierarchyItem } from '../../classes/hierarchy-item';
+import { ListOptions } from '../../classes/list-options';
 import { ListUpdate } from '../../classes/list-update';
+import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
 
 @Component({
   selector: 'niche-hierarchy',
@@ -10,11 +12,95 @@ import { ListUpdate } from '../../classes/list-update';
 })
 export class NicheHierarchyComponent {
   @Input() niches!: Array<HierarchyItem>;
+  @ViewChild('hierarchy') hierarchy!: HierarchyComponent;
   public isParent!: boolean;
+  public options: ListOptions = {
+    editable: true,
+    menu: {
+      parentObj: this,
+      menuOptions: [
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Open to the Side',
+          shortcut: 'Ctrl+Enter',
+          optionFunction: this.trumpy,
+          optionFunctionParameters: ['alita', 'battle', 'angel']
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Open Width...',
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Reveal in File Explorer',
+          shortcut: 'Shift+Alt+R'
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Open in Intergrated Terminal',
+        },
+        {
+          type: MenuOptionType.Divider
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Select for Compare',
+        },
+        {
+          type: MenuOptionType.Divider
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Open Timeline',
+        },
+        {
+          type: MenuOptionType.Divider
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Cut',
+          shortcut: 'Ctrl+X'
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Copy',
+          shortcut: 'Ctrl+C'
+        },
+        {
+          type: MenuOptionType.Divider
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Copy Path',
+          shortcut: 'Shift+Alt+C'
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Copy Relative Path',
+          shortcut: 'Ctrl+K Ctrl+Shift+C'
+        },
+        {
+          type: MenuOptionType.Divider
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Rename',
+          shortcut: 'F2'
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Delete',
+          shortcut: 'Delete'
+        }
+      ]
+    }
+  }
+  
+
+
+
+
   private _listUpdate: ListUpdate = new ListUpdate();
-
-
-
   public get listUpdate(): ListUpdate {
     return this._listUpdate;
   }
@@ -26,11 +112,20 @@ export class NicheHierarchyComponent {
     }
 
     if (v.type == ListUpdateType.Delete) {
-      // console.log(v.deletedItems)
+      console.log(v.deletedItems)
     }
 
     if (v.type == ListUpdateType.ArrowClicked) {
       // console.log(v.hasChildren)
     }
+
+    this.options.menu!.menuOptions[0].isDisabled = v.editDisabled;
+  }
+
+
+  trumpy(alita: string, battle: string, angel: string) {
+    this.hierarchy.add();
+
+    console.log(alita, battle, angel)
   }
 }

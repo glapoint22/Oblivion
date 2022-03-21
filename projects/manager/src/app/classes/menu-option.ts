@@ -1,4 +1,10 @@
+import { MenuOptionType } from "./enums";
+
 export class MenuOption {
-    name!: string;
-    action!: Function;
+    type!: MenuOptionType;
+    name?: string;
+    shortcut?: string;
+    optionFunction?: Function;
+    optionFunctionParameters?: Array<any>;
+    isDisabled?: boolean;
 }

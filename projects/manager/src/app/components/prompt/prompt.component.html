@@ -1,0 +1,41 @@
+<div class="hide backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="base">
+
+        <div class="header">
+            <div>{{title}}</div>
+            <div class="x" (click)="close()">X</div>
+        </div>
+        <div class="drop-shadow"></div>
+
+        <div class="content">
+
+            <div class="message">{{message}}</div>
+            
+            <div class="button-container">
+
+                <div>
+                    <button *ngIf="tertiaryButton && tertiaryButton.name"
+                            class="purple-button"
+                            (click)="tertiaryButtonFunction()">
+                        {{tertiaryButton.name}}
+                    </button>
+                </div>
+
+                <div>
+                    <button *ngIf="secondaryButton && secondaryButton.name"
+                            class="dark-button"
+                            (click)="secondaryButtonFunction()">
+                        {{secondaryButton.name}}
+                    </button>
+
+                    <button *ngIf="primaryButton && primaryButton.name"
+                            class="gold-button"
+                            (click)="primaryButtonFunction()">
+                        {{primaryButton.name}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
