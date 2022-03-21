@@ -1,17 +1,18 @@
+<div [ngClass]="{'cover': hasCover}" (contextmenu)="$event.preventDefault()"></div>
 <div #base
-     class="menu-base"
-     [style.left.px]="menuVisible ? xPos + 5 : -1000"
-     [style.top.px]="menuVisible ?  yPos + 5 :  -1000"
-     (contextmenu)="$event.preventDefault()"
-     (mouseenter)="overMenu.next(true)"
-     (mouseleave)="overMenu.next(false)"
-     [ngStyle]="{'visibility': menuVisible ? 'visible' : 'hidden'}">
+    class="menu-base"
+    [style.left.px]="menuVisible ? xPos : -1000"
+    [style.top.px]="menuVisible ?  yPos :  -1000"
+    (contextmenu)="$event.preventDefault()"
+    (mouseenter)="overMenu.next(true)"
+    (mouseleave)="overMenu.next(false)"
+    [ngStyle]="{'visibility': menuVisible ? 'visible' : 'hidden'}">
 
     <ng-container *ngFor="let menuOption of options">
         <div *ngIf="menuOption.type == MenuOptionType.MenuItem"
-             class="menu-item"
-             [ngClass]="{'disabled': menuOption.isDisabled}"
-             (click)="menuOption.optionFunction && !menuOption.isDisabled ? onClick(menuOption.optionFunction!, menuOption.optionFunctionParameters!) : null">
+            class="menu-item"
+            [ngClass]="{'disabled': menuOption.isDisabled}"
+            (click)="menuOption.optionFunction && !menuOption.isDisabled ? onClick(menuOption.optionFunction!, menuOption.optionFunctionParameters!) : null">
             <div class="menu-item-text">{{menuOption.name}}</div>
             <div *ngIf="menuOption.shortcut" class="menu-item-text">{{menuOption.shortcut}}</div>
         </div>

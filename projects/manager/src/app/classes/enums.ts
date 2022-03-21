@@ -29,7 +29,7 @@ export enum ListUpdateType {
     Edit,
     Delete,
     DeletePrompt,
-    SelectedItem,
+    SelectedItems,
     CheckboxChange,
     ArrowClicked
 }

@@ -18,7 +18,7 @@
          class="item"
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
-         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemComponentMousedown(listManager.getItem(this), $event) : null) : listManager.onCheckboxChange(listManager.getItem(this))"
+         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(listManager.getItem(this), $event) : null) : listManager.onCheckboxChange(listManager.getItem(this))"
          (blur)="listManager.onItemBlur(listManager.getItem(this))"
          (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(listManager.getItem(this)) : null"
          [contentEditable]="listManager.getItem(this) == listManager.editableItem"
@@ -29,7 +29,8 @@
                 'selected-item-top': listManager.getItem(this).selectType == listManager.SelectType.Top,
                 'selected-item-all': listManager.getItem(this).selectType == listManager.SelectType.All,
                 'selected-item-middle': listManager.getItem(this).selectType == listManager.SelectType.Middle,
-                'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom}">
+                'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom,
+                'no-hover': listManager.contextMenuOpen}">
 
 
         <ng-container *ngIf="listManager.editableItem == null">

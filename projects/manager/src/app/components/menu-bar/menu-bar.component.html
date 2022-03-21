@@ -1,12 +1,32 @@
 <div class="menu-bar">
-    <div>
-        <a routerLink="/product-builder">Product Builder</a>
+    <div style="display: flex; align-items: center; height: 100%;">
+        <!-- <a routerLink="/product-builder">Product Builder</a>
         <a routerLink="/page-builder">Page Builder</a>
-        <a routerLink="/email-builder">Email Builder</a>
+        <a routerLink="/email-builder">Email Builder</a> -->
+
+        <div>
+            <img style="margin-top: 3px;" src="assets/shack.png">
+        </div>
+
+        <div style="display: flex; padding-left: 10px; color: #b4b4b4; font-size: 12px; height: 100%;">
+            <div #htmlMenuBarOption
+                 *ngFor="let menuBarOption of menuBarOptions"
+                 class="menu-option"
+                 (mouseover)="selectedMenuBarOption != null && menuBarOption != selectedMenuBarOption ? openMenu(htmlMenuBarOption, menuBarOption) : null; overMenu = true"
+                 (mouseout)="overMenu = false"
+                 (mousedown)="openMenu(htmlMenuBarOption, menuBarOption)"
+                 [ngClass]="{'selected': menuBarOption == selectedMenuBarOption}">
+                 
+                {{menuBarOption.name}}
+            </div>
+            
+        </div>
+
+
     </div>
 
 
-    <button class="icon-button" style="margin-right: 20px;">
+    <button class="icon-button">
         <i class="fas fa-bell" aria-hidden="true"></i>
     </button>
 
