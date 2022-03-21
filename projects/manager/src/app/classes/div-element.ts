@@ -1,30 +1,18 @@
 import { NodeType } from "widgets";
 import { Element } from "./element";
 import { SelectedElement } from "./selected-element";
+import { TextElement } from "./text-element";
 
 export class DivElement extends Element {
 
-    constructor() {
-        super();
+    constructor(parent: Element) {
+        super(parent);
         this.nodeType = NodeType.Div;
     }
 
-    // copyElement(parent: Element): Element {
-    //     const divElement = new DivElement();
 
-    //     divElement.parent = parent;
-    //     divElement.styles = this.styles;
-    //     this.children.forEach((child: Element) => {
-    //         divElement.children.push(child.copyElement(divElement));
-    //     });
-
-    //     return divElement;
-    // }
-
-
-
-    createElement(): Element {
-        return new DivElement();
+    createElement(parent: Element): Element {
+        return new DivElement(parent);
     }
 
 
@@ -35,13 +23,15 @@ export class DivElement extends Element {
     }
 
 
+
+
     onKeydown(key: string, offset: number): SelectedElement {
-        throw new Error("Method not implemented.");
-    }
+        const child = this.getFirstChild();
+        const parent = child.parent;
 
+        parent.children = [];
+        parent.children.push(new TextElement(parent, key));
 
-
-    setSelectedElement(offset: number): SelectedElement {
-        return new SelectedElement(this.id, 0);
+        return super.onKeydown(key, 1);
     }
 }

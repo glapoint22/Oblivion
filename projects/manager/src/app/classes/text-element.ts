@@ -1,15 +1,14 @@
 import { NodeType } from "widgets";
 import { BreakElement } from "./break-element";
-import { Range } from "./range";
-import { DivElement } from "./div-element";
+import { ElementRange } from "./element-range";
 import { Element } from "./element";
 import { SelectedElementOnDeletion } from "./enums";
 import { SelectedElement } from "./selected-element";
 
 export class TextElement extends Element {
 
-    constructor(public text: string) {
-        super();
+    constructor(parent: Element, public text: string) {
+        super(parent);
         this.nodeType = NodeType.Text;
     }
 
@@ -36,7 +35,7 @@ export class TextElement extends Element {
 
         // If offset is -1, we have to move the text to the previous line
         if (offset == -1) {
-            const previousElement = this.getPreviousElement();
+            const previousElement = this.getPreviousChild();
 
             if (!previousElement.isRoot) {
                 const currentContainer = this.getContainer();
@@ -87,8 +86,7 @@ export class TextElement extends Element {
 
                     // If this container has no children, create a break element inside of the container
                     if (container.children.length == 0) {
-                        container.children.push(new BreakElement());
-                        container.children[0].parent = container;
+                        container.children.push(new BreakElement(container));
                         return container.setSelectedElement(offset);
                     } else {
 
@@ -104,7 +102,7 @@ export class TextElement extends Element {
                     return this.parent.deleteChild(this, { selectedChildOnDeletion: SelectedElementOnDeletion.Previous }).setSelectedElement(Infinity);
                 } else {
                     // place cursor at previous sibling
-                    return this.getPreviousElement().getLastChild().setSelectedElement(Infinity);
+                    return this.getPreviousChild().getLastChild().setSelectedElement(Infinity);
                 }
             }
         }
@@ -121,7 +119,7 @@ export class TextElement extends Element {
         // If the cursor is at the end of the text
         if (offset == this.text.length) {
             // Get the next element
-            let nextElement = this.getNextElement();
+            let nextElement = this.getNextChild();
 
             if (!nextElement.isRoot) {
                 nextElement = nextElement.getFirstChild();
@@ -173,8 +171,7 @@ export class TextElement extends Element {
 
                     // If this container has no children
                     if (currentContainer.children.length == 0) {
-                        currentContainer.children.push(new BreakElement());
-                        currentContainer.children[0].parent = currentContainer;
+                        currentContainer.children.push(new BreakElement(currentContainer));
                         return currentContainer.setSelectedElement(offset);
                     }
 
@@ -199,63 +196,60 @@ export class TextElement extends Element {
 
     // ---------------------------------------------------On Enter-----------------------------------------------------   
     onEnter(offset: number): SelectedElement {
-        const sourceContainer = this.getContainer();
-        const sourceContainerIndex = sourceContainer.parent.children.findIndex(x => x == sourceContainer);
-        const range = new Range();
-        const range2 = new Range();
+        const container = this.getContainer();
+        const containerIndex = container.parent.children.findIndex(x => x == container);
+        const topParent = this.getTopParent();
+        const lastChild = container.getLastChild() as TextElement;
+        const leftFragment = container.copyElement(container.parent, new ElementRange(container.id, container.children[0].id, 0, this.id, offset, topParent.id));
+        const rightFragment = container.copyElement(container.parent, new ElementRange(container.id, this.id, offset, lastChild.id, lastChild.text.length, topParent.id));
 
-        range.containerId = sourceContainer.id;
-        range.startElementId = sourceContainer.children[0].id;
-        range.startOffset = 0;
-        range.endElementId = this.id;
-        range.endOffset = offset;
-
-        const copiedStartElement = sourceContainer.copyElement(sourceContainer.parent, range);
-
-        const lastChild = sourceContainer.getLastChild() as TextElement;
-        range2.containerId = sourceContainer.id;
-        range2.startElementId = this.id;
-        range2.startOffset = offset;
-        range2.endElementId = lastChild.id;
-        range2.endOffset = lastChild.text.length;
-        range2.topParentId = this.getTopParent().id;
-
-        const copiedEndElement = sourceContainer.copyElement(sourceContainer.parent, range2);
-
-        if (copiedStartElement) sourceContainer.parent.children.splice(sourceContainerIndex + 1, 0, copiedStartElement);
-        if (copiedEndElement) sourceContainer.parent.children.splice(sourceContainerIndex + 2, 0, copiedEndElement);
-        
-
-        // // Delete the source container
-        sourceContainer.parent.deleteChild(sourceContainer);
+        if (leftFragment) container.parent.children.splice(containerIndex + 1, 0, leftFragment);
+        if (rightFragment) container.parent.children.splice(containerIndex + 2, 0, rightFragment);
 
 
-        return new SelectedElement('fsdf', 0);
+        // Delete the container
+        container.parent.deleteChild(container);
+
+        let selectedElement!: SelectedElement;
+
+        if (rightFragment) selectedElement = rightFragment.getFirstChild().setSelectedElement(0);
+
+        return selectedElement;
     }
 
 
+
+
+
+
+
+
     // ---------------------------------------------------Copy Element-----------------------------------------------------
-    copyElement(parent: Element, range?: Range): Element | null {
+    copyElement(parent: Element, range?: ElementRange): Element | null {
         let text = this.text;
 
         if (range && range.startElementId == this.id) {
             range.inRange = true;
-            text = text.substring(range.startOffset);
+            text = text.substring(range.startOffset, range.startElementId == range.endElementId ? range.endOffset : undefined);
         } else if (range && range.endElementId == this.id) {
             text = text.substring(0, range.endOffset);
         } else if (range && range.topParentId == this.id) {
-            range.hasAccess = true;
+            range.inTopParentRange = true;
         }
 
         if (!range || range.inRange) {
-            const textElement = new TextElement(text);
-            textElement.parent = parent;
-
             if (range?.endElementId == this.id) {
                 range.inRange = false;
-                range.hasAccess = false;
+                range.inTopParentRange = false;
+
+                if (text.length == 0) {
+                    const breakElement = new BreakElement(parent);
+                    return breakElement;
+                }
             }
 
+            const textElement = new TextElement(parent, text);
+            textElement.id = this.id;
             return textElement;
         }
 
@@ -270,7 +264,7 @@ export class TextElement extends Element {
         this.text = this.text.substring(0, offset) + key + this.text.substring(offset);
         offset++;
 
-        return this.setSelectedElement(offset);
+        return super.onKeydown(key, offset);
     }
 
 
@@ -292,11 +286,8 @@ export class TextElement extends Element {
 
 
 
-
-
-
-
-    createElement(): Element {
-        return new TextElement(this.text);
+    // ---------------------------------------------------Create Element-----------------------------------------------------
+    createElement(parent: Element): Element {
+        return new TextElement(parent, this.text);
     }
 }

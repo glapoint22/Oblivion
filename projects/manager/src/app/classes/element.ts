@@ -1,17 +1,17 @@
 import { NodeType, Style } from "widgets";
-import { Range } from "./range";
+import { ElementDeleteOptions } from "./element-delete-options";
+import { ElementRange } from "./element-range";
 import { SelectedElementOnDeletion } from "./enums";
 import { SelectedElement } from "./selected-element";
 
 export abstract class Element {
     public id!: string;
-    public parent!: Element;
     public styles!: Array<Style>;
     public children: Array<Element> = [];
     public isRoot!: boolean;
     public nodeType!: NodeType
 
-    constructor() {
+    constructor(public parent: Element) {
         this.id = Math.random().toString(36).substring(2);
     }
 
@@ -49,21 +49,18 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Delete Child-----------------------------------------------------
-    deleteChild(child: Element, deleteOptions?: {
-        selectedChildOnDeletion?: SelectedElementOnDeletion,
-        preserveContainer?: boolean
-    }): Element {
+    deleteChild(child: Element, deleteOptions?: ElementDeleteOptions): Element {
         const index = this.children.findIndex(x => x == child);
         let selectedChild!: Element;
 
         // Previous
         if (deleteOptions && deleteOptions.selectedChildOnDeletion == SelectedElementOnDeletion.Previous) {
-            selectedChild = this.children[index].getPreviousElement();
+            selectedChild = this.children[index].getPreviousChild();
             if (!selectedChild.isRoot) selectedChild = selectedChild.getLastChild();
 
             // Next
         } else if (deleteOptions && deleteOptions.selectedChildOnDeletion == SelectedElementOnDeletion.Next) {
-            selectedChild = this.children[index].getNextElement();
+            selectedChild = this.children[index].getNextChild();
             if (!selectedChild.isRoot) selectedChild = selectedChild.getFirstChild();
         }
 
@@ -73,6 +70,20 @@ export abstract class Element {
         if (this.children.length == 0) {
             if (!deleteOptions || !deleteOptions.preserveContainer || (this.nodeType != NodeType.Div && this.nodeType != NodeType.Li))
                 return this.parent.deleteChild(this, deleteOptions);
+        } 
+        else {
+            // This will remove any list items
+            if ((this.nodeType == NodeType.Ol || this.nodeType == NodeType.Ul) && this.children.length == 1 && this.children[0].nodeType != NodeType.Li) {
+                this.children[0].children.forEach((child: Element) => {
+                    const copiedElement = child.copyElement(this);
+
+                    if (copiedElement) {
+                        this.children.push(copiedElement);
+                    }
+                });
+
+                return this.deleteChild(this.children[0], deleteOptions);
+            }
         }
 
         return selectedChild;
@@ -122,9 +133,24 @@ export abstract class Element {
 
     // ---------------------------------------------------Get Container-----------------------------------------------------
     getContainer(): Element {
-        if (this.parent.nodeType == NodeType.Div || this.parent.nodeType == NodeType.Li) return this.parent;
+        if (this.parent.nodeType == NodeType.Div || this.parent.nodeType == NodeType.Li || this.parent.nodeType == NodeType.Ul || this.parent.nodeType == NodeType.Ol) return this.parent;
 
         return this.parent.getContainer();
+    }
+
+
+
+
+
+    // ---------------------------------------------------Get Top Container-----------------------------------------------------
+    getTopContainer(): Element {
+        if (this.parent.nodeType == NodeType.Div || this.parent.nodeType == NodeType.Ul || this.parent.nodeType == NodeType.Ol) {
+            if (this.parent.nodeType == NodeType.Div || this.parent.parent.nodeType == NodeType.Div) {
+                return this.parent;
+            }
+        }
+
+        return this.parent.getTopContainer();
     }
 
 
@@ -147,13 +173,13 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Get Previous Element-----------------------------------------------------   
-    getPreviousElement(): Element {
+    getPreviousChild(): Element {
         if (this.isRoot) return this;
 
         const index = this.parent.children.findIndex(x => x == this);
 
         if (index == 0) {
-            return this.parent.getPreviousElement();
+            return this.parent.getPreviousChild();
         }
 
         let element = this.parent.children[index - 1];
@@ -171,7 +197,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Get Next Element-----------------------------------------------------   
-    getNextElement(): Element {
+    getNextChild(): Element {
         if (this.isRoot) {
             return this;
         }
@@ -179,7 +205,7 @@ export abstract class Element {
         const index = this.parent.children.findIndex(x => x == this);
 
         if (index == this.parent.children.length - 1) {
-            return this.parent.getNextElement();
+            return this.parent.getNextChild();
         }
 
         return this.parent.children[index + 1];
@@ -194,7 +220,7 @@ export abstract class Element {
 
     // ---------------------------------------------------On Backspace-----------------------------------------------------   
     onBackspace(offset: number): SelectedElement {
-        const selectedElement = this.getPreviousElement();
+        const selectedElement = this.getPreviousChild();
 
         if (!selectedElement.isRoot) {
             this.parent.deleteChild(this);
@@ -215,7 +241,7 @@ export abstract class Element {
 
     // ---------------------------------------------------On Delete-----------------------------------------------------   
     onDelete(offset: number): SelectedElement {
-        let nextElement = this.getNextElement();
+        let nextElement = this.getNextChild();
 
         if (!nextElement.isRoot) {
             nextElement = nextElement.getFirstChild();
@@ -224,12 +250,12 @@ export abstract class Element {
             const otherContainer = nextElement.getContainer();
 
             if (nextElement.nodeType == NodeType.Br) {
-                this.deleteChild(this.children[0], { preserveContainer: true });
+                currentContainer.deleteChild(currentContainer.getFirstChild(), { preserveContainer: true });
 
                 otherContainer.children.forEach((element: Element) => {
                     const copiedElement = element.copyElement(currentContainer);
 
-                    if (copiedElement) currentContainer.children.push();
+                    if (copiedElement) currentContainer.children.push(copiedElement);
                 });
 
 
@@ -253,21 +279,37 @@ export abstract class Element {
 
     // ---------------------------------------------------On Enter-----------------------------------------------------   
     onEnter(offset: number): SelectedElement {
-        return new SelectedElement('', 0);
+        const index = this.parent.children.findIndex(x => x == this);
+        const element = this.copyElement(this.parent);
+        let selectedElement!: SelectedElement;
+
+        if (element) {
+            this.parent.children.splice(index + 1, 0, element);
+            selectedElement = element.setSelectedElement(0);
+        }
+
+        return selectedElement;
     }
 
 
-    copyElement(parent: Element, range?: Range): Element | null {
+
+
+
+
+
+
+
+    // ---------------------------------------------------Copy Element-----------------------------------------------------   
+    copyElement(parent: Element, range?: ElementRange): Element | null {
         if (range && (range.startElementId == this.id || range.endElementId == this.id)) {
             range.inRange = true;
         } else if (range && range.topParentId == this.id) {
-            range.hasAccess = true;
+            range.inTopParentRange = true;
         }
 
-        if (!range || range.inRange || range.containerId == this.id || range.hasAccess) {
-            const element = this.createElement();
+        if (!range || range.inRange || range.containerId == this.id || range.inTopParentRange) {
+            const element = this.createElement(parent);
 
-            element.parent = parent;
             element.styles = this.styles;
             this.children.forEach((child: Element) => {
                 const copiedElement = child.copyElement(element, range);
@@ -282,10 +324,18 @@ export abstract class Element {
     }
 
 
-    abstract createHtml(parent: HTMLElement): void;
-    abstract onKeydown(key: string, offset: number): SelectedElement;
-    abstract setSelectedElement(offset: number): SelectedElement;
-    abstract createElement(): Element;
 
-    // abstract onTab(offset: number): SelectedElement;
+
+    onKeydown(key: string, offset: number): SelectedElement {
+        return this.getFirstChild().setSelectedElement(offset);
+    }
+
+
+    setSelectedElement(offset: number): SelectedElement {
+        return new SelectedElement(this.id, 0);
+    }
+
+
+    abstract createHtml(parent: HTMLElement): void;
+    abstract createElement(parent: Element): Element;
 }
