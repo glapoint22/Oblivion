@@ -1,9 +1,18 @@
+.cover {
+    position: fixed;
+    top: 33px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
 .menu-base {
     position: absolute;
     padding: 7px 1px;
     background: rgba(22, 22, 22, 0.95);
     box-shadow: 3px 3px 7px 2px rgba(0, 0, 0, 0.25);
     overflow-y: auto;
+    outline: none;
 }
 
 .menu-item {

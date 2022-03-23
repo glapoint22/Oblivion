@@ -9,7 +9,7 @@
          class="item"
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
-         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemComponentMousedown(listManager.getItem(this), $event) : null) : listManager.onArrowClick(listManager.getItem(this))"
+         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(listManager.getItem(this), $event) : null) : listManager.onArrowClick(listManager.getItem(this))"
          (blur)="listManager.onItemBlur(listManager.getItem(this))"
          (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(listManager.getItem(this)) : null"
          [contentEditable]="listManager.getItem(this) == listManager.editableItem"

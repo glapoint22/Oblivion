@@ -9,7 +9,6 @@ import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
   imports: [
     CommonModule,
     HierarchyModule
-  ],
-  exports: [NicheHierarchyComponent]
+  ]
 })
 export class NicheHierarchyModule { }

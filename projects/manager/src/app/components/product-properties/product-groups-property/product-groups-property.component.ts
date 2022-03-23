@@ -64,6 +64,18 @@ export class ProductGroupsPropertyComponent {
   public set listUpdate(update: ListUpdate) {
     this._listUpdate = update;
 
+    if (update.type == ListUpdateType.SelectedItems) {
+      if(update.selectedItems!.length > 1) {
+        this.listOptions.menu!.menuOptions[1].isDisabled = true;
+        this.listOptions.menu!.menuOptions[2].name = 'Delete Groups';
+      }else {
+        this.listOptions.menu!.menuOptions[1].isDisabled = false;
+        this.listOptions.menu!.menuOptions[2].name = 'Delete Group';
+      }
+    }
+    
+    
+
     if (update.type == ListUpdateType.Add) {
       // this.productGroups[update.index!].id = 22;
     }

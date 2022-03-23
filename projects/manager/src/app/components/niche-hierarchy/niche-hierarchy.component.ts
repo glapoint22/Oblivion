@@ -1,4 +1,6 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { LazyLoad } from 'common';
+import { Subject } from 'rxjs';
 import { ListUpdateType, MenuOptionType } from '../../classes/enums';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { ListOptions } from '../../classes/list-options';
@@ -10,9 +12,11 @@ import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component
   templateUrl: './niche-hierarchy.component.html',
   styleUrls: ['./niche-hierarchy.component.scss']
 })
-export class NicheHierarchyComponent {
-  @Input() niches!: Array<HierarchyItem>;
+export class NicheHierarchyComponent  extends LazyLoad{
   @ViewChild('hierarchy') hierarchy!: HierarchyComponent;
+  public niches!: Array<HierarchyItem>;
+  public showSearch!: boolean;
+  public overNicheHierarchy: Subject<boolean> = new Subject<boolean>();
   public isParent!: boolean;
   public options: ListOptions = {
     editable: true,
@@ -23,8 +27,6 @@ export class NicheHierarchyComponent {
           type: MenuOptionType.MenuItem,
           name: 'Open to the Side',
           shortcut: 'Ctrl+Enter',
-          optionFunction: this.trumpy,
-          optionFunctionParameters: ['alita', 'battle', 'angel']
         },
         {
           type: MenuOptionType.MenuItem,
@@ -123,9 +125,16 @@ export class NicheHierarchyComponent {
   }
 
 
-  trumpy(alita: string, battle: string, angel: string) {
-    this.hierarchy.add();
 
-    console.log(alita, battle, angel)
+  hello() {
+    this.showSearch = !this.showSearch;
+
+    window.setTimeout(()=> {
+      document.getElementById('searchInput')?.focus();
+    })
+    
+    
   }
+
+
 }

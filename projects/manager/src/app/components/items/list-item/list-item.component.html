@@ -8,7 +8,7 @@
         class="item" 
         tabindex="-1"
         (contextmenu)="$event.preventDefault()"
-        (mousedown)="listManager.onItemComponentMousedown(listManager.getItem(this), $event)"
+        (mousedown)="listManager.onItemDown(listManager.getItem(this), $event)"
         (blur)="listManager.onItemBlur(listManager.getItem(this))"
         (dblclick)="listManager.onItemDoubleClick(listManager.getItem(this))"
         [contentEditable]="listManager.getItem(this) == listManager.editableItem"

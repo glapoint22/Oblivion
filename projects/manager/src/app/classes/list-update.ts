@@ -7,6 +7,7 @@ export class ListUpdate {
   index?: number;
   type?: ListUpdateType;
   deletedItems?: Array<ListItem>;
+  selectedItems?: Array<ListItem>;
   addDisabled?: boolean;
   editDisabled?: boolean;
   deleteDisabled?: boolean;
