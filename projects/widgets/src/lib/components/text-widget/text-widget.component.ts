@@ -201,7 +201,7 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
                         styles: [
                           {
                             style: 'color',
-                            value: '#0000ff'
+                            value: '#d5c617'
                           }
                         ],
                         children: [

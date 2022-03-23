@@ -35,12 +35,12 @@ export class TextElement extends Element {
 
         // If offset is -1, we have to move the text to the previous line
         if (offset == -1) {
-            const previousElement = this.getPreviousChild();
+            const previousChild = this.previousChild;
 
-            if (!previousElement.isRoot) {
-                const currentContainer = this.getContainer();
-                const previousContainer = previousElement.getLastChild().getContainer();
-                const previousContainerLastChild = previousContainer.getLastChild();
+            if (previousChild) {
+                const currentContainer = this.container;
+                const previousContainer = previousChild.container;
+                const previousContainerLastChild = previousContainer.lastChild;
 
                 // Move each element from the current container into the previous container
                 currentContainer.children.forEach((element: Element) => {
@@ -56,7 +56,9 @@ export class TextElement extends Element {
                 // If the previous container's last child is a break element, we need to delete it
                 if (previousContainerLastChild.nodeType == NodeType.Br) {
                     const selectedElement = previousContainer.deleteChild(previousContainerLastChild, { selectedChildOnDeletion: SelectedElementOnDeletion.Next });
-                    return selectedElement.setSelectedElement(0);
+
+                    if (selectedElement) return selectedElement.setSelectedElement(0);
+
                 } else {
                     return previousContainerLastChild.setSelectedElement(Infinity);
                 }
@@ -70,11 +72,11 @@ export class TextElement extends Element {
 
             // Cursor is at start of the text
         } else if (offset == 0) {
-            const container = this.getContainer();
-            const topParent = this.getTopParent();
+            const container = this.container;
+            const topParent = this.topParent;
 
             // Test to see if we are at the start of the container
-            if (container.children[0] == topParent && topParent.getFirstChild() == this) {
+            if (container.children[0] == topParent && topParent.firstChild == this) {
 
                 // If we have no text
                 if (this.text.length == 0) {
@@ -91,7 +93,7 @@ export class TextElement extends Element {
                     } else {
 
                         // we have children remaining...Set the cursor on the next sibling
-                        return selectedElement.setSelectedElement(0);
+                        if (selectedElement) return selectedElement.setSelectedElement(0);
                     }
                 }
 
@@ -99,10 +101,16 @@ export class TextElement extends Element {
             } else {
                 // If we have no text left...Delete this text element and place cursor at previous sibling
                 if (this.text.length == 0) {
-                    return this.parent.deleteChild(this, { selectedChildOnDeletion: SelectedElementOnDeletion.Previous }).setSelectedElement(Infinity);
+                    const previousChild = this.parent.deleteChild(this, { selectedChildOnDeletion: SelectedElementOnDeletion.Previous });
+
+                    if (previousChild) return previousChild.setSelectedElement(Infinity);
                 } else {
-                    // place cursor at previous sibling
-                    return this.getPreviousChild().getLastChild().setSelectedElement(Infinity);
+                    // place cursor at previous child
+                    const previousChild = this.previousChild;
+
+                    if (previousChild) {
+                        return previousChild.setSelectedElement(Infinity);
+                    }
                 }
             }
         }
@@ -119,14 +127,13 @@ export class TextElement extends Element {
         // If the cursor is at the end of the text
         if (offset == this.text.length) {
             // Get the next element
-            let nextElement = this.getNextChild();
+            let nextElement = this.nextChild;
 
-            if (!nextElement.isRoot) {
-                nextElement = nextElement.getFirstChild();
+            if (nextElement) {
 
                 // Get this container and the other container the next element is in
-                const currentContainer = this.getContainer();
-                const otherContainer = nextElement.getContainer();
+                const currentContainer = this.container;
+                const otherContainer = nextElement.container;
 
                 // If the other container is not this container
                 if (currentContainer != otherContainer) {
@@ -164,10 +171,10 @@ export class TextElement extends Element {
                 });
 
 
-                const currentContainer = this.getContainer();
+                const currentContainer = this.container;
 
                 // If we are the last element or this container is not the selected element's container
-                if (selectedElement.isRoot || currentContainer != selectedElement.getContainer()) {
+                if (!selectedElement || currentContainer != selectedElement.container) {
 
                     // If this container has no children
                     if (currentContainer.children.length == 0) {
@@ -196,10 +203,10 @@ export class TextElement extends Element {
 
     // ---------------------------------------------------On Enter-----------------------------------------------------   
     onEnter(offset: number): SelectedElement {
-        const container = this.getContainer();
+        const container = this.container;
         const containerIndex = container.parent.children.findIndex(x => x == container);
-        const topParent = this.getTopParent();
-        const lastChild = container.getLastChild() as TextElement;
+        const topParent = this.topParent;
+        const lastChild = container.lastChild as TextElement;
         const leftFragment = container.copyElement(container.parent, new ElementRange(container.id, container.children[0].id, 0, this.id, offset, topParent.id));
         const rightFragment = container.copyElement(container.parent, new ElementRange(container.id, this.id, offset, lastChild.id, lastChild.text.length, topParent.id));
 
@@ -212,7 +219,7 @@ export class TextElement extends Element {
 
         let selectedElement!: SelectedElement;
 
-        if (rightFragment) selectedElement = rightFragment.getFirstChild().setSelectedElement(0);
+        if (rightFragment) selectedElement = rightFragment.firstChild.setSelectedElement(0);
 
         return selectedElement;
     }
@@ -264,7 +271,7 @@ export class TextElement extends Element {
         this.text = this.text.substring(0, offset) + key + this.text.substring(offset);
         offset++;
 
-        return super.onKeydown(key, offset);
+        return this.setSelectedElement(offset);
     }
 
 

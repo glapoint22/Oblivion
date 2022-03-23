@@ -28,7 +28,7 @@ export class Text {
 
 
     // ---------------------------------------------------------Render------------------------------------------------------------------
-    public render() {
+    public render(): void {
         if (this.root.children.length > 0) {
             while (this.htmlElement.firstChild) {
                 this.htmlElement.removeChild(this.htmlElement.firstChild);
@@ -46,45 +46,8 @@ export class Text {
 
 
 
-    // ---------------------------------------------------------Create Html------------------------------------------------------------------
-    private createHtml(element: Element, parent: HTMLElement) {
-        element.createHtml(parent);
-    }
-
-
-
-    // ---------------------------------------------------------Set Selection------------------------------------------------------------------
-    setSelection() {
-        const selection = window.getSelection();
-
-        if (selection) this.range = selection.getRangeAt(0);
-
-        if (this.range.collapsed) {
-            this.startElement = this.endElement = this.getElement(this.range.startContainer);
-        } else {
-            const startNode = this.getChildNode(this.range.startContainer);
-            this.range.setStart(startNode, this.range.startOffset);
-
-            const endNode = this.getChildNode(this.range.endContainer);
-            this.range.setEnd(endNode, this.range.endOffset);
-
-            this.startElement = this.getElement(this.range.startContainer);
-            this.endElement = this.getElement(this.range.endContainer);
-        }
-    }
-
-
-    // ---------------------------------------------------------Get Child Node------------------------------------------------------------------
-    getChildNode(node: Node): Node {
-        if (node.nodeName == '#text' || node.nodeName == 'BR') return node;
-
-        return this.getChildNode(node.firstChild as Node);
-    }
-
-
-
     // ---------------------------------------------------------On Paste------------------------------------------------------------------
-    onPaste(event: ClipboardEvent) {
+    public onPaste(event: ClipboardEvent): void {
         event.preventDefault();
     }
 
@@ -92,7 +55,7 @@ export class Text {
 
 
     // ---------------------------------------------------------On Mousedown------------------------------------------------------------------
-    public onMousedown() {
+    public onMousedown(): void {
         const onMouseup = () => {
             this.setSelection();
         }
@@ -106,7 +69,7 @@ export class Text {
 
 
     // ---------------------------------------------------------On Keyup------------------------------------------------------------------
-    onKeyup(event: KeyboardEvent) {
+    public onKeyup(event: KeyboardEvent): void {
         if (event.key.includes('Arrow') || (event.ctrlKey && (event.key == 'a' || event.key == 'A'))) {
             this.setSelection();
         }
@@ -118,7 +81,7 @@ export class Text {
 
 
     // ---------------------------------------------------------On Keydown------------------------------------------------------------------
-    onKeydown(event: KeyboardEvent) {
+    public onKeydown(event: KeyboardEvent): void {
         const key = this.getKey(event);
 
         if (!key) return;
@@ -153,20 +116,36 @@ export class Text {
             if (this.startElement == this.endElement) {
                 const textElement = this.startElement as TextElement;
 
+                // Set the text
                 textElement.text = textElement.text.substring(0, this.range.startOffset) + textElement.text.substring(this.range.endOffset);
+                selectedElement = this.setKey(key, textElement, this.range.startOffset);
 
-                if (textElement.text.length > 0) {
-                    selectedElement = this.startElement.setSelectedElement(this.range.startOffset);
-                } else {
-                    const container = this.startElement.getContainer();
-                    this.startElement.parent.deleteChild(this.startElement, { preserveContainer: true });
+                // If we have no text
+                if (textElement.text.length == 0) {
+                    const container = textElement.container;
+                    const firstChild = container.firstChild;
 
-                    container.children.push(new BreakElement(container));
-                    selectedElement = container.setSelectedElement(0);
+                    // Delete the text element
+                    const element = textElement.parent.deleteChild(textElement, {
+                        preserveContainer: true,
+                        selectedChildOnDeletion: textElement == firstChild ? SelectedElementOnDeletion.Next : SelectedElementOnDeletion.Previous
+                    });
+
+                    selectedElement = element ? element.setSelectedElement(textElement == firstChild ? 0 : Infinity) : textElement.setSelectedElement(0);
+
+
+
+                    // If the container has no more children add a break element
+                    if (container.children.length == 0) {
+                        const breakElement = new BreakElement(container);
+
+                        container.children.push(breakElement);
+                        selectedElement = container.setSelectedElement(0);
+                    }
                 }
 
             } else {
-                selectedElement = this.deleteRange(this.startElement, this.startElement.getContainer());
+                selectedElement = this.onRangeKeydown(key, this.startElement, this.startElement.container);
             }
         }
 
@@ -184,39 +163,102 @@ export class Text {
 
 
 
+    // ---------------------------------------------------------Create Html------------------------------------------------------------------
+    private createHtml(element: Element, parent: HTMLElement): void {
+        element.createHtml(parent);
+    }
 
 
-    deleteRange(element: Element, startContainer: Element): SelectedElement {
-        let nextChild!: Element;
 
+    // ---------------------------------------------------------Set Selection------------------------------------------------------------------
+    private setSelection(): void {
+        const selection = window.getSelection();
+
+        if (selection) this.range = selection.getRangeAt(0);
+
+        if (this.range.collapsed) {
+            this.startElement = this.endElement = this.getElement(this.range.startContainer);
+        } else {
+            const startNode = this.getChildNode(this.range.startContainer);
+            this.range.setStart(startNode, this.range.startOffset);
+
+            const endNode = this.getChildNode(this.range.endContainer);
+            this.range.setEnd(endNode, this.range.endOffset);
+
+            this.startElement = this.getElement(this.range.startContainer);
+            this.endElement = this.getElement(this.range.endContainer);
+        }
+    }
+
+
+    // ---------------------------------------------------------Get Child Node------------------------------------------------------------------
+    private getChildNode(node: Node): Node {
+        if (node.nodeName == '#text' || node.nodeName == 'BR') return node;
+
+        return this.getChildNode(node.firstChild as Node);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ---------------------------------------------------------Set Key------------------------------------------------------------------
+    private setKey(key: string, element: Element, offset: number): SelectedElement {
+        if (key == 'Enter') return element.onEnter(offset);
+        if (key == 'Backspace' || key == 'Delete') return element.setSelectedElement(offset);
+
+        return element.onKeydown(key, offset);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // ---------------------------------------------------------On Range Keydown------------------------------------------------------------------
+    private onRangeKeydown(key: string, currentElement: Element, startContainer: Element): SelectedElement {
         // Start element
-        if (element.id == this.startElement.id) {
-            if (element != startContainer.getFirstChild() || this.range.startOffset > 0) {
+        if (currentElement.id == this.startElement.id) {
+            if (currentElement != startContainer.firstChild || this.range.startOffset > 0) {
 
 
                 // Trim the end of the text
                 if (this.range.startOffset > 0) {
-                    const textElement = element as TextElement;
+                    const textElement = currentElement as TextElement;
                     textElement.text = textElement.text.substring(0, this.range.startOffset);
 
-                    nextChild = element.getNextChild().getFirstChild();
-                    return this.deleteRange(nextChild, startContainer);
+                    const nextChild = textElement.nextChild;
+
+                    if (nextChild) return this.onRangeKeydown(key, nextChild, startContainer);
                 }
             }
 
 
 
             // End Element
-        } else if (element.id == this.endElement.id) {
-            let selectedElement!: Element;
-            const currentContainer = element.getContainer();
+        } else if (currentElement.id == this.endElement.id) {
+            const currentContainer = currentElement.container;
 
             // If element is a text element
             if (this.range.endContainer.nodeType == 3) {
 
 
                 // If the offset is not to the end of the text
-                if (startContainer != currentContainer && (element != currentContainer.getLastChild() ||
+                if (startContainer != currentContainer && (currentElement != currentContainer.lastChild ||
                     this.range.endOffset != this.range.endContainer.textContent?.length)) {
 
                     // This will copy the elements from the current container and place them into the start container
@@ -229,29 +271,38 @@ export class Text {
                     });
 
 
-                    const newElement = this.searchElement(startContainer, element.id);
-                    if (newElement) element = newElement;
+                    const newElement = this.searchElement(startContainer, currentElement.id);
+                    if (newElement) currentElement = newElement;
 
                     // Delete the current container
                     currentContainer.parent.deleteChild(currentContainer);
                 }
 
 
-                // Trim the begining of the text
+                // Set the text if selection is NOT at the end of the text
                 if (this.range.endContainer.textContent?.length != this.range.endOffset) {
-                    const textElement = element as TextElement;
+                    const textElement = currentElement as TextElement;
 
                     textElement.text = textElement.text.substring(this.range.endOffset);
-                    return textElement.setSelectedElement(0);
+
+                    // Get the previous child
+                    const previousChild = textElement.previousChild;
+                    const startContainerHasPreviousChild = previousChild && previousChild.container == startContainer;
+
+                    if (previousChild && startContainerHasPreviousChild) {
+                        return this.setKey(key, previousChild, Infinity);
+                    } else {
+                        return this.setKey(key, textElement, 0);
+                    }
                 }
             }
 
 
             // This is used to determine what the selected element will be
-            const isLastChild = element == currentContainer.getLastChild() && this.range.endOffset == this.range.endContainer.textContent?.length;
-
-            selectedElement = element.parent.deleteChild(element, {
-                selectedChildOnDeletion: isLastChild ? SelectedElementOnDeletion.Previous : SelectedElementOnDeletion.Next,
+            const previousChild = currentElement.previousChild;
+            const hasPreviousChild = previousChild && previousChild.container == startContainer;
+            const selectedElement = currentElement.parent.deleteChild(currentElement, {
+                selectedChildOnDeletion: hasPreviousChild ? SelectedElementOnDeletion.Previous : SelectedElementOnDeletion.Next,
                 preserveContainer: currentContainer == startContainer
             });
 
@@ -259,21 +310,24 @@ export class Text {
             // If the start container has no children, create a break element inside the start container
             if (startContainer.children.length == 0) {
                 startContainer.children.push(new BreakElement(startContainer));
-                return startContainer.setSelectedElement(0);
+                return this.setKey(key, startContainer, 0);
             }
 
-            return selectedElement.setSelectedElement(isLastChild ? Infinity : 0);
+            if (selectedElement) return this.setKey(key, selectedElement, hasPreviousChild ? Infinity : 0);
         }
 
 
         // Delete the current element
-        const firstChild = element.getFirstChild();
-        nextChild = firstChild.parent.deleteChild(firstChild, {
+        const firstChild = currentElement.firstChild;
+        let nextChild!: Element;
+        const element = firstChild.parent.deleteChild(firstChild, {
             selectedChildOnDeletion: SelectedElementOnDeletion.Next,
-            preserveContainer: element.getContainer() == startContainer
+            preserveContainer: currentElement.container == startContainer
         });
 
-        return this.deleteRange(nextChild, startContainer);
+        if (element) nextChild = element;
+
+        return this.onRangeKeydown(key, nextChild, startContainer);
     }
 
 
@@ -284,7 +338,7 @@ export class Text {
 
 
     // ---------------------------------------------------------Get Key------------------------------------------------------------------
-    getKey(event: KeyboardEvent): string | null {
+    private getKey(event: KeyboardEvent): string | null {
         if (event.key == 'Backspace' || event.key == 'Enter' || event.key == 'Delete' || event.key == 'Tab') return event.key;
 
         if (!/^(?:\w|\W){1}$/.test(event.key) || event.ctrlKey) return null;
@@ -300,7 +354,7 @@ export class Text {
 
 
     // ---------------------------------------------------------Get Element------------------------------------------------------------------
-    getElement(node: Node): Element {
+    private getElement(node: Node): Element {
         if (node.nodeType == 3) {
             return this.getTextElement(node);
         }
@@ -362,7 +416,7 @@ export class Text {
 
 
     // ---------------------------------------------------------Create Element------------------------------------------------------------------
-    private createElement(data: TextData, parent: Element) {
+    private createElement(data: TextData, parent: Element): Element {
         let element!: Element;
 
         // Div
