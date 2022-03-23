@@ -1,12 +1,15 @@
 <div class="menu-bar">
     <div style="display: flex; align-items: center; height: 100%;">
-        <!-- <a routerLink="/product-builder">Product Builder</a>
-        <a routerLink="/page-builder">Page Builder</a>
-        <a routerLink="/email-builder">Email Builder</a> -->
+        
 
-        <div>
+        <div style="cursor: pointer;"
+             (click)="onNicheShackLogoClick()"
+             (mouseover)="overNicheHierarchy = true"
+             (mouseout)="overNicheHierarchy = false;"
+             >
             <img style="margin-top: 3px;" src="assets/shack.png">
         </div>
+
 
         <div style="display: flex; padding-left: 10px; color: #b4b4b4; font-size: 12px; height: 100%;">
             <div #htmlMenuBarOption

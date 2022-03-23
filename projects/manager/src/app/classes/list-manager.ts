@@ -1,4 +1,4 @@
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { ListItemComponent } from "../components/items/list-item/list-item.component";
 import { ItemSelectType, ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
@@ -36,6 +36,7 @@ export class ListManager {
   contextMenu!: ContextMenuComponent
   contextMenuOpen!: boolean;
   deletePromptOpen!: boolean;
+  overContextMenuListener!: Subscription;
 
   constructor(public lazyLoadingService: LazyLoadingService) { }
 
@@ -60,7 +61,8 @@ export class ListManager {
     if (this.contextMenuOpen) {
       this.contextMenu.onHide();
       // window.setTimeout(() => {
-        this.contextMenuOpen = false;
+      this.contextMenuOpen = false;
+      this.overContextMenuListener.unsubscribe();
       // })
       this.setItemFocus(this.selectedItem)
     } else {
@@ -224,8 +226,11 @@ export class ListManager {
 
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
-    if (this.contextMenuOpen) this.contextMenu.onHide();
-    this.contextMenuOpen = false;
+    if (this.contextMenuOpen) {
+      this.contextMenu.onHide();
+      this.contextMenuOpen = false;
+      this.overContextMenuListener.unsubscribe();
+    }
 
     // Initialize
     this.preventUnselectionFromRightMousedown = false;
@@ -838,7 +843,7 @@ export class ListManager {
       contextMenu.yPos = e.clientY + 5;
       contextMenu.parentObj = this.options.menu?.parentObj!;
       contextMenu.options = this.options.menu?.menuOptions!;
-      contextMenu.overMenu.subscribe((overMenu: boolean) => {
+      this.overContextMenuListener = contextMenu.overMenu.subscribe((overMenu: boolean) => {
         this.overButton = overMenu;
       })
     });
@@ -857,23 +862,27 @@ export class ListManager {
     }, SpinnerAction.None).then((prompt: PromptComponent) => {
       this.deletePromptOpen = true;
 
+
       // Delay so list does NOT show hover between context menu closing and prompt opening
-      window.setTimeout(()=> {
+      window.setTimeout(() => {
         this.contextMenuOpen = false;
-      },10)
-      
+        if(this.overContextMenuListener != null) this.overContextMenuListener.unsubscribe();
+      }, 10)
+
       prompt.parentObj = this.options.deletePrompt?.parentObj!;
       prompt.title = this.options.deletePrompt?.title!;
       prompt.message = this.options.deletePrompt?.message!;
       prompt.primaryButton = this.options.deletePrompt?.primaryButton!;
       prompt.secondaryButton = this.options.deletePrompt?.secondaryButton!;
       prompt.tertiaryButton = this.options.deletePrompt?.tertiaryButton!;
-      prompt.onClose.subscribe(() => {
+      let promptCloseListener: Subscription = prompt.onClose.subscribe(() => {
+
         // Wait a frame so escape key event knows the prompt was open
         window.setTimeout(() => {
           this.deletePromptOpen = false;
         })
         this.setItemFocus(this.selectedItem);
+        promptCloseListener.unsubscribe();
       })
     })
   }
