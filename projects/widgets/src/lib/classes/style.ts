@@ -1,4 +1,4 @@
 export class Style {
-    public style!: string;
-    public value!: string;
+
+    constructor(public style: string, public value: string) { }
 }

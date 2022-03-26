@@ -1,9 +1,10 @@
-import { NodeType } from "widgets";
+import { NodeType, Style } from "widgets";
 import { BreakElement } from "./break-element";
 import { ElementRange } from "./element-range";
 import { Element } from "./element";
 import { SelectedElementOnDeletion } from "./enums";
 import { SelectedElement } from "./selected-element";
+import { SpanElement } from "./span-element";
 
 export class TextElement extends Element {
 
@@ -296,5 +297,72 @@ export class TextElement extends Element {
     // ---------------------------------------------------Create Element-----------------------------------------------------
     createElement(parent: Element): Element {
         return new TextElement(parent, this.text);
+    }
+
+
+
+
+
+
+    styleBeginningText(style: Style, endOffset: number) {
+        const startText = this.text.substring(0, endOffset);
+        const endText = this.text.substring(endOffset);
+        const parent = this.parent;
+        const index = parent.children.findIndex(x => x == this);
+        const spanElement = new SpanElement(parent);
+
+        this.text = startText;
+        spanElement.styles.push(style);
+        spanElement.children.push(this.copyElement(spanElement) as TextElement);
+        parent.children.splice(index, 1, spanElement);
+        parent.children.splice(index + 1, 0, new TextElement(parent, endText));
+    }
+
+
+
+
+    styleMiddleText(style: Style, startOffset: number, endOffset: number) {
+        const middleText = this.text.substring(startOffset, endOffset);
+        const endText = this.text.substring(endOffset);
+        const parent = this.parent;
+        const spanElement = new SpanElement(parent);
+        const index = parent.children.findIndex(x => x == this);
+
+        this.text = this.text.substring(0, startOffset);
+        spanElement.styles.push(style);
+        spanElement.children.push(new TextElement(spanElement, middleText));
+        parent.children.splice(index + 1, 0, spanElement);
+        parent.children.splice(index + 2, 0, new TextElement(parent, endText));
+    }
+
+
+
+
+    styleEndText(style: Style, startOffset: number) {
+        const endText = this.text.substring(startOffset);
+        const parent = this.parent;
+        const spanElement = new SpanElement(parent);
+        const index = parent.children.findIndex(x => x == this);
+
+        this.text = this.text.substring(0, startOffset);
+        spanElement.styles.push(style);
+        spanElement.children.push(new TextElement(spanElement, endText));
+        parent.children.splice(index + 1, 0, spanElement);
+    }
+
+
+
+    styleWholeText(style: Style) {
+        if (this.parent.nodeType == NodeType.Span) {
+            this.parent.styles.push(style);
+        } else {
+            const parent = this.parent;
+            const index = parent.children.findIndex(x => x == this);
+            const spanElement = new SpanElement(parent);
+
+            spanElement.styles.push(style);
+            spanElement.children.push(this.copyElement(spanElement) as TextElement);
+            parent.children.splice(index, 1, spanElement);
+        }
     }
 }

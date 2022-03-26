@@ -1,0 +1,11 @@
+<!-- Background -->
+<background [background]="textWidget.background" (onChange)="update()"></background>
+
+<!-- Padding -->
+<padding [padding]="textWidget.padding" (onChange)="textWidget.padding.setClasses(textWidget.widgetElement); update()"></padding>
+
+<!-- Column Span -->
+<column-span [column]="widgetService.selectedColumn" (onChange)="widgetService.selectedColumn.columnSpan.setClasses(widgetService.selectedColumn.columnElement); update()"></column-span>
+
+<!-- Text -->
+<text [text]="textWidget.text"></text>

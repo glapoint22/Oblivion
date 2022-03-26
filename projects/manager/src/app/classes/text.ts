@@ -1,4 +1,4 @@
-import { NodeType, TextData } from "widgets";
+import { NodeType, Style, TextData } from "widgets";
 import { AnchorElement } from "./anchor-element";
 import { BreakElement } from "./break-element";
 import { DivElement } from "./div-element";
@@ -48,7 +48,7 @@ export class Text {
 
     // ---------------------------------------------------------On Paste------------------------------------------------------------------
     public onPaste(event: ClipboardEvent): void {
-        event.preventDefault();
+        // event.preventDefault();
     }
 
 
@@ -74,6 +74,8 @@ export class Text {
             this.setSelection();
         }
     }
+
+
 
 
 
@@ -225,6 +227,20 @@ export class Text {
 
 
 
+    public applyStyle(style: Style) {
+        const textElement = this.startElement as TextElement;
+        if (this.range.startOffset == 0 && this.range.endOffset < textElement.text.length) {
+            textElement.styleBeginningText(style, this.range.endOffset);
+        } else if (this.range.startOffset > 0 && this.range.endOffset < textElement.text.length) {
+            textElement.styleMiddleText(style, this.range.startOffset, this.range.endOffset);
+        } else if (this.range.startOffset > 0 && this.range.endOffset == textElement.text.length) {
+            textElement.styleEndText(style, this.range.startOffset);
+        } else if (this.range.startOffset == 0 && this.range.endOffset == textElement.text.length) {
+            textElement.styleWholeText(style);
+        }
+
+        this.render();
+    }
 
 
 

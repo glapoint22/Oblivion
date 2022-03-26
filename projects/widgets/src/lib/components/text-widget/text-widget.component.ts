@@ -4,7 +4,7 @@ import { Padding } from '../../classes/padding';
 import { TextData } from '../../classes/text-data';
 import { TextWidgetData } from '../../classes/text-widget-data';
 import { Widget } from '../../classes/widget';
-import { NodeType } from '../../classes/widget-enums';
+import { NodeType, WidgetType } from '../../classes/widget-enums';
 
 @Component({
   selector: 'text-widget',
@@ -16,6 +16,9 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
   public padding: Padding = new Padding();
   public textData: Array<TextData> = [];
 
+  ngOnInit() {
+    this.type = WidgetType.Text;
+  }
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();

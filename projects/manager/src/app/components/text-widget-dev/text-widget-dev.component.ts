@@ -15,6 +15,7 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
   constructor(public widgetService: WidgetService) { super() }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.height = 64;
   }
 
