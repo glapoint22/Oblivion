@@ -20,7 +20,7 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
   }
 
   setText() {
-    this.text = new Text(this.textData, this.textElement.nativeElement);
-    this.text.render();
+    this.text = new Text(this.textElement.nativeElement);
+    if (this.textData && this.textData.length > 0) this.text.load(this.textData);
   }
 }

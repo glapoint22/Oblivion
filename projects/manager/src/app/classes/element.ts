@@ -1,12 +1,12 @@
-import { NodeType, Style } from "widgets";
+import { NodeType, StyleData } from "widgets";
 import { ElementDeleteOptions } from "./element-delete-options";
 import { ElementRange } from "./element-range";
 import { SelectedElementOnDeletion } from "./enums";
-import { SelectedElement } from "./selected-element";
+import { TextSelection } from "./text-selection";
 
 export abstract class Element {
     public id!: string;
-    public styles: Array<Style> = [];
+    public styles: Array<StyleData> = [];
     public children: Array<Element> = [];
     public isRoot!: boolean;
     public nodeType!: NodeType
@@ -15,8 +15,6 @@ export abstract class Element {
     constructor(public parent: Element) {
         this.id = Math.random().toString(36).substring(2);
     }
-
-
 
 
 
@@ -185,7 +183,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------On Backspace-----------------------------------------------------   
-    onBackspace(offset: number): SelectedElement {
+    onBackspace(offset: number): TextSelection {
         const previousChild = this.previousChild;
 
         if (previousChild) {
@@ -206,7 +204,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------On Delete-----------------------------------------------------   
-    onDelete(offset: number): SelectedElement {
+    onDelete(offset: number): TextSelection {
         let nextElement = this.nextChild;
 
         if (nextElement) {
@@ -227,8 +225,8 @@ export abstract class Element {
 
                 return this.firstChild.setSelectedElement(offset);
             } else {
-                currentContainer.parent.deleteChild(currentContainer);
-                return nextElement.setSelectedElement(0);
+                nextElement = currentContainer.parent.deleteChild(currentContainer, { selectedChildOnDeletion: SelectedElementOnDeletion.Next });
+                if (nextElement) return nextElement.setSelectedElement(0);
             }
         }
 
@@ -242,10 +240,10 @@ export abstract class Element {
 
 
     // ---------------------------------------------------On Enter-----------------------------------------------------   
-    onEnter(offset: number): SelectedElement {
+    onEnter(offset: number): TextSelection {
         const index = this.parent.children.findIndex(x => x == this);
         const element = this.copyElement(this.parent);
-        let selectedElement!: SelectedElement;
+        let selectedElement!: TextSelection;
 
         if (element) {
             this.parent.children.splice(index + 1, 0, element);
@@ -264,7 +262,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Copy Element-----------------------------------------------------   
-    copyElement(parent: Element, range?: ElementRange): Element | null {
+    copyElement(parent: Element, range?: ElementRange, copyChildId = true): Element | null {
         if (range && (range.startElementId == this.id || range.endElementId == this.id)) {
             range.inRange = true;
         } else if (range && range.topParentId == this.id) {
@@ -274,9 +272,14 @@ export abstract class Element {
         if (!range || range.inRange || range.containerId == this.id || range.inTopParentRange) {
             const element = this.createElement(parent);
 
-            element.styles = this.styles;
+
+
+            this.styles.forEach((style: StyleData) => {
+                element.styles.push(new StyleData(style.style, style.value));
+            });
+
             this.children.forEach((child: Element) => {
-                const copiedElement = child.copyElement(element, range);
+                const copiedElement = child.copyElement(element, range, copyChildId);
 
                 if (copiedElement) element.children.push(copiedElement);
             });
@@ -290,13 +293,13 @@ export abstract class Element {
 
 
 
-    onKeydown(key: string, offset: number): SelectedElement {
+    onKeydown(key: string, offset: number): TextSelection {
         return this.firstChild.onKeydown(key, offset);
     }
 
 
-    setSelectedElement(offset: number): SelectedElement {
-        return new SelectedElement(this.id, 0);
+    setSelectedElement(offset: number): TextSelection {
+        return new TextSelection(this.id, 0);
     }
 
 

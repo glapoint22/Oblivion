@@ -1,6 +1,6 @@
 import { NodeType } from "widgets";
 import { Element } from "./element";
-import { SelectedElement } from "./selected-element";
+import { TextSelection } from "./text-selection";
 import { TextElement } from "./text-element";
 
 export class BreakElement extends Element {
@@ -18,7 +18,7 @@ export class BreakElement extends Element {
         parent.appendChild(breakElement);
     }
 
-    setSelectedElement(offset: number): SelectedElement {
+    setSelectedElement(offset: number): TextSelection {
         return this.container.setSelectedElement(0);
     }
 
@@ -28,7 +28,7 @@ export class BreakElement extends Element {
     }
 
 
-    onKeydown(key: string, offset: number): SelectedElement {
+    onKeydown(key: string, offset: number): TextSelection {
         const textElement = new TextElement(this.parent, key);
         
         this.parent.children = [];

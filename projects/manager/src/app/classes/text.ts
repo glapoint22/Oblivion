@@ -1,4 +1,4 @@
-import { NodeType, Style, TextData } from "widgets";
+import { NodeType, TextData } from "widgets";
 import { AnchorElement } from "./anchor-element";
 import { BreakElement } from "./break-element";
 import { DivElement } from "./div-element";
@@ -6,247 +6,130 @@ import { Element } from "./element";
 import { SelectedElementOnDeletion } from "./enums";
 import { ListItemElement } from "./list-item-element";
 import { OrderedListElement } from "./ordered-list-element";
-import { SelectedElement } from "./selected-element";
 import { SpanElement } from "./span-element";
 import { TextElement } from "./text-element";
+import { TextSelection } from "./text-selection";
 import { UnorderedListElement } from "./unordered-list-element";
 
 export class Text {
-    private rootParent!: Element;
-    private root: DivElement = new DivElement(this.rootParent);
-    private range!: Range;
-    private startElement!: Element;
-    private endElement!: Element;
+    public range!: Range;
+    public startElement!: Element;
+    public endElement!: Element;
+    public root!: DivElement;
 
-    constructor(textData: Array<TextData>, private htmlElement: HTMLElement) {
+    constructor(private htmlElement: HTMLElement) {
+        let rootParent!: Element;
+        this.root = new DivElement(rootParent);
         this.root.isRoot = true;
+
+        const divElement = new DivElement(this.root);
+        const breakElement = new BreakElement(divElement);
+
+        divElement.children.push(breakElement);
+        this.root.children.push(divElement);
+
+        this.render();
+
+        htmlElement.focus();
+        this.getSelection();
+        this.setRange();
+
+
+        // Mousedown
+        htmlElement.addEventListener('mousedown', () => {
+            const onMouseup = () => {
+                this.getSelection();
+                this.setRange();
+            }
+
+            window.addEventListener('mouseup', onMouseup, { once: true });
+        });
+
+        // Paste
+        htmlElement.addEventListener('paste', (event: ClipboardEvent) => {
+            event.preventDefault();
+        });
+
+
+        // Keydown
+        htmlElement.addEventListener('keydown', this.onKeydown);
+
+
+        // Keyup
+        htmlElement.addEventListener('keyup', (event: KeyboardEvent) => {
+            if (event.key.includes('Arrow') || (event.ctrlKey && (event.key == 'a' || event.key == 'A'))) {
+                this.getSelection();
+                this.setRange();
+            }
+        });
+    }
+
+
+
+    // ---------------------------------------------------------Load------------------------------------------------------------------
+    public load(textData: Array<TextData>) {
+        this.root.children = [];
 
         textData.forEach((data: TextData) => {
             this.root.children.push(this.createElement(data, this.root));
         });
-    }
 
+        this.render();
 
-    // ---------------------------------------------------------Render------------------------------------------------------------------
-    public render(): void {
-        if (this.root.children.length > 0) {
-            while (this.htmlElement.firstChild) {
-                this.htmlElement.removeChild(this.htmlElement.firstChild);
-            }
-        }
-
-        this.htmlElement.id = this.root.id;
-
-        this.root.children.forEach((element: Element) => {
-            this.createHtml(element, this.htmlElement);
-        });
+        const textSelection = this.root.children[0].firstChild.setSelectedElement(0);
+        let node = document.getElementById(textSelection.id) as Node;
+        if (textSelection.childIndex != -1) node = node.childNodes[textSelection.childIndex] as Node;
+        this.range.setStart(node, textSelection.offset);
+        this.setRange();
     }
 
 
 
 
 
-    // ---------------------------------------------------------On Paste------------------------------------------------------------------
-    public onPaste(event: ClipboardEvent): void {
-        // event.preventDefault();
-    }
+    concatenate(element: Element = this.root) {
+        for (let i = 0; i < element.children.length; i++) {
+            if (i != element.children.length - 1) {
+
+                // Span
+                if (element.children[i].nodeType == NodeType.Span &&
+                    element.children[i + 1].nodeType == NodeType.Span &&
+                    element.children[i].styles.every(x => element.children[i + 1].styles.map(x => x.style).includes(x.style) &&
+                        element.children[i + 1].styles.map(x => x.value).includes(x.value))) {
 
 
+                    element.children[i + 1].children.forEach((child: Element) => {
+                        const copiedElement = child.copyElement(element.children[i]);
 
+                        if (copiedElement) {
+                            element.children[i].children.push(copiedElement);
+                        }
 
-    // ---------------------------------------------------------On Mousedown------------------------------------------------------------------
-    public onMousedown(): void {
-        const onMouseup = () => {
-            this.setSelection();
-        }
-
-        window.addEventListener('mouseup', onMouseup, { once: true });
-    }
-
-
-
-
-
-
-    // ---------------------------------------------------------On Keyup------------------------------------------------------------------
-    public onKeyup(event: KeyboardEvent): void {
-        if (event.key.includes('Arrow') || (event.ctrlKey && (event.key == 'a' || event.key == 'A'))) {
-            this.setSelection();
-        }
-    }
-
-
-
-
-
-
-
-
-    // ---------------------------------------------------------On Keydown------------------------------------------------------------------
-    public onKeydown(event: KeyboardEvent): void {
-        const key = this.getKey(event);
-
-        if (!key) return;
-        event.preventDefault();
-
-        let selectedElement!: SelectedElement;
-
-        if (this.range.collapsed) {
-            switch (key) {
-                case 'Backspace':
-                    selectedElement = this.startElement.onBackspace(this.range.startOffset);
-                    break;
-
-                case 'Enter':
-                    selectedElement = this.startElement.onEnter(this.range.startOffset);
-                    break;
-
-                case 'Delete':
-                    selectedElement = this.startElement.onDelete(this.range.startOffset);
-                    break;
-
-                case 'Tab':
-                    // selectedElement = this.startElement.onTab(this.range.startOffset);
-                    break;
-
-                default:
-                    selectedElement = this.startElement.onKeydown(key, this.range.startOffset);
-                    break;
-            }
-
-        } else {
-            if (this.startElement == this.endElement) {
-                const textElement = this.startElement as TextElement;
-
-                // Set the text
-                textElement.text = textElement.text.substring(0, this.range.startOffset) + textElement.text.substring(this.range.endOffset);
-                selectedElement = this.setKey(key, textElement, this.range.startOffset);
-
-                // If we have no text
-                if (textElement.text.length == 0) {
-                    const container = textElement.container;
-                    const firstChild = container.firstChild;
-
-                    // Delete the text element
-                    const element = textElement.parent.deleteChild(textElement, {
-                        preserveContainer: true,
-                        selectedChildOnDeletion: textElement == firstChild ? SelectedElementOnDeletion.Next : SelectedElementOnDeletion.Previous
+                        element.children[i + 1].parent.deleteChild(element.children[i + 1]);
                     });
 
-                    selectedElement = element ? element.setSelectedElement(textElement == firstChild ? 0 : Infinity) : textElement.setSelectedElement(0);
-
-
-
-                    // If the container has no more children add a break element
-                    if (container.children.length == 0) {
-                        const breakElement = new BreakElement(container);
-
-                        container.children.push(breakElement);
-                        selectedElement = container.setSelectedElement(0);
-                    }
+                    i--;
+                    continue;
                 }
 
-            } else {
-                selectedElement = this.onRangeKeydown(key, this.startElement, this.startElement.container);
+
+                // Text
+                if (element.children[i].nodeType == NodeType.Text && element.children[i + 1].nodeType == NodeType.Text) {
+                    (element.children[i] as TextElement).text += (element.children[i + 1] as TextElement).text;
+                    element.children[i + 1].parent.deleteChild(element.children[i + 1]);
+
+                    i--;
+                    continue;
+                }
             }
-        }
 
-        this.render();
-
-        let node = document.getElementById(selectedElement.id) as Node;
-        if (selectedElement.childIndex != -1) node = node.childNodes[selectedElement.childIndex] as Node;
-        this.range.setStart(node, selectedElement.offset);
-        this.setSelection();
-    }
-
-
-
-
-
-
-
-    // ---------------------------------------------------------Create Html------------------------------------------------------------------
-    private createHtml(element: Element, parent: HTMLElement): void {
-        element.createHtml(parent);
-    }
-
-
-
-    // ---------------------------------------------------------Set Selection------------------------------------------------------------------
-    private setSelection(): void {
-        const selection = window.getSelection();
-
-        if (selection) this.range = selection.getRangeAt(0);
-
-        if (this.range.collapsed) {
-            this.startElement = this.endElement = this.getElement(this.range.startContainer);
-        } else {
-            const startNode = this.getChildNode(this.range.startContainer);
-            this.range.setStart(startNode, this.range.startOffset);
-
-            const endNode = this.getChildNode(this.range.endContainer);
-            this.range.setEnd(endNode, this.range.endOffset);
-
-            this.startElement = this.getElement(this.range.startContainer);
-            this.endElement = this.getElement(this.range.endContainer);
+            this.concatenate(element.children[i]);
         }
     }
-
-
-    // ---------------------------------------------------------Get Child Node------------------------------------------------------------------
-    private getChildNode(node: Node): Node {
-        if (node.nodeName == '#text' || node.nodeName == 'BR') return node;
-
-        return this.getChildNode(node.firstChild as Node);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ---------------------------------------------------------Set Key------------------------------------------------------------------
-    private setKey(key: string, element: Element, offset: number): SelectedElement {
-        if (key == 'Enter') return element.onEnter(offset);
-        if (key == 'Backspace' || key == 'Delete') return element.setSelectedElement(offset);
-
-        return element.onKeydown(key, offset);
-    }
-
-
-
-
-
-
-
-
-    public applyStyle(style: Style) {
-        const textElement = this.startElement as TextElement;
-        if (this.range.startOffset == 0 && this.range.endOffset < textElement.text.length) {
-            textElement.styleBeginningText(style, this.range.endOffset);
-        } else if (this.range.startOffset > 0 && this.range.endOffset < textElement.text.length) {
-            textElement.styleMiddleText(style, this.range.startOffset, this.range.endOffset);
-        } else if (this.range.startOffset > 0 && this.range.endOffset == textElement.text.length) {
-            textElement.styleEndText(style, this.range.startOffset);
-        } else if (this.range.startOffset == 0 && this.range.endOffset == textElement.text.length) {
-            textElement.styleWholeText(style);
-        }
-
-        this.render();
-    }
-
-
 
 
     // ---------------------------------------------------------On Range Keydown------------------------------------------------------------------
-    private onRangeKeydown(key: string, currentElement: Element, startContainer: Element): SelectedElement {
+    private onRangeKeydown(key: string, currentElement: Element, startContainer: Element): TextSelection {
         // Start element
         if (currentElement.id == this.startElement.id) {
             if (currentElement != startContainer.firstChild || this.range.startOffset > 0) {
@@ -349,10 +232,6 @@ export class Text {
 
 
 
-
-
-
-
     // ---------------------------------------------------------Get Key------------------------------------------------------------------
     private getKey(event: KeyboardEvent): string | null {
         if (event.key == 'Backspace' || event.key == 'Enter' || event.key == 'Delete' || event.key == 'Tab') return event.key;
@@ -365,12 +244,50 @@ export class Text {
 
 
 
+    // ---------------------------------------------------------Set Key------------------------------------------------------------------
+    private setKey(key: string, element: Element, offset: number): TextSelection {
+        if (key == 'Enter') return element.onEnter(offset);
+        if (!this.range.collapsed && (key == 'Backspace' || key == 'Delete')) return element.setSelectedElement(offset);
+        if (key == 'Backspace') return element.onBackspace(offset);
+        if (key == 'Delete') return element.onDelete(offset);
+
+        return element.onKeydown(key, offset);
+    }
+
+
+
+
+
+    // ---------------------------------------------------------Render------------------------------------------------------------------
+    public render(): void {
+        if (this.root.children.length > 0) {
+            while (this.htmlElement.firstChild) {
+                this.htmlElement.removeChild(this.htmlElement.firstChild);
+            }
+        }
+
+        this.htmlElement.id = this.root.id;
+
+        this.root.children.forEach((element: Element) => {
+            this.createHtml(element, this.htmlElement);
+        });
+    }
+
+
+
+
+    // ---------------------------------------------------------Create Html------------------------------------------------------------------
+    private createHtml(element: Element, parent: HTMLElement): void {
+        element.createHtml(parent);
+    }
+
+
 
 
 
 
     // ---------------------------------------------------------Get Element------------------------------------------------------------------
-    private getElement(node: Node): Element {
+    public getElement(node: Node): Element {
         if (node.nodeType == 3) {
             return this.getTextElement(node);
         }
@@ -385,7 +302,7 @@ export class Text {
 
 
     // ---------------------------------------------------------Search Element------------------------------------------------------------------
-    private searchElement(parentElement: Element, id: string): Element | null {
+    public searchElement(parentElement: Element, id: string): Element | null {
         if (parentElement.id == id) return parentElement;
 
         for (let i = 0; i < parentElement.children.length; i++) {
@@ -405,6 +322,116 @@ export class Text {
         }
 
         return null;
+    }
+
+
+
+
+    // ---------------------------------------------------------On Keydown------------------------------------------------------------------
+    private onKeydown = (event: KeyboardEvent) => {
+        const key = this.getKey(event);
+
+        if (!key) return;
+        event.preventDefault();
+
+        let textSelection!: TextSelection;
+
+        if (this.range.collapsed) {
+            textSelection = this.setKey(key, this.startElement, this.range.startOffset);
+        } else {
+            if (this.startElement == this.endElement) {
+                const textElement = this.startElement as TextElement;
+
+                // Set the text
+                textElement.text = textElement.text.substring(0, this.range.startOffset) + textElement.text.substring(this.range.endOffset);
+                textSelection = this.setKey(key, textElement, this.range.startOffset);
+
+                // If we have no text
+                if (textElement.text.length == 0) {
+                    const container = textElement.container;
+                    const firstChild = container.firstChild;
+
+                    // Delete the text element
+                    const element = textElement.parent.deleteChild(textElement, {
+                        preserveContainer: true,
+                        selectedChildOnDeletion: textElement == firstChild ? SelectedElementOnDeletion.Next : SelectedElementOnDeletion.Previous
+                    });
+
+                    // If the container has no more children add a break element
+                    if (container.children.length == 0) {
+                        const breakElement = new BreakElement(container);
+
+                        container.children.push(breakElement);
+                        textSelection = container.setSelectedElement(0);
+                    } else {
+                        textSelection = element ? element.setSelectedElement(textElement == firstChild ? 0 : Infinity) : textElement.setSelectedElement(0);
+                    }
+                }
+            } else {
+                textSelection = this.onRangeKeydown(key, this.startElement, this.startElement.container);
+            }
+        }
+
+        this.concatenate();
+
+        this.render();
+
+        let node = document.getElementById(textSelection.id) as Node;
+        if (textSelection.childIndex != -1) node = node.childNodes[textSelection.childIndex] as Node;
+        this.range.setStart(node, textSelection.offset);
+        this.setRange();
+    }
+
+    getSelection() {
+        const selection = window.getSelection();
+
+        if (selection) this.range = selection.getRangeAt(0);
+    }
+
+    setRange() {
+        if (this.range.collapsed) {
+            this.startElement = this.endElement = this.getElement(this.range.startContainer);
+        } else {
+            const startNode = this.getChildNode(this.range.startContainer);
+            this.range.setStart(startNode, this.range.startOffset);
+
+            const endNode = this.getChildNode(this.range.endContainer);
+            this.range.setEnd(endNode, this.range.endOffset);
+
+            this.startElement = this.getElement(this.range.startContainer);
+            this.endElement = this.getElement(this.range.endContainer);
+        }
+    }
+
+
+
+    trumpy() {
+        this.concatenate();
+
+        const startSelection = this.startElement.setSelectedElement(0);
+        const endSelection = this.endElement.setSelectedElement((this.endElement as TextElement).text.length);
+
+        this.render();
+
+
+        let node = document.getElementById(startSelection.id) as Node;
+        if (startSelection.childIndex != -1) node = node.childNodes[startSelection.childIndex] as Node;
+        this.range.setStart(node, 0);
+
+
+        node = document.getElementById(endSelection.id) as Node;
+        if (endSelection.childIndex != -1) node = node.childNodes[endSelection.childIndex] as Node;
+        this.range.setEnd(node, endSelection.offset);
+
+        this.htmlElement.focus();
+    }
+
+
+    // ---------------------------------------------------------Get Child Node------------------------------------------------------------------
+    private getChildNode(node: Node): Node {
+        if (node.nodeName == '#text' || node.nodeName == 'BR') return node;
+
+        return this.getChildNode(node.firstChild as Node);
     }
 
 

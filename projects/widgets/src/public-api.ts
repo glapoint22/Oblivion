@@ -31,7 +31,7 @@ export * from './lib/classes/query';
 export * from './lib/classes/query-params';
 export * from './lib/classes/row';
 export * from './lib/classes/shadow';
-export * from './lib/classes/style';
+export * from './lib/classes/style-data';
 export * from './lib/classes/text-data';
 export * from './lib/classes/text-widget-data';
 export * from './lib/classes/vertical-alignment';

@@ -1,10 +1,9 @@
-import { NodeType, Style } from "widgets";
+import { NodeType } from "widgets";
 import { BreakElement } from "./break-element";
 import { ElementRange } from "./element-range";
 import { Element } from "./element";
 import { SelectedElementOnDeletion } from "./enums";
-import { SelectedElement } from "./selected-element";
-import { SpanElement } from "./span-element";
+import { TextSelection } from "./text-selection";
 
 export class TextElement extends Element {
 
@@ -29,7 +28,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------On Backspace-----------------------------------------------------
-    onBackspace(offset: number): SelectedElement {
+    onBackspace(offset: number): TextSelection {
         // Remove the previous character
         this.text = this.text.substring(0, offset - 1) + this.text.substring(offset);
         offset--;
@@ -123,7 +122,7 @@ export class TextElement extends Element {
 
 
     // --------------------------------------------------On Delete-----------------------------------------------------
-    onDelete(offset: number): SelectedElement {
+    onDelete(offset: number): TextSelection {
 
         // If the cursor is at the end of the text
         if (offset == this.text.length) {
@@ -203,7 +202,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------On Enter-----------------------------------------------------   
-    onEnter(offset: number): SelectedElement {
+    onEnter(offset: number): TextSelection {
         const container = this.container;
         const containerIndex = container.parent.children.findIndex(x => x == container);
         const topParent = this.topParent;
@@ -218,7 +217,7 @@ export class TextElement extends Element {
         // Delete the container
         container.parent.deleteChild(container);
 
-        let selectedElement!: SelectedElement;
+        let selectedElement!: TextSelection;
 
         if (rightFragment) selectedElement = rightFragment.firstChild.setSelectedElement(0);
 
@@ -233,7 +232,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Copy Element-----------------------------------------------------
-    copyElement(parent: Element, range?: ElementRange): Element | null {
+    copyElement(parent: Element, range?: ElementRange, copyChildId = true): Element | null {
         let text = this.text;
 
         if (range && range.startElementId == this.id) {
@@ -257,7 +256,7 @@ export class TextElement extends Element {
             }
 
             const textElement = new TextElement(parent, text);
-            textElement.id = this.id;
+            if (copyChildId) textElement.id = this.id;
             return textElement;
         }
 
@@ -268,7 +267,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------On Keydown-----------------------------------------------------
-    onKeydown(key: string, offset: number): SelectedElement {
+    onKeydown(key: string, offset: number): TextSelection {
         this.text = this.text.substring(0, offset) + key + this.text.substring(offset);
         offset++;
 
@@ -282,11 +281,11 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Set Selected Element-----------------------------------------------------
-    setSelectedElement(offset: number): SelectedElement {
+    setSelectedElement(offset: number): TextSelection {
         const index = this.parent.children.findIndex(x => x == this);
 
         if (offset == Infinity) offset = this.text.length;
-        return new SelectedElement(this.parent.id, offset, index);
+        return new TextSelection(this.parent.id, offset, index);
     }
 
 
@@ -297,72 +296,5 @@ export class TextElement extends Element {
     // ---------------------------------------------------Create Element-----------------------------------------------------
     createElement(parent: Element): Element {
         return new TextElement(parent, this.text);
-    }
-
-
-
-
-
-
-    styleBeginningText(style: Style, endOffset: number) {
-        const startText = this.text.substring(0, endOffset);
-        const endText = this.text.substring(endOffset);
-        const parent = this.parent;
-        const index = parent.children.findIndex(x => x == this);
-        const spanElement = new SpanElement(parent);
-
-        this.text = startText;
-        spanElement.styles.push(style);
-        spanElement.children.push(this.copyElement(spanElement) as TextElement);
-        parent.children.splice(index, 1, spanElement);
-        parent.children.splice(index + 1, 0, new TextElement(parent, endText));
-    }
-
-
-
-
-    styleMiddleText(style: Style, startOffset: number, endOffset: number) {
-        const middleText = this.text.substring(startOffset, endOffset);
-        const endText = this.text.substring(endOffset);
-        const parent = this.parent;
-        const spanElement = new SpanElement(parent);
-        const index = parent.children.findIndex(x => x == this);
-
-        this.text = this.text.substring(0, startOffset);
-        spanElement.styles.push(style);
-        spanElement.children.push(new TextElement(spanElement, middleText));
-        parent.children.splice(index + 1, 0, spanElement);
-        parent.children.splice(index + 2, 0, new TextElement(parent, endText));
-    }
-
-
-
-
-    styleEndText(style: Style, startOffset: number) {
-        const endText = this.text.substring(startOffset);
-        const parent = this.parent;
-        const spanElement = new SpanElement(parent);
-        const index = parent.children.findIndex(x => x == this);
-
-        this.text = this.text.substring(0, startOffset);
-        spanElement.styles.push(style);
-        spanElement.children.push(new TextElement(spanElement, endText));
-        parent.children.splice(index + 1, 0, spanElement);
-    }
-
-
-
-    styleWholeText(style: Style) {
-        if (this.parent.nodeType == NodeType.Span) {
-            this.parent.styles.push(style);
-        } else {
-            const parent = this.parent;
-            const index = parent.children.findIndex(x => x == this);
-            const spanElement = new SpanElement(parent);
-
-            spanElement.styles.push(style);
-            spanElement.children.push(this.copyElement(spanElement) as TextElement);
-            parent.children.splice(index, 1, spanElement);
-        }
     }
 }
