@@ -15,11 +15,12 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
   constructor(public widgetService: WidgetService) { super() }
 
   ngOnInit(): void {
+    super.ngOnInit();
     this.height = 64;
   }
 
   setText() {
-    this.text = new Text(this.textData, this.textElement.nativeElement);
-    this.text.render();
+    this.text = new Text(this.textElement.nativeElement);
+    if (this.textData && this.textData.length > 0) this.text.load(this.textData);
   }
 }

@@ -1,0 +1,186 @@
+<panel [title]="'Text'">
+    <!-- Font -->
+    <div class="property">
+        <div class="label">Font</div>
+        <div style="flex: 1;">
+            <!-- <dropdown [height]="20" [dropdownList]="textWidget.textBox.font.options"
+                [selectedIndex]="textWidget.textBox.font.selectedIndex"
+                (onChange)="textWidget.textBox.font.setStyleValue($event)">
+            </dropdown> -->
+        </div>
+    </div>
+
+
+
+    <!-- Font Size -->
+    <div class="property">
+        <div class="label">Font Size</div>
+        <div style="flex: 1;">
+            <!-- <editable-dropdown [height]="20" [dropdownList]="textWidget.textBox.fontSize.options"
+                [selectedIndex]="textWidget.textBox.fontSize.selectedIndex"
+                (onChange)="textWidget.textBox.fontSize.setStyleValue($event)">
+            </editable-dropdown> -->
+        </div>
+    </div>
+
+
+
+    <!-- Font Color -->
+    <div class="property">
+        <div class="label">Color</div>
+        <div style="flex: 1;">
+            
+                <!-- <color-swatch [color]="fontColor" (onChange)="widgetService.$update.next()"></color-swatch> -->
+        </div>
+    </div>
+
+
+
+
+    <!-- Hightlight -->
+    <div class="property">
+        <div class="label">Highlight</div>
+        <div style="flex: 1;">
+            <!-- <color-swatch [color]="textWidget.textBox.highlightColor.value"
+                (onInit)="textWidget.textBox.highlightColor.colorPicker = $event"
+                (onColorPickerOpen)="textWidget.textBox.highlightColor.onColorPickerOpen()"></color-swatch> -->
+        </div>
+    </div>
+
+
+
+    <!-- Alignment -->
+    <div class="property">
+        <div class="label">Alignment</div>
+        <div style="flex: 1; display: flex; justify-content: space-between;">
+
+            <!-- Left align -->
+            <div class="icon-container" title="Left align (Ctrl+Shift+L)"
+                 >
+                <i class="fas fa-align-left"></i>
+            </div>
+
+            <!-- Center align -->
+            <div class="icon-container" title="Center align (Ctrl+Shift+E)"
+                 >
+                <i class="fas fa-align-center"></i>
+            </div>
+
+
+            <!-- Right align -->
+            <div class="icon-container" title="Right align (Ctrl+Shift+R)"
+                 >
+                <i class="fas fa-align-right"></i>
+            </div>
+
+
+            <!-- Justify -->
+            <div class="icon-container" title="Justify (Ctrl+Shift+J)"
+                 >
+                <i class="fas fa-align-justify"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Font Style -->
+    <div class="property">
+        <div class="label">Style</div>
+        <div style="flex: 1; display: flex; justify-content: space-between;">
+
+            <!-- Spacer -->
+            <div class="icon-container" style="cursor: default;"></div>
+
+            <!-- Bold -->
+            <div class="style-icon" (click)="bold.setStyle()">
+                <i class="fas fa-bold"></i>
+            </div>
+
+            <!-- Italic -->
+            <div class="style-icon" >
+                <i class="fas fa-italic"></i>
+            </div>
+
+            <!-- Underline -->
+            <div class="style-icon" >
+                <i class="fas fa-underline"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bullets -->
+    <div class="property">
+        <div class="label">Bullets</div>
+        <div style="flex: 1; display: flex; justify-content: space-between;">
+
+            <!-- Spacer -->
+            <div class="icon-container" style="cursor: default;"></div>
+
+            <!-- Spacer -->
+            <div class="icon-container" style="cursor: default;"></div>
+
+            <!-- Numbered list -->
+            <div class="icon-container" title="Numbered list (Ctrl+Shift+7)"
+                
+                >
+                <i class="fas fa-list-ol"></i>
+            </div>
+
+            <!-- Bulleted list -->
+            <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)"
+                
+                >
+                <i class="fas fa-list-ul"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Indent -->
+    <div class="property">
+        <div class="label">Indent</div>
+        <div style="flex: 1; display: flex; justify-content: space-between;">
+
+            <!-- Spacer -->
+            <div class="icon-container" style="cursor: default;"></div>
+
+            <!-- Spacer -->
+            <div class="icon-container" style="cursor: default;"></div>
+
+            <!-- Decrease indent -->
+            <div class="icon-container" title="Decrease indent (ctrl+[)"
+                >
+                <i class="fas fa-outdent"></i>
+            </div>
+
+
+            <!-- Increase indent -->
+            <div class="icon-container" title="Increase indent (ctrl+])"
+                >
+                <i class="fas fa-indent"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Link -->
+    <div class="property">
+        <div class="label">Link</div>
+        <div style="flex: 1; display: flex; justify-content: flex-end;">
+            <!-- <link-icon [link]="textWidget.textBox.linkStyle.link"
+                (onInit)="textWidget.textBox.linkStyle.linkPopup = $event"
+                (onLinkPopupOpen)="textWidget.textBox.linkStyle.onLinkPopupOpen()"></link-icon> -->
+        </div>
+    </div>
+
+
+</panel>
