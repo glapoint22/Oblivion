@@ -5,11 +5,6 @@ import { ListManager } from "./list-manager";
 
 export class HierarchyManager extends ListManager {
 
-    getItem(itemComponent: HierarchyItemComponent): HierarchyItem {
-        const hierarchyItem: HierarchyItem = this.sourceList.find(x => x.id == itemComponent.id) as HierarchyItem;
-        return hierarchyItem;
-    }
-
     getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem): number {
         let parentHierarchyIndex!: number;
         const hierarchyItemIndex = this.sourceList.indexOf(hierarchyItem);
@@ -38,18 +33,21 @@ export class HierarchyManager extends ListManager {
 
 
     onArrowClick(hierarchyItem: HierarchyItem) {
+        this.closeContextMenu();
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
-        this.showHide(this.sourceList.findIndex(x => x.id == hierarchyItem.id));
-        this.onListUpdate.next({ type: ListUpdateType.ArrowClicked,
-                                 id: hierarchyItem.id,
-                                 index: this.sourceList.indexOf(hierarchyItem),
-                                 name: hierarchyItem.name,
-                                 arrowDown: hierarchyItem.arrowDown,
-                                 addDisabled: this.addDisabled,
-                                 editDisabled: this.editDisabled,
-                                 deleteDisabled: this.deleteDisabled,
-                                 hasChildren: this.hasChildren(hierarchyItem)
-                                });
+        this.showHide(this.sourceList.findIndex(x => x.identity == hierarchyItem.identity));
+        this.onListUpdate.next({
+            type: ListUpdateType.ArrowClicked,
+            id: hierarchyItem.id,
+            index: this.sourceList.indexOf(hierarchyItem),
+            name: hierarchyItem.name,
+            addDisabled: this.addDisabled,
+            editDisabled: this.editDisabled,
+            deleteDisabled: this.deleteDisabled,
+            arrowDown: hierarchyItem.arrowDown,
+            hasChildren: this.hasChildren(hierarchyItem),
+            hierarchyGroupID: hierarchyItem.hierarchyGroupID
+        });
     }
 
 
@@ -138,7 +136,7 @@ export class HierarchyManager extends ListManager {
 
 
 
-    sort(hierarchyItem: HierarchyItem) {
+    sort(hierarchyItem: HierarchyItem): HierarchyItem {
         let parentHierarchyIndex: number = -1;
         let tempArray: Array<HierarchyItem> = new Array<HierarchyItem>();
         let newHierarchyGroup: Array<HierarchyItem> = new Array<HierarchyItem>();
@@ -169,7 +167,7 @@ export class HierarchyManager extends ListManager {
         // Loop through all the hierarchy items in the temp array
         tempArray.forEach(x => {
             // Get the index of that same hierarchy item from the source list
-            let index = this.sourceList.findIndex(y => y.id == x.id);
+            let index = this.sourceList.findIndex(y => y.identity == x.identity);
 
             // Copy the hierarchy item and all its children
             for (let i = index; i < this.sourceList.length; i++) {
@@ -186,7 +184,7 @@ export class HierarchyManager extends ListManager {
         this.sourceList.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
 
         // Remove the selected hierarchy item and then put it back so the indent can take effect
-        const hierarchyItemIndex = this.sourceList.findIndex(x => x.id == hierarchyItem?.id);
+        const hierarchyItemIndex = this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity);
         this.sourceList.splice(hierarchyItemIndex, 1);
         this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent } as HierarchyItem);
 
@@ -194,5 +192,27 @@ export class HierarchyManager extends ListManager {
         window.setTimeout(() => {
             this.addEventListeners();
         }, 35)
+
+        return this.sourceList[hierarchyItemIndex];
     }
+
+
+    setSelectedItemsUpdate(rightClick: boolean) {
+        const selectedItems = this.sourceList.filter(x => x.selected == true);
+        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
+    }
+
+
+    updateList(hierarchyItem: HierarchyItem) {
+        const newItem = this.newItem;
+    
+        // Sort the source list
+        let newListItem = this.sort(hierarchyItem);
+    
+        window.setTimeout(() => {
+          const listItemIndex = this.sourceList.findIndex(x => x.identity == newListItem?.identity);
+          this.selectItem(this.sourceList[listItemIndex]);
+          this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: hierarchyItem!.id, index: listItemIndex, name: hierarchyItem!.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID });
+        })
+      }
 }

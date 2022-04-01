@@ -1,41 +1,44 @@
 <div class="item-container" >
 
     <div *ngIf="listManager.editableItem != null" class="disabled-arrow-container">
-        <div [style.width.px]="listManager.getItem(this).hierarchyGroupID ? listManager.getItem(this).hierarchyGroupID! * 35 : 0"></div>
-        <div class="disabled-arrow" [ngClass]="{'arrow-down': listManager.getItem(this).arrowDown}"></div>
+        <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
+        <div class="disabled-arrow" [ngClass]="{'arrow-down': item.arrowDown}"></div>
     </div>
 
     <div #htmlItem
          class="item"
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
-         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(listManager.getItem(this), $event) : null) : listManager.onArrowClick(listManager.getItem(this))"
-         (blur)="listManager.onItemBlur(listManager.getItem(this))"
-         (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(listManager.getItem(this)) : null"
-         [contentEditable]="listManager.getItem(this) == listManager.editableItem"
-         [ngClass]="{'selected-item': listManager.getItem(this) == listManager.selectedItem,
-                'unselected-item': listManager.getItem(this) == listManager.unselectedItem,
-                'edited-item': listManager.getItem(this) == listManager.editableItem,
-                'transparent-item': listManager.editableItem != null && listManager.editableItem != listManager.getItem(this),
-                'selected-item-top': listManager.getItem(this).selectType == listManager.SelectType.Top,
-                'selected-item-all': listManager.getItem(this).selectType == listManager.SelectType.All,
-                'selected-item-middle': listManager.getItem(this).selectType == listManager.SelectType.Middle,
-                'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom,
+         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(item, $event) : null) : listManager.onArrowClick(item)"
+         (blur)="listManager.onItemBlur(item)"
+         (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(item) : null"
+         [contentEditable]="item == listManager.editableItem"
+         [ngClass]="{'selected-item': item == listManager.selectedItem,
+                'unselected-item': item == listManager.unselectedItem,
+                'edited-item': item == listManager.editableItem,
+                'transparent-item': listManager.editableItem != null && listManager.editableItem != item,
+                'selected-item-top': item.selectType == listManager.SelectType.Top,
+                'selected-item-all': item.selectType == listManager.SelectType.All,
+                'selected-item-middle': item.selectType == listManager.SelectType.Middle,
+                'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
                 'no-hover': listManager.contextMenuOpen}">
 
         <ng-container *ngIf="listManager.editableItem == null">
             
-            <div [style.width.px]="listManager.getItem(this).hierarchyGroupID ? listManager.getItem(this).hierarchyGroupID! * 35 : 0"></div>
+            <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
 
             
             <div class="arrow-container"
                 (mouseover)="listManager.overButton = true"
                 (mouseout)="listManager.overButton = false"
-                (click)="listManager.selectable ? listManager.onArrowClick(listManager.getItem(this)) : null">
-                <div class="arrow" [ngClass]="{'arrow-down': listManager.getItem(this).arrowDown}"></div>
+                (click)="listManager.selectable ? listManager.onArrowClick(item) : null">
+                <div class="arrow" [ngClass]="{'arrow-down': item.arrowDown}"></div>
             </div>
         </ng-container>
 
-        {{listManager.getItem(this).name}}
+        {{item.name}}
+
+        <div style="width: 10px;"></div>
+
     </div>
 </div>

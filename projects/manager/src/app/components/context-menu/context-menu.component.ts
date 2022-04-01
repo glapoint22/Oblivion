@@ -16,6 +16,7 @@ export class ContextMenuComponent extends LazyLoad {
   public options!: Array<MenuOption>;
   public MenuOptionType = MenuOptionType;
   public overMenu: Subject<boolean> = new Subject<boolean>();
+  public menuOpen: Subject<boolean> = new Subject<boolean>();
   public menuVisible!: boolean;
   public hasCover!: boolean;
 
@@ -64,6 +65,7 @@ export class ContextMenuComponent extends LazyLoad {
   onClick(optionFunction: Function, functionParameters?: Array<any>) {
     this.onHide();
     this.overMenu.next(false);
+    this.menuOpen.next(false);
     optionFunction.apply(this.parentObj, functionParameters);
   }
 

@@ -22,14 +22,17 @@ export class HierarchyComponent extends ListComponent {
   }
 
 
-    add(isParent?: boolean | number) {
-      // If a hierarchy item is selected
-      if (this.listManager.selectedItem) {
-        let index: number;
-        let hierarchyGroupID: number;
+  add(itemIndex?: number, isParent?: boolean | string) {
+    // If a hierarchy item is selected
+    if (this.listManager.selectedItem) {
+      let index: number;
+      let hierarchyGroupID: number;
 
-        // If the selected hierarchy item has children or that selected hierarchy item belongs to the top level group or it is marked as a parent
-        if (this.listManager.hasChildren(this.listManager.selectedItem) || this.listManager.selectedItem.hierarchyGroupID == 0 || (this.listManager.selectedItem as HierarchyItem).isParent) {
+      // If the selected hierarchy item has children or that selected hierarchy item belongs to the top level group or it is marked as a parent
+      if (this.listManager.hasChildren(this.listManager.selectedItem) || this.listManager.selectedItem.hierarchyGroupID == 0 || (this.listManager.selectedItem as HierarchyItem).isParent) {
+
+        // If the item index is NOT specified
+        if (!itemIndex) {
           index = this.sourceList.indexOf(this.listManager.selectedItem) + 1;
           hierarchyGroupID = this.listManager.selectedItem.hierarchyGroupID! + 1;
 
@@ -38,22 +41,33 @@ export class HierarchyComponent extends ListComponent {
             this.listManager.onArrowClick(this.sourceList[this.sourceList.indexOf(this.listManager.selectedItem)]);
           }
 
-          // If the selected hierarchy item does NOT have children and that selected hierarchy item does NOT belong to the top level group and it is NOT marked as a parent
-        } else {
+          // But if the item index is specified
+        }else {
+          index = itemIndex + 1;
+          hierarchyGroupID = this.sourceList[itemIndex].hierarchyGroupID! + 1;
 
-          index = this.listManager.getIndexOfHierarchyItemParent(this.listManager.selectedItem) + 1;
-          hierarchyGroupID = this.listManager.selectedItem.hierarchyGroupID!;
+          if (!(this.sourceList[itemIndex]).arrowDown) {
+            this.listManager.onArrowClick(this.sourceList[itemIndex]);
+          }
         }
-        this.sourceList.splice(index, 0, { id: -1, name: '', hierarchyGroupID: hierarchyGroupID, isParent: isParent as boolean });
 
-        // If a hierarchy item is NOT selected
+
+        // If the selected hierarchy item does NOT have children and that selected hierarchy item does NOT belong to the top level group and it is NOT marked as a parent
       } else {
-        this.sourceList.unshift({ id: -1, name: '', hierarchyGroupID: 0 });
+
+        index = this.listManager.getIndexOfHierarchyItemParent(this.listManager.selectedItem) + 1;
+        hierarchyGroupID = this.listManager.selectedItem.hierarchyGroupID!;
       }
+      this.sourceList.splice(index, 0, { id: -1, name: '', hierarchyGroupID: hierarchyGroupID, isParent: isParent as boolean });
 
-
-      window.setTimeout(() => {
-        this.listManager.setAddItem(this.sourceList[this.sourceList.findIndex(x => x.id == -1)]);
-      })
+      // If a hierarchy item is NOT selected
+    } else {
+      this.sourceList.unshift({ id: -1, name: '', hierarchyGroupID: 0 });
     }
+
+
+    window.setTimeout(() => {
+      this.listManager.setAddItem(this.sourceList[this.sourceList.findIndex(x => x.id == -1)]);
+    })
+  }
 }

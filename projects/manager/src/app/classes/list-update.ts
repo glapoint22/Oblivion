@@ -14,4 +14,6 @@ export class ListUpdate {
   isChecked?: boolean;
   arrowDown?: boolean;
   hasChildren?: boolean;
+  hierarchyGroupID?: number;
+  rightClick?: boolean;
 }

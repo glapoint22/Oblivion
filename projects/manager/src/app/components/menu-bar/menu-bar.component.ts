@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
 import { MenuOptionType } from '../../classes/enums';
-import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MenuBarOption } from '../../classes/menu-bar-option';
 import { NicheHierarchyComponent } from '../../components/niche-hierarchy/niche-hierarchy.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
@@ -24,143 +23,9 @@ export class MenuBarComponent {
   private nicheHierarchyOpen!: boolean;
   public overNicheHierarchy!: boolean;
   public selectedMenuBarOption!: MenuBarOption;
+
+
   constructor(public lazyLoadingService: LazyLoadingService, private router: Router) { }
-
-
-
-
-
-
-  public niches: Array<HierarchyItem> =
-    [
-      {
-        id: 1,
-        name: 'Item 1a',
-        hierarchyGroupID: 0,
-        hidden: false,
-        arrowDown: false
-      },
-
-      {
-        id: 2,
-        name: 'Item 2a',
-        hierarchyGroupID: 1,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 3,
-        name: 'Item 3a',
-        hierarchyGroupID: 2,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 4,
-        name: 'Item 3b',
-        hierarchyGroupID: 2,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 5,
-        name: 'Item 3c',
-        hierarchyGroupID: 2,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 6,
-        name: 'Item 2b',
-        hierarchyGroupID: 1,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 7,
-        name: 'Item 3d',
-        hierarchyGroupID: 2,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 8,
-        name: 'Item 4a',
-        hierarchyGroupID: 3,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 9,
-        name: 'Item 4b',
-        hierarchyGroupID: 3,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 10,
-        name: 'Item 4c',
-        hierarchyGroupID: 3,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 11,
-        name: 'Item 2c',
-        hierarchyGroupID: 1,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 12,
-        name: 'Item 2d',
-        hierarchyGroupID: 1,
-        hidden: true,
-        arrowDown: false
-      },
-
-      {
-        id: 13,
-        name: 'Item 1b',
-        hierarchyGroupID: 0,
-        hidden: false,
-        arrowDown: false
-      },
-
-      {
-        id: 14,
-        name: 'Item 1c',
-        hierarchyGroupID: 0,
-        hidden: false,
-        arrowDown: false
-      },
-
-      {
-        id: 15,
-        name: 'Item 2e',
-        hierarchyGroupID: 1,
-        hidden: true,
-        arrowDown: false
-      }
-    ]
-
-
-
-
-
-
-
-
 
 
   public menuBarOptions: Array<MenuBarOption> = [
@@ -286,10 +151,9 @@ export class MenuBarComponent {
 
 
   async onNicheShackLogoClick() {
-
     if (!this.nicheHierarchyOpen) {
       this.nicheHierarchyOpen = true;
-      window.addEventListener('mousedown', this.onMouseDown);
+      this.addEventListeners();
 
       this.lazyLoadingService.load(async () => {
         const { NicheHierarchyComponent } = await import('../../components/niche-hierarchy/niche-hierarchy.component');
@@ -300,8 +164,7 @@ export class MenuBarComponent {
         }
       }, SpinnerAction.None).then((nicheHierarchy: NicheHierarchyComponent) => {
         this.nicheHierarchy = nicheHierarchy;
-        nicheHierarchy.niches = this.niches;
-        this.overNicheHierarchyListener = nicheHierarchy.overNicheHierarchy.subscribe((overNicheHierarchy: boolean)=> {
+        this.overNicheHierarchyListener = nicheHierarchy.overNicheHierarchy.subscribe((overNicheHierarchy: boolean) => {
           this.overNicheHierarchy = overNicheHierarchy;
         })
       })
@@ -321,19 +184,25 @@ export class MenuBarComponent {
       this.eventListenersAdded = true;
       window.addEventListener('mousedown', this.onMouseDown);
       window.addEventListener('keydown', this.onKeyDown);
+      window.addEventListener('blur', this.onInnerWindowBlur);
     }
   }
 
+
+  removeEventListeners() {
+    this.eventListenersAdded = false;
+    window.removeEventListener('mousedown', this.onMouseDown);
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('blur', this.onInnerWindowBlur);
+  }
 
 
   closeMenu() {
     this.menuOpen = false;
     this.contextMenu.onHide();
-    this.eventListenersAdded = false;
     this.selectedMenuBarOption = null!;
     this.overMenuListener.unsubscribe();
-    window.removeEventListener('mousedown', this.onMouseDown);
-    window.removeEventListener('keydown', this.onKeyDown);
+    this.removeEventListeners();
   }
 
 
@@ -341,18 +210,58 @@ export class MenuBarComponent {
     this.nicheHierarchy.close();
     this.nicheHierarchyOpen = false;
     this.overNicheHierarchyListener.unsubscribe();
-    window.removeEventListener('mousedown', this.onMouseDown);
+    this.removeEventListeners();
   }
 
 
   onMouseDown = () => {
     if (!this.overMenu && this.menuOpen) this.closeMenu();
-    if (this.nicheHierarchyOpen && !this.overNicheHierarchy) this.closeNicheHierarchy();
+
+    if (this.nicheHierarchyOpen &&
+      !this.nicheHierarchy.moveFormOpen &&
+      !this.overNicheHierarchy &&
+      !this.nicheHierarchy.hierarchy.listManager.editableItem &&
+      !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen &&
+      !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen) {
+      this.closeNicheHierarchy();
+    }
   }
 
 
   onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') this.closeMenu();
+    if (e.key === 'Escape') {
+      if (this.menuOpen) this.closeMenu();
+
+      if (this.nicheHierarchyOpen &&
+        !this.nicheHierarchy.moveFormOpen &&
+        !this.nicheHierarchy.hierarchy.listManager.editableItem &&
+        !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen &&
+        !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen) {
+        this.closeNicheHierarchy();
+      }
+    }
+  }
+
+
+  onInnerWindowBlur = () => {
+    if (this.menuOpen) this.closeMenu();
+
+    // If the niche hierarchy is being displayed
+    if(this.nicheHierarchy.hierarchy) {
+      if (this.nicheHierarchyOpen &&
+        !this.nicheHierarchy.moveFormOpen &&
+        !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen) {
+        this.closeNicheHierarchy();
+        this.nicheHierarchy.hierarchy.listManager.editableItem = null!;
+      }
+
+      // If the search text is being displayed
+    }else {
+
+      if (this.nicheHierarchyOpen) {
+        this.closeNicheHierarchy();
+      }
+    }
   }
 
 
@@ -395,6 +304,7 @@ export class MenuBarComponent {
       }
     }
   }
+
 
   openProductBuilder() {
     this.selectedMenuBarOption = null!;

@@ -37,14 +37,9 @@ export class ListManager {
   contextMenuOpen!: boolean;
   deletePromptOpen!: boolean;
   overContextMenuListener!: Subscription;
+  contextMenuOpenListener!: Subscription;
 
   constructor(public lazyLoadingService: LazyLoadingService) { }
-
-
-  getItem(itemComponent: ListItemComponent): ListItem {
-    const listItem: ListItem = this.sourceList.find(x => x.id == itemComponent.id)!;
-    return listItem;
-  }
 
 
   addEventListeners() {
@@ -59,18 +54,16 @@ export class ListManager {
 
   removeEventListeners() {
     if (this.contextMenuOpen) {
-      this.contextMenu.onHide();
-      // window.setTimeout(() => {
-      this.contextMenuOpen = false;
-      this.overContextMenuListener.unsubscribe();
-      // })
+      this.closeContextMenu();
       this.setItemFocus(this.selectedItem)
     } else {
-      this.removeFocus();
-      this.eventListenersAdded = false;
-      window.removeEventListener('keyup', this.onKeyUp);
-      window.removeEventListener('keydown', this.onKeyDown);
-      window.removeEventListener('blur', this.onInnerWindowBlur);
+      if (this.unselectable) {
+        this.removeFocus();
+        this.eventListenersAdded = false;
+        window.removeEventListener('keyup', this.onKeyUp);
+        window.removeEventListener('keydown', this.onKeyDown);
+        window.removeEventListener('blur', this.onInnerWindowBlur);
+      }
     }
   }
 
@@ -141,7 +134,7 @@ export class ListManager {
       } else {
 
         // Then remove all listeners and selections
-        if (this.unselectable) this.removeEventListeners();
+        this.removeEventListeners();
       }
     }
   }
@@ -198,7 +191,7 @@ export class ListManager {
             && !this.preventUnselectionFromRightMousedown) {
             // If a list item is NOT being deleted and there is no right mouse down event on a list item,
             // then remove all listeners and selections
-            if (this.unselectable) this.removeEventListeners();
+            this.removeEventListeners();
           }
           // If a right mouse down event prevented the selections and listeners from being removed,
           // then we can reset this back to false, because it alreday served its purpose
@@ -211,9 +204,9 @@ export class ListManager {
       }
 
       // But if we are clicking on an icon button and an item is in edit mode
-      if (this.overButton || !this.unselectable) {
+      if (this.overButton) {
         // Send the focus right back to the item that is in edit mode
-        this.setItemFocus(listItem)
+        this.setItemFocus(listItem);
       }
 
       window.setTimeout(() => {
@@ -226,11 +219,8 @@ export class ListManager {
 
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
-    if (this.contextMenuOpen) {
-      this.contextMenu.onHide();
-      this.contextMenuOpen = false;
-      this.overContextMenuListener.unsubscribe();
-    }
+    this.setItemFocus(listItem);
+    this.closeContextMenu();
 
     // Initialize
     this.preventUnselectionFromRightMousedown = false;
@@ -257,8 +247,15 @@ export class ListManager {
       window.setTimeout(() => {
         this.currentFocusedItem = document.activeElement!;
         this.setItemSelection(listItem);
+        this.setAddEditDelete();
+        
       });
     }
+
+    window.setTimeout(()=> {
+      this.setSelectedItemsUpdate(e != null && e.button == 2);
+    })
+    
   }
 
 
@@ -337,10 +334,8 @@ export class ListManager {
       this.setSelectedItemsNoModifierKey(listItem);
     }
 
-    this.setAddEditDelete();
-
-    const selectedItems = this.sourceList.filter(x => x.selected == true);
-    this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.id == x?.id), name: x.name } }) });
+    // this.setAddEditDelete();
+    // this.setSelectedItemsUpdate();
   }
 
 
@@ -463,8 +458,6 @@ export class ListManager {
     listItem.selected = true;
     // Define the pivot item
     this.pivotItem = listItem;
-
-    // this.onListUpdate.next({ type: ListUpdateType.SelectedItems, id: listItem.id, index: this.sourceList.findIndex(x => x.id == listItem?.id), name: listItem.name });
   }
 
 
@@ -555,7 +548,7 @@ export class ListManager {
         // Get all the items that are going to be deleted
         let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
         // Send the delete info back so it can be used for the prompt message
-        this.onListUpdate.next({ type: ListUpdateType.DeletePrompt, deletedItems: deletedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.id == x?.id), name: x.name } }) });
+        this.onListUpdate.next({ type: ListUpdateType.DeletePrompt, deletedItems: deletedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.identity == x?.identity), name: x.name, hierarchyGroupID: x.hierarchyGroupID } }) });
         // Open the prompt
         this.openPrompt();
 
@@ -586,7 +579,7 @@ export class ListManager {
       let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete(deletedItems);
 
       // Update the list
-      this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.id == x?.id), name: x.name } }) });
+      this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.identity == x?.identity), name: x.name, hierarchyGroupID: x.hierarchyGroupID } }) });
 
       // Loop through all the deleted items
       deletedItems.forEach(() => {
@@ -688,7 +681,7 @@ export class ListManager {
 
 
         // Then remove all listeners and selections
-        if (this.unselectable) this.removeEventListeners();
+        this.removeEventListeners();
       }
 
       this.setAddEditDelete();
@@ -810,6 +803,7 @@ export class ListManager {
 
   sort(listItem?: ListItem) {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+    return listItem
   }
 
 
@@ -817,13 +811,19 @@ export class ListManager {
     const newItem = this.newItem;
 
     // Sort the source list
-    this.sort(listItem);
+    let newListItem = this.sort(listItem);
 
     window.setTimeout(() => {
-      const listItemIndex = this.sourceList.findIndex(x => x.id == listItem?.id);
+      const listItemIndex = this.sourceList.findIndex(x => x.identity == newListItem?.identity);
       this.selectItem(this.sourceList[listItemIndex]);
       this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: listItem!.id, index: listItemIndex, name: listItem!.name });
     })
+  }
+
+
+  setSelectedItemsUpdate(rightClick: boolean) {
+    const selectedItems = this.sourceList.filter(x => x.selected == true);
+    this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
   }
 
 
@@ -846,7 +846,20 @@ export class ListManager {
       this.overContextMenuListener = contextMenu.overMenu.subscribe((overMenu: boolean) => {
         this.overButton = overMenu;
       })
+      this.contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
+        this.contextMenuOpen = menuOpen;
+      })
     });
+  }
+
+
+  closeContextMenu() {
+    if (this.contextMenuOpen) {
+      this.contextMenu.onHide();
+      this.contextMenuOpen = false;
+      this.overContextMenuListener.unsubscribe();
+      this.contextMenuOpenListener.unsubscribe();
+    }
   }
 
 
@@ -866,7 +879,8 @@ export class ListManager {
       // Delay so list does NOT show hover between context menu closing and prompt opening
       window.setTimeout(() => {
         this.contextMenuOpen = false;
-        if(this.overContextMenuListener != null) this.overContextMenuListener.unsubscribe();
+        if (this.overContextMenuListener != null) this.overContextMenuListener.unsubscribe();
+        if (this.contextMenuOpenListener != null) this.contextMenuOpenListener.unsubscribe();
       }, 10)
 
       prompt.parentObj = this.options.deletePrompt?.parentObj!;

@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ListItem } from '../../../classes/list-item';
 import { ListManager } from '../../../classes/list-manager';
 
 @Component({
@@ -7,13 +8,15 @@ import { ListManager } from '../../../classes/list-manager';
   styleUrls: ['../list-item/list-item.component.scss']
 })
 export class ListItemComponent {
-  @Input() id!: number;
+  @Input() item!: ListItem;
   @Input() listManager!: ListManager;
   @ViewChild('htmlItem') htmlItem!: ElementRef<HTMLElement>;
 
-  ngAfterViewInit() {
-    window.setTimeout(()=> {
-      this.listManager.getItem(this).htmlItem = this.htmlItem;
-    })
+  ngOnInit() {
+    this.item.identity = this;
   }
- }
+
+  ngAfterViewInit() {
+    this.item.htmlItem = this.htmlItem;
+  }
+}

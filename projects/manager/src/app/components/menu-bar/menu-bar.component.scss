@@ -8,6 +8,28 @@
     padding: 0 9px;
 }
 
+.left-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.shack-container {
+    cursor: pointer;
+}
+
+img{
+    margin-top: 3px;
+}
+
+.menu-options-container {
+    display: flex;
+    padding-left: 10px;
+    color: #b4b4b4;
+    font-size: 12px;
+    height: 100%;
+}
+
 .menu-option {
     padding: 0 10px;
     height: 100%;
