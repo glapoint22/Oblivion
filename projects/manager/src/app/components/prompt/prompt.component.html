@@ -8,33 +8,30 @@
         </div>
         <div class="drop-shadow"></div>
 
-        <div class="content">
-
-            <div class="message">{{message}}</div>
+        <div class="message" [innerHtml]="message"></div>
             
-            <div class="button-container">
+        <div class="button-container">
 
-                <div>
-                    <button *ngIf="tertiaryButton && tertiaryButton.name"
-                            class="dark-button"
-                            (click)="tertiaryButtonFunction()">
-                        {{tertiaryButton.name}}
-                    </button>
-                </div>
+            <div>
+                <button *ngIf="tertiaryButton && tertiaryButton.name"
+                        class="dark-button"
+                        (click)="tertiaryButtonFunction()">
+                    {{tertiaryButton.name}}
+                </button>
+            </div>
 
-                <div>
-                    <button *ngIf="secondaryButton && secondaryButton.name"
-                            class="dark-button"
-                            (click)="secondaryButtonFunction()">
-                        {{secondaryButton.name}}
-                    </button>
+            <div>
+                <button *ngIf="secondaryButton && secondaryButton.name"
+                        class="dark-button"
+                        (click)="secondaryButtonFunction()">
+                    {{secondaryButton.name}}
+                </button>
 
-                    <button *ngIf="primaryButton && primaryButton.name"
-                            class="gold-button"
-                            (click)="primaryButtonFunction()">
-                        {{primaryButton.name}}
-                    </button>
-                </div>
+                <button *ngIf="primaryButton && primaryButton.name"
+                        class="gold-button"
+                        (click)="primaryButtonFunction()">
+                    {{primaryButton.name}}
+                </button>
             </div>
         </div>
     </div>

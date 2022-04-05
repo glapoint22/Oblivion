@@ -65,7 +65,7 @@ export class ListComponent implements OnInit {
 
 
       this.listManager.onListUpdate.next({ addDisabled: this.listManager.addDisabled, editDisabled: this.listManager.editDisabled, deleteDisabled: this.listManager.deleteDisabled });
-    })
+    },100)
   }
 
 
@@ -78,12 +78,21 @@ export class ListComponent implements OnInit {
       // Add the new item to the source list
       this.sourceList.push({ id: id!, name: name! });
 
-      // Sort the list
-      this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
 
       window.setTimeout(() => {
-        this.listManager.setAddItem(this.sourceList.find(x => x.id == id)!);
+        const identity = this.sourceList[this.sourceList.length - 1].identity;
+
+        // Sort the list
+        this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+
+        window.setTimeout(() => {
+          this.listManager.setAddItem(this.sourceList.find(x => x.identity == identity)!);
+        })
+
       })
+
+
+
 
 
       // Editable

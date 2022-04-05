@@ -2,13 +2,13 @@
 
     <ng-container *ngIf="listManager.editableItem != null">
 
-        <div [style.width.px]="listManager.getItem(this).hierarchyGroupID ? (listManager.getItem(this).hierarchyGroupID! * 35) + 10 : 0"></div>
+        <div [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 10 : 0"></div>
 
         <label class="checkbox disabled-checkbox">
             
             <input class="disabled-input"
                 type="checkbox"
-                [checked]="listManager.getItem(this).isChecked">
+                [checked]="item.isChecked">
             <span class="disabled-checkmark"></span>
         </label>
 
@@ -18,37 +18,37 @@
          class="item"
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
-         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(listManager.getItem(this), $event) : null) : listManager.onCheckboxChange(listManager.getItem(this))"
-         (blur)="listManager.onItemBlur(listManager.getItem(this))"
-         (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(listManager.getItem(this)) : null"
-         [contentEditable]="listManager.getItem(this) == listManager.editableItem"
-         [ngClass]="{'selected-item': listManager.getItem(this) == listManager.selectedItem,
-                'unselected-item': listManager.getItem(this) == listManager.unselectedItem,
-                'edited-item': listManager.getItem(this) == listManager.editableItem,
-                'transparent-item': listManager.editableItem != null && listManager.editableItem != listManager.getItem(this),
-                'selected-item-top': listManager.getItem(this).selectType == listManager.SelectType.Top,
-                'selected-item-all': listManager.getItem(this).selectType == listManager.SelectType.All,
-                'selected-item-middle': listManager.getItem(this).selectType == listManager.SelectType.Middle,
-                'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom,
+         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(item, $event) : null) : listManager.onCheckboxChange(item)"
+         (blur)="listManager.onItemBlur(item)"
+         (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(item) : null"
+         [contentEditable]="item == listManager.editableItem"
+         [ngClass]="{'selected-item': item == listManager.selectedItem,
+                'unselected-item': item == listManager.unselectedItem,
+                'edited-item': item == listManager.editableItem,
+                'transparent-item': listManager.editableItem != null && listManager.editableItem != item,
+                'selected-item-top': item.selectType == listManager.SelectType.Top,
+                'selected-item-all': item.selectType == listManager.SelectType.All,
+                'selected-item-middle': item.selectType == listManager.SelectType.Middle,
+                'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
                 'no-hover': listManager.contextMenuOpen}">
 
 
         <ng-container *ngIf="listManager.editableItem == null">
 
-            <div [style.width.px]="listManager.getItem(this).hierarchyGroupID ? listManager.getItem(this).hierarchyGroupID! * 35 : 0"></div>
+            <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
 
             <label class="checkbox"
                    (mouseover)="listManager.overButton = true"
                    (mouseout)="listManager.overButton = false">
 
                 <input type="checkbox"
-                        [checked]="listManager.getItem(this).isChecked"
-                        (change)="listManager.selectable ? listManager.onCheckboxChange(listManager.getItem(this)) : null"
+                        [checked]="item.isChecked"
+                        (change)="listManager.selectable ? listManager.onCheckboxChange(item) : null"
                         [disabled] = "!listManager.selectable">
                 <span class="checkmark"></span>
             </label>
 
         </ng-container>
-        {{listManager.getItem(this).name}}
+        {{item.name}}
     </div>
 </div>

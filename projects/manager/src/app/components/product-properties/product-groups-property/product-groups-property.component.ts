@@ -65,6 +65,8 @@ export class ProductGroupsPropertyComponent {
     this._listUpdate = update;
 
     if (update.type == ListUpdateType.SelectedItems) {
+
+
       if(update.selectedItems!.length > 1) {
         this.listOptions.menu!.menuOptions[1].isDisabled = true;
         this.listOptions.menu!.menuOptions[2].name = 'Delete Groups';
@@ -78,6 +80,10 @@ export class ProductGroupsPropertyComponent {
 
     if (update.type == ListUpdateType.Add) {
       // this.productGroups[update.index!].id = 22;
+    }
+
+    if (update.type == ListUpdateType.Edit) {
+      // console.log(update)
     }
 
     if(update.type == ListUpdateType.DeletePrompt) {

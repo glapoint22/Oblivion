@@ -9,18 +9,19 @@
     [ngStyle]="{'visibility': menuVisible ? 'visible' : 'hidden'}">
 
     <ng-container *ngFor="let menuOption of options">
-        <div *ngIf="menuOption.type == MenuOptionType.MenuItem"
-            class="menu-item"
-            [ngClass]="{'disabled': menuOption.isDisabled}"
-            (click)="menuOption.optionFunction && !menuOption.isDisabled ? onClick(menuOption.optionFunction!, menuOption.optionFunctionParameters!) : null">
-            <div class="menu-item-text">{{menuOption.name}}</div>
-            <div *ngIf="menuOption.shortcut" class="menu-item-text">{{menuOption.shortcut}}</div>
-        </div>
+        <ng-container *ngIf="!menuOption.hidden">
+            <div *ngIf="menuOption.type == MenuOptionType.MenuItem"
+                class="menu-item"
+                [ngClass]="{'disabled': menuOption.isDisabled}"
+                (click)="menuOption.optionFunction && !menuOption.isDisabled ? onClick(menuOption.optionFunction!, menuOption.optionFunctionParameters!) : null">
+                <div class="menu-item-text">{{menuOption.name}}</div>
+                <div *ngIf="menuOption.shortcut" class="menu-item-text">{{menuOption.shortcut}}</div>
+            </div>
 
 
-        <div *ngIf="menuOption.type == MenuOptionType.Divider" class="divider">
-            <div class="divider-line"></div>
-        </div>
-
+            <div *ngIf="menuOption.type == MenuOptionType.Divider" class="divider">
+                <div class="divider-line"></div>
+            </div>
+        </ng-container>
     </ng-container>
 </div>

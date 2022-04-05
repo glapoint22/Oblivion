@@ -1,0 +1,42 @@
+<div class="hide backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="base">
+
+        <div class="header">
+            <div>Move {{moveItemType}}</div>
+            <div class="x" (click)="close()">X</div>
+        </div>
+        <div class="drop-shadow"></div>
+
+        <div class="content">
+
+            <div class="label-container">
+                <span class="label">Move {{moveItemType}}:</span>
+                <span class="value">{{moveItem.name}}</span>
+            </div>
+
+            <div class="label-container">
+                <span class="label">From {{toItemType}}:</span>
+                <span class="value">{{fromItem.name}}</span>
+            </div>
+
+            <div class="label-container">
+                <span class="label">To {{toItemType}}:</span>
+                <span *ngIf="toItem" class="value">{{toItem.name}}</span>
+                <span *ngIf="!toItem" class="value-placeholder">&lt;{{toItemType}}&gt;</span>
+            </div>
+
+            <div class="instructions">Select a {{toItemType | lowercase}} from the following list:</div>
+
+            <div class="list-container">
+                <list #list [sourceList]="destinationList" [options]="listOptions" (onListUpdate)="listUpdate = $event"></list>
+            </div>
+        </div>
+
+
+        <div class="button-container">
+            <button class="dark-button" (click)="close()">Cancel</button>
+            <button class="gold-button" [disabled]="!toItem" (click)="onMove()">Move</button>
+        </div>
+    </div>
+</div>

@@ -12,7 +12,7 @@
 }
 
 .base {
-    width: 400px;
+    width: 450px;
     background: #1b1b1b;
     border: 1px solid #2c2c2c;
     border-radius: 7px;
@@ -46,20 +46,47 @@
 }
 
 
-
-
-.message {
-    padding: 12px 20px;
-    margin-bottom: 22px;
-    font-size: 15px;
-    color: #c0c0c0;
-    line-height: 21px;
+.content {
+    padding: 10px;
+    color: #b4b4b4;
 }
+
+.label-container {
+    margin-bottom: 9px;
+}
+
+.label {
+    margin-right: 5px;
+    color: #b4b4b4;
+}
+
+.value {
+    color: #ffba00;
+}
+
+.value-placeholder {
+    color: rgba(255, 187, 0, 0.301);
+}
+
+.instructions {
+    color: #616161;
+    font-style: italic;
+    margin-top: 13px;
+}
+
+.list-container {
+    height: 262px;
+    margin-top: 6px;
+    background: #171717;
+    border: 1px solid #353535;
+    overflow-y: auto;
+}
+
 
 .button-container {
     padding: 0 10px 9px 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 
 .gold-button {
@@ -78,6 +105,12 @@
 
     &:active {
         background: linear-gradient(lighten(#fedb7d, 10), lighten(#c28f06, 10));
+    }
+
+    &:disabled {
+        cursor: default;
+        background: linear-gradient(rgba(255, 221, 127, 0.22), rgba(192, 141, 2, 0.22));
+        color: rgba(0, 0, 0, 0.5);
     }
 }
 

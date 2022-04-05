@@ -3,14 +3,14 @@ import { CheckboxListItem } from "./checkbox-list-item";
 
 export class CheckboxListManager extends CheckboxHierarchyManager {
 
-    sort(listItem: CheckboxListItem) {
+    sort(listItem: CheckboxListItem): CheckboxListItem {
         // Sort
         this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
 
         // If a new item is being added to the list
         if (this.newItem) {
             // Get the index of where the sorted item now resides
-            const listItemIndex = this.sourceList.findIndex(x => x.id == listItem?.id);
+            const listItemIndex = this.sourceList.findIndex(x => x.identity == listItem?.identity);
 
             // Remove the new item because the checkbox appears to the right of the list name
             this.sourceList.splice(listItemIndex, 1);
@@ -22,6 +22,10 @@ export class CheckboxListManager extends CheckboxHierarchyManager {
             window.setTimeout(() => {
                 this.addEventListeners();
             }, 35)
+
+            return this.sourceList[listItemIndex] as CheckboxListItem;
         }
+
+        return listItem;
     }
 }

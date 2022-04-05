@@ -1,29 +1,31 @@
 <div class="item-container">
 
     <div *ngIf="listManager.editableItem != null">
-        <div [style.width.px]="listManager.getItem(this).hierarchyGroupID ? (listManager.getItem(this).hierarchyGroupID! * 35) + 22 : 0"></div>
+        <div [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 22 : 0"></div>
     </div>
 
     <div #htmlItem 
         class="item" 
         tabindex="-1"
         (contextmenu)="$event.preventDefault()"
-        (mousedown)="listManager.onItemDown(listManager.getItem(this), $event)"
-        (blur)="listManager.onItemBlur(listManager.getItem(this))"
-        (dblclick)="listManager.onItemDoubleClick(listManager.getItem(this))"
-        [contentEditable]="listManager.getItem(this) == listManager.editableItem"
-        [ngClass]="{'selected-item': listManager.getItem(this) == listManager.selectedItem,
-                    'unselected-item': listManager.getItem(this) == listManager.unselectedItem,
-                    'edited-item': listManager.getItem(this) == listManager.editableItem,
-                    'transparent-item': listManager.editableItem != null && listManager.editableItem != listManager.getItem(this),
-                    'selected-item-top': listManager.getItem(this).selectType == listManager.SelectType.Top,
-                    'selected-item-all': listManager.getItem(this).selectType == listManager.SelectType.All,
-                    'selected-item-middle': listManager.getItem(this).selectType == listManager.SelectType.Middle,
-                    'selected-item-bottom': listManager.getItem(this).selectType == listManager.SelectType.Bottom,
+        (mousedown)="listManager.onItemDown(item, $event)"
+        (blur)="listManager.onItemBlur(item)"
+        (dblclick)="listManager.onItemDoubleClick(item)"
+        [contentEditable]="item == listManager.editableItem"
+        [ngClass]="{'selected-item': item == listManager.selectedItem,
+                    'unselected-item': item == listManager.unselectedItem,
+                    'edited-item': item == listManager.editableItem,
+                    'transparent-item': listManager.editableItem != null && listManager.editableItem != item,
+                    'selected-item-top': item.selectType == listManager.SelectType.Top,
+                    'selected-item-all': item.selectType == listManager.SelectType.All,
+                    'selected-item-middle': item.selectType == listManager.SelectType.Middle,
+                    'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
                     'no-hover': listManager.contextMenuOpen}">
 
-        <div *ngIf="listManager.editableItem == null" [style.width.px]="listManager.getItem(this).hierarchyGroupID ? (listManager.getItem(this).hierarchyGroupID! * 35) + 22 : 0"></div>
+        <div *ngIf="listManager.editableItem == null" [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 22 : 0"></div>
 
-        {{listManager.getItem(this).name}}
+        {{item.name}}
+
+        <div style="width: 10px;"></div>
     </div>
 </div>
