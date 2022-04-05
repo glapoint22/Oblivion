@@ -1,6 +1,7 @@
 import { NodeType } from "widgets";
 import { BreakElement } from "./break-element";
 import { Element } from "./element";
+import { SpanElement } from "./span-element";
 import { Style } from "./style";
 import { TextElement } from "./text-element";
 
@@ -49,7 +50,7 @@ export class ToggleStyle extends Style {
                 newElement = this.removeStyleFromAllOfText(textElement);
             }
         } else {
-            newElement = this.removeStyleFromBreakElement(element);
+            newElement = this.removeStyleFromDivElement(element);
         }
 
         return newElement;
@@ -69,7 +70,7 @@ export class ToggleStyle extends Style {
         let newTextElement!: TextElement;
 
         if (parentCopy) {
-            parentCopy.styles.splice(styleIndex, 1);
+            if (styleIndex != -1) parentCopy.styles.splice(styleIndex, 1);
 
             if (parentCopy.styles.length == 0) {
                 newTextElement = new TextElement(textElement.parent.parent, startText);
@@ -164,38 +165,133 @@ export class ToggleStyle extends Style {
 
     // ---------------------------------------------------------Remove Style From All Of Text----------------------------------------------------------
     private removeStyleFromAllOfText(textElement: TextElement): TextElement {
-        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
+        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name && x.value == this.value);
 
-        textElement.parent.styles.splice(styleIndex, 1);
+        if (styleIndex != -1 && textElement.parent.children.length == 1) {
 
-        if (textElement.parent.styles.length == 0) {
-            const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
-            const newText = new TextElement(textElement.parent.parent, textElement.text);
 
-            textElement.parent.parent.children.splice(index, 1, newText);
+            textElement.parent.styles.splice(styleIndex, 1);
 
-            return newText;
+            if (textElement.parent.styles.length == 0) {
+                const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
+                const newText = new TextElement(textElement.parent.parent, textElement.text);
+
+                textElement.parent.parent.children.splice(index, 1, newText);
+
+                return newText;
+            }
+
+            return textElement;
         }
 
-        return textElement;
+        return this.removeTopStyle(textElement);
     }
 
 
 
 
+    // ---------------------------------------------------------Remove Top Style----------------------------------------------------------
+    private removeTopStyle(textElement: TextElement): TextElement {
+        const container = textElement.container;
+        let styleParent = textElement.parent;
+        let curentElement = textElement as Element;
+
+
+        while (!styleParent.styles.some(x => x.style == this.name && x.value == this.value)) {
+            curentElement = styleParent;
+            styleParent = styleParent.parent;
+
+            // If the style is not found, return
+            if (styleParent.nodeType == NodeType.Div || styleParent.nodeType == NodeType.Li) return textElement;
+        }
+
+        const currentElementIndex = styleParent.children.findIndex(x => x == curentElement);
+        const styleParentIndex = styleParent.parent.children.findIndex(x => x == styleParent);
+
+        // Make a copy of the parent that has the style
+        const styleParentCopy = styleParent.copyElement(styleParent.parent);
+
+        if (styleParentCopy) {
+            // Remove the style
+            const styleIndex = styleParentCopy.styles.findIndex(x => x.style == this.name && x.value == this.value);
+            styleParentCopy.styles.splice(styleIndex, 1);
+
+            // This will add the style parent copy to its parent
+            styleParent.parent.children.splice(styleParentIndex + 1, 0, styleParentCopy);
+
+
+            // Remove any children that is before the current element
+            if (currentElementIndex > 0) {
+                styleParentCopy.children.splice(0, currentElementIndex);
+            }
+
+
+
+            // This will create the style for the elements that are NOT in the selection
+            let currentChild = styleParentCopy.firstChild;
+            while (currentChild && currentChild.isChildOf(styleParentCopy)) {
+                if (!this.text.selection.isInRange(currentChild.id)) {
+                    if (currentChild.parent.children.length == 1) {
+                        currentChild.parent.styles.push(this.createStyleData())
+                    } else {
+                        const index = currentChild.parent.children.findIndex(x => x == currentChild);
+                        const spanElement = new SpanElement(currentChild.parent);
+                        const currentChildCopy = currentChild.copyElement(spanElement);
+
+                        spanElement.styles.push(this.createStyleData());
+
+                        if (currentChildCopy) {
+                            spanElement.children.push(currentChildCopy);
+                            currentChild.parent.children.splice(index, 1, spanElement);
+                            currentChild = currentChildCopy;
+                        }
+                    }
+                }
+
+                currentChild = currentChild.nextChild as TextElement;
+            }
+
+            // If the style parent copy has no more styles
+            if (styleParentCopy.styles.length == 0) {
+                let index = styleParentIndex + 1;
+
+                // Move the children outside the style parent copy
+                styleParentCopy.children.forEach((child: Element) => {
+                    const childCopy = child.copyElement(styleParentCopy.parent);
+
+                    if (childCopy) styleParentCopy.parent.children.splice(index, index == styleParentIndex + 1 ? 1 : 0, childCopy);
+
+                    index++;
+                });
+            }
+        }
+
+        // Remove the children from the original style parent starting from the current element
+        styleParent.children.splice(currentElementIndex, styleParent.children.length - currentElementIndex);
+
+        // If we have no more children, delete the original style parent
+        if (styleParent.children.length == 0) {
+            styleParent.parent.children.splice(styleParentIndex, 1);
+        }
+
+        return Element.search(textElement.id, container) as TextElement;
+    }
+
+
 
 
     // ---------------------------------------------------------Remove Style From Break Element----------------------------------------------------------
-    private removeStyleFromBreakElement(element: Element): Element {
-        const styleIndex = element.parent.styles.findIndex(x => x.style == this.name);
+    private removeStyleFromDivElement(element: Element): Element {
+        const child = element.firstChild;
 
-        element.parent.styles.splice(styleIndex, 1);
+        const styleIndex = child.parent.styles.findIndex(x => x.style == this.name);
 
-        if (element.parent.styles.length == 0) {
-            const newBreakElement = new BreakElement(element.parent.parent);
+        child.parent.styles.splice(styleIndex, 1);
 
-            element.parent.parent.children.splice(0, 1, newBreakElement);
-            return newBreakElement;
+        if (child.parent.styles.length == 0) {
+            const newBreakElement = new BreakElement(child.parent.parent);
+
+            child.parent.parent.children.splice(0, 1, newBreakElement);
         }
 
         return element;

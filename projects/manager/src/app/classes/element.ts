@@ -1,8 +1,8 @@
 import { NodeType, StyleData } from "widgets";
 import { ElementDeleteOptions } from "./element-delete-options";
 import { ElementRange } from "./element-range";
+import { Selection } from "./selection";
 import { SelectedElementOnDeletion } from "./enums";
-import { TextSelection } from "./text-selection";
 
 export abstract class Element {
     public id!: string;
@@ -17,6 +17,29 @@ export abstract class Element {
     }
 
 
+
+    // ---------------------------------------------------Search-----------------------------------------------------
+    public static search(elementId: string, elementToSearchIn: Element): Element | null {
+        if (elementToSearchIn.id == elementId) return elementToSearchIn;
+
+        for (let i = 0; i < elementToSearchIn.children.length; i++) {
+            const element = elementToSearchIn.children[i];
+
+            if (element.id == elementId) {
+                return element;
+            }
+
+            if (element.children.length > 0) {
+                const result = Element.search(elementId, element);
+
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+
+        return null;
+    }
 
     // ---------------------------------------------------First Child-----------------------------------------------------
     public get firstChild(): Element {
@@ -183,15 +206,15 @@ export abstract class Element {
 
 
     // ---------------------------------------------------On Backspace-----------------------------------------------------   
-    onBackspace(offset: number): TextSelection {
+    onBackspace(offset: number): Selection {
         const previousChild = this.previousChild;
 
         if (previousChild) {
             this.parent.deleteChild(this);
-            return previousChild.setSelectedElement(Infinity);
+            return previousChild.getStartSelection(Infinity);
         }
 
-        return this.setSelectedElement(offset);
+        return this.getStartSelection(offset);
     }
 
 
@@ -204,7 +227,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------On Delete-----------------------------------------------------   
-    onDelete(offset: number): TextSelection {
+    onDelete(offset: number): Selection {
         let nextElement = this.nextChild;
 
         if (nextElement) {
@@ -223,14 +246,14 @@ export abstract class Element {
 
                 otherContainer.parent.deleteChild(otherContainer);
 
-                return this.firstChild.setSelectedElement(offset);
+                return this.firstChild.getStartSelection(offset);
             } else {
                 nextElement = currentContainer.parent.deleteChild(currentContainer, { selectedChildOnDeletion: SelectedElementOnDeletion.Next });
-                if (nextElement) return nextElement.setSelectedElement(0);
+                if (nextElement) return nextElement.getStartSelection();
             }
         }
 
-        return this.setSelectedElement(0);
+        return this.getStartSelection();
     }
 
 
@@ -240,17 +263,17 @@ export abstract class Element {
 
 
     // ---------------------------------------------------On Enter-----------------------------------------------------   
-    onEnter(offset: number): TextSelection {
+    onEnter(offset: number): Selection {
         const index = this.parent.children.findIndex(x => x == this);
         const element = this.copyElement(this.parent);
-        let selectedElement!: TextSelection;
+        let selection!: Selection;
 
         if (element) {
             this.parent.children.splice(index + 1, 0, element);
-            selectedElement = element.setSelectedElement(0);
+            selection = element.getStartSelection();
         }
 
-        return selectedElement;
+        return selection;
     }
 
 
@@ -261,7 +284,7 @@ export abstract class Element {
 
 
 
-    // ---------------------------------------------------Copy Element-----------------------------------------------------   
+    // ---------------------------------------------------Copy Element-----------------------------------------------------
     copyElement(parent: Element, range?: ElementRange, copyChildId = true): Element | null {
         if (range && (range.startElementId == this.id || range.endElementId == this.id)) {
             range.inRange = true;
@@ -293,14 +316,61 @@ export abstract class Element {
 
 
 
-    onKeydown(key: string, offset: number): TextSelection {
+    // ---------------------------------------------------On Key Down-----------------------------------------------------
+    onKeydown(key: string, offset: number): Selection {
         return this.firstChild.onKeydown(key, offset);
     }
 
 
-    setSelectedElement(offset: number): TextSelection {
-        return new TextSelection(this.id, 0);
+
+
+
+    // ---------------------------------------------------Get Start Selection-----------------------------------------------------
+    getStartSelection(startOffset?: number): Selection {
+        const selection = new Selection();
+
+        selection.startElement = this;
+        selection.startOffset = 0;
+
+        return selection;
     }
+
+
+    // ---------------------------------------------------Get Start-End Selection-----------------------------------------------------
+    getStartEndSelection(): Selection {
+        return new Selection();
+    }
+
+
+
+
+    // ---------------------------------------------------Get End Selection-----------------------------------------------------
+    getEndSelection(endOffset?: number): Selection {
+        const selection = new Selection();
+
+        selection.endElement = this;
+        selection.endOffset = 0;
+
+        return selection;
+    }
+
+
+
+
+
+
+    // ---------------------------------------------------Is Child Of-----------------------------------------------------
+    isChildOf(parent: Element): boolean {
+        let currentElement = this.parent;
+
+        while (true) {
+            if (currentElement == parent) return true;
+            if (currentElement.nodeType == NodeType.Div || currentElement.nodeType == NodeType.Li) return false;
+
+            currentElement = currentElement.parent;
+        }
+    }
+    
 
 
     abstract createHtml(parent: HTMLElement): void;
