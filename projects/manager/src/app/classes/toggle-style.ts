@@ -61,67 +61,122 @@ export class ToggleStyle extends Style {
 
     // ---------------------------------------------------------Remove Style At Beginning Of Text----------------------------------------------------------
     private removeStyleAtBeginningOfText(textElement: TextElement, endOffset: number): TextElement {
+        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
         const startText = textElement.text.substring(0, endOffset);
         const endText = textElement.text.substring(endOffset);
-        const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
-        const parentCopy = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
-        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
-        const childIndex = textElement.parent.children.findIndex(x => x == textElement);
         let newTextElement!: TextElement;
 
-        if (parentCopy) {
-            if (styleIndex != -1) parentCopy.styles.splice(styleIndex, 1);
+        if (styleIndex != -1 && textElement.parent.children.length == 1) {
+            const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
+            const parentCopy = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
 
-            if (parentCopy.styles.length == 0) {
-                newTextElement = new TextElement(textElement.parent.parent, startText);
-                textElement.parent.parent.children.splice(index, 0, newTextElement);
-            } else {
-                newTextElement = parentCopy.children[childIndex] as TextElement;
-                newTextElement.text = startText;
-                textElement.parent.parent.children.splice(index, 0, parentCopy);
+            if (parentCopy) {
+                parentCopy.styles.splice(styleIndex, 1);
+
+                if (parentCopy.styles.length == 0) {
+                    newTextElement = new TextElement(textElement.parent.parent, startText);
+                    textElement.parent.parent.children.splice(index, 0, newTextElement);
+                } else {
+                    newTextElement = parentCopy.children[0] as TextElement;
+                    newTextElement.text = startText;
+                    textElement.parent.parent.children.splice(index, 0, parentCopy);
+                }
             }
+
+            textElement.text = endText;
+
+            return newTextElement;
         }
 
-        textElement.text = endText;
+        const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
+        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
+        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, undefined, false) : textElement.copyElement(textElement.parent, undefined, false);
+        const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
 
-        return newTextElement;
+        if (startCopy) {
+            newTextElement = startCopy.firstChild as TextElement;
+            newTextElement.text = startText;
+            topParent.children.splice(index, 1, startCopy);
+        }
+
+
+        if (endCopy) {
+            (endCopy.firstChild as TextElement).text = endText;
+            topParent.children.splice(index + 1, 0, endCopy);
+        }
+
+        this.text.selection.resetSelection();
+        return this.removeTopStyle(newTextElement);
     }
 
 
 
     // ---------------------------------------------------------Remove Style At Middle Of Text----------------------------------------------------------
     private removeStyleAtMiddleOfText(textElement: TextElement, startOffset: number, endOffset: number): TextElement {
+        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
         const startText = textElement.text.substring(0, startOffset);
         const middleText = textElement.text.substring(startOffset, endOffset);
         const endText = textElement.text.substring(endOffset);
-        const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
-        const childIndex = textElement.parent.children.findIndex(x => x == textElement);
-        const middleParent = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
-        const endParent = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
-        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
         let newTextElement!: TextElement;
 
-        textElement.text = startText;
 
-        if (middleParent) {
-            middleParent.styles.splice(styleIndex, 1);
+        if (styleIndex != -1 && textElement.parent.children.length == 1) {
+            const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
+            const childIndex = textElement.parent.children.findIndex(x => x == textElement);
+            const middleParent = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
+            const endParent = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
 
-            if (middleParent.styles.length == 0) {
-                newTextElement = new TextElement(textElement.parent.parent, middleText);
-                textElement.parent.parent.children.splice(index + 1, 0, newTextElement);
-            } else {
-                newTextElement = middleParent.children[childIndex] as TextElement;
-                newTextElement.text = middleText;
-                textElement.parent.parent.children.splice(index + 1, 0, middleParent);
+            textElement.text = startText;
+
+            if (middleParent) {
+                middleParent.styles.splice(styleIndex, 1);
+
+                if (middleParent.styles.length == 0) {
+                    newTextElement = new TextElement(textElement.parent.parent, middleText);
+                    textElement.parent.parent.children.splice(index + 1, 0, newTextElement);
+                } else {
+                    newTextElement = middleParent.children[childIndex] as TextElement;
+                    newTextElement.text = middleText;
+                    textElement.parent.parent.children.splice(index + 1, 0, middleParent);
+                }
             }
+
+            if (endParent) {
+                (endParent.children[childIndex] as TextElement).text = endText;
+                textElement.parent.parent.children.splice(index + 2, 0, endParent);
+            }
+
+            return newTextElement;
         }
 
-        if (endParent) {
-            (endParent.children[childIndex] as TextElement).text = endText;
-            textElement.parent.parent.children.splice(index + 2, 0, endParent);
+
+
+
+        const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
+        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, undefined, false) : textElement.copyElement(textElement.parent, undefined, false);
+        const middleCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
+        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, undefined, false) : textElement.copyElement(textElement.parent, undefined, false);
+        const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
+
+        if (startCopy) {
+            (startCopy.firstChild as TextElement).text = startText;
+            topParent.children.splice(index, 1, startCopy);
         }
 
-        return newTextElement;
+        if (middleCopy) {
+            newTextElement = middleCopy.firstChild as TextElement;
+            newTextElement.text = middleText;
+            topParent.children.splice(index + 1, 0, middleCopy);
+        }
+
+        if (endCopy) {
+            (endCopy.firstChild as TextElement).text = endText;
+            topParent.children.splice(index + 2, 0, endCopy);
+        }
+
+        this.text.selection.resetSelection();
+
+        return this.removeTopStyle(newTextElement);
     }
 
 
@@ -131,29 +186,55 @@ export class ToggleStyle extends Style {
 
     // ---------------------------------------------------------Remove Style At End Of Text----------------------------------------------------------
     private removeStyleAtEndOfText(textElement: TextElement, startOffset: number): TextElement {
-        const endText = textElement.text.substring(startOffset);
-        const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
-        const parentCopy = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
         const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
-        const childIndex = textElement.parent.children.findIndex(x => x == textElement);
+        const startText = textElement.text.substring(0, startOffset);
+        const endText = textElement.text.substring(startOffset);
         let newTextElement!: TextElement;
 
-        textElement.text = textElement.text.substring(0, startOffset);
+        if (styleIndex != -1 && textElement.parent.children.length == 1) {
+            const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
+            const parentCopy = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
+            const childIndex = textElement.parent.children.findIndex(x => x == textElement);
+            textElement.text = startText;
 
-        if (parentCopy) {
-            parentCopy.styles.splice(styleIndex, 1);
+            if (parentCopy) {
+                parentCopy.styles.splice(styleIndex, 1);
 
-            if (parentCopy.styles.length == 0) {
-                newTextElement = new TextElement(textElement.parent.parent, endText);
-                textElement.parent.parent.children.splice(index + 1, 0, newTextElement);
-            } else {
-                newTextElement = parentCopy.children[childIndex] as TextElement;
-                newTextElement.text = endText;
-                textElement.parent.parent.children.splice(index + 1, 0, parentCopy);
+                if (parentCopy.styles.length == 0) {
+                    newTextElement = new TextElement(textElement.parent.parent, endText);
+                    textElement.parent.parent.children.splice(index + 1, 0, newTextElement);
+                } else {
+                    newTextElement = parentCopy.children[childIndex] as TextElement;
+                    newTextElement.text = endText;
+                    textElement.parent.parent.children.splice(index + 1, 0, parentCopy);
+                }
             }
+
+            return newTextElement;
         }
 
-        return newTextElement;
+
+
+        const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
+        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, undefined, false) : textElement.copyElement(textElement.parent, undefined, false);
+        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
+        const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
+
+        if (startCopy) {
+            (startCopy.firstChild as TextElement).text = startText;
+            topParent.children.splice(index, 1, startCopy);
+        }
+
+        if (endCopy) {
+            newTextElement = endCopy.firstChild as TextElement;
+            newTextElement.text = endText;
+            topParent.children.splice(index + 1, 0, endCopy);
+        }
+
+        
+
+        this.text.selection.resetSelection();
+        return this.removeTopStyle(newTextElement);
     }
 
 
@@ -165,11 +246,9 @@ export class ToggleStyle extends Style {
 
     // ---------------------------------------------------------Remove Style From All Of Text----------------------------------------------------------
     private removeStyleFromAllOfText(textElement: TextElement): TextElement {
-        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name && x.value == this.value);
+        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
 
         if (styleIndex != -1 && textElement.parent.children.length == 1) {
-
-
             textElement.parent.styles.splice(styleIndex, 1);
 
             if (textElement.parent.styles.length == 0) {
@@ -197,7 +276,7 @@ export class ToggleStyle extends Style {
         let curentElement = textElement as Element;
 
 
-        while (!styleParent.styles.some(x => x.style == this.name && x.value == this.value)) {
+        while (!styleParent.styles.some(x => x.style == this.name)) {
             curentElement = styleParent;
             styleParent = styleParent.parent;
 
@@ -213,7 +292,7 @@ export class ToggleStyle extends Style {
 
         if (styleParentCopy) {
             // Remove the style
-            const styleIndex = styleParentCopy.styles.findIndex(x => x.style == this.name && x.value == this.value);
+            const styleIndex = styleParentCopy.styles.findIndex(x => x.style == this.name);
             styleParentCopy.styles.splice(styleIndex, 1);
 
             // This will add the style parent copy to its parent
@@ -292,6 +371,7 @@ export class ToggleStyle extends Style {
             const newBreakElement = new BreakElement(child.parent.parent);
 
             child.parent.parent.children.splice(0, 1, newBreakElement);
+            return newBreakElement;
         }
 
         return element;

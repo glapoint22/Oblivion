@@ -248,8 +248,6 @@ export class TextElement extends Element {
             text = text.substring(range.startOffset, range.startElementId == range.endElementId ? range.endOffset : undefined);
         } else if (range && range.endElementId == this.id) {
             text = text.substring(0, range.endOffset);
-        } else if (range && range.topParentId == this.id) {
-            range.inTopParentRange = true;
         }
 
         if (!range || range.inRange) {

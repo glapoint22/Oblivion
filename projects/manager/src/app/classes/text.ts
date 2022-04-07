@@ -279,7 +279,9 @@ export class Text {
                     }
                 }
             } else {
-                selection = this.onRangeKeydown(key, this.selection.startElement, this.selection.startElement.container);
+                const startContainer = this.selection.startElement.nodeType == NodeType.Div || this.selection.startElement.nodeType == NodeType.Li ?
+                    this.selection.startElement : this.selection.startElement.container;
+                selection = this.onRangeKeydown(key, this.selection.startElement, startContainer);
             }
         }
 
@@ -295,35 +297,80 @@ export class Text {
 
     // ---------------------------------------------------------On Range Keydown------------------------------------------------------------------
     private onRangeKeydown(key: string, currentElement: Element, startContainer: Element): Selection {
-        // Start element
-        if (currentElement.id == this.selection.startElement.id) {
-            if (currentElement != startContainer.firstChild || this.selection.startOffset > 0) {
+        let selection!: Selection;
+
+        while (!selection) {
+            // Start element
+            if (currentElement.id == this.selection.startElement.id) {
+                if (currentElement != startContainer.firstChild || this.selection.startOffset > 0) {
 
 
-                // Trim the end of the text
-                if (this.selection.startOffset > 0) {
-                    const textElement = currentElement as TextElement;
-                    textElement.text = textElement.text.substring(0, this.selection.startOffset);
+                    // Trim the end of the text
+                    if (this.selection.startOffset > 0) {
+                        const textElement = currentElement as TextElement;
+                        textElement.text = textElement.text.substring(0, this.selection.startOffset);
 
-                    const nextChild = textElement.nextChild;
+                        const nextChild = textElement.nextChild;
 
-                    if (nextChild) return this.onRangeKeydown(key, nextChild, startContainer);
+                        if (nextChild) currentElement = nextChild;
+                        continue;
+                    }
                 }
-            }
 
 
 
-            // End Element
-        } else if (currentElement.id == this.selection.endElement.id) {
-            const currentContainer = currentElement.container;
+                // End Element
+            } else if (currentElement.id == this.selection.endElement.id || currentElement.id == this.selection.endElement.firstChild.id) {
+                const currentContainer = currentElement.container;
 
-            // If element is a text element
-            if (this.selection.endElement.nodeType == NodeType.Text) {
+                // If element is a text element
+                if (this.selection.endElement.nodeType == NodeType.Text) {
 
 
-                // If the offset is not at the end of the text
-                if (startContainer != currentContainer && (currentElement != currentContainer.lastChild ||
-                    this.selection.endOffset != (this.selection.endElement as TextElement).text.length)) {
+                    // If the offset is not at the end of the text
+                    if (startContainer != currentContainer && (currentElement != currentContainer.lastChild ||
+                        this.selection.endOffset != (this.selection.endElement as TextElement).text.length)) {
+
+                        // This will copy the elements from the current container and place them into the start container
+                        currentContainer.children.forEach((child: Element) => {
+                            const copiedElement = child.copyElement(startContainer);
+
+                            if (copiedElement) {
+                                startContainer.children.push(copiedElement);
+                            }
+                        });
+
+
+                        const newElement = Element.search(currentElement.id, startContainer);
+                        if (newElement) currentElement = newElement;
+
+                        // Delete the current container
+                        currentContainer.parent.deleteChild(currentContainer);
+                    }
+
+
+                    // Set the text if selection is NOT at the end of the text
+                    if ((this.selection.endElement as TextElement).text.length != this.selection.endOffset) {
+                        const textElement = currentElement as TextElement;
+
+                        textElement.text = textElement.text.substring(this.selection.endOffset);
+
+                        // Get the previous child
+                        const previousChild = textElement.previousChild;
+                        const startContainerHasPreviousChild = previousChild && previousChild.container == startContainer;
+
+                        if (previousChild && startContainerHasPreviousChild) {
+                            selection = this.setKey(key, previousChild, Infinity);
+                        } else {
+                            selection = this.setKey(key, textElement, 0);
+                        }
+
+                        continue;
+                    }
+                }
+
+
+                else {
 
                     // This will copy the elements from the current container and place them into the start container
                     currentContainer.children.forEach((child: Element) => {
@@ -340,58 +387,59 @@ export class Text {
 
                     // Delete the current container
                     currentContainer.parent.deleteChild(currentContainer);
-                }
 
-
-                // Set the text if selection is NOT at the end of the text
-                if ((this.selection.endElement as TextElement).text.length != this.selection.endOffset) {
-                    const textElement = currentElement as TextElement;
-
-                    textElement.text = textElement.text.substring(this.selection.endOffset);
 
                     // Get the previous child
-                    const previousChild = textElement.previousChild;
+                    const previousChild = currentElement.previousChild;
                     const startContainerHasPreviousChild = previousChild && previousChild.container == startContainer;
 
                     if (previousChild && startContainerHasPreviousChild) {
-                        return this.setKey(key, previousChild, Infinity);
+                        // If the current element is a break element
+                        if (currentElement.nodeType == NodeType.Br) {
+                            currentElement.parent.deleteChild(currentElement);
+                        }
+
+                        selection = this.setKey(key, previousChild, Infinity);
                     } else {
-                        return this.setKey(key, textElement, 0);
+                        selection = this.setKey(key, currentElement, 0);
                     }
+
+                    continue;
                 }
+
+
+                // This is used to determine what the selected element will be
+                const previousChild = currentElement.previousChild;
+                const hasPreviousChild = previousChild && previousChild.container == startContainer;
+                const selectedElement = currentElement.parent.deleteChild(currentElement, {
+                    selectedChildOnDeletion: hasPreviousChild ? SelectedElementOnDeletion.Previous : SelectedElementOnDeletion.Next,
+                    preserveContainer: currentContainer == startContainer
+                });
+
+
+                // If the start container has no children, create a break element inside the start container
+                if (startContainer.children.length == 0) {
+                    startContainer.children.push(new BreakElement(startContainer));
+                    selection = this.setKey(key, startContainer, 0);
+                    continue;
+                }
+
+                if (selectedElement) selection = this.setKey(key, selectedElement, hasPreviousChild ? Infinity : 0);
+                continue;
             }
 
 
-            // This is used to determine what the selected element will be
-            const previousChild = currentElement.previousChild;
-            const hasPreviousChild = previousChild && previousChild.container == startContainer;
-            const selectedElement = currentElement.parent.deleteChild(currentElement, {
-                selectedChildOnDeletion: hasPreviousChild ? SelectedElementOnDeletion.Previous : SelectedElementOnDeletion.Next,
-                preserveContainer: currentContainer == startContainer
+            // Delete the current element
+            const firstChild = currentElement.firstChild;
+            const nextElement = firstChild.parent.deleteChild(firstChild, {
+                selectedChildOnDeletion: SelectedElementOnDeletion.Next,
+                preserveContainer: currentElement.container == startContainer || currentElement == startContainer
             });
 
-
-            // If the start container has no children, create a break element inside the start container
-            if (startContainer.children.length == 0) {
-                startContainer.children.push(new BreakElement(startContainer));
-                return this.setKey(key, startContainer, 0);
-            }
-
-            if (selectedElement) return this.setKey(key, selectedElement, hasPreviousChild ? Infinity : 0);
+            if (nextElement) currentElement = nextElement;
         }
 
-
-        // Delete the current element
-        const firstChild = currentElement.firstChild;
-        let nextChild!: Element;
-        const element = firstChild.parent.deleteChild(firstChild, {
-            selectedChildOnDeletion: SelectedElementOnDeletion.Next,
-            preserveContainer: currentElement.container == startContainer
-        });
-
-        if (element) nextChild = element;
-
-        return this.onRangeKeydown(key, nextChild, startContainer);
+        return selection;
     }
 
 

@@ -1,5 +1,6 @@
 import { Element } from "./element";
 import { ElementRange } from "./element-range";
+import { TextElement } from "./text-element";
 
 export class Selection {
     public startElement!: Element;
@@ -110,16 +111,18 @@ export class Selection {
 
     // ---------------------------------------------------------Reset Selection------------------------------------------------------------------
     public resetSelection() {
-        const startElement = Element.search(this.startElement.id, this.root as Element);
+        const startElement = Element.search(this.startElement.id, this.startElement.container as Element);
         if (startElement && startElement != this.startElement) {
             this.startElement = startElement;
             this.startChildIndex = startElement.parent.children.findIndex(x => x == startElement);
+            this.startOffset = 0;
         }
 
-        const endElement = Element.search(this.endElement.id, this.root as Element);
+        const endElement = Element.search(this.endElement.id, this.endElement.container as Element);
         if (endElement && endElement != this.endElement) {
             this.endElement = endElement;
             this.endChildIndex = endElement.parent.children.findIndex(x => x == endElement);
+            this.endOffset = (this.endElement as TextElement).text.length;
         }
     }
 
@@ -146,7 +149,15 @@ export class Selection {
             }
 
             if (child.id == elementId) {
-                if (range.inRange) return true;
+                if (range.inRange) {
+                    if (child.id == range.endElementId) {
+                        if (this.endOffset != (this.endElement as TextElement).text.length) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
                 return false;
             }
 

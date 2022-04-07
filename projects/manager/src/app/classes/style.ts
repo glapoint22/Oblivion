@@ -253,7 +253,7 @@ export class Style {
             spanElement.children.push(newBreakElement);
             child.parent.children.splice(0, 1, spanElement);
 
-
+            return newBreakElement;
         }
 
         return element;
