@@ -25,7 +25,6 @@ export class CheckboxListManager extends CheckboxHierarchyManager {
 
             return this.sourceList[listItemIndex] as CheckboxListItem;
         }
-
         return listItem;
     }
 }

@@ -1,6 +1,6 @@
 <div class="item-container">
 
-    <ng-container *ngIf="listManager.editableItem != null">
+    <ng-container *ngIf="listManager.editedItem != null">
 
         <div [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 10 : 0"></div>
 
@@ -21,11 +21,11 @@
          (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(item, $event) : null) : listManager.onCheckboxChange(item)"
          (blur)="listManager.onItemBlur(item)"
          (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(item) : null"
-         [contentEditable]="item == listManager.editableItem"
+         [contentEditable]="item == listManager.editedItem"
          [ngClass]="{'selected-item': item == listManager.selectedItem,
                 'unselected-item': item == listManager.unselectedItem,
-                'edited-item': item == listManager.editableItem,
-                'transparent-item': listManager.editableItem != null && listManager.editableItem != item,
+                'edited-item': item == listManager.editedItem,
+                'transparent-item': listManager.editedItem != null && listManager.editedItem != item,
                 'selected-item-top': item.selectType == listManager.SelectType.Top,
                 'selected-item-all': item.selectType == listManager.SelectType.All,
                 'selected-item-middle': item.selectType == listManager.SelectType.Middle,
@@ -33,7 +33,7 @@
                 'no-hover': listManager.contextMenuOpen}">
 
 
-        <ng-container *ngIf="listManager.editableItem == null">
+        <ng-container *ngIf="listManager.editedItem == null">
 
             <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
 

@@ -8,5 +8,6 @@ export class ListOptions {
     deletable?: boolean;
     deletePrompt?: Prompt;
     multiselectable?: boolean;
+    sortable?: boolean;
     menu?: Menu;
 }

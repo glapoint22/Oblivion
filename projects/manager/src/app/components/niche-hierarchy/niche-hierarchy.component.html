@@ -19,45 +19,61 @@
 
             <!-- Delete icon -->
             <button class="icon-button"
-                    [ngClass]="{'icon-button-disabled': hierarchyUpdate.deleteDisabled}"
-                    (mouseover)="hierarchy.overButton = true"
-                    (mouseout)="hierarchy.overButton = false"
-                    (click)="hierarchy.delete()"
-                    [disabled]="hierarchyUpdate.deleteDisabled">
+                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled}"
+                    (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
+                    (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
+                    (click)="!showSearch ? hierarchy.delete() : multiColumnList.delete()"
+                    [disabled]="!showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled">
                 <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
             </button>
     
             <!-- Edit icon -->
             <button class="icon-button"
-                    [ngClass]="{'icon-button-disabled': hierarchyUpdate.editDisabled}"
-                    (mouseover)="hierarchy.overButton = true"
-                    (mouseout)="hierarchy.overButton = false"
-                    (click)="hierarchy.edit()"
-                    [disabled]="hierarchyUpdate.editDisabled">
+                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled}"
+                    (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
+                    (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
+                    (click)="!showSearch ? hierarchy.edit() : multiColumnList.edit()"
+                    [disabled]="!showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled">
                 <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
             </button>
     
             <!-- Add icon -->
-            <button class="icon-button"
+            <button *ngIf="!showSearch" class="icon-button"
                     [ngClass]="{'icon-button-disabled': hierarchyUpdate.addDisabled}"
-                    (mouseover)="hierarchy.overButton = true"
-                    (mouseout)="hierarchy.overButton = false"
+                    (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
+                    (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
                     (click)="hierarchy.add(null!, isParent)"
                     [disabled]="hierarchyUpdate.addDisabled">
                 <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
             </button>
 
             <!-- Collapse icon -->
-            <button class="icon-button">
+            <button *ngIf="!showSearch" class="icon-button">
                 <i style="pointer-events: none;" class="fas fa-minus-square"></i>
             </button>
         </div>
     </div>
     <div class="drop-shadow"></div>
 
-
-    <div class="hierarchy-container" [style.height.px]="base.clientHeight - 40">
-        <input id="searchInput" *ngIf="showSearch" placeholder="Search">
-        <hierarchy #hierarchy *ngIf="!showSearch" [sourceList]="nicheHierarchyService.niches" [options]="hierarchyOptions" (onListUpdate)="hierarchyUpdate = $event"></hierarchy>
+    
+    <!-- Hierarchy -->
+    <div *ngIf="!showSearch" class="overflow-container" [style.height.px]="base.clientHeight - 40">
+        <hierarchy #hierarchy [sourceList]="nicheHierarchyService.niches" [options]="hierarchyOptions" (onListUpdate)="hierarchyUpdate = $event"></hierarchy>
     </div>
+
+    <!-- Search -->
+    <ng-container *ngIf="showSearch">
+        <input id="searchInput" placeholder="Search" (input)="onSearchInputChange($event.target)">
+
+        <!-- <div *ngIf="searchList.length > 0" style="margin: 0 0 7px 10px; color: #a0a0a0; font-size: 12px;">{{searchList.length}} results</div> -->
+        <div *ngIf="searchList.length > 0" style="height: 26px; display: flex; justify-content: space-between; padding: 0 56px 0 5px; font-size: 12px; color: #656565; margin: 0 10px 10px 6px; border-bottom: 1px solid rgb(34, 34, 34); ">
+            <div style="height: 100%; line-height: 26px; user-select: none;">Name</div>
+            <div style="height: 100%; line-height: 26px; user-select: none;">Type</div>
+            <!-- <div style="position: absolute; left: 300px; width: 1px; background: #282828; height: 26px;"></div> -->
+        </div>
+
+        <div class="overflow-container" [style.height.px]="base.clientHeight - 116">
+            <multi-column-list #multiColumnList [sourceList]="searchList" [options]="searchListOptions" (onListUpdate)="searchListUpdate = $event"></multi-column-list>
+        </div>
+    </ng-container>
 </div>

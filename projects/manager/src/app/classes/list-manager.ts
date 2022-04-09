@@ -12,7 +12,7 @@ export class ListManager {
   sourceList!: Array<ListItem>;
   selectedItem!: ListItem;
   unselectedItem!: ListItem;
-  editableItem!: ListItem;
+  editedItem!: ListItem;
   currentFocusedItem!: Element;
   pivotItem!: ListItem;
   shiftKeyDown!: boolean;
@@ -27,11 +27,12 @@ export class ListManager {
   addDisabled: boolean = false;
   editDisabled: boolean = true;
   deleteDisabled: boolean = true;
-  editable: boolean = false;
+  editable: boolean = true;
   selectable: boolean = true;
   unselectable: boolean = true;
   deletable: boolean = true;
   multiselectable: boolean = true;
+  sortable: boolean = true;
   onListUpdate = new Subject<ListUpdate>();
   contextMenu!: ContextMenuComponent
   contextMenuOpen!: boolean;
@@ -126,7 +127,7 @@ export class ListManager {
 
     if (!this.deletePromptOpen) {
       // If a list item is being edited or added
-      if (this.editableItem != null) {
+      if (this.editedItem != null) {
         // Evaluate the state of the edit and then act accordingly
         this.evaluateEdit();
 
@@ -146,7 +147,7 @@ export class ListManager {
       // Set focus to the html item of the list item
       if (listItem) listItem.htmlItem!.nativeElement.focus();
 
-      if (listItem && listItem == this.editableItem) {
+      if (listItem && listItem == this.editedItem) {
         let range = document.createRange();
         range.selectNodeContents(listItem.htmlItem!.nativeElement!);
         let sel = window.getSelection();
@@ -166,17 +167,11 @@ export class ListManager {
 
   onItemBlur(listItem: ListItem) {
     window.setTimeout(() => {
-      // As long as a list item isn't losing focus becaus another list item is receiving focus
-      if (document.activeElement != this.currentFocusedItem
-        // and the context menu is NOT open
-        // && !this.menuService.menu.isVisible
-        // // and the search popup is NOT open
-        // && !this.popupService.searchPopup.show
-        // // and we're NOT clicking on an icon button
-        && !this.overButton) {
+      // As long as a list item isn't losing focus becaus another list item is receiving focus and we're NOT clicking on an icon button
+      if (document.activeElement != this.currentFocusedItem && !this.overButton) {
 
         // If an item is being edited or added
-        if (this.editableItem != null) {
+        if (this.editedItem != null) {
           // Evaluate the state of the edit and then act accordingly
           this.evaluateEdit(null!, true);
 
@@ -210,7 +205,7 @@ export class ListManager {
       }
 
       window.setTimeout(() => {
-        if (this.editableItem == null) {
+        if (this.editedItem == null) {
           this.setAddEditDelete();
         }
       }, 30)
@@ -219,43 +214,54 @@ export class ListManager {
 
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
-    this.setItemFocus(listItem);
-    this.closeContextMenu();
+    // As long as this item is NOT currently being edited
+    if (this.editedItem != listItem) {
+      this.setItemFocus(listItem);
+      this.closeContextMenu();
 
-    // Initialize
-    this.preventUnselectionFromRightMousedown = false;
+      // Initialize
+      this.preventUnselectionFromRightMousedown = false;
 
-    // If this item is being selected from a right mouse down
-    if (e != null && e.button == 2) {
+      // If this item is being selected from a right mouse down
+      if (e != null && e.button == 2) {
 
-      if (this.options && this.options.menu) this.openContextMenu(e);
+        // As long as we're not in edit mode
+        if (this.editedItem == null) {
+          // Open the context menu
+          if (this.options && this.options.menu) this.openContextMenu(e);
+        }
 
-      // Check to see if this item is already selected
-      if (listItem.selected) {
 
-        // And as long as that selected item is not the current focused item
-        if (listItem.htmlItem?.nativeElement != document.activeElement) {
+        // Check to see if this item is already selected
+        if (listItem.selected) {
 
-          // Prevent it from being unselected
-          this.preventUnselectionFromRightMousedown = true;
+          // And as long as that selected item is not the current focused item
+          if (listItem.htmlItem?.nativeElement != document.activeElement) {
+
+            // Prevent it from being unselected
+            this.preventUnselectionFromRightMousedown = true;
+          }
+        }
+      }
+
+      if (this.selectable) {
+        // As long as we're not right clicking on an item that's already selected
+        if (!this.preventUnselectionFromRightMousedown) {
+
+          // window.setTimeout(() => {???????????????
+          this.currentFocusedItem = document.activeElement!;
+          this.setItemSelection(listItem);
+          this.setAddEditDelete();
+
+          // });
+        }
+
+        // As long as we're not in edit mode
+        if (this.editedItem == null) {
+          this.selectedItemsUpdate(e != null && e.button == 2);
         }
       }
     }
-
-    // As long as we're not right clicking on an item that's already selected
-    if (!this.preventUnselectionFromRightMousedown && this.selectable) {
-      window.setTimeout(() => {
-        this.currentFocusedItem = document.activeElement!;
-        this.setItemSelection(listItem);
-        this.setAddEditDelete();
-        
-      });
-    }
-
-    window.setTimeout(()=> {
-      this.setSelectedItemsUpdate(e != null && e.button == 2);
-    })
-    
   }
 
 
@@ -263,7 +269,7 @@ export class ListManager {
 
   setItemSelection(listItem: ListItem) {
     // If an item is NOT being edited
-    if (this.editableItem == null) {
+    if (this.editedItem == null) {
 
       this.addEventListeners();
       this.selectedItem = listItem;
@@ -274,22 +280,28 @@ export class ListManager {
       this.setItemsSelectType();
 
       // If an item is being edited and another item that is NOT being edited is selected
-    } else if (listItem != this.editableItem) {
+    } else if (listItem != this.editedItem) {
 
-      const htmlEditedItem = this.editableItem.htmlItem!.nativeElement;
+      const htmlEditedItem = this.editedItem.htmlItem!.nativeElement;
       const trimmedEditedItem = htmlEditedItem.textContent?.trim();
 
       // If the edited item has text written in it
       if (trimmedEditedItem!.length > 0) {
 
         // As long as the edited name is different from what it was before the edit
-        if (trimmedEditedItem != this.editableItem.name) {
+        if (trimmedEditedItem != this.editedItem.name) {
 
           // Update the name property
-          this.editableItem.name = trimmedEditedItem!;
+          this.editedItem.name = trimmedEditedItem!;
 
-          // Update the list
-          this.updateList(this.editableItem);
+          // Resort list (as long as the list is sortable)
+          const editedItem: ListItem = this.sortable ? this.sort(this.editedItem)! : this.editedItem;
+
+          // Select the item that was renamed
+          this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == editedItem?.identity)]);
+
+          // Send update
+          this.addEditUpdate(editedItem);
         }
 
         // But if the item is empty
@@ -299,21 +311,21 @@ export class ListManager {
         if (this.newItem) {
 
           // Remove the item
-          this.sourceList.splice(this.sourceList.indexOf(this.editableItem), 1);
+          this.sourceList.splice(this.sourceList.indexOf(this.editedItem), 1);
 
           // If we were NOT adding a new item
         } else {
 
           // Reset the item back to the way it was before the edit
-          htmlEditedItem.textContent = this.editableItem.name!;
+          htmlEditedItem.textContent = this.editedItem.name!;
         }
       }
 
-      this.editableItem.selected = false;
-      this.editableItem.selectType = null!;
+      this.editedItem.selected = false;
+      this.editedItem.selectType = null!;
       this.selectedItem = listItem;
       this.newItem = false;
-      this.editableItem = null!;
+      this.editedItem = null!;
       this.pivotItem = this.selectedItem;
       this.selectedItem.selected = true;
     }
@@ -333,9 +345,6 @@ export class ListManager {
     } else {
       this.setSelectedItemsNoModifierKey(listItem);
     }
-
-    // this.setAddEditDelete();
-    // this.setSelectedItemsUpdate();
   }
 
 
@@ -465,7 +474,7 @@ export class ListManager {
     window.setTimeout(() => {
       listItem.selected = true;
       this.selectedItem = listItem;
-      this.editableItem = null!;
+      this.editedItem = null!;
       this.unselectedItem = null!;
       this.setItemFocus(this.selectedItem);
     })
@@ -477,7 +486,7 @@ export class ListManager {
     this.pivotItem = null!;
     this.selectedItem = null!;
     this.unselectedItem = null!;
-    this.editableItem = null!;
+    this.editedItem = null!;
 
     this.sourceList.forEach(x => {
       x.selected = false;
@@ -508,11 +517,10 @@ export class ListManager {
       this.overButton = false;
       this.selectedItem = null!;
       this.unselectedItem = null!;
-      this.editableItem = listItem;
-      this.setItemFocus(this.editableItem);
+      this.editedItem = listItem;
+      this.setItemFocus(this.editedItem);
       this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
     }
-
   }
 
 
@@ -522,14 +530,14 @@ export class ListManager {
     if (listItem && this.editable) {
       this.addEventListeners();
       this.overButton = false;
-      this.editableItem = listItem;
+      this.editedItem = listItem;
       this.selectedItem = null!;
 
       this.sourceList.forEach(x => {
         if (x.selected) x.selected = false;
         if (x.selectType) x.selectType = null!;
       })
-      this.setItemFocus(this.editableItem);
+      this.setItemFocus(this.editedItem);
       this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
     }
   }
@@ -548,7 +556,8 @@ export class ListManager {
         // Get all the items that are going to be deleted
         let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
         // Send the delete info back so it can be used for the prompt message
-        this.onListUpdate.next({ type: ListUpdateType.DeletePrompt, deletedItems: deletedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.identity == x?.identity), name: x.name, hierarchyGroupID: x.hierarchyGroupID } }) });
+        this.deletePromptUpdate(deletedItems);
+
         // Open the prompt
         this.openPrompt();
 
@@ -577,9 +586,8 @@ export class ListManager {
       let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
       // Get the item that will be selected after all items are deleted 
       let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete(deletedItems);
-
       // Update the list
-      this.onListUpdate.next({ type: ListUpdateType.Delete, deletedItems: deletedItems!.map((x) => { return { id: x.id, index: this.sourceList.findIndex(y => y.identity == x?.identity), name: x.name, hierarchyGroupID: x.hierarchyGroupID } }) });
+      this.deleteUpdate(deletedItems);
 
       // Loop through all the deleted items
       deletedItems.forEach(() => {
@@ -672,7 +680,7 @@ export class ListManager {
     if (!this.deletePromptOpen) {
 
       // If an item is being edited
-      if (this.editableItem != null) {
+      if (this.editedItem != null) {
         // Evaluate the state of the edit and then act accordingly
         this.evaluateEdit(true);
 
@@ -713,7 +721,7 @@ export class ListManager {
     e.preventDefault();
 
     // If an item is being edited
-    if (this.editableItem) {
+    if (this.editedItem) {
 
       // Evaluate the state of the edit and then act accordingly
       this.evaluateEdit();
@@ -724,7 +732,7 @@ export class ListManager {
 
 
   evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
-    const htmlEditedItem = this.editableItem.htmlItem!.nativeElement;
+    const htmlEditedItem = this.editedItem.htmlItem!.nativeElement;
     const trimmedEditedItem = htmlEditedItem.textContent?.trim();
 
     // Set the focus to the edited item just in case it lost it on a mouse down
@@ -740,16 +748,16 @@ export class ListManager {
         if (this.newItem) {
 
           // Remove the item
-          this.sourceList.splice(this.sourceList.indexOf(this.editableItem), 1);
+          this.sourceList.splice(this.sourceList.indexOf(this.editedItem), 1);
 
           // If we were NOT adding a new item
         } else {
 
           // As long as the edited name is different from what it was before the edit
-          if (trimmedEditedItem != this.editableItem.name) {
+          if (trimmedEditedItem != this.editedItem.name) {
 
             // Reset the item back to the way it was before the edit
-            htmlEditedItem.textContent = this.editableItem.name!;
+            htmlEditedItem.textContent = this.editedItem.name!;
           }
         }
 
@@ -758,19 +766,28 @@ export class ListManager {
       } else {
 
         // As long as the edited name is different from what it was before the edit
-        if (trimmedEditedItem != this.editableItem.name) {
+        if (trimmedEditedItem != this.editedItem.name) {
           // Update the name property
-          this.editableItem.name = trimmedEditedItem!;
-          this.updateList(this.editableItem);
+          this.editedItem.name = trimmedEditedItem!;
+          htmlEditedItem.textContent = this.editedItem.name!; // (Don't remove NEEDED)
+
+          // Resort list (as long as the list is sortable)
+          const editedItem: ListItem = this.sortable ? this.sort(this.editedItem)! : this.editedItem;
+
+          // Select the item that was renamed
+          this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == editedItem?.identity)]);
+
+          // Send update
+          this.addEditUpdate(editedItem);
         }
       }
       this.newItem = false;
       if (this.selectable) {
-        this.selectedItem = this.editableItem;
+        this.selectedItem = this.editedItem;
         this.selectedItem.selected = true;
       }
 
-      this.editableItem = null!;
+      this.editedItem = null!;
 
       // But if the item is empty
     } else {
@@ -782,20 +799,23 @@ export class ListManager {
         if (this.newItem) {
 
           // Remove the item
-          this.sourceList.splice(this.sourceList.indexOf(this.editableItem), 1);
+          this.sourceList.splice(this.sourceList.indexOf(this.editedItem), 1);
 
           // If we were NOT adding a new list item
         } else {
 
           // Reset the item back to the way it was before the edit
-          htmlEditedItem.textContent = this.editableItem.name;
+          htmlEditedItem.textContent = this.editedItem.name!;
 
-          if (this.selectable) this.selectedItem = this.editableItem;
+          if (this.selectable) {
+            this.selectedItem = this.editedItem;
+            this.selectedItem.selected = true;
+          }
         }
 
         // Reset
         this.newItem = false;
-        this.editableItem = null!;
+        this.editedItem = null!;
       }
     }
   }
@@ -804,26 +824,6 @@ export class ListManager {
   sort(listItem?: ListItem) {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
     return listItem
-  }
-
-
-  updateList(listItem: ListItem) {
-    const newItem = this.newItem;
-
-    // Sort the source list
-    let newListItem = this.sort(listItem);
-
-    window.setTimeout(() => {
-      const listItemIndex = this.sourceList.findIndex(x => x.identity == newListItem?.identity);
-      this.selectItem(this.sourceList[listItemIndex]);
-      this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: listItem!.id, index: listItemIndex, name: listItem!.name });
-    })
-  }
-
-
-  setSelectedItemsUpdate(rightClick: boolean) {
-    const selectedItems = this.sourceList.filter(x => x.selected == true);
-    this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
   }
 
 
@@ -899,5 +899,54 @@ export class ListManager {
         promptCloseListener.unsubscribe();
       })
     })
+  }
+
+
+  addEditUpdate(listItem: ListItem) {
+    this.onListUpdate.next(
+      {
+        type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,
+        id: listItem.id,
+        index: this.sourceList.findIndex(x => x.identity == listItem?.identity),
+        name: listItem.name
+      }
+    );
+  }
+
+
+  selectedItemsUpdate(rightClick: boolean) {
+    const selectedItems = this.sourceList.filter(x => x.selected == true);
+    this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
+  }
+
+
+  deletePromptUpdate(deletedItems: Array<ListItem>) {
+    this.onListUpdate.next(
+      {
+        type: ListUpdateType.DeletePrompt,
+        deletedItems: deletedItems!.map((x) => {
+          return {
+            id: x.id,
+            index: this.sourceList.findIndex(y => y.identity == x?.identity),
+            name: x.name
+          }
+        })
+      }
+    );
+  }
+
+
+  deleteUpdate(deletedItems: Array<ListItem>) {
+    this.onListUpdate.next(
+      {
+        type: ListUpdateType.Delete,
+        deletedItems: deletedItems!.map((x) => {
+          return {
+            id: x.id,
+            index: this.sourceList.findIndex(y => y.identity == x?.identity),
+            name: x.name
+          }
+        })
+      });
   }
 }

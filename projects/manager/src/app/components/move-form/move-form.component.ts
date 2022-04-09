@@ -98,11 +98,15 @@ export class MoveFormComponent extends LazyLoad {
       // Add the item-to-be-moved to that list
       toList.push(moveList[0]);
 
-      // Then sort that list
-      toList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+
+      if (this.list.listManager.sortable) {
+        // Then sort that list
+        toList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+      }
+
 
       // Now that the list is sorted, get the index of the item-to-be-moved
-      // (sorting the list lets us know where the item-to-be-moved and its children will be placed)
+      // (the purpose of sorting the list is that it lets us know where the item-to-be-moved and its children will be placed)
       const indexOfSortedItemToBeMoved = toList.indexOf(moveList[0]);
 
       // If the move-to-item is a niche and its sub-niches are expanded, we have to account for the number of products those sub-niches have when placing the item-to-be-moved

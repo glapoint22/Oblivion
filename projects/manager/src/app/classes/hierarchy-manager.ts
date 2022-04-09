@@ -1,9 +1,11 @@
-import { HierarchyItemComponent } from "../components/items/hierarchy-item/hierarchy-item.component";
+import { Subject } from "rxjs";
 import { ListUpdateType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
+import { HierarchyUpdate } from "./hierarchy-update";
 import { ListManager } from "./list-manager";
 
 export class HierarchyManager extends ListManager {
+    onListUpdate = new Subject<HierarchyUpdate>();
 
     getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem): number {
         let parentHierarchyIndex!: number;
@@ -186,7 +188,7 @@ export class HierarchyManager extends ListManager {
         // Remove the selected hierarchy item and then put it back so the indent can take effect
         const hierarchyItemIndex = this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity);
         this.sourceList.splice(hierarchyItemIndex, 1);
-        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent } as HierarchyItem);
+        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent, selected: hierarchyItem.selected } as HierarchyItem);
 
         // And because we removed the selected hierarchy item, we lost our event listeners, so we have to put them back
         window.setTimeout(() => {
@@ -197,22 +199,54 @@ export class HierarchyManager extends ListManager {
     }
 
 
-    setSelectedItemsUpdate(rightClick: boolean) {
+    selectedItemsUpdate(rightClick: boolean) {
         const selectedItems = this.sourceList.filter(x => x.selected == true);
         this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
     }
 
 
-    updateList(hierarchyItem: HierarchyItem) {
-        const newItem = this.newItem;
-    
-        // Sort the source list
-        let newListItem = this.sort(hierarchyItem);
-    
-        window.setTimeout(() => {
-          const listItemIndex = this.sourceList.findIndex(x => x.identity == newListItem?.identity);
-          this.selectItem(this.sourceList[listItemIndex]);
-          this.onListUpdate.next({ type: newItem ? ListUpdateType.Add : ListUpdateType.Edit, id: hierarchyItem!.id, index: listItemIndex, name: hierarchyItem!.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID });
-        })
-      }
+
+    addEditUpdate(hierarchyItem: HierarchyItem) {
+        this.onListUpdate.next(
+            {
+                type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,
+                id: hierarchyItem.id,
+                index: this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity),
+                name: hierarchyItem.name,
+                hierarchyGroupID: hierarchyItem.hierarchyGroupID
+            }
+        );
+    }
+
+
+    deletePromptUpdate(deletedItems: Array<HierarchyItem>) {
+        this.onListUpdate.next(
+            {
+                type: ListUpdateType.DeletePrompt,
+                deletedItems: deletedItems!.map((x) => {
+                    return {
+                        id: x.id,
+                        index: this.sourceList.findIndex(y => y.identity == x?.identity),
+                        name: x.name,
+                        hierarchyGroupID: x.hierarchyGroupID
+                    }
+                })
+            });
+    }
+
+
+    deleteUpdate(deletedItems: Array<HierarchyItem>) {
+        this.onListUpdate.next(
+            {
+                type: ListUpdateType.Delete,
+                deletedItems: deletedItems!.map((x) => {
+                    return {
+                        id: x.id,
+                        index: this.sourceList.findIndex(y => y.identity == x?.identity),
+                        name: x.name,
+                        hierarchyGroupID: x.hierarchyGroupID
+                    }
+                })
+            });
+    }
 }
