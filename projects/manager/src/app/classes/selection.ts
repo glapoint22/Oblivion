@@ -1,3 +1,4 @@
+import { NodeType, StyleData } from "widgets";
 import { Element } from "./element";
 import { ElementRange } from "./element-range";
 import { TextElement } from "./text-element";
@@ -10,6 +11,8 @@ export class Selection {
     public endOffset!: number;
     public endChildIndex: number = -1;
     public collapsed!: boolean;
+    public commonAncestorContainer!: Element;
+    public selectedStyles!: StyleData[][];
     private range!: Range;
 
 
@@ -57,53 +60,136 @@ export class Selection {
 
 
 
-    // ---------------------------------------------------------Get Element------------------------------------------------------------------
-    private getElement(node: Node): Element {
-        if (node.nodeType == Node.TEXT_NODE) {
-            return this.getTextElement(node);
-        }
-
-        return Element.search((node as HTMLElement).id, this.root as Element) as Element;
-    }
-
-
-
-
-
-
+    
 
 
 
     // ---------------------------------------------------------Set Selection------------------------------------------------------------------
     public setSelection() {
         this.range = window.getSelection()?.getRangeAt(0) as Range;
-        this.startElement = this.getElement(this.range.startContainer);
-        this.endElement = this.getElement(this.range.endContainer);
         this.startOffset = this.range.startOffset;
         this.endOffset = this.range.endOffset;
         this.collapsed = this.range.collapsed;
+        this.setStartEnd();
+        this.setSelectedStyles();
+    }
+
+
+
+
+
+    // ---------------------------------------------------------Set Selected Styles------------------------------------------------------------------
+    public setSelectedStyles(currentElement: Element = this.commonAncestorContainer, range: ElementRange = new ElementRange('', '', 0, '', 0, '')) {
+        let done!: boolean;
+
+        if (currentElement.id == this.startElement.id) {
+            range.inRange = true;
+            this.selectedStyles = [];
+        }
+
+
+        if (range.inRange) {
+            if (currentElement.nodeType == NodeType.Text || currentElement.nodeType == NodeType.Br) {
+                let styles: Array<StyleData> = new Array<StyleData>();
+
+                let parent = currentElement.parent;
+                while (true) {
+                    styles = styles.concat(parent.styles);
+
+                    if (parent.nodeType == NodeType.Div || parent.nodeType == NodeType.Li) {
+                        break;
+                    }
+
+                    parent = parent.parent;
+                }
+
+                this.selectedStyles.push(styles);
+            }
+        }
+
+        if (currentElement.id == this.endElement.id) return true;
+
+
+        for (let i = 0; i < currentElement.children.length; i++) {
+            const child = currentElement.children[i];
+
+            done = this.setSelectedStyles(child, range);
+            if (done) return true;
+        }
+
+        return done;
+    }
+
+
+
+
+
+
+    // ---------------------------------------------------------Set Start End------------------------------------------------------------------
+    private setStartEnd(currentElement: Element = this.root as Element): boolean {
+        let done!: boolean;
+
+        if (this.range.startContainer.nodeType == Node.TEXT_NODE && this.range.startContainer.parentElement?.id == currentElement.id) {
+            this.startElement = this.getTextElement(this.range.startContainer, currentElement);
+
+            if (this.range.commonAncestorContainer == this.range.startContainer) {
+                this.commonAncestorContainer = this.startElement;
+            }
+            
+
+        } else if (currentElement.id == (this.range.startContainer as HTMLElement).id) {
+            this.startElement = currentElement;
+            
+        }
+
+        if (currentElement.id == (this.range.commonAncestorContainer as HTMLElement).id) {
+            this.commonAncestorContainer = currentElement;
+        }
+
+        
+
+
+        if (this.range.endContainer.nodeType == Node.TEXT_NODE && this.range.endContainer.parentElement?.id == currentElement.id) {
+            this.endElement = this.getTextElement(this.range.endContainer, currentElement);
+
+            return true;
+
+        } else if (currentElement.id == (this.range.endContainer as HTMLElement).id) {
+            this.endElement = currentElement;
+
+            return true;
+        }
+
+
+
+        for (let i = 0; i < currentElement.children.length; i++) {
+            const child = currentElement.children[i];
+
+            done = this.setStartEnd(child);
+            if (done) return true;
+        }
+
+        return done;
     }
 
 
 
 
     // ---------------------------------------------------------Get Text Element------------------------------------------------------------------
-    private getTextElement(node: Node): Element {
-        const parentId = node.parentElement?.id as string
-        const element = Element.search(parentId, this.root as Element) as Element;
-        const parentElement = node.parentElement;
+    private getTextElement(textNode: Node, parentElement: Element): Element {
+        const htmlParentElement = textNode.parentElement;
         let index = 0;
 
-        if (parentElement) {
-            for (let i = 0; i < parentElement.childNodes.length; i++) {
-                if (parentElement.childNodes[i] == node) {
+        if (htmlParentElement) {
+            for (let i = 0; i < htmlParentElement.childNodes.length; i++) {
+                if (htmlParentElement.childNodes[i] == textNode) {
                     index = i;
                     break;
                 }
             }
         }
 
-        return element.children[index];
+        return parentElement.children[index];
     }
 
 

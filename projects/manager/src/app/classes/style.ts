@@ -1,63 +1,23 @@
 import { NodeType, StyleData } from "widgets";
 import { BreakElement } from "./break-element";
 import { Element } from "./element";
-import { ElementRange } from "./element-range";
 import { Selection } from "./selection";
 import { SpanElement } from "./span-element";
 import { Text } from "./text";
 import { TextElement } from "./text-element";
 
-export class Style {
+export abstract class Style {
     public name!: string;
     public value!: string;
-    get hasStyle(): boolean {
-        return this.findStyle(this.text.root, new ElementRange('', this.text.selection.startElement.id, 0, this.text.selection.endElement.id, 0, ''));
+    get selectionHasStyle(): boolean {
+        if (this.text.selection.selectedStyles.length > 0) {
+            return this.text.selection.selectedStyles.every(x => x.some(z => z.style == this.name && z.value == this.value));
+        }
+
+        return false;
     }
 
     constructor(public text: Text) { }
-
-
-
-    private findStyle(element: Element, range: ElementRange): boolean {
-        let result!: boolean;
-
-        for (let i = 0; i < element.children.length; i++) {
-            const child = element.children[i];
-
-            if (child.id == range.startElementId) {
-                range.inRange = true;
-            }
-
-
-            if (range.inRange) {
-                let currentElement = child.firstChild;
-                let hasStyle!: boolean;
-
-                while (currentElement.nodeType != NodeType.Div && currentElement.nodeType != NodeType.Li) {
-                    if (currentElement.styles.some(x => x.style == this.name && x.value == this.value)) {
-                        hasStyle = true;
-                        break;
-                    }
-
-                    currentElement = currentElement.parent;
-                }
-
-                if (!hasStyle) return false;
-            }
-
-
-            if (child.id == range.endElementId) {
-                return true;
-            }
-
-            result = this.findStyle(child, range);
-
-            if (result != undefined && result == false || result == true) return result;
-
-        }
-
-        return result;
-    }
 
 
     // ---------------------------------------------------------Set Style------------------------------------------------------------------
@@ -76,6 +36,8 @@ export class Style {
         this.text.merge();
         this.text.render();
         this.text.selection.setRange();
+        this.text.selection.setSelection();
+        this.setSelectedStyle();
         this.text.setFocus();
     }
 
@@ -267,4 +229,7 @@ export class Style {
     public createStyleData(): StyleData {
         return new StyleData(this.name, this.value);
     }
+
+
+    public abstract setSelectedStyle(): void;
 }

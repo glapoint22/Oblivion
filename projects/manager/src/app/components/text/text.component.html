@@ -3,10 +3,9 @@
     <div class="property">
         <div class="label">Font</div>
         <div style="flex: 1;">
-            <!-- <dropdown [height]="20" [dropdownList]="textWidget.textBox.font.options"
-                [selectedIndex]="textWidget.textBox.font.selectedIndex"
-                (onChange)="textWidget.textBox.font.setStyleValue($event)">
-            </dropdown> -->
+            <select [(ngModel)]="font.selectedOption" (change)="font.setStyle()">
+                <option *ngFor="let option of font.options" [ngValue]="option">{{option.key}}</option>
+            </select>
         </div>
     </div>
 
@@ -29,8 +28,8 @@
     <div class="property">
         <div class="label">Color</div>
         <div style="flex: 1;">
-            
-                <!-- <color-swatch [color]="fontColor" (onChange)="widgetService.$update.next()"></color-swatch> -->
+
+            <!-- <color-swatch [color]="fontColor" (onChange)="widgetService.$update.next()"></color-swatch> -->
         </div>
     </div>
 
@@ -55,28 +54,24 @@
         <div style="flex: 1; display: flex; justify-content: space-between;">
 
             <!-- Left align -->
-            <div class="icon-container" title="Left align (Ctrl+Shift+L)"
-                 >
+            <div class="icon-container" title="Left align (Ctrl+Shift+L)">
                 <i class="fas fa-align-left"></i>
             </div>
 
             <!-- Center align -->
-            <div class="icon-container" title="Center align (Ctrl+Shift+E)"
-                 >
+            <div class="icon-container" title="Center align (Ctrl+Shift+E)">
                 <i class="fas fa-align-center"></i>
             </div>
 
 
             <!-- Right align -->
-            <div class="icon-container" title="Right align (Ctrl+Shift+R)"
-                 >
+            <div class="icon-container" title="Right align (Ctrl+Shift+R)">
                 <i class="fas fa-align-right"></i>
             </div>
 
 
             <!-- Justify -->
-            <div class="icon-container" title="Justify (Ctrl+Shift+J)"
-                 >
+            <div class="icon-container" title="Justify (Ctrl+Shift+J)">
                 <i class="fas fa-align-justify"></i>
             </div>
         </div>
@@ -94,17 +89,17 @@
             <div class="icon-container" style="cursor: default;"></div>
 
             <!-- Bold -->
-            <div class="style-icon" (click)="bold.setStyle()">
+            <div class="style-icon" (click)="bold.setStyle()" [ngClass]="{'selected': bold.isSelected}">
                 <i class="fas fa-bold"></i>
             </div>
 
             <!-- Italic -->
-            <div class="style-icon" (click)="italic.setStyle()">
+            <div class="style-icon" (click)="italic.setStyle()" [ngClass]="{'selected': italic.isSelected}">
                 <i class="fas fa-italic"></i>
             </div>
 
             <!-- Underline -->
-            <div class="style-icon" (click)="underline.setStyle()">
+            <div class="style-icon" (click)="underline.setStyle()" [ngClass]="{'selected': underline.isSelected}">
                 <i class="fas fa-underline"></i>
             </div>
         </div>
@@ -124,16 +119,12 @@
             <div class="icon-container" style="cursor: default;"></div>
 
             <!-- Numbered list -->
-            <div class="icon-container" title="Numbered list (Ctrl+Shift+7)"
-                
-                >
+            <div class="icon-container" title="Numbered list (Ctrl+Shift+7)">
                 <i class="fas fa-list-ol"></i>
             </div>
 
             <!-- Bulleted list -->
-            <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)"
-                
-                >
+            <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)">
                 <i class="fas fa-list-ul"></i>
             </div>
         </div>
@@ -155,15 +146,13 @@
             <div class="icon-container" style="cursor: default;"></div>
 
             <!-- Decrease indent -->
-            <div class="icon-container" title="Decrease indent (ctrl+[)"
-                >
+            <div class="icon-container" title="Decrease indent (ctrl+[)">
                 <i class="fas fa-outdent"></i>
             </div>
 
 
             <!-- Increase indent -->
-            <div class="icon-container" title="Increase indent (ctrl+])"
-                >
+            <div class="icon-container" title="Increase indent (ctrl+])">
                 <i class="fas fa-indent"></i>
             </div>
         </div>

@@ -6,12 +6,13 @@ import { Style } from "./style";
 import { TextElement } from "./text-element";
 
 export class ToggleStyle extends Style {
+    public isSelected!: boolean;
     private isRemoveStyle!: boolean;
 
 
     // ---------------------------------------------------------Set Style------------------------------------------------------------------
     public setStyle(): void {
-        this.isRemoveStyle = this.hasStyle;
+        this.isRemoveStyle = this.selectionHasStyle;
 
         super.setStyle();
     }
@@ -231,7 +232,7 @@ export class ToggleStyle extends Style {
             topParent.children.splice(index + 1, 0, endCopy);
         }
 
-        
+
 
         this.text.selection.resetSelection();
         return this.removeTopStyle(newTextElement);
@@ -375,5 +376,13 @@ export class ToggleStyle extends Style {
         }
 
         return element;
+    }
+
+
+
+
+    // ---------------------------------------------------------Set Selected Style------------------------------------------------------------------
+    public setSelectedStyle(): void {
+        this.isSelected = this.selectionHasStyle;
     }
 }

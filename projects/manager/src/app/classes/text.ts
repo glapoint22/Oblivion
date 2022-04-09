@@ -1,4 +1,4 @@
-import { NodeType, StyleData, TextData } from "widgets";
+import { NodeType, TextData } from "widgets";
 import { AnchorElement } from "./anchor-element";
 import { BreakElement } from "./break-element";
 import { DivElement } from "./div-element";
@@ -10,10 +10,12 @@ import { OrderedListElement } from "./ordered-list-element";
 import { SpanElement } from "./span-element";
 import { TextElement } from "./text-element";
 import { UnorderedListElement } from "./unordered-list-element";
+import { Subject } from "rxjs";
 
 export class Text {
     public selection: Selection;
     public root!: DivElement;
+    public onSelection: Subject<void> = new Subject<void>();
 
 
     constructor(private htmlElement: HTMLElement) {
@@ -45,6 +47,7 @@ export class Text {
             const onMouseup = () => {
                 window.setTimeout(() => {
                     this.selection.setSelection();
+                    this.onSelection.next();
                 });
 
             }
@@ -67,6 +70,7 @@ export class Text {
             if (event.key.includes('Arrow') || (event.ctrlKey && (event.key == 'a' || event.key == 'A'))) {
                 window.setTimeout(() => {
                     this.selection.setSelection();
+                    this.onSelection.next();
                 });
             }
         });
