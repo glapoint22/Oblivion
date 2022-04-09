@@ -1,6 +1,7 @@
 import { NodeType } from "widgets";
 import { Element } from "./element";
-import { TextSelection } from "./text-selection";
+import { ElementRange } from "./element-range";
+import { Selection } from "./selection";
 import { TextElement } from "./text-element";
 
 export class BreakElement extends Element {
@@ -18,9 +19,11 @@ export class BreakElement extends Element {
         parent.appendChild(breakElement);
     }
 
-    setSelectedElement(offset: number): TextSelection {
-        return this.container.setSelectedElement(0);
+
+    getStartSelection(offset?: number): Selection {
+        return this.container.getStartSelection(0);
     }
+
 
 
     createElement(parent: Element): Element {
@@ -28,12 +31,35 @@ export class BreakElement extends Element {
     }
 
 
-    onKeydown(key: string, offset: number): TextSelection {
+    onKeydown(key: string, offset: number): Selection {
         const textElement = new TextElement(this.parent, key);
-        
+
         this.parent.children = [];
         this.parent.children.push(textElement);
 
-        return textElement.setSelectedElement(1);
+        return textElement.getStartSelection(1);
+    }
+
+
+
+
+    // ---------------------------------------------------Copy Element-----------------------------------------------------
+    copyElement(parent: Element, range?: ElementRange, copyChildId = true): Element | null {
+        if (range && range.startElementId == this.id) {
+            range.inRange = true;
+        }
+
+        if (!range || range.inRange) {
+            if (range?.endElementId == this.id) {
+                range.inRange = false;
+                range.inTopParentRange = false;
+            }
+
+            const breakElement = new BreakElement(parent);
+            if (copyChildId) breakElement.id = this.id;
+            return breakElement;
+        }
+
+        return null;
     }
 }

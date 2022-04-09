@@ -3,43 +3,53 @@ import { AnchorElement } from "./anchor-element";
 import { BreakElement } from "./break-element";
 import { DivElement } from "./div-element";
 import { Element } from "./element";
+import { Selection } from "./selection";
 import { SelectedElementOnDeletion } from "./enums";
 import { ListItemElement } from "./list-item-element";
 import { OrderedListElement } from "./ordered-list-element";
 import { SpanElement } from "./span-element";
 import { TextElement } from "./text-element";
-import { TextSelection } from "./text-selection";
 import { UnorderedListElement } from "./unordered-list-element";
+import { Subject } from "rxjs";
 
 export class Text {
-    public range!: Range;
-    public startElement!: Element;
-    public endElement!: Element;
+    public selection: Selection;
     public root!: DivElement;
+    public onSelection: Subject<void> = new Subject<void>();
+
 
     constructor(private htmlElement: HTMLElement) {
+        // Set the root
         let rootParent!: Element;
         this.root = new DivElement(rootParent);
         this.root.isRoot = true;
+        this.selection = new Selection(this.root);
 
+        // Create the first child
         const divElement = new DivElement(this.root);
         const breakElement = new BreakElement(divElement);
-
         divElement.children.push(breakElement);
+
+        // Add the first child
         this.root.children.push(divElement);
 
-        this.render();
+        // Give focus to the html element
+        this.setFocus();
 
-        htmlElement.focus();
-        this.getSelection();
-        this.setRange();
+        // Render the text and set the selection
+        this.render();
+        this.selection.setSelection();
+
 
 
         // Mousedown
         htmlElement.addEventListener('mousedown', () => {
             const onMouseup = () => {
-                this.getSelection();
-                this.setRange();
+                window.setTimeout(() => {
+                    this.selection.setSelection();
+                    this.onSelection.next();
+                });
+
             }
 
             window.addEventListener('mouseup', onMouseup, { once: true });
@@ -58,11 +68,24 @@ export class Text {
         // Keyup
         htmlElement.addEventListener('keyup', (event: KeyboardEvent) => {
             if (event.key.includes('Arrow') || (event.ctrlKey && (event.key == 'a' || event.key == 'A'))) {
-                this.getSelection();
-                this.setRange();
+                window.setTimeout(() => {
+                    this.selection.setSelection();
+                    this.onSelection.next();
+                });
             }
         });
     }
+
+
+
+
+    // ---------------------------------------------------------Set Focus------------------------------------------------------------------
+    public setFocus() {
+        this.htmlElement.focus();
+    }
+
+
+
 
 
 
@@ -74,186 +97,12 @@ export class Text {
             this.root.children.push(this.createElement(data, this.root));
         });
 
+        const selection = this.root.children[0].firstChild.getStartSelection();
+        this.selection.setStartSelection(selection);
+
         this.render();
-
-        const textSelection = this.root.children[0].firstChild.setSelectedElement(0);
-        let node = document.getElementById(textSelection.id) as Node;
-        if (textSelection.childIndex != -1) node = node.childNodes[textSelection.childIndex] as Node;
-        this.range.setStart(node, textSelection.offset);
-        this.setRange();
+        this.selection.setRange();
     }
-
-
-
-
-
-    concatenate(element: Element = this.root) {
-        for (let i = 0; i < element.children.length; i++) {
-            if (i != element.children.length - 1) {
-
-                // Span
-                if (element.children[i].nodeType == NodeType.Span &&
-                    element.children[i + 1].nodeType == NodeType.Span &&
-                    element.children[i].styles.every(x => element.children[i + 1].styles.map(x => x.style).includes(x.style) &&
-                        element.children[i + 1].styles.map(x => x.value).includes(x.value))) {
-
-
-                    element.children[i + 1].children.forEach((child: Element) => {
-                        const copiedElement = child.copyElement(element.children[i]);
-
-                        if (copiedElement) {
-                            element.children[i].children.push(copiedElement);
-                        }
-
-                        element.children[i + 1].parent.deleteChild(element.children[i + 1]);
-                    });
-
-                    i--;
-                    continue;
-                }
-
-
-                // Text
-                if (element.children[i].nodeType == NodeType.Text && element.children[i + 1].nodeType == NodeType.Text) {
-                    (element.children[i] as TextElement).text += (element.children[i + 1] as TextElement).text;
-                    element.children[i + 1].parent.deleteChild(element.children[i + 1]);
-
-                    i--;
-                    continue;
-                }
-            }
-
-            this.concatenate(element.children[i]);
-        }
-    }
-
-
-    // ---------------------------------------------------------On Range Keydown------------------------------------------------------------------
-    private onRangeKeydown(key: string, currentElement: Element, startContainer: Element): TextSelection {
-        // Start element
-        if (currentElement.id == this.startElement.id) {
-            if (currentElement != startContainer.firstChild || this.range.startOffset > 0) {
-
-
-                // Trim the end of the text
-                if (this.range.startOffset > 0) {
-                    const textElement = currentElement as TextElement;
-                    textElement.text = textElement.text.substring(0, this.range.startOffset);
-
-                    const nextChild = textElement.nextChild;
-
-                    if (nextChild) return this.onRangeKeydown(key, nextChild, startContainer);
-                }
-            }
-
-
-
-            // End Element
-        } else if (currentElement.id == this.endElement.id) {
-            const currentContainer = currentElement.container;
-
-            // If element is a text element
-            if (this.range.endContainer.nodeType == 3) {
-
-
-                // If the offset is not to the end of the text
-                if (startContainer != currentContainer && (currentElement != currentContainer.lastChild ||
-                    this.range.endOffset != this.range.endContainer.textContent?.length)) {
-
-                    // This will copy the elements from the current container and place them into the start container
-                    currentContainer.children.forEach((child: Element) => {
-                        const copiedElement = child.copyElement(startContainer);
-
-                        if (copiedElement) {
-                            startContainer?.children.push(copiedElement);
-                        }
-                    });
-
-
-                    const newElement = this.searchElement(startContainer, currentElement.id);
-                    if (newElement) currentElement = newElement;
-
-                    // Delete the current container
-                    currentContainer.parent.deleteChild(currentContainer);
-                }
-
-
-                // Set the text if selection is NOT at the end of the text
-                if (this.range.endContainer.textContent?.length != this.range.endOffset) {
-                    const textElement = currentElement as TextElement;
-
-                    textElement.text = textElement.text.substring(this.range.endOffset);
-
-                    // Get the previous child
-                    const previousChild = textElement.previousChild;
-                    const startContainerHasPreviousChild = previousChild && previousChild.container == startContainer;
-
-                    if (previousChild && startContainerHasPreviousChild) {
-                        return this.setKey(key, previousChild, Infinity);
-                    } else {
-                        return this.setKey(key, textElement, 0);
-                    }
-                }
-            }
-
-
-            // This is used to determine what the selected element will be
-            const previousChild = currentElement.previousChild;
-            const hasPreviousChild = previousChild && previousChild.container == startContainer;
-            const selectedElement = currentElement.parent.deleteChild(currentElement, {
-                selectedChildOnDeletion: hasPreviousChild ? SelectedElementOnDeletion.Previous : SelectedElementOnDeletion.Next,
-                preserveContainer: currentContainer == startContainer
-            });
-
-
-            // If the start container has no children, create a break element inside the start container
-            if (startContainer.children.length == 0) {
-                startContainer.children.push(new BreakElement(startContainer));
-                return this.setKey(key, startContainer, 0);
-            }
-
-            if (selectedElement) return this.setKey(key, selectedElement, hasPreviousChild ? Infinity : 0);
-        }
-
-
-        // Delete the current element
-        const firstChild = currentElement.firstChild;
-        let nextChild!: Element;
-        const element = firstChild.parent.deleteChild(firstChild, {
-            selectedChildOnDeletion: SelectedElementOnDeletion.Next,
-            preserveContainer: currentElement.container == startContainer
-        });
-
-        if (element) nextChild = element;
-
-        return this.onRangeKeydown(key, nextChild, startContainer);
-    }
-
-
-
-
-    // ---------------------------------------------------------Get Key------------------------------------------------------------------
-    private getKey(event: KeyboardEvent): string | null {
-        if (event.key == 'Backspace' || event.key == 'Enter' || event.key == 'Delete' || event.key == 'Tab') return event.key;
-
-        if (!/^(?:\w|\W){1}$/.test(event.key) || event.ctrlKey) return null;
-
-        return event.key;
-    }
-
-
-
-
-    // ---------------------------------------------------------Set Key------------------------------------------------------------------
-    private setKey(key: string, element: Element, offset: number): TextSelection {
-        if (key == 'Enter') return element.onEnter(offset);
-        if (!this.range.collapsed && (key == 'Backspace' || key == 'Delete')) return element.setSelectedElement(offset);
-        if (key == 'Backspace') return element.onBackspace(offset);
-        if (key == 'Delete') return element.onDelete(offset);
-
-        return element.onKeydown(key, offset);
-    }
-
 
 
 
@@ -276,54 +125,120 @@ export class Text {
 
 
 
-    // ---------------------------------------------------------Create Html------------------------------------------------------------------
-    private createHtml(element: Element, parent: HTMLElement): void {
-        element.createHtml(parent);
-    }
+
+    // ---------------------------------------------------------Merge------------------------------------------------------------------
+    public merge(element: Element = this.root): void {
+        for (let i = 0; i < element.children.length; i++) {
+            const currentElement = element.children[i];
 
 
+            if (currentElement.styles.some(x => currentElement.parent.styles.map(z => z.style).includes(x.style) &&
+                currentElement.parent.styles.map(z => z.value).includes(x.value))) {
 
 
+                for (let j = 0; j < currentElement.styles.length; j++) {
+                    const currentStyle = currentElement.styles[j];
 
+                    if (currentElement.parent.styles.some(x => x.style == currentStyle.style && x.value == currentStyle.value)) {
+                        currentElement.styles.splice(j, 1);
+                        j--;
+                    }
+                }
 
-    // ---------------------------------------------------------Get Element------------------------------------------------------------------
-    public getElement(node: Node): Element {
-        if (node.nodeType == 3) {
-            return this.getTextElement(node);
-        }
+                if (currentElement.styles.length == 0) {
+                    const startIndex = currentElement.parent.children.findIndex(x => x == currentElement);
+                    let index = startIndex;
 
-        return this.searchElement(this.root, (node as HTMLElement).id) as Element;
-    }
+                    currentElement.children.forEach((child: Element) => {
+                        const copiedElement = child.copyElement(currentElement.parent);
 
+                        if (copiedElement) {
+                            currentElement.parent.children.splice(index, index == startIndex ? 1 : 0, copiedElement);
+                            index++;
+                        }
+                    });
 
+                    // Reset the selection
+                    this.selection.resetSelection();
+                }
 
-
-
-
-
-    // ---------------------------------------------------------Search Element------------------------------------------------------------------
-    public searchElement(parentElement: Element, id: string): Element | null {
-        if (parentElement.id == id) return parentElement;
-
-        for (let i = 0; i < parentElement.children.length; i++) {
-            const element = parentElement.children[i];
-
-            if (element.id == id) {
-                return element;
+                i = -1;
+                continue;
             }
 
-            if (element.children.length > 0) {
-                const result = this.searchElement(element, id);
 
-                if (result != null) {
-                    return result;
+
+
+
+
+
+            if (i != element.children.length - 1) {
+
+                const nextElement = element.children[i + 1];
+
+                // Do the current and next element's node types match?
+                if (((currentElement.nodeType == NodeType.Span && nextElement.nodeType == NodeType.Span) ||
+                    (currentElement.nodeType == NodeType.A && nextElement.nodeType == NodeType.A))
+
+                    // Do their styles match?
+                    && currentElement.styles.every(x => nextElement.styles.map(z => z.style).includes(x.style) &&
+                        nextElement.styles.map(z => z.value).includes(x.value)) &&
+                    nextElement.styles.every(x => currentElement.styles.map(z => z.style).includes(x.style) &&
+                        currentElement.styles.map(z => z.value).includes(x.value))) {
+
+                    // Everyting matches, so copy the contents from the next element to the current element
+                    nextElement.children.forEach((child: Element) => {
+                        const copiedElement = child.copyElement(currentElement);
+
+                        if (copiedElement) {
+                            currentElement.children.push(copiedElement);
+                        }
+                    });
+
+                    // Delete the next element
+                    nextElement.parent.deleteChild(nextElement);
+
+                    // Reset the selection
+                    this.selection.resetSelection();
+
+                    i--;
+                    continue;
+                }
+
+
+                // Current element and next element are text
+                if (currentElement.nodeType == NodeType.Text && nextElement.nodeType == NodeType.Text) {
+                    const currentTextElement = currentElement as TextElement;
+                    const nextTextElement = nextElement as TextElement;
+
+
+                    // Next element is the selection start element
+                    if (nextTextElement.id == this.selection.startElement.id) {
+                        this.selection.startElement = currentTextElement;
+                        this.selection.startOffset = currentTextElement.text.length;
+                        this.selection.startChildIndex = currentTextElement.parent.children.findIndex(x => x == currentTextElement);
+                    }
+
+
+                    // Next element is the selection end element
+                    if (nextTextElement.id == this.selection.endElement.id) {
+                        this.selection.endElement = currentTextElement;
+                        this.selection.endOffset = currentTextElement.text.length + nextTextElement.text.length;
+                        this.selection.endChildIndex = currentTextElement.parent.children.findIndex(x => x == currentTextElement);
+                    }
+
+                    // Merge the text
+                    currentTextElement.text += nextTextElement.text;
+                    nextTextElement.parent.deleteChild(nextTextElement);
+
+                    i--;
+                    continue;
                 }
             }
+
+            this.merge(currentElement);
         }
-
-        return null;
     }
-
 
 
 
@@ -334,17 +249,17 @@ export class Text {
         if (!key) return;
         event.preventDefault();
 
-        let textSelection!: TextSelection;
+        let selection!: Selection;
 
-        if (this.range.collapsed) {
-            textSelection = this.setKey(key, this.startElement, this.range.startOffset);
+        if (this.selection.collapsed) {
+            selection = this.setKey(key, this.selection.startElement, this.selection.startOffset);
         } else {
-            if (this.startElement == this.endElement) {
-                const textElement = this.startElement as TextElement;
+            if (this.selection.startElement == this.selection.endElement) {
+                const textElement = this.selection.startElement as TextElement;
 
                 // Set the text
-                textElement.text = textElement.text.substring(0, this.range.startOffset) + textElement.text.substring(this.range.endOffset);
-                textSelection = this.setKey(key, textElement, this.range.startOffset);
+                textElement.text = textElement.text.substring(0, this.selection.startOffset) + textElement.text.substring(this.selection.endOffset);
+                selection = this.setKey(key, textElement, this.selection.startOffset);
 
                 // If we have no text
                 if (textElement.text.length == 0) {
@@ -362,99 +277,244 @@ export class Text {
                         const breakElement = new BreakElement(container);
 
                         container.children.push(breakElement);
-                        textSelection = container.setSelectedElement(0);
+                        selection = container.getStartSelection();
                     } else {
-                        textSelection = element ? element.setSelectedElement(textElement == firstChild ? 0 : Infinity) : textElement.setSelectedElement(0);
+                        selection = element ? element.getStartSelection(textElement == firstChild ? 0 : Infinity) : textElement.getStartSelection();
                     }
                 }
             } else {
-                textSelection = this.onRangeKeydown(key, this.startElement, this.startElement.container);
+                const startContainer = this.selection.startElement.nodeType == NodeType.Div || this.selection.startElement.nodeType == NodeType.Li ?
+                    this.selection.startElement : this.selection.startElement.container;
+                selection = this.onRangeKeydown(key, this.selection.startElement, startContainer);
             }
         }
 
-        this.concatenate();
-
+        this.selection.setStartSelection(selection);
+        this.merge();
         this.render();
-
-        let node = document.getElementById(textSelection.id) as Node;
-        if (textSelection.childIndex != -1) node = node.childNodes[textSelection.childIndex] as Node;
-        this.range.setStart(node, textSelection.offset);
-        this.setRange();
-    }
-
-    getSelection() {
-        const selection = window.getSelection();
-
-        if (selection) this.range = selection.getRangeAt(0);
-    }
-
-    setRange() {
-        if (this.range.collapsed) {
-            this.startElement = this.endElement = this.getElement(this.range.startContainer);
-        } else {
-            const startNode = this.getChildNode(this.range.startContainer);
-            this.range.setStart(startNode, this.range.startOffset);
-
-            const endNode = this.getChildNode(this.range.endContainer);
-            this.range.setEnd(endNode, this.range.endOffset);
-
-            this.startElement = this.getElement(this.range.startContainer);
-            this.endElement = this.getElement(this.range.endContainer);
-        }
-    }
-
-
-
-    trumpy() {
-        this.concatenate();
-
-        const startSelection = this.startElement.setSelectedElement(0);
-        const endSelection = this.endElement.setSelectedElement((this.endElement as TextElement).text.length);
-
-        this.render();
-
-
-        let node = document.getElementById(startSelection.id) as Node;
-        if (startSelection.childIndex != -1) node = node.childNodes[startSelection.childIndex] as Node;
-        this.range.setStart(node, 0);
-
-
-        node = document.getElementById(endSelection.id) as Node;
-        if (endSelection.childIndex != -1) node = node.childNodes[endSelection.childIndex] as Node;
-        this.range.setEnd(node, endSelection.offset);
-
-        this.htmlElement.focus();
-    }
-
-
-    // ---------------------------------------------------------Get Child Node------------------------------------------------------------------
-    private getChildNode(node: Node): Node {
-        if (node.nodeName == '#text' || node.nodeName == 'BR') return node;
-
-        return this.getChildNode(node.firstChild as Node);
+        this.selection.setRange();
     }
 
 
 
 
-    // ---------------------------------------------------------Get Text Element------------------------------------------------------------------
-    private getTextElement(node: Node): Element {
-        const parentId = node.parentElement?.id as string
-        const element = this.searchElement(this.root, parentId) as Element;
-        const parentElement = node.parentElement;
-        let index = 0;
 
-        if (parentElement) {
-            for (let i = 0; i < parentElement.childNodes.length; i++) {
-                if (parentElement.childNodes[i] == node) {
-                    index = i;
-                    break;
+    // ---------------------------------------------------------On Range Keydown------------------------------------------------------------------
+    private onRangeKeydown(key: string, currentElement: Element, startContainer: Element): Selection {
+        let selection!: Selection;
+
+        while (!selection) {
+            // Start element
+            if (currentElement.id == this.selection.startElement.id) {
+                if (currentElement != startContainer.firstChild || this.selection.startOffset > 0) {
+
+
+                    // Trim the end of the text
+                    if (this.selection.startOffset > 0) {
+                        const textElement = currentElement as TextElement;
+                        textElement.text = textElement.text.substring(0, this.selection.startOffset);
+
+                        const nextChild = textElement.nextChild;
+
+                        if (nextChild) currentElement = nextChild;
+                        continue;
+                    }
                 }
+
+
+
+                // End Element
+            } else if (currentElement.id == this.selection.endElement.id || currentElement.id == this.selection.endElement.firstChild.id) {
+                const currentContainer = currentElement.container;
+
+                // If element is a text element
+                if (this.selection.endElement.nodeType == NodeType.Text) {
+
+
+                    // If the offset is not at the end of the text
+                    if (startContainer != currentContainer && (currentElement != currentContainer.lastChild ||
+                        this.selection.endOffset != (this.selection.endElement as TextElement).text.length)) {
+
+                        // This will copy the elements from the current container and place them into the start container
+                        currentContainer.children.forEach((child: Element) => {
+                            const copiedElement = child.copyElement(startContainer);
+
+                            if (copiedElement) {
+                                startContainer.children.push(copiedElement);
+                            }
+                        });
+
+
+                        const newElement = Element.search(currentElement.id, startContainer);
+                        if (newElement) currentElement = newElement;
+
+                        // Delete the current container
+                        currentContainer.parent.deleteChild(currentContainer);
+                    }
+
+
+                    // Set the text if selection is NOT at the end of the text
+                    if ((this.selection.endElement as TextElement).text.length != this.selection.endOffset) {
+                        const textElement = currentElement as TextElement;
+
+                        textElement.text = textElement.text.substring(this.selection.endOffset);
+
+                        // Get the previous child
+                        const previousChild = textElement.previousChild;
+                        const startContainerHasPreviousChild = previousChild && previousChild.container == startContainer;
+
+                        if (previousChild && startContainerHasPreviousChild) {
+                            selection = this.setKey(key, previousChild, Infinity);
+                        } else {
+                            selection = this.setKey(key, textElement, 0);
+                        }
+
+                        continue;
+                    }
+                }
+
+
+                else {
+
+                    // This will copy the elements from the current container and place them into the start container
+                    currentContainer.children.forEach((child: Element) => {
+                        const copiedElement = child.copyElement(startContainer);
+
+                        if (copiedElement) {
+                            startContainer.children.push(copiedElement);
+                        }
+                    });
+
+
+                    const newElement = Element.search(currentElement.id, startContainer);
+                    if (newElement) currentElement = newElement;
+
+                    // Delete the current container
+                    currentContainer.parent.deleteChild(currentContainer);
+
+
+                    // Get the previous child
+                    const previousChild = currentElement.previousChild;
+                    const startContainerHasPreviousChild = previousChild && previousChild.container == startContainer;
+
+                    if (previousChild && startContainerHasPreviousChild) {
+                        // If the current element is a break element
+                        if (currentElement.nodeType == NodeType.Br) {
+                            currentElement.parent.deleteChild(currentElement);
+                        }
+
+                        selection = this.setKey(key, previousChild, Infinity);
+                    } else {
+                        selection = this.setKey(key, currentElement, 0);
+                    }
+
+                    continue;
+                }
+
+
+                // This is used to determine what the selected element will be
+                const previousChild = currentElement.previousChild;
+                const hasPreviousChild = previousChild && previousChild.container == startContainer;
+                const selectedElement = currentElement.parent.deleteChild(currentElement, {
+                    selectedChildOnDeletion: hasPreviousChild ? SelectedElementOnDeletion.Previous : SelectedElementOnDeletion.Next,
+                    preserveContainer: currentContainer == startContainer
+                });
+
+
+                // If the start container has no children, create a break element inside the start container
+                if (startContainer.children.length == 0) {
+                    startContainer.children.push(new BreakElement(startContainer));
+                    selection = this.setKey(key, startContainer, 0);
+                    continue;
+                }
+
+                if (selectedElement) selection = this.setKey(key, selectedElement, hasPreviousChild ? Infinity : 0);
+                continue;
             }
+
+
+            // Delete the current element
+            const firstChild = currentElement.firstChild;
+            const nextElement = firstChild.parent.deleteChild(firstChild, {
+                selectedChildOnDeletion: SelectedElementOnDeletion.Next,
+                preserveContainer: currentElement.container == startContainer || currentElement == startContainer
+            });
+
+            if (nextElement) currentElement = nextElement;
         }
 
-        return element.children[index];
+        return selection;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ---------------------------------------------------------Get Key------------------------------------------------------------------
+    private getKey(event: KeyboardEvent): string | null {
+        if (event.key == 'Backspace' || event.key == 'Enter' || event.key == 'Delete' || event.key == 'Tab') return event.key;
+
+        if (!/^(?:\w|\W){1}$/.test(event.key) || event.ctrlKey) return null;
+
+        return event.key;
+    }
+
+
+
+
+
+
+
+
+    // ---------------------------------------------------------Set Key------------------------------------------------------------------
+    private setKey(key: string, element: Element, offset: number): Selection {
+        // Enter
+        if (key == 'Enter') return element.onEnter(offset);
+
+        // Backspace
+        if (key == 'Backspace') {
+            if (this.selection.collapsed) return element.onBackspace(offset);
+            return element.getStartSelection(offset);
+        }
+
+        // Delete
+        if (key == 'Delete') {
+            if (this.selection.collapsed) return element.onDelete(offset);
+            return element.getStartSelection(offset);
+        }
+
+        // Other
+        return element.onKeydown(key, offset);
+    }
+
+
+
+
+
+
+
+
+
+
+    // ---------------------------------------------------------Create Html------------------------------------------------------------------
+    private createHtml(element: Element, parent: HTMLElement): void {
+        element.createHtml(parent);
+    }
+
+
+
+
+
 
 
 
