@@ -337,7 +337,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Get Start-End Selection-----------------------------------------------------
-    getStartEndSelection(): Selection {
+    getStartEndSelection(startOffset?: number, endOffset?: number): Selection {
         return new Selection();
     }
 

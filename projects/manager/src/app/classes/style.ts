@@ -9,8 +9,9 @@ import { TextElement } from "./text-element";
 export abstract class Style {
     public name!: string;
     public value!: string;
+    public preventCollapsedStyling: boolean = true;
     get selectionHasStyle(): boolean {
-        if (this.text.selection.selectedStyles.length > 0) {
+        if (this.text.selection.selectedStyles.length > 0 && !(this.text.selection.selectedStyles.length == 1 && this.text.selection.selectedStyles[0].length == 0)) {
             return this.text.selection.selectedStyles.every(x => x.some(z => z.style == this.name && z.value == this.value));
         }
 
@@ -22,17 +23,41 @@ export abstract class Style {
 
     // ---------------------------------------------------------Set Style------------------------------------------------------------------
     public setStyle(): void {
-        if (this.text.selection.collapsed) return;
+        if (this.preventCollapsedStyling && this.text.selection.collapsed) return;
 
         if (this.text.selection.startElement == this.text.selection.endElement) {
             const element = this.applyStyle(this.text.selection.startElement as TextElement, this.text.selection.startOffset, this.text.selection.endOffset);
-            const selection = element.getStartEndSelection();
+            const selection = this.getStartEndSelection(element);
 
             this.text.selection.setStartSelection(selection);
         } else {
             this.setRangeStyle();
         }
     }
+
+
+
+    // ---------------------------------------------------------Get Start End Selection------------------------------------------------------------------
+    public getStartEndSelection(element: Element): Selection {
+        return element.getStartEndSelection();
+    }
+
+
+
+
+
+    // ---------------------------------------------------------Get Start Selection------------------------------------------------------------------
+    public getStartSelection(element: Element): Selection {
+        return element.getStartSelection();
+    }
+
+
+
+    // ---------------------------------------------------------Get Start Selection------------------------------------------------------------------
+    public getEndSelection(element: Element): Selection {
+        return element.getEndSelection();
+    }
+
 
 
 
@@ -57,12 +82,12 @@ export abstract class Style {
             if (currentElement.id == this.text.selection.startElement.id) {
                 currentElement = this.text.selection.startElement =
                     this.applyStyle(currentElement, this.text.selection.startOffset, currentElement.nodeType == NodeType.Text ? (currentElement as TextElement).text.length : 1);
-                startSelection = currentElement.getStartSelection();
+                startSelection = this.getStartSelection(currentElement);
             } else if (currentElement.id == this.text.selection.endElement.id || currentElement.container.id == this.text.selection.endElement.id) {
                 if (currentElement.container.id == this.text.selection.endElement.id) currentElement = currentElement.container;
 
                 currentElement = this.applyStyle(currentElement, 0, this.text.selection.endOffset);
-                endSelection = currentElement.getEndSelection();
+                endSelection = this.getEndSelection(currentElement);
                 break;
             } else {
                 currentElement = this.applyStyle(currentElement, 0, currentElement.nodeType == NodeType.Text ? (currentElement as TextElement).text.length : 1);
