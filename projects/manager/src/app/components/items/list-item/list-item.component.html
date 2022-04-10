@@ -1,6 +1,6 @@
 <div class="item-container">
 
-    <div *ngIf="listManager.editableItem != null">
+    <div *ngIf="listManager.editedItem != null">
         <div [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 22 : 0"></div>
     </div>
 
@@ -11,18 +11,18 @@
         (mousedown)="listManager.onItemDown(item, $event)"
         (blur)="listManager.onItemBlur(item)"
         (dblclick)="listManager.onItemDoubleClick(item)"
-        [contentEditable]="item == listManager.editableItem"
+        [contentEditable]="item == listManager.editedItem"
         [ngClass]="{'selected-item': item == listManager.selectedItem,
                     'unselected-item': item == listManager.unselectedItem,
-                    'edited-item': item == listManager.editableItem,
-                    'transparent-item': listManager.editableItem != null && listManager.editableItem != item,
+                    'edited-item': item == listManager.editedItem,
+                    'transparent-item': listManager.editedItem != null && listManager.editedItem != item,
                     'selected-item-top': item.selectType == listManager.SelectType.Top,
                     'selected-item-all': item.selectType == listManager.SelectType.All,
                     'selected-item-middle': item.selectType == listManager.SelectType.Middle,
                     'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
                     'no-hover': listManager.contextMenuOpen}">
 
-        <div *ngIf="listManager.editableItem == null" [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 22 : 0"></div>
+        <div *ngIf="listManager.editedItem == null" [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 22 : 0"></div>
 
         {{item.name}}
 

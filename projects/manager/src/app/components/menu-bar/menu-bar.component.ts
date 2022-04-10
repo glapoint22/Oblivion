@@ -217,13 +217,27 @@ export class MenuBarComponent {
   onMouseDown = () => {
     if (!this.overMenu && this.menuOpen) this.closeMenu();
 
-    if (this.nicheHierarchyOpen &&
-      !this.nicheHierarchy.moveFormOpen &&
-      !this.overNicheHierarchy &&
-      !this.nicheHierarchy.hierarchy.listManager.editableItem &&
-      !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen &&
-      !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen) {
-      this.closeNicheHierarchy();
+    if (this.nicheHierarchyOpen) {
+      // If the niche hierarchy is being displayed
+      if (this.nicheHierarchy.hierarchy) {
+        if (!this.overNicheHierarchy &&
+          !this.nicheHierarchy.moveFormOpen &&
+          !this.nicheHierarchy.hierarchy.listManager.editedItem &&
+          !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen &&
+          !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen) {
+          this.closeNicheHierarchy();
+        }
+
+        // If the search text is being displayed
+      } else {
+        if (!this.overNicheHierarchy &&
+          !this.nicheHierarchy.moveFormOpen &&
+          !this.nicheHierarchy.multiColumnList.listManager.editedItem &&
+          !this.nicheHierarchy.multiColumnList.listManager.contextMenuOpen &&
+          !this.nicheHierarchy.multiColumnList.listManager.deletePromptOpen) {
+          this.closeNicheHierarchy();
+        }
+      }
     }
   }
 
@@ -232,12 +246,25 @@ export class MenuBarComponent {
     if (e.key === 'Escape') {
       if (this.menuOpen) this.closeMenu();
 
-      if (this.nicheHierarchyOpen &&
-        !this.nicheHierarchy.moveFormOpen &&
-        !this.nicheHierarchy.hierarchy.listManager.editableItem &&
-        !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen &&
-        !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen) {
-        this.closeNicheHierarchy();
+      if (this.nicheHierarchyOpen) {
+        // If the niche hierarchy is being displayed
+        if (this.nicheHierarchy.hierarchy) {
+          if (!this.nicheHierarchy.moveFormOpen &&
+            !this.nicheHierarchy.hierarchy.listManager.editedItem &&
+            !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen &&
+            !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen) {
+            this.closeNicheHierarchy();
+          }
+
+          // If the search text is being displayed
+        } else {
+          if (!this.nicheHierarchy.moveFormOpen &&
+            !this.nicheHierarchy.multiColumnList.listManager.editedItem &&
+            !this.nicheHierarchy.multiColumnList.listManager.contextMenuOpen &&
+            !this.nicheHierarchy.multiColumnList.listManager.deletePromptOpen) {
+            this.closeNicheHierarchy();
+          }
+        }
       }
     }
   }
@@ -246,20 +273,23 @@ export class MenuBarComponent {
   onInnerWindowBlur = () => {
     if (this.menuOpen) this.closeMenu();
 
-    // If the niche hierarchy is being displayed
-    if(this.nicheHierarchy.hierarchy) {
-      if (this.nicheHierarchyOpen &&
-        !this.nicheHierarchy.moveFormOpen &&
-        !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen) {
-        this.closeNicheHierarchy();
-        this.nicheHierarchy.hierarchy.listManager.editableItem = null!;
-      }
 
-      // If the search text is being displayed
-    }else {
+    if (this.nicheHierarchyOpen) {
+      // If the niche hierarchy is being displayed
+      if (this.nicheHierarchy.hierarchy) {
+        if (!this.nicheHierarchy.moveFormOpen &&
+          !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen) {
+          this.closeNicheHierarchy();
+          this.nicheHierarchy.hierarchy.listManager.editedItem = null!;
+        }
 
-      if (this.nicheHierarchyOpen) {
-        this.closeNicheHierarchy();
+        // If the search text is being displayed
+      } else {
+        if (!this.nicheHierarchy.moveFormOpen &&
+          !this.nicheHierarchy.multiColumnList.listManager.deletePromptOpen) {
+          this.closeNicheHierarchy();
+          this.nicheHierarchy.multiColumnList.listManager.editedItem = null!;
+        }
       }
     }
   }

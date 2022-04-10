@@ -1,9 +1,11 @@
-import { HierarchyItemComponent } from "../components/items/hierarchy-item/hierarchy-item.component";
+import { Subject } from "rxjs";
 import { CheckboxHierarchyItem } from "./checkbox-hierarchy-item";
+import { CheckboxListUpdate } from "./checkbox-list-update";
 import { ListUpdateType } from "./enums";
 import { HierarchyManager } from "./hierarchy-manager";
 
 export class CheckboxHierarchyManager extends HierarchyManager {
+    onListUpdate = new Subject<CheckboxListUpdate>();
 
     onCheckboxChange(hierarchyItem: CheckboxHierarchyItem) {
         hierarchyItem.isChecked = !hierarchyItem.isChecked;

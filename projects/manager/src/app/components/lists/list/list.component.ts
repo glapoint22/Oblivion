@@ -61,11 +61,12 @@ export class ListComponent implements OnInit {
         if (this.options.unselectable != null) this.listManager.unselectable = this.options.unselectable;
         if (this.options.deletable != null) this.listManager.deletable = this.options.deletable;
         if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
+        if (this.options.sortable != null) this.listManager.sortable = this.options.sortable;
       }
 
 
       this.listManager.onListUpdate.next({ addDisabled: this.listManager.addDisabled, editDisabled: this.listManager.editDisabled, deleteDisabled: this.listManager.deleteDisabled });
-    },100)
+    }, 100)
   }
 
 
@@ -82,8 +83,11 @@ export class ListComponent implements OnInit {
       window.setTimeout(() => {
         const identity = this.sourceList[this.sourceList.length - 1].identity;
 
-        // Sort the list
-        this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+        if (this.listManager.sortable) {
+          // Sort the list
+          this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+        }
+
 
         window.setTimeout(() => {
           this.listManager.setAddItem(this.sourceList.find(x => x.identity == identity)!);

@@ -1,14 +1,17 @@
 import { Component, ViewChild } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { Subject } from 'rxjs';
+import { debounceTime, fromEvent, Subject, Subscription } from 'rxjs';
 import { ListUpdateType, MenuOptionType } from '../../classes/enums';
 import { HierarchyItem } from '../../classes/hierarchy-item';
+import { HierarchyUpdate } from '../../classes/hierarchy-update';
 import { ListItem } from '../../classes/list-item';
 import { ListOptions } from '../../classes/list-options';
-import { ListUpdate } from '../../classes/list-update';
+import { MultiColumnItem } from '../../classes/multi-column-item';
+import { MultiColumnListUpdate } from '../../classes/multi-column-list-update';
 import { MoveFormComponent } from '../../components/move-form/move-form.component';
 import { NicheHierarchyService } from '../../services/niche-hierarchy/niche-hierarchy.service';
 import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
+import { MultiColumnListComponent } from '../lists/multi-column-list/multi-column-list.component';
 
 @Component({
   selector: 'niche-hierarchy',
@@ -17,19 +20,29 @@ import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component
 })
 export class NicheHierarchyComponent extends LazyLoad {
   // Private
-  private _hierarchyUpdate: ListUpdate = new ListUpdate();
+  private _hierarchyUpdate: HierarchyUpdate = new HierarchyUpdate();
+  private _searchListUpdate: MultiColumnListUpdate = new MultiColumnListUpdate();
+  private searchInputSubscription!: Subscription;
+  private editedSearchItem!: HierarchyItem;
 
   // Public
   public isParent!: boolean;
   public showSearch!: boolean;
   public moveFormOpen!: boolean;
   public hierarchyOptions: ListOptions = new ListOptions();
+  public searchListOptions: ListOptions = new ListOptions();
   public overNicheHierarchy: Subject<boolean> = new Subject<boolean>();
-  public get hierarchyUpdate(): ListUpdate { return this._hierarchyUpdate; }
-  public set hierarchyUpdate(hierarchyUpdate: ListUpdate) { this.onHierarchyUpdate(hierarchyUpdate); }
+  public searchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+  public get hierarchyUpdate(): HierarchyUpdate { return this._hierarchyUpdate; }
+  public get searchListUpdate(): MultiColumnListUpdate { return this._searchListUpdate; }
+  public set searchListUpdate(searchListUpdate: MultiColumnListUpdate) { this.onSearchListUpdate(searchListUpdate); }
+  public set hierarchyUpdate(hierarchyUpdate: HierarchyUpdate) { this.onHierarchyUpdate(hierarchyUpdate); }
 
   // Decorators
   @ViewChild('hierarchy') hierarchy!: HierarchyComponent;
+  @ViewChild('multiColumnList') multiColumnList!: MultiColumnListComponent;
+
+
 
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
@@ -45,17 +58,21 @@ export class NicheHierarchyComponent extends LazyLoad {
       editable: true,
       unselectable: false,
       multiselectable: false,
+
+
       deletePrompt: {
-        parentObj: this.hierarchy,
+        parentObj: this,
         title: 'Delete',
         primaryButton: {
           name: 'Delete',
-          buttonFunction: this.hierarchy.delete
+          buttonFunction: this.onDelete
         },
         secondaryButton: {
           name: 'Cancel'
         }
       },
+
+
       menu: {
         parentObj: this,
         menuOptions: [
@@ -67,15 +84,14 @@ export class NicheHierarchyComponent extends LazyLoad {
           },
           {
             type: MenuOptionType.MenuItem,
-            name: 'Edit',
-            shortcut: 'Ctrl+Alt+E',
-            optionFunction: this.onEditFromMenu
+            shortcut: 'Ctrl+Alt+R',
+            optionFunction: this.onEdit
           },
           {
             type: MenuOptionType.MenuItem,
             name: 'Delete',
             shortcut: 'Delete',
-            optionFunction: this.onDeleteFromMenu
+            optionFunction: this.onDelete
           },
           {
             type: MenuOptionType.Divider
@@ -89,26 +105,78 @@ export class NicheHierarchyComponent extends LazyLoad {
         ]
       }
     }
+
+
+    this.searchListOptions = {
+      // unselectable: false,
+      sortable: false,
+      multiselectable: false,
+
+
+      deletePrompt: {
+        parentObj: this,
+        title: 'Delete',
+        primaryButton: {
+          name: 'Delete',
+          buttonFunction: this.onDelete
+        },
+        secondaryButton: {
+          name: 'Cancel'
+        }
+      },
+
+
+      menu: {
+        parentObj: this,
+        menuOptions: [
+          {
+            type: MenuOptionType.MenuItem,
+            shortcut: 'Ctrl+Alt+R',
+            optionFunction: this.onEdit
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Delete',
+            shortcut: 'Delete',
+            optionFunction: this.onDelete
+          },
+          {
+            type: MenuOptionType.Divider
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Move',
+            shortcut: 'Ctrl+M',
+            optionFunction: this.onMove
+          }
+        ]
+      }
+    }
+
+
+
+
   }
 
 
   onOpen() {
     if (this.nicheHierarchyService.niches.length == 0) {
-      this.dataService.get<Array<HierarchyItem>>('api/Categories').subscribe((hierarchyItems: Array<HierarchyItem>) => {
-        hierarchyItems.forEach(x => {
-          this.nicheHierarchyService.niches.push({
-            id: x.id,
-            name: x.name,
-            hierarchyGroupID: 0,
-            hidden: false,
-            arrowDown: false
+      this.dataService.get<Array<HierarchyItem>>('api/Categories')
+        .subscribe((hierarchyItems: Array<HierarchyItem>) => {
+          hierarchyItems.forEach(x => {
+            this.nicheHierarchyService.niches.push({
+              id: x.id,
+              name: x.name,
+              hierarchyGroupID: 0,
+              hidden: false,
+              arrowDown: false
+            })
           })
-        })
-      });
-    }else {
-      
-      const selectedItem = this.nicheHierarchyService.niches.filter(x => x.selected)[0];
-      if(selectedItem) {
+        });
+    } else {
+
+      const selectedItem = this.nicheHierarchyService.niches.filter(x => x.selectType != null || x.selected == true)[0];
+      if (selectedItem) {
         this.hierarchy.listManager.onItemDown(selectedItem);
       }
     }
@@ -118,25 +186,61 @@ export class NicheHierarchyComponent extends LazyLoad {
   toggleSearch() {
     this.showSearch = !this.showSearch;
 
-    window.setTimeout(() => {
-      document.getElementById('searchInput')?.focus();
-    })
+    // If we're in search view
+    if (this.showSearch) {
+      this.searchList.splice(0, this.searchList.length);
+      window.setTimeout(() => {
+        const searchInput: HTMLInputElement = document.getElementById('searchInput') as HTMLInputElement;
+
+        searchInput!.focus();
+        this.searchInputSubscription = fromEvent(searchInput, 'input').pipe(debounceTime(500)).subscribe(() => {
+          if (searchInput.value.length > 1) {
+            this.getSearchResults(searchInput.value);
+          }
+        });
+      })
+
+      // If we're in hierarchy view
+    } else {
+
+
+      window.setTimeout(() => {
+        if (this.editedSearchItem) {
+          this.hierarchy.listManager.sort(this.editedSearchItem);
+        }
+
+        this.searchInputSubscription.unsubscribe();
+        const selectedItem = this.nicheHierarchyService.niches.filter(x => x.selectType != null || x.selected == true)[0];
+        if (selectedItem) {
+          this.hierarchy.listManager.onItemDown(selectedItem);
+        }
+      })
+    }
   }
 
 
-  onHierarchyUpdate(hierarchyUpdate: ListUpdate) {
+  onHierarchyUpdate(hierarchyUpdate: HierarchyUpdate) {
     this._hierarchyUpdate = hierarchyUpdate;
-    if (hierarchyUpdate.type == ListUpdateType.Add) this.onAdd(hierarchyUpdate);
-    if (hierarchyUpdate.type == ListUpdateType.Edit) this.onEdit(hierarchyUpdate);
-    if (hierarchyUpdate.type == ListUpdateType.Delete) this.onDelete(hierarchyUpdate.deletedItems![0]);
-    if (hierarchyUpdate.type == ListUpdateType.SelectedItems) this.onSelectedItem(hierarchyUpdate);
+    if (hierarchyUpdate.type == ListUpdateType.Add) this.onHierarchyItemAdd(hierarchyUpdate);
+    if (hierarchyUpdate.type == ListUpdateType.Edit) this.onHierarchyItemEdit(hierarchyUpdate);
     if (hierarchyUpdate.type == ListUpdateType.ArrowClicked) this.onArrowClick(hierarchyUpdate);
-    if (hierarchyUpdate.type == ListUpdateType.DeletePrompt) this.onDeletePromptOpen(hierarchyUpdate.deletedItems![0]);
+    if (hierarchyUpdate.type == ListUpdateType.SelectedItems) this.onSelectedHierarchyItem(hierarchyUpdate);
+    if (hierarchyUpdate.type == ListUpdateType.Delete) this.onHierarchyItemDelete(hierarchyUpdate.deletedItems![0]);
+    if (hierarchyUpdate.type == ListUpdateType.DeletePrompt) this.onHierarchyDeletePromptOpen(hierarchyUpdate.deletedItems![0]);
     this.hierarchyOptions.menu!.menuOptions[0].isDisabled = hierarchyUpdate.editDisabled;
   }
 
-  onAdd(hierarchyUpdate: ListUpdate) {
 
+  onSearchListUpdate(searchListUpdate: MultiColumnListUpdate) {
+    this._searchListUpdate = searchListUpdate;
+    if (searchListUpdate.type == ListUpdateType.Edit) this.onSearchListItemEdit(searchListUpdate);
+    if (searchListUpdate.type == ListUpdateType.SelectedItems) this.onSelectedSearchListItem(searchListUpdate);
+    if (searchListUpdate.type == ListUpdateType.Delete) this.onSearchListItemDelete(searchListUpdate.deletedMultiColumnItems![0]);
+    if (searchListUpdate.type == ListUpdateType.DeletePrompt) this.onSearchListDeletePromptOpen(searchListUpdate.deletedMultiColumnItems![0]);
+  }
+
+
+  onHierarchyItemAdd(hierarchyUpdate: HierarchyUpdate) {
     if (hierarchyUpdate.hierarchyGroupID == 0) {
       this.dataService.post<number>('api/Categories', {
         name: hierarchyUpdate.name
@@ -167,7 +271,7 @@ export class NicheHierarchyComponent extends LazyLoad {
   }
 
 
-  onEdit(hierarchyUpdate: ListUpdate) {
+  onHierarchyItemEdit(hierarchyUpdate: HierarchyUpdate) {
     if (hierarchyUpdate.hierarchyGroupID == 0) {
       this.dataService.put('api/Categories', {
         id: hierarchyUpdate.id,
@@ -193,7 +297,46 @@ export class NicheHierarchyComponent extends LazyLoad {
   }
 
 
-  onDelete(deletedItem: HierarchyItem) {
+  onSearchListItemEdit(searchListUpdate: MultiColumnListUpdate) {
+    if (searchListUpdate.values![1].name == 'Niche') {
+      this.dataService.put('api/Categories', {
+        id: searchListUpdate.id,
+        name: searchListUpdate.values![0].name
+      }).subscribe(() => {
+        this.editedSearchItem = this.nicheHierarchyService.niches.find(x => x.id == searchListUpdate.id && x.hierarchyGroupID == 0)!;
+        if (this.editedSearchItem) {
+          this.editedSearchItem.name = searchListUpdate.values![0].name;
+        }
+      });
+    }
+
+    if (searchListUpdate.values![1].name == 'Sub Niche') {
+      this.dataService.put('api/Niches', {
+        id: searchListUpdate.id,
+        name: searchListUpdate.values![0].name
+      }).subscribe(() => {
+        this.editedSearchItem = this.nicheHierarchyService.niches.find(x => x.id == searchListUpdate.id && x.hierarchyGroupID == 1)!;
+        if (this.editedSearchItem) {
+          this.editedSearchItem.name = searchListUpdate.values![0].name;
+        }
+      });
+    }
+
+    if (searchListUpdate.values![1].name == 'Product') {
+      this.dataService.put('api/Products', {
+        id: searchListUpdate.id,
+        name: searchListUpdate.values![0].name
+      }).subscribe(() => {
+        this.editedSearchItem = this.nicheHierarchyService.niches.find(x => x.id == searchListUpdate.id && x.hierarchyGroupID == 2)!;
+        if (this.editedSearchItem) {
+          this.editedSearchItem.name = searchListUpdate.values![0].name;
+        }
+      });
+    }
+  }
+
+
+  onHierarchyItemDelete(deletedItem: HierarchyItem) {
     if (deletedItem.hierarchyGroupID == 0) {
       this.dataService.delete('api/Categories', {
         id: deletedItem.id
@@ -216,7 +359,35 @@ export class NicheHierarchyComponent extends LazyLoad {
   }
 
 
-  onSelectedItem(hierarchyUpdate: ListUpdate) {
+  onSearchListItemDelete(deletedItem: MultiColumnItem) {
+    if (deletedItem.values[1].name == 'Niche') {
+      this.dataService.delete('api/Categories', {
+        id: deletedItem.id
+      }).subscribe();
+    }
+
+
+    if (deletedItem.values[1].name == 'Sub Niche') {
+      this.dataService.delete('api/Niches', {
+        id: deletedItem.id
+      }).subscribe();
+    }
+
+
+    if (deletedItem.values[1].name == 'Product') {
+      this.dataService.delete('api/Products', {
+        id: deletedItem.id
+      }).subscribe();
+    }
+
+
+    // Remove the deleted search item from the niche hierarchy as well
+    const index = this.nicheHierarchyService.niches.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.values[0].name);
+    this.nicheHierarchyService.niches.splice(index, 1)
+  }
+
+
+  onSelectedHierarchyItem(hierarchyUpdate: HierarchyUpdate) {
     this.isParent = hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1 || hierarchyUpdate.selectedItems![0].hierarchyGroupID == 2 ? false : true;
 
     if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
@@ -226,6 +397,8 @@ export class NicheHierarchyComponent extends LazyLoad {
       this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
       this.hierarchyOptions.menu!.menuOptions[1].name = 'Add Sub Niche';
       this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.addSubNicheBelow;
+      this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename Niche';
+      this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete Niche';
       this.hierarchyOptions.menu!.menuOptions[5].isDisabled = true;
     }
 
@@ -236,6 +409,8 @@ export class NicheHierarchyComponent extends LazyLoad {
       this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
       this.hierarchyOptions.menu!.menuOptions[1].name = 'Add Product';
       this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.addProductBelow;
+      this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename Sub Niche';
+      this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete Sub Niche';
       this.hierarchyOptions.menu!.menuOptions[5].isDisabled = false;
     }
 
@@ -244,14 +419,20 @@ export class NicheHierarchyComponent extends LazyLoad {
       this.hierarchyOptions.menu!.menuOptions[0].name = 'Add Product';
       this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addProduct;
       this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
+      this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename Product';
+      this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete Product';
       this.hierarchyOptions.menu!.menuOptions[5].isDisabled = false;
-
 
       if (!hierarchyUpdate.rightClick) {
         this.dataService.get('api/Products/product', [{ key: 'productId', value: hierarchyUpdate.selectedItems![0].id }]).subscribe(x => console.log(x));
       }
-
     }
+  }
+
+
+  onSelectedSearchListItem(searchListUpdate: MultiColumnListUpdate) {
+    this.searchListOptions.deletePrompt!.title = 'Delete ' + searchListUpdate.selectedMultiColumnItems![0].values[1].name;
+    this.searchListOptions.menu!.menuOptions[0].name = 'Rename ' + searchListUpdate.selectedMultiColumnItems![0].values[1].name;
   }
 
 
@@ -279,12 +460,20 @@ export class NicheHierarchyComponent extends LazyLoad {
     this.hierarchy.add();
   }
 
-  onEditFromMenu() {
-    this.hierarchy.edit();
+  onEdit() {
+    if (!this.showSearch) {
+      this.hierarchy.edit();
+    } else {
+      this.multiColumnList.edit();
+    }
   }
 
-  onDeleteFromMenu() {
-    this.hierarchy.delete();
+  onDelete() {
+    if (!this.showSearch) {
+      this.hierarchy.delete();
+    } else {
+      this.multiColumnList.delete();
+    }
   }
 
   async onMove() {
@@ -345,7 +534,7 @@ export class NicheHierarchyComponent extends LazyLoad {
 
 
 
-  onArrowClick(hierarchyUpdate: ListUpdate) {
+  onArrowClick(hierarchyUpdate: HierarchyUpdate) {
     // If a niche was expanded and its children hasn't been loaded yet
     if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
 
@@ -355,7 +544,7 @@ export class NicheHierarchyComponent extends LazyLoad {
         // Get all its niche children
         this.dataService.get<Array<HierarchyItem>>('api/Niches', [{ key: 'categoryId', value: hierarchyUpdate.id! }]).subscribe((hierarchyItems: Array<HierarchyItem>) => {
           // If a niche is being added and the arrow down is automated, then place the loading niches after the added niche, otherwise place the loading niches after the parent niche
-          let num = this.hierarchy.listManager.editableItem ? 2 : 1;
+          let num = this.hierarchy.listManager.editedItem ? 2 : 1;
 
           for (let i = hierarchyItems.length - 1; i >= 0; i--) {
             this.nicheHierarchyService.niches.splice(hierarchyUpdate.index! + num, 0,
@@ -375,7 +564,7 @@ export class NicheHierarchyComponent extends LazyLoad {
       if (hierarchyUpdate.hierarchyGroupID == 1) {
         this.dataService.get<Array<HierarchyItem>>('api/Products', [{ key: 'nicheId', value: hierarchyUpdate.id! }]).subscribe((hierarchyItems: Array<HierarchyItem>) => {
           // If a product is being added and the arrow down is automated, then place the loading products after the added product, otherwise place the loading products after the parent niche
-          let num = this.hierarchy.listManager.editableItem ? 2 : 1;
+          let num = this.hierarchy.listManager.editedItem ? 2 : 1;
 
           for (let i = hierarchyItems.length - 1; i >= 0; i--) {
             this.nicheHierarchyService.niches.splice(hierarchyUpdate.index! + num, 0,
@@ -393,20 +582,67 @@ export class NicheHierarchyComponent extends LazyLoad {
   }
 
 
-  onDeletePromptOpen(deletedItem: HierarchyItem) {
-    // Niche
-    if (deletedItem.hierarchyGroupID == 0 || deletedItem.hierarchyGroupID == 1) {
-      this.hierarchyOptions.deletePrompt!.message = 'Are you sure you want to delete the following niche and its contents?<br><br>\"' + deletedItem.name + '\"';
-
-      // Product
-    } else {
-      const indexOfHierarchyItemParent = this.hierarchy.listManager.getIndexOfHierarchyItemParent(this.hierarchy.sourceList[deletedItem.index!]);
-      this.hierarchyOptions.deletePrompt!.message = 'Are you sure you want to delete the following product from the niche, ' + this.hierarchy.sourceList[indexOfHierarchyItemParent].name + '?<br><br>\"' + deletedItem.name + '\"';
+  onSearchInputChange(searchInput: any) {
+    if (searchInput.value.length == 1) {
+      this.getSearchResults(searchInput.value);
+    } else if (searchInput.value.length == 0) {
+      this.searchList.splice(0, this.searchList.length);
     }
   }
 
 
+  getSearchResults(value: string) {
+    this.searchList.splice(0, this.searchList.length);
 
+    this.dataService.get<Array<MultiColumnItem>>('api/Products/Search', [{ key: 'searchWords', value: value }])
+      .subscribe((searchList: Array<MultiColumnItem>) => {
+
+        searchList.forEach(x => {
+          this.searchList.push({
+
+            id: x.id,
+            values: [{ name: x.name!, width: '295px', allowEdit: true }, { name: 'Product', width: '78px' }]
+          })
+        })
+      });
+
+
+    this.dataService.get<Array<MultiColumnItem>>('api/Niches/Search', [{ key: 'searchWords', value: value }])
+      .subscribe((searchList: Array<MultiColumnItem>) => {
+
+        searchList.forEach(x => {
+          this.searchList.push({
+
+            id: x.id,
+            values: [{ name: x.name!, width: '295px', allowEdit: true }, { name: 'Sub Niche', width: '78px' }]
+          })
+        })
+      });
+
+
+    this.dataService.get<Array<MultiColumnItem>>('api/Categories/Search', [{ key: 'searchWords', value: value }])
+      .subscribe((searchList: Array<MultiColumnItem>) => {
+
+        searchList.forEach(x => {
+          this.searchList.push({
+
+            id: x.id,
+            values: [{ name: x.name!, width: '295px', allowEdit: true }, { name: 'Niche', width: '78px' }]
+          })
+        })
+      });
+  }
+
+
+  onHierarchyDeletePromptOpen(deletedItem: HierarchyItem) {
+    const item = deletedItem.hierarchyGroupID == 0 ? 'Niche' : deletedItem.hierarchyGroupID == 1 ? 'Sub Niche' : 'Product';
+    this.hierarchyOptions.deletePrompt!.message = 'Are you sure you want to delete the following?<br><br>' + item + ':<br>' + deletedItem.name;
+  }
+
+
+  onSearchListDeletePromptOpen(deletedItem: MultiColumnItem) {
+    this.searchListOptions.deletePrompt!.message = 'Are you sure you want to delete the following?<br><br>' + deletedItem.values[1].name + ':<br>' + deletedItem.values[0].name;
+  }
 
   onEscape(): void {
     // Prevent escacpe from happening here and let the menu bar component take care of it

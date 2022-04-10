@@ -11,9 +11,5 @@ export class ListUpdate {
   addDisabled?: boolean;
   editDisabled?: boolean;
   deleteDisabled?: boolean;
-  isChecked?: boolean;
-  arrowDown?: boolean;
-  hasChildren?: boolean;
-  hierarchyGroupID?: number;
   rightClick?: boolean;
 }
