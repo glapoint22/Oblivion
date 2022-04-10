@@ -26,20 +26,21 @@ export class ColorPickerComponent extends LazyLoad {
   @ViewChild('hueBar') hueBar!: ElementRef;
   @ViewChild('colorPalette') colorPalette!: ElementRef;
   public $onChange: Subject<void> = new Subject<void>();
+  public $onClose: Subject<void> = new Subject<void>();
 
   ngAfterViewInit(): void {
-      super.ngAfterViewInit();
+    super.ngAfterViewInit();
 
-      window.setTimeout(() => {
-        // Set the ring position
-        this.setRingPosition(this.color.toHSB());
-        // Set the hue slider position
-        this.setHueSliderPosition(this.color.toHSL());
-        // Set the RGB
-        this.setRGB();
-        // Set the alpha
-        this.alpha = this.color.a;
-      });
+    window.setTimeout(() => {
+      // Set the ring position
+      this.setRingPosition(this.color.toHSB());
+      // Set the hue slider position
+      this.setHueSliderPosition(this.color.toHSL());
+      // Set the RGB
+      this.setRGB();
+      // Set the alpha
+      this.alpha = this.color.a;
+    });
   }
 
 
@@ -64,7 +65,7 @@ export class ColorPickerComponent extends LazyLoad {
     }
     setColor(e);
     // this.cover.showPointerCover = this.preventNoShow = true;
-    
+
     // Moving the ring
     const ringMove = (e: MouseEvent) => {
       setColor(e);
@@ -205,6 +206,12 @@ export class ColorPickerComponent extends LazyLoad {
     const magicNumber = 360 / hueContainerHeight;
     const hue = hsl.h * 360;
     this.hueSliderY = hueContainerHeight - (hue / magicNumber);
+  }
+
+
+
+  ngOnDestroy() {
+    this.$onClose.next();
   }
 
 }

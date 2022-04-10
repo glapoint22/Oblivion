@@ -32,16 +32,17 @@ export abstract class Style {
         } else {
             this.setRangeStyle();
         }
+    }
 
-        this.text.merge();
-        this.text.render();
+
+
+    // ---------------------------------------------------------Reset Selection------------------------------------------------------------------
+    public resetSelection() {
         this.text.selection.setRange();
         this.text.selection.setSelection();
         this.setSelectedStyle();
         this.text.setFocus();
     }
-
-
 
 
 
@@ -177,6 +178,9 @@ export abstract class Style {
         if (textElement.parent.nodeType == NodeType.Span && textElement.parent.children.length == 1) {
             if (!textElement.parent.styles.some(x => x.style == this.name)) {
                 textElement.parent.styles.push(this.createStyleData());
+            } else {
+                const style = textElement.parent.styles.find(x => x.style == this.name);
+                if (style) style.value = this.value;
             }
 
             return textElement;

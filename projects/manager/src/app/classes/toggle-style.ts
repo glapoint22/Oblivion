@@ -15,6 +15,10 @@ export class ToggleStyle extends Style {
         this.isRemoveStyle = this.selectionHasStyle;
 
         super.setStyle();
+
+        this.text.merge();
+        this.text.render();
+        this.resetSelection();
     }
 
 
