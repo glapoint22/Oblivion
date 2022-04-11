@@ -298,12 +298,12 @@ export class TextElement extends Element {
     }
 
 
-    getStartEndSelection(): Selection {
+    getStartEndSelection(startOffset?: number, endOffset?: number): Selection {
         const selection = new Selection();
 
         selection.endElement = selection.startElement = this;
-        selection.startOffset = 0;
-        selection.endOffset = this.text.length;
+        selection.startOffset = startOffset ? startOffset : 0;
+        selection.endOffset = endOffset ? endOffset : this.text.length;
         selection.endChildIndex = selection.startChildIndex = this.parent.children.findIndex(x => x == this);
 
         return selection;

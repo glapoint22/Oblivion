@@ -60,7 +60,7 @@ export class Selection {
 
 
 
-    
+
 
 
 
@@ -94,7 +94,13 @@ export class Selection {
 
                 let parent = currentElement.parent;
                 while (true) {
-                    styles = styles.concat(parent.styles);
+                    for (let i = 0; i < parent.styles.length; i++) {
+                        const style = parent.styles[i];
+
+                        if (!styles.some(x => x.style == style.style && x.value != style.value)) {
+                            styles.push(style);
+                        }
+                    }
 
                     if (parent.nodeType == NodeType.Div || parent.nodeType == NodeType.Li) {
                         break;
@@ -135,18 +141,18 @@ export class Selection {
             if (this.range.commonAncestorContainer == this.range.startContainer) {
                 this.commonAncestorContainer = this.startElement;
             }
-            
+
 
         } else if (currentElement.id == (this.range.startContainer as HTMLElement).id) {
             this.startElement = currentElement;
-            
+
         }
 
         if (currentElement.id == (this.range.commonAncestorContainer as HTMLElement).id) {
             this.commonAncestorContainer = currentElement;
         }
 
-        
+
 
 
         if (this.range.endContainer.nodeType == Node.TEXT_NODE && this.range.endContainer.parentElement?.id == currentElement.id) {

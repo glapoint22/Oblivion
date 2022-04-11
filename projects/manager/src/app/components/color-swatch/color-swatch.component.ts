@@ -8,14 +8,17 @@ import { ColorPickerComponent } from '../color-picker/color-picker.component';
   templateUrl: './color-swatch.component.html',
   styleUrls: ['./color-swatch.component.scss']
 })
-export class ColorSwatchComponent  {
+export class ColorSwatchComponent {
   @Input() color!: Color;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
+  @Output() onClick: EventEmitter<void> = new EventEmitter();
+  @Output() onColorPickerClose: EventEmitter<void> = new EventEmitter();
   @ViewChild('colorPickerContainer', { read: ViewContainerRef }) colorPickerContainer!: ViewContainerRef;
-  
+
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
-  onClick() {
+  onSwatchClick() {
+    this.onClick.emit();
     this.loadColorPicker();
   }
 
@@ -30,12 +33,20 @@ export class ColorSwatchComponent  {
         module: ColorPickerModule
       }
     }, SpinnerAction.None, this.colorPickerContainer)
-    .then((colorPicker: ColorPickerComponent)=> {
-      colorPicker.color = this.color;
-      colorPicker.$onChange.subscribe(()=> {
-        this.onChange.emit();
-      });
-    });
-  }
+      .then((colorPicker: ColorPickerComponent) => {
+        colorPicker.color = this.color;
 
+        // Subscribe to every change
+        colorPicker.$onChange.subscribe(() => {
+          this.onChange.emit();
+        });
+
+
+        // Subscribe to when the color picker closes
+        colorPicker.$onClose.subscribe(() => {
+          this.onColorPickerClose.emit();
+        });
+
+      });
+  }
 }

@@ -3,8 +3,8 @@
     <div class="property">
         <div class="label">Font</div>
         <div style="flex: 1;">
-            <select [(ngModel)]="font.selectedOption" (change)="font.setStyle()">
-                <option *ngFor="let option of font.options" [ngValue]="option">{{option.key}}</option>
+            <select [(ngModel)]="fontFamily.selectedOption" (change)="fontFamily.setStyle()">
+                <option *ngFor="let option of fontFamily.options" [ngValue]="option">{{option.key}}</option>
             </select>
         </div>
     </div>
@@ -15,10 +15,9 @@
     <div class="property">
         <div class="label">Font Size</div>
         <div style="flex: 1;">
-            <!-- <editable-dropdown [height]="20" [dropdownList]="textWidget.textBox.fontSize.options"
-                [selectedIndex]="textWidget.textBox.fontSize.selectedIndex"
-                (onChange)="textWidget.textBox.fontSize.setStyleValue($event)">
-            </editable-dropdown> -->
+            <select [(ngModel)]="fontSize.selectedOption" (change)="fontSize.setStyle()">
+                <option *ngFor="let option of fontSize.options" [ngValue]="option">{{option.key}}</option>
+            </select>
         </div>
     </div>
 
@@ -28,8 +27,9 @@
     <div class="property">
         <div class="label">Color</div>
         <div style="flex: 1;">
-
-            <!-- <color-swatch [color]="fontColor" (onChange)="widgetService.$update.next()"></color-swatch> -->
+            <color-swatch [color]="fontColor.rgbColor" (onClick)="fontColor.initialize()"
+                (onChange)="fontColor.setStyle()" (onColorPickerClose)="fontColor.onColorPickerClose()">
+            </color-swatch>
         </div>
     </div>
 
@@ -40,9 +40,9 @@
     <div class="property">
         <div class="label">Highlight</div>
         <div style="flex: 1;">
-            <!-- <color-swatch [color]="textWidget.textBox.highlightColor.value"
-                (onInit)="textWidget.textBox.highlightColor.colorPicker = $event"
-                (onColorPickerOpen)="textWidget.textBox.highlightColor.onColorPickerOpen()"></color-swatch> -->
+            <color-swatch [color]="highlightColor.rgbColor" (onClick)="highlightColor.initialize()"
+                (onChange)="highlightColor.setStyle()" (onColorPickerClose)="highlightColor.onColorPickerClose()">
+            </color-swatch>
         </div>
     </div>
 
@@ -53,25 +53,33 @@
         <div class="label">Alignment</div>
         <div style="flex: 1; display: flex; justify-content: space-between;">
 
-            <!-- Left align -->
-            <div class="icon-container" title="Left align (Ctrl+Shift+L)">
+            <!-- Align Left -->
+            <div class="icon-container" title="Left align (Ctrl+Shift+L)"
+                (click)="alignLeft.setStyle(); alignCenter.isSelected = false; alignRight.isSelected = false; alignJustify.isSelected = false"
+                [ngClass]="{'selected': alignLeft.isSelected}">
                 <i class="fas fa-align-left"></i>
             </div>
 
-            <!-- Center align -->
-            <div class="icon-container" title="Center align (Ctrl+Shift+E)">
+            <!-- Align Center -->
+            <div class="icon-container" title="Center align (Ctrl+Shift+E)"
+                (click)="alignCenter.setStyle(); alignLeft.isSelected = false; alignRight.isSelected = false; alignJustify.isSelected = false"
+                [ngClass]="{'selected': alignCenter.isSelected}">
                 <i class="fas fa-align-center"></i>
             </div>
 
 
-            <!-- Right align -->
-            <div class="icon-container" title="Right align (Ctrl+Shift+R)">
+            <!-- Align Right -->
+            <div class="icon-container" title="Right align (Ctrl+Shift+R)"
+                (click)="alignRight.setStyle(); alignCenter.isSelected = false; alignLeft.isSelected = false; alignJustify.isSelected = false"
+                [ngClass]="{'selected': alignRight.isSelected}">
                 <i class="fas fa-align-right"></i>
             </div>
 
 
-            <!-- Justify -->
-            <div class="icon-container" title="Justify (Ctrl+Shift+J)">
+            <!-- Align Justify -->
+            <div class="icon-container" title="Justify (Ctrl+Shift+J)"
+                (click)="alignJustify.setStyle(); alignCenter.isSelected = false; alignRight.isSelected = false; alignLeft.isSelected = false"
+                [ngClass]="{'selected': alignJustify.isSelected}">
                 <i class="fas fa-align-justify"></i>
             </div>
         </div>

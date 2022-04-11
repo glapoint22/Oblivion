@@ -18,6 +18,10 @@ i {
     box-sizing: border-box;
 }
 
+ul, ol {
+    list-style-position: inside;
+}
+
 ::-webkit-scrollbar {
     width: 15px;
     height: 5px;
