@@ -1,5 +1,4 @@
 import { Component, ViewChild } from '@angular/core';
-import { NgControlStatus } from '@angular/forms';
 import { DataService, LazyLoad, LazyLoadingService } from 'common';
 import { Subject } from 'rxjs';
 import { ListUpdateType } from '../../classes/enums';
@@ -16,16 +15,12 @@ import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component
 })
 export class MoveFormComponent extends LazyLoad {
   private _listUpdate!: ListUpdate;
-  public moveItemType!: string;
-  public toItemType!: string;
-
-  public moveItem!: HierarchyItem;
+  public itemToBeMovedType!: string;
+  public destinationItemType!: string;
+  public itemToBeMoved!: HierarchyItem;
   public fromItem!: HierarchyItem;
-  public toItem!: HierarchyItem;
-
+  public destinationItem!: HierarchyItem;
   public nicheHierarchy!: Array<HierarchyItem>;
-
-
   public listOptions: ListOptions = new ListOptions();
   public destinationList: Array<ListItem> = new Array<ListItem>();
   public get listUpdate(): ListUpdate { return this._listUpdate; }
@@ -57,7 +52,7 @@ export class MoveFormComponent extends LazyLoad {
 
 
   onSelectedItem(selectedItem: ListItem) {
-    this.toItem = selectedItem;
+    this.destinationItem = selectedItem;
   }
 
   close(): void {
@@ -66,13 +61,26 @@ export class MoveFormComponent extends LazyLoad {
   }
 
 
-  onMove() {
+  onMoveButtonClick() {
     this.close();
     let moveList: Array<HierarchyItem> = new Array<HierarchyItem>();
     let toList: Array<HierarchyItem> = new Array<HierarchyItem>();
 
     // Get the index of the item-to-be-moved
-    const indexOfItemToBeMoved = this.nicheHierarchy.findIndex(x => x == this.moveItem);
+    let indexOfItemToBeMoved = this.nicheHierarchy.findIndex(x => x.id == this.itemToBeMoved.id && x.name == this.itemToBeMoved.name && x.hierarchyGroupID == this.itemToBeMoved.hierarchyGroupID);
+
+    // If the item-to-be-moved was not found 
+    // (This would be because we're searching from the search list and the item-to-be-moved is not visible on the niche hierarchy)
+    if (indexOfItemToBeMoved == -1) {
+      // Then create the item-to-be-moved
+      this.nicheHierarchy.push({
+        id: this.itemToBeMoved.id,
+        name: this.itemToBeMoved.name,
+        hierarchyGroupID: this.itemToBeMoved.hierarchyGroupID,
+        isParent: this.itemToBeMoved.isParent
+      })
+      indexOfItemToBeMoved = this.nicheHierarchy.length - 1;
+    }
 
     // Make a copy of the item-to-be-moved and all its children
     for (let i = indexOfItemToBeMoved; i < this.nicheHierarchy.length; i++) {
@@ -84,50 +92,47 @@ export class MoveFormComponent extends LazyLoad {
     this.nicheHierarchy.splice(indexOfItemToBeMoved, moveList.length);
 
     // Get the index of the item that the item-to-be-moved will be moved to
-    const indexOfMoveToItem = this.nicheHierarchy.findIndex(x => x.id == this.toItem.id && x.name == this.toItem.name);
+    const indexOfDestinationItem = this.nicheHierarchy.findIndex(x => x.id == this.destinationItem.id && x.name == this.destinationItem.name && x.hierarchyGroupID == (this.itemToBeMovedType == 'Sub Niche' ? 0 : 1));
 
-    // If the move-to-item has its arrow expanded
-    if (indexOfMoveToItem != -1 && this.nicheHierarchy[indexOfMoveToItem].arrowDown) {
-      // Make a copy of all the children that belongs to the move-to-item
-      for (let i = indexOfMoveToItem + 1; i < this.nicheHierarchy.length; i++) {
-        if (this.nicheHierarchy[i].hierarchyGroupID! <= this.nicheHierarchy[indexOfMoveToItem].hierarchyGroupID! && i != indexOfMoveToItem + 1) break;
-
-        if (this.nicheHierarchy[i].hierarchyGroupID == this.nicheHierarchy[indexOfMoveToItem].hierarchyGroupID! + 1) toList.push(this.nicheHierarchy[i]);
+    // If the destination-item has its arrow expanded
+    if (indexOfDestinationItem != -1 && this.nicheHierarchy[indexOfDestinationItem].arrowDown) {
+      // Make a copy of all the children that belongs to that destination-item
+      for (let i = indexOfDestinationItem + 1; i < this.nicheHierarchy.length; i++) {
+        if (this.nicheHierarchy[i].hierarchyGroupID! <= this.nicheHierarchy[indexOfDestinationItem].hierarchyGroupID! && i != indexOfDestinationItem + 1) break;
+        if (this.nicheHierarchy[i].hierarchyGroupID == this.nicheHierarchy[indexOfDestinationItem].hierarchyGroupID! + 1) toList.push(this.nicheHierarchy[i]);
       }
 
-      // Add the item-to-be-moved to that list
+      // Then add the item-to-be-moved to that list
       toList.push(moveList[0]);
 
-
+      // If the list is allowed to be sorted
       if (this.list.listManager.sortable) {
         // Then sort that list
+        // (the purpose of sorting the list is that it lets us know where the item-to-be-moved and its children will be placed)
         toList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
       }
 
-
       // Now that the list is sorted, get the index of the item-to-be-moved
-      // (the purpose of sorting the list is that it lets us know where the item-to-be-moved and its children will be placed)
       const indexOfSortedItemToBeMoved = toList.indexOf(moveList[0]);
 
-      // If the move-to-item is a niche and its sub-niches are expanded, we have to account for the number of products those sub-niches have when placing the item-to-be-moved
+      // If the destination-item is a niche and its sub-niches are expanded (showing their products), then we have to account for the number of products those sub-niches have when placing the item-to-be-moved
       let numChildren = 0;
-      for (let i = indexOfMoveToItem + 1 + indexOfSortedItemToBeMoved; i < this.nicheHierarchy.length; i++) {
-        if (this.nicheHierarchy[i].hierarchyGroupID! <= this.nicheHierarchy[indexOfMoveToItem + 1].hierarchyGroupID!) break;
-        if (this.nicheHierarchy[i].hierarchyGroupID! > this.nicheHierarchy[indexOfMoveToItem].hierarchyGroupID! + 1) numChildren++;
+      for (let i = indexOfDestinationItem + 1 + indexOfSortedItemToBeMoved; i < this.nicheHierarchy.length; i++) {
+        if (this.nicheHierarchy[i].hierarchyGroupID! <= this.nicheHierarchy[indexOfDestinationItem + 1].hierarchyGroupID!) break;
+        if (this.nicheHierarchy[i].hierarchyGroupID! > this.nicheHierarchy[indexOfDestinationItem].hierarchyGroupID! + 1) numChildren++;
       }
-
 
       // Place the item-to-be-moved and its children at its new position
       for (let i = moveList.length - 1; i >= 0; i--) {
-        this.nicheHierarchy.splice(indexOfMoveToItem + 1 + indexOfSortedItemToBeMoved + numChildren, 0, moveList[i]);
+        this.nicheHierarchy.splice(indexOfDestinationItem + 1 + indexOfSortedItemToBeMoved + numChildren, 0, moveList[i]);
       }
     }
 
-    let moveItemType = this.moveItem.hierarchyGroupID == 1 ? 'Niches' : 'Products';
+    let itemToBeMovedType = this.itemToBeMovedType == 'Sub Niche' ? 'Niches' : 'Products';
 
-    this.dataService.put('api/' + moveItemType + '/Move', {
-      MoveItemId: this.moveItem.id,
-      ParentItemId: this.toItem.id
+    this.dataService.put('api/' + itemToBeMovedType + '/Move', {
+      itemToBeMovedId: this.itemToBeMoved.id,
+      destinationItemId: this.destinationItem.id
     }).subscribe();
   }
 }

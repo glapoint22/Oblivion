@@ -75,7 +75,7 @@ export class ListManager {
 
 
   keydown(e: KeyboardEvent) {
-    if (e.key === 'Delete') this.setDelete(); // thisOptions.onDeleteItem.apply(thisOptions.currentObj);
+    if (e.key === 'Delete') this.setDelete();
     if (e.key === 'Escape') this.escape();
     if (e.key === 'Enter') this.enter(e);
     if (e.key === 'ArrowUp') this.arrowUp();
@@ -544,31 +544,33 @@ export class ListManager {
 
 
   setDelete() {
-    // If a delete prompt is being used with this list
-    if (this.options && this.options.deletePrompt) {
-      this.overButton = false;
-      this.itemDeletionPending = true;
+    if (this.editedItem == null) {
+      // If a delete prompt is being used with this list
+      if (this.options && this.options.deletePrompt) {
+        this.overButton = false;
+        this.itemDeletionPending = true;
 
-      // If the delete prompt has NOT been opened yet
-      if (!this.deletePromptOpen) {
-        // Gather all the selected items
-        let selectedItems: Array<ListItem> = this.sourceList.filter(x => x.selected);
-        // Get all the items that are going to be deleted
-        let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
-        // Send the delete info back so it can be used for the prompt message
-        this.deletePromptUpdate(deletedItems);
+        // If the delete prompt has NOT been opened yet
+        if (!this.deletePromptOpen) {
+          // Gather all the selected items
+          let selectedItems: Array<ListItem> = this.sourceList.filter(x => x.selected);
+          // Get all the items that are going to be deleted
+          let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
+          // Send the delete info back so it can be used for the prompt message
+          this.deletePromptUpdate(deletedItems);
 
-        // Open the prompt
-        this.openPrompt();
+          // Open the prompt
+          this.openPrompt();
 
-        // If the delete prompt is open, then delete the item(s)
+          // If the delete prompt is open, then delete the item(s)
+        } else {
+          this.delete();
+        }
+
+        // If a delete prompt is NOT being used with this list, then just delete the item(s)
       } else {
         this.delete();
       }
-
-      // If a delete prompt is NOT being used with this list, then just delete the item(s)
-    } else {
-      this.delete();
     }
   }
 
@@ -603,12 +605,15 @@ export class ListManager {
         if (nextSelectedItem != null) {
           window.setTimeout(() => {
             // Select that list item
-            this.selectedItem = nextSelectedItem;
-            this.selectedItem.selected = true;
-            // Re-establish the pivot index
-            this.pivotItem = this.selectedItem;
-            // Set focus to that selected list item
-            this.setItemFocus(this.selectedItem);
+
+            this.onItemDown(nextSelectedItem);
+
+            // this.selectedItem = nextSelectedItem;
+            // this.selectedItem.selected = true;
+            // // Re-establish the pivot index
+            // this.pivotItem = this.selectedItem;
+            // // Set focus to that selected list item
+            // this.setItemFocus(this.selectedItem);
           }, 20);
 
           // If there is NOT a next available list item that can be selected
