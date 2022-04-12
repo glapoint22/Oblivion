@@ -75,7 +75,7 @@ export class ListManager {
 
 
   keydown(e: KeyboardEvent) {
-    if (e.key === 'Delete') this.setDelete();
+    if (e.key === 'Delete') if (this.editedItem == null) this.setDelete();
     if (e.key === 'Escape') this.escape();
     if (e.key === 'Enter') this.enter(e);
     if (e.key === 'ArrowUp') this.arrowUp();

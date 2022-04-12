@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
 import { LazyLoad } from 'common';
 import { Subject } from 'rxjs';
 import { Button } from '../../classes/button';
@@ -11,7 +12,7 @@ import { Button } from '../../classes/button';
 export class PromptComponent extends LazyLoad {
   public parentObj!: Object;
   public title!: string;
-  public message!: string;
+  public message!: SafeHtml;
   public primaryButton: Button = new Button();
   public secondaryButton: Button = new Button();
   public tertiaryButton: Button = new Button();

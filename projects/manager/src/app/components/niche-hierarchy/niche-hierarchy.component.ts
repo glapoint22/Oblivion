@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { debounceTime, fromEvent, Subject, Subscription } from 'rxjs';
 import { ListUpdateType, MenuOptionType } from '../../classes/enums';
@@ -45,6 +46,7 @@ export class NicheHierarchyComponent extends LazyLoad {
 
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
+    private sanitizer: DomSanitizer,
     public nicheHierarchyService: NicheHierarchyService) {
     super(lazyLoadingService);
   }
@@ -663,13 +665,41 @@ export class NicheHierarchyComponent extends LazyLoad {
 
 
   onHierarchyDeletePromptOpen(deletedItem: HierarchyItem) {
-    const item = deletedItem.hierarchyGroupID == 0 ? 'Niche' : deletedItem.hierarchyGroupID == 1 ? 'Sub Niche' : 'Product';
-    this.hierarchyOptions.deletePrompt!.message = 'Are you sure you want to delete the following?<br><br>' + item + ':<br>' + deletedItem.name;
+    const itemType = deletedItem.hierarchyGroupID == 0 ? 'Niche' : deletedItem.hierarchyGroupID == 1 ? 'Sub Niche' : 'Product';
+    this.hierarchyOptions.deletePrompt!.message = this.sanitizer.bypassSecurityTrustHtml(
+      
+      '<div>The following ' + itemType.toLowerCase() + (itemType == 'Product' ? '' : ' and its contents') + ' will be permanently deleted from the list:</div>' +
+
+      '<br>' +
+
+      '<div style="margin-bottom: 4px; display: flex">' +
+        '<div style="width: fit-content; padding-right: 4px; flex-shrink: 0;">' + itemType + ':</div>' +
+        '<div style="color: #ffba00">' + deletedItem.name + '</div>' +
+      '</div>' +
+
+      '<br>' +
+
+      '<div>This operation can NOT be undone. Are you sure you want to proceed?</div>'
+    )
   }
 
 
   onSearchListDeletePromptOpen(deletedItem: MultiColumnItem) {
-    this.searchListOptions.deletePrompt!.message = 'Are you sure you want to delete the following?<br><br>' + deletedItem.values[1].name + ':<br>' + deletedItem.values[0].name;
+    this.searchListOptions.deletePrompt!.message = this.sanitizer.bypassSecurityTrustHtml(
+      
+      '<div>The following ' + deletedItem.values[1].name.toLowerCase() + (deletedItem.values[1].name == 'Product' ? '' : ' and its contents') + ' will be permanently deleted from the list:</div>' +
+
+      '<br>' +
+
+      '<div style="margin-bottom: 4px; display: flex">' +
+        '<div style="width: fit-content; padding-right: 4px; flex-shrink: 0;">' + deletedItem.values[1].name + ':</div>' +
+        '<div style="color: #ffba00">' + deletedItem.values[0].name + '</div>' +
+      '</div>' +
+
+      '<br>' +
+
+      '<div>This operation can NOT be undone. Are you sure you want to proceed?</div>'
+    )
   }
 
   onEscape(): void {

@@ -1,11 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { DataService, LazyLoad, LazyLoadingService } from 'common';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { Subject } from 'rxjs';
 import { ListUpdateType } from '../../classes/enums';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { ListItem } from '../../classes/list-item';
 import { ListOptions } from '../../classes/list-options';
 import { ListUpdate } from '../../classes/list-update';
+import { PromptComponent } from '../../components/prompt/prompt.component';
 import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
 
 @Component({
@@ -29,7 +31,7 @@ export class MoveFormComponent extends LazyLoad {
   @ViewChild('list') list!: HierarchyComponent;
 
 
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
+  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer) {
     super(lazyLoadingService);
   }
 
@@ -55,14 +57,14 @@ export class MoveFormComponent extends LazyLoad {
     this.destinationItem = selectedItem;
   }
 
-  close(): void {
-    super.close();
+
+  onCancelButtonClick() {
+    this.close();
     this.isOpen.next(false);
   }
 
 
   onMoveButtonClick() {
-    this.close();
     let moveList: Array<HierarchyItem> = new Array<HierarchyItem>();
     let toList: Array<HierarchyItem> = new Array<HierarchyItem>();
 
@@ -133,6 +135,54 @@ export class MoveFormComponent extends LazyLoad {
     this.dataService.put('api/' + itemToBeMovedType + '/Move', {
       itemToBeMovedId: this.itemToBeMoved.id,
       destinationItemId: this.destinationItem.id
-    }).subscribe();
+    }).subscribe(()=> {
+      this.openSuccessPrompt();
+    });
+  }
+
+  async openSuccessPrompt(){
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../../components/prompt/prompt.component');
+      const { PromptModule } = await import('../../components/prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      this.close();
+      prompt.title = 'Move Successful';
+      prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+        
+
+        '<div style="margin-bottom: 4px; display: flex">' +
+          '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">Moved ' + this.itemToBeMovedType + ':</div>' +
+          '<div style="color: #ffba00">' + this.itemToBeMoved.name + '</div>' +
+        '</div>' +
+
+
+        '<div style="margin-bottom: 4px; display: flex">' +
+          '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">From ' + this.destinationItemType + ':</div>' +
+          '<div style="color: #ffba00">' + this.fromItem.name + '</div>' +
+        '</div>' +
+
+
+        '<div style="margin-bottom: 21px; display: flex">' +
+          '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">To ' + this.destinationItemType + ':</div>' +
+          '<div style="color: #ffba00">' + this.destinationItem.name + '</div>' +
+        '</div>' +
+
+
+        'The move operation listed above has been completed successfully.' 
+        
+        );
+      prompt.secondaryButton = {
+        name: 'Close'
+      }
+
+      prompt.onClose.subscribe(() => {
+        this.isOpen.next(false);
+      })
+    })
   }
 }
