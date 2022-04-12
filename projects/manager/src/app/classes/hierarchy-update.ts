@@ -7,4 +7,5 @@ export class HierarchyUpdate extends ListUpdate{
     hierarchyGroupID?: number;
     deletedItems?: Array<HierarchyItem>;
     selectedItems?: Array<HierarchyItem>;
+    collapseDisabled?: boolean;
 }

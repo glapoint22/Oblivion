@@ -1,5 +1,4 @@
 import { Subject, Subscription } from "rxjs";
-import { ListItemComponent } from "../components/items/list-item/list-item.component";
 import { ItemSelectType, ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
@@ -98,7 +97,7 @@ export class ListManager {
   }
 
 
-  setAddEditDelete() {
+  setButtonsState() {
     const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
 
     if (itemSelectedCount == 0) {
@@ -118,7 +117,7 @@ export class ListManager {
       this.editDisabled = true;
       this.deleteDisabled = false;
     }
-    this.onListUpdate.next({ addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
+    this.buttonsUpdate();
   }
 
 
@@ -206,7 +205,7 @@ export class ListManager {
 
       window.setTimeout(() => {
         if (this.editedItem == null) {
-          this.setAddEditDelete();
+          this.setButtonsState();
         }
       }, 30)
     })
@@ -251,7 +250,7 @@ export class ListManager {
           // window.setTimeout(() => {???????????????
           this.currentFocusedItem = document.activeElement!;
           this.setItemSelection(listItem);
-          this.setAddEditDelete();
+          this.setButtonsState();
 
           // });
         }
@@ -697,7 +696,7 @@ export class ListManager {
         this.removeEventListeners();
       }
 
-      this.setAddEditDelete();
+      this.setButtonsState();
     }
   }
 
@@ -904,6 +903,17 @@ export class ListManager {
         promptCloseListener.unsubscribe();
       })
     })
+  }
+
+
+  buttonsUpdate() {
+    this.onListUpdate.next(
+      {
+        addDisabled: this.addDisabled,
+        editDisabled: this.editDisabled,
+        deleteDisabled: this.deleteDisabled
+      }
+    );
   }
 
 

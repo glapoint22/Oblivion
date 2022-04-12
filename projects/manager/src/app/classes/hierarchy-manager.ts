@@ -6,6 +6,7 @@ import { ListManager } from "./list-manager";
 
 export class HierarchyManager extends ListManager {
     onListUpdate = new Subject<HierarchyUpdate>();
+    collapseDisabled: boolean = true;
 
     getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem): number {
         let parentHierarchyIndex!: number;
@@ -38,6 +39,7 @@ export class HierarchyManager extends ListManager {
         this.closeContextMenu();
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
         this.showHide(this.sourceList.findIndex(x => x.identity == hierarchyItem.identity));
+        this.collapseDisabled = this.getIsCollapsed();
         this.onListUpdate.next({
             type: ListUpdateType.ArrowClicked,
             id: hierarchyItem.id,
@@ -46,12 +48,24 @@ export class HierarchyManager extends ListManager {
             addDisabled: this.addDisabled,
             editDisabled: this.editDisabled,
             deleteDisabled: this.deleteDisabled,
+            collapseDisabled: this.collapseDisabled,
             arrowDown: hierarchyItem.arrowDown,
             hasChildren: this.hasChildren(hierarchyItem),
             hierarchyGroupID: hierarchyItem.hierarchyGroupID
         });
     }
 
+    getIsCollapsed(): boolean {
+        let isCollapsed: boolean = true;
+
+        for(let i = 0; i < this.sourceList.length; i++) {
+            if((this.sourceList[i] as HierarchyItem).arrowDown) {
+                isCollapsed = false;
+                break;
+            }
+        }
+        return isCollapsed;
+    }
 
     showHide(parentIndex: number) {
         // Loop through all the hierarchy items starting with the hierarchy item that follows the current parent
@@ -197,6 +211,28 @@ export class HierarchyManager extends ListManager {
 
         return this.sourceList[hierarchyItemIndex];
     }
+
+
+    collapseHierarchy(){
+        this.sourceList.forEach(x => {
+            const item = (x as HierarchyItem);
+            item.arrowDown = false;
+            if(item.hierarchyGroupID != 0) item.hidden = true;
+        })
+        this.collapseDisabled = true;
+    }
+
+
+    buttonsUpdate() {
+        this.onListUpdate.next(
+          {
+            addDisabled: this.addDisabled,
+            editDisabled: this.editDisabled,
+            deleteDisabled: this.deleteDisabled,
+            collapseDisabled: this.collapseDisabled
+          }
+        );
+      }
 
 
     selectedItemsUpdate(rightClick: boolean) {

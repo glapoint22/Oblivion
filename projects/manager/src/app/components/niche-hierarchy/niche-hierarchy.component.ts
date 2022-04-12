@@ -178,6 +178,8 @@ export class NicheHierarchyComponent extends LazyLoad {
       if (selectedItem) {
         this.hierarchy.listManager.onItemDown(selectedItem);
       }
+
+      this.hierarchy.listManager.collapseDisabled = this.hierarchy.listManager.getIsCollapsed();
     }
   }
 
