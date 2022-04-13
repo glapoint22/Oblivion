@@ -258,6 +258,7 @@ export class ListManager {
         // As long as we're not in edit mode
         if (this.editedItem == null) {
           this.selectedItemsUpdate(e != null && e.button == 2);
+          this.buttonsUpdate();
         }
       }
     }
@@ -301,6 +302,7 @@ export class ListManager {
 
           // Send update
           this.addEditUpdate(editedItem);
+          this.buttonsUpdate();
         }
 
         // But if the item is empty
@@ -518,7 +520,7 @@ export class ListManager {
       this.unselectedItem = null!;
       this.editedItem = listItem;
       this.setItemFocus(this.editedItem);
-      this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
+      this.buttonsUpdate();
     }
   }
 
@@ -537,7 +539,7 @@ export class ListManager {
         if (x.selectType) x.selectType = null!;
       })
       this.setItemFocus(this.editedItem);
-      this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
+      this.buttonsUpdate();
     }
   }
 
@@ -557,6 +559,7 @@ export class ListManager {
           let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
           // Send the delete info back so it can be used for the prompt message
           this.deletePromptUpdate(deletedItems);
+          this.buttonsUpdate();
 
           // Open the prompt
           this.openPrompt();
@@ -589,6 +592,7 @@ export class ListManager {
       let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete(deletedItems);
       // Update the list
       this.deleteUpdate(deletedItems);
+      this.buttonsUpdate();
 
       // Loop through all the deleted items
       deletedItems.forEach(() => {
@@ -783,6 +787,7 @@ export class ListManager {
 
           // Send update
           this.addEditUpdate(editedItem);
+          this.buttonsUpdate();
         }
       }
       this.newItem = false;

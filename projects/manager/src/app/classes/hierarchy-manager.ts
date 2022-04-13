@@ -208,7 +208,6 @@ export class HierarchyManager extends ListManager {
         window.setTimeout(() => {
             this.addEventListeners();
         }, 35)
-
         return this.sourceList[hierarchyItemIndex];
     }
 
@@ -220,6 +219,7 @@ export class HierarchyManager extends ListManager {
             if(item.hierarchyGroupID != 0) item.hidden = true;
         })
         this.collapseDisabled = true;
+        this.buttonsUpdate();
     }
 
 

@@ -31,6 +31,9 @@ export class NicheHierarchyComponent extends LazyLoad {
   public isParent!: boolean;
   public showSearch!: boolean;
   public moveFormOpen!: boolean;
+  public addButtonTitle: string  = 'Add Niche';
+  public editButtonTitle: string  = 'Edit';
+  public deleteButtonTitle: string  = 'Delete';
   public hierarchyOptions: ListOptions = new ListOptions();
   public searchListOptions: ListOptions = new ListOptions();
   public overNicheHierarchy: Subject<boolean> = new Subject<boolean>();
@@ -392,6 +395,9 @@ export class NicheHierarchyComponent extends LazyLoad {
     this.isParent = hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1 || hierarchyUpdate.selectedItems![0].hierarchyGroupID == 2 ? false : true;
 
     if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
+      this.addButtonTitle = 'Add Sub Niche';
+      this.editButtonTitle = 'Edit Niche';
+      this.deleteButtonTitle = 'Delete Niche';
       this.hierarchyOptions.deletePrompt!.title = 'Delete Niche';
       this.hierarchyOptions.menu!.menuOptions[0].name = 'Add Niche';
       this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addNiche;
@@ -404,6 +410,9 @@ export class NicheHierarchyComponent extends LazyLoad {
     }
 
     if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1) {
+      this.addButtonTitle = 'Add Product';
+      this.editButtonTitle = 'Edit Sub Niche';
+      this.deleteButtonTitle = 'Delete Sub Niche';
       this.hierarchyOptions.deletePrompt!.title = 'Delete Sub Niche';
       this.hierarchyOptions.menu!.menuOptions[0].name = 'Add Sub Niche';
       this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addSubNiche;
@@ -416,6 +425,9 @@ export class NicheHierarchyComponent extends LazyLoad {
     }
 
     if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 2) {
+      this.addButtonTitle = 'Add Product';
+      this.editButtonTitle = 'Edit Product';
+      this.deleteButtonTitle = 'Delete Product';
       this.hierarchyOptions.deletePrompt!.title = 'Delete Product';
       this.hierarchyOptions.menu!.menuOptions[0].name = 'Add Product';
       this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addProduct;

@@ -19,6 +19,7 @@
 
             <!-- Delete icon -->
             <button class="icon-button"
+                    [title]="deleteButtonTitle"
                     [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled}"
                     (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
                     (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
@@ -29,6 +30,7 @@
     
             <!-- Edit icon -->
             <button class="icon-button"
+                    [title]="editButtonTitle"
                     [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled}"
                     (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
                     (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
@@ -39,6 +41,7 @@
     
             <!-- Add icon -->
             <button *ngIf="!showSearch" class="icon-button"
+                    [title]="addButtonTitle"
                     [ngClass]="{'icon-button-disabled': hierarchyUpdate.addDisabled}"
                     (mouseover)="hierarchy.overButton = true"
                     (mouseout)="hierarchy.overButton = false"
@@ -49,6 +52,7 @@
 
             <!-- Collapse icon -->
             <button *ngIf="!showSearch" class="icon-button"
+                    title="Collapse"
                     [ngClass]="{'icon-button-disabled': hierarchyUpdate.collapseDisabled}"
                     (mouseover)="hierarchy.overButton = true"
                     (mouseout)="hierarchy.overButton = false"
