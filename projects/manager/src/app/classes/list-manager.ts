@@ -1,5 +1,4 @@
 import { Subject, Subscription } from "rxjs";
-import { ListItemComponent } from "../components/items/list-item/list-item.component";
 import { ItemSelectType, ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
@@ -75,7 +74,7 @@ export class ListManager {
 
 
   keydown(e: KeyboardEvent) {
-    if (e.key === 'Delete') this.setDelete(); // thisOptions.onDeleteItem.apply(thisOptions.currentObj);
+    if (e.key === 'Delete') if (this.editedItem == null) this.setDelete();
     if (e.key === 'Escape') this.escape();
     if (e.key === 'Enter') this.enter(e);
     if (e.key === 'ArrowUp') this.arrowUp();
@@ -98,7 +97,7 @@ export class ListManager {
   }
 
 
-  setAddEditDelete() {
+  setButtonsState() {
     const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
 
     if (itemSelectedCount == 0) {
@@ -118,7 +117,7 @@ export class ListManager {
       this.editDisabled = true;
       this.deleteDisabled = false;
     }
-    this.onListUpdate.next({ addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
+    this.buttonsUpdate();
   }
 
 
@@ -206,7 +205,7 @@ export class ListManager {
 
       window.setTimeout(() => {
         if (this.editedItem == null) {
-          this.setAddEditDelete();
+          this.setButtonsState();
         }
       }, 30)
     })
@@ -251,7 +250,7 @@ export class ListManager {
           // window.setTimeout(() => {???????????????
           this.currentFocusedItem = document.activeElement!;
           this.setItemSelection(listItem);
-          this.setAddEditDelete();
+          this.setButtonsState();
 
           // });
         }
@@ -259,6 +258,7 @@ export class ListManager {
         // As long as we're not in edit mode
         if (this.editedItem == null) {
           this.selectedItemsUpdate(e != null && e.button == 2);
+          this.buttonsUpdate();
         }
       }
     }
@@ -302,6 +302,7 @@ export class ListManager {
 
           // Send update
           this.addEditUpdate(editedItem);
+          this.buttonsUpdate();
         }
 
         // But if the item is empty
@@ -519,7 +520,7 @@ export class ListManager {
       this.unselectedItem = null!;
       this.editedItem = listItem;
       this.setItemFocus(this.editedItem);
-      this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
+      this.buttonsUpdate();
     }
   }
 
@@ -538,37 +539,40 @@ export class ListManager {
         if (x.selectType) x.selectType = null!;
       })
       this.setItemFocus(this.editedItem);
-      this.onListUpdate.next({ addDisabled: true, editDisabled: true, deleteDisabled: true });
+      this.buttonsUpdate();
     }
   }
 
 
   setDelete() {
-    // If a delete prompt is being used with this list
-    if (this.options && this.options.deletePrompt) {
-      this.overButton = false;
-      this.itemDeletionPending = true;
+    if (this.editedItem == null) {
+      // If a delete prompt is being used with this list
+      if (this.options && this.options.deletePrompt) {
+        this.overButton = false;
+        this.itemDeletionPending = true;
 
-      // If the delete prompt has NOT been opened yet
-      if (!this.deletePromptOpen) {
-        // Gather all the selected items
-        let selectedItems: Array<ListItem> = this.sourceList.filter(x => x.selected);
-        // Get all the items that are going to be deleted
-        let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
-        // Send the delete info back so it can be used for the prompt message
-        this.deletePromptUpdate(deletedItems);
+        // If the delete prompt has NOT been opened yet
+        if (!this.deletePromptOpen) {
+          // Gather all the selected items
+          let selectedItems: Array<ListItem> = this.sourceList.filter(x => x.selected);
+          // Get all the items that are going to be deleted
+          let deletedItems: Array<ListItem> = this.getDeletedItems(selectedItems);
+          // Send the delete info back so it can be used for the prompt message
+          this.deletePromptUpdate(deletedItems);
+          this.buttonsUpdate();
 
-        // Open the prompt
-        this.openPrompt();
+          // Open the prompt
+          this.openPrompt();
 
-        // If the delete prompt is open, then delete the item(s)
+          // If the delete prompt is open, then delete the item(s)
+        } else {
+          this.delete();
+        }
+
+        // If a delete prompt is NOT being used with this list, then just delete the item(s)
       } else {
         this.delete();
       }
-
-      // If a delete prompt is NOT being used with this list, then just delete the item(s)
-    } else {
-      this.delete();
     }
   }
 
@@ -588,6 +592,7 @@ export class ListManager {
       let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete(deletedItems);
       // Update the list
       this.deleteUpdate(deletedItems);
+      this.buttonsUpdate();
 
       // Loop through all the deleted items
       deletedItems.forEach(() => {
@@ -603,12 +608,15 @@ export class ListManager {
         if (nextSelectedItem != null) {
           window.setTimeout(() => {
             // Select that list item
-            this.selectedItem = nextSelectedItem;
-            this.selectedItem.selected = true;
-            // Re-establish the pivot index
-            this.pivotItem = this.selectedItem;
-            // Set focus to that selected list item
-            this.setItemFocus(this.selectedItem);
+
+            this.onItemDown(nextSelectedItem);
+
+            // this.selectedItem = nextSelectedItem;
+            // this.selectedItem.selected = true;
+            // // Re-establish the pivot index
+            // this.pivotItem = this.selectedItem;
+            // // Set focus to that selected list item
+            // this.setItemFocus(this.selectedItem);
           }, 20);
 
           // If there is NOT a next available list item that can be selected
@@ -692,7 +700,7 @@ export class ListManager {
         this.removeEventListeners();
       }
 
-      this.setAddEditDelete();
+      this.setButtonsState();
     }
   }
 
@@ -779,6 +787,7 @@ export class ListManager {
 
           // Send update
           this.addEditUpdate(editedItem);
+          this.buttonsUpdate();
         }
       }
       this.newItem = false;
@@ -899,6 +908,17 @@ export class ListManager {
         promptCloseListener.unsubscribe();
       })
     })
+  }
+
+
+  buttonsUpdate() {
+    this.onListUpdate.next(
+      {
+        addDisabled: this.addDisabled,
+        editDisabled: this.editDisabled,
+        deleteDisabled: this.deleteDisabled
+      }
+    );
   }
 
 

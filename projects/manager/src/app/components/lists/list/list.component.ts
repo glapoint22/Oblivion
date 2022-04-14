@@ -36,12 +36,7 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     this.instantiate();
-
     this.listManager.sourceList = this.sourceList;
-
-
-
-
     this.listManager.onListUpdate.subscribe((listUpdate) => {
       this.onListUpdate.emit(listUpdate);
     });
@@ -50,25 +45,35 @@ export class ListComponent implements OnInit {
 
 
   ngAfterViewInit() {
-
     window.setTimeout(() => {
-
-
-      if (this.options) {
-        this.listManager.options = this.options;
-        if (this.options.editable != null) this.listManager.editable = this.options.editable;
-        if (this.options.selectable != null) this.listManager.selectable = this.options.selectable;
-        if (this.options.unselectable != null) this.listManager.unselectable = this.options.unselectable;
-        if (this.options.deletable != null) this.listManager.deletable = this.options.deletable;
-        if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
-        if (this.options.sortable != null) this.listManager.sortable = this.options.sortable;
-      }
-
-
-      this.listManager.onListUpdate.next({ addDisabled: this.listManager.addDisabled, editDisabled: this.listManager.editDisabled, deleteDisabled: this.listManager.deleteDisabled });
+      this.setListOptions();
     }, 100)
   }
 
+
+  setListOptions() {
+    if (this.options) {
+      this.listManager.options = this.options;
+      if (this.options.editable != null) this.listManager.editable = this.options.editable;
+      if (this.options.selectable != null) this.listManager.selectable = this.options.selectable;
+      if (this.options.unselectable != null) this.listManager.unselectable = this.options.unselectable;
+      if (this.options.deletable != null) this.listManager.deletable = this.options.deletable;
+      if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
+      if (this.options.sortable != null) this.listManager.sortable = this.options.sortable;
+    }
+    this.initializeListUpdate();
+  }
+
+
+  initializeListUpdate() {
+    this.listManager.onListUpdate.next(
+      {
+        addDisabled: this.listManager.addDisabled,
+        editDisabled: this.listManager.editDisabled,
+        deleteDisabled: this.listManager.deleteDisabled
+      }
+    )
+  }
 
 
   add(id?: number, name?: string) {

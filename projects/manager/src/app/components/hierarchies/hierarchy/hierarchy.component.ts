@@ -12,8 +12,21 @@ export class HierarchyComponent extends ListComponent {
   public listManager!: HierarchyManager;
   @Input() sourceList!: Array<HierarchyItem>;
 
+
   instantiate() {
     this.listManager = new HierarchyManager(this.lazyLoadingService);
+  }
+
+
+  initializeListUpdate() {
+    this.listManager.onListUpdate.next(
+      {
+        addDisabled: this.listManager.addDisabled,
+        editDisabled: this.listManager.editDisabled,
+        deleteDisabled: this.listManager.deleteDisabled,
+        collapseDisabled: this.listManager.collapseDisabled
+      }
+    )
   }
 
 
@@ -64,5 +77,10 @@ export class HierarchyComponent extends ListComponent {
     window.setTimeout(() => {
       this.listManager.setAddItem(this.sourceList[this.sourceList.findIndex(x => x.id == -1)]);
     })
+  }
+
+
+  collapse() {
+    this.listManager.collapseHierarchy();
   }
 }
