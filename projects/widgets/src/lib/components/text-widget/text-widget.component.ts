@@ -423,7 +423,7 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
         ]
       },
       {
-        nodeType: NodeType.Ol,
+        nodeType: NodeType.Ul,
         children: [
           {
             nodeType: NodeType.Li,

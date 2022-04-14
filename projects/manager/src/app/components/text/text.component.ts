@@ -4,6 +4,7 @@ import { AlignJustify } from '../../classes/align-justify';
 import { AlignLeft } from '../../classes/align-left';
 import { AlignRight } from '../../classes/align-right';
 import { Bold } from '../../classes/bold';
+import { BulletedList } from '../../classes/bulleted-list';
 import { FontColor } from '../../classes/font-color';
 import { FontFamily } from '../../classes/font-family';
 import { FontSize } from '../../classes/font-size';
@@ -31,6 +32,7 @@ export class TextComponent implements OnChanges {
   public alignCenter!: AlignCenter;
   public alignRight!: AlignRight;
   public alignJustify!: AlignJustify;
+  public bulletedList!: BulletedList;
 
   constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { }
 
@@ -47,6 +49,7 @@ export class TextComponent implements OnChanges {
       this.alignCenter = new AlignCenter(this.text);
       this.alignRight = new AlignRight(this.text);
       this.alignJustify = new AlignJustify(this.text);
+      this.bulletedList = new BulletedList(this.text);
 
 
       this.text.onSelection.subscribe(() => {
@@ -61,6 +64,7 @@ export class TextComponent implements OnChanges {
         this.alignCenter.setSelectedStyle();
         this.alignRight.setSelectedStyle();
         this.alignJustify.setSelectedStyle();
+        this.bulletedList.setSelectedStyle();
 
         this.appRef.tick();
       });
