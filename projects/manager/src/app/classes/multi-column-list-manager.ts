@@ -37,9 +37,6 @@ export class MultiColumnListManager extends ListManager {
 
 
     setValueFocus() {
-
-
-
         window.setTimeout(() => {
             let range = document.createRange();
             range.selectNodeContents(this.editableValue.htmlValue!.nativeElement);
