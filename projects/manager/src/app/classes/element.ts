@@ -73,6 +73,7 @@ export abstract class Element {
 
     // ---------------------------------------------------Container-----------------------------------------------------
     public get container(): Element {
+        if (this.parent.isRoot) return this;
         if (this.parent.nodeType == NodeType.Div || this.parent.nodeType == NodeType.Li || this.parent.nodeType == NodeType.Ul || this.parent.nodeType == NodeType.Ol) return this.parent;
 
         return this.parent.container;
@@ -338,7 +339,14 @@ export abstract class Element {
 
     // ---------------------------------------------------Get Start-End Selection-----------------------------------------------------
     getStartEndSelection(startOffset?: number, endOffset?: number): Selection {
-        return new Selection();
+        const selection = new Selection();
+
+        selection.startElement = this;
+        selection.startOffset = startOffset ? startOffset : 0;
+        selection.endElement = this;
+        selection.endOffset = endOffset ? endOffset : 0;
+
+        return selection;
     }
 
 
@@ -370,7 +378,7 @@ export abstract class Element {
             currentElement = currentElement.parent;
         }
     }
-    
+
 
 
     abstract createHtml(parent: HTMLElement): void;

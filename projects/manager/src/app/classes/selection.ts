@@ -202,19 +202,19 @@ export class Selection {
 
 
     // ---------------------------------------------------------Reset Selection------------------------------------------------------------------
-    public resetSelection() {
-        const startElement = Element.search(this.startElement.id, this.startElement.container as Element);
+    public resetSelection(container?: Element, startOffset?: number, endOffset?: number) {
+        const startElement = Element.search(this.startElement.id, container ? container : this.startElement.container as Element);
         if (startElement && startElement != this.startElement) {
             this.startElement = startElement;
             this.startChildIndex = startElement.parent.children.findIndex(x => x == startElement);
-            this.startOffset = 0;
+            this.startOffset = startOffset ? startOffset : 0;
         }
 
-        const endElement = Element.search(this.endElement.id, this.endElement.container as Element);
+        const endElement = Element.search(this.endElement.id, container ? container : this.endElement.container as Element);
         if (endElement && endElement != this.endElement) {
             this.endElement = endElement;
             this.endChildIndex = endElement.parent.children.findIndex(x => x == endElement);
-            this.endOffset = (this.endElement as TextElement).text.length;
+            this.endOffset = endOffset ? endOffset : (this.endElement as TextElement).text.length;
         }
     }
 
