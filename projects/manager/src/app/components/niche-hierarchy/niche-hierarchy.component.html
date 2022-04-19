@@ -20,7 +20,7 @@
             <!-- Delete icon -->
             <button class="icon-button"
                     [title]="deleteButtonTitle"
-                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled}"
+                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled == null ? true : searchListUpdate.deleteDisabled}"
                     (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
                     (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
                     (click)="!showSearch ? hierarchy.delete() : multiColumnList.delete()"
@@ -31,7 +31,7 @@
             <!-- Edit icon -->
             <button class="icon-button"
                     [title]="editButtonTitle"
-                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled}"
+                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled == null ? true : searchListUpdate.deleteDisabled}"
                     (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
                     (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
                     (click)="!showSearch ? hierarchy.edit() : multiColumnList.edit()"
@@ -74,11 +74,20 @@
     <ng-container *ngIf="showSearch">
         <input id="searchInput" placeholder="Search" (input)="onSearchInputChange($event.target)">
 
-        <div *ngIf="searchList.length > 0" style="height: 26px; display: flex; justify-content: space-between; padding: 0 56px 0 5px; font-size: 12px; color: #656565; margin: 0 10px 10px 6px; border-bottom: 1px solid rgb(34, 34, 34); ">
-            <div style="height: 100%; line-height: 26px; user-select: none;">Name</div>
-            <div style="height: 100%; line-height: 26px; user-select: none;">Type</div>
-        </div>
+        <!-- Column Headers -->
+        <ng-container *ngIf="searchList.length > 0">
+            <div class="column-name-container">
+                <div class="column-name">Name</div>
+                <div class="column-name">Type</div>
+            </div>
 
+            <div class="column-underline-container">
+                <div class="column-underline"></div>
+                <div class="column-underline"></div>
+            </div>
+        </ng-container>
+
+        <!-- List -->
         <div class="overflow-container" [style.height.px]="base.clientHeight - 116">
             <multi-column-list #multiColumnList [sourceList]="searchList" [options]="searchListOptions" (onListUpdate)="searchListUpdate = $event"></multi-column-list>
         </div>

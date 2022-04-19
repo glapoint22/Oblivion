@@ -64,6 +64,11 @@ export class MoveFormComponent extends LazyLoad {
   }
 
 
+  onEscape(): void {
+    this.onCancelButtonClick();
+  }
+
+
   onMoveButtonClick() {
     let moveList: Array<HierarchyItem> = new Array<HierarchyItem>();
     let toList: Array<HierarchyItem> = new Array<HierarchyItem>();

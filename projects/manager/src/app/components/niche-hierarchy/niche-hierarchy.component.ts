@@ -22,18 +22,20 @@ import { MultiColumnListComponent } from '../lists/multi-column-list/multi-colum
 })
 export class NicheHierarchyComponent extends LazyLoad {
   // Private
+  private editedSearchItem!: HierarchyItem;
+  private searchInputSubscription!: Subscription;
+  private onNicheLoad: Subject<void> = new Subject<void>();
+  private onSubNicheLoad: Subject<void> = new Subject<void>();
   private _hierarchyUpdate: HierarchyUpdate = new HierarchyUpdate();
   private _searchListUpdate: MultiColumnListUpdate = new MultiColumnListUpdate();
-  private searchInputSubscription!: Subscription;
-  private editedSearchItem!: HierarchyItem;
 
   // Public
   public isParent!: boolean;
   public showSearch!: boolean;
   public moveFormOpen!: boolean;
-  public addButtonTitle: string  = 'Add Niche';
-  public editButtonTitle: string  = 'Edit';
-  public deleteButtonTitle: string  = 'Delete';
+  public addButtonTitle: string = 'Add Niche';
+  public editButtonTitle: string = 'Edit';
+  public deleteButtonTitle: string = 'Delete';
   public hierarchyOptions: ListOptions = new ListOptions();
   public searchListOptions: ListOptions = new ListOptions();
   public overNicheHierarchy: Subject<boolean> = new Subject<boolean>();
@@ -154,6 +156,12 @@ export class NicheHierarchyComponent extends LazyLoad {
             name: 'Move',
             shortcut: 'Ctrl+M',
             optionFunction: this.openMoveForm
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Go To Hierarchy',
+            shortcut: 'Alt+H',
+            optionFunction: this.gotoHierarchy
           }
         ]
       }
@@ -177,12 +185,189 @@ export class NicheHierarchyComponent extends LazyLoad {
         });
     } else {
 
-      const selectedItem = this.nicheHierarchyService.niches.filter(x => x.selectType != null || x.selected == true)[0];
-      if (selectedItem) {
-        this.hierarchy.listManager.onItemDown(selectedItem);
+      this.setHierarchy();
+    }
+  }
+
+
+  setHierarchy() {
+    if (this.searchInputSubscription) this.searchInputSubscription.unsubscribe();
+    const selectedItem = this.nicheHierarchyService.niches.filter(x => x.selectType != null || x.selected == true)[0];
+    if (selectedItem) {
+      this.hierarchy.listManager.onItemDown(selectedItem);
+    }
+    this.hierarchy.listManager.collapseDisabled = this.hierarchy.listManager.getIsCollapsed();
+  }
+
+
+  getNiche(nicheId: number, subNicheId: number, func: Function, funcParameters: Array<any>, func2: Function, func2Parameters: Array<any>) {
+    // Find the niche in the hierarchy
+    const niche: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 0 && x.id == nicheId)!;
+
+    // If the niche does NOT have its arrow down
+    if (!niche.arrowDown) {
+      
+      // Check to see if its arrow was ever down and its sub-niches have already been loaded
+      const subNiche: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 1 && x.id == subNicheId)!;
+
+      // Then set that arrow of that niche to be down
+      this.hierarchy.listManager.onArrowClick(niche);
+
+      // If its sub-niches were never loaded
+      if (subNiche == null) {
+        
+        // Now that the niche's arrow is down, wait for its sub-niches to load
+        let onNicheLoadListener = this.onNicheLoad.subscribe(() => {
+          onNicheLoadListener.unsubscribe();
+          func.apply(this, funcParameters);
+        })
+
+        // But if the sub-niches are already loaded
+      } else {
+        
+        func2.apply(this, func2Parameters);
       }
 
-      this.hierarchy.listManager.collapseDisabled = this.hierarchy.listManager.getIsCollapsed();
+      // If the arrow of the niche is already down
+    } else {
+      
+      func2.apply(this, func2Parameters);
+    }
+  }
+
+
+  getSubNiche(subNicheId: number, productId: number) {
+    // Find the sub-niche we're looking for in the hierarchy
+    const subNiche: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 1 && x.id == subNicheId)!;
+
+    // If the arrow of that sub-niche is NOT down
+    if (!subNiche.arrowDown) {
+
+      // Check to see if the arrow of that sub-niche was ever down and its products have already been loaded
+      const product: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 2 && x.id == productId)!;
+
+      // Then set that arrow of that sub-niche to be down
+      this.hierarchy.listManager.onArrowClick(subNiche);
+
+      // If its products were never loaded
+      if (product == null) {
+
+        // Now that the sub-niche's arrow is down, wait for its products to load
+        let onSubNicheLoadListener = this.onSubNicheLoad.subscribe(() => {
+          onSubNicheLoadListener.unsubscribe();
+
+          // Once all the products are loaded, find the product in the hierarchy
+          const product: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 2 && x.id == productId)!;
+          // Then select that product
+          this.hierarchy.listManager.onItemDown(product);
+        })
+
+        // But if the products are already loaded
+      } else {
+
+        // Then select the product we're looking for
+        this.hierarchy.listManager.onItemDown(product);
+      }
+
+      // If the arrow of that sub-niche is already down
+    } else {
+
+      // Find the product we're looking for in the hierarchy
+      const product: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 2 && x.id == productId)!;
+      // Then select that product
+      this.hierarchy.listManager.onItemDown(product);
+    }
+  }
+
+
+  selectSubNiche(subNicheId: number) {
+    // Find the sub-niche we're looking for in the hierarchy
+    const subNiche: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 1 && x.id == subNicheId)!;
+    // Then select that sub-niche
+    this.hierarchy.listManager.onItemDown(subNiche);
+  }
+
+
+  getProduct(subNicheId: number, productId: number) {
+    // Find the sub-niche we were looking for
+    const subNiche: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 1 && x.id == subNicheId)!;
+
+    // Now that we found the sub-niche we were looking for, set the arrow of that sub-niche to be down
+    if (!subNiche.arrowDown) this.hierarchy.listManager.onArrowClick(subNiche);
+
+    // Now that the sub-niche's arrow is down, wait for its products to load
+    let onSubNicheLoadListener = this.onSubNicheLoad.subscribe(() => {
+      onSubNicheLoadListener.unsubscribe();
+
+      // Once all the products are loaded, find the product in the hierarchy
+      const product: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 2 && x.id == productId)!;
+      // Then select that product
+      this.hierarchy.listManager.onItemDown(product);
+    })
+  }
+
+
+
+
+  gotoHierarchy() {
+    // Go to niche
+    if ((this.multiColumnList.listManager.selectedItem as MultiColumnItem).values[1].name == 'Niche') {
+      const searchListNiche: MultiColumnItem = this.multiColumnList.listManager.selectedItem as MultiColumnItem;
+
+      // Now go to the hierarchy
+      this.showSearch = false;
+      window.setTimeout(() => {
+        this.setHierarchy();
+
+        // Find the niche in the hierarchy
+        const niche: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 0 && x.id == searchListNiche.id)!;
+        // Then select that niche
+        this.hierarchy.listManager.onItemDown(niche);
+      })
+    }
+
+
+    // Go to sub-Niche
+    if ((this.multiColumnList.listManager.selectedItem as MultiColumnItem).values[1].name == 'Sub Niche') {
+      const searchListSubNiche: MultiColumnItem = this.multiColumnList.listManager.selectedItem as MultiColumnItem;
+
+      // Get the parent niche of the selected sub-niche
+      this.dataService.get<Item>('api/Niches/ParentCategory', [{ key: 'nicheId', value: searchListSubNiche.id }])
+        .subscribe((item: Item) => {
+          const nicheId: number = item.id;
+
+          // Now go to the hierarchy
+          this.showSearch = false;
+          window.setTimeout(() => {
+            this.setHierarchy();
+            this.getNiche(nicheId, searchListSubNiche.id, this.selectSubNiche, [searchListSubNiche.id], this.selectSubNiche, [searchListSubNiche.id]);
+          })
+        })
+    }
+
+
+    // Go to product
+    if ((this.multiColumnList.listManager.selectedItem as MultiColumnItem).values[1].name == 'Product') {
+      const searchListProduct: MultiColumnItem = this.multiColumnList.listManager.selectedItem as MultiColumnItem;
+
+      // Get the parent sub-niche of the selected product
+      this.dataService.get<Item>('api/Products/ParentNiche', [{ key: 'productId', value: searchListProduct.id }])
+        .subscribe((item: Item) => {
+          const subNicheId: number = item.id;
+
+          // Then get the parent niche of the sub-niche
+          this.dataService.get<Item>('api/Niches/ParentCategory', [{ key: 'nicheId', value: item.id }])
+            .subscribe((item: Item) => {
+              const nicheId: number = item.id;
+
+              // Now go to the hierarchy
+              this.showSearch = false;
+              window.setTimeout(() => {
+                this.setHierarchy();
+                this.getNiche(nicheId, subNicheId, this.getProduct, [subNicheId, searchListProduct.id], this.getSubNiche, [subNicheId, searchListProduct.id]);
+              })
+            });
+        });
     }
   }
 
@@ -194,6 +379,8 @@ export class NicheHierarchyComponent extends LazyLoad {
     if (this.showSearch) {
       this.searchList.splice(0, this.searchList.length);
       window.setTimeout(() => {
+        this.multiColumnList.listManager.deleteDisabled = true;
+        this.multiColumnList.listManager.editDisabled = true;
         const searchInput: HTMLInputElement = document.getElementById('searchInput') as HTMLInputElement;
 
         searchInput!.focus();
@@ -207,17 +394,11 @@ export class NicheHierarchyComponent extends LazyLoad {
       // If we're in hierarchy view
     } else {
 
-
       window.setTimeout(() => {
         if (this.editedSearchItem) {
           this.hierarchy.listManager.sort(this.editedSearchItem);
         }
-
-        this.searchInputSubscription.unsubscribe();
-        const selectedItem = this.nicheHierarchyService.niches.filter(x => x.selectType != null || x.selected == true)[0];
-        if (selectedItem) {
-          this.hierarchy.listManager.onItemDown(selectedItem);
-        }
+        this.setHierarchy();
       })
     }
   }
@@ -602,6 +783,7 @@ export class NicheHierarchyComponent extends LazyLoad {
               }
             )
           }
+          this.onNicheLoad.next();
         });
       }
 
@@ -620,6 +802,7 @@ export class NicheHierarchyComponent extends LazyLoad {
               }
             )
           }
+          this.onSubNicheLoad.next();
         });
       }
     }
@@ -681,14 +864,14 @@ export class NicheHierarchyComponent extends LazyLoad {
   onHierarchyDeletePromptOpen(deletedItem: HierarchyItem) {
     const itemType = deletedItem.hierarchyGroupID == 0 ? 'Niche' : deletedItem.hierarchyGroupID == 1 ? 'Sub Niche' : 'Product';
     this.hierarchyOptions.deletePrompt!.message = this.sanitizer.bypassSecurityTrustHtml(
-      
+
       '<div>The following ' + itemType.toLowerCase() + (itemType == 'Product' ? '' : ' and its contents') + ' will be permanently deleted from the list:</div>' +
 
       '<br>' +
 
       '<div style="margin-bottom: 4px; display: flex">' +
-        '<div style="width: fit-content; padding-right: 4px; flex-shrink: 0;">' + itemType + ':</div>' +
-        '<div style="color: #ffba00">' + deletedItem.name + '</div>' +
+      '<div style="width: fit-content; padding-right: 4px; flex-shrink: 0;">' + itemType + ':</div>' +
+      '<div style="color: #ffba00">' + deletedItem.name + '</div>' +
       '</div>' +
 
       '<br>' +
@@ -700,14 +883,14 @@ export class NicheHierarchyComponent extends LazyLoad {
 
   onSearchListDeletePromptOpen(deletedItem: MultiColumnItem) {
     this.searchListOptions.deletePrompt!.message = this.sanitizer.bypassSecurityTrustHtml(
-      
+
       '<div>The following ' + deletedItem.values[1].name.toLowerCase() + (deletedItem.values[1].name == 'Product' ? '' : ' and its contents') + ' will be permanently deleted from the list:</div>' +
 
       '<br>' +
 
       '<div style="margin-bottom: 4px; display: flex">' +
-        '<div style="width: fit-content; padding-right: 4px; flex-shrink: 0;">' + deletedItem.values[1].name + ':</div>' +
-        '<div style="color: #ffba00">' + deletedItem.values[0].name + '</div>' +
+      '<div style="width: fit-content; padding-right: 4px; flex-shrink: 0;">' + deletedItem.values[1].name + ':</div>' +
+      '<div style="color: #ffba00">' + deletedItem.values[0].name + '</div>' +
       '</div>' +
 
       '<br>' +

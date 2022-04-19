@@ -58,3 +58,39 @@ input {
 ::placeholder {
     color: #494949;
 }
+
+.column-name-container {
+    height: 26px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 56px 0 5px;
+    font-size: 12px;
+    color: #656565;
+    margin: 0 10px 0 6px;
+}
+
+.column-name {
+    height: 100%;
+    line-height: 26px;
+    user-select: none;
+}
+
+.column-underline-container {
+    display: flex;
+    padding: 0 10px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.column-underline {
+    background: #2a2a2a;
+    height: 1px;
+
+    &:first-child {
+        width: 277px;
+    }
+
+    &:last-child {
+        width: 88px;
+    }
+}
