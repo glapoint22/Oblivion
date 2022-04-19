@@ -4,6 +4,7 @@ import { ElementRange } from "./element-range";
 import { Element } from "./element";
 import { SelectedElementOnDeletion } from "./enums";
 import { Selection } from "./selection";
+import { CopyElementOptions } from "./copy-element-options";
 
 export class TextElement extends Element {
 
@@ -207,19 +208,34 @@ export class TextElement extends Element {
         const containerIndex = container.parent.children.findIndex(x => x == container);
         const lastChild = container.lastChild as TextElement;
         let textElement = this as TextElement;
+        const firstRange = new ElementRange();
 
+        firstRange.containerId = container.id;
+        firstRange.startElementId = container.children[0].id;
+        firstRange.startOffset = 0;
+        firstRange.endElementId = textElement.id;
+        firstRange.endOffset = offset;
+        firstRange.topParentId = textElement.topParent.id;
 
-        const leftFragment = container.copyElement(container.parent, new ElementRange(container.id, container.children[0].id, 0, textElement.id, offset, textElement.topParent.id));
+        const firstSegment = container.copyElement(container.parent, { range: firstRange });
 
         if (offset == this.text.length && this != lastChild) {
             textElement = textElement.nextChild as TextElement;
             offset = 0;
         }
 
-        const rightFragment = container.copyElement(container.parent, new ElementRange(container.id, textElement.id, offset, lastChild.id, lastChild.text.length, textElement.topParent.id));
+        const secondRange = new ElementRange();
+        secondRange.containerId = container.id;
+        secondRange.startElementId = textElement.id;
+        secondRange.startOffset = offset;
+        secondRange.endElementId = lastChild.id;
+        secondRange.endOffset = lastChild.text.length;
+        secondRange.topParentId = textElement.topParent.id;
 
-        if (leftFragment) container.parent.children.splice(containerIndex + 1, 0, leftFragment);
-        if (rightFragment) container.parent.children.splice(containerIndex + 2, 0, rightFragment);
+        const secondSegment = container.copyElement(container.parent, { range: secondRange });
+
+        if (firstSegment) container.parent.children.splice(containerIndex + 1, 0, firstSegment);
+        if (secondSegment) container.parent.children.splice(containerIndex + 2, 0, secondSegment);
 
 
         // Delete the container
@@ -227,7 +243,7 @@ export class TextElement extends Element {
 
         let selection!: Selection;
 
-        if (rightFragment) selection = rightFragment.firstChild.getStartSelection();
+        if (secondSegment) selection = secondSegment.firstChild.getStartSelection();
 
         return selection;
     }
@@ -240,20 +256,21 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Copy Element-----------------------------------------------------
-    copyElement(parent: Element, range?: ElementRange, copyChildId = true): Element | null {
+    copyElement(parent: Element, options?: CopyElementOptions): Element | null {
         let text = this.text;
 
-        if (range && range.startElementId == this.id) {
-            range.inRange = true;
-            text = text.substring(range.startOffset, range.startElementId == range.endElementId ? range.endOffset : undefined);
-        } else if (range && range.endElementId == this.id) {
-            text = text.substring(0, range.endOffset);
+        if (options && options.range && options.range.startElementId == this.id) {
+            options.range.inRange = true;
+            text = text.substring(options.range.startOffset, options.range.startElementId == options.range.endElementId ? options.range.endOffset : undefined);
+        } else if (options && options.range && options.range.endElementId == this.id) {
+            text = text.substring(0, options.range.endOffset);
         }
 
-        if (!range || range.inRange) {
-            if (range?.endElementId == this.id) {
-                range.inRange = false;
-                range.inTopParentRange = false;
+        if (!options || !options.range || options.range.inRange) {
+            if (options && options.range?.endElementId == this.id) {
+                options.range.inRange = false;
+                options.range.rangeEnded = true;
+                options.range.inTopParentRange = false;
 
                 if (text.length == 0) {
                     const breakElement = new BreakElement(parent);
@@ -262,7 +279,7 @@ export class TextElement extends Element {
             }
 
             const textElement = new TextElement(parent, text);
-            if (copyChildId) textElement.id = this.id;
+            if (!options || !options.createNewChildId) textElement.id = this.id;
             return textElement;
         }
 

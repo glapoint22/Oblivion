@@ -61,8 +61,8 @@ export abstract class Style {
 
 
 
-    // ---------------------------------------------------------Reset Selection------------------------------------------------------------------
-    public resetSelection() {
+    // ---------------------------------------------------------Finalize Style------------------------------------------------------------------
+    public finalizeStyle() {
         this.text.selection.setRange();
         this.text.selection.setSelection();
         this.setSelectedStyle();

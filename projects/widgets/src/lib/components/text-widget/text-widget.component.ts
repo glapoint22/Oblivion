@@ -315,6 +315,105 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
                     ]
                   }
                 ]
+              },
+
+
+              {
+                nodeType: NodeType.Ul,
+                children: [
+                  {
+                    nodeType: NodeType.Li,
+                    children: [
+                      {
+                        nodeType: NodeType.Text,
+                        text: 'Make'
+                      }
+                    ]
+                  },
+
+
+
+                  {
+                    nodeType: NodeType.Ul,
+                    children: [
+                      {
+                        nodeType: NodeType.Li,
+                        children: [
+                          {
+                            nodeType: NodeType.Text,
+                            text: 'America'
+                          }
+                        ]
+                      },
+
+
+
+                      {
+                        nodeType: NodeType.Ul,
+                        children: [
+                          {
+                            nodeType: NodeType.Li,
+                            children: [
+                              {
+                                nodeType: NodeType.Text,
+                                text: 'Great'
+                              }
+                            ]
+                          },
+
+
+                          {
+                            nodeType: NodeType.Ul,
+                            children: [
+                              {
+                                nodeType: NodeType.Li,
+                                children: [
+                                  {
+                                    nodeType: NodeType.Text,
+                                    text: 'Again'
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+
+
+                        ]
+                      }
+
+
+
+                    ]
+                  }
+
+
+
+
+                ]
+              },
+
+
+              {
+                nodeType: NodeType.Li,
+                children: [
+                  {
+                    nodeType: NodeType.Text,
+                    text: 'Hello'
+                  }
+                ]
+              }
+
+
+
+            ]
+          },
+
+          {
+            nodeType: NodeType.Li,
+            children: [
+              {
+                nodeType: NodeType.Text,
+                text: 'There'
               }
             ]
           }
@@ -322,6 +421,7 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
       },
       {
         nodeType: NodeType.Div,
+        indent: 2,
         children: [
           {
             nodeType: NodeType.Text,
@@ -423,7 +523,7 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
         ]
       },
       {
-        nodeType: NodeType.Ul,
+        nodeType: NodeType.Ol,
         children: [
           {
             nodeType: NodeType.Li,

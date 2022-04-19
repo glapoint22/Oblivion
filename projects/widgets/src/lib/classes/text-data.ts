@@ -7,4 +7,5 @@ export class TextData {
    public text?: string;
    public styles?: Array<StyleData>;
    public link?: string;
+   public indent?: number;
 }

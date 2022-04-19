@@ -82,6 +82,6 @@ export class ColorStyle extends Style {
 
     // ---------------------------------------------------------On Color Picker Close------------------------------------------------------------------
     onColorPickerClose() {
-        this.resetSelection();
+        this.finalizeStyle();
     }
 }

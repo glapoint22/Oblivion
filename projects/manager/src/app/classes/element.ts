@@ -1,15 +1,16 @@
 import { NodeType, StyleData } from "widgets";
 import { ElementDeleteOptions } from "./element-delete-options";
-import { ElementRange } from "./element-range";
 import { Selection } from "./selection";
 import { SelectedElementOnDeletion } from "./enums";
+import { CopyElementOptions } from "./copy-element-options";
 
 export abstract class Element {
     public id!: string;
     public styles: Array<StyleData> = [];
     public children: Array<Element> = [];
     public isRoot!: boolean;
-    public nodeType!: NodeType
+    public nodeType!: NodeType;
+    public indent: number = 0;
 
 
     constructor(public parent: Element) {
@@ -184,7 +185,7 @@ export abstract class Element {
                 return this.parent.deleteChild(this, deleteOptions);
         }
         else {
-            // This will remove any list items
+            // This will remove any lists
             if ((this.nodeType == NodeType.Ol || this.nodeType == NodeType.Ul) && this.children.length == 1 && this.children[0].nodeType != NodeType.Li) {
                 this.children[0].children.forEach((child: Element) => {
                     const copiedElement = child.copyElement(this);
@@ -286,16 +287,22 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Copy Element-----------------------------------------------------
-    copyElement(parent: Element, range?: ElementRange, copyChildId = true): Element | null {
-        if (range && (range.startElementId == this.id || range.endElementId == this.id)) {
-            range.inRange = true;
-        } else if (range && range.topParentId == this.id) {
-            range.inTopParentRange = true;
+    copyElement(parent: Element, options?: CopyElementOptions): Element | null {
+        if (options && options.range && (options.range.startElementId == this.id)) {
+            options.range.inRange = true;
+        } else if (options && options.range && options.range.topParentId == this.id) {
+            options.range.inTopParentRange = true;
+        } else if (options && options.range && options.range.endElementId == this.id) {
+            options.range.inRange = false;
         }
 
-        if (!range || range.inRange || range.containerId == this.id || range.inTopParentRange) {
-            const element = this.createElement(parent);
+        if (!options || !options.range || options.range.inRange || options.range.containerId == this.id || options.range.inTopParentRange
 
+            || !options.range.rangeEnded && (this.nodeType == NodeType.Ul || this.nodeType == NodeType.Ol)
+        ) {
+            const element = this.createElement(parent, options && options.changeType ? options.changeType : undefined);
+
+            if (options && options.preserveId) element.id = this.id;
 
 
             this.styles.forEach((style: StyleData) => {
@@ -303,7 +310,7 @@ export abstract class Element {
             });
 
             this.children.forEach((child: Element) => {
-                const copiedElement = child.copyElement(element, range, copyChildId);
+                const copiedElement = child.copyElement(element, options);
 
                 if (copiedElement) element.children.push(copiedElement);
             });
@@ -382,5 +389,5 @@ export abstract class Element {
 
 
     abstract createHtml(parent: HTMLElement): void;
-    abstract createElement(parent: Element): Element;
+    abstract createElement(parent: Element, changeType?: NodeType): Element;
 }

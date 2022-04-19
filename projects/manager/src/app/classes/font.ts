@@ -17,7 +17,7 @@ export class Font extends Style {
 
         this.text.merge();
         this.text.render();
-        this.resetSelection();
+        this.finalizeStyle();
     }
 
 
