@@ -79,7 +79,7 @@ export class Selection {
 
 
     // ---------------------------------------------------------Set Selected Styles------------------------------------------------------------------
-    public setSelectedStyles(currentElement: Element = this.commonAncestorContainer, range: ElementRange = new ElementRange('', '', 0, '', 0, '')) {
+    public setSelectedStyles(currentElement: Element = this.commonAncestorContainer, range: ElementRange = new ElementRange()) {
         let done!: boolean;
 
         if (currentElement.id == this.startElement.id) {
@@ -222,7 +222,11 @@ export class Selection {
 
     // ---------------------------------------------------------Is In Range------------------------------------------------------------------
     public isInRange(elementId: string): boolean {
-        return this.isElementInRange(elementId, new ElementRange('', this.startElement.id, 0, this.endElement.id, 0, ''), this.root as Element);
+        const range = new ElementRange();
+        range.startElementId = this.startElement.id;
+        range.endElementId = this.endElement.id;
+
+        return this.isElementInRange(elementId, range, this.root as Element);
     }
 
 

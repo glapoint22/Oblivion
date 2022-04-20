@@ -18,7 +18,7 @@ export class ToggleStyle extends Style {
 
         this.text.merge();
         this.text.render();
-        this.resetSelection();
+        this.finalizeStyle();
     }
 
 
@@ -73,7 +73,7 @@ export class ToggleStyle extends Style {
 
         if (styleIndex != -1 && textElement.parent.children.length == 1) {
             const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
-            const parentCopy = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
+            const parentCopy = textElement.parent.copyElement(textElement.parent.parent, { createNewChildId: true });
 
             if (parentCopy) {
                 parentCopy.styles.splice(styleIndex, 1);
@@ -95,7 +95,7 @@ export class ToggleStyle extends Style {
 
         const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
         const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
-        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, undefined, false) : textElement.copyElement(textElement.parent, undefined, false);
+        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, { createNewChildId: true }) : textElement.copyElement(textElement.parent, { createNewChildId: true });
         const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
 
         if (startCopy) {
@@ -128,8 +128,8 @@ export class ToggleStyle extends Style {
         if (styleIndex != -1 && textElement.parent.children.length == 1) {
             const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
             const childIndex = textElement.parent.children.findIndex(x => x == textElement);
-            const middleParent = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
-            const endParent = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
+            const middleParent = textElement.parent.copyElement(textElement.parent.parent, { createNewChildId: true });
+            const endParent = textElement.parent.copyElement(textElement.parent.parent, { createNewChildId: true });
 
             textElement.text = startText;
 
@@ -158,9 +158,9 @@ export class ToggleStyle extends Style {
 
 
         const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
-        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, undefined, false) : textElement.copyElement(textElement.parent, undefined, false);
+        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, { createNewChildId: true }) : textElement.copyElement(textElement.parent, { createNewChildId: true });
         const middleCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
-        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, undefined, false) : textElement.copyElement(textElement.parent, undefined, false);
+        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, { createNewChildId: true }) : textElement.copyElement(textElement.parent, { createNewChildId: true });
         const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
 
         if (startCopy) {
@@ -198,7 +198,7 @@ export class ToggleStyle extends Style {
 
         if (styleIndex != -1 && textElement.parent.children.length == 1) {
             const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
-            const parentCopy = textElement.parent.copyElement(textElement.parent.parent, undefined, false);
+            const parentCopy = textElement.parent.copyElement(textElement.parent.parent, { createNewChildId: true });
             const childIndex = textElement.parent.children.findIndex(x => x == textElement);
             textElement.text = startText;
 
@@ -221,7 +221,7 @@ export class ToggleStyle extends Style {
 
 
         const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
-        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, undefined, false) : textElement.copyElement(textElement.parent, undefined, false);
+        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, { createNewChildId: true }) : textElement.copyElement(textElement.parent, { createNewChildId: true });
         const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
         const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
 

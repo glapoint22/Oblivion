@@ -132,6 +132,7 @@ export class Text {
             const currentElement = element.children[i];
 
 
+            // Current element's styles are the same as its parent
             if (currentElement.styles.some(x => currentElement.parent.styles.map(z => z.style).includes(x.style) &&
                 currentElement.parent.styles.map(z => z.value).includes(x.value))) {
 
@@ -223,7 +224,7 @@ export class Text {
                     // Next element is the selection end element
                     if (nextTextElement.id == this.selection.endElement.id) {
                         this.selection.endElement = currentTextElement;
-                        this.selection.endOffset = currentTextElement.text.length + nextTextElement.text.length;
+                        this.selection.endOffset = this.selection.collapsed ? this.selection.startOffset : currentTextElement.text.length + nextTextElement.text.length;
                         this.selection.endChildIndex = currentTextElement.parent.children.findIndex(x => x == currentTextElement);
                     }
 
@@ -234,6 +235,32 @@ export class Text {
                     i--;
                     continue;
                 }
+
+
+
+
+                // Current element and next element list types match
+                if ((currentElement.nodeType == NodeType.Ul && nextElement.nodeType == NodeType.Ul) ||
+                    (currentElement.nodeType == NodeType.Ol && nextElement.nodeType == NodeType.Ol)) {
+
+                    nextElement.children.forEach((child: Element) => {
+                        const copiedElement = child.copyElement(currentElement);
+
+                        if (copiedElement) {
+                            currentElement.children.push(copiedElement);
+                        }
+                    });
+
+                    // Delete the next element
+                    nextElement.parent.deleteChild(nextElement);
+
+                    // Reset the selection
+                    this.selection.resetSelection(this.root);
+
+                    i--;
+                    continue;
+                }
+
             }
 
             this.merge(currentElement);
@@ -462,7 +489,7 @@ export class Text {
 
     // ---------------------------------------------------------Get Key------------------------------------------------------------------
     private getKey(event: KeyboardEvent): string | null {
-        if (event.key == 'Backspace' || event.key == 'Enter' || event.key == 'Delete' || event.key == 'Tab') return event.key;
+        if (event.key == 'Backspace' || event.key == 'Enter' || event.key == 'Delete') return event.key;
 
         if (!/^(?:\w|\W){1}$/.test(event.key) || event.ctrlKey) return null;
 
@@ -567,6 +594,9 @@ export class Text {
 
         // Set the styles
         if (data.styles) element.styles = data.styles;
+
+        // indent
+        if (data.indent) element.indent = data.indent;
 
         // Create the children
         if (data.children) {

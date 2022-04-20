@@ -17,6 +17,7 @@ export class DivElement extends Element {
     createHtml(parent: HTMLElement): void {
         const divElement = document.createElement('div');
 
+        if (this.indent > 0) divElement.style.textIndent = (this.indent * 40) + 20 + 'px';
         this.setHtmlElement(divElement, parent);
     }
 }

@@ -125,15 +125,19 @@
 
             <!-- Spacer -->
             <div class="icon-container" style="cursor: default;"></div>
-
-            <!-- Numbered list -->
-            <div class="icon-container" title="Numbered list (Ctrl+Shift+7)">
-                <i class="fas fa-list-ol"></i>
-            </div>
+            
 
             <!-- Bulleted list -->
-            <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)" (click)="bulletedList.setStyle()">
+            <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)" (click)="bulletedList.setStyle(); numberedList.isSelected = false"
+                [ngClass]="{'selected': bulletedList.isSelected}">
                 <i class="fas fa-list-ul"></i>
+            </div>
+
+
+            <!-- Numbered list -->
+            <div class="icon-container" title="Numbered list (Ctrl+Shift+7)" (click)="numberedList.setStyle(); bulletedList.isSelected = false"
+                [ngClass]="{'selected': numberedList.isSelected}">
+                <i class="fas fa-list-ol"></i>
             </div>
         </div>
     </div>

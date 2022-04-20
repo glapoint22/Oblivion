@@ -1,4 +1,5 @@
 import { NodeType } from "widgets";
+import { CopyElementOptions } from "./copy-element-options";
 import { Element } from "./element";
 import { ElementRange } from "./element-range";
 import { Selection } from "./selection";
@@ -44,19 +45,19 @@ export class BreakElement extends Element {
 
 
     // ---------------------------------------------------Copy Element-----------------------------------------------------
-    copyElement(parent: Element, range?: ElementRange, copyChildId = true): Element | null {
-        if (range && range.startElementId == this.id) {
-            range.inRange = true;
+    copyElement(parent: Element, options?: CopyElementOptions): Element | null {
+        if (options && options.range && options.range.startElementId == this.id) {
+            options.range.inRange = true;
         }
 
-        if (!range || range.inRange) {
-            if (range?.endElementId == this.id) {
-                range.inRange = false;
-                range.inTopParentRange = false;
+        if (!options || !options.range || options.range.inRange) {
+            if (options && options.range?.endElementId == this.id) {
+                options.range.inRange = false;
+                options.range.inTopParentRange = false;
             }
 
             const breakElement = new BreakElement(parent);
-            if (copyChildId) breakElement.id = this.id;
+            if (!options || !options.createNewChildId) breakElement.id = this.id;
             return breakElement;
         }
 

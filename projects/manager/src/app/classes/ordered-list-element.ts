@@ -1,5 +1,6 @@
 import { NodeType } from "widgets";
 import { Element } from "./element";
+import { UnorderedListElement } from "./unordered-list-element";
 
 export class OrderedListElement extends Element {
 
@@ -19,7 +20,11 @@ export class OrderedListElement extends Element {
 
 
 
-    createElement(parent: Element): Element {
+    createElement(parent: Element, changeType?: NodeType): Element {
+        if (changeType == NodeType.Ul) {
+            return new UnorderedListElement(parent);
+        }
+
         return new OrderedListElement(parent);
     }
 }

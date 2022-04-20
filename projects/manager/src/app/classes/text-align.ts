@@ -19,7 +19,7 @@ export class TextAlign extends Style {
         super.setStyle();
 
         this.text.render();
-        this.resetSelection();
+        this.finalizeStyle();
     }
 
 
