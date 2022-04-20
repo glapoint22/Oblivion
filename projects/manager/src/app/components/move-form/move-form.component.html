@@ -1,14 +1,14 @@
-<div class="hide backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="base">
+    <div class="modal-base">
 
-        <div class="header">
+        <div class="modal-bar">
             <div>Move {{itemToBeMovedType}}</div>
-            <div class="x" (click)="onCancelButtonClick()">X</div>
+            <div class="modal-x-button" (click)="onCancelButtonClick()">X</div>
         </div>
-        <div class="drop-shadow"></div>
+        <div class="modal-bar-drop-shadow"></div>
 
-        <div class="content">
+        <div class="modal-content">
 
             <div class="label-container">
                 <span class="label">Move {{itemToBeMovedType}}:</span>
@@ -34,7 +34,7 @@
         </div>
 
 
-        <div class="button-container">
+        <div class="modal-button-container">
             <button class="dark-button" (click)="onCancelButtonClick()">Cancel</button>
             <button class="gold-button" [disabled]="!destinationItem" (click)="onMoveButtonClick()">Move</button>
         </div>

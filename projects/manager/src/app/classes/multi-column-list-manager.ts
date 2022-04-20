@@ -63,12 +63,34 @@ export class MultiColumnListManager extends ListManager {
     }
 
 
+
+    commitAddEdit() {
+        const trimmedEditedValue = this.editableValue.htmlValue?.nativeElement.textContent?.trim();
+        this.addEditVerificationInProgress = false;
+
+        // Update the name property
+        this.editableValue.name = trimmedEditedValue!;
+        // Select the item that was renamed
+        this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == this.editedItem?.identity)]);
+        // Send update
+        this.addEditUpdate(this.editedItem as MultiColumnItem);
+        this.buttonsUpdate();
+
+        if (this.selectable) {
+            this.selectedItem = this.editedItem;
+            this.selectedItem.selected = true;
+        }
+
+        this.editedItem = null!;
+        this.editableValue = null!;
+    }
+
+
     evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
-        const htmlEditedItem = this.editedItem.htmlItem!.nativeElement;
         const trimmedEditedValue = this.editableValue.htmlValue?.nativeElement.textContent?.trim();
 
         // Set the focus to the edited item just in case it lost it on a mouse down
-        htmlEditedItem.focus();
+        this.editedItem.htmlItem!.nativeElement.focus();
 
         // If the edited value has text written in it
         if (trimmedEditedValue!.length > 0) {
@@ -89,12 +111,25 @@ export class MultiColumnListManager extends ListManager {
 
                 // As long as the edited name is different from what it was before the edit
                 if (trimmedEditedValue != this.editableValue.name) {
-                    // Update the name property
-                    this.editableValue.name = trimmedEditedValue!;
-                    // Select the item that was renamed
-                    this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == this.editedItem?.identity)]);
-                    // Send update
-                    this.addEditUpdate(this.editedItem as MultiColumnItem);
+
+                    if (!this.verifyAddEdit) {
+
+                        // Update the name property
+                        this.editableValue.name = trimmedEditedValue!;
+                        // Select the item that was renamed
+                        this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == this.editedItem?.identity)]);
+                        // Send update
+                        this.addEditUpdate(this.editedItem as MultiColumnItem);
+                        this.buttonsUpdate();
+
+                    } else {
+
+                        if (!this.addEditVerificationInProgress) {
+                            this.addEditVerificationInProgress = true;
+                            this.verifyAddEditUpdate(this.editedItem as MultiColumnItem, trimmedEditedValue!);
+                            return
+                        }
+                    }
                 }
             }
 
@@ -139,6 +174,18 @@ export class MultiColumnListManager extends ListManager {
         );
     }
 
+
+    verifyAddEditUpdate(multiColumnItem: MultiColumnItem, name: string) {
+        this.onListUpdate.next(
+            {
+                type: ListUpdateType.VerifyAddEdit,
+                id: multiColumnItem.id,
+                index: this.sourceList.findIndex(x => x.identity == multiColumnItem?.identity),
+                name: name,
+                values: multiColumnItem.values
+            }
+        );
+    }
 
     selectedItemsUpdate(rightClick: boolean) {
         const selectedItems = this.sourceList.filter(x => x.selected == true);

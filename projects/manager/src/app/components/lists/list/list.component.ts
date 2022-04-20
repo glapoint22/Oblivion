@@ -60,6 +60,7 @@ export class ListComponent implements OnInit {
       if (this.options.deletable != null) this.listManager.deletable = this.options.deletable;
       if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
       if (this.options.sortable != null) this.listManager.sortable = this.options.sortable;
+      if (this.options.verifyAddEdit != null) this.listManager.verifyAddEdit = this.options.verifyAddEdit;
     }
     this.initializeListUpdate();
   }
@@ -100,10 +101,6 @@ export class ListComponent implements OnInit {
 
       })
 
-
-
-
-
       // Editable
     } else {
 
@@ -127,7 +124,12 @@ export class ListComponent implements OnInit {
   }
 
 
-  openPrompt() {
-    this.listManager.openPrompt();
+  commitAddEdit() {
+    this.listManager.commitAddEdit();
+  }
+
+
+  openDuplicatePrompt() {
+    this.listManager.openPrompt(this.listManager.options.duplicatePrompt!);
   }
 }

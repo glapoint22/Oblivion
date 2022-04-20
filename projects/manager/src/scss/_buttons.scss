@@ -1,0 +1,48 @@
+.gold-button {
+    width: fit-content;
+    height: 30px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    padding: 1px 18px 0;
+    margin-left: 10px;
+    background: linear-gradient(#fedb7d, #c28f06);
+
+    &:hover {
+        background: linear-gradient(lighten(#fedb7d, 6), lighten(#c28f06, 6));
+    }
+
+    &:active {
+        background: linear-gradient(lighten(#fedb7d, 10), lighten(#c28f06, 10));
+    }
+
+    &:disabled {
+        cursor: default;
+        background: linear-gradient(rgba(255, 221, 127, 0.22), rgba(192, 141, 2, 0.22));
+        color: rgba(0, 0, 0, 0.5);
+    }
+}
+
+.dark-button {
+    width: fit-content;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #3d3d3d;
+    cursor: pointer;
+    background: #282828;
+    padding: 0 18px;
+    margin-left: 10px;
+    color: #b4b4b4;
+
+    &:hover {
+        background: lighten(#282828, 6);
+        border-color: lighten(#3d3d3d, 6);
+        color: lighten(#b4b4b4, 6);
+    }
+
+    &:active {
+        background: lighten(#282828, 10);
+        border-color: lighten(#3d3d3d, 10);
+        color: lighten(#b4b4b4, 10);
+    }
+}

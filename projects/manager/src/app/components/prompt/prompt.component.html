@@ -1,16 +1,16 @@
-<div class="hide backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="base">
+    <div class="modal-base">
 
-        <div class="header">
+        <div class="modal-bar">
             <div>{{title}}</div>
-            <div class="x" (click)="close()">X</div>
+            <div class="modal-x-button" (click)="close()">X</div>
         </div>
-        <div class="drop-shadow"></div>
+        <div class="modal-bar-drop-shadow"></div>
 
         <div class="message" [innerHtml]="message"></div>
             
-        <div class="button-container">
+        <div class="modal-button-container">
 
             <div>
                 <button *ngIf="tertiaryButton && tertiaryButton.name"

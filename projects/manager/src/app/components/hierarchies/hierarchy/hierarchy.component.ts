@@ -31,6 +31,7 @@ export class HierarchyComponent extends ListComponent {
 
 
   add(itemIndex?: number, isParent?: boolean | string) {
+
     // If a hierarchy item is selected
     if (this.listManager.selectedItem) {
       let index: number;
@@ -50,7 +51,7 @@ export class HierarchyComponent extends ListComponent {
           }
 
           // But if the item index is specified
-        }else {
+        } else {
           index = itemIndex + 1;
           hierarchyGroupID = this.sourceList[itemIndex].hierarchyGroupID! + 1;
 
@@ -83,4 +84,8 @@ export class HierarchyComponent extends ListComponent {
   collapse() {
     this.listManager.collapseHierarchy();
   }
+
+
+
+
 }
