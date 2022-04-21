@@ -13,23 +13,21 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
   styleUrls: ['./menu-bar.component.scss']
 })
 export class MenuBarComponent {
-  private contextMenu!: ContextMenuComponent;
-  private eventListenersAdded!: boolean;
-  public nicheHierarchy!: NicheHierarchyComponent;
-  public overMenu!: boolean;
-  private overMenuListener!: Subscription;
-  private overNicheHierarchyListener!: Subscription;
+  // Private
   private menuOpen!: boolean;
   private nicheHierarchyOpen!: boolean;
+  private eventListenersAdded!: boolean;
+  private overMenuListener!: Subscription;
+  private menuOpenListener!: Subscription;
+  private contextMenu!: ContextMenuComponent;
+  private overNicheHierarchyListener!: Subscription;
+
+  // Public
+  public overMenu!: boolean;
   public overNicheHierarchy!: boolean;
+  public nicheHierarchy!: NicheHierarchyComponent;
   public selectedMenuBarOption!: MenuBarOption;
-
-
-  constructor(public lazyLoadingService: LazyLoadingService, private router: Router) { }
-
-
   public menuBarOptions: Array<MenuBarOption> = [
-
 
     // Builders
     {
@@ -70,7 +68,8 @@ export class MenuBarComponent {
         {
           type: MenuOptionType.MenuItem,
           name: 'Filters',
-          shortcut: 'Shift+F'
+          shortcut: 'Shift+F',
+          optionFunction: this.openFilterForm
         },
         {
           type: MenuOptionType.MenuItem,
@@ -149,34 +148,10 @@ export class MenuBarComponent {
     }
   ]
 
-
-  async onNicheShackLogoClick() {
-    if (!this.nicheHierarchyOpen) {
-      this.nicheHierarchyOpen = true;
-      this.addEventListeners();
-
-      this.lazyLoadingService.load(async () => {
-        const { NicheHierarchyComponent } = await import('../../components/niche-hierarchy/niche-hierarchy.component');
-        const { NicheHierarchyModule } = await import('../../components/niche-hierarchy/niche-hierarchy.module');
-        return {
-          component: NicheHierarchyComponent,
-          module: NicheHierarchyModule
-        }
-      }, SpinnerAction.None).then((nicheHierarchy: NicheHierarchyComponent) => {
-        this.nicheHierarchy = nicheHierarchy;
-        this.overNicheHierarchyListener = nicheHierarchy.overNicheHierarchy.subscribe((overNicheHierarchy: boolean) => {
-          this.overNicheHierarchy = overNicheHierarchy;
-        })
-      })
-
-    } else {
-      this.closeNicheHierarchy();
-    }
-
-
-
-
-  }
+  constructor(
+    public lazyLoadingService: LazyLoadingService,
+    private router: Router
+  ) { }
 
 
   addEventListeners() {
@@ -196,103 +171,6 @@ export class MenuBarComponent {
     window.removeEventListener('blur', this.onInnerWindowBlur);
   }
 
-
-  closeMenu() {
-    this.menuOpen = false;
-    this.contextMenu.onHide();
-    this.selectedMenuBarOption = null!;
-    this.overMenuListener.unsubscribe();
-    this.removeEventListeners();
-  }
-
-
-  closeNicheHierarchy() {
-    this.nicheHierarchy.close();
-    this.nicheHierarchyOpen = false;
-    this.overNicheHierarchyListener.unsubscribe();
-    this.removeEventListeners();
-  }
-
-
-  onMouseDown = () => {
-    if (!this.overMenu && this.menuOpen) this.closeMenu();
-
-    if (this.nicheHierarchyOpen) {
-      // If the niche hierarchy is being displayed
-      if (this.nicheHierarchy.hierarchy) {
-        if (!this.overNicheHierarchy &&
-          !this.nicheHierarchy.moveFormOpen &&
-          !this.nicheHierarchy.hierarchy.listManager.editedItem &&
-          !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen &&
-          !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen) {
-          this.closeNicheHierarchy();
-        }
-
-        // If the search text is being displayed
-      } else {
-        if (!this.overNicheHierarchy &&
-          !this.nicheHierarchy.moveFormOpen &&
-          !this.nicheHierarchy.multiColumnList.listManager.editedItem &&
-          !this.nicheHierarchy.multiColumnList.listManager.contextMenuOpen &&
-          !this.nicheHierarchy.multiColumnList.listManager.deletePromptOpen) {
-          this.closeNicheHierarchy();
-        }
-      }
-    }
-  }
-
-
-  onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      if (this.menuOpen) this.closeMenu();
-
-      if (this.nicheHierarchyOpen) {
-        // If the niche hierarchy is being displayed
-        if (this.nicheHierarchy.hierarchy) {
-          if (!this.nicheHierarchy.moveFormOpen &&
-            !this.nicheHierarchy.hierarchy.listManager.editedItem &&
-            !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen &&
-            !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen) {
-            this.closeNicheHierarchy();
-          }
-
-          // If the search text is being displayed
-        } else {
-          if (!this.nicheHierarchy.moveFormOpen &&
-            !this.nicheHierarchy.multiColumnList.listManager.editedItem &&
-            !this.nicheHierarchy.multiColumnList.listManager.contextMenuOpen &&
-            !this.nicheHierarchy.multiColumnList.listManager.deletePromptOpen) {
-            this.closeNicheHierarchy();
-          }
-        }
-      }
-    }
-  }
-
-
-  onInnerWindowBlur = () => {
-    if (this.menuOpen) this.closeMenu();
-
-
-    if (this.nicheHierarchyOpen) {
-      // If the niche hierarchy is being displayed
-      if (this.nicheHierarchy.hierarchy) {
-        if (!this.nicheHierarchy.moveFormOpen &&
-          !this.nicheHierarchy.hierarchy.listManager.deletePromptOpen) {
-          this.closeNicheHierarchy();
-          this.nicheHierarchy.hierarchy.listManager.editedItem = null!;
-        }
-
-        // If the search text is being displayed
-      } else {
-        if (!this.nicheHierarchy.moveFormOpen &&
-          !this.nicheHierarchy.multiColumnList.listManager.deletePromptOpen) {
-          this.closeNicheHierarchy();
-          this.nicheHierarchy.multiColumnList.listManager.editedItem = null!;
-        }
-      }
-    }
-  }
 
 
   async openMenu(htmlMenuBarOption: HTMLElement, menuBarOption: MenuBarOption) {
@@ -328,11 +206,26 @@ export class MenuBarComponent {
           this.overMenuListener = contextMenu.overMenu.subscribe((overMenu: boolean) => {
             this.overMenu = overMenu;
           })
+          this.menuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
+            if (!menuOpen) this.closeMenu();
+          })
         });
+
+        // When the same menu bar option is clicked again
       } else {
         this.closeMenu();
       }
     }
+  }
+
+
+  closeMenu() {
+    this.menuOpen = false;
+    this.contextMenu.onHide();
+    this.selectedMenuBarOption = null!;
+    this.overMenuListener.unsubscribe();
+    this.menuOpenListener.unsubscribe();
+    this.removeEventListeners();
   }
 
 
@@ -352,5 +245,130 @@ export class MenuBarComponent {
   openEmailBuilder() {
     this.selectedMenuBarOption = null!;
     this.router.navigate(['email-builder']);
+  }
+
+
+  async openNicheHierarchy() {
+    if (!this.nicheHierarchyOpen) {
+      this.nicheHierarchyOpen = true;
+      this.addEventListeners();
+
+      this.lazyLoadingService.load(async () => {
+        const { NicheHierarchyComponent } = await import('../../components/niche-hierarchy/niche-hierarchy.component');
+        const { NicheHierarchyModule } = await import('../../components/niche-hierarchy/niche-hierarchy.module');
+        return {
+          component: NicheHierarchyComponent,
+          module: NicheHierarchyModule
+        }
+      }, SpinnerAction.None).then((nicheHierarchy: NicheHierarchyComponent) => {
+        this.nicheHierarchy = nicheHierarchy;
+        this.overNicheHierarchyListener = nicheHierarchy.overNicheHierarchy.subscribe((overNicheHierarchy: boolean) => {
+          this.overNicheHierarchy = overNicheHierarchy;
+        })
+      })
+
+    } else {
+      this.closeNicheHierarchy();
+    }
+  }
+
+
+  closeNicheHierarchy() {
+    this.nicheHierarchy.close();
+    this.nicheHierarchyOpen = false;
+    this.overNicheHierarchyListener.unsubscribe();
+    this.removeEventListeners();
+  }
+
+
+  openFilterForm() {
+    this.lazyLoadingService.load(async () => {
+      const { FilterFormComponent } = await import('../../components/filter-form/filter-form.component');
+      const { FilterFormModule } = await import('../../components/filter-form/filter-form.module');
+      return {
+        component: FilterFormComponent,
+        module: FilterFormModule
+      }
+    }, SpinnerAction.None)
+  }
+
+
+  onMouseDown = () => {
+    if (!this.overMenu && this.menuOpen) this.closeMenu();
+
+    if (this.nicheHierarchyOpen) {
+      // If the niche hierarchy is being displayed
+      if (this.nicheHierarchy.hierarchy) {
+        if (!this.overNicheHierarchy &&
+          !this.nicheHierarchy.moveFormOpen &&
+          !this.nicheHierarchy.hierarchy.listManager.editedItem &&
+          !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen &&
+          !this.nicheHierarchy.hierarchy.listManager.promptOpen) {
+          this.closeNicheHierarchy();
+        }
+
+        // If the search text is being displayed
+      } else {
+        if (!this.overNicheHierarchy &&
+          !this.nicheHierarchy.moveFormOpen &&
+          !this.nicheHierarchy.multiColumnList.listManager.editedItem &&
+          !this.nicheHierarchy.multiColumnList.listManager.contextMenuOpen &&
+          !this.nicheHierarchy.multiColumnList.listManager.promptOpen) {
+          this.closeNicheHierarchy();
+        }
+      }
+    }
+  }
+
+
+  onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      if (this.menuOpen) this.closeMenu();
+
+      if (this.nicheHierarchyOpen) {
+        // If the niche hierarchy is being displayed
+        if (this.nicheHierarchy.hierarchy) {
+          if (!this.nicheHierarchy.moveFormOpen &&
+            !this.nicheHierarchy.hierarchy.listManager.editedItem &&
+            !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen &&
+            !this.nicheHierarchy.hierarchy.listManager.promptOpen) {
+            this.closeNicheHierarchy();
+          }
+
+          // If the search text is being displayed
+        } else {
+          if (!this.nicheHierarchy.moveFormOpen &&
+            !this.nicheHierarchy.multiColumnList.listManager.editedItem &&
+            !this.nicheHierarchy.multiColumnList.listManager.contextMenuOpen &&
+            !this.nicheHierarchy.multiColumnList.listManager.promptOpen) {
+            this.closeNicheHierarchy();
+          }
+        }
+      }
+    }
+  }
+
+
+  onInnerWindowBlur = () => {
+    if (this.menuOpen) this.closeMenu();
+
+    if (this.nicheHierarchyOpen) {
+      // If the niche hierarchy is being displayed
+      if (this.nicheHierarchy.hierarchy) {
+        if (!this.nicheHierarchy.moveFormOpen &&
+          !this.nicheHierarchy.hierarchy.listManager.promptOpen) {
+          this.closeNicheHierarchy();
+          this.nicheHierarchy.hierarchy.listManager.editedItem = null!;
+        }
+
+        // If the search text is being displayed
+      } else {
+        if (!this.nicheHierarchy.moveFormOpen &&
+          !this.nicheHierarchy.multiColumnList.listManager.promptOpen) {
+          this.closeNicheHierarchy();
+          this.nicheHierarchy.multiColumnList.listManager.editedItem = null!;
+        }
+      }
+    }
   }
 }

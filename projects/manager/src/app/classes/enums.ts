@@ -31,7 +31,8 @@ export enum ListUpdateType {
     DeletePrompt,
     SelectedItems,
     CheckboxChange,
-    ArrowClicked
+    ArrowClicked,
+    VerifyAddEdit
 }
 
 

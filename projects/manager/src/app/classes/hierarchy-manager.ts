@@ -58,14 +58,32 @@ export class HierarchyManager extends ListManager {
     getIsCollapsed(): boolean {
         let isCollapsed: boolean = true;
 
-        for(let i = 0; i < this.sourceList.length; i++) {
-            if((this.sourceList[i] as HierarchyItem).arrowDown) {
+        for (let i = 0; i < this.sourceList.length; i++) {
+            if ((this.sourceList[i] as HierarchyItem).arrowDown) {
                 isCollapsed = false;
                 break;
             }
         }
         return isCollapsed;
     }
+
+
+    setButtonsState() {
+        // We need to wait a frame because we run into the
+        // problem when adding or editing a hierarchy item,
+        // we have to remove that item and then re-add it
+        // again so we can get the indent, but doing that
+        // makes it lose the focus which updates the button
+        // state and causes the error "Expression has changed
+        // after it was checked". That's because we're updating
+        // the button state at the same time here.
+        window.setTimeout(() => {
+            this.collapseDisabled = this.getIsCollapsed();
+            super.setButtonsState();
+        })
+
+    }
+
 
     showHide(parentIndex: number) {
         // Loop through all the hierarchy items starting with the hierarchy item that follows the current parent
@@ -104,6 +122,22 @@ export class HierarchyManager extends ListManager {
                 break;
             }
         }
+    }
+
+
+    setAddItem(hierarchyItem: HierarchyItem) {
+        if (this.editable) {
+            this.collapseDisabled = true;
+        }
+        super.setAddItem(hierarchyItem);
+    }
+
+
+    setEditItem(hierarchyItem: HierarchyItem) {
+        if (this.editable) {
+            this.collapseDisabled = true;
+        }
+        super.setEditItem(hierarchyItem);
     }
 
     getDeletedItems(selectedItems: Array<HierarchyItem>): Array<HierarchyItem> {
@@ -202,21 +236,35 @@ export class HierarchyManager extends ListManager {
         // Remove the selected hierarchy item and then put it back so the indent can take effect
         const hierarchyItemIndex = this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity);
         this.sourceList.splice(hierarchyItemIndex, 1);
-        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent, selected: hierarchyItem.selected } as HierarchyItem);
+        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent, selected: hierarchyItem.selected, htmlItem: hierarchyItem?.htmlItem } as HierarchyItem);
 
         // And because we removed the selected hierarchy item, we lost our event listeners, so we have to put them back
-        window.setTimeout(() => {
-            this.addEventListeners();
-        }, 35)
+        // window.setTimeout(() => {
+        this.addEventListeners();
+        // }, 35)
         return this.sourceList[hierarchyItemIndex];
     }
 
 
-    collapseHierarchy(){
+
+
+    resetItemName(hierarchyItem: HierarchyItem): HierarchyItem {
+        // Update the text content of the html item
+        hierarchyItem!.htmlItem!.nativeElement.textContent = hierarchyItem!.name!;
+
+        const hierarchyItemIndex = this.sourceList.findIndex(x => x == hierarchyItem);
+        this.sourceList.splice(hierarchyItemIndex, 1);
+        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem!.id, name: hierarchyItem!.name, hierarchyGroupID: hierarchyItem!.hierarchyGroupID, isParent: hierarchyItem!.isParent, selected: hierarchyItem!.selected, htmlItem: hierarchyItem?.htmlItem } as HierarchyItem);
+
+        return this.sourceList[hierarchyItemIndex];
+    }
+
+
+    collapseHierarchy() {
         this.sourceList.forEach(x => {
             const item = (x as HierarchyItem);
             item.arrowDown = false;
-            if(item.hierarchyGroupID != 0) item.hidden = true;
+            if (item.hierarchyGroupID != 0) item.hidden = true;
         })
         this.collapseDisabled = true;
         this.buttonsUpdate();
@@ -224,15 +272,18 @@ export class HierarchyManager extends ListManager {
 
 
     buttonsUpdate() {
+        // Expression has changed after it was checked
+        // window.setTimeout(() => { //??????????????????????????
         this.onListUpdate.next(
-          {
-            addDisabled: this.addDisabled,
-            editDisabled: this.editDisabled,
-            deleteDisabled: this.deleteDisabled,
-            collapseDisabled: this.collapseDisabled
-          }
+            {
+                addDisabled: this.addDisabled,
+                editDisabled: this.editDisabled,
+                deleteDisabled: this.deleteDisabled,
+                collapseDisabled: this.collapseDisabled
+            }
         );
-      }
+        // })
+    }
 
 
     selectedItemsUpdate(rightClick: boolean) {
@@ -249,6 +300,19 @@ export class HierarchyManager extends ListManager {
                 id: hierarchyItem.id,
                 index: this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity),
                 name: hierarchyItem.name,
+                hierarchyGroupID: hierarchyItem.hierarchyGroupID
+            }
+        );
+    }
+
+
+    verifyAddEditUpdate(hierarchyItem: HierarchyItem, name: string) {
+        this.onListUpdate.next(
+            {
+                type: ListUpdateType.VerifyAddEdit,
+                id: hierarchyItem.id,
+                index: this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity),
+                name: name,
                 hierarchyGroupID: hierarchyItem.hierarchyGroupID
             }
         );

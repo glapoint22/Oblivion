@@ -31,16 +31,17 @@
             <!-- Edit icon -->
             <button class="icon-button"
                     [title]="editButtonTitle"
-                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled == null ? true : searchListUpdate.deleteDisabled}"
+                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.editDisabled : searchListUpdate.editDisabled == null ? true : searchListUpdate.editDisabled}"
                     (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
                     (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
                     (click)="!showSearch ? hierarchy.edit() : multiColumnList.edit()"
-                    [disabled]="!showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled">
+                    [disabled]="!showSearch ? hierarchyUpdate.editDisabled : searchListUpdate.editDisabled">
                 <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
             </button>
     
             <!-- Add icon -->
-            <button *ngIf="!showSearch" class="icon-button"
+            <button *ngIf="!showSearch"
+                    class="icon-button"
                     [title]="addButtonTitle"
                     [ngClass]="{'icon-button-disabled': hierarchyUpdate.addDisabled}"
                     (mouseover)="hierarchy.overButton = true"
@@ -51,7 +52,8 @@
             </button>
 
             <!-- Collapse icon -->
-            <button *ngIf="!showSearch" class="icon-button"
+            <button *ngIf="!showSearch"
+                    class="icon-button"
                     title="Collapse"
                     [ngClass]="{'icon-button-disabled': hierarchyUpdate.collapseDisabled}"
                     (mouseover)="hierarchy.overButton = true"

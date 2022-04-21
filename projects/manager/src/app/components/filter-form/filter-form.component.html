@@ -1,0 +1,80 @@
+<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="modal-base">
+
+        <div class="modal-bar">
+            <div>Filters</div>
+            <div class="modal-x-button"
+                 (click)="close()"
+                 (mouseover)="filtersHierarchy.overButton = true"
+                 (mouseout)="filtersHierarchy.overButton = false">
+                X
+            </div>
+        </div>
+        <div class="modal-bar-drop-shadow"></div>
+
+        <div class="modal-content">
+
+            <div class="icons">
+
+                <!-- Delete icon -->
+                <button class="icon-button"
+                        [title]="'Delete'"
+                        [ngClass]="{'icon-button-disabled': filtersUpdate ? filtersUpdate.deleteDisabled : null}"
+                        (mouseover)="filtersHierarchy.overButton = true"
+                        (mouseout)="filtersHierarchy.overButton = false"
+                        (click)="filtersHierarchy.delete()"
+                        [disabled]="filtersUpdate ? filtersUpdate.deleteDisabled : null">
+                    <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
+                </button>
+
+                <!-- Edit icon -->
+                <button class="icon-button"
+                        [title]="'Edit'"
+                        [ngClass]="{'icon-button-disabled': filtersUpdate ? filtersUpdate.editDisabled : null}"
+                        (mouseover)="filtersHierarchy.overButton = true"
+                        (mouseout)="filtersHierarchy.overButton = false"
+                        (click)="filtersHierarchy.edit()"
+                        [disabled]="filtersUpdate ? filtersUpdate.editDisabled : null">
+                    <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
+                </button>
+
+                <!-- Add icon -->
+                <button class="icon-button"
+                        [title]="'Add'"
+                        [ngClass]="{'icon-button-disabled': filtersUpdate ? filtersUpdate.addDisabled : null}"
+                        (mouseover)="filtersHierarchy.overButton = true"
+                        (mouseout)="filtersHierarchy.overButton = false"
+                        (click)="filtersHierarchy.add(null!, isParent)"
+                        [disabled]="filtersUpdate ? filtersUpdate.addDisabled : null">
+                    <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
+                </button>
+
+                <!-- Collapse icon -->
+                <button class="icon-button"
+                        title="Collapse"
+                        [ngClass]="{'icon-button-disabled': filtersUpdate ? filtersUpdate.collapseDisabled : null}"
+                        (mouseover)="filtersHierarchy.overButton = true"
+                        (mouseout)="filtersHierarchy.overButton = false"
+                        (click)="filtersHierarchy.collapse()"
+                        [disabled]="filtersUpdate ? filtersUpdate.collapseDisabled : null">
+                    <i style="pointer-events: none;" class="fas fa-minus-square"></i>
+                </button>
+            </div>
+
+            <div class="filters-container">
+                <hierarchy #filtersHierarchy [sourceList]="filtersService.filters" [options]="filtersOptions" (onListUpdate)="filtersUpdate = $event"></hierarchy>
+            </div>
+        </div>
+
+
+        <div class="modal-button-container">
+            <button class="dark-button"
+                    (click)="close()"
+                    (mouseover)="filtersHierarchy.overButton = true"
+                    (mouseout)="filtersHierarchy.overButton = false">
+                    Close
+            </button>
+        </div>
+    </div>
+</div>

@@ -49,6 +49,7 @@ export class NicheHierarchyComponent extends LazyLoad {
   @ViewChild('hierarchy') hierarchy!: HierarchyComponent;
   @ViewChild('multiColumnList') multiColumnList!: MultiColumnListComponent;
 
+  // Constructor
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
     private sanitizer: DomSanitizer,

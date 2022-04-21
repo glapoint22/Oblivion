@@ -11,6 +11,6 @@ export class CheckboxHierarchyComponent extends HierarchyComponent {
   public listManager!: CheckboxHierarchyManager;
 
   instantiate() {
-    this.listManager = new CheckboxHierarchyManager();
+    this.listManager = new CheckboxHierarchyManager(this.lazyLoadingService);
   }
 }

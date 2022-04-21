@@ -32,6 +32,14 @@ export class ProductGroupsPropertyComponent {
           name: 'Trumpy'
         }
       },
+      duplicatePrompt: {
+        parentObj: this.list,
+        title: 'Duplicate',
+        message: 'Duplicate Item',
+        secondaryButton: {
+          name: 'Close'
+        }
+      },
       menu: {
         parentObj: this.list,
         menuOptions: [
@@ -86,12 +94,17 @@ export class ProductGroupsPropertyComponent {
       // console.log(update)
     }
 
+    if(update.type == ListUpdateType.VerifyAddEdit) {
+      // console.log(update)
+      this.list.add();
+      // this.list.openDuplicatePrompt();
+    }
+
     if(update.type == ListUpdateType.DeletePrompt) {
       // console.log(update.deletedItems)
 
 
       this.listOptions.deletePrompt!.message = 'Make America Great Again';
-      // this.list.openPrompt();
       // this.list.delete()
     }
 
