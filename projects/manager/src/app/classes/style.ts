@@ -73,7 +73,7 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Set Range Style------------------------------------------------------------------
-    private setRangeStyle() {
+    protected setRangeStyle() {
         let currentElement = this.text.selection.startElement;
         let startSelection!: Selection;
         let endSelection!: Selection;
@@ -136,7 +136,7 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Apply Style At Beginning Of Text----------------------------------------------------------
-    private applyStyleAtBeginningOfText(textElement: TextElement, endOffset: number): TextElement {
+    protected applyStyleAtBeginningOfText(textElement: TextElement, endOffset: number): TextElement {
         const startText = textElement.text.substring(0, endOffset);
         const endText = textElement.text.substring(endOffset);
         const index = textElement.parent.children.findIndex(x => x == textElement);
@@ -158,7 +158,7 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Apply Style At Middle Of Text----------------------------------------------------------
-    private applyStyleAtMiddleOfText(textElement: TextElement, startOffset: number, endOffset: number): TextElement {
+    protected applyStyleAtMiddleOfText(textElement: TextElement, startOffset: number, endOffset: number): TextElement {
         const middleText = textElement.text.substring(startOffset, endOffset);
         const endText = textElement.text.substring(endOffset);
         const spanElement = new SpanElement(textElement.parent);
@@ -180,7 +180,7 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Apply Style At End Of Text----------------------------------------------------------
-    private applyStyleAtEndOfText(textElement: TextElement, startOffset: number): TextElement {
+    protected applyStyleAtEndOfText(textElement: TextElement, startOffset: number): TextElement {
         const endText = textElement.text.substring(startOffset);
         const spanElement = new SpanElement(textElement.parent);
         const index = textElement.parent.children.findIndex(x => x == textElement);
@@ -199,7 +199,7 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Apply Style To All Of Text----------------------------------------------------------
-    private applyStyleToAllOfText(textElement: TextElement): TextElement {
+    protected applyStyleToAllOfText(textElement: TextElement): TextElement {
         if (textElement.parent.nodeType == NodeType.Span && textElement.parent.children.length == 1) {
             if (!textElement.parent.styles.some(x => x.style == this.name)) {
                 textElement.parent.styles.push(this.createStyleData());
@@ -226,8 +226,8 @@ export abstract class Style {
 
 
 
-    // ---------------------------------------------------------Apply Style To Break Element----------------------------------------------------------
-    private applyStyleToDivElement(element: Element): Element {
+    // ---------------------------------------------------------Apply Style To Div Element----------------------------------------------------------
+    protected applyStyleToDivElement(element: Element): Element {
         const child = element.firstChild;
 
         if (child.parent.nodeType == NodeType.Span) {

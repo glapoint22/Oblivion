@@ -12,9 +12,13 @@ import { FontSize } from '../../classes/font-size';
 import { HighlightColor } from '../../classes/highlight-color';
 import { IncreaseIndent } from '../../classes/increase-indent';
 import { Italic } from '../../classes/italic';
+import { LowerCase } from '../../classes/lower-case';
 import { NumberedList } from '../../classes/numbered-list';
+import { SentenceCase } from '../../classes/sentence-case';
 import { Text } from '../../classes/text';
+import { TitleCase } from '../../classes/title-case';
 import { Underline } from '../../classes/underline';
+import { UpperCase } from '../../classes/upper-case';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -39,6 +43,10 @@ export class TextComponent implements OnChanges {
   public numberedList!: NumberedList;
   public increaseIndent!: IncreaseIndent;
   public decreaseIndent!: DecreaseIndent;
+  public lowerCase!: LowerCase;
+  public upperCase!: UpperCase;
+  public sentenceCase!: SentenceCase;
+  public titleCase!: TitleCase;
 
   constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { }
 
@@ -59,6 +67,10 @@ export class TextComponent implements OnChanges {
       this.numberedList = new NumberedList(this.text);
       this.increaseIndent = new IncreaseIndent(this.text);
       this.decreaseIndent = new DecreaseIndent(this.text);
+      this.lowerCase = new LowerCase(this.text);
+      this.upperCase = new UpperCase(this.text);
+      this.sentenceCase = new SentenceCase(this.text);
+      this.titleCase = new TitleCase(this.text);
 
 
       this.text.onSelection.subscribe(() => {
