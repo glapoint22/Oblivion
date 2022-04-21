@@ -186,17 +186,17 @@ export abstract class Element {
         }
         else {
             // This will remove any lists
-            if ((this.nodeType == NodeType.Ol || this.nodeType == NodeType.Ul) && this.children.length == 1 && this.children[0].nodeType != NodeType.Li) {
-                this.children[0].children.forEach((child: Element) => {
-                    const copiedElement = child.copyElement(this);
+            // if ((this.nodeType == NodeType.Ol || this.nodeType == NodeType.Ul) && this.children.length == 1 && this.children[0].nodeType != NodeType.Li) {
+            //     this.children[0].children.forEach((child: Element) => {
+            //         const copiedElement = child.copyElement(this);
 
-                    if (copiedElement) {
-                        this.children.push(copiedElement);
-                    }
-                });
+            //         if (copiedElement) {
+            //             this.children.push(copiedElement);
+            //         }
+            //     });
 
-                return this.deleteChild(this.children[0], deleteOptions);
-            }
+            //     return this.deleteChild(this.children[0], deleteOptions);
+            // }
         }
 
         return selectedChild;
@@ -290,15 +290,18 @@ export abstract class Element {
     copyElement(parent: Element, options?: CopyElementOptions): Element | null {
         if (options && options.range && (options.range.startElementId == this.id)) {
             options.range.inRange = true;
-        } else if (options && options.range && options.range.topParentId == this.id) {
-            options.range.inTopParentRange = true;
+        // } else if (options && options.range && options.range.topParentId == this.id) {
+        //     options.range.inTopParentRange = true;
         } else if (options && options.range && options.range.endElementId == this.id) {
             options.range.inRange = false;
         }
 
-        if (!options || !options.range || options.range.inRange || options.range.containerId == this.id || options.range.inTopParentRange
+        if (!options || !options.range || options.range.inRange 
+            || Element.search(options.range.startElementId, this)
 
-            || !options.range.rangeEnded && (this.nodeType == NodeType.Ul || this.nodeType == NodeType.Ol)
+            // || options.range.containerId == this.id || options.range.inTopParentRange
+
+            // || !options.range.rangeEnded && (this.nodeType == NodeType.Ul || this.nodeType == NodeType.Ol)
         ) {
             const element = this.createElement(parent, options && options.changeType ? options.changeType : undefined);
 
@@ -384,6 +387,19 @@ export abstract class Element {
 
             currentElement = currentElement.parent;
         }
+    }
+
+
+
+    // ---------------------------------------------------------Get Top List-------------------------------------------------------------
+    public getTopList(): Element {
+        let container = this as Element;
+
+        while (container.parent.nodeType != NodeType.Div) {
+            container = container.parent;
+        }
+
+        return container;
     }
 
 

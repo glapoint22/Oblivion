@@ -5,10 +5,12 @@ import { AlignLeft } from '../../classes/align-left';
 import { AlignRight } from '../../classes/align-right';
 import { Bold } from '../../classes/bold';
 import { BulletedList } from '../../classes/bulleted-list';
+import { DecreaseIndent } from '../../classes/decrease-indent';
 import { FontColor } from '../../classes/font-color';
 import { FontFamily } from '../../classes/font-family';
 import { FontSize } from '../../classes/font-size';
 import { HighlightColor } from '../../classes/highlight-color';
+import { IncreaseIndent } from '../../classes/increase-indent';
 import { Italic } from '../../classes/italic';
 import { NumberedList } from '../../classes/numbered-list';
 import { Text } from '../../classes/text';
@@ -35,6 +37,8 @@ export class TextComponent implements OnChanges {
   public alignJustify!: AlignJustify;
   public bulletedList!: BulletedList;
   public numberedList!: NumberedList;
+  public increaseIndent!: IncreaseIndent;
+  public decreaseIndent!: DecreaseIndent;
 
   constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { }
 
@@ -53,6 +57,8 @@ export class TextComponent implements OnChanges {
       this.alignJustify = new AlignJustify(this.text);
       this.bulletedList = new BulletedList(this.text);
       this.numberedList = new NumberedList(this.text);
+      this.increaseIndent = new IncreaseIndent(this.text);
+      this.decreaseIndent = new DecreaseIndent(this.text);
 
 
       this.text.onSelection.subscribe(() => {

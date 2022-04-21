@@ -252,6 +252,31 @@ export abstract class Style {
 
 
 
+    // ---------------------------------------------------------Get Selected Containers------------------------------------------------------------------
+    protected getSelectedContainers(): Array<Element> {
+        let currentElement = this.text.selection.startElement;
+        let selectedContainers: Array<Element> = new Array<Element>();
+
+        while (true) {
+            const container = currentElement.container;
+            if (!selectedContainers.some(x => x == container)) selectedContainers.push(container);
+
+            if (currentElement == this.text.selection.endElement || container == this.text.selection.endElement) {
+                break;
+            }
+
+            const nextChild = currentElement.nextChild;
+
+            if (nextChild) {
+                currentElement = nextChild;
+            }
+        }
+
+        return selectedContainers;
+    }
+
+
+
 
 
     // ---------------------------------------------------------Create Style Data----------------------------------------------------------

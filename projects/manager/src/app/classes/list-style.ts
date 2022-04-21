@@ -12,10 +12,10 @@ export abstract class ListStyle extends Style {
     // ---------------------------------------------------------Set Style------------------------------------------------------------------
     public setStyle(): void {
         let selectedContainers = this.getSelectedContainers();
-        const topContainer = this.getTopList(selectedContainers[0]);
+        const topList = selectedContainers[0].getTopList();
 
 
-        if (selectedContainers.every(x => x.nodeType == NodeType.Li && this.getTopList(x) == topContainer)) {
+        if (selectedContainers.every(x => x.nodeType == NodeType.Li && x.getTopList() == topList)) {
             let selectedLists: Array<Element> = [];
 
             selectedContainers.forEach((container) => {
@@ -55,28 +55,28 @@ export abstract class ListStyle extends Style {
 
 
                 // We have to copy the list and split it into different parts so we can remove the selected list items
-                const startIndex = topContainer.parent.children.findIndex(x => x == topContainer);
+                const startIndex = topList.parent.children.findIndex(x => x == topList);
                 let index = startIndex + 1;
 
                 // If the first selected container is NOT the first container in the list
-                if (selectedContainers[0] != topContainer.firstChild.container) {
+                if (selectedContainers[0] != topList.firstChild.container) {
                     // Set the range of what we are copying
                     const startRange = new ElementRange();
-                    startRange.startElementId = topContainer.id;
+                    startRange.startElementId = topList.id;
                     startRange.endElementId = selectedContainers[0].previousChild?.id as string;
 
                     // Copy the list
-                    const startListContainer = topContainer.copyElement(topContainer.parent, { range: startRange });
-                    if (startListContainer) topContainer.parent.children.splice(index, 0, startListContainer);
+                    const startListContainer = topList.copyElement(topList.parent, { range: startRange });
+                    if (startListContainer) topList.parent.children.splice(index, 0, startListContainer);
                     index++;
                 }
 
                 // Transform the selected list items into divs
                 selectedContainers.forEach((container: Element) => {
-                    const divElement = new DivElement(topContainer.parent);
+                    const divElement = new DivElement(topList.parent);
                     divElement.styles = container.styles;
 
-                    const level = this.getLevel(container.parent);
+                    const level = this.getIndentLevel(container.parent);
 
                     if (level > 0) divElement.indent = level;
 
@@ -89,24 +89,24 @@ export abstract class ListStyle extends Style {
                         }
                     });
 
-                    topContainer.parent.children.splice(index, 0, divElement);
+                    topList.parent.children.splice(index, 0, divElement);
                     index++;
                 });
 
 
                 // Copy the list items that are NOT selected
-                if (selectedContainers[selectedContainers.length - 1].lastChild != topContainer.lastChild) {
+                if (selectedContainers[selectedContainers.length - 1].lastChild != topList.lastChild) {
                     const endRange = new ElementRange();
 
                     endRange.startElementId = selectedContainers[selectedContainers.length - 1].lastChild.nextChild?.container.id as string;
-                    endRange.endElementId = topContainer.lastChild.id;
+                    endRange.endElementId = topList.lastChild.id;
 
-                    const endListContainer = topContainer.copyElement(topContainer.parent, { range: endRange });
-                    if (endListContainer) topContainer.parent.children.splice(index, 0, endListContainer);
+                    const endListContainer = topList.copyElement(topList.parent, { range: endRange });
+                    if (endListContainer) topList.parent.children.splice(index, 0, endListContainer);
                 }
 
                 // Delete the orginal list
-                topContainer.parent.children.splice(startIndex, 1);
+                topList.parent.children.splice(startIndex, 1);
             }
 
 
@@ -126,7 +126,7 @@ export abstract class ListStyle extends Style {
                     if (container.nodeType == NodeType.Div) {
                         this.convertDivToList(container);
                     } else {
-                        const topList = this.getTopList(container);
+                        const topList = container.getTopList();
                         const index = topList.parent.children.findIndex(x => x == topList);
                         const lastContainer = selectedContainers.find((x, index) => x == topList.lastChild.container || index == selectedContainers.length - 1);
                         const startRange = new ElementRange();
@@ -184,7 +184,7 @@ export abstract class ListStyle extends Style {
 
 
 
-        this.text.selection.resetSelection(topContainer.parent, this.text.selection.startOffset, this.text.selection.endOffset);
+        this.text.selection.resetSelection(this.text.root, this.text.selection.startOffset, this.text.selection.endOffset);
         this.text.merge();
         this.text.render();
         this.finalizeStyle();
@@ -231,77 +231,25 @@ export abstract class ListStyle extends Style {
     }
 
 
+    
 
 
 
 
 
-
-
-    // ---------------------------------------------------------Get Selected Containers------------------------------------------------------------------
-    private getSelectedContainers(): Array<Element> {
-        let currentElement = this.text.selection.startElement;
-        let selectedContainers: Array<Element> = new Array<Element>();
-
-        while (true) {
-            const container = currentElement.container;
-            if (!selectedContainers.some(x => x == container)) selectedContainers.push(container);
-
-            if (currentElement == this.text.selection.endElement || container == this.text.selection.endElement) {
-                break;
-            }
-
-            const nextChild = currentElement.nextChild;
-
-            if (nextChild) {
-                currentElement = nextChild;
-            }
-        }
-
-        return selectedContainers;
-    }
-
-
-
-
-
-    // ---------------------------------------------------------Get Level-------------------------------------------------------------
-    private getLevel(listContainer: Element): number {
+    // ---------------------------------------------------------Get Indent Level-------------------------------------------------------------
+    private getIndentLevel(list: Element): number {
         let level = 0;
 
-        if (listContainer.nodeType == NodeType.Div) return level;
+        if (list.nodeType == NodeType.Div) return level;
 
-        while (listContainer.parent.nodeType != NodeType.Div) {
-            listContainer = listContainer.parent;
+        while (list.parent.nodeType != NodeType.Div) {
+            list = list.parent;
             level++;
         }
 
         return level;
     }
-
-
-
-
-
-
-
-
-    // ---------------------------------------------------------Get Top Container-------------------------------------------------------------
-    private getTopList(element: Element): Element {
-        let container = element.container;
-
-        while (container.parent.nodeType != NodeType.Div) {
-            container = container.parent;
-        }
-
-        return container;
-    }
-
-
-
-
-
-
 
 
 

@@ -255,7 +255,7 @@ export class Text {
                     nextElement.parent.deleteChild(nextElement);
 
                     // Reset the selection
-                    this.selection.resetSelection(this.root);
+                    this.selection.resetSelection(this.root, this.selection.startOffset, this.selection.endOffset);
 
                     i--;
                     continue;

@@ -210,12 +210,10 @@ export class TextElement extends Element {
         let textElement = this as TextElement;
         const firstRange = new ElementRange();
 
-        firstRange.containerId = container.id;
         firstRange.startElementId = container.children[0].id;
         firstRange.startOffset = 0;
         firstRange.endElementId = textElement.id;
         firstRange.endOffset = offset;
-        firstRange.topParentId = textElement.topParent.id;
 
         const firstSegment = container.copyElement(container.parent, { range: firstRange });
 
@@ -225,12 +223,10 @@ export class TextElement extends Element {
         }
 
         const secondRange = new ElementRange();
-        secondRange.containerId = container.id;
         secondRange.startElementId = textElement.id;
         secondRange.startOffset = offset;
         secondRange.endElementId = lastChild.id;
         secondRange.endOffset = lastChild.text.length;
-        secondRange.topParentId = textElement.topParent.id;
 
         const secondSegment = container.copyElement(container.parent, { range: secondRange });
 
@@ -269,8 +265,6 @@ export class TextElement extends Element {
         if (!options || !options.range || options.range.inRange) {
             if (options && options.range?.endElementId == this.id) {
                 options.range.inRange = false;
-                options.range.rangeEnded = true;
-                options.range.inTopParentRange = false;
 
                 if (text.length == 0) {
                     const breakElement = new BreakElement(parent);

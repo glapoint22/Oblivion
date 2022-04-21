@@ -53,7 +53,6 @@ export class BreakElement extends Element {
         if (!options || !options.range || options.range.inRange) {
             if (options && options.range?.endElementId == this.id) {
                 options.range.inRange = false;
-                options.range.inTopParentRange = false;
             }
 
             const breakElement = new BreakElement(parent);
