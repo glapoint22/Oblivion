@@ -176,10 +176,14 @@
     <!-- Link -->
     <div class="property">
         <div class="label">Link</div>
-        <div style="flex: 1; display: flex; justify-content: flex-end;">
-            <!-- <link-icon [link]="textWidget.textBox.linkStyle.link"
-                (onInit)="textWidget.textBox.linkStyle.linkPopup = $event"
-                (onLinkPopupOpen)="textWidget.textBox.linkStyle.onLinkPopupOpen()"></link-icon> -->
+        <div style="flex: 1; display: flex; justify-content: space-between;">
+            <div class="icon-container" title="Link" (click)="linkStyle.setStyle()">
+                <i class="fas fa-outdent"></i>
+            </div>
+
+            <div class="icon-container" title="Remove Link" (click)="linkStyle.removeLink()">
+                <i class="fas fa-outdent"></i>
+            </div>
         </div>
     </div>
 

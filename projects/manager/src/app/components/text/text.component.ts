@@ -12,6 +12,7 @@ import { FontSize } from '../../classes/font-size';
 import { HighlightColor } from '../../classes/highlight-color';
 import { IncreaseIndent } from '../../classes/increase-indent';
 import { Italic } from '../../classes/italic';
+import { LinkStyle } from '../../classes/link-style';
 import { LowerCase } from '../../classes/lower-case';
 import { NumberedList } from '../../classes/numbered-list';
 import { SentenceCase } from '../../classes/sentence-case';
@@ -47,6 +48,7 @@ export class TextComponent implements OnChanges {
   public upperCase!: UpperCase;
   public sentenceCase!: SentenceCase;
   public titleCase!: TitleCase;
+  public linkStyle!: LinkStyle;
 
   constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { }
 
@@ -71,6 +73,7 @@ export class TextComponent implements OnChanges {
       this.upperCase = new UpperCase(this.text);
       this.sentenceCase = new SentenceCase(this.text);
       this.titleCase = new TitleCase(this.text);
+      this.linkStyle = new LinkStyle(this.text);
 
 
       this.text.onSelection.subscribe(() => {
@@ -87,6 +90,7 @@ export class TextComponent implements OnChanges {
         this.alignJustify.setSelectedStyle();
         this.bulletedList.setSelectedStyle();
         this.numberedList.setSelectedStyle();
+        this.linkStyle.setSelectedStyle();
 
         this.appRef.tick();
       });

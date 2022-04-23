@@ -283,10 +283,10 @@ export class TextElement extends Element {
 
 
 
-    // ---------------------------------------------------On Keydown-----------------------------------------------------
-    onKeydown(key: string, offset: number): Selection {
-        this.text = this.text.substring(0, offset) + key + this.text.substring(offset);
-        offset++;
+    // ---------------------------------------------------On Input-----------------------------------------------------
+    onInput(text: string, offset: number): Selection {
+        this.text = this.text.substring(0, offset) + text + this.text.substring(offset);
+        offset += text.length;
 
         return this.getStartSelection(offset);
     }

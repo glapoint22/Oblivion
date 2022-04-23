@@ -327,9 +327,9 @@ export abstract class Element {
 
 
 
-    // ---------------------------------------------------On Key Down-----------------------------------------------------
-    onKeydown(key: string, offset: number): Selection {
-        return this.firstChild.onKeydown(key, offset);
+    // ---------------------------------------------------On Input-----------------------------------------------------
+    onInput(text: string, offset: number): Selection {
+        return this.firstChild.onInput(text, offset);
     }
 
 
