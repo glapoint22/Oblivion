@@ -20,4 +20,8 @@ export class DivElement extends Element {
         if (this.indent > 0) divElement.style.textIndent = (this.indent * 40) + 20 + 'px';
         this.setHtmlElement(divElement, parent);
     }
+
+    setIndent(value: number) {
+        this.indent = Math.max(0, this.indent + value);
+    }
 }

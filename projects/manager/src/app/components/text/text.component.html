@@ -158,13 +158,13 @@
             <div class="icon-container" style="cursor: default;"></div>
 
             <!-- Decrease indent -->
-            <div class="icon-container" title="Decrease indent (ctrl+[)">
+            <div class="icon-container" title="Decrease indent (ctrl+[)" (click)="decreaseIndent.setStyle()">
                 <i class="fas fa-outdent"></i>
             </div>
 
 
             <!-- Increase indent -->
-            <div class="icon-container" title="Increase indent (ctrl+])">
+            <div class="icon-container" title="Increase indent (ctrl+])" (click)="increaseIndent.setStyle()">
                 <i class="fas fa-indent"></i>
             </div>
         </div>
@@ -176,10 +176,51 @@
     <!-- Link -->
     <div class="property">
         <div class="label">Link</div>
-        <div style="flex: 1; display: flex; justify-content: flex-end;">
-            <!-- <link-icon [link]="textWidget.textBox.linkStyle.link"
-                (onInit)="textWidget.textBox.linkStyle.linkPopup = $event"
-                (onLinkPopupOpen)="textWidget.textBox.linkStyle.onLinkPopupOpen()"></link-icon> -->
+        <div style="flex: 1; display: flex; justify-content: space-between;">
+            <div class="icon-container" title="Link" (click)="linkStyle.setStyle()">
+                <i class="fas fa-outdent"></i>
+            </div>
+
+            <div class="icon-container" title="Remove Link" (click)="linkStyle.removeLink()">
+                <i class="fas fa-outdent"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Case -->
+    <div class="property">
+        <div class="label">Case</div>
+        <div style="flex: 1; display: flex; justify-content: space-between;">
+
+            
+
+            <!-- Lower Case -->
+            <div class="icon-container" title="Lower Case" (click)="lowerCase.setStyle()">
+                <i class="fas fa-outdent"></i>
+            </div>
+
+            <!-- Upper Case -->
+            <div class="icon-container" title="Upper Case" (click)="upperCase.setStyle()">
+                <i class="fas fa-outdent"></i>
+            </div>
+
+
+            <!-- Sentence Case -->
+            <div class="icon-container" title="Sentence Case" (click)="sentenceCase.setStyle()">
+                <i class="fas fa-outdent"></i>
+            </div>
+
+
+            <!-- Title Case -->
+            <div class="icon-container" title="Title Case" (click)="titleCase.setStyle()">
+                <i class="fas fa-outdent"></i>
+            </div>
+
+
+            
         </div>
     </div>
 

@@ -58,6 +58,10 @@ export class Text {
         // Paste
         htmlElement.addEventListener('paste', (event: ClipboardEvent) => {
             event.preventDefault();
+
+            const clipboardData = event.clipboardData?.getData('text/plain');
+
+            if (clipboardData) this.onInput(clipboardData, true);
         });
 
 
@@ -255,7 +259,7 @@ export class Text {
                     nextElement.parent.deleteChild(nextElement);
 
                     // Reset the selection
-                    this.selection.resetSelection(this.root);
+                    this.selection.resetSelection(this.root, this.selection.startOffset, this.selection.endOffset);
 
                     i--;
                     continue;
@@ -276,17 +280,26 @@ export class Text {
         if (!key) return;
         event.preventDefault();
 
+        this.onInput(key);
+    }
+
+
+
+
+
+    // ---------------------------------------------------------On Input------------------------------------------------------------------
+    private onInput(text: string, isClipboardData: boolean = false) {
         let selection!: Selection;
 
         if (this.selection.collapsed) {
-            selection = this.setKey(key, this.selection.startElement, this.selection.startOffset);
+            selection = this.setInput(text, this.selection.startElement, this.selection.startOffset, isClipboardData);
         } else {
             if (this.selection.startElement == this.selection.endElement) {
                 const textElement = this.selection.startElement as TextElement;
 
                 // Set the text
                 textElement.text = textElement.text.substring(0, this.selection.startOffset) + textElement.text.substring(this.selection.endOffset);
-                selection = this.setKey(key, textElement, this.selection.startOffset);
+                selection = this.setInput(text, textElement, this.selection.startOffset, isClipboardData);
 
                 // If we have no text
                 if (textElement.text.length == 0) {
@@ -312,7 +325,7 @@ export class Text {
             } else {
                 const startContainer = this.selection.startElement.nodeType == NodeType.Div || this.selection.startElement.nodeType == NodeType.Li ?
                     this.selection.startElement : this.selection.startElement.container;
-                selection = this.onRangeKeydown(key, this.selection.startElement, startContainer);
+                selection = this.onRangeKeydown(text, this.selection.startElement, startContainer, isClipboardData);
             }
         }
 
@@ -324,10 +337,8 @@ export class Text {
 
 
 
-
-
     // ---------------------------------------------------------On Range Keydown------------------------------------------------------------------
-    private onRangeKeydown(key: string, currentElement: Element, startContainer: Element): Selection {
+    private onRangeKeydown(text: string, currentElement: Element, startContainer: Element, isClipboardData: boolean): Selection {
         let selection!: Selection;
 
         while (!selection) {
@@ -391,9 +402,9 @@ export class Text {
                         const startContainerHasPreviousChild = previousChild && previousChild.container == startContainer;
 
                         if (previousChild && startContainerHasPreviousChild) {
-                            selection = this.setKey(key, previousChild, Infinity);
+                            selection = this.setInput(text, previousChild, Infinity, isClipboardData);
                         } else {
-                            selection = this.setKey(key, textElement, 0);
+                            selection = this.setInput(text, textElement, 0, isClipboardData);
                         }
 
                         continue;
@@ -430,9 +441,9 @@ export class Text {
                             currentElement.parent.deleteChild(currentElement);
                         }
 
-                        selection = this.setKey(key, previousChild, Infinity);
+                        selection = this.setInput(text, previousChild, Infinity, isClipboardData);
                     } else {
-                        selection = this.setKey(key, currentElement, 0);
+                        selection = this.setInput(text, currentElement, 0, isClipboardData);
                     }
 
                     continue;
@@ -451,11 +462,11 @@ export class Text {
                 // If the start container has no children, create a break element inside the start container
                 if (startContainer.children.length == 0) {
                     startContainer.children.push(new BreakElement(startContainer));
-                    selection = this.setKey(key, startContainer, 0);
+                    selection = this.setInput(text, startContainer, 0, isClipboardData);
                     continue;
                 }
 
-                if (selectedElement) selection = this.setKey(key, selectedElement, hasPreviousChild ? Infinity : 0);
+                if (selectedElement) selection = this.setInput(text, selectedElement, hasPreviousChild ? Infinity : 0, isClipboardData);
                 continue;
             }
 
@@ -503,25 +514,28 @@ export class Text {
 
 
 
-    // ---------------------------------------------------------Set Key------------------------------------------------------------------
-    private setKey(key: string, element: Element, offset: number): Selection {
-        // Enter
-        if (key == 'Enter') return element.onEnter(offset);
+    // ---------------------------------------------------------Set Input------------------------------------------------------------------
+    private setInput(text: string, element: Element, offset: number, isClipboardData: boolean): Selection {
+        if (!isClipboardData) {
+            // Enter
+            if (text == 'Enter') return element.onEnter(offset);
 
-        // Backspace
-        if (key == 'Backspace') {
-            if (this.selection.collapsed) return element.onBackspace(offset);
-            return element.getStartSelection(offset);
+            // Backspace
+            if (text == 'Backspace') {
+                if (this.selection.collapsed) return element.onBackspace(offset);
+                return element.getStartSelection(offset);
+            }
+
+            // Delete
+            if (text == 'Delete') {
+                if (this.selection.collapsed) return element.onDelete(offset);
+                return element.getStartSelection(offset);
+            }
         }
 
-        // Delete
-        if (key == 'Delete') {
-            if (this.selection.collapsed) return element.onDelete(offset);
-            return element.getStartSelection(offset);
-        }
 
         // Other
-        return element.onKeydown(key, offset);
+        return element.onInput(text, offset);
     }
 
 
@@ -589,7 +603,7 @@ export class Text {
 
         // Anchor
         else if (data.nodeType == NodeType.A) {
-            element = new AnchorElement(parent, data.link as string);
+            element = new AnchorElement(parent, data.link!);
         }
 
         // Set the styles

@@ -32,13 +32,13 @@ export class BreakElement extends Element {
     }
 
 
-    onKeydown(key: string, offset: number): Selection {
-        const textElement = new TextElement(this.parent, key);
+    onInput(text: string, offset: number): Selection {
+        const textElement = new TextElement(this.parent, text);
 
         this.parent.children = [];
         this.parent.children.push(textElement);
 
-        return textElement.getStartSelection(1);
+        return textElement.getStartSelection(text.length);
     }
 
 
@@ -53,7 +53,6 @@ export class BreakElement extends Element {
         if (!options || !options.range || options.range.inRange) {
             if (options && options.range?.endElementId == this.id) {
                 options.range.inRange = false;
-                options.range.inTopParentRange = false;
             }
 
             const breakElement = new BreakElement(parent);

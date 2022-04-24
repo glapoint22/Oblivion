@@ -10,13 +10,7 @@ export abstract class Style {
     public name!: string;
     public value!: string;
     public preventCollapsedStyling: boolean = true;
-    get selectionHasStyle(): boolean {
-        if (this.text.selection.selectedStyles.length > 0 && !(this.text.selection.selectedStyles.length == 1 && this.text.selection.selectedStyles[0].length == 0)) {
-            return this.text.selection.selectedStyles.every(x => x.some(z => z.style == this.name && z.value == this.value));
-        }
 
-        return false;
-    }
 
     constructor(public text: Text) { }
 
@@ -33,6 +27,16 @@ export abstract class Style {
         } else {
             this.setRangeStyle();
         }
+    }
+
+
+    // ---------------------------------------------------------Selection Has Style------------------------------------------------------------------
+    selectionHasStyle(): boolean {
+        if (this.text.selection.selectedStyles.length > 0 && !(this.text.selection.selectedStyles.length == 1 && this.text.selection.selectedStyles[0].length == 0)) {
+            return this.text.selection.selectedStyles.every(x => x.some(z => z.style == this.name && z.value == this.value));
+        }
+
+        return false;
     }
 
 
@@ -73,7 +77,7 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Set Range Style------------------------------------------------------------------
-    private setRangeStyle() {
+    protected setRangeStyle() {
         let currentElement = this.text.selection.startElement;
         let startSelection!: Selection;
         let endSelection!: Selection;
@@ -136,17 +140,17 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Apply Style At Beginning Of Text----------------------------------------------------------
-    private applyStyleAtBeginningOfText(textElement: TextElement, endOffset: number): TextElement {
+    protected applyStyleAtBeginningOfText(textElement: TextElement, endOffset: number): TextElement {
         const startText = textElement.text.substring(0, endOffset);
         const endText = textElement.text.substring(endOffset);
         const index = textElement.parent.children.findIndex(x => x == textElement);
-        const spanElement = new SpanElement(textElement.parent);
-        const newTextElement = textElement.copyElement(spanElement) as TextElement;
+        const styleElement = this.createStyleElement(textElement.parent);
+        const newTextElement = textElement.copyElement(styleElement) as TextElement;
 
         newTextElement.text = startText;
-        spanElement.styles.push(this.createStyleData());
-        spanElement.children.push(newTextElement);
-        textElement.parent.children.splice(index, 1, spanElement);
+        this.setStyleToElement(styleElement);
+        styleElement.children.push(newTextElement);
+        textElement.parent.children.splice(index, 1, styleElement);
         textElement.parent.children.splice(index + 1, 0, new TextElement(textElement.parent, endText));
 
         return newTextElement;
@@ -158,17 +162,17 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Apply Style At Middle Of Text----------------------------------------------------------
-    private applyStyleAtMiddleOfText(textElement: TextElement, startOffset: number, endOffset: number): TextElement {
+    protected applyStyleAtMiddleOfText(textElement: TextElement, startOffset: number, endOffset: number): TextElement {
         const middleText = textElement.text.substring(startOffset, endOffset);
         const endText = textElement.text.substring(endOffset);
-        const spanElement = new SpanElement(textElement.parent);
+        const styleElement = this.createStyleElement(textElement.parent);
         const index = textElement.parent.children.findIndex(x => x == textElement);
-        const newTextElement = new TextElement(spanElement, middleText);
+        const newTextElement = new TextElement(styleElement, middleText);
 
         textElement.text = textElement.text.substring(0, startOffset);
-        spanElement.styles.push(this.createStyleData());
-        spanElement.children.push(newTextElement);
-        textElement.parent.children.splice(index + 1, 0, spanElement);
+        this.setStyleToElement(styleElement);
+        styleElement.children.push(newTextElement);
+        textElement.parent.children.splice(index + 1, 0, styleElement);
         textElement.parent.children.splice(index + 2, 0, new TextElement(textElement.parent, endText));
 
         return newTextElement;
@@ -180,16 +184,16 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Apply Style At End Of Text----------------------------------------------------------
-    private applyStyleAtEndOfText(textElement: TextElement, startOffset: number): TextElement {
+    protected applyStyleAtEndOfText(textElement: TextElement, startOffset: number): TextElement {
         const endText = textElement.text.substring(startOffset);
-        const spanElement = new SpanElement(textElement.parent);
+        const styleElement = this.createStyleElement(textElement.parent);
         const index = textElement.parent.children.findIndex(x => x == textElement);
-        const newTextElement = new TextElement(spanElement, endText);
+        const newTextElement = new TextElement(styleElement, endText);
 
         textElement.text = textElement.text.substring(0, startOffset);
-        spanElement.styles.push(this.createStyleData());
-        spanElement.children.push(newTextElement);
-        textElement.parent.children.splice(index + 1, 0, spanElement);
+        this.setStyleToElement(styleElement);
+        styleElement.children.push(newTextElement);
+        textElement.parent.children.splice(index + 1, 0, styleElement);
 
         return newTextElement;
     }
@@ -199,10 +203,12 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Apply Style To All Of Text----------------------------------------------------------
-    private applyStyleToAllOfText(textElement: TextElement): TextElement {
-        if (textElement.parent.nodeType == NodeType.Span && textElement.parent.children.length == 1) {
+    protected applyStyleToAllOfText(textElement: TextElement): TextElement {
+        if ((textElement.parent.nodeType == NodeType.Span || textElement.parent.nodeType == NodeType.A) && textElement.parent.children.length == 1) {
             if (!textElement.parent.styles.some(x => x.style == this.name)) {
-                textElement.parent.styles.push(this.createStyleData());
+                const newElement = this.setStyleToElement(textElement.parent);
+
+                return newElement.children[0] as TextElement;
             } else {
                 const style = textElement.parent.styles.find(x => x.style == this.name);
                 if (style) style.value = this.value;
@@ -211,12 +217,13 @@ export abstract class Style {
             return textElement;
         } else {
             const index = textElement.parent.children.findIndex(x => x == textElement);
-            const spanElement = new SpanElement(textElement.parent);
-            const newTextElement = textElement.copyElement(spanElement) as TextElement;
+            const styleElement = this.createStyleElement(textElement.parent);
+            const newTextElement = textElement.copyElement(styleElement) as TextElement;
 
-            spanElement.styles.push(this.createStyleData());
-            spanElement.children.push(newTextElement);
-            textElement.parent.children.splice(index, 1, spanElement);
+            this.setStyleToElement(styleElement);
+
+            styleElement.children.push(newTextElement);
+            textElement.parent.children.splice(index, 1, styleElement);
 
             return newTextElement;
         }
@@ -226,23 +233,23 @@ export abstract class Style {
 
 
 
-    // ---------------------------------------------------------Apply Style To Break Element----------------------------------------------------------
-    private applyStyleToDivElement(element: Element): Element {
+    // ---------------------------------------------------------Apply Style To Div Element----------------------------------------------------------
+    protected applyStyleToDivElement(element: Element): Element {
         const child = element.firstChild;
 
         if (child.parent.nodeType == NodeType.Span) {
             if (!child.parent.styles.some(x => x.style == this.name)) {
-                child.parent.styles.push(this.createStyleData());
+                this.setStyleToElement(child.parent);
             }
 
 
         } else {
-            const spanElement = new SpanElement(child.parent);
-            const newBreakElement = new BreakElement(spanElement);
+            const styleElement = this.createStyleElement(child.parent);
+            const newBreakElement = new BreakElement(styleElement);
 
-            spanElement.styles.push(this.createStyleData());
-            spanElement.children.push(newBreakElement);
-            child.parent.children.splice(0, 1, spanElement);
+            this.setStyleToElement(styleElement);
+            styleElement.children.push(newBreakElement);
+            child.parent.children.splice(0, 1, styleElement);
 
             return newBreakElement;
         }
@@ -252,11 +259,45 @@ export abstract class Style {
 
 
 
+    // ---------------------------------------------------------Get Selected Containers------------------------------------------------------------------
+    protected getSelectedContainers(): Array<Element> {
+        let currentElement = this.text.selection.startElement;
+        let selectedContainers: Array<Element> = new Array<Element>();
+
+        while (true) {
+            const container = currentElement.container;
+            if (!selectedContainers.some(x => x == container)) selectedContainers.push(container);
+
+            if (currentElement == this.text.selection.endElement || container == this.text.selection.endElement) {
+                break;
+            }
+
+            const nextChild = currentElement.nextChild;
+
+            if (nextChild) {
+                currentElement = nextChild;
+            }
+        }
+
+        return selectedContainers;
+    }
 
 
-    // ---------------------------------------------------------Create Style Data----------------------------------------------------------
-    public createStyleData(): StyleData {
-        return new StyleData(this.name, this.value);
+
+
+
+    // ---------------------------------------------------------Create Style----------------------------------------------------------
+    protected setStyleToElement(element: Element): Element {
+        element.styles.push(new StyleData(this.name, this.value));
+
+        return element;
+    }
+
+
+
+    // ---------------------------------------------------------Create Style Element----------------------------------------------------------
+    protected createStyleElement(parent: Element): Element {
+        return new SpanElement(parent);
     }
 
 

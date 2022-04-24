@@ -49,7 +49,6 @@ export enum LinkOption {
     Page,
     Product,
     WebAddress,
-    OnClick
 }
 
 

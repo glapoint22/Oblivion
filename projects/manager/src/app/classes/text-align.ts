@@ -35,7 +35,7 @@ export class TextAlign extends Style {
         })) {
             element.container.styles[index].value = this.value;
         } else {
-            element.container.styles.push(this.createStyleData());
+            this.setStyleToElement(element.container);
         }
 
 
@@ -66,6 +66,6 @@ export class TextAlign extends Style {
 
     // ---------------------------------------------------------Set Selected Style------------------------------------------------------------------
     public setSelectedStyle(): void {
-        this.isSelected = this.selectionHasStyle;
+        this.isSelected = this.selectionHasStyle();
     }
 }

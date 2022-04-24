@@ -1,10 +1,11 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { Background } from '../../classes/background';
+import { Link } from '../../classes/link';
 import { Padding } from '../../classes/padding';
 import { TextData } from '../../classes/text-data';
 import { TextWidgetData } from '../../classes/text-widget-data';
 import { Widget } from '../../classes/widget';
-import { NodeType, WidgetType } from '../../classes/widget-enums';
+import { LinkOption, NodeType, WidgetType } from '../../classes/widget-enums';
 
 @Component({
   selector: 'text-widget',
@@ -612,7 +613,11 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
           },
           {
             nodeType: NodeType.A,
-            link: 'https://truthsocial.com/',
+            link: {
+              url: 'https://truthsocial.com/',
+              selectedOption: LinkOption.WebAddress,
+              setData(link: Link) { }
+            },
             children: [
               {
                 nodeType: NodeType.Text,

@@ -24,6 +24,10 @@ ul, ol {
     margin-block-end: 0;
 }
 
+a {
+    color: inherit;
+}
+
 ::-webkit-scrollbar {
     width: 15px;
     height: 5px;

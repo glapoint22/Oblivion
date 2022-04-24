@@ -5,14 +5,21 @@ import { AlignLeft } from '../../classes/align-left';
 import { AlignRight } from '../../classes/align-right';
 import { Bold } from '../../classes/bold';
 import { BulletedList } from '../../classes/bulleted-list';
+import { DecreaseIndent } from '../../classes/decrease-indent';
 import { FontColor } from '../../classes/font-color';
 import { FontFamily } from '../../classes/font-family';
 import { FontSize } from '../../classes/font-size';
 import { HighlightColor } from '../../classes/highlight-color';
+import { IncreaseIndent } from '../../classes/increase-indent';
 import { Italic } from '../../classes/italic';
+import { LinkStyle } from '../../classes/link-style';
+import { LowerCase } from '../../classes/lower-case';
 import { NumberedList } from '../../classes/numbered-list';
+import { SentenceCase } from '../../classes/sentence-case';
 import { Text } from '../../classes/text';
+import { TitleCase } from '../../classes/title-case';
 import { Underline } from '../../classes/underline';
+import { UpperCase } from '../../classes/upper-case';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -35,6 +42,13 @@ export class TextComponent implements OnChanges {
   public alignJustify!: AlignJustify;
   public bulletedList!: BulletedList;
   public numberedList!: NumberedList;
+  public increaseIndent!: IncreaseIndent;
+  public decreaseIndent!: DecreaseIndent;
+  public lowerCase!: LowerCase;
+  public upperCase!: UpperCase;
+  public sentenceCase!: SentenceCase;
+  public titleCase!: TitleCase;
+  public linkStyle!: LinkStyle;
 
   constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { }
 
@@ -53,6 +67,13 @@ export class TextComponent implements OnChanges {
       this.alignJustify = new AlignJustify(this.text);
       this.bulletedList = new BulletedList(this.text);
       this.numberedList = new NumberedList(this.text);
+      this.increaseIndent = new IncreaseIndent(this.text);
+      this.decreaseIndent = new DecreaseIndent(this.text);
+      this.lowerCase = new LowerCase(this.text);
+      this.upperCase = new UpperCase(this.text);
+      this.sentenceCase = new SentenceCase(this.text);
+      this.titleCase = new TitleCase(this.text);
+      this.linkStyle = new LinkStyle(this.text);
 
 
       this.text.onSelection.subscribe(() => {
@@ -69,6 +90,7 @@ export class TextComponent implements OnChanges {
         this.alignJustify.setSelectedStyle();
         this.bulletedList.setSelectedStyle();
         this.numberedList.setSelectedStyle();
+        this.linkStyle.setSelectedStyle();
 
         this.appRef.tick();
       });

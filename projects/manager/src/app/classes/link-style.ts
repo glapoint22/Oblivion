@@ -1,60 +1,48 @@
-import { NodeType } from "widgets";
-import { BreakElement } from "./break-element";
+import { Link, NodeType } from "widgets";
+import { AnchorElement } from "./anchor-element";
 import { Element } from "./element";
-import { Style } from "./style";
+import { SpanElement } from "./span-element";
+import { Text } from "./text";
 import { TextElement } from "./text-element";
+import { ToggleStyle } from "./toggle-style";
 
-export class ToggleStyle extends Style {
-    public isSelected!: boolean;
-    protected isRemoveStyle!: boolean;
+export class LinkStyle extends ToggleStyle {
+    private link!: Link;
+
+    constructor(text: Text) {
+        super(text);
+
+        this.name = 'link';
+    }
+
+    private isRemoveLink!: boolean;
 
 
-    // ---------------------------------------------------------Set Style------------------------------------------------------------------
-    public setStyle(): void {
-        this.isRemoveStyle = this.selectionHasStyle();
-
-        super.setStyle();
-
-        this.text.merge();
-        this.text.render();
-        this.finalizeStyle();
+    // ---------------------------------------------------------Create Style Element----------------------------------------------------------
+    protected createStyleElement(parent: Element): Element {
+        return new AnchorElement(parent, this.link);
     }
 
 
+    // ---------------------------------------------------------Set Style To Element----------------------------------------------------------
+    protected setStyleToElement(element: Element): Element {
+        let newElement = element;
 
+        if (element.nodeType == NodeType.Span) {
+            const styleElement = this.createStyleElement(element.parent);
+            const index = element.parent.children.findIndex(x => x == element);
 
+            styleElement.styles = element.styles;
+            element.children.forEach((child: Element) => {
+                const copiedElement = child.copyElement(styleElement);
 
-    // ---------------------------------------------------------Apply Style------------------------------------------------------------------
-    protected applyStyle(element: Element, startOffset: number, endOffset: number): Element {
-        if (this.isRemoveStyle) {
-            return this.removeStyle(element, startOffset, endOffset);
-        } else {
-            return super.applyStyle(element, startOffset, endOffset);
-        }
-    }
+                if (copiedElement) {
+                    styleElement.children.push(copiedElement);
+                }
+            });
 
-
-
-
-
-    // ---------------------------------------------------------Remove Style------------------------------------------------------------------
-    private removeStyle(element: Element, startOffset: number, endOffset: number): Element {
-        let newElement!: Element;
-
-        if (element.nodeType == NodeType.Text) {
-            const textElement = element as TextElement
-
-            if (startOffset == 0 && endOffset < textElement.text.length) {
-                newElement = this.removeStyleAtBeginningOfText(textElement, endOffset);
-            } else if (startOffset > 0 && endOffset < textElement.text.length) {
-                newElement = this.removeStyleAtMiddleOfText(textElement, startOffset, endOffset);
-            } else if (startOffset > 0 && endOffset == textElement.text.length) {
-                newElement = this.removeStyleAtEndOfText(textElement, startOffset);
-            } else if (startOffset == 0 && endOffset == textElement.text.length) {
-                newElement = this.removeStyleFromAllOfText(textElement);
-            }
-        } else {
-            newElement = this.removeStyleFromDivElement(element);
+            element.parent.children.splice(index, 1, styleElement);
+            newElement = styleElement;
         }
 
         return newElement;
@@ -63,28 +51,47 @@ export class ToggleStyle extends Style {
 
 
 
+    // ---------------------------------------------------------Remove Link----------------------------------------------------------
+    public removeLink() {
+        this.isRemoveLink = true;
+
+        super.setStyle();
+    }
+
+
+    // ---------------------------------------------------------Selection Has Style----------------------------------------------------------
+    selectionHasStyle(): boolean {
+        if (this.isRemoveLink) {
+            this.isRemoveLink = false;
+            return true;
+        }
+
+        return false;
+    }
+
+
+
+
+
     // ---------------------------------------------------------Remove Style At Beginning Of Text----------------------------------------------------------
     protected removeStyleAtBeginningOfText(textElement: TextElement, endOffset: number): TextElement {
-        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
         const startText = textElement.text.substring(0, endOffset);
         const endText = textElement.text.substring(endOffset);
         let newTextElement!: TextElement;
 
-        if (styleIndex != -1 && textElement.parent.children.length == 1) {
+        if (textElement.parent.nodeType == NodeType.A) {
             const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
-            const parentCopy = textElement.parent.copyElement(textElement.parent.parent, { createNewChildId: true });
 
-            if (parentCopy) {
-                parentCopy.styles.splice(styleIndex, 1);
+            if (textElement.parent.styles.length == 0) {
+                newTextElement = new TextElement(textElement.parent.parent, startText);
+                textElement.parent.parent.children.splice(index, 0, newTextElement);
+            } else {
+                const spanElement = new SpanElement(textElement.parent.parent);
 
-                if (parentCopy.styles.length == 0) {
-                    newTextElement = new TextElement(textElement.parent.parent, startText);
-                    textElement.parent.parent.children.splice(index, 0, newTextElement);
-                } else {
-                    newTextElement = parentCopy.children[0] as TextElement;
-                    newTextElement.text = startText;
-                    textElement.parent.parent.children.splice(index, 0, parentCopy);
-                }
+                spanElement.styles = textElement.parent.styles;
+                newTextElement = new TextElement(spanElement, startText);
+                spanElement.children.push(newTextElement);
+                textElement.parent.parent.children.splice(index, 0, spanElement);
             }
 
             textElement.text = endText;
@@ -92,10 +99,10 @@ export class ToggleStyle extends Style {
             return newTextElement;
         }
 
-        const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
-        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
-        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, { createNewChildId: true }) : textElement.copyElement(textElement.parent, { createNewChildId: true });
-        const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
+        const topParent = textElement.parent.parent;
+        const startCopy = textElement.parent.copyElement(topParent);
+        const endCopy = textElement.parent.copyElement(topParent, { createNewChildId: true });
+        const index = topParent.children.findIndex(x => x == (textElement.parent));
 
         if (startCopy) {
             newTextElement = startCopy.firstChild as TextElement;
@@ -109,22 +116,23 @@ export class ToggleStyle extends Style {
             topParent.children.splice(index + 1, 0, endCopy);
         }
 
+
         this.text.selection.resetSelection();
         return this.removeTopStyle(newTextElement);
     }
 
 
 
+
     // ---------------------------------------------------------Remove Style At Middle Of Text----------------------------------------------------------
     protected removeStyleAtMiddleOfText(textElement: TextElement, startOffset: number, endOffset: number): TextElement {
-        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
         const startText = textElement.text.substring(0, startOffset);
         const middleText = textElement.text.substring(startOffset, endOffset);
         const endText = textElement.text.substring(endOffset);
         let newTextElement!: TextElement;
 
 
-        if (styleIndex != -1 && textElement.parent.children.length == 1) {
+        if (textElement.parent.nodeType == NodeType.A) {
             const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
             const childIndex = textElement.parent.children.findIndex(x => x == textElement);
             const middleParent = textElement.parent.copyElement(textElement.parent.parent, { createNewChildId: true });
@@ -133,15 +141,18 @@ export class ToggleStyle extends Style {
             textElement.text = startText;
 
             if (middleParent) {
-                middleParent.styles.splice(styleIndex, 1);
+
 
                 if (middleParent.styles.length == 0) {
                     newTextElement = new TextElement(textElement.parent.parent, middleText);
                     textElement.parent.parent.children.splice(index + 1, 0, newTextElement);
                 } else {
-                    newTextElement = middleParent.children[childIndex] as TextElement;
-                    newTextElement.text = middleText;
-                    textElement.parent.parent.children.splice(index + 1, 0, middleParent);
+                    const spanElement = new SpanElement(textElement.parent.parent);
+
+                    spanElement.styles = textElement.parent.styles;
+                    newTextElement = new TextElement(spanElement, middleText);
+                    spanElement.children.push(newTextElement);
+                    textElement.parent.parent.children.splice(index + 1, 0, spanElement);
                 }
             }
 
@@ -156,11 +167,11 @@ export class ToggleStyle extends Style {
 
 
 
-        const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
-        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, { createNewChildId: true }) : textElement.copyElement(textElement.parent, { createNewChildId: true });
-        const middleCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
-        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, { createNewChildId: true }) : textElement.copyElement(textElement.parent, { createNewChildId: true });
-        const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
+        const topParent = textElement.parent.parent;
+        const startCopy = textElement.parent.copyElement(topParent, { createNewChildId: true });
+        const middleCopy = textElement.parent.copyElement(topParent);
+        const endCopy = textElement.parent.copyElement(topParent, { createNewChildId: true });
+        const index = topParent.children.findIndex(x => x == (textElement.parent));
 
         if (startCopy) {
             (startCopy.firstChild as TextElement).text = startText;
@@ -190,27 +201,26 @@ export class ToggleStyle extends Style {
 
     // ---------------------------------------------------------Remove Style At End Of Text----------------------------------------------------------
     protected removeStyleAtEndOfText(textElement: TextElement, startOffset: number): TextElement {
-        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
         const startText = textElement.text.substring(0, startOffset);
         const endText = textElement.text.substring(startOffset);
         let newTextElement!: TextElement;
 
-        if (styleIndex != -1 && textElement.parent.children.length == 1) {
+        if (textElement.parent.nodeType == NodeType.A) {
             const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
             const parentCopy = textElement.parent.copyElement(textElement.parent.parent, { createNewChildId: true });
-            const childIndex = textElement.parent.children.findIndex(x => x == textElement);
             textElement.text = startText;
 
             if (parentCopy) {
-                parentCopy.styles.splice(styleIndex, 1);
-
                 if (parentCopy.styles.length == 0) {
                     newTextElement = new TextElement(textElement.parent.parent, endText);
                     textElement.parent.parent.children.splice(index + 1, 0, newTextElement);
                 } else {
-                    newTextElement = parentCopy.children[childIndex] as TextElement;
-                    newTextElement.text = endText;
-                    textElement.parent.parent.children.splice(index + 1, 0, parentCopy);
+                    const spanElement = new SpanElement(textElement.parent.parent);
+
+                    spanElement.styles = textElement.parent.styles;
+                    newTextElement = new TextElement(spanElement, endText);
+                    spanElement.children.push(newTextElement);
+                    textElement.parent.parent.children.splice(index + 1, 0, spanElement);
                 }
             }
 
@@ -219,10 +229,10 @@ export class ToggleStyle extends Style {
 
 
 
-        const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
-        const startCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent, { createNewChildId: true }) : textElement.copyElement(textElement.parent, { createNewChildId: true });
-        const endCopy = styleIndex == -1 ? textElement.parent.copyElement(topParent) : textElement.copyElement(textElement.parent);
-        const index = topParent.children.findIndex(x => x == (styleIndex == -1 ? textElement.parent : textElement));
+        const topParent = textElement.parent.parent;
+        const startCopy = textElement.parent.copyElement(topParent, { createNewChildId: true });
+        const endCopy = textElement.parent.copyElement(topParent);
+        const index = topParent.children.findIndex(x => x == (textElement.parent));
 
         if (startCopy) {
             (startCopy.firstChild as TextElement).text = startText;
@@ -246,29 +256,32 @@ export class ToggleStyle extends Style {
 
 
 
-
-
     // ---------------------------------------------------------Remove Style From All Of Text----------------------------------------------------------
     protected removeStyleFromAllOfText(textElement: TextElement): TextElement {
-        const styleIndex = textElement.parent.styles.findIndex(x => x.style == this.name);
+        let newTextElement!: TextElement;
 
-        if (styleIndex != -1 && textElement.parent.children.length == 1) {
-            textElement.parent.styles.splice(styleIndex, 1);
+        if (textElement.parent.nodeType == NodeType.A) {
+            const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
 
             if (textElement.parent.styles.length == 0) {
-                const index = textElement.parent.parent.children.findIndex(x => x == textElement.parent);
-                const newText = new TextElement(textElement.parent.parent, textElement.text);
+                newTextElement = new TextElement(textElement.parent.parent, textElement.text);
+                textElement.parent.parent.children.splice(index, 1, newTextElement);
+            } else {
+                const spanElement = new SpanElement(textElement.parent.parent);
 
-                textElement.parent.parent.children.splice(index, 1, newText);
-
-                return newText;
+                spanElement.styles = textElement.parent.styles;
+                newTextElement = new TextElement(spanElement, textElement.text);
+                spanElement.children.push(newTextElement);
+                textElement.parent.parent.children.splice(index, 1, spanElement);
             }
 
-            return textElement;
+            return newTextElement;
         }
 
         return this.removeTopStyle(textElement);
     }
+
+
 
 
 
@@ -280,7 +293,7 @@ export class ToggleStyle extends Style {
         let curentElement = textElement as Element;
 
 
-        while (!styleParent.styles.some(x => x.style == this.name)) {
+        while (styleParent.nodeType != NodeType.A) {
             curentElement = styleParent;
             styleParent = styleParent.parent;
 
@@ -295,9 +308,6 @@ export class ToggleStyle extends Style {
         const styleParentCopy = styleParent.copyElement(styleParent.parent);
 
         if (styleParentCopy) {
-            // Remove the style
-            const styleIndex = styleParentCopy.styles.findIndex(x => x.style == this.name);
-            styleParentCopy.styles.splice(styleIndex, 1);
 
             // This will add the style parent copy to its parent
             styleParent.parent.children.splice(styleParentIndex + 1, 0, styleParentCopy);
@@ -315,13 +325,14 @@ export class ToggleStyle extends Style {
             while (currentChild && currentChild.isChildOf(styleParentCopy)) {
                 if (!this.text.selection.isInRange(currentChild.id)) {
                     if (currentChild.parent.children.length == 1) {
-                        this.setStyleToElement(currentChild.parent);
+                        const newElement = this.setStyleToElement(currentChild.parent);
+
+                        currentChild = newElement.children[0] as TextElement;
                     } else {
                         const index = currentChild.parent.children.findIndex(x => x == currentChild);
                         const styleElement = this.createStyleElement(currentChild.parent);
                         const currentChildCopy = currentChild.copyElement(styleElement);
 
-                        this.setStyleToElement(styleElement);
 
                         if (currentChildCopy) {
                             styleElement.children.push(currentChildCopy);
@@ -334,11 +345,11 @@ export class ToggleStyle extends Style {
                 currentChild = currentChild.nextChild as TextElement;
             }
 
-            // If the style parent copy has no more styles
-            if (styleParentCopy.styles.length == 0) {
-                let index = styleParentIndex + 1;
 
-                // Move the children outside the style parent copy
+            let index = styleParentIndex + 1;
+
+            // If there are no styles on the style parent copy, move the children outside the style parent copy
+            if (styleParentCopy.styles.length == 0) {
                 styleParentCopy.children.forEach((child: Element) => {
                     const childCopy = child.copyElement(styleParentCopy.parent);
 
@@ -346,6 +357,20 @@ export class ToggleStyle extends Style {
 
                     index++;
                 });
+
+                // We have styles on the style parent copy
+                // so we have to create a span element to hold the styles and children from the style parent copy
+            } else {
+                const spanElement = new SpanElement(styleParentCopy.parent);
+
+                spanElement.styles = styleParentCopy.styles;
+                styleParentCopy.children.forEach((child: Element) => {
+                    const childCopy = child.copyElement(spanElement);
+
+                    if (childCopy) spanElement.children.push(childCopy);
+                });
+
+                spanElement.parent.children.splice(index, 1, spanElement);
             }
         }
 
@@ -358,34 +383,5 @@ export class ToggleStyle extends Style {
         }
 
         return Element.search(textElement.id, container) as TextElement;
-    }
-
-
-
-
-    // ---------------------------------------------------------Remove Style From Break Element----------------------------------------------------------
-    private removeStyleFromDivElement(element: Element): Element {
-        const child = element.firstChild;
-
-        const styleIndex = child.parent.styles.findIndex(x => x.style == this.name);
-
-        child.parent.styles.splice(styleIndex, 1);
-
-        if (child.parent.styles.length == 0) {
-            const newBreakElement = new BreakElement(child.parent.parent);
-
-            child.parent.parent.children.splice(0, 1, newBreakElement);
-            return newBreakElement;
-        }
-
-        return element;
-    }
-
-
-
-
-    // ---------------------------------------------------------Set Selected Style------------------------------------------------------------------
-    public setSelectedStyle(): void {
-        this.isSelected = this.selectionHasStyle();
     }
 }
