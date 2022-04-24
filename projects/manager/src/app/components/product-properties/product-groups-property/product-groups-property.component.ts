@@ -18,6 +18,7 @@ export class ProductGroupsPropertyComponent {
 
   ngAfterViewInit() {
     this.listOptions = {
+      // verifyAddEdit: true,
       deletePrompt: {
         parentObj: this.list,
         title: 'Delete',
@@ -95,8 +96,10 @@ export class ProductGroupsPropertyComponent {
     }
 
     if(update.type == ListUpdateType.VerifyAddEdit) {
-      // console.log(update)
-      this.list.add();
+      // No match
+      // this.list.commitAddEdit();
+      
+      // Match found
       // this.list.openDuplicatePrompt();
     }
 

@@ -9,34 +9,28 @@
             <div class="icons">
 
                 <!-- Delete icon -->
-                <button class="icon-button"
-                        [ngClass]="{'icon-button-disabled': listUpdate.deleteDisabled}"
-                        (mouseover)="list.overButton = true"
-                        (mouseout)="list.overButton = false"
-                        (click)="list.delete()"
-                        [disabled]="listUpdate.deleteDisabled">
-                    <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
-                </button>
+                <icon-button [icon]="'fas fa-trash-alt'"
+                             [title]="'Delete'"
+                             [isDisabled]="listUpdate.deleteDisabled"
+                             (onOver)="list.overButton = $event"
+                             (onClick)="list.delete()">
+                </icon-button>
 
                 <!-- Edit icon -->
-                <button class="icon-button"
-                        [ngClass]="{'icon-button-disabled': listUpdate.editDisabled}"
-                        (mouseover)="list.overButton = true"
-                        (mouseout)="list.overButton = false"
-                        (click)="list.edit()"
-                        [disabled]="listUpdate.editDisabled">
-                    <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
-                </button>
+                <icon-button [icon]="'fas fa-pencil-alt'"
+                             [title]="'Edit'"
+                             [isDisabled]="listUpdate.editDisabled"
+                             (onOver)="list.overButton = $event"
+                             (onClick)="list.edit()">
+                </icon-button>
 
                 <!-- Add icon -->
-                <button class="icon-button"
-                        [ngClass]="{'icon-button-disabled': listUpdate.addDisabled}"
-                        (mouseover)="list.overButton = true"
-                        (mouseout)="list.overButton = false"
-                        (click)="list.add()"
-                        [disabled]="listUpdate.addDisabled">
-                    <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
-                </button>
+                <icon-button [icon]="'fas fa-plus-circle'"
+                             [title]="'Add'"
+                             [isDisabled]="listUpdate.addDisabled"
+                             (onOver)="list.overButton = $event"
+                             (onClick)="list.add()">
+                </icon-button>
             </div>
         </div>
         <list #list [sourceList]="productGroups" [options]="listOptions" (onListUpdate)="listUpdate = $event"></list>

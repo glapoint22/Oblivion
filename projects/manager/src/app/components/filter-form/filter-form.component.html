@@ -5,75 +5,107 @@
         <div class="modal-bar">
             <div>Filters</div>
             <div class="modal-x-button"
-                 (click)="close()"
-                 (mouseover)="filtersHierarchy.overButton = true"
-                 (mouseout)="filtersHierarchy.overButton = false">
+                 (mouseover)="!searchMode ? filtersHierarchy.overButton = true : searchMode && searchList.length > 0 ? filtersSearch.overButton = true : null"
+                 (mouseout)="!searchMode ? filtersHierarchy.overButton = false : searchMode && searchList.length > 0 ? filtersSearch.overButton = false : null"
+                 (click)="close()">
                 X
             </div>
         </div>
         <div class="modal-bar-drop-shadow"></div>
 
+
         <div class="modal-content">
 
-            <div class="icons">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
 
-                <!-- Delete icon -->
-                <button class="icon-button"
-                        [title]="'Delete'"
-                        [ngClass]="{'icon-button-disabled': filtersUpdate ? filtersUpdate.deleteDisabled : null}"
-                        (mouseover)="filtersHierarchy.overButton = true"
-                        (mouseout)="filtersHierarchy.overButton = false"
-                        (click)="filtersHierarchy.delete()"
-                        [disabled]="filtersUpdate ? filtersUpdate.deleteDisabled : null">
-                    <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
-                </button>
+                <!-- Search icon -->
+                <icon-button style="margin-top: 4px; margin-left: -5px;"
+                             [icon]="!searchMode ? 'fas fa-search' : 'fa fa-list'"
+                             [title]="!searchMode ? 'Search' : 'Back to Hierarchy'"
+                             [isDisabled]="false"
+                             (onOver)="!searchMode ? filtersHierarchy.overButton = $event : searchMode && searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                             (onClick)="toggleSearch()">
+                </icon-button>
 
-                <!-- Edit icon -->
-                <button class="icon-button"
-                        [title]="'Edit'"
-                        [ngClass]="{'icon-button-disabled': filtersUpdate ? filtersUpdate.editDisabled : null}"
-                        (mouseover)="filtersHierarchy.overButton = true"
-                        (mouseout)="filtersHierarchy.overButton = false"
-                        (click)="filtersHierarchy.edit()"
-                        [disabled]="filtersUpdate ? filtersUpdate.editDisabled : null">
-                    <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
-                </button>
+                <div class="icons">
+                    <!-- Delete icon -->
+                    <icon-button [icon]="'fas fa-trash-alt'"
+                                 [title]="!searchMode && filtersHierarchy ? filtersHierarchy.listManager.selectedItem == null ? 'Delete' : deleteButtonTitle : searchMode && filtersSearch ? filtersSearch.listManager.selectedItem == null ? 'Delete' : deleteButtonTitle : 'Delete'"
+                                 [isDisabled]="isDisabled('deleteDisabled')"
+                                 (onOver)="!searchMode ? filtersHierarchy.overButton = $event : searchMode && searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                                 (onClick)="!searchMode ? filtersHierarchy.delete() : searchMode && searchList.length > 0 ? filtersSearch.delete() : null">
+                    </icon-button>
 
-                <!-- Add icon -->
-                <button class="icon-button"
-                        [title]="'Add'"
-                        [ngClass]="{'icon-button-disabled': filtersUpdate ? filtersUpdate.addDisabled : null}"
-                        (mouseover)="filtersHierarchy.overButton = true"
-                        (mouseout)="filtersHierarchy.overButton = false"
-                        (click)="filtersHierarchy.add(null!, isParent)"
-                        [disabled]="filtersUpdate ? filtersUpdate.addDisabled : null">
-                    <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
-                </button>
+                    <!-- Edit icon -->
+                    <icon-button [icon]="'fas fa-pencil-alt'"
+                                 [title]="!searchMode && filtersHierarchy ? filtersHierarchy.listManager.selectedItem == null ? 'Edit' : editButtonTitle : searchMode && filtersSearch ? filtersSearch.listManager.selectedItem == null ? 'Edit' : editButtonTitle : 'Edit'"
+                                 [isDisabled]="isDisabled('editDisabled')"
+                                 (onOver)="!searchMode ? filtersHierarchy.overButton = $event : searchMode && searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                                 (onClick)="!searchMode ? filtersHierarchy.edit() : searchMode && searchList.length > 0 ? filtersSearch.edit() : null">
+                    </icon-button>
 
-                <!-- Collapse icon -->
-                <button class="icon-button"
-                        title="Collapse"
-                        [ngClass]="{'icon-button-disabled': filtersUpdate ? filtersUpdate.collapseDisabled : null}"
-                        (mouseover)="filtersHierarchy.overButton = true"
-                        (mouseout)="filtersHierarchy.overButton = false"
-                        (click)="filtersHierarchy.collapse()"
-                        [disabled]="filtersUpdate ? filtersUpdate.collapseDisabled : null">
-                    <i style="pointer-events: none;" class="fas fa-minus-square"></i>
-                </button>
+                    <!-- Add icon -->
+                    <icon-button *ngIf="!searchMode"
+                                 [icon]="'fas fa-plus-circle'"
+                                 [title]="filtersHierarchy ? filtersHierarchy.listManager.selectedItem == null ? 'Add Filter' : addButtonTitle : 'Add Filter'"
+                                 [isDisabled]="isDisabled('addDisabled')"
+                                 (onOver)="filtersHierarchy.overButton = $event"
+                                 (onClick)="filtersHierarchy.add(null!, isParent)">
+                    </icon-button>
+
+                    <!-- Collapse icon -->
+                    <icon-button *ngIf="!searchMode"
+                                 [icon]="'fas fa-minus-square'"
+                                 [title]="'Collapse'"
+                                 [isDisabled]="isDisabled('collapseDisabled')"
+                                 (onOver)="filtersHierarchy.overButton = $event"
+                                 (onClick)="filtersHierarchy.collapse()">
+                    </icon-button>
+                </div>
             </div>
 
-            <div class="filters-container">
-                <hierarchy #filtersHierarchy [sourceList]="filtersService.filters" [options]="filtersOptions" (onListUpdate)="filtersUpdate = $event"></hierarchy>
-            </div>
+
+            <!-- Hierarchy -->
+            <ng-container *ngIf="!searchMode">
+                <div class="filters-container">
+                    <hierarchy #filtersHierarchy [sourceList]="filtersService.filters" [options]="filtersHierarchyOptions" (onListUpdate)="filtersHierarchyUpdate = $event"></hierarchy>
+                </div>
+            </ng-container>
+
+            <!-- Search -->
+            <ng-container *ngIf="searchMode">
+                <input id="searchInput" placeholder="Search" (input)="onSearchInputChange($event.target)">
+
+                <div class="column-name-container">
+                    <div class="column-name">Name</div>
+                    <div class="column-name">Type</div>
+                </div>
+
+                <div style="height: 198px;" class="filters-container">
+
+                    <ng-container *ngIf="searchList.length == 0">
+                        <div style="display: flex; height: 100%; justify-content: center; align-items: center; color: #666666;">
+                            No search results available
+                        </div>
+                    </ng-container>
+                    
+
+                    <ng-container *ngIf="searchList.length > 0">
+                        <multi-column-list #filtersSearch [sourceList]="searchList" [options]="filtersSearchOptions" (onListUpdate)="filtersSearchUpdate = $event"></multi-column-list>
+                    </ng-container>
+                    
+
+                </div>
+            </ng-container>
         </div>
 
 
         <div class="modal-button-container">
             <button class="dark-button"
-                    (click)="close()"
-                    (mouseover)="filtersHierarchy.overButton = true"
-                    (mouseout)="filtersHierarchy.overButton = false">
-                    Close
+                    (mouseover)="!searchMode ? filtersHierarchy.overButton = true : searchMode && searchList.length > 0 ? filtersSearch.overButton = true : null"
+                    (mouseout)="!searchMode ? filtersHierarchy.overButton = false : searchMode && searchList.length > 0 ? filtersSearch.overButton = false : null"
+                    (click)="close()">
+                Close
             </button>
         </div>
     </div>

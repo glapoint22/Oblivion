@@ -31,7 +31,7 @@ export class NicheHierarchyComponent extends LazyLoad {
 
   // Public
   public isParent!: boolean;
-  public showSearch!: boolean;
+  public searchMode!: boolean;
   public moveFormOpen!: boolean;
   public addButtonTitle: string = 'Add Niche';
   public editButtonTitle: string = 'Edit';
@@ -70,7 +70,6 @@ export class NicheHierarchyComponent extends LazyLoad {
       // Prompt
       deletePrompt: {
         parentObj: this,
-        title: 'Delete',
         primaryButton: {
           name: 'Delete',
           buttonFunction: this.onDelete
@@ -124,7 +123,6 @@ export class NicheHierarchyComponent extends LazyLoad {
       // Prompt
       deletePrompt: {
         parentObj: this,
-        title: 'Delete',
         primaryButton: {
           name: 'Delete',
           buttonFunction: this.onDelete
@@ -207,7 +205,7 @@ export class NicheHierarchyComponent extends LazyLoad {
 
     // If the niche does NOT have its arrow down
     if (!niche.arrowDown) {
-      
+
       // Check to see if its arrow was ever down and its sub-niches have already been loaded
       const subNiche: HierarchyItem = this.nicheHierarchyService.niches.find(x => x.hierarchyGroupID == 1 && x.id == subNicheId)!;
 
@@ -216,7 +214,7 @@ export class NicheHierarchyComponent extends LazyLoad {
 
       // If its sub-niches were never loaded
       if (subNiche == null) {
-        
+
         // Now that the niche's arrow is down, wait for its sub-niches to load
         let onNicheLoadListener = this.onNicheLoad.subscribe(() => {
           onNicheLoadListener.unsubscribe();
@@ -225,13 +223,13 @@ export class NicheHierarchyComponent extends LazyLoad {
 
         // But if the sub-niches are already loaded
       } else {
-        
+
         func2.apply(this, func2Parameters);
       }
 
       // If the arrow of the niche is already down
     } else {
-      
+
       func2.apply(this, func2Parameters);
     }
   }
@@ -316,7 +314,7 @@ export class NicheHierarchyComponent extends LazyLoad {
       const searchListNiche: MultiColumnItem = this.multiColumnList.listManager.selectedItem as MultiColumnItem;
 
       // Now go to the hierarchy
-      this.showSearch = false;
+      this.searchMode = false;
       window.setTimeout(() => {
         this.setHierarchy();
 
@@ -338,7 +336,7 @@ export class NicheHierarchyComponent extends LazyLoad {
           const nicheId: number = item.id;
 
           // Now go to the hierarchy
-          this.showSearch = false;
+          this.searchMode = false;
           window.setTimeout(() => {
             this.setHierarchy();
             this.getNiche(nicheId, searchListSubNiche.id, this.selectSubNiche, [searchListSubNiche.id], this.selectSubNiche, [searchListSubNiche.id]);
@@ -362,7 +360,7 @@ export class NicheHierarchyComponent extends LazyLoad {
               const nicheId: number = item.id;
 
               // Now go to the hierarchy
-              this.showSearch = false;
+              this.searchMode = false;
               window.setTimeout(() => {
                 this.setHierarchy();
                 this.getNiche(nicheId, subNicheId, this.getProduct, [subNicheId, searchListProduct.id], this.getSubNiche, [subNicheId, searchListProduct.id]);
@@ -374,16 +372,13 @@ export class NicheHierarchyComponent extends LazyLoad {
 
 
   toggleSearch() {
-    this.showSearch = !this.showSearch;
+    this.searchMode = !this.searchMode;
 
-    // If we're in search view
-    if (this.showSearch) {
+    // If we're in search mode
+    if (this.searchMode) {
       this.searchList.splice(0, this.searchList.length);
       window.setTimeout(() => {
-        this.multiColumnList.listManager.deleteDisabled = true;
-        this.multiColumnList.listManager.editDisabled = true;
         const searchInput: HTMLInputElement = document.getElementById('searchInput') as HTMLInputElement;
-
         searchInput!.focus();
         this.searchInputSubscription = fromEvent(searchInput, 'input').pipe(debounceTime(500)).subscribe(() => {
           if (searchInput.value.length > 1) {
@@ -392,7 +387,7 @@ export class NicheHierarchyComponent extends LazyLoad {
         });
       })
 
-      // If we're in hierarchy view
+      // If we're in hierarchy mode
     } else {
 
       window.setTimeout(() => {
@@ -431,27 +426,27 @@ export class NicheHierarchyComponent extends LazyLoad {
       this.dataService.post<number>('api/Categories', {
         name: hierarchyUpdate.name
       }).subscribe((id: number) => {
-        this.hierarchy.sourceList[hierarchyUpdate.index!].id = id;
+        this.nicheHierarchyService.niches[hierarchyUpdate.index!].id = id;
       });
     }
 
 
     if (hierarchyUpdate.hierarchyGroupID == 1) {
       this.dataService.post<number>('api/Niches', {
-        id: this.hierarchy.sourceList[this.hierarchy.listManager.getIndexOfHierarchyItemParent(this.hierarchy.sourceList[hierarchyUpdate.index!])].id,
+        id: this.nicheHierarchyService.niches[this.hierarchy.listManager.getIndexOfHierarchyItemParent(this.nicheHierarchyService.niches[hierarchyUpdate.index!])].id,
         name: hierarchyUpdate.name
       }).subscribe((id: number) => {
-        this.hierarchy.sourceList[hierarchyUpdate.index!].id = id;
+        this.nicheHierarchyService.niches[hierarchyUpdate.index!].id = id;
       });
     }
 
 
     if (hierarchyUpdate.hierarchyGroupID == 2) {
       this.dataService.post<number>('api/Products', {
-        id: this.hierarchy.sourceList[this.hierarchy.listManager.getIndexOfHierarchyItemParent(this.hierarchy.sourceList[hierarchyUpdate.index!])].id,
+        id: this.nicheHierarchyService.niches[this.hierarchy.listManager.getIndexOfHierarchyItemParent(this.nicheHierarchyService.niches[hierarchyUpdate.index!])].id,
         name: hierarchyUpdate.name
       }).subscribe((id: number) => {
-        this.hierarchy.sourceList[hierarchyUpdate.index!].id = id;
+        this.nicheHierarchyService.niches[hierarchyUpdate.index!].id = id;
       });
     }
   }
@@ -629,6 +624,9 @@ export class NicheHierarchyComponent extends LazyLoad {
     this.searchListOptions.deletePrompt!.title = 'Delete ' + searchListUpdate.selectedMultiColumnItems![0].values[1].name;
     this.searchListOptions.menu!.menuOptions[0].name = 'Rename ' + searchListUpdate.selectedMultiColumnItems![0].values[1].name;
 
+    this.editButtonTitle = 'Edit ' + searchListUpdate.selectedMultiColumnItems![0].values[1].name;
+    this.deleteButtonTitle = 'Delete ' + searchListUpdate.selectedMultiColumnItems![0].values[1].name;
+
     if (searchListUpdate.selectedMultiColumnItems![0].values[1].name == 'Niche') this.searchListOptions.menu!.menuOptions[3].isDisabled = true;
     if (searchListUpdate.selectedMultiColumnItems![0].values[1].name == 'Sub Niche') this.searchListOptions.menu!.menuOptions[3].isDisabled = false;
     if (searchListUpdate.selectedMultiColumnItems![0].values[1].name == 'Product') this.searchListOptions.menu!.menuOptions[3].isDisabled = false;
@@ -660,7 +658,7 @@ export class NicheHierarchyComponent extends LazyLoad {
   }
 
   onEdit() {
-    if (!this.showSearch) {
+    if (!this.searchMode) {
       this.hierarchy.edit();
     } else {
       this.multiColumnList.edit();
@@ -668,7 +666,7 @@ export class NicheHierarchyComponent extends LazyLoad {
   }
 
   onDelete() {
-    if (!this.showSearch) {
+    if (!this.searchMode) {
       this.hierarchy.delete();
     } else {
       this.multiColumnList.delete();
@@ -686,12 +684,12 @@ export class NicheHierarchyComponent extends LazyLoad {
       .then((moveForm: MoveFormComponent) => {
 
         // If we're in hierarchy view
-        if (!this.showSearch) {
+        if (!this.searchMode) {
           const itemToBeMovedType = this.hierarchy.listManager.selectedItem.hierarchyGroupID == 1 ? 'Sub Niche' : 'Product';
           const destinationItemType = this.hierarchy.listManager.selectedItem.hierarchyGroupID == 1 ? 'Niche' : 'Sub Niche';
           const itemToBeMoved = this.hierarchy.listManager.selectedItem;
           const index = this.hierarchy.listManager.getIndexOfHierarchyItemParent(this.hierarchy.listManager.selectedItem);
-          const fromItem = this.hierarchy.sourceList[index];
+          const fromItem = this.nicheHierarchyService.niches[index];
           const path = this.hierarchy.listManager.selectedItem.hierarchyGroupID == 1 ? 'api/Categories' : 'api/Niches/All';
           this.setMoveForm(moveForm, itemToBeMovedType, destinationItemType, itemToBeMoved, fromItem, path);
 

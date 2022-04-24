@@ -3,7 +3,7 @@ import { Button } from "./button";
 
 export class Prompt {
     parentObj!: Object;
-    title!: string;
+    title?: string;
     message?: SafeHtml;
     primaryButton?: Button;
     secondaryButton?: Button;

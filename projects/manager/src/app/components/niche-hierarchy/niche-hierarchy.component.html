@@ -10,70 +10,62 @@
     <div class="bar">
 
         <!-- Search icon -->
-        <button style="margin-left: 0;" class="icon-button" (click)="toggleSearch()">
-            <i *ngIf="!showSearch" style="pointer-events: none;" class="fas fa-search"></i>
-            <i *ngIf="showSearch" class="fa fa-list"></i>
+        <button style="margin-left: 0;"
+                class="icon-button"
+                (click)="toggleSearch()">
+            <i *ngIf="!searchMode" style="pointer-events: none;" class="fas fa-search"></i>
+            <i *ngIf="searchMode" class="fa fa-list"></i>
         </button>
 
         <div class="icons">
-
+            
             <!-- Delete icon -->
-            <button class="icon-button"
-                    [title]="deleteButtonTitle"
-                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled == null ? true : searchListUpdate.deleteDisabled}"
-                    (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
-                    (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
-                    (click)="!showSearch ? hierarchy.delete() : multiColumnList.delete()"
-                    [disabled]="!showSearch ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled">
-                <i style="pointer-events: none;" class="fas fa-trash-alt"></i>
-            </button>
-    
+            <icon-button [icon]="'fas fa-trash-alt'"
+                         [title]="deleteButtonTitle"
+                         [isDisabled]="!searchMode ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled == null ? true : searchListUpdate.deleteDisabled"
+                         (onOver)="hierarchy ? hierarchy.overButton = $event : multiColumnList.overButton = $event"
+                         (onClick)="hierarchy ? hierarchy.delete() : multiColumnList.delete()">
+            </icon-button>
+            
             <!-- Edit icon -->
-            <button class="icon-button"
-                    [title]="editButtonTitle"
-                    [ngClass]="{'icon-button-disabled': !showSearch ? hierarchyUpdate.editDisabled : searchListUpdate.editDisabled == null ? true : searchListUpdate.editDisabled}"
-                    (mouseover)="hierarchy ? hierarchy.overButton = true : multiColumnList.overButton = true"
-                    (mouseout)="hierarchy ? hierarchy.overButton = false : multiColumnList.overButton = false"
-                    (click)="!showSearch ? hierarchy.edit() : multiColumnList.edit()"
-                    [disabled]="!showSearch ? hierarchyUpdate.editDisabled : searchListUpdate.editDisabled">
-                <i style="pointer-events: none;" class="fas fa-pencil-alt"></i>
-            </button>
-    
+            <icon-button [icon]="'fas fa-pencil-alt'"
+                         [title]="editButtonTitle"
+                         [isDisabled]="!searchMode ? hierarchyUpdate.editDisabled : searchListUpdate.editDisabled == null ? true : searchListUpdate.editDisabled"
+                         (onOver)="hierarchy ? hierarchy.overButton = $event : multiColumnList.overButton = $event"
+                         (onClick)="hierarchy ? hierarchy.delete() : multiColumnList.delete()">
+            </icon-button>
+
             <!-- Add icon -->
-            <button *ngIf="!showSearch"
-                    class="icon-button"
-                    [title]="addButtonTitle"
-                    [ngClass]="{'icon-button-disabled': hierarchyUpdate.addDisabled}"
-                    (mouseover)="hierarchy.overButton = true"
-                    (mouseout)="hierarchy.overButton = false"
-                    (click)="hierarchy.add(null!, isParent)"
-                    [disabled]="hierarchyUpdate.addDisabled">
-                <i style="pointer-events: none;" class="fas fa-plus-circle"></i>
-            </button>
+            <icon-button *ngIf="!searchMode"
+                         [icon]="'fas fa-plus-circle'"
+                         [title]="addButtonTitle"
+                         [isDisabled]="hierarchyUpdate.addDisabled"
+                         (onOver)="hierarchy.overButton = $event"
+                         (onClick)="hierarchy.add(null!, isParent)">
+            </icon-button>
 
             <!-- Collapse icon -->
-            <button *ngIf="!showSearch"
-                    class="icon-button"
-                    title="Collapse"
-                    [ngClass]="{'icon-button-disabled': hierarchyUpdate.collapseDisabled}"
-                    (mouseover)="hierarchy.overButton = true"
-                    (mouseout)="hierarchy.overButton = false"
-                    (click)="hierarchy.collapse()"
-                    [disabled]="hierarchyUpdate.collapseDisabled">
-                <i style="pointer-events: none;" class="fas fa-minus-square"></i>
-            </button>
+            <icon-button *ngIf="!searchMode"
+                         [icon]="'fas fa-minus-square'"
+                         [title]="'Collapse'"
+                         [isDisabled]="hierarchyUpdate.collapseDisabled"
+                         (onOver)="hierarchy.overButton = $event"
+                         (onClick)="hierarchy.collapse()">
+            </icon-button>
         </div>
     </div>
     <div class="drop-shadow"></div>
 
     
     <!-- Hierarchy -->
-    <div *ngIf="!showSearch" class="overflow-container" [style.height.px]="base.clientHeight - 40">
-        <hierarchy #hierarchy [sourceList]="nicheHierarchyService.niches" [options]="hierarchyOptions" (onListUpdate)="hierarchyUpdate = $event"></hierarchy>
-    </div>
+    <ng-container *ngIf="!searchMode">
+        <div class="overflow-container" [style.height.px]="base.clientHeight - 40">
+            <hierarchy #hierarchy [sourceList]="nicheHierarchyService.niches" [options]="hierarchyOptions" (onListUpdate)="hierarchyUpdate = $event"></hierarchy>
+        </div>
+    </ng-container>
 
     <!-- Search -->
-    <ng-container *ngIf="showSearch">
+    <ng-container *ngIf="searchMode">
         <input id="searchInput" placeholder="Search" (input)="onSearchInputChange($event.target)">
 
         <!-- Column Headers -->
