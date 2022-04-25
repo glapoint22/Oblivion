@@ -8,6 +8,10 @@
         "dist/common/common",
         "dist/common"
       ],
+      "text-box": [
+        "dist/text-box/text-box",
+        "dist/text-box"
+      ],
       "widgets": [
         "dist/widgets/widgets",
         "dist/widgets"
