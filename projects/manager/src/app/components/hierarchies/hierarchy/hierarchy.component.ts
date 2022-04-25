@@ -31,7 +31,6 @@ export class HierarchyComponent extends ListComponent {
 
 
   add(itemIndex?: number, isParent?: boolean | string) {
-
     // If a hierarchy item is selected
     if (this.listManager.selectedItem) {
       let index: number;

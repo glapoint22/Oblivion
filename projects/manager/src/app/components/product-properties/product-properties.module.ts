@@ -20,6 +20,7 @@ import { ImageBoxModule } from '../image-box/image-box.module';
 import { CheckboxListModule } from '../lists/checkbox-list/checkbox-list.module';
 import { HierarchyListModule } from '../lists/hierarchy-list/hierarchy-list.module';
 import { ListModule } from '../lists/list/list.module';
+import { IconButtonModule } from '../icon-button/icon-button.module';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { ListModule } from '../lists/list/list.module';
     ImageBoxModule,
     ListModule,
     CheckboxListModule,
-    HierarchyListModule
+    HierarchyListModule,
+    IconButtonModule
   ],
   exports: [ProductPropertiesComponent]
 })

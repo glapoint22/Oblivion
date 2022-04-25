@@ -18,6 +18,8 @@
          class="item"
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
+         (mouseover)="listManager.overItem = true"
+         (mouseout)="listManager.overItem = false"
          (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(item, $event) : null) : listManager.onCheckboxChange(item)"
          (blur)="listManager.onItemBlur(item)"
          (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(item) : null"

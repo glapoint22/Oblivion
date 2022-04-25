@@ -248,15 +248,15 @@ export class HierarchyManager extends ListManager {
 
 
 
-    resetItemName(hierarchyItem: HierarchyItem): HierarchyItem {
+    resetItemTextContent() {
         // Update the text content of the html item
-        hierarchyItem!.htmlItem!.nativeElement.textContent = hierarchyItem!.name!;
+        this.editedItem!.htmlItem!.nativeElement.textContent = this.editedItem!.name!;
 
-        const hierarchyItemIndex = this.sourceList.findIndex(x => x == hierarchyItem);
+        const hierarchyItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
         this.sourceList.splice(hierarchyItemIndex, 1);
-        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem!.id, name: hierarchyItem!.name, hierarchyGroupID: hierarchyItem!.hierarchyGroupID, isParent: hierarchyItem!.isParent, selected: hierarchyItem!.selected, htmlItem: hierarchyItem?.htmlItem } as HierarchyItem);
+        this.sourceList.splice(hierarchyItemIndex, 0, { id: this.editedItem!.id, name: this.editedItem!.name, hierarchyGroupID: this.editedItem!.hierarchyGroupID, isParent: (this.editedItem as HierarchyItem).isParent, selected: this.editedItem!.selected, htmlItem: this.editedItem?.htmlItem } as HierarchyItem);
 
-        return this.sourceList[hierarchyItemIndex];
+        this.editedItem = this.sourceList[hierarchyItemIndex];
     }
 
 
