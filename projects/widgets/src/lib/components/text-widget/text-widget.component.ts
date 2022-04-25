@@ -1,11 +1,10 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { ElementType, LinkType, TextBox, TextBoxData } from 'text-box';
 import { Background } from '../../classes/background';
-import { Link } from '../../classes/link';
 import { Padding } from '../../classes/padding';
-import { TextData } from '../../classes/text-data';
 import { TextWidgetData } from '../../classes/text-widget-data';
 import { Widget } from '../../classes/widget';
-import { LinkOption, NodeType, WidgetType } from '../../classes/widget-enums';
+import { WidgetType } from '../../classes/widget-enums';
 
 @Component({
   selector: 'text-widget',
@@ -15,7 +14,8 @@ import { LinkOption, NodeType, WidgetType } from '../../classes/widget-enums';
 export class TextWidgetComponent extends Widget implements AfterViewInit {
   public background: Background = new Background();
   public padding: Padding = new Padding();
-  public textData: Array<TextData> = [];
+  public textBoxData: Array<TextBoxData> = [];
+  private textBox!: TextBox;
 
   ngOnInit() {
     this.type = WidgetType.Text;
@@ -24,8 +24,8 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    this.setText();
     this.padding.setClasses(this.widgetElement);
+    this.setText();
   }
 
   setWidget(textWidgetData: TextWidgetData) {
@@ -34,83 +34,83 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
 
     textWidgetData.textData = [
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         children: [
           {
-            nodeType: NodeType.Text,
+            elementType: ElementType.Text,
             text: 'The '
           },
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'font-family',
+                name: 'font-family',
                 value: '"Comic Sans MS", cursive, sans-serif'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'quick '
               }
             ]
           },
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'color',
+                name: 'color',
                 value: '#ff00ff'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'brown '
               }
             ]
           },
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'font-size',
+                name: 'font-size',
                 value: '18px'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'fox '
               },
               {
-                nodeType: NodeType.Span,
+                elementType: ElementType.Span,
                 styles: [
                   {
-                    style: 'background-color',
+                    name: 'background-color',
                     value: '#ffff00'
                   },
                   {
-                    style: 'color',
+                    name: 'color',
                     value: '#000000'
                   }
                 ],
                 children: [
                   {
-                    nodeType: NodeType.Text,
+                    elementType: ElementType.Text,
                     text: 'ju'
                   },
                   {
-                    nodeType: NodeType.Span,
+                    elementType: ElementType.Span,
                     styles: [
                       {
-                        style: 'color',
+                        name: 'color',
                         value: '#ff0000'
                       }
                     ],
                     children: [
                       {
-                        nodeType: NodeType.Text,
+                        elementType: ElementType.Text,
                         text: 'mps'
                       }
                     ]
@@ -120,28 +120,28 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
             ]
           },
           {
-            nodeType: NodeType.Text,
+            elementType: ElementType.Text,
             text: ' over '
           },
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'font-weight',
+                name: 'font-weight',
                 value: 'bold'
               },
               {
-                style: 'font-style',
+                name: 'font-style',
                 value: 'italic'
               },
               {
-                style: 'text-decoration',
+                name: 'text-decoration',
                 value: 'underline'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'the lazy dog.'
               }
             ]
@@ -149,94 +149,94 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         children: [
           {
-            nodeType: NodeType.Br
+            elementType: ElementType.Break
           }
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         children: [
           {
-            nodeType: NodeType.Text,
+            elementType: ElementType.Text,
             text: 'This is a bullet list:'
           }
         ]
       },
       {
-        nodeType: NodeType.Ul,
+        elementType: ElementType.UnorderedList,
         children: [
           {
-            nodeType: NodeType.Li,
+            elementType: ElementType.ListItem,
             children: [
               {
-                nodeType: NodeType.Span,
+                elementType: ElementType.Span,
                 styles: [
                   {
-                    style: 'color',
+                    name: 'color',
                     value: '#00ff00'
                   }
                 ],
                 children: [
                   {
-                    nodeType: NodeType.Text,
+                    elementType: ElementType.Text,
                     text: 'A'
                   },
                   {
-                    nodeType: NodeType.Span,
+                    elementType: ElementType.Span,
                     styles: [
                       {
-                        style: 'color',
+                        name: 'color',
                         value: '#ff0000'
                       }
                     ],
                     children: [
                       {
-                        nodeType: NodeType.Text,
+                        elementType: ElementType.Text,
                         text: 'l'
                       },
 
 
 
                       {
-                        nodeType: NodeType.Span,
+                        elementType: ElementType.Span,
                         styles: [
                           {
-                            style: 'color',
+                            name: 'color',
                             value: '#d5c617'
                           }
                         ],
                         children: [
                           {
-                            nodeType: NodeType.Text,
+                            elementType: ElementType.Text,
                             text: 'i'
                           },
                           {
-                            nodeType: NodeType.Span,
+                            elementType: ElementType.Span,
                             styles: [
                               {
-                                style: 'color',
+                                name: 'color',
                                 value: '#ff00ff'
                               }
                             ],
                             children: [
                               {
-                                nodeType: NodeType.Text,
+                                elementType: ElementType.Text,
                                 text: 't'
                               },
                               {
-                                nodeType: NodeType.Span,
+                                elementType: ElementType.Span,
                                 styles: [
                                   {
-                                    style: 'color',
+                                    name: 'color',
                                     value: '#00ffff'
                                   }
                                 ],
                                 children: [
                                   {
-                                    nodeType: NodeType.Text,
+                                    elementType: ElementType.Text,
                                     text: 'a!'
                                   }
                                 ]
@@ -255,19 +255,19 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
             ]
           },
           {
-            nodeType: NodeType.Li,
+            elementType: ElementType.ListItem,
             children: [
               {
-                nodeType: NodeType.Span,
+                elementType: ElementType.Span,
                 styles: [
                   {
-                    style: 'color',
+                    name: 'color',
                     value: '#ffff00'
                   }
                 ],
                 children: [
                   {
-                    nodeType: NodeType.Text,
+                    elementType: ElementType.Text,
                     text: 'Battle'
                   }
                 ]
@@ -275,22 +275,22 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
             ]
           },
           {
-            nodeType: NodeType.Ul,
+            elementType: ElementType.UnorderedList,
             children: [
               {
-                nodeType: NodeType.Li,
+                elementType: ElementType.ListItem,
                 children: [
                   {
-                    nodeType: NodeType.Span,
+                    elementType: ElementType.Span,
                     styles: [
                       {
-                        style: 'font-weight',
+                        name: 'font-weight',
                         value: 'bold'
                       }
                     ],
                     children: [
                       {
-                        nodeType: NodeType.Text,
+                        elementType: ElementType.Text,
                         text: 'Trumpy'
                       }
                     ]
@@ -298,19 +298,19 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
                 ]
               },
               {
-                nodeType: NodeType.Li,
+                elementType: ElementType.ListItem,
                 children: [
                   {
-                    nodeType: NodeType.Span,
+                    elementType: ElementType.Span,
                     styles: [
                       {
-                        style: 'color',
+                        name: 'color',
                         value: '#ff0000'
                       }
                     ],
                     children: [
                       {
-                        nodeType: NodeType.Text,
+                        elementType: ElementType.Text,
                         text: 'Alita'
                       }
                     ]
@@ -320,13 +320,13 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
 
 
               {
-                nodeType: NodeType.Ul,
+                elementType: ElementType.UnorderedList,
                 children: [
                   {
-                    nodeType: NodeType.Li,
+                    elementType: ElementType.ListItem,
                     children: [
                       {
-                        nodeType: NodeType.Text,
+                        elementType: ElementType.Text,
                         text: 'Make'
                       }
                     ]
@@ -335,13 +335,13 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
 
 
                   {
-                    nodeType: NodeType.Ul,
+                    elementType: ElementType.UnorderedList,
                     children: [
                       {
-                        nodeType: NodeType.Li,
+                        elementType: ElementType.ListItem,
                         children: [
                           {
-                            nodeType: NodeType.Text,
+                            elementType: ElementType.Text,
                             text: 'America'
                           }
                         ]
@@ -350,13 +350,13 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
 
 
                       {
-                        nodeType: NodeType.Ul,
+                        elementType: ElementType.UnorderedList,
                         children: [
                           {
-                            nodeType: NodeType.Li,
+                            elementType: ElementType.ListItem,
                             children: [
                               {
-                                nodeType: NodeType.Text,
+                                elementType: ElementType.Text,
                                 text: 'Great'
                               }
                             ]
@@ -364,13 +364,13 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
 
 
                           {
-                            nodeType: NodeType.Ul,
+                            elementType: ElementType.UnorderedList,
                             children: [
                               {
-                                nodeType: NodeType.Li,
+                                elementType: ElementType.ListItem,
                                 children: [
                                   {
-                                    nodeType: NodeType.Text,
+                                    elementType: ElementType.Text,
                                     text: 'Again'
                                   }
                                 ]
@@ -395,10 +395,10 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
 
 
               {
-                nodeType: NodeType.Li,
+                elementType: ElementType.ListItem,
                 children: [
                   {
-                    nodeType: NodeType.Text,
+                    elementType: ElementType.Text,
                     text: 'Hello'
                   }
                 ]
@@ -410,10 +410,10 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
           },
 
           {
-            nodeType: NodeType.Li,
+            elementType: ElementType.ListItem,
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'There'
               }
             ]
@@ -421,93 +421,93 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         indent: 2,
         children: [
           {
-            nodeType: NodeType.Text,
+            elementType: ElementType.Text,
             text: 'MAGA!'
           }
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         children: [
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'color',
+                name: 'color',
                 value: '#ff0000'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'H'
               }
             ]
           },
 
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'color',
+                name: 'color',
                 value: '#00ff00'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'e'
               }
             ]
           },
 
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'color',
+                name: 'color',
                 value: '#0000ff'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'l'
               }
             ]
           },
 
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'color',
+                name: 'color',
                 value: '#ff00ff'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'l'
               }
             ]
           },
 
           {
-            nodeType: NodeType.Span,
+            elementType: ElementType.Span,
             styles: [
               {
-                style: 'color',
+                name: 'color',
                 value: '#00ffff'
               }
             ],
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'o'
               }
             ]
@@ -515,49 +515,49 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         children: [
           {
-            nodeType: NodeType.Text,
+            elementType: ElementType.Text,
             text: 'This is a numbered list:'
           }
         ]
       },
       {
-        nodeType: NodeType.Ol,
+        elementType: ElementType.OrderedList,
         children: [
           {
-            nodeType: NodeType.Li,
+            elementType: ElementType.ListItem,
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'First Item'
               }
             ]
           },
           {
-            nodeType: NodeType.Li,
+            elementType: ElementType.ListItem,
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'Second Item'
               }
             ]
           },
           {
-            nodeType: NodeType.Li,
+            elementType: ElementType.ListItem,
             children: [
               {
-                nodeType: NodeType.Span,
+                elementType: ElementType.Span,
                 styles: [
                   {
-                    style: 'color',
+                    name: 'color',
                     value: '#ff00ff'
                   }
                 ],
                 children: [
                   {
-                    nodeType: NodeType.Text,
+                    elementType: ElementType.Text,
                     text: 'Third Item'
                   }
                 ]
@@ -567,60 +567,60 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         children: [
           {
-            nodeType: NodeType.Br
+            elementType: ElementType.Break
           }
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         styles: [
           {
-            style: 'text-align',
+            name: 'text-align',
             value: 'center'
           },
         ],
         children: [
           {
-            nodeType: NodeType.Text,
+            elementType: ElementType.Text,
             text: 'This is aligned center'
           }
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         styles: [
           {
-            style: 'text-align',
+            name: 'text-align',
             value: 'right'
           },
         ],
         children: [
           {
-            nodeType: NodeType.Text,
+            elementType: ElementType.Text,
             text: 'This is aligned right'
           }
         ]
       },
       {
-        nodeType: NodeType.Div,
+        elementType: ElementType.Div,
         children: [
           {
-            nodeType: NodeType.Text,
+            elementType: ElementType.Text,
             text: 'This is a link to '
           },
           {
-            nodeType: NodeType.A,
+            elementType: ElementType.Anchor,
             link: {
               url: 'https://truthsocial.com/',
-              selectedOption: LinkOption.WebAddress,
-              setData(link: Link) { }
+              linkType: LinkType.WebAddress,
+
             },
             children: [
               {
-                nodeType: NodeType.Text,
+                elementType: ElementType.Text,
                 text: 'TRUTH Social'
               }
             ]
@@ -629,13 +629,17 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
       }
     ]
 
-    if (textWidgetData.textData) this.textData = textWidgetData.textData;
+    if (textWidgetData.textData) this.textBoxData = textWidgetData.textData;
 
     super.setWidget(textWidgetData);
   }
 
   setText() {
+    this.textBox = new TextBox(this.widgetElement);
 
+    if (this.textBoxData && this.textBoxData.length > 0) {
+      this.textBox.load(this.textBoxData);
+      this.textBox.render();
+    }
   }
-
 }

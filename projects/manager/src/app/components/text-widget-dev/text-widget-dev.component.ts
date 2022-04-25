@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { TextBoxDev } from 'text-box';
 import { TextWidgetComponent } from 'widgets';
 import { Text } from '../../classes/text';
 import { WidgetService } from '../../services/widget/widget.service';
@@ -9,8 +10,10 @@ import { WidgetService } from '../../services/widget/widget.service';
   styleUrls: ['./text-widget-dev.component.scss']
 })
 export class TextWidgetDevComponent extends TextWidgetComponent implements OnInit {
-  @ViewChild('textElement') textElement!: ElementRef<HTMLElement>;
+  @ViewChild('htmlRootElement') htmlRootElement!: ElementRef<HTMLElement>;
   public text!: Text;
+
+  public textBoxDev!: TextBoxDev;
 
   constructor(public widgetService: WidgetService) { super() }
 
@@ -20,7 +23,12 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
   }
 
   setText() {
-    this.text = new Text(this.textElement.nativeElement);
-    if (this.textData && this.textData.length > 0) this.text.load(this.textData);
+    this.textBoxDev = new TextBoxDev(this.htmlRootElement.nativeElement);
+
+    if (this.textBoxData && this.textBoxData.length > 0) {
+      this.textBoxDev.load(this.textBoxData);
+    }
+
+    this.textBoxDev.render();
   }
 }
