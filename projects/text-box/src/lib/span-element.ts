@@ -1,4 +1,5 @@
 import { Element } from "./element";
+import { ElementDeleteStatus } from "./element-delete-status";
 import { ElementType } from "./element-type";
 
 export class SpanElement extends Element {
@@ -20,5 +21,17 @@ export class SpanElement extends Element {
     // ---------------------------------------------------Create-----------------------------------------------------
     protected create(parent: Element): Element {
         return new SpanElement(parent);
+    }
+
+
+    // ---------------------------------------------------Delete-----------------------------------------------------
+    public delete(startOffset?: number, endOffset?: number): ElementDeleteStatus {
+        // Parent will delete this element
+        if (startOffset == 0 && endOffset == 0) {
+            return this.parent.delete(startOffset, endOffset);
+        }
+
+        // Delete this element
+        return super.delete(startOffset, endOffset);
     }
 }

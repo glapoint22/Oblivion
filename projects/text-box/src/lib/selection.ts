@@ -18,6 +18,8 @@ export class Selection {
         this.startOffset = this.range.startOffset;
         this.endOffset = this.range.endOffset;
         this.collapsed = this.range.collapsed;
+        this.startElement = undefined!;
+        this.endElement = undefined!;
         this.setStartEndElements(rootElement);
     }
 
@@ -36,6 +38,8 @@ export class Selection {
                 this.commonAncestorContainer = this.startElement;
             }
 
+            if (this.endElement) return true;
+
         } else if (currentElement.id == (this.range.startContainer as HTMLElement).id) {
             this.startElement = currentElement;
         }
@@ -51,7 +55,7 @@ export class Selection {
         if (this.range.endContainer.nodeType == Node.TEXT_NODE && this.range.endContainer.parentElement?.id == currentElement.id) {
             this.endElement = this.getTextElement(this.range.endContainer, currentElement);
 
-            return true;
+            if (this.startElement) return true;
 
         } else if (currentElement.id == (this.range.endContainer as HTMLElement).id) {
             this.endElement = currentElement;

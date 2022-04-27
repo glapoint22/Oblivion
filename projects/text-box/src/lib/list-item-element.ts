@@ -1,7 +1,8 @@
+import { Container } from "./container";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
 
-export class ListItemElement extends Element {
+export class ListItemElement extends Container {
 
     constructor(public parent: Element) {
         super();
