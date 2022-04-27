@@ -898,12 +898,12 @@ export class ListManager {
               this.resetItemTextContent(); // * Used for hierarchy list * (calling this puts back the indent)
             }
 
-
+            
             // Select the item that was renamed
             // this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == this.editedItem?.identity)]);
             // this.setButtonsState();
             // Send update
-            // this.addEditUpdate(this.editedItem);
+            this.addEditUpdate(this.editedItem);
 
 
           }
@@ -918,13 +918,13 @@ export class ListManager {
 
       // But if the item is empty
     } else {
-
+      
       // If we pressed the (Escape) key or the item was (Blurred)
       if (isEscape || isBlur) {
-
+        
         // If we were adding a new item
         if (this.newItem) {
-
+          
           // Remove the item
           this.sourceList.splice(this.sourceList.indexOf(this.editedItem), 1);
 
@@ -946,7 +946,7 @@ export class ListManager {
       }
     }
 
-    this.addEditUpdate(this.editedItem);
+    
 
     this.reselectItem();
 

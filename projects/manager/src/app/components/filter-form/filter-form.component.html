@@ -5,8 +5,8 @@
         <div class="modal-bar">
             <div>Filters</div>
             <div class="modal-x-button"
-                 (mouseover)="!searchMode ? filtersHierarchy.overButton = true : searchMode && searchList.length > 0 ? filtersSearch.overButton = true : null"
-                 (mouseout)="!searchMode ? filtersHierarchy.overButton = false : searchMode && searchList.length > 0 ? filtersSearch.overButton = false : null"
+                 (mouseover)="!filtersService.searchMode ? filtersService.filtersHierarchy.overButton = true : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.overButton = true : null"
+                 (mouseout)="!filtersService.searchMode ? filtersService.filtersHierarchy.overButton = false : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.overButton = false : null"
                  (click)="close()">
                 X
             </div>
@@ -20,61 +20,61 @@
 
                 <!-- Search icon -->
                 <icon-button style="margin-top: 4px; margin-left: -5px;"
-                             [icon]="!searchMode ? 'fas fa-search' : 'fa fa-list'"
-                             [title]="!searchMode ? 'Search' : 'Back to Hierarchy'"
+                             [icon]="!filtersService.searchMode ? 'fas fa-search' : 'fa fa-list'"
+                             [title]="!filtersService.searchMode ? 'Search' : 'Back to Hierarchy'"
                              [isDisabled]="false"
-                             (onOver)="!searchMode ? filtersHierarchy.overButton = $event : searchMode && searchList.length > 0 ? filtersSearch.overButton = $event : false"
-                             (onClick)="toggleSearch()">
+                             (onOver)="!filtersService.searchMode ? filtersService.filtersHierarchy.overButton = $event : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                             (onClick)="filtersService.toggleSearch()">
                 </icon-button>
 
                 <div class="icons">
                     <!-- Delete icon -->
                     <icon-button [icon]="'fas fa-trash-alt'"
-                                 [title]="!searchMode && filtersHierarchy ? filtersHierarchy.listManager.selectedItem == null ? 'Delete' : deleteButtonTitle : searchMode && filtersSearch ? filtersSearch.listManager.selectedItem == null ? 'Delete' : deleteButtonTitle : 'Delete'"
-                                 [isDisabled]="isDisabled('deleteDisabled')"
-                                 (onOver)="!searchMode ? filtersHierarchy.overButton = $event : searchMode && searchList.length > 0 ? filtersSearch.overButton = $event : false"
-                                 (onClick)="!searchMode ? filtersHierarchy.delete() : searchMode && searchList.length > 0 ? filtersSearch.delete() : null">
+                                 [title]="!filtersService.searchMode && filtersService.filtersHierarchy ? filtersService.filtersHierarchy.listManager.selectedItem == null ? 'Delete' : filtersService.deleteButtonTitle : filtersService.searchMode && filtersSearch ? filtersSearch.listManager.selectedItem == null ? 'Delete' : filtersService.deleteButtonTitle : 'Delete'"
+                                 [isDisabled]="filtersService.isDisabled('deleteDisabled')"
+                                 (onOver)="!filtersService.searchMode ? filtersService.filtersHierarchy.overButton = $event : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                                 (onClick)="!filtersService.searchMode ? filtersService.filtersHierarchy.delete() : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.delete() : null">
                     </icon-button>
 
                     <!-- Edit icon -->
                     <icon-button [icon]="'fas fa-pencil-alt'"
-                                 [title]="!searchMode && filtersHierarchy ? filtersHierarchy.listManager.selectedItem == null ? 'Edit' : editButtonTitle : searchMode && filtersSearch ? filtersSearch.listManager.selectedItem == null ? 'Edit' : editButtonTitle : 'Edit'"
-                                 [isDisabled]="isDisabled('editDisabled')"
-                                 (onOver)="!searchMode ? filtersHierarchy.overButton = $event : searchMode && searchList.length > 0 ? filtersSearch.overButton = $event : false"
-                                 (onClick)="!searchMode ? filtersHierarchy.edit() : searchMode && searchList.length > 0 ? filtersSearch.edit() : null">
+                                 [title]="!filtersService.searchMode && filtersService.filtersHierarchy ? filtersService.filtersHierarchy.listManager.selectedItem == null ? 'Edit' : filtersService.editButtonTitle : filtersService.searchMode && filtersSearch ? filtersSearch.listManager.selectedItem == null ? 'Edit' : filtersService.editButtonTitle : 'Edit'"
+                                 [isDisabled]="filtersService.isDisabled('editDisabled')"
+                                 (onOver)="!filtersService.searchMode ? filtersService.filtersHierarchy.overButton = $event : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                                 (onClick)="!filtersService.searchMode ? filtersService.filtersHierarchy.edit() : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.edit() : null">
                     </icon-button>
 
                     <!-- Add icon -->
-                    <icon-button *ngIf="!searchMode"
+                    <icon-button *ngIf="!filtersService.searchMode"
                                  [icon]="'fas fa-plus-circle'"
-                                 [title]="filtersHierarchy ? filtersHierarchy.listManager.selectedItem == null ? 'Add Filter' : addButtonTitle : 'Add Filter'"
-                                 [isDisabled]="isDisabled('addDisabled')"
-                                 (onOver)="filtersHierarchy.overButton = $event"
-                                 (onClick)="filtersHierarchy.add(null!, isParent)">
+                                 [title]="filtersService.filtersHierarchy ? filtersService.filtersHierarchy.listManager.selectedItem == null ? 'Add Filter' : filtersService.addButtonTitle : 'Add Filter'"
+                                 [isDisabled]="filtersService.isDisabled('addDisabled')"
+                                 (onOver)="filtersService.filtersHierarchy.overButton = $event"
+                                 (onClick)="filtersService.filtersHierarchy.add()">
                     </icon-button>
 
                     <!-- Collapse icon -->
-                    <icon-button *ngIf="!searchMode"
+                    <icon-button *ngIf="!filtersService.searchMode"
                                  [icon]="'fas fa-minus-square'"
                                  [title]="'Collapse'"
-                                 [isDisabled]="isDisabled('collapseDisabled')"
-                                 (onOver)="filtersHierarchy.overButton = $event"
-                                 (onClick)="filtersHierarchy.collapse()">
+                                 [isDisabled]="filtersService.isDisabled('collapseDisabled')"
+                                 (onOver)="filtersService.filtersHierarchy.overButton = $event"
+                                 (onClick)="filtersService.filtersHierarchy.collapse()">
                     </icon-button>
                 </div>
             </div>
 
 
             <!-- Hierarchy -->
-            <ng-container *ngIf="!searchMode">
+            <ng-container *ngIf="!filtersService.searchMode">
                 <div class="filters-container">
-                    <hierarchy #filtersHierarchy [sourceList]="filtersService.filters" [options]="filtersHierarchyOptions" (onListUpdate)="filtersHierarchyUpdate = $event"></hierarchy>
+                    <hierarchy #filtersHierarchy [sourceList]="filtersService.filters" [options]="filtersService.filtersHierarchyOptions" (onListUpdate)="filtersService.filtersHierarchyUpdate = $event"></hierarchy>
                 </div>
             </ng-container>
 
             <!-- Search -->
-            <ng-container *ngIf="searchMode">
-                <input id="searchInput" placeholder="Search" (input)="onSearchInputChange($event.target)">
+            <ng-container *ngIf="filtersService.searchMode">
+                <input id="searchInput" placeholder="Search" (input)="filtersService.onSearchInputChange($event.target)">
 
                 <div class="column-name-container">
                     <div class="column-name">Name</div>
@@ -83,15 +83,15 @@
 
                 <div style="height: 198px;" class="filters-container">
 
-                    <ng-container *ngIf="searchList.length == 0">
+                    <ng-container *ngIf="filtersService.searchList.length == 0">
                         <div style="display: flex; height: 100%; justify-content: center; align-items: center; color: #666666;">
                             No search results available
                         </div>
                     </ng-container>
                     
 
-                    <ng-container *ngIf="searchList.length > 0">
-                        <multi-column-list #filtersSearch [sourceList]="searchList" [options]="filtersSearchOptions" (onListUpdate)="filtersSearchUpdate = $event"></multi-column-list>
+                    <ng-container *ngIf="filtersService.searchList.length > 0">
+                        <multi-column-list #filtersSearch [sourceList]="filtersService.searchList" [options]="filtersService.filtersSearchOptions" (onListUpdate)="filtersService.filtersSearchUpdate = $event"></multi-column-list>
                     </ng-container>
                     
 
@@ -102,8 +102,8 @@
 
         <div class="modal-button-container">
             <button class="dark-button"
-                    (mouseover)="!searchMode ? filtersHierarchy.overButton = true : searchMode && searchList.length > 0 ? filtersSearch.overButton = true : null"
-                    (mouseout)="!searchMode ? filtersHierarchy.overButton = false : searchMode && searchList.length > 0 ? filtersSearch.overButton = false : null"
+                    (mouseover)="!filtersService.searchMode ? filtersService.filtersHierarchy.overButton = true : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.overButton = true : null"
+                    (mouseout)="!filtersService.searchMode ? filtersService.filtersHierarchy.overButton = false : filtersService.searchMode && filtersService.searchList.length > 0 ? filtersSearch.overButton = false : null"
                     (click)="close()">
                 Close
             </button>
