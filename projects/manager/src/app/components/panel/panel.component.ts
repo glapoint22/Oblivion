@@ -10,6 +10,7 @@ export class PanelComponent {
   @Input() title!: string;
   @Input() enabledProperty!: Enableable;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
+  @Output() onOpen: EventEmitter<void> = new EventEmitter();
   @ViewChild('content') content!: ElementRef;
   public expanded!: boolean;
   public contentMaxHeight!: number;
@@ -25,6 +26,7 @@ export class PanelComponent {
       });
     } else {
       this.expanded = true;
+      this.onOpen.emit();
     }
   }
 

@@ -1,3 +1,100 @@
-<panel [title]="'Filters'">
+<panel [title]="'Filters'" (onOpen)="filtersManager.onOpen()">
+    <div class="property-box-dark">
+
+        <!-- Property Box Bar -->
+        <div class="property-box-bar">
+
+            <!-- Search icon -->
+            <icon-button style="margin-top: 4px; margin-left: -5px;"
+                         [icon]="!filtersManager.searchMode ? 'fas fa-search' : 'fa fa-list'"
+                         [title]="!filtersManager.searchMode ? 'Search' : 'Back to Hierarchy'"
+                         [isDisabled]="false"
+                         (onOver)="!filtersManager.searchMode ? filtersManager.filtersHierarchy.overButton = $event : filtersManager.searchMode && filtersManager.searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                         (onClick)="filtersManager.toggleSearch()">
+            </icon-button>
+
+            <!-- Icons -->
+            <div class="icons">
+
+                <!-- Delete icon -->
+                <icon-button [icon]="'fas fa-trash-alt'"
+                             [title]="!filtersManager.searchMode && filtersManager.filtersHierarchy ? filtersManager.filtersHierarchy.listManager.selectedItem == null ? 'Delete' : filtersManager.deleteButtonTitle : filtersManager.searchMode && filtersSearch ? filtersSearch.listManager.selectedItem == null ? 'Delete' : filtersManager.deleteButtonTitle : 'Delete'"
+                             [isDisabled]="filtersManager.isDisabled('deleteDisabled')"
+                             (onOver)="!filtersManager.searchMode ? filtersManager.filtersHierarchy.overButton = $event : filtersManager.searchMode && filtersManager.searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                             (onClick)="!filtersManager.searchMode ? filtersManager.filtersHierarchy.delete() : filtersManager.searchMode && filtersManager.searchList.length > 0 ? filtersSearch.delete() : null">
+                </icon-button>
+
+                <!-- Edit icon -->
+                <icon-button [icon]="'fas fa-pencil-alt'"
+                             [title]="!filtersManager.searchMode && filtersManager.filtersHierarchy ? filtersManager.filtersHierarchy.listManager.selectedItem == null ? 'Edit' : filtersManager.editButtonTitle : filtersManager.searchMode && filtersSearch ? filtersSearch.listManager.selectedItem == null ? 'Edit' : filtersManager.editButtonTitle : 'Edit'"
+                             [isDisabled]="filtersManager.isDisabled('editDisabled')"
+                             (onOver)="!filtersManager.searchMode ? filtersManager.filtersHierarchy.overButton = $event : filtersManager.searchMode && filtersManager.searchList.length > 0 ? filtersSearch.overButton = $event : false"
+                             (onClick)="!filtersManager.searchMode ? filtersManager.filtersHierarchy.edit() : filtersManager.searchMode && filtersManager.searchList.length > 0 ? filtersSearch.edit() : null">
+                </icon-button>
+
+                <!-- Add icon -->
+                <icon-button *ngIf="!filtersManager.searchMode"
+                             [icon]="'fas fa-plus-circle'"
+                             [title]="filtersManager.filtersHierarchy ? filtersManager.filtersHierarchy.listManager.selectedItem == null ? 'Add Filter' : filtersManager.addButtonTitle : 'Add Filter'"
+                             [isDisabled]="filtersManager.isDisabled('addDisabled')"
+                             (onOver)="filtersManager.filtersHierarchy.overButton = $event"
+                             (onClick)="filtersManager.filtersHierarchy.add()">
+                </icon-button>
+
+                <!-- Collapse icon -->
+                <icon-button *ngIf="!filtersManager.searchMode"
+                             [icon]="'fas fa-minus-square'"
+                             [title]="'Collapse'"
+                             [isDisabled]="filtersManager.isDisabled('collapseDisabled')"
+                             (onOver)="filtersManager.filtersHierarchy.overButton = $event"
+                             (onClick)="filtersManager.filtersHierarchy.collapse()">
+                </icon-button>
+            </div>
+        </div>
+        
+        <!-- Hierarchy -->
+        <ng-container *ngIf="!filtersManager.searchMode">
+            <checkbox-hierarchy #filtersHierarchy [sourceList]="filtersManager.filters" [options]="filtersManager.filtersHierarchyOptions" (onListUpdate)="filtersHierarchyUpdate = $event"></checkbox-hierarchy>
+        </ng-container>
+
+        <!-- Search -->
+        <ng-container *ngIf="filtersManager.searchMode">
+            
+
+            <div>
+            
+                <div style="padding: 10px;">
+                    <input id="productFiltersSearchInput" placeholder="Search" (input)="filtersManager.onSearchInputChange($event.target)">
+                </div>
+                
+
+                <div class="column-name-container">
+                    <div class="column-name">Name</div>
+                    <div class="column-name">Type</div>
+                </div>
+
+                <div class="column-underline-container">
+                    <div class="column-underline"></div>
+                    <div class="column-underline"></div>
+                </div>
     
+                <div class="filters-container">
+    
+                    <ng-container *ngIf="filtersManager.searchList.length == 0">
+                        <div style="display: flex; height: 100px; margin-top: -10px; justify-content: center; align-items: center; color: #666666;">
+                            No search results available
+                        </div>
+                    </ng-container>
+                    
+    
+                    <ng-container *ngIf="filtersManager.searchList.length > 0">
+                        <multi-column-list #filtersSearch [sourceList]="filtersManager.searchList" [options]="filtersManager.filtersSearchOptions" (onListUpdate)="filtersManager.filtersSearchUpdate = $event"></multi-column-list>
+                    </ng-container>
+                    
+    
+                </div>
+            
+            </div>
+        </ng-container>
+    </div>
 </panel>
