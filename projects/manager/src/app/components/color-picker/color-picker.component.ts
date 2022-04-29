@@ -1,7 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { LazyLoad } from 'common';
+import { Color, HSB, HSL, LazyLoad } from 'common';
 import { Subject } from 'rxjs';
-import { Color, HSB, HSL } from 'widgets';
 
 
 @Component({

@@ -1,4 +1,4 @@
-import { Color } from "./color";
+import { Color } from "common";
 
 export class Caption {
     public fontWeight: string = 'normal';

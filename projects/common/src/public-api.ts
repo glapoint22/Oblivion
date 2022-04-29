@@ -14,6 +14,9 @@ export * from './lib/classes/query-filter';
 export * from './lib/classes/query-filter-option';
 export * from './lib/classes/subniche-filter';
 export * from './lib/classes/subniches-filter';
+export * from './lib/classes/hsb';
+export * from './lib/classes/hsl';
+export * from './lib/classes/color';
 
 // Components
 export * from './lib/components/dropdown/dropdown.component';

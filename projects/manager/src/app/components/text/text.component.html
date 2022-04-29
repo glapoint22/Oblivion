@@ -3,8 +3,8 @@
     <div class="property">
         <div class="label">Font</div>
         <div style="flex: 1;">
-            <select [(ngModel)]="fontFamily.selectedOption" (change)="fontFamily.setStyle()">
-                <option *ngFor="let option of fontFamily.options" [ngValue]="option">{{option.key}}</option>
+            <select [(ngModel)]="text.fontFamily.selectedOption" (change)="text.fontFamily.setStyle(); text.render()">
+                <option *ngFor="let option of text.fontFamily.options" [ngValue]="option">{{option.key}}</option>
             </select>
         </div>
     </div>
@@ -15,8 +15,8 @@
     <div class="property">
         <div class="label">Font Size</div>
         <div style="flex: 1;">
-            <select [(ngModel)]="fontSize.selectedOption" (change)="fontSize.setStyle()">
-                <option *ngFor="let option of fontSize.options" [ngValue]="option">{{option.key}}</option>
+            <select [(ngModel)]="text.fontSize.selectedOption" (change)="text.fontSize.setStyle(); text.render()">
+                <option *ngFor="let option of text.fontSize.options" [ngValue]="option">{{option.key}}</option>
             </select>
         </div>
     </div>
@@ -27,8 +27,7 @@
     <div class="property">
         <div class="label">Color</div>
         <div style="flex: 1;">
-            <color-swatch [color]="fontColor.rgbColor" (onClick)="fontColor.initialize()"
-                (onChange)="fontColor.setStyle()" (onColorPickerClose)="fontColor.onColorPickerClose()">
+            <color-swatch [color]="text.fontColor.rgbColor" (onChange)="text.fontColor.setStyle(); text.render()">
             </color-swatch>
         </div>
     </div>
@@ -40,8 +39,8 @@
     <div class="property">
         <div class="label">Highlight</div>
         <div style="flex: 1;">
-            <color-swatch [color]="highlightColor.rgbColor" (onClick)="highlightColor.initialize()"
-                (onChange)="highlightColor.setStyle()" (onColorPickerClose)="highlightColor.onColorPickerClose()">
+            <color-swatch [color]="text.highlightColor.rgbColor"
+                (onChange)="text.highlightColor.setStyle(); text.render()">
             </color-swatch>
         </div>
     </div>
@@ -54,32 +53,44 @@
         <div style="flex: 1; display: flex; justify-content: space-between;">
 
             <!-- Align Left -->
-            <div class="icon-container" title="Left align (Ctrl+Shift+L)"
-                (click)="alignLeft.setStyle(); alignCenter.isSelected = false; alignRight.isSelected = false; alignJustify.isSelected = false"
-                [ngClass]="{'selected': alignLeft.isSelected}">
+            <div class="icon-container" title="Left align (Ctrl+Shift+L)" (click)="
+                text.alignLeft.setStyle();
+                text.alignCenter.isSelected = false;
+                text.alignRight.isSelected = false;
+                text.alignJustify.isSelected = false; 
+                text.render()" [ngClass]="{'selected': text.alignLeft.isSelected}">
                 <i class="fas fa-align-left"></i>
             </div>
 
             <!-- Align Center -->
-            <div class="icon-container" title="Center align (Ctrl+Shift+E)"
-                (click)="alignCenter.setStyle(); alignLeft.isSelected = false; alignRight.isSelected = false; alignJustify.isSelected = false"
-                [ngClass]="{'selected': alignCenter.isSelected}">
+            <div class="icon-container" title="Center align (Ctrl+Shift+E)" (click)="
+                text.alignCenter.setStyle();
+                text.alignLeft.isSelected = false;
+                text.alignRight.isSelected = false;
+                text.alignJustify.isSelected = false;
+                text.render()" [ngClass]="{'selected': text.alignCenter.isSelected}">
                 <i class="fas fa-align-center"></i>
             </div>
 
 
             <!-- Align Right -->
-            <div class="icon-container" title="Right align (Ctrl+Shift+R)"
-                (click)="alignRight.setStyle(); alignCenter.isSelected = false; alignLeft.isSelected = false; alignJustify.isSelected = false"
-                [ngClass]="{'selected': alignRight.isSelected}">
+            <div class="icon-container" title="Right align (Ctrl+Shift+R)" (click)="
+                text.alignRight.setStyle();
+                text.alignCenter.isSelected = false;
+                text.alignLeft.isSelected = false;
+                text.alignJustify.isSelected = false;
+                text.render()" [ngClass]="{'selected': text.alignRight.isSelected}">
                 <i class="fas fa-align-right"></i>
             </div>
 
 
             <!-- Align Justify -->
-            <div class="icon-container" title="Justify (Ctrl+Shift+J)"
-                (click)="alignJustify.setStyle(); alignCenter.isSelected = false; alignRight.isSelected = false; alignLeft.isSelected = false"
-                [ngClass]="{'selected': alignJustify.isSelected}">
+            <div class="icon-container" title="Justify (Ctrl+Shift+J)" (click)="
+                text.alignJustify.setStyle();
+                text.alignCenter.isSelected = false;
+                text.alignRight.isSelected = false;
+                text.alignLeft.isSelected = false;
+                text.render()" [ngClass]="{'selected': text.alignJustify.isSelected}">
                 <i class="fas fa-align-justify"></i>
             </div>
         </div>
@@ -97,17 +108,20 @@
             <div class="icon-container" style="cursor: default;"></div>
 
             <!-- Bold -->
-            <div class="style-icon" (click)="bold.setStyle()" [ngClass]="{'selected': bold.isSelected}">
+            <div class="style-icon" (click)="text.bold.setStyle(); text.render()"
+                [ngClass]="{'selected': text.bold.isSelected}">
                 <i class="fas fa-bold"></i>
             </div>
 
             <!-- Italic -->
-            <div class="style-icon" (click)="italic.setStyle()" [ngClass]="{'selected': italic.isSelected}">
+            <div class="style-icon" (click)="text.italic.setStyle(); text.render()"
+                [ngClass]="{'selected': text.italic.isSelected}">
                 <i class="fas fa-italic"></i>
             </div>
 
             <!-- Underline -->
-            <div class="style-icon" (click)="underline.setStyle()" [ngClass]="{'selected': underline.isSelected}">
+            <div class="style-icon" (click)="text.underline.setStyle(); text.render()"
+                [ngClass]="{'selected': text.underline.isSelected}">
                 <i class="fas fa-underline"></i>
             </div>
         </div>
@@ -125,20 +139,20 @@
 
             <!-- Spacer -->
             <div class="icon-container" style="cursor: default;"></div>
-            
+
 
             <!-- Bulleted list -->
-            <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)" (click)="bulletedList.setStyle(); numberedList.isSelected = false"
+            <!-- <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)" (click)="bulletedList.setStyle(); numberedList.isSelected = false"
                 [ngClass]="{'selected': bulletedList.isSelected}">
                 <i class="fas fa-list-ul"></i>
-            </div>
+            </div> -->
 
 
             <!-- Numbered list -->
-            <div class="icon-container" title="Numbered list (Ctrl+Shift+7)" (click)="numberedList.setStyle(); bulletedList.isSelected = false"
+            <!-- <div class="icon-container" title="Numbered list (Ctrl+Shift+7)" (click)="numberedList.setStyle(); bulletedList.isSelected = false"
                 [ngClass]="{'selected': numberedList.isSelected}">
                 <i class="fas fa-list-ol"></i>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -158,15 +172,15 @@
             <div class="icon-container" style="cursor: default;"></div>
 
             <!-- Decrease indent -->
-            <div class="icon-container" title="Decrease indent (ctrl+[)" (click)="decreaseIndent.setStyle()">
+            <!-- <div class="icon-container" title="Decrease indent (ctrl+[)" (click)="decreaseIndent.setStyle()">
                 <i class="fas fa-outdent"></i>
-            </div>
+            </div> -->
 
 
             <!-- Increase indent -->
-            <div class="icon-container" title="Increase indent (ctrl+])" (click)="increaseIndent.setStyle()">
+            <!-- <div class="icon-container" title="Increase indent (ctrl+])" (click)="increaseIndent.setStyle()">
                 <i class="fas fa-indent"></i>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -177,13 +191,13 @@
     <div class="property">
         <div class="label">Link</div>
         <div style="flex: 1; display: flex; justify-content: space-between;">
-            <div class="icon-container" title="Link" (click)="linkStyle.setStyle()">
+            <div class="icon-container" title="Link" (click)="text.linkStyle.setStyle(); text.render()">
                 <i class="fas fa-outdent"></i>
             </div>
 
-            <div class="icon-container" title="Remove Link" (click)="linkStyle.removeLink()">
+            <!-- <div class="icon-container" title="Remove Link" (click)="linkStyle.removeLink()">
                 <i class="fas fa-outdent"></i>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -195,32 +209,32 @@
         <div class="label">Case</div>
         <div style="flex: 1; display: flex; justify-content: space-between;">
 
-            
+
 
             <!-- Lower Case -->
-            <div class="icon-container" title="Lower Case" (click)="lowerCase.setStyle()">
+            <div class="icon-container" title="Lower Case" (click)="text.lowerCase.setStyle(); text.render()">
                 <i class="fas fa-outdent"></i>
             </div>
 
             <!-- Upper Case -->
-            <div class="icon-container" title="Upper Case" (click)="upperCase.setStyle()">
+            <div class="icon-container" title="Upper Case" (click)="text.upperCase.setStyle(); text.render()">
                 <i class="fas fa-outdent"></i>
             </div>
 
 
             <!-- Sentence Case -->
-            <div class="icon-container" title="Sentence Case" (click)="sentenceCase.setStyle()">
+            <div class="icon-container" title="Sentence Case" (click)="text.sentenceCase.setStyle(); text.render()">
                 <i class="fas fa-outdent"></i>
             </div>
 
 
             <!-- Title Case -->
-            <div class="icon-container" title="Title Case" (click)="titleCase.setStyle()">
+            <div class="icon-container" title="Title Case" (click)="text.titleCase.setStyle(); text.render()">
                 <i class="fas fa-outdent"></i>
             </div>
 
 
-            
+
         </div>
     </div>
 

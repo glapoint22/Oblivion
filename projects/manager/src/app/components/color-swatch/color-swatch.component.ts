@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
-import { LazyLoadingService, SpinnerAction } from 'common';
-import { Color } from 'widgets';
+import { Color, LazyLoadingService, SpinnerAction } from 'common';
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
 
 @Component({

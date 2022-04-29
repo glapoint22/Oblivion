@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Color } from 'widgets';
+import { Color } from 'common';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({

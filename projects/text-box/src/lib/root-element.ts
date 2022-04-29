@@ -5,7 +5,7 @@ export class RootElement extends Element {
     
     constructor() {
         super();
-        this.elementType == ElementType.Root;
+        this.elementType = ElementType.Root;
     }
 
 

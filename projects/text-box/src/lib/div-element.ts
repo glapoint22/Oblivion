@@ -1,7 +1,8 @@
+import { Container } from "./container";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
 
-export class DivElement extends Element {
+export class DivElement extends Container {
 
     constructor(public parent: Element) {
         super();

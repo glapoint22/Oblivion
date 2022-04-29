@@ -152,7 +152,18 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
         elementType: ElementType.Div,
         children: [
           {
-            elementType: ElementType.Break
+            elementType: ElementType.Span,
+            styles: [
+              {
+                name: 'color',
+                value: '#00ff00'
+              }
+            ],
+            children: [
+              {
+                elementType: ElementType.Break
+              }
+            ]
           }
         ]
       },

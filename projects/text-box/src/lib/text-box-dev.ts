@@ -1,14 +1,48 @@
 import { Subject } from "rxjs";
+import { AlignCenter } from "./align-center";
+import { AlignJustify } from "./align-justify";
+import { AlignLeft } from "./align-left";
+import { AlignRight } from "./align-right";
+import { Bold } from "./bold";
 import { BreakElement } from "./break-element";
 import { DivElement } from "./div-element";
 import { Element } from "./element";
+import { ElementDeleteStatus } from "./element-delete-status";
 import { ElementRange } from "./element-range";
+import { FontColor } from "./font-color";
+import { FontFamily } from "./font-family";
+import { FontSize } from "./font-size";
+import { HighlightColor } from "./highlight-color";
+import { Italic } from "./italic";
+import { LinkStyle } from "./link-style";
+import { LowerCase } from "./lower-case";
 import { Selection } from "./selection";
+import { SentenceCase } from "./sentence-case";
 import { TextBox } from "./text-box";
+import { TextElement } from "./text-element";
+import { TitleCase } from "./title-case";
+import { Underline } from "./underline";
+import { UpperCase } from "./upper-case";
 
 export class TextBoxDev extends TextBox {
     public selection = new Selection();
     public onSelection: Subject<void> = new Subject<void>();
+    public bold: Bold = new Bold(this.selection);
+    public italic: Italic = new Italic(this.selection);
+    public underline: Underline = new Underline(this.selection);
+    public fontFamily: FontFamily = new FontFamily(this.selection);
+    public fontSize: FontSize = new FontSize(this.selection);
+    public fontColor: FontColor = new FontColor(this.selection);
+    public highlightColor: HighlightColor = new HighlightColor(this.selection);
+    public alignLeft: AlignLeft = new AlignLeft(this.selection);
+    public alignCenter: AlignCenter = new AlignCenter(this.selection);
+    public alignRight: AlignRight = new AlignRight(this.selection);
+    public alignJustify: AlignJustify = new AlignJustify(this.selection);
+    public linkStyle: LinkStyle = new LinkStyle(this.selection);
+    public upperCase: UpperCase = new UpperCase(this.selection);
+    public lowerCase: LowerCase = new LowerCase(this.selection);
+    public sentenceCase: SentenceCase = new SentenceCase(this.selection);
+    public titleCase: TitleCase = new TitleCase(this.selection);
 
     constructor(htmlRootElement: HTMLElement) {
         super(htmlRootElement);
@@ -43,15 +77,52 @@ export class TextBoxDev extends TextBox {
 
             const clipboardData = event.clipboardData?.getData('text/plain');
 
-            // if (clipboardData) this.onInput(clipboardData, true);
+            if (clipboardData) {
+                if (!this.selection.collapsed) this.deleteRange();
+
+                this.selection.startElement.onTextInput(clipboardData, this.selection.startOffset);
+                this.render();
+            }
         });
 
 
 
         // Keydown
         htmlRootElement.addEventListener('keydown', (event) => {
+            const key = this.getKey(event);
+            if (!key) return;
+
             event.preventDefault();
-            this.deleteRange();
+
+            // We have a ranged selection
+            if (!this.selection.collapsed) {
+                this.deleteRange();
+
+                if (key == 'Enter') {
+                    // On Enter Keydown
+                    this.selection.startElement.onEnterKeydown(this.selection.startOffset);
+                } else if (key != 'Backspace' && key != 'Delete') {
+                    // On Text Input
+                    this.selection.startElement.onTextInput(key, this.selection.startOffset);
+                }
+
+                // Ranged is collapsed
+            } else {
+                if (key == 'Backspace') {
+                    // On Backspace keydown
+                    this.selection.startElement.onBackspaceKeydown(this.selection.startOffset);
+                } else if (key == 'Enter') {
+                    // On Enter keydown
+                    this.selection.startElement.onEnterKeydown(this.selection.startOffset);
+                } else if (key == 'Delete') {
+                    // On Delete keydown
+                    this.selection.startElement.onDeleteKeydown(this.selection.startOffset);
+                } else {
+                    // On Text input
+                    this.selection.startElement.onTextInput(key, this.selection.startOffset);
+                }
+            }
+
             this.render();
         });
 
@@ -90,27 +161,68 @@ export class TextBoxDev extends TextBox {
 
 
     // ---------------------------------------------------------Delete Range------------------------------------------------------------------
-    private deleteRange(currentElement: Element = this.selection.commonAncestorContainer, range: ElementRange = new ElementRange()): boolean {
-        let done!: boolean;
+    private deleteRange(currentElement: Element = this.selection.commonAncestorContainer, range: ElementRange = new ElementRange(), startContainer: Element = this.selection.startElement.container): ElementDeleteStatus {
+        let status!: ElementDeleteStatus;
 
-        // If current element is start element
+        // If current element is the start element
         if (currentElement.id == this.selection.startElement.id) {
-            currentElement.delete(0, this.selection.startOffset);
+            startContainer.preserve = true;
+
+            // Selection only contains one text element
+            if (this.selection.startElement == this.selection.endElement) {
+                const textElement = this.selection.startElement as TextElement;
+                const startText = textElement.text.substring(0, this.selection.startOffset);
+                const endText = textElement.text.substring(this.selection.endOffset);
+
+                // Set the new text
+                textElement.text = startText + endText;
+
+                // If we have an empty text
+                if (textElement.text.length == 0) {
+                    textElement.delete();
+
+                    // Insert a break element
+                    if (startContainer.children.length == 0) {
+                        startContainer.children.push(new BreakElement(startContainer));
+                    }
+                }
+
+                return ElementDeleteStatus.DeletionComplete;
+            }
+
+
+            status = currentElement.delete(0, this.selection.startOffset);
             range.inRange = true;
+            return status;
         }
 
-        // If current element is end element
+        // If current element is the end element
         else if (currentElement.id == this.selection.endElement.id) {
-            currentElement.delete(this.selection.endOffset);
+            const endContainer = currentElement.container;
 
-            return true;
+            status = currentElement.delete(this.selection.endOffset);
+
+            // If the start container is empty and we have nothing moving into it, insert a break element
+            if ((startContainer == endContainer && startContainer.children.length == 0) ||
+                (endContainer.children.length == 0 && startContainer.children.length == 0)) {
+
+                // Insert a break element
+                startContainer.children.push(new BreakElement(startContainer));
+
+
+                // Move the elements into the start container
+            } else if (startContainer != endContainer && endContainer.children.length > 0) {
+                if (status == ElementDeleteStatus.Deleted) currentElement = endContainer;
+                currentElement.moveTo(startContainer);
+            }
+
+            return ElementDeleteStatus.DeletionComplete;
         }
 
         // Other
         else if (range.inRange) {
             if (!Element.search(this.selection.endElement.id, currentElement)) {
-                currentElement.delete();
-                return false;
+                return currentElement.delete();
             }
         }
 
@@ -119,18 +231,36 @@ export class TextBoxDev extends TextBox {
         for (let i = 0; i < currentElement.children.length; i++) {
             const child = currentElement.children[i];
 
-            done = this.deleteRange(child, range);
-            if (done) return true;
-            if (done == false) {
-                // If we are on the last child, return
-                if (i == currentElement.children.length) return undefined!;
+            status = this.deleteRange(child, range, startContainer);
+
+            // If complete, we are done!
+            if (status == ElementDeleteStatus.DeletionComplete) return status;
+
+            // If current element has been deleted
+            if (status == ElementDeleteStatus.Deleted) {
+
+                // If we are on the last child, return not deleted
+                if (i == currentElement.children.length && currentElement.children.length != 0) {
+                    return ElementDeleteStatus.NotDeleted;
+                }
 
                 // This will ensure we loop through all children
                 i--;
             }
         }
 
-        return done;
+        return status;
     }
 
+
+
+
+    // ---------------------------------------------------------Get Key------------------------------------------------------------------
+    private getKey(event: KeyboardEvent): string | null {
+        if (event.key == 'Backspace' || event.key == 'Enter' || event.key == 'Delete') return event.key;
+
+        if (!/^(?:\w|\W){1}$/.test(event.key) || event.ctrlKey) return null;
+
+        return event.key;
+    }
 }
