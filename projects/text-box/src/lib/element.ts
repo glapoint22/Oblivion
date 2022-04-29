@@ -1,12 +1,12 @@
 import { ElementDeleteStatus } from "./element-delete-status";
 import { ElementRange } from "./element-range";
 import { ElementType } from "./element-type";
-import { Style } from "./style";
+import { StyleData } from "./style-data";
 
 export abstract class Element {
     public parent!: Element;
     public children: Array<Element> = [];
-    public styles: Array<Style> = [];
+    public styles: Array<StyleData> = [];
     public indent: number = 0;
     public id: string;
     public elementType!: ElementType;
@@ -146,8 +146,8 @@ export abstract class Element {
             newElement = this.create(parent);
 
             // Copy the styles
-            this.styles.forEach((style: Style) => {
-                newElement.styles.push(new Style(style.name, style.value));
+            this.styles.forEach((style: StyleData) => {
+                newElement.styles.push(new StyleData(style.name, style.value));
             });
 
             // Copy the children

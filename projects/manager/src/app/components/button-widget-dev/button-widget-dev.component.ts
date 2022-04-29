@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ButtonWidgetComponent, Color } from 'widgets';
+import { Color } from 'common';
+import { ButtonWidgetComponent } from 'widgets';
 import { ButtonState } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 

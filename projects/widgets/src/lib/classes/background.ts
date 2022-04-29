@@ -1,5 +1,5 @@
+import { Color } from "common";
 import { BackgroundImage } from "./background-image";
-import { Color } from "./color";
 import { Enableable } from "./enableable";
 
 export class Background implements Enableable {

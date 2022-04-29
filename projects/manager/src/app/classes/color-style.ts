@@ -1,4 +1,5 @@
-import { Color, StyleData } from "widgets";
+import { Color } from "common";
+import { StyleData } from "widgets";
 import { Style } from "./style";
 
 export class ColorStyle extends Style {

@@ -1,16 +1,48 @@
 import { Subject } from "rxjs";
+import { AlignCenter } from "./align-center";
+import { AlignJustify } from "./align-justify";
+import { AlignLeft } from "./align-left";
+import { AlignRight } from "./align-right";
+import { Bold } from "./bold";
 import { BreakElement } from "./break-element";
 import { DivElement } from "./div-element";
 import { Element } from "./element";
 import { ElementDeleteStatus } from "./element-delete-status";
 import { ElementRange } from "./element-range";
+import { FontColor } from "./font-color";
+import { FontFamily } from "./font-family";
+import { FontSize } from "./font-size";
+import { HighlightColor } from "./highlight-color";
+import { Italic } from "./italic";
+import { LinkStyle } from "./link-style";
+import { LowerCase } from "./lower-case";
 import { Selection } from "./selection";
+import { SentenceCase } from "./sentence-case";
 import { TextBox } from "./text-box";
 import { TextElement } from "./text-element";
+import { TitleCase } from "./title-case";
+import { Underline } from "./underline";
+import { UpperCase } from "./upper-case";
 
 export class TextBoxDev extends TextBox {
     public selection = new Selection();
     public onSelection: Subject<void> = new Subject<void>();
+    public bold: Bold = new Bold(this.selection);
+    public italic: Italic = new Italic(this.selection);
+    public underline: Underline = new Underline(this.selection);
+    public fontFamily: FontFamily = new FontFamily(this.selection);
+    public fontSize: FontSize = new FontSize(this.selection);
+    public fontColor: FontColor = new FontColor(this.selection);
+    public highlightColor: HighlightColor = new HighlightColor(this.selection);
+    public alignLeft: AlignLeft = new AlignLeft(this.selection);
+    public alignCenter: AlignCenter = new AlignCenter(this.selection);
+    public alignRight: AlignRight = new AlignRight(this.selection);
+    public alignJustify: AlignJustify = new AlignJustify(this.selection);
+    public linkStyle: LinkStyle = new LinkStyle(this.selection);
+    public upperCase: UpperCase = new UpperCase(this.selection);
+    public lowerCase: LowerCase = new LowerCase(this.selection);
+    public sentenceCase: SentenceCase = new SentenceCase(this.selection);
+    public titleCase: TitleCase = new TitleCase(this.selection);
 
     constructor(htmlRootElement: HTMLElement) {
         super(htmlRootElement);
