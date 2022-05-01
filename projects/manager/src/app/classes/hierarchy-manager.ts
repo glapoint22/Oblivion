@@ -236,7 +236,7 @@ export class HierarchyManager extends ListManager {
         // Remove the selected hierarchy item and then put it back so the indent can take effect
         const hierarchyItemIndex = this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity);
         this.sourceList.splice(hierarchyItemIndex, 1);
-        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent, selected: hierarchyItem.selected, htmlItem: hierarchyItem?.htmlItem } as HierarchyItem);
+        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent, selected: hierarchyItem.selected, htmlItem: hierarchyItem?.htmlItem, hidden: hierarchyItem.hidden } as HierarchyItem);
 
         // And because we removed the selected hierarchy item, we lost our event listeners, so we have to put them back
         // window.setTimeout(() => {
@@ -254,7 +254,7 @@ export class HierarchyManager extends ListManager {
 
         const hierarchyItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
         this.sourceList.splice(hierarchyItemIndex, 1);
-        this.sourceList.splice(hierarchyItemIndex, 0, { id: this.editedItem!.id, name: this.editedItem!.name, hierarchyGroupID: this.editedItem!.hierarchyGroupID, isParent: (this.editedItem as HierarchyItem).isParent, selected: this.editedItem!.selected, htmlItem: this.editedItem?.htmlItem } as HierarchyItem);
+        this.sourceList.splice(hierarchyItemIndex, 0, { id: this.editedItem!.id, name: this.editedItem!.name, hierarchyGroupID: this.editedItem!.hierarchyGroupID, isParent: (this.editedItem as HierarchyItem).isParent, selected: this.editedItem!.selected, htmlItem: this.editedItem?.htmlItem, hidden: (this.editedItem as HierarchyItem).hidden } as HierarchyItem);
 
         this.editedItem = this.sourceList[hierarchyItemIndex];
     }

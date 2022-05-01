@@ -21,6 +21,9 @@ import { CheckboxListModule } from '../lists/checkbox-list/checkbox-list.module'
 import { HierarchyListModule } from '../lists/hierarchy-list/hierarchy-list.module';
 import { ListModule } from '../lists/list/list.module';
 import { IconButtonModule } from '../icon-button/icon-button.module';
+import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
+import { MultiColumnListModule } from '../lists/multi-column-list/multi-column-list.module';
+import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
 
 
 @NgModule({
@@ -48,7 +51,10 @@ import { IconButtonModule } from '../icon-button/icon-button.module';
     ListModule,
     CheckboxListModule,
     HierarchyListModule,
-    IconButtonModule
+    IconButtonModule,
+    HierarchyModule,
+    MultiColumnListModule,
+    CheckboxHierarchyModule
   ],
   exports: [ProductPropertiesComponent]
 })
