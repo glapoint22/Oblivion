@@ -1,8 +1,10 @@
 import { Container } from "./container";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
+import { Selection } from "./selection";
 
 export class ListItemElement extends Container {
+    
 
     constructor(public parent: Element) {
         super();

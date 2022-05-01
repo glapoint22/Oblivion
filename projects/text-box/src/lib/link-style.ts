@@ -28,7 +28,7 @@ export class LinkStyle extends ToggleStyle {
 
             styleElement.styles = element.styles;
             element.children.forEach((child: Element) => {
-                const copiedElement = child.copy(styleElement);
+                const copiedElement = child.copy(styleElement, this.selection);
                 
                 styleElement.children.push(copiedElement);
             });

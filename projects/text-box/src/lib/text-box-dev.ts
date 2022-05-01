@@ -47,6 +47,8 @@ export class TextBoxDev extends TextBox {
     constructor(htmlRootElement: HTMLElement) {
         super(htmlRootElement);
 
+        this.htmlRootElement = htmlRootElement;
+
         // Create the first child
         const divElement = new DivElement(this.rootElement);
         const breakElement = new BreakElement(divElement);
@@ -62,6 +64,7 @@ export class TextBoxDev extends TextBox {
             const onMouseup = () => {
                 window.setTimeout(() => {
                     this.selection.onSelection(this.rootElement);
+                    this.setSelectedClasses();
                     this.onSelection.next();
                 });
             }
@@ -80,8 +83,9 @@ export class TextBoxDev extends TextBox {
             if (clipboardData) {
                 if (!this.selection.collapsed) this.deleteRange();
 
-                this.selection.startElement.onTextInput(clipboardData, this.selection.startOffset);
-                this.render();
+                this.selection.startElement.onTextInput(clipboardData, this.selection);
+
+                this.setText();
             }
         });
 
@@ -100,30 +104,30 @@ export class TextBoxDev extends TextBox {
 
                 if (key == 'Enter') {
                     // On Enter Keydown
-                    this.selection.startElement.onEnterKeydown(this.selection.startOffset);
+                    this.selection.startElement.onEnterKeydown(this.selection);
                 } else if (key != 'Backspace' && key != 'Delete') {
                     // On Text Input
-                    this.selection.startElement.onTextInput(key, this.selection.startOffset);
+                    this.selection.startElement.onTextInput(key, this.selection);
                 }
 
                 // Ranged is collapsed
             } else {
                 if (key == 'Backspace') {
                     // On Backspace keydown
-                    this.selection.startElement.onBackspaceKeydown(this.selection.startOffset);
+                    this.selection.startElement.onBackspaceKeydown(this.selection);
                 } else if (key == 'Enter') {
                     // On Enter keydown
-                    this.selection.startElement.onEnterKeydown(this.selection.startOffset);
+                    this.selection.startElement.onEnterKeydown(this.selection);
                 } else if (key == 'Delete') {
                     // On Delete keydown
-                    this.selection.startElement.onDeleteKeydown(this.selection.startOffset);
+                    this.selection.startElement.onDeleteKeydown(this.selection);
                 } else {
                     // On Text input
-                    this.selection.startElement.onTextInput(key, this.selection.startOffset);
+                    this.selection.startElement.onTextInput(key, this.selection);
                 }
             }
 
-            this.render();
+            this.setText();
         });
 
 
@@ -132,12 +136,27 @@ export class TextBoxDev extends TextBox {
             if (event.key.includes('Arrow') || (event.ctrlKey && (event.key == 'a' || event.key == 'A'))) {
                 window.setTimeout(() => {
                     this.selection.onSelection(this.rootElement);
+                    this.setSelectedClasses();
                     this.onSelection.next();
                 });
             }
         });
     }
 
+
+    // ---------------------------------------------------------Set Text------------------------------------------------------------------
+    public setText(): void {
+        this.render();
+        this.selection.setRange();
+    }
+
+
+
+    // ---------------------------------------------------------Set Focus------------------------------------------------------------------
+    public setFocus(): void {
+        this.htmlRootElement.focus();
+        this.selection.onSelection(this.rootElement);
+    }
 
 
     // ---------------------------------------------------------Render------------------------------------------------------------------
@@ -184,8 +203,12 @@ export class TextBoxDev extends TextBox {
                     // Insert a break element
                     if (startContainer.children.length == 0) {
                         startContainer.children.push(new BreakElement(startContainer));
+                        startContainer.firstChild.parent.setSelection(this.selection);
                     }
+                } else {
+                    currentElement.setSelection(this.selection, this.selection.startOffset);
                 }
+
 
                 return ElementDeleteStatus.DeletionComplete;
             }
@@ -199,6 +222,7 @@ export class TextBoxDev extends TextBox {
         // If current element is the end element
         else if (currentElement.id == this.selection.endElement.id) {
             const endContainer = currentElement.container;
+            const startContainerChildrenCount = startContainer.children.length;
 
             status = currentElement.delete(this.selection.endOffset);
 
@@ -208,12 +232,21 @@ export class TextBoxDev extends TextBox {
 
                 // Insert a break element
                 startContainer.children.push(new BreakElement(startContainer));
+                startContainer.firstChild.parent.setSelection(this.selection);
 
+                return ElementDeleteStatus.DeletionComplete;
 
                 // Move the elements into the start container
             } else if (startContainer != endContainer && endContainer.children.length > 0) {
                 if (status == ElementDeleteStatus.Deleted) currentElement = endContainer;
-                currentElement.moveTo(startContainer);
+                currentElement.moveTo(startContainer, this.selection);
+            }
+
+            // Set the selection
+            if (startContainerChildrenCount > 0) {
+                this.selection.startElement.setSelection(this.selection, this.selection.startOffset);
+            } else {
+                startContainer.firstChild.setSelection(this.selection);
             }
 
             return ElementDeleteStatus.DeletionComplete;
@@ -262,5 +295,26 @@ export class TextBoxDev extends TextBox {
         if (!/^(?:\w|\W){1}$/.test(event.key) || event.ctrlKey) return null;
 
         return event.key;
+    }
+
+
+
+
+
+
+    // ---------------------------------------------------------Set Selected Classes------------------------------------------------------------------
+    public setSelectedClasses() {
+        this.bold.setSelectedStyle();
+        this.italic.setSelectedStyle();
+        this.underline.setSelectedStyle();
+        this.fontFamily.setSelectedStyle();
+        this.fontSize.setSelectedStyle();
+        this.fontColor.setSelectedStyle();
+        this.highlightColor.setSelectedStyle();
+        this.alignLeft.setSelectedStyle();
+        this.alignCenter.setSelectedStyle();
+        this.alignRight.setSelectedStyle();
+        this.alignJustify.setSelectedStyle();
+        this.linkStyle.setSelectedStyle();
     }
 }

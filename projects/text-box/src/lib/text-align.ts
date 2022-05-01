@@ -3,7 +3,8 @@ import { Selection } from "./selection";
 import { Style } from "./style";
 import { StyleData } from "./style-data";
 
-export class TextAlign extends Style {
+export abstract class TextAlign extends Style {
+    
     public isSelected!: boolean;
 
     constructor(selection: Selection) {
@@ -25,5 +26,12 @@ export class TextAlign extends Style {
         } else {
             this.addStyleToElement(element.container);
         }
+    }
+
+
+
+    // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
+    public setSelectedStyle(): void {
+        // throw new Error("Method not implemented.");
     }
 }

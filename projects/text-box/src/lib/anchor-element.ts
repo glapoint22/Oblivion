@@ -2,6 +2,7 @@ import { Element } from "./element";
 import { ElementType } from "./element-type";
 import { Link } from "./link";
 import { LinkType } from "./link-type";
+import { Selection } from "./selection";
 
 export class AnchorElement extends Element {
 

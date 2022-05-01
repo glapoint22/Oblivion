@@ -149,9 +149,13 @@ export abstract class Case extends Style {
                 if (nextElement) currentElement = nextElement;
             }
         }
+    }
 
 
 
+    // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
+    public setSelectedStyle(): void {
+        throw new Error("Method not implemented.");
     }
 
 

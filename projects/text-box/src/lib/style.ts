@@ -6,11 +6,24 @@ import { SpanElement } from "./span-element";
 import { StyleData } from "./style-data";
 import { TextElement } from "./text-element";
 
-export class Style {
+export abstract class Style {
     public name!: string;
     public value!: string;
 
     constructor(protected selection: Selection) { }
+
+
+    // ---------------------------------------------------------Is Style Selected------------------------------------------------------------------
+    protected get isStyleSelected(): boolean {
+        if (this.selection.selectedStyles.length > 0 && !(this.selection.selectedStyles.length == 1 && this.selection.selectedStyles[0].length == 0)) {
+            return this.selection.selectedStyles.every(x => x.some(z => z.name == this.name && z.value == this.value));
+        }
+
+        return false;
+    }
+
+
+
 
 
     // ---------------------------------------------------------Set Style------------------------------------------------------------------
@@ -87,7 +100,7 @@ export class Style {
         const endText = textElement.text.substring(endOffset);
         const index = textElement.index;
         const styleElement = this.createStyleElement(textElement.parent);
-        const newTextElement = textElement.copy(styleElement) as TextElement;
+        const newTextElement = textElement.copy(styleElement, this.selection) as TextElement;
 
         newTextElement.text = startText;
         this.addStyleToElement(styleElement);
@@ -148,7 +161,7 @@ export class Style {
         } else {
             const index = textElement.index;
             const styleElement = this.createStyleElement(textElement.parent);
-            const newTextElement = textElement.copy(styleElement) as TextElement;
+            const newTextElement = textElement.copy(styleElement, this.selection) as TextElement;
 
             this.addStyleToElement(styleElement);
 
@@ -191,4 +204,9 @@ export class Style {
     protected addStyleToElement(element: Element): void {
         element.styles.push(new StyleData(this.name, this.value));
     }
+
+
+
+    // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
+    public abstract setSelectedStyle(): void;
 }

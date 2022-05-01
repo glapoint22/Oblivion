@@ -35,4 +35,11 @@ export class ColorStyle extends Style {
         this.value = this.color;
         super.setStyle();
     }
+
+
+
+    // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
+    public setSelectedStyle(): void {
+        // throw new Error("Method not implemented.");
+    }
 }

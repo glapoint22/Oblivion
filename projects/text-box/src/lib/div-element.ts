@@ -1,6 +1,7 @@
 import { Container } from "./container";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
+import { Selection } from "./selection";
 
 export class DivElement extends Container {
 
@@ -23,4 +24,5 @@ export class DivElement extends Container {
     protected create(parent: Element): Element {
         return new DivElement(parent);
     }
+
 }
