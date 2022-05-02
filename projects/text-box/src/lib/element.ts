@@ -145,7 +145,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, selection: Selection, range?: ElementRange): Element {
+    public copy(parent: Element, range?: ElementRange): Element {
         let newElement!: Element;
 
         if (range?.startElementId == this.id) {
@@ -159,9 +159,6 @@ export abstract class Element {
             // Create the new element
             newElement = this.create(parent);
 
-            // Reset the selection elements
-            if (selection.startElement == this) selection.startElement = newElement;
-            if (selection.endElement == this) selection.endElement = newElement;
 
             // Copy the styles
             this.styles.forEach((style: StyleData) => {
@@ -172,7 +169,7 @@ export abstract class Element {
 
             // Copy the children
             this.children.forEach((child: Element) => {
-                const copiedChild = child.copy(newElement, selection, range);
+                const copiedChild = child.copy(newElement, range);
 
                 if (copiedChild) newElement.children.push(copiedChild);
             });
@@ -270,8 +267,9 @@ export abstract class Element {
     // ---------------------------------------------------On Enter keydown-----------------------------------------------------
     public onEnterKeydown(selection: Selection): void {
         const container = this.container;
-        const containerCopy = container.copy(container.parent, selection);
+        const containerCopy = container.copy(container.parent);
 
+        containerCopy.setSelection(selection);
         container.parent.children.splice(container.index + 1, 0, containerCopy);
     }
 

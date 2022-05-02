@@ -52,7 +52,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, selection: Selection, range?: ElementRange): Element {
+    public copy(parent: Element, range?: ElementRange): Element {
         let text = this.text;
         let textElement: TextElement;
 
@@ -73,10 +73,6 @@ export class TextElement extends Element {
             }
 
             textElement = new TextElement(parent, text);
-
-            // Reset the selection elements
-            if (selection.startElement == this) selection.startElement = textElement;
-            if (selection.endElement == this) selection.endElement = textElement;
         }
 
         return textElement!;
@@ -86,14 +82,14 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Move To-----------------------------------------------------
-    public moveTo(container: Element, selection: Selection) {
+    public moveTo(container: Element) {
         let topElement: Element = this;
 
         while (topElement.parent.elementType != ElementType.Div && topElement.parent.elementType != ElementType.ListItem) {
             topElement = topElement.parent;
         }
 
-        const copy = topElement.copy(container, selection);
+        const copy = topElement.copy(container);
 
         container.children.push(copy);
         topElement.delete();
@@ -122,11 +118,14 @@ export class TextElement extends Element {
                 if (previousChild.elementType == ElementType.Break) {
                     previousContainer.preserve = true;
                     previousChild.delete();
+                    this.container.moveTo(previousContainer, selection);
+                    previousContainer.firstChild.setSelection(selection);
                 } else {
                     previousChild.setSelection(selection, Infinity);
+                    this.container.moveTo(previousContainer, selection);
                 }
 
-                this.container.moveTo(previousContainer, selection);
+
             }
         } else {
             // Remove the previous character
@@ -138,9 +137,10 @@ export class TextElement extends Element {
                 const previousChild = this.previousChild;
                 const nextChild = this.nextChild;
                 const container = this.container as Container;
+                const previousContainer = previousChild?.container;
 
                 // If the container is down to one child
-                if (container.children.length == 1) {
+                if (container.children.length == 1 && container.lastChild == this) {
                     container.preserve = true;
                 }
 
@@ -153,7 +153,7 @@ export class TextElement extends Element {
                     container.setSelection(selection);
                 } else {
                     // Select the previous child
-                    if (previousChild) {
+                    if (previousChild && this.container == previousContainer) {
                         previousChild.setSelection(selection, Infinity);
 
                         // Select the next child
@@ -167,9 +167,10 @@ export class TextElement extends Element {
                 let offset = selection.startOffset - 1;
                 let element: Element = this;
                 const previousChild = this.previousChild;
+                const previousContainer = previousChild?.container;
 
                 // If we are at the beginning of the text, select the previous child
-                if (offset == 0 && previousChild) {
+                if (offset == 0 && previousChild && this.container == previousContainer) {
                     offset = Infinity;
                     element = previousChild;
                 }
@@ -245,53 +246,52 @@ export class TextElement extends Element {
         const startRange = new ElementRange();
         const endRange = new ElementRange();
 
-        // If the cursor is at the end
-        if (this == lastChild && selection.startOffset == this.text.length) {
-            startRange.startElementId = this.id;
-            startRange.startOffset = selection.startOffset;
-            startRange.endElementId = this.id
-
-            const containerCopy = container.copy(container.parent, selection, startRange) as Container;
-            containerCopy.createBreakElement();
-            container.parent.children.splice(index + 1, 0, containerCopy);
-
-            containerCopy.firstChild.parent.setSelection(selection);
-
-            // If cursor is at the beginning
-        } else if (this == firstChild && selection.startOffset == 0) {
+        // If cursor is at the beginning
+        if (this == firstChild && selection.startOffset == 0) {
             startRange.startElementId = container.id;
             startRange.endElementId = this.id;
             startRange.startOffset = 0;
             startRange.endOffset = 0;
 
-            const containerCopy = container.copy(container.parent, selection, startRange) as Container;
+            const containerCopy = container.copy(container.parent, startRange) as Container;
             containerCopy.createBreakElement();
             container.parent.children.splice(index, 0, containerCopy);
 
             this.setSelection(selection);
+        }
 
-            // Other
-        } else {
+        // If the cursor is at the end
+        else if (this == lastChild && selection.startOffset == this.text.length) {
+            startRange.startElementId = this.id;
+            startRange.startOffset = selection.startOffset;
+            startRange.endElementId = this.id
+
+            const containerCopy = container.copy(container.parent, startRange) as Container;
+            containerCopy.createBreakElement();
+            container.parent.children.splice(index + 1, 0, containerCopy);
+
+            containerCopy.firstChild.parent.setSelection(selection);
+        }
+
+        // Other
+        else {
             startRange.startElementId = container.id;
             startRange.endElementId = this.id;
             startRange.endOffset = selection.startOffset;
-            const startCopy = container.copy(container.parent, selection, startRange);
-
+            const startCopy = container.copy(container.parent, startRange);
             const startElement = selection.startOffset == this.text.length ? this.nextChild : this;
-            selection.startElement = selection.endElement = startElement!;
 
             endRange.startElementId = startElement?.id!;
             endRange.startOffset = selection.startOffset == this.text.length ? 0 : selection.startOffset;
             endRange.endElementId = lastChild.id;
             endRange.endOffset = (lastChild as TextElement).text.length;
-
-            const endCopy = container.copy(container.parent, selection, endRange);
+            const endCopy = container.copy(container.parent, endRange);
 
 
             container.parent.children.splice(index, 1, startCopy);
             container.parent.children.splice(index + 1, 0, endCopy);
 
-            selection.startElement.setSelection(selection);
+            endCopy.firstChild.setSelection(selection);
         }
     }
 

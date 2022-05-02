@@ -148,6 +148,7 @@ export class TextBoxDev extends TextBox {
     public setText(): void {
         this.render();
         this.selection.setRange();
+        this.htmlRootElement.focus();
     }
 
 
@@ -223,10 +224,11 @@ export class TextBoxDev extends TextBox {
         else if (currentElement.id == this.selection.endElement.id) {
             const endContainer = currentElement.container;
             const startContainerChildrenCount = startContainer.children.length;
+            const startContainerLastChild = startContainer.lastChild;
 
             status = currentElement.delete(this.selection.endOffset);
 
-            // If the start container is empty and we have nothing moving into it, insert a break element
+            // If the start container is the same as the end container and is empty and we have nothing moving into it, insert a break element
             if ((startContainer == endContainer && startContainer.children.length == 0) ||
                 (endContainer.children.length == 0 && startContainer.children.length == 0)) {
 
@@ -244,7 +246,7 @@ export class TextBoxDev extends TextBox {
 
             // Set the selection
             if (startContainerChildrenCount > 0) {
-                this.selection.startElement.setSelection(this.selection, this.selection.startOffset);
+                startContainerLastChild.setSelection(this.selection, Infinity)
             } else {
                 startContainer.firstChild.setSelection(this.selection);
             }

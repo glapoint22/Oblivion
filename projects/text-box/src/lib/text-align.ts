@@ -15,7 +15,7 @@ export abstract class TextAlign extends Style {
 
 
     // ---------------------------------------------------------Add Style------------------------------------------------------------------
-    protected addStyle(element: Element): void {
+    protected addStyle(element: Element): Element {
         let index!: number;
 
         if (element.container.styles.some((style: StyleData, i: number) => {
@@ -26,6 +26,8 @@ export abstract class TextAlign extends Style {
         } else {
             this.addStyleToElement(element.container);
         }
+
+        return element;
     }
 
 
