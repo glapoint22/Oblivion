@@ -34,6 +34,6 @@ export abstract class TextAlign extends Style {
 
     // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
     public setSelectedStyle(): void {
-        // throw new Error("Method not implemented.");
+        this.isSelected = this.styleSelected;
     }
 }

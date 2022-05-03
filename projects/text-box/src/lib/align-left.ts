@@ -18,4 +18,11 @@ export class AlignLeft extends TextAlign {
 
         return element;
     }
+
+
+
+    // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
+    public setSelectedStyle(): void {
+        this.isSelected = !this.getSelectedValue();
+    }
 }

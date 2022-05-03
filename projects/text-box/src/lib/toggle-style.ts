@@ -1,3 +1,5 @@
+import { BreakElement } from "./break-element";
+import { Container } from "./container";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
 import { Style } from "./style";
@@ -9,7 +11,7 @@ export abstract class ToggleStyle extends Style {
 
     // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
     public setSelectedStyle(): void {
-        this.isSelected = this.isStyleSelected;
+        this.isSelected = this.styleSelected;
     }
 
 
@@ -18,7 +20,7 @@ export abstract class ToggleStyle extends Style {
     protected addStyle(element: Element, startOffset: number, endOffset: number): Element {
         let newElement!: Element;
 
-        if (this.isStyleSelected) {
+        if (this.styleSelected) {
             newElement = this.removeStyle(element, startOffset, endOffset);
         } else {
             newElement = super.addStyle(element, startOffset, endOffset);
@@ -81,6 +83,8 @@ export abstract class ToggleStyle extends Style {
 
             textElement.text = endText;
 
+            this.setSelection(textElement, newTextElement);
+
             return newTextElement;
         }
 
@@ -96,6 +100,8 @@ export abstract class ToggleStyle extends Style {
 
         (endCopy.firstChild as TextElement).text = endText;
         topParent.children.splice(index + 1, 0, endCopy);
+
+        this.setSelection(textElement, newTextElement);
 
         return this.removeTopStyle(newTextElement);
     }
@@ -133,6 +139,10 @@ export abstract class ToggleStyle extends Style {
 
             (endParent.children[childIndex] as TextElement).text = endText;
             textElement.parent.parent.children.splice(index + 2, 0, endParent);
+
+            this.setSelection(textElement, newTextElement);
+
+            return newTextElement;
         }
 
 
@@ -153,9 +163,9 @@ export abstract class ToggleStyle extends Style {
         (endCopy.firstChild as TextElement).text = endText;
         topParent.children.splice(index + 2, 0, endCopy);
 
-        this.removeTopStyle(newTextElement);
+        this.setSelection(textElement, newTextElement);
 
-        return newTextElement;
+        return this.removeTopStyle(newTextElement);
     }
 
 
@@ -164,7 +174,54 @@ export abstract class ToggleStyle extends Style {
 
     // ---------------------------------------------------------Remove Style At End Of Text------------------------------------------------------------------
     protected removeStyleAtEndOfText(textElement: TextElement, startOffset: number): Element {
-        throw new Error("Method not implemented.");
+        const styleIndex = textElement.parent.styles.findIndex(x => x.name == this.name);
+        const startText = textElement.text.substring(0, startOffset);
+        const endText = textElement.text.substring(startOffset);
+        let newTextElement!: TextElement;
+
+        if (styleIndex != -1 && textElement.parent.children.length == 1) {
+            const index = textElement.parent.index;
+            const parentCopy = textElement.parent.copy(textElement.parent.parent);
+            const childIndex = textElement.index;
+            textElement.text = startText;
+
+
+            parentCopy.styles.splice(styleIndex, 1);
+
+            if (parentCopy.styles.length == 0) {
+                newTextElement = new TextElement(textElement.parent.parent, endText);
+                textElement.parent.parent.children.splice(index + 1, 0, newTextElement);
+            } else {
+                newTextElement = parentCopy.children[childIndex] as TextElement;
+                newTextElement.text = endText;
+                textElement.parent.parent.children.splice(index + 1, 0, parentCopy);
+            }
+
+            this.setSelection(textElement, newTextElement);
+
+            return newTextElement;
+        }
+
+
+
+        const topParent = styleIndex == -1 ? textElement.parent.parent : textElement.parent;
+        const startCopy = styleIndex == -1 ? textElement.parent.copy(topParent) : textElement.copy(textElement.parent);
+        const endCopy = styleIndex == -1 ? textElement.parent.copy(topParent) : textElement.copy(textElement.parent);
+        const index = styleIndex == -1 ? textElement.parent.index : textElement.index;
+
+
+        (startCopy.firstChild as TextElement).text = startText;
+        topParent.children.splice(index, 1, startCopy);
+
+
+
+        newTextElement = endCopy.firstChild as TextElement;
+        newTextElement.text = endText;
+        topParent.children.splice(index + 1, 0, endCopy);
+
+
+        this.setSelection(textElement, newTextElement);
+        return this.removeTopStyle(newTextElement);
     }
 
 
@@ -172,20 +229,65 @@ export abstract class ToggleStyle extends Style {
 
     // ---------------------------------------------------------Remove Style From All Of Text------------------------------------------------------------------
     protected removeStyleFromAllOfText(textElement: TextElement): Element {
-        throw new Error("Method not implemented.");
+        const styleIndex = textElement.parent.styles.findIndex(x => x.name == this.name);
+
+        if (styleIndex != -1 && textElement.parent.children.length == 1) {
+            textElement.parent.styles.splice(styleIndex, 1);
+
+            if (textElement.parent.styles.length == 0) {
+                const index = textElement.parent.index;
+                const newTextElement = new TextElement(textElement.parent.parent, textElement.text);
+
+                textElement.parent.parent.children.splice(index, 1, newTextElement);
+
+                this.setSelection(textElement, newTextElement);
+                return newTextElement;
+            }
+
+            return textElement;
+        }
+
+        return this.removeTopStyle(textElement);
     }
 
 
 
     // ---------------------------------------------------------Remove Style From Container------------------------------------------------------------------
     protected removeStyleFromContainer(element: Element): Element {
-        throw new Error("Method not implemented.");
+        const child = element.firstChild;
+        const container = element.container;
+
+        const styleIndex = child.parent.styles.findIndex(x => x.name == this.name);
+
+        child.parent.styles.splice(styleIndex, 1);
+
+        if (child.parent.styles.length == 0) {
+            const newBreakElement = new BreakElement(container);
+
+            container.children.splice(0, 1, newBreakElement);
+
+            if (!(element instanceof Container)) {
+                if (element == this.selection.startElement) {
+                    this.selection.startElement = container;
+                    this.selection.startOffset = 0;
+                }
+
+                if (element == this.selection.endElement) {
+                    this.selection.endElement = container;;
+                    this.selection.endOffset = 1
+                }
+            }
+            return newBreakElement;
+        }
+
+        return element;
     }
 
 
 
     // ---------------------------------------------------------Remove Top Style----------------------------------------------------------
     protected removeTopStyle(textElement: TextElement): Element {
+        const container = textElement.container;
         let styleParent = textElement.parent;
         let curentElement = textElement as Element;
 
@@ -202,7 +304,7 @@ export abstract class ToggleStyle extends Style {
         const styleParentIndex = styleParent.index;
 
         // Make a copy of the parent that has the style
-        const styleParentCopy = styleParent.copy(styleParent.parent);
+        const styleParentCopy = styleParent.copy(styleParent.parent, undefined, textElement.id);
 
         // Remove the style
         const styleIndex = styleParentCopy.styles.findIndex(x => x.name == this.name);
@@ -249,7 +351,7 @@ export abstract class ToggleStyle extends Style {
 
             // Move the children outside the style parent copy
             styleParentCopy.children.forEach((child: Element) => {
-                const childCopy = child.copy(styleParentCopy.parent);
+                const childCopy = child.copy(styleParentCopy.parent, undefined, textElement.id);
 
                 if (childCopy) styleParentCopy.parent.children.splice(index, index == styleParentIndex + 1 ? 1 : 0, childCopy);
 
@@ -265,8 +367,10 @@ export abstract class ToggleStyle extends Style {
             styleParent.parent.children.splice(styleParentIndex, 1);
         }
 
+        const newTextElement = Element.search(textElement.id, container) as TextElement;
 
-        // TEMP!!!
-        return textElement;
+        this.setSelection(textElement, newTextElement);
+
+        return newTextElement;
     }
 }

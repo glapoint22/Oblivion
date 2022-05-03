@@ -127,7 +127,7 @@ export class Selection {
 
 
     // ---------------------------------------------------------Get Selected Styles------------------------------------------------------------------
-    public getSelectedStyles(currentElement: Element = this.commonAncestorContainer, range: ElementRange = new ElementRange()): boolean {
+    public getSelectedStyles(currentElement: Element = this.startElement.root, range: ElementRange = new ElementRange()): boolean {
         let done!: boolean;
 
         if (currentElement.id == this.startElement.id) {

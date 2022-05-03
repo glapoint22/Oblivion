@@ -3,7 +3,8 @@
     <div class="property">
         <div class="label">Font</div>
         <div style="flex: 1;">
-            <select [(ngModel)]="textBox.fontFamily.selectedOption" (change)="textBox.fontFamily.setStyle(); textBox.setText()">
+            <select [(ngModel)]="textBox.fontFamily.selectedOption"
+                (change)="textBox.fontFamily.setStyle(); textBox.setText()">
                 <option *ngFor="let option of textBox.fontFamily.options" [ngValue]="option">{{option.key}}</option>
             </select>
         </div>
@@ -15,7 +16,8 @@
     <div class="property">
         <div class="label">Font Size</div>
         <div style="flex: 1;">
-            <select [(ngModel)]="textBox.fontSize.selectedOption" (change)="textBox.fontSize.setStyle(); textBox.setText()">
+            <select [(ngModel)]="textBox.fontSize.selectedOption"
+                (change)="textBox.fontSize.setStyle(); textBox.setText()">
                 <option *ngFor="let option of textBox.fontSize.options" [ngValue]="option">{{option.key}}</option>
             </select>
         </div>
@@ -27,7 +29,9 @@
     <div class="property">
         <div class="label">Color</div>
         <div style="flex: 1;">
-            <color-swatch [color]="textBox.fontColor.rgbColor" (onChange)="textBox.fontColor.setStyle(); textBox.setText()">
+            <color-swatch [color]="textBox.fontColor.rgbColor"
+                (onChange)="textBox.fontColor.setStyle(); textBox.render()"
+                (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
             </color-swatch>
         </div>
     </div>
@@ -40,7 +44,9 @@
         <div class="label">Highlight</div>
         <div style="flex: 1;">
             <color-swatch [color]="textBox.highlightColor.rgbColor"
-                (onChange)="textBox.highlightColor.setStyle(); textBox.setText()">
+                (onChange)="textBox.highlightColor.setStyle(); textBox.render()"
+                (onClick)="textBox.highlightColor.color == '#00000000' ? textBox.highlightColor.color = '#ffff00': null"
+                (onColorPickerClose)="textBox.highlightColor.onColorPickerClose(); textBox.setText()">
             </color-swatch>
         </div>
     </div>
@@ -223,7 +229,8 @@
 
 
             <!-- Sentence Case -->
-            <div class="icon-container" title="Sentence Case" (click)="textBox.sentenceCase.setStyle(); textBox.setText()">
+            <div class="icon-container" title="Sentence Case"
+                (click)="textBox.sentenceCase.setStyle(); textBox.setText()">
                 <i class="fas fa-outdent"></i>
             </div>
 

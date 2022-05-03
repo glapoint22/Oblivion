@@ -14,7 +14,7 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Is Style Selected------------------------------------------------------------------
-    protected get isStyleSelected(): boolean {
+    protected get styleSelected(): boolean {
         if (this.selection.selectedStyles.length > 0 && !(this.selection.selectedStyles.length == 1 && this.selection.selectedStyles[0].length == 0)) {
             return this.selection.selectedStyles.every(x => x.some(z => z.name == this.name && z.value == this.value));
         }
@@ -52,7 +52,7 @@ export abstract class Style {
             }
 
             // If end element
-            else if (currentElement.id == this.selection.endElement.id) {
+            else if (currentElement.id == this.selection.endElement.id || currentElement.container.id == this.selection.endElement.id) {
                 currentElement = this.addStyle(currentElement, 0, this.selection.endOffset);
                 break;
             }
@@ -67,6 +67,9 @@ export abstract class Style {
             const nextElement = currentElement.nextChild;
             if (nextElement) currentElement = nextElement;
         }
+
+        this.selection.getSelectedStyles();
+        this.setSelectedStyle();
     }
 
 
@@ -101,11 +104,13 @@ export abstract class Style {
         if (oldTextElement == this.selection.startElement) {
             this.selection.startElement = newTextElement;
             this.selection.startOffset = 0;
+            this.selection.startChildIndex = newTextElement.index;
         }
 
         if (oldTextElement == this.selection.endElement) {
             this.selection.endElement = newTextElement;
             this.selection.endOffset = newTextElement.text.length;
+            this.selection.endChildIndex = newTextElement.index;
         }
     }
 
@@ -235,6 +240,26 @@ export abstract class Style {
         }
 
         return newElement;
+    }
+
+
+
+    // ---------------------------------------------------------Get Selected Value----------------------------------------------------------
+    protected getSelectedValue(): string | null {
+        if (this.selection.selectedStyles.length > 0 && !(this.selection.selectedStyles.length == 1 && this.selection.selectedStyles[0].length == 0)) {
+
+            for (let i = 0; i < this.selection.selectedStyles.length; i++) {
+                const styles = this.selection.selectedStyles[i];
+
+                // Find the first style
+                const foundStyle = styles.find(x => x.name == this.name);
+                if (foundStyle) {
+                    return foundStyle.value;
+                }
+            }
+        }
+
+        return null;
     }
 
 

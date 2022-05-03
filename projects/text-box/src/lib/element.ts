@@ -145,7 +145,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, range?: ElementRange): Element {
+    public copy(parent: Element, range?: ElementRange, preserveId?: string): Element {
         let newElement!: Element;
 
         if (range?.startElementId == this.id) {
@@ -159,6 +159,7 @@ export abstract class Element {
             // Create the new element
             newElement = this.create(parent);
 
+            if (preserveId == this.id) newElement.id = this.id;
 
             // Copy the styles
             this.styles.forEach((style: StyleData) => {
@@ -169,7 +170,7 @@ export abstract class Element {
 
             // Copy the children
             this.children.forEach((child: Element) => {
-                const copiedChild = child.copy(newElement, range);
+                const copiedChild = child.copy(newElement, range, preserveId);
 
                 if (copiedChild) newElement.children.push(copiedChild);
             });

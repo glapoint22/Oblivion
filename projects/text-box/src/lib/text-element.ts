@@ -52,7 +52,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, range?: ElementRange): Element {
+    public copy(parent: Element, range?: ElementRange, preserveId?: string): Element {
         let text = this.text;
         let textElement: TextElement;
 
@@ -73,6 +73,8 @@ export class TextElement extends Element {
             }
 
             textElement = new TextElement(parent, text);
+
+            if (preserveId == this.id) textElement.id = this.id;
         }
 
         return textElement!;
