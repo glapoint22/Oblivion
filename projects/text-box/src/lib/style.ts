@@ -1,4 +1,5 @@
 import { BreakElement } from "./break-element";
+import { Container } from "./container";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
 import { Selection } from "./selection";
@@ -116,6 +117,22 @@ export abstract class Style {
 
 
 
+    // -----------------------------------------------------------------Set Container Selection-------------------------------------------------------------
+    protected setContainerSelection(element: Element, container: Element) {
+        if (!(element instanceof Container)) {
+            if (element == this.selection.startElement) {
+                this.selection.startElement = container;
+                this.selection.startOffset = 0;
+            }
+
+            if (element == this.selection.endElement) {
+                this.selection.endElement = container;;
+                this.selection.endOffset = 1
+            }
+        }
+    }
+
+
     // ---------------------------------------------------------Add Style At Beginning Of Text---------------------------------------------------
     protected addStyleAtBeginningOfText(textElement: TextElement, endOffset: number): Element {
         const startText = textElement.text.substring(0, endOffset);
@@ -189,13 +206,14 @@ export abstract class Style {
         // If we already have a parent to add the style to
         if ((textElement.parent.elementType == ElementType.Span || textElement.parent.elementType == ElementType.Anchor) && textElement.parent.children.length == 1) {
             if (!textElement.parent.styles.some(x => x.name == this.name)) {
-                this.addStyleToElement(textElement.parent);
+                newTextElement = this.addStyleToElement(textElement.parent).firstChild as TextElement;
             } else {
                 const style = textElement.parent.styles.find(x => x.name == this.name);
                 if (style) style.value = this.value;
+                newTextElement = textElement;
             }
 
-            newTextElement = textElement;
+
 
             // Create the style element and add the style
         } else {
@@ -207,10 +225,10 @@ export abstract class Style {
 
             styleElement.children.push(newTextElement);
             textElement.parent.children.splice(index, 1, styleElement);
-
-            // Set the selection
-            this.setSelection(textElement, newTextElement);
         }
+
+        // Set the selection
+        this.setSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -220,14 +238,13 @@ export abstract class Style {
     // ---------------------------------------------------------Add Style To Container---------------------------------------------------
     protected addStyleToContainer(element: Element): Element {
         const child = element.firstChild;
-        let newElement: Element;
+        const container = element.container;
+        let newElement!: Element;
 
         if (child.parent.elementType == ElementType.Span) {
             if (!child.parent.styles.some(x => x.name == this.name)) {
-                this.addStyleToElement(child.parent);
+                newElement = this.addStyleToElement(child.parent);
             }
-
-            newElement = element;
         } else {
             const styleElement = this.createStyleElement(child.parent);
             const newBreakElement = new BreakElement(styleElement);
@@ -238,6 +255,8 @@ export abstract class Style {
 
             newElement = newBreakElement;
         }
+
+        this.setContainerSelection(element, container);
 
         return newElement;
     }
@@ -273,8 +292,10 @@ export abstract class Style {
 
 
     // ---------------------------------------------------------Set Style To Element----------------------------------------------------------
-    protected addStyleToElement(element: Element): void {
+    protected addStyleToElement(element: Element): Element {
         element.styles.push(new StyleData(this.name, this.value));
+
+        return element;
     }
 
 
