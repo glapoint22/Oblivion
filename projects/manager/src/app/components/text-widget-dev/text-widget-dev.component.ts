@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TextBoxDev } from 'text-box';
 import { TextWidgetComponent } from 'widgets';
-import { Text } from '../../classes/text';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -11,7 +10,6 @@ import { WidgetService } from '../../services/widget/widget.service';
 })
 export class TextWidgetDevComponent extends TextWidgetComponent implements OnInit {
   @ViewChild('htmlRootElement') htmlRootElement!: ElementRef<HTMLElement>;
-  // public text!: Text;
 
   public textBoxDev!: TextBoxDev;
 
@@ -30,5 +28,6 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
     }
 
     this.textBoxDev.render();
+    this.textBoxDev.setFocus();
   }
 }

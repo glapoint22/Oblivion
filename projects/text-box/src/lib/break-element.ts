@@ -1,5 +1,6 @@
 import { Element } from "./element";
 import { ElementType } from "./element-type";
+import { Selection } from "./selection";
 import { TextElement } from "./text-element";
 
 export class BreakElement extends Element {
@@ -33,9 +34,10 @@ export class BreakElement extends Element {
 
 
     // ---------------------------------------------------On Text Input-----------------------------------------------------
-    public onTextInput(text: string, offset: number): void {
+    public onTextInput(text: string, selection: Selection): void {
         const textElement = new TextElement(this.parent, text);
-
+        
         this.parent.children.splice(this.index, 1, textElement);
+        textElement.setSelection(selection, text.length);
     }
 }

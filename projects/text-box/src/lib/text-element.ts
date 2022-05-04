@@ -1,8 +1,9 @@
-import { BreakElement } from "./break-element";
+import { Container } from "./container";
 import { Element } from "./element";
 import { ElementDeleteStatus } from "./element-delete-status";
 import { ElementRange } from "./element-range";
 import { ElementType } from "./element-type";
+import { Selection } from "./selection";
 
 export class TextElement extends Element {
 
@@ -39,7 +40,7 @@ export class TextElement extends Element {
         }
 
         // Set the text
-        this.text = this.text.substring(startOffset!, endOffset);
+        this.text = this.text.substring(startOffset!, endOffset == Infinity ? this.text.length : endOffset);
 
         // If we have no text, delete this element
         if (this.text.length == 0) return super.delete();
@@ -51,7 +52,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, range?: ElementRange): Element {
+    public copy(parent: Element, range?: ElementRange, preserveId?: string): Element {
         let text = this.text;
         let textElement: TextElement;
 
@@ -67,12 +68,13 @@ export class TextElement extends Element {
                 range.inRange = false;
 
                 if (text.length == 0) {
-                    const breakElement = new BreakElement(parent);
-                    return breakElement;
+                    return textElement!;
                 }
             }
 
             textElement = new TextElement(parent, text);
+
+            if (preserveId == this.id) textElement.id = this.id;
         }
 
         return textElement!;
@@ -98,16 +100,17 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------On Text Input-----------------------------------------------------
-    public onTextInput(text: string, offset: number): void {
-        this.text = this.text.substring(0, offset) + text + this.text.substring(offset);
+    public onTextInput(text: string, selection: Selection): void {
+        this.text = this.text.substring(0, selection.startOffset) + text + this.text.substring(selection.startOffset);
+        this.setSelection(selection, selection.startOffset + text.length);
     }
 
 
 
     // ---------------------------------------------------On Backspace Keydown-----------------------------------------------------
-    public onBackspaceKeydown(offset: number): void {
+    public onBackspaceKeydown(selection: Selection): void {
         // Move to previous container if offset is zero and this is the first text element in the container
-        if (offset == 0 && this == this.container.firstChild) {
+        if (selection.startOffset == 0 && this == this.container.firstChild) {
             const previousChild = this.previousChild;
 
             if (previousChild) {
@@ -117,22 +120,73 @@ export class TextElement extends Element {
                 if (previousChild.elementType == ElementType.Break) {
                     previousContainer.preserve = true;
                     previousChild.delete();
+                    this.container.moveTo(previousContainer, selection);
+                    previousContainer.firstChild.setSelection(selection);
+                } else {
+                    previousChild.setSelection(selection, Infinity);
+                    this.container.moveTo(previousContainer, selection);
                 }
 
-                this.moveTo(previousContainer);
+
             }
         } else {
             // Remove the previous character
-            this.text = this.text.substring(0, offset - 1) + this.text.substring(offset);
-            if (this.text.length == 0) this.delete();
+            this.text = this.text.substring(0, selection.startOffset - 1) + this.text.substring(selection.startOffset);
+
+
+            // If we have empty text
+            if (this.text.length == 0) {
+                const previousChild = this.previousChild;
+                const nextChild = this.nextChild;
+                const container = this.container as Container;
+                const previousContainer = previousChild?.container;
+
+                // If the container is down to one child
+                if (container.children.length == 1 && container.lastChild == this) {
+                    container.preserve = true;
+                }
+
+                // Delete this text element
+                this.delete();
+
+                // If this container has no more children, create a break element
+                if (container.children.length == 0) {
+                    container.createBreakElement();
+                    container.setSelection(selection);
+                } else {
+                    // Select the previous child
+                    if (previousChild && this.container == previousContainer) {
+                        previousChild.setSelection(selection, Infinity);
+
+                        // Select the next child
+                    } else {
+                        nextChild?.setSelection(selection);
+                    }
+                }
+
+
+            } else {
+                let offset = selection.startOffset - 1;
+                let element: Element = this;
+                const previousChild = this.previousChild;
+                const previousContainer = previousChild?.container;
+
+                // If we are at the beginning of the text, select the previous child
+                if (offset == 0 && previousChild && this.container == previousContainer) {
+                    offset = Infinity;
+                    element = previousChild;
+                }
+
+                element.setSelection(selection, offset);
+            }
         }
     }
 
 
 
     // ---------------------------------------------------On Delete keydown-----------------------------------------------------
-    public onDeleteKeydown(offset: number): void {
-        if (offset == this.text.length) {
+    public onDeleteKeydown(selection: Selection): void {
+        if (selection.startOffset == this.text.length) {
             const nextElement = this.nextChild;
 
             if (nextElement) {
@@ -145,18 +199,40 @@ export class TextElement extends Element {
                         nextElement.delete();
                     } else {
                         // Move the next container's elements into this container
-                        nextElement.container.moveTo(this.container);
+                        nextElement.container.moveTo(this.container, selection);
                     }
 
                 } else {
                     // Delete the next element
-                    nextElement.onDeleteKeydown(0);
+                    nextElement.delete(1, Infinity);
                 }
             }
         } else {
             // Remove the next character
-            this.text = this.text.substring(0, offset) + this.text.substring(offset + 1);
-            if (this.text.length == 0) this.delete();
+            this.text = this.text.substring(0, selection.startOffset) + this.text.substring(selection.startOffset + 1);
+
+            // If we have an empty string
+            if (this.text.length == 0) {
+                let nextChild = this.nextChild;
+                const container = this.container as Container;
+                const nextContainer = nextChild?.container;
+
+                // If the next child is in a different container
+                if (container != nextContainer) {
+                    container.preserve = true;
+                }
+
+                // Delete this text element
+                this.delete();
+
+                // If this container has no more children, create a break element
+                if (container.children.length == 0) {
+                    container.createBreakElement();
+                    nextChild = container;
+                }
+
+                nextChild?.setSelection(selection);
+            }
         }
     }
 
@@ -164,35 +240,69 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------On Enter keydown-----------------------------------------------------
-    public onEnterKeydown(offset: number): void {
+    public onEnterKeydown(selection: Selection): void {
         const container = this.container;
+        const firstChild = this.container.firstChild;
         const lastChild = container.lastChild;
         const index = container.index;
         const startRange = new ElementRange();
         const endRange = new ElementRange();
 
-        // If the cursor is at the very end of the container
-        if (this == lastChild && offset == this.text.length) {
-            startRange.startElementId = this.id;
-            startRange.startOffset = offset;
-            startRange.endElementId = this.id
-
-            const copy = container.copy(container.parent, startRange);
-            container.parent.children.splice(index + 1, 0, copy);
-        } else {
+        // If cursor is at the beginning
+        if (this == firstChild && selection.startOffset == 0) {
             startRange.startElementId = container.id;
             startRange.endElementId = this.id;
-            startRange.endOffset = offset;
-            const startCopy = container.copy(container.parent, startRange);
+            startRange.startOffset = 0;
+            startRange.endOffset = 0;
 
-            endRange.startElementId = offset == this.text.length ? this.nextChild?.id! : this.id;
-            endRange.startOffset = offset == this.text.length ? 0 : offset;
+            const containerCopy = container.copy(container.parent, startRange) as Container;
+            containerCopy.createBreakElement();
+            container.parent.children.splice(index, 0, containerCopy);
+
+            this.setSelection(selection);
+        }
+
+        // If the cursor is at the end
+        else if (this == lastChild && selection.startOffset == this.text.length) {
+            startRange.startElementId = this.id;
+            startRange.startOffset = selection.startOffset;
+            startRange.endElementId = this.id
+
+            const containerCopy = container.copy(container.parent, startRange) as Container;
+            containerCopy.createBreakElement();
+            container.parent.children.splice(index + 1, 0, containerCopy);
+
+            containerCopy.firstChild.parent.setSelection(selection);
+        }
+
+        // Other
+        else {
+            startRange.startElementId = container.id;
+            startRange.endElementId = this.id;
+            startRange.endOffset = selection.startOffset;
+            const startCopy = container.copy(container.parent, startRange);
+            const startElement = selection.startOffset == this.text.length ? this.nextChild : this;
+
+            endRange.startElementId = startElement?.id!;
+            endRange.startOffset = selection.startOffset == this.text.length ? 0 : selection.startOffset;
             endRange.endElementId = lastChild.id;
             endRange.endOffset = (lastChild as TextElement).text.length;
             const endCopy = container.copy(container.parent, endRange);
 
+
             container.parent.children.splice(index, 1, startCopy);
             container.parent.children.splice(index + 1, 0, endCopy);
+
+            endCopy.firstChild.setSelection(selection);
         }
     }
+
+
+    // ---------------------------------------------------Set Selection-----------------------------------------------------
+    public setSelection(selection: Selection, offset?: number): void {
+        selection.startElement = selection.endElement = this;
+        selection.startChildIndex = selection.endChildIndex = this.index;
+        selection.startOffset = selection.endOffset = offset ? offset == Infinity ? this.text.length : offset : 0;
+    }
+
 }

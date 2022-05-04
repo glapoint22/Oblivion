@@ -1,8 +1,10 @@
 import { Element } from "./element";
 import { ElementDeleteStatus } from "./element-delete-status";
 import { ElementType } from "./element-type";
+import { Selection } from "./selection";
 
 export class SpanElement extends Element {
+
 
     constructor(public parent: Element) {
         super();

@@ -1,7 +1,9 @@
 import { Element } from "./element";
 import { ElementType } from "./element-type";
+import { Selection } from "./selection";
 
 export class UnorderedListElement extends Element {
+    
 
     constructor(public parent: Element) {
         super();

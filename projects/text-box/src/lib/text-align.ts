@@ -3,7 +3,8 @@ import { Selection } from "./selection";
 import { Style } from "./style";
 import { StyleData } from "./style-data";
 
-export class TextAlign extends Style {
+export abstract class TextAlign extends Style {
+    
     public isSelected!: boolean;
 
     constructor(selection: Selection) {
@@ -14,7 +15,7 @@ export class TextAlign extends Style {
 
 
     // ---------------------------------------------------------Add Style------------------------------------------------------------------
-    protected addStyle(element: Element): void {
+    protected addStyle(element: Element): Element {
         let index!: number;
 
         if (element.container.styles.some((style: StyleData, i: number) => {
@@ -25,5 +26,14 @@ export class TextAlign extends Style {
         } else {
             this.addStyleToElement(element.container);
         }
+
+        return element;
+    }
+
+
+
+    // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
+    public setSelectedStyle(): void {
+        this.isSelected = this.styleSelected;
     }
 }

@@ -1,6 +1,7 @@
 import { ElementDeleteStatus } from "./element-delete-status";
 import { ElementRange } from "./element-range";
 import { ElementType } from "./element-type";
+import { Selection } from "./selection";
 import { StyleData } from "./style-data";
 
 export abstract class Element {
@@ -19,6 +20,19 @@ export abstract class Element {
     // ---------------------------------------------------Index-----------------------------------------------------
     public get index(): number {
         return this.parent.children.findIndex(x => x == this);
+    }
+
+
+
+    // ---------------------------------------------------Root-----------------------------------------------------
+    public get root(): Element {
+        let curentElement = this as Element;
+
+        while (curentElement.elementType != ElementType.Root) {
+            curentElement = curentElement.parent;
+        }
+
+        return curentElement;
     }
 
 
@@ -131,7 +145,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, range?: ElementRange): Element {
+    public copy(parent: Element, range?: ElementRange, preserveId?: string): Element {
         let newElement!: Element;
 
         if (range?.startElementId == this.id) {
@@ -145,14 +159,18 @@ export abstract class Element {
             // Create the new element
             newElement = this.create(parent);
 
+            if (preserveId == this.id) newElement.id = this.id;
+
             // Copy the styles
             this.styles.forEach((style: StyleData) => {
                 newElement.styles.push(new StyleData(style.name, style.value));
             });
 
+            newElement.indent = this.indent;
+
             // Copy the children
             this.children.forEach((child: Element) => {
-                const copiedChild = child.copy(newElement, range);
+                const copiedChild = child.copy(newElement, range, preserveId);
 
                 if (copiedChild) newElement.children.push(copiedChild);
             });
@@ -211,11 +229,11 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Move To-----------------------------------------------------
-    public moveTo(container: Element) {
+    public moveTo(container: Element, selection: Selection) {
         for (let i = 0; i < this.children.length; i++) {
             const child = this.children[i];
 
-            child.lastChild.moveTo(container);
+            child.lastChild.moveTo(container, selection);
             i--;
         }
     }
@@ -224,31 +242,53 @@ export abstract class Element {
 
 
     // ---------------------------------------------------On Backspace Keydown-----------------------------------------------------
-    public onBackspaceKeydown(offset: number): void {
-        this.delete();
+    public onBackspaceKeydown(selection: Selection): void {
+        const previousChild = this.previousChild;
+
+        if (previousChild) {
+            this.delete();
+            previousChild.setSelection(selection, Infinity);
+        }
     }
 
 
 
     // ---------------------------------------------------On Delete keydown-----------------------------------------------------
-    public onDeleteKeydown(offset: number): void {
-        this.delete();
+    public onDeleteKeydown(selection: Selection): void {
+        const nextChild = this.nextChild;
+
+        if (nextChild) {
+            this.delete();
+            nextChild.setSelection(selection);
+        }
     }
 
 
 
     // ---------------------------------------------------On Enter keydown-----------------------------------------------------
-    public onEnterKeydown(offset: number): void {
+    public onEnterKeydown(selection: Selection): void {
         const container = this.container;
+        const containerCopy = container.copy(container.parent);
 
-        container.parent.children.splice(this.index + 1, 0, container.copy(container.parent));
+        containerCopy.setSelection(selection);
+        container.parent.children.splice(container.index + 1, 0, containerCopy);
     }
 
 
 
     // ---------------------------------------------------On Text Input-----------------------------------------------------
-    public onTextInput(text: string, offset: number): void {
-        this.lastChild.onTextInput(text, offset);
+    public onTextInput(text: string, selection: Selection): void {
+        this.lastChild.onTextInput(text, selection);
+    }
+
+
+
+
+    // ---------------------------------------------------Set Selection-----------------------------------------------------
+    public setSelection(selection: Selection, offset?: number): void {
+        selection.startElement = selection.endElement = this;
+        selection.startChildIndex = selection.endChildIndex = -1;
+        selection.startOffset = selection.endOffset = 0;
     }
 
 
@@ -258,4 +298,6 @@ export abstract class Element {
 
     // ---------------------------------------------------Create-----------------------------------------------------
     protected abstract create(parent: Element): Element;
+
+
 }

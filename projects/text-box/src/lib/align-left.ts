@@ -11,9 +11,18 @@ export class AlignLeft extends TextAlign {
 
 
     // ---------------------------------------------------------Add Style------------------------------------------------------------------
-    protected addStyle(element: Element): void {
+    protected addStyle(element: Element): Element {
         const index = element.container.styles.findIndex(x => x.name == this.name);
 
         if (index != -1) element.container.styles.splice(index, 1);
+
+        return element;
+    }
+
+
+
+    // ---------------------------------------------------------Set Selected Style----------------------------------------------------------
+    public setSelectedStyle(): void {
+        this.isSelected = !this.getSelectedValue();
     }
 }
