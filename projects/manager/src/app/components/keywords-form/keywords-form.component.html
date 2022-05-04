@@ -1,0 +1,118 @@
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div class="modal-base">
+        <div class="modal-bar">
+            <div>Keywords</div>
+            <div class="modal-x-button"
+                 (mouseover)="keywordsFormManager.overButton = true"
+                 (mouseout)="keywordsFormManager.overButton = false"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+        <div class="modal-bar-drop-shadow"></div>
+
+        <div class="modal-content">
+            <div class="icon-buttons-container">
+
+                <!-- Search icon -->
+                <icon-button class="search-icon-button"
+                             [icon]="keywordsFormManager.searchIcon"
+                             [title]="keywordsFormManager.searchIconButtonTitle"
+                             [isDisabled]="false"
+                             (onOver)="keywordsFormManager.overButton = $event"
+                             (onClick)="keywordsFormManager.toggleSearch()">
+                </icon-button>
+
+                <div class="icons">
+                    <!-- Delete icon -->
+                    <icon-button [icon]="'fas fa-trash-alt'"
+                                 [title]="keywordsFormManager.deleteIconButtonTitle"
+                                 [isDisabled]="keywordsFormManager.isDisabled('deleteDisabled')"
+                                 (onOver)="keywordsFormManager.overButton = $event"
+                                 (onClick)="keywordsFormManager.delete()">
+                    </icon-button>
+
+                    <!-- Edit icon -->
+                    <icon-button [icon]="'fas fa-pencil-alt'"
+                                 [title]="keywordsFormManager.editIconButtonTitle"
+                                 [isDisabled]="keywordsFormManager.isDisabled('editDisabled')"
+                                 (onOver)="keywordsFormManager.overButton = $event"
+                                 (onClick)="keywordsFormManager.edit()">
+                    </icon-button>
+
+                    <!-- Add icon -->
+                    <icon-button *ngIf="!keywordsFormManager.searchMode"
+                                 [icon]="'fas fa-plus-circle'"
+                                 [title]="keywordsFormManager.addIconButtonTitle"
+                                 [isDisabled]="keywordsFormManager.isDisabled('addDisabled')"
+                                 (onOver)="keywordsFormManager.overButton = $event"
+                                 (onClick)="keywordsFormManager.add()">
+                    </icon-button>
+
+                    <!-- Collapse icon -->
+                    <icon-button *ngIf="!keywordsFormManager.searchMode"
+                                 [icon]="'fas fa-minus-square'"
+                                 [title]="'Collapse'"
+                                 [isDisabled]="keywordsFormManager.isDisabled('collapseDisabled')"
+                                 (onOver)="keywordsFormManager.overButton = $event"
+                                 (onClick)="keywordsFormManager.collapse()">
+                    </icon-button>
+                </div>
+            </div>
+
+
+            <!-- Hierarchy -->
+            <ng-container *ngIf="!keywordsFormManager.searchMode">
+                <div class="modal-list-container">
+                    <hierarchy #hierarchyComponent
+                               [sourceList]="keywordsFormManager.thisArray"
+                               [options]="keywordsFormManager.hierarchyOptions"
+                               (onListUpdate)="keywordsFormManager.hierarchyUpdate = $event">
+                    </hierarchy>
+                </div>
+            </ng-container>
+
+
+            <!-- Search -->
+            <ng-container *ngIf="keywordsFormManager.searchMode">
+                <input id="keywordsFormSearchInput"
+                       placeholder="Search"
+                       (input)="keywordsFormManager.onSearchInputChange($event.target)">
+
+                <div class="column-name-container">
+                    <div class="column-name">Name</div>
+                    <div class="column-name">Type</div>
+                </div>
+
+                <div class="list-container">
+                    <ng-container *ngIf="keywordsFormManager.searchList.length == 0">
+                        <div class="no-search-results">
+                            No search results available
+                        </div>
+                    </ng-container>
+                    
+                    <ng-container *ngIf="keywordsFormManager.searchList.length > 0">
+                        <multi-column-list #searchComponent
+                                           [sourceList]="keywordsFormManager.searchList"
+                                           [options]="keywordsFormManager.searchOptions"
+                                           (onListUpdate)="keywordsFormManager.searchUpdate = $event">
+                        </multi-column-list>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button class="dark-button"
+                    (mouseover)="keywordsFormManager.overButton = true"
+                    (mouseout)="keywordsFormManager.overButton = false"
+                    (click)="close()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>

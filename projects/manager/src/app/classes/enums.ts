@@ -30,6 +30,7 @@ export enum ListUpdateType {
     Delete,
     DeletePrompt,
     SelectedItems,
+    UnselectedItems,
     CheckboxChange,
     ArrowClicked,
     VerifyAddEdit
@@ -51,3 +52,8 @@ export enum MenuOptionType {
     MenuItem,
     Divider
 }
+
+export enum SortType {
+    Form,
+    Product
+  }

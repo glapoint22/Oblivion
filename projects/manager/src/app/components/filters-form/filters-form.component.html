@@ -1,0 +1,118 @@
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div class="modal-base">
+        <div class="modal-bar">
+            <div>Filters</div>
+            <div class="modal-x-button"
+                 (mouseover)="filtersFormManager.overButton = true"
+                 (mouseout)="filtersFormManager.overButton = false"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+        <div class="modal-bar-drop-shadow"></div>
+
+        <div class="modal-content">
+            <div class="icon-buttons-container">
+
+                <!-- Search icon -->
+                <icon-button class="search-icon-button"
+                             [icon]="filtersFormManager.searchIcon"
+                             [title]="filtersFormManager.searchIconButtonTitle"
+                             [isDisabled]="false"
+                             (onOver)="filtersFormManager.overButton = $event"
+                             (onClick)="filtersFormManager.toggleSearch()">
+                </icon-button>
+
+                <div class="icons">
+                    <!-- Delete icon -->
+                    <icon-button [icon]="'fas fa-trash-alt'"
+                                 [title]="filtersFormManager.deleteIconButtonTitle"
+                                 [isDisabled]="filtersFormManager.isDisabled('deleteDisabled')"
+                                 (onOver)="filtersFormManager.overButton = $event"
+                                 (onClick)="filtersFormManager.delete()">
+                    </icon-button>
+
+                    <!-- Edit icon -->
+                    <icon-button [icon]="'fas fa-pencil-alt'"
+                                 [title]="filtersFormManager.editIconButtonTitle"
+                                 [isDisabled]="filtersFormManager.isDisabled('editDisabled')"
+                                 (onOver)="filtersFormManager.overButton = $event"
+                                 (onClick)="filtersFormManager.edit()">
+                    </icon-button>
+
+                    <!-- Add icon -->
+                    <icon-button *ngIf="!filtersFormManager.searchMode"
+                                 [icon]="'fas fa-plus-circle'"
+                                 [title]="filtersFormManager.addIconButtonTitle"
+                                 [isDisabled]="filtersFormManager.isDisabled('addDisabled')"
+                                 (onOver)="filtersFormManager.overButton = $event"
+                                 (onClick)="filtersFormManager.add()">
+                    </icon-button>
+
+                    <!-- Collapse icon -->
+                    <icon-button *ngIf="!filtersFormManager.searchMode"
+                                 [icon]="'fas fa-minus-square'"
+                                 [title]="'Collapse'"
+                                 [isDisabled]="filtersFormManager.isDisabled('collapseDisabled')"
+                                 (onOver)="filtersFormManager.overButton = $event"
+                                 (onClick)="filtersFormManager.collapse()">
+                    </icon-button>
+                </div>
+            </div>
+
+
+            <!-- Hierarchy -->
+            <ng-container *ngIf="!filtersFormManager.searchMode">
+                <div class="modal-list-container">
+                    <hierarchy #hierarchyComponent
+                               [sourceList]="filtersFormManager.thisArray"
+                               [options]="filtersFormManager.hierarchyOptions"
+                               (onListUpdate)="filtersFormManager.hierarchyUpdate = $event">
+                    </hierarchy>
+                </div>
+            </ng-container>
+
+
+            <!-- Search -->
+            <ng-container *ngIf="filtersFormManager.searchMode">
+                <input id="filtersFormSearchInput"
+                       placeholder="Search"
+                       (input)="filtersFormManager.onSearchInputChange($event.target)">
+
+                <div class="column-name-container">
+                    <div class="column-name">Name</div>
+                    <div class="column-name">Type</div>
+                </div>
+
+                <div class="list-container">
+                    <ng-container *ngIf="filtersFormManager.searchList.length == 0">
+                        <div class="no-search-results">
+                            No search results available
+                        </div>
+                    </ng-container>
+                    
+                    <ng-container *ngIf="filtersFormManager.searchList.length > 0">
+                        <multi-column-list #searchComponent
+                                           [sourceList]="filtersFormManager.searchList"
+                                           [options]="filtersFormManager.searchOptions"
+                                           (onListUpdate)="filtersFormManager.searchUpdate = $event">
+                        </multi-column-list>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button class="dark-button"
+                    (mouseover)="filtersFormManager.overButton = true"
+                    (mouseout)="filtersFormManager.overButton = false"
+                    (click)="close()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>

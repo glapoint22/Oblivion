@@ -49,6 +49,16 @@
     padding: 10px;
 }
 
+.modal-list-container {
+    height: 262px;
+    background: #171717;
+    border: 1px solid #2c2c2c;
+    border-left-color: rgb(10, 10, 10);
+    border-top-color: rgb(10, 10, 10);
+    border-radius: 4px;
+    overflow-y: auto;
+}
+
 .modal-button-container {
     padding: 5px 10px 10px 0;
     display: flex;

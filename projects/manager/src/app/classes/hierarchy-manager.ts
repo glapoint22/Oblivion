@@ -293,6 +293,18 @@ export class HierarchyManager extends ListManager {
 
 
 
+    unSelectedItemsUpdate() {
+        this.onListUpdate.next({
+          type: ListUpdateType.UnselectedItems,
+          addDisabled: this.addDisabled,
+          editDisabled: this.editDisabled,
+          deleteDisabled: this.deleteDisabled,
+          collapseDisabled: this.collapseDisabled
+        })
+      }
+
+
+
     addEditUpdate(hierarchyItem: HierarchyItem) {
         this.onListUpdate.next(
             {

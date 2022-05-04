@@ -73,6 +73,7 @@ export class ListManager {
         window.removeEventListener('keydown', this.onKeyDown);
         window.removeEventListener('blur', this.onInnerWindowBlur);
         window.removeEventListener('mousedown', this.onMouseDown);
+        this.unSelectedItemsUpdate();
       }
     }
   }
@@ -596,7 +597,13 @@ export class ListManager {
       this.editDisabled = true;
       this.deleteDisabled = true;
       this.addEventListeners();
+
+
+
       this.editedItem = listItem;
+
+      // this.editedItem.htmlItem!.nativeElement.textContent = this.editedItem.htmlItem!.nativeElement.textContent?.trim()!;
+
       this.selectedItem = null!;
 
       this.sourceList.forEach(x => {
@@ -898,7 +905,7 @@ export class ListManager {
               this.resetItemTextContent(); // * Used for hierarchy list * (calling this puts back the indent)
             }
 
-            
+
             // Select the item that was renamed
             // this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == this.editedItem?.identity)]);
             // this.setButtonsState();
@@ -918,13 +925,13 @@ export class ListManager {
 
       // But if the item is empty
     } else {
-      
+
       // If we pressed the (Escape) key or the item was (Blurred)
       if (isEscape || isBlur) {
-        
+
         // If we were adding a new item
         if (this.newItem) {
-          
+
           // Remove the item
           this.sourceList.splice(this.sourceList.indexOf(this.editedItem), 1);
 
@@ -946,7 +953,7 @@ export class ListManager {
       }
     }
 
-    
+
 
     this.reselectItem();
 
@@ -1111,6 +1118,16 @@ export class ListManager {
   selectedItemsUpdate(rightClick: boolean) {
     const selectedItems = this.sourceList.filter(x => x.selected == true);
     this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
+  }
+
+
+  unSelectedItemsUpdate() {
+    this.onListUpdate.next({
+      type: ListUpdateType.UnselectedItems,
+      addDisabled: this.addDisabled,
+      editDisabled: this.editDisabled,
+      deleteDisabled: this.deleteDisabled
+    })
   }
 
 

@@ -4,4 +4,4 @@ import { ListUpdateService } from '../list-update/list-update.service';
 @Injectable({
   providedIn: 'root'
 })
-export class FiltersService extends ListUpdateService { }
+export class KeywordsService extends ListUpdateService { }

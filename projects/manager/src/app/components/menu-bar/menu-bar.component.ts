@@ -69,12 +69,13 @@ export class MenuBarComponent {
           type: MenuOptionType.MenuItem,
           name: 'Filters',
           shortcut: 'Shift+F',
-          optionFunction: this.openFilterForm
+          optionFunction: this.openFiltersForm
         },
         {
           type: MenuOptionType.MenuItem,
           name: 'Keywords',
-          shortcut: 'Alt+K'
+          shortcut: 'Alt+K',
+          optionFunction: this.openKeywordsForm
         },
         {
           type: MenuOptionType.MenuItem,
@@ -281,13 +282,25 @@ export class MenuBarComponent {
   }
 
 
-  openFilterForm() {
+  openFiltersForm() {
     this.lazyLoadingService.load(async () => {
-      const { FilterFormComponent } = await import('../../components/filter-form/filter-form.component');
-      const { FilterFormModule } = await import('../../components/filter-form/filter-form.module');
+      const { FiltersFormComponent } = await import('../filters-form/filters-form.component');
+      const { FiltersFormModule } = await import('../filters-form/filters-form.module');
       return {
-        component: FilterFormComponent,
-        module: FilterFormModule
+        component: FiltersFormComponent,
+        module: FiltersFormModule
+      }
+    }, SpinnerAction.None)
+  }
+
+
+  openKeywordsForm() {
+    this.lazyLoadingService.load(async () => {
+      const { KeywordsFormComponent } = await import('../../components/keywords-form/keywords-form.component');
+      const { KeywordsFormModule } = await import('../../components/keywords-form/keywords-form.module');
+      return {
+        component: KeywordsFormComponent,
+        module: KeywordsFormModule
       }
     }, SpinnerAction.None)
   }
