@@ -101,17 +101,17 @@ export abstract class Style {
 
 
     // -----------------------------------------------------------------Set Selection-------------------------------------------------------------
-    protected setSelection(oldTextElement: TextElement, newTextElement: TextElement): void {
-        if (oldTextElement == this.selection.startElement) {
-            this.selection.startElement = newTextElement;
-            this.selection.startOffset = 0;
-            this.selection.startChildIndex = newTextElement.index;
+    protected setSelection(oldElement: Element, newElement: Element, preserveOffset?: boolean): void {
+        if (oldElement.id == this.selection.startElement.id) {
+            this.selection.startElement = newElement;
+            if (!preserveOffset) this.selection.startOffset = 0;
+            this.selection.startChildIndex = newElement.index;
         }
 
-        if (oldTextElement == this.selection.endElement) {
-            this.selection.endElement = newTextElement;
-            this.selection.endOffset = newTextElement.text.length;
-            this.selection.endChildIndex = newTextElement.index;
+        if (oldElement.id == this.selection.endElement.id) {
+            this.selection.endElement = newElement;
+            if (!preserveOffset) this.selection.endOffset = newElement.elementType = ElementType.Text ? (newElement as TextElement).text.length : 0;
+            this.selection.endChildIndex = newElement.index;
         }
     }
 
@@ -279,6 +279,32 @@ export abstract class Style {
         }
 
         return null;
+    }
+
+
+
+
+    // ---------------------------------------------------------Get Selected Containers------------------------------------------------------------------
+    protected getSelectedContainers(): Array<Element> {
+        let currentElement = this.selection.startElement;
+        let selectedContainers: Array<Element> = new Array<Element>();
+
+        while (true) {
+            const container = currentElement.container;
+            if (!selectedContainers.some(x => x == container)) selectedContainers.push(container);
+
+            if (currentElement == this.selection.endElement || container == this.selection.endElement) {
+                break;
+            }
+
+            const nextChild = currentElement.nextChild;
+
+            if (nextChild) {
+                currentElement = nextChild;
+            }
+        }
+
+        return selectedContainers;
     }
 
 

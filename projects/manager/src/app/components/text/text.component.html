@@ -148,17 +148,19 @@
 
 
             <!-- Bulleted list -->
-            <!-- <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)" (click)="bulletedList.setStyle(); numberedList.isSelected = false"
-                [ngClass]="{'selected': bulletedList.isSelected}">
+            <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)"
+                (click)="textBox.bulletedList.setStyle(); textBox.numberedList.isSelected = false; textBox.setText()"
+                [ngClass]="{'selected': textBox.bulletedList.isSelected}">
                 <i class="fas fa-list-ul"></i>
-            </div> -->
+            </div>
 
 
             <!-- Numbered list -->
-            <!-- <div class="icon-container" title="Numbered list (Ctrl+Shift+7)" (click)="numberedList.setStyle(); bulletedList.isSelected = false"
-                [ngClass]="{'selected': numberedList.isSelected}">
+            <div class="icon-container" title="Numbered list (Ctrl+Shift+7)"
+                (click)="textBox.numberedList.setStyle(); textBox.bulletedList.isSelected = false; textBox.setText()"
+                [ngClass]="{'selected': textBox.numberedList.isSelected}">
                 <i class="fas fa-list-ol"></i>
-            </div> -->
+            </div>
         </div>
     </div>
 

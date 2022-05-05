@@ -159,7 +159,7 @@ export abstract class Element {
             // Create the new element
             newElement = this.create(parent);
 
-            if (preserveId == this.id) newElement.id = this.id;
+            if (preserveId == this.id || preserveId == 'all') newElement.id = this.id;
 
             // Copy the styles
             this.styles.forEach((style: StyleData) => {
@@ -289,6 +289,19 @@ export abstract class Element {
         selection.startElement = selection.endElement = this;
         selection.startChildIndex = selection.endChildIndex = -1;
         selection.startOffset = selection.endOffset = 0;
+    }
+
+
+
+    // ---------------------------------------------------------Get Top List-------------------------------------------------------------
+    public getTopList(): Element {
+        let container = this as Element;
+
+        while (container.parent.elementType != ElementType.Div && container.parent.elementType != ElementType.Root) {
+            container = container.parent;
+        }
+
+        return container;
     }
 
 

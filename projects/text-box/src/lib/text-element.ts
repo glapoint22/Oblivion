@@ -74,7 +74,7 @@ export class TextElement extends Element {
 
             textElement = new TextElement(parent, text);
 
-            if (preserveId == this.id) textElement.id = this.id;
+            if (preserveId == this.id || preserveId == 'all') textElement.id = this.id;
         }
 
         return textElement!;

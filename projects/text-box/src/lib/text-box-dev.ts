@@ -5,6 +5,7 @@ import { AlignLeft } from "./align-left";
 import { AlignRight } from "./align-right";
 import { Bold } from "./bold";
 import { BreakElement } from "./break-element";
+import { BulletedList } from "./bulleted-list";
 import { DivElement } from "./div-element";
 import { Element } from "./element";
 import { ElementDeleteStatus } from "./element-delete-status";
@@ -16,6 +17,7 @@ import { HighlightColor } from "./highlight-color";
 import { Italic } from "./italic";
 import { LinkStyle } from "./link-style";
 import { LowerCase } from "./lower-case";
+import { NumberedList } from "./numbered-list";
 import { Selection } from "./selection";
 import { SentenceCase } from "./sentence-case";
 import { TextBox } from "./text-box";
@@ -43,6 +45,8 @@ export class TextBoxDev extends TextBox {
     public lowerCase: LowerCase = new LowerCase(this.selection);
     public sentenceCase: SentenceCase = new SentenceCase(this.selection);
     public titleCase: TitleCase = new TitleCase(this.selection);
+    public bulletedList: BulletedList = new BulletedList(this.selection);
+    public numberedList: NumberedList = new NumberedList(this.selection);
 
     constructor(htmlRootElement: HTMLElement) {
         super(htmlRootElement);
@@ -318,5 +322,7 @@ export class TextBoxDev extends TextBox {
         this.alignRight.setSelectedStyle();
         this.alignJustify.setSelectedStyle();
         this.linkStyle.setSelectedStyle();
+        this.bulletedList.setSelectedStyle();
+        this.numberedList.setSelectedStyle();
     }
 }
