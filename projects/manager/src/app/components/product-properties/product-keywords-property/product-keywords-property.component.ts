@@ -1,38 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { ListItem } from '../../../classes/list-item';
+import { Component, ViewChild } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DataService } from 'common';
+import { ProductKeywordsManager } from '../../../classes/product-keywords-manager';
+import { KeywordsService } from '../../../services/keywords/keywords.service';
+import { HierarchyComponent } from '../../hierarchies/hierarchy/hierarchy.component';
+import { MultiColumnListComponent } from '../../lists/multi-column-list/multi-column-list.component';
 
 @Component({
   selector: 'product-keywords-property',
   templateUrl: './product-keywords-property.component.html',
   styleUrls: ['./product-keywords-property.component.scss']
 })
-export class ProductKeywordsPropertyComponent implements OnInit {
-  public keywords: Array<ListItem> = [
-    {
-      id: 1,
-      name: 'Keyword 1'
-    },
-    {
-      id: 2,
-      name: 'Keyword 2'
-    },
-    {
-      id: 3,
-      name: 'Keyword 3'
-    },
-    {
-      id: 4,
-      name: 'Keyword 4'
-    },
-    {
-      id: 5,
-      name: 'Keyword 5'
-    }
-  ]
+export class ProductKeywordsPropertyComponent {
+  @ViewChild('hierarchyComponent') hierarchyComponent!: HierarchyComponent;
+  @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
+  public productKeywordsManager: ProductKeywordsManager = new ProductKeywordsManager(this.dataService, this.sanitizer, this.keywordsService);
 
-  constructor() { }
+  constructor(private dataService: DataService, private sanitizer: DomSanitizer, private keywordsService: KeywordsService) { }
 
-  ngOnInit(): void {
+  ngAfterViewChecked() {
+    this.productKeywordsManager.searchComponent = this.searchComponent;
+    this.productKeywordsManager.otherHierarchyComponent = this.keywordsService.formHierarchyComponent;
+    this.productKeywordsManager.hierarchyComponent = this.keywordsService.productHierarchyComponent = this.hierarchyComponent;
+    this.productKeywordsManager.searchInput = document.getElementById('productKeywordsSearchInput') as HTMLInputElement;
   }
-
 }

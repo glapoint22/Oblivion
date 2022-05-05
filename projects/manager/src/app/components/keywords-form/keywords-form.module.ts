@@ -1,19 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FilterFormComponent } from './filter-form.component';
-import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
+import { KeywordsFormComponent } from './keywords-form.component';
 import { IconButtonModule } from '../icon-button/icon-button.module';
+import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
 import { MultiColumnListModule } from '../lists/multi-column-list/multi-column-list.module';
 
 
 
 @NgModule({
-  declarations: [FilterFormComponent],
+  declarations: [KeywordsFormComponent],
   imports: [
     CommonModule,
-    HierarchyModule,
     IconButtonModule,
+    HierarchyModule,
     MultiColumnListModule
+  ],
+  exports: [
+    KeywordsFormComponent
   ]
 })
-export class FilterFormModule { }
+export class KeywordsFormModule { }

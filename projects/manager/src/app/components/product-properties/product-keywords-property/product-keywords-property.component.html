@@ -1,27 +1,98 @@
-<panel [title]="'Keywords'">
+<panel [title]="'Keywords'"
+       (onOpen)="productKeywordsManager.onOpen()">
+       
     <div class="property-box-dark">
-
 
         <!-- Property Box Bar -->
         <div class="property-box-bar">
 
-            <!-- Icons -->
-            <div class="icons">
+            <!-- Search icon -->
+            <icon-button class="search-icon-button"
+                         [icon]="productKeywordsManager.searchIcon"
+                         [title]="productKeywordsManager.searchIconButtonTitle"
+                         [isDisabled]="false"
+                         (onOver)="productKeywordsManager.overButton = $event"
+                         (onClick)="productKeywordsManager.toggleSearch()">
+            </icon-button>
 
+            <div class="icons">
                 <!-- Delete icon -->
-                <button class="icon-button">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
+                <icon-button [icon]="'fas fa-trash-alt'"
+                             [title]="productKeywordsManager.deleteIconButtonTitle"
+                             [isDisabled]="productKeywordsManager.isDisabled('deleteDisabled')"
+                             (onOver)="productKeywordsManager.overButton = $event"
+                             (onClick)="productKeywordsManager.delete()">
+                </icon-button>
+
+                <!-- Edit icon -->
+                <icon-button [icon]="'fas fa-pencil-alt'"
+                             [title]="productKeywordsManager.editIconButtonTitle"
+                             [isDisabled]="productKeywordsManager.isDisabled('editDisabled')"
+                             (onOver)="productKeywordsManager.overButton = $event"
+                             (onClick)="productKeywordsManager.edit()">
+                </icon-button>
 
                 <!-- Add icon -->
-                <button class="icon-button">
-                    <i class="fas fa-plus-circle"></i>
-                </button>
+                <icon-button *ngIf="!productKeywordsManager.searchMode"
+                             [icon]="'fas fa-plus-circle'"
+                             [title]="productKeywordsManager.addIconButtonTitle"
+                             [isDisabled]="productKeywordsManager.isDisabled('addDisabled')"
+                             (onOver)="productKeywordsManager.overButton = $event"
+                             (onClick)="productKeywordsManager.add()">
+                </icon-button>
+
+                <!-- Collapse icon -->
+                <icon-button *ngIf="!productKeywordsManager.searchMode"
+                             [icon]="'fas fa-minus-square'"
+                             [title]="'Collapse'"
+                             [isDisabled]="productKeywordsManager.isDisabled('collapseDisabled')"
+                             (onOver)="productKeywordsManager.overButton = $event"
+                             (onClick)="productKeywordsManager.collapse()">
+                </icon-button>
+            </div>
+        </div>
+        
+        <!-- Hierarchy -->
+        <ng-container *ngIf="!productKeywordsManager.searchMode">
+            <hierarchy #hierarchyComponent
+                       [sourceList]="productKeywordsManager.thisArray"
+                       [options]="productKeywordsManager.hierarchyOptions"
+                       (onListUpdate)="productKeywordsManager.hierarchyUpdate = $event">
+            </hierarchy>
+        </ng-container>
+
+        <!-- Search -->
+        <ng-container *ngIf="productKeywordsManager.searchMode">
+            
+            <input id="productKeywordsSearchInput"
+                    placeholder="Search"
+                    (input)="productKeywordsManager.onSearchInputChange($event.target)">
+
+            <div class="column-name-container">
+                <div class="column-name">Name</div>
+                <div class="column-name">Type</div>
             </div>
 
-        </div>
+            <div class="column-underline-container">
+                <div class="column-underline"></div>
+                <div class="column-underline"></div>
+            </div>
 
-        <!-- <list [list]="keywords"></list> -->
-        
+
+            <ng-container *ngIf="productKeywordsManager.searchList.length == 0">
+                <div class="no-search-results">
+                    No search results available
+                </div>
+            </ng-container>
+            
+
+            <ng-container *ngIf="productKeywordsManager.searchList.length > 0">
+                <multi-column-list #searchComponent
+                                   [sourceList]="productKeywordsManager.searchList"
+                                   [options]="productKeywordsManager.searchOptions"
+                                   (onListUpdate)="productKeywordsManager.searchUpdate = $event">
+                </multi-column-list>
+            </ng-container>
+        </ng-container>
     </div>
 </panel>
