@@ -43,10 +43,6 @@ export enum ButtonState {
     Active
 }
 
-export enum SelectedElementOnDeletion {
-    Previous,
-    Next
-}
 
 export enum MenuOptionType {
     MenuItem,
