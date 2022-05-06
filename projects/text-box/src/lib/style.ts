@@ -100,37 +100,11 @@ export abstract class Style {
     }
 
 
-    // -----------------------------------------------------------------Set Selection-------------------------------------------------------------
-    protected setSelection(oldElement: Element, newElement: Element, preserveOffset?: boolean): void {
-        if (oldElement.id == this.selection.startElement.id) {
-            this.selection.startElement = newElement;
-            if (!preserveOffset) this.selection.startOffset = 0;
-            this.selection.startChildIndex = newElement.index;
-        }
-
-        if (oldElement.id == this.selection.endElement.id) {
-            this.selection.endElement = newElement;
-            if (!preserveOffset) this.selection.endOffset = newElement.elementType = ElementType.Text ? (newElement as TextElement).text.length : 0;
-            this.selection.endChildIndex = newElement.index;
-        }
-    }
+    
 
 
 
-    // -----------------------------------------------------------------Set Container Selection-------------------------------------------------------------
-    protected setContainerSelection(element: Element, container: Element) {
-        if (!(element instanceof Container)) {
-            if (element == this.selection.startElement) {
-                this.selection.startElement = container;
-                this.selection.startOffset = 0;
-            }
-
-            if (element == this.selection.endElement) {
-                this.selection.endElement = container;;
-                this.selection.endOffset = 1
-            }
-        }
-    }
+    
 
 
     // ---------------------------------------------------------Add Style At Beginning Of Text---------------------------------------------------
@@ -148,7 +122,7 @@ export abstract class Style {
         textElement.parent.children.splice(index + 1, 0, new TextElement(textElement.parent, endText));
 
         // Set the selection
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -172,7 +146,7 @@ export abstract class Style {
         textElement.parent.children.splice(index + 2, 0, new TextElement(textElement.parent, endText));
 
         // Set the selection
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -192,7 +166,7 @@ export abstract class Style {
         textElement.parent.children.splice(index + 1, 0, styleElement);
 
         // Set the selection
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -228,7 +202,7 @@ export abstract class Style {
         }
 
         // Set the selection
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -306,6 +280,24 @@ export abstract class Style {
 
         return selectedContainers;
     }
+
+
+    // -----------------------------------------------------------------Set Container Selection-------------------------------------------------------------
+    protected setContainerSelection(element: Element, container: Element) {
+        if (!(element instanceof Container)) {
+            if (element == this.selection.startElement) {
+                this.selection.startElement = container;
+                this.selection.startOffset = 0;
+            }
+
+            if (element == this.selection.endElement) {
+                this.selection.endElement = container;;
+                this.selection.endOffset = 1
+            }
+        }
+    }
+
+
 
 
 

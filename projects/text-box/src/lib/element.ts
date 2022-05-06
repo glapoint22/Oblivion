@@ -143,23 +143,30 @@ export abstract class Element {
 
 
 
-
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, range?: ElementRange, preserveId?: string): Element {
+    public copy(parent: Element, options?: { range?: ElementRange, preserveSelection?: Selection }): Element {
         let newElement!: Element;
 
-        if (range?.startElementId == this.id) {
-            range.inRange = true;
-        } else if (range?.endElementId == this.id) {
-            range.inRange = false;
+        if (options && options.range && options.range.startElementId == this.id) {
+            options.range.inRange = true;
+        } else if (options && options.range && options.range.endElementId == this.id) {
+            options.range.inRange = false;
         }
 
 
-        if (!range || range.inRange || Element.search(range.startElementId, this)) {
+        if (!options || !options.range || options.range.inRange || Element.search(options.range.startElementId, this)) {
             // Create the new element
             newElement = this.create(parent);
 
-            if (preserveId == this.id || preserveId == 'all') newElement.id = this.id;
+            // If we are preserving the selection
+            if (options && options.preserveSelection &&
+                (options.preserveSelection.startElement.id == this.id ||
+                    options.preserveSelection.endElement.id == this.id ||
+                    Element.search(options.preserveSelection.startElement.id, this) ||
+                    Element.search(options.preserveSelection.endElement.id, this))) {
+
+                newElement.id = this.id;
+            }
 
             // Copy the styles
             this.styles.forEach((style: StyleData) => {
@@ -170,7 +177,7 @@ export abstract class Element {
 
             // Copy the children
             this.children.forEach((child: Element) => {
-                const copiedChild = child.copy(newElement, range, preserveId);
+                const copiedChild = child.copy(newElement, options);
 
                 if (copiedChild) newElement.children.push(copiedChild);
             });
@@ -305,12 +312,18 @@ export abstract class Element {
     }
 
 
+    // ---------------------------------------------------------Set Indent-------------------------------------------------------------
+    public setIndent(value: number): void {
+        this.indent = Math.max(0, this.indent + value);
+    }
+
+
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
     public abstract generateHtml(parent: HTMLElement, includeId?: boolean): void;
 
     // ---------------------------------------------------Create-----------------------------------------------------
-    protected abstract create(parent: Element): Element;
+    public abstract create(parent: Element): Element;
 
 
 }

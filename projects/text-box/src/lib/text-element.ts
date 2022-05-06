@@ -25,7 +25,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Create-----------------------------------------------------
-    protected create(parent: Element): Element {
+    public create(parent: Element): Element {
         return new TextElement(parent, this.text);
     }
 
@@ -52,20 +52,20 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, range?: ElementRange, preserveId?: string): Element {
+    public copy(parent: Element, options?: { range?: ElementRange, preserveSelection?: Selection }): Element {
         let text = this.text;
         let textElement: TextElement;
 
-        if (range && range.startElementId == this.id) {
-            range.inRange = true;
-            text = text.substring(range.startOffset, range.startElementId == range.endElementId ? range.endOffset : undefined);
-        } else if (range && range.endElementId == this.id) {
-            text = text.substring(0, range.endOffset);
+        if (options && options.range && options.range.startElementId == this.id) {
+            options.range.inRange = true;
+            text = text.substring(options.range.startOffset, options.range.startElementId == options.range.endElementId ? options.range.endOffset : undefined);
+        } else if (options && options.range && options.range.endElementId == this.id) {
+            text = text.substring(0, options.range.endOffset);
         }
 
-        if (!range || range.inRange) {
-            if (range?.endElementId == this.id) {
-                range.inRange = false;
+        if (!options || !options.range || options.range.inRange) {
+            if (options && options.range && options.range.endElementId == this.id) {
+                options.range.inRange = false;
 
                 if (text.length == 0) {
                     return textElement!;
@@ -74,7 +74,13 @@ export class TextElement extends Element {
 
             textElement = new TextElement(parent, text);
 
-            if (preserveId == this.id || preserveId == 'all') textElement.id = this.id;
+            // If we are preserving the selection
+            if (options && options.preserveSelection &&
+                (options.preserveSelection.startElement.id == this.id ||
+                    options.preserveSelection.endElement.id == this.id)) {
+
+                textElement.id = this.id;
+            }
         }
 
         return textElement!;
@@ -255,7 +261,7 @@ export class TextElement extends Element {
             startRange.startOffset = 0;
             startRange.endOffset = 0;
 
-            const containerCopy = container.copy(container.parent, startRange) as Container;
+            const containerCopy = container.copy(container.parent, { range: startRange }) as Container;
             containerCopy.createBreakElement();
             container.parent.children.splice(index, 0, containerCopy);
 
@@ -268,7 +274,7 @@ export class TextElement extends Element {
             startRange.startOffset = selection.startOffset;
             startRange.endElementId = this.id
 
-            const containerCopy = container.copy(container.parent, startRange) as Container;
+            const containerCopy = container.copy(container.parent, { range: startRange }) as Container;
             containerCopy.createBreakElement();
             container.parent.children.splice(index + 1, 0, containerCopy);
 
@@ -280,14 +286,14 @@ export class TextElement extends Element {
             startRange.startElementId = container.id;
             startRange.endElementId = this.id;
             startRange.endOffset = selection.startOffset;
-            const startCopy = container.copy(container.parent, startRange);
+            const startCopy = container.copy(container.parent, { range: startRange });
             const startElement = selection.startOffset == this.text.length ? this.nextChild : this;
 
             endRange.startElementId = startElement?.id!;
             endRange.startOffset = selection.startOffset == this.text.length ? 0 : selection.startOffset;
             endRange.endElementId = lastChild.id;
             endRange.endOffset = (lastChild as TextElement).text.length;
-            const endCopy = container.copy(container.parent, endRange);
+            const endCopy = container.copy(container.parent, { range: endRange });
 
 
             container.parent.children.splice(index, 1, startCopy);

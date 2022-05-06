@@ -180,15 +180,17 @@
             <div class="icon-container" style="cursor: default;"></div>
 
             <!-- Decrease indent -->
-            <!-- <div class="icon-container" title="Decrease indent (ctrl+[)" (click)="decreaseIndent.setStyle()">
+            <div class="icon-container" title="Decrease indent (ctrl+[)"
+                (click)="textBox.decreaseIndent.setStyle(); textBox.setText()">
                 <i class="fas fa-outdent"></i>
-            </div> -->
+            </div>
 
 
             <!-- Increase indent -->
-            <!-- <div class="icon-container" title="Increase indent (ctrl+])" (click)="increaseIndent.setStyle()">
+            <div class="icon-container" title="Increase indent (ctrl+])"
+                (click)="textBox.increaseIndent.setStyle(); textBox.setText()">
                 <i class="fas fa-indent"></i>
-            </div> -->
+            </div>
         </div>
     </div>
 

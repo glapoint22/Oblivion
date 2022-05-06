@@ -83,7 +83,7 @@ export abstract class ToggleStyle extends Style {
 
             textElement.text = endText;
 
-            this.setSelection(textElement, newTextElement);
+            this.selection.resetSelection(textElement, newTextElement);
 
             return newTextElement;
         }
@@ -109,7 +109,7 @@ export abstract class ToggleStyle extends Style {
         (endCopy.firstChild as TextElement).text = endText;
         topParent.children.splice(index + 1, 0, endCopy);
 
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -135,7 +135,7 @@ export abstract class ToggleStyle extends Style {
         (endCopy.firstChild as TextElement).text = endText;
         topParent.children.splice(index + 2, 0, endCopy);
 
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -159,7 +159,7 @@ export abstract class ToggleStyle extends Style {
         topParent.children.splice(index + 1, 0, endCopy);
 
 
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -195,7 +195,7 @@ export abstract class ToggleStyle extends Style {
             (endParent.children[childIndex] as TextElement).text = endText;
             textElement.parent.parent.children.splice(index + 2, 0, endParent);
 
-            this.setSelection(textElement, newTextElement);
+            this.selection.resetSelection(textElement, newTextElement);
 
             return newTextElement;
         }
@@ -234,7 +234,7 @@ export abstract class ToggleStyle extends Style {
                 textElement.parent.parent.children.splice(index + 1, 0, parentCopy);
             }
 
-            this.setSelection(textElement, newTextElement);
+            this.selection.resetSelection(textElement, newTextElement);
 
             return newTextElement;
         }
@@ -259,7 +259,7 @@ export abstract class ToggleStyle extends Style {
 
                 textElement.parent.parent.children.splice(index, 1, newTextElement);
 
-                this.setSelection(textElement, newTextElement);
+                this.selection.resetSelection(textElement, newTextElement);
                 return newTextElement;
             }
 
@@ -337,7 +337,7 @@ export abstract class ToggleStyle extends Style {
         const styleParentIndex = styleParent.index;
 
         // Make a copy of the parent that has the style
-        const styleParentCopy = styleParent.copy(styleParent.parent, undefined, textElement.id);
+        const styleParentCopy = styleParent.copy(styleParent.parent, { preserveSelection: this.selection });
 
         // Remove the style
         const styleIndex = styleParentCopy.styles.findIndex(x => x.name == this.name);
@@ -388,7 +388,7 @@ export abstract class ToggleStyle extends Style {
 
         const newTextElement = Element.search(textElement.id, container) as TextElement;
 
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -404,7 +404,7 @@ export abstract class ToggleStyle extends Style {
 
             // Move the children outside the style parent copy
             styleParent.children.forEach((child: Element) => {
-                const childCopy = child.copy(styleParent.parent, undefined, textElementId);
+                const childCopy = child.copy(styleParent.parent, { preserveSelection: this.selection });
 
                 if (childCopy) styleParent.parent.children.splice(index, index == styleParentIndex + 1 ? 1 : 0, childCopy);
 

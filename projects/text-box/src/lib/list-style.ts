@@ -63,31 +63,19 @@ export abstract class ListStyle extends Style {
     }
 
 
-    // ---------------------------------------------------------Set Selection From Copy------------------------------------------------------------------
-    private setSelectionFromCopy(original: Element, copy: Element) {
-        const startElement = Element.search(this.selection.startElement.id, original);
-        const endElement = Element.search(this.selection.endElement.id, original);
 
-        if (startElement) {
-            this.setSelection(startElement, Element.search(startElement.id, copy)!, true);
-        }
-
-        if (endElement && endElement != startElement) {
-            this.setSelection(endElement, Element.search(endElement.id, copy)!, true);
-        }
-    }
 
 
     // ---------------------------------------------------------Swap List Type------------------------------------------------------------------
     private swapListType(list: Element, options?: { range?: ElementRange, recursive?: boolean }): Element {
         let newList!: Element;
         let currentList!: Element;
-        
+
 
         newList = this.createListContainer(list.parent);
 
         if (options && options.range) {
-            currentList = list.copy(list.parent, options.range, 'all');
+            currentList = list.copy(list.parent, { range: options.range, preserveSelection: this.selection });
             options.range = undefined;
         } else {
             currentList = list;
@@ -100,11 +88,11 @@ export abstract class ListStyle extends Style {
                 child.parent = newList;
                 copiedChild = this.swapListType(child, options);
             } else {
-                copiedChild = child.copy(newList, undefined, 'all');
+                copiedChild = child.copy(newList, { preserveSelection: this.selection });
             }
 
             newList.children.push(copiedChild);
-            this.setSelectionFromCopy(child, copiedChild);
+            this.selection.resetSelection(child, copiedChild, true);
         });
 
         return newList;
@@ -131,10 +119,10 @@ export abstract class ListStyle extends Style {
                     const lastContainer = selectedContainers.find((x, index) => x == topList.lastChild.container || index == selectedContainers.length - 1);
                     const startRange = new ElementRange();
                     const endRange = new ElementRange();
-                    let firstListSelected!: boolean;
+                    let beginningOfListIsSelected!: boolean;
 
                     if (topList.children[0] == container) {
-                        firstListSelected = true;
+                        beginningOfListIsSelected = true;
                         startRange.startElementId = topList.children[0].id;
 
                         // The whole list is selected
@@ -167,10 +155,15 @@ export abstract class ListStyle extends Style {
 
 
                     let startListContainer!: Element;
-                    if (firstListSelected) {
+
+                    // If the beginning of the list is selected, swap the list types based on the range
+                    if (beginningOfListIsSelected) {
                         startListContainer = this.swapListType(topList, { range: startRange, recursive: true });
-                    } else {
-                        startListContainer = topList.copy(topList.parent, startRange);
+                    }
+
+                    // The beginning of the list is NOT selected so copy the list based on the range
+                    else {
+                        startListContainer = topList.copy(topList.parent, { range: startRange });
                     }
 
 
@@ -180,10 +173,14 @@ export abstract class ListStyle extends Style {
                     if (endRange.startElementId) {
                         let endListContainer!: Element;
 
-                        if (!firstListSelected) {
+                        // If the end of the list is selected, swap the list types based on the range
+                        if (!beginningOfListIsSelected) {
                             endListContainer = this.swapListType(topList, { range: endRange, recursive: true });
-                        } else {
-                            endListContainer = topList.copy(topList.parent, endRange);
+                        }
+
+                        // The end of the list is NOT selected so copy the list based on the range
+                        else {
+                            endListContainer = topList.copy(topList.parent, { range: endRange });
                         }
 
                         topList.parent.children.splice(index + 1, 0, endListContainer);
@@ -210,7 +207,7 @@ export abstract class ListStyle extends Style {
             startRange.endElementId = selectedContainers[0].previousChild?.id as string;
 
             // Copy the list
-            const startListContainer = topList.copy(topList.parent, startRange);
+            const startListContainer = topList.copy(topList.parent, { range: startRange });
             topList.parent.children.splice(index, 0, startListContainer);
             index++;
         }
@@ -226,10 +223,10 @@ export abstract class ListStyle extends Style {
 
             // Add the container's children to the new div element
             container.children.forEach((child: Element) => {
-                const copiedElement = child.copy(divElement, undefined, 'all');
+                const copiedElement = child.copy(divElement, { preserveSelection: this.selection });
 
                 divElement.children.push(copiedElement);
-                this.setSelectionFromCopy(child, copiedElement);
+                this.selection.resetSelection(child, copiedElement, true);
             });
 
             topList.parent.children.splice(index, 0, divElement);
@@ -244,7 +241,7 @@ export abstract class ListStyle extends Style {
             endRange.startElementId = selectedContainers[selectedContainers.length - 1].lastChild.nextChild?.container.id as string;
             endRange.endElementId = topList.lastChild.id;
 
-            const endListContainer = topList.copy(topList.parent, endRange);
+            const endListContainer = topList.copy(topList.parent, { range: endRange });
             topList.parent.children.splice(index, 0, endListContainer);
         }
 
@@ -272,10 +269,10 @@ export abstract class ListStyle extends Style {
 
         // Add the container's children to the new list item element
         container.children.forEach((child: Element) => {
-            const copiedElement = child.copy(listItemElement, undefined, 'all');
+            const copiedElement = child.copy(listItemElement, { preserveSelection: this.selection });
 
             listItemElement.children.push(copiedElement);
-            this.setSelectionFromCopy(child, copiedElement);
+            this.selection.resetSelection(child, copiedElement, true);
         });
 
         // Add the list item element to the list along with any styles
