@@ -52,7 +52,7 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, options?: { range?: ElementRange, preserveSelection?: Selection }): Element {
+    public copy(parent: Element, options?: { range?: ElementRange, preserveSelection?: Selection, preserveIds?: boolean }): Element {
         let text = this.text;
         let textElement: TextElement;
 
@@ -75,9 +75,10 @@ export class TextElement extends Element {
             textElement = new TextElement(parent, text);
 
             // If we are preserving the selection
-            if (options && options.preserveSelection &&
+            if ((options && options.preserveSelection &&
                 (options.preserveSelection.startElement.id == this.id ||
-                    options.preserveSelection.endElement.id == this.id)) {
+                    options.preserveSelection.endElement.id == this.id)) ||
+                options && options.preserveIds) {
 
                 textElement.id = this.id;
             }

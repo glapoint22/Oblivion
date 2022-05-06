@@ -67,31 +67,30 @@ export class DecreaseIndent extends Style {
                             endRange.endElementId = topList.lastChild.id;
 
 
-                            const startListContainer = topList.copy(topList.parent, { range: startRange, preserveSelection: this.selection });
-                            const firstChild = startListContainer.children[0];
+                            const startList = topList.copy(topList.parent, { range: startRange, preserveSelection: this.selection });
+                            const firstChild = startList.children[0];
                             let index = 0;
 
-                            topList.parent.children.splice(topListIndex, 0, startListContainer);
+                            topList.parent.children.splice(topListIndex, 0, startList);
 
                             // Move each child from the first child and insert them into the top list
                             firstChild.children.forEach((child: Element) => {
-                                const copy = child.copy(startListContainer, { preserveSelection: this.selection });
+                                const copy = child.copy(startList, { preserveSelection: this.selection });
 
-                                if (copy) {
-                                    startListContainer.children.splice(index, 0, copy);
-                                    index++;
-                                }
+                                startList.children.splice(index, 0, copy);
+                                index++;
                             });
 
-                            this.selection.resetSelection(firstChild, startListContainer, true);
+                            // Reset the selection
+                            this.selection.resetSelection(firstChild, startList, true);
 
 
                             // Delete the orginal first child
                             firstChild.delete();
 
 
-                            const endListContainer = topList.copy(topList.parent, { range: endRange });
-                            if (endListContainer) topList.parent.children.splice(topListIndex + 1, 0, endListContainer);
+                            const endList = topList.copy(topList.parent, { range: endRange });
+                            topList.parent.children.splice(topListIndex + 1, 0, endList);
 
 
                             topList.delete();
@@ -105,44 +104,40 @@ export class DecreaseIndent extends Style {
 
                         // The second half of the list is selected
                         if (lastContainerOfListIndex != -1) {
-                            const startRange = new ElementRange();
-                            const endRange = new ElementRange();
+                            const firstRange = new ElementRange();
+                            const secondRange = new ElementRange();
                             const topListIndex = topList.index;
 
-                            startRange.startElementId = topList.children[0].id;
-                            startRange.endElementId = container.previousChild?.id as string;
-                            endRange.startElementId = container.id;
-                            endRange.endElementId = topList.lastChild.id;
+                            // Set the ranges
+                            firstRange.startElementId = topList.children[0].id;
+                            firstRange.endElementId = container.previousChild?.id as string;
+                            secondRange.startElementId = container.id;
+                            secondRange.endElementId = topList.lastChild.id;
+
+                            // Copy and insert the first list
+                            const firstList = topList.copy(topList.parent, { range: firstRange });
+                            topList.parent.children.splice(topListIndex, 0, firstList);
 
 
-                            const startListContainer = topList.copy(topList.parent, { range: startRange });
-                            if (startListContainer) {
-                                topList.parent.children.splice(topListIndex, 0, startListContainer);
-                            }
+                            // Copy and insert the second list
+                            const secondList = topList.copy(topList.parent, { range: secondRange, preserveSelection: this.selection });
+                            topList.parent.children.splice(topListIndex + 1, 0, secondList);
+
+                            // Get the first child from the second list
+                            const firstChild = secondList.children[0];
+
+                            // Copy each child of the first child to the top list
+                            firstChild.children.forEach((child: Element) => {
+                                const copy = child.copy(secondList, { preserveSelection: this.selection });
+
+                                secondList.children.push(copy);
+                            });
+
+                            // Reset the selection
+                            this.selection.resetSelection(firstChild, secondList, true);
 
 
-
-                            const endListContainer = topList.copy(topList.parent, { range: endRange });
-                            if (endListContainer) {
-                                topList.parent.children.splice(topListIndex + 1, 0, endListContainer);
-
-                                const firstChild = endListContainer.children[0];
-
-                                // Copy each child of the first child to the top list
-                                firstChild.children.forEach((child: Element) => {
-                                    const copy = child.copy(endListContainer);
-
-                                    if (copy) {
-                                        endListContainer.children.push(copy);
-                                    }
-                                });
-
-                                // Delete the orginal first child
-                                firstChild.delete();
-                            }
-
-
-
+                            firstChild.delete();
                             topList.delete();
 
 
@@ -152,59 +147,56 @@ export class DecreaseIndent extends Style {
 
                         // The middle of the list is selected
                         else {
-                            const startRange = new ElementRange();
-                            const middleRange = new ElementRange();
-                            const endRange = new ElementRange();
+                            const firstRange = new ElementRange();
+                            const secondRange = new ElementRange();
+                            const thirdRange = new ElementRange();
                             const topListIndex = topList.index;
 
-                            // Start Range
-                            startRange.startElementId = topList.children[0].id;
-                            startRange.endElementId = container.previousChild?.id as string;
+                            // First Range
+                            firstRange.startElementId = topList.children[0].id;
+                            firstRange.endElementId = container.previousChild?.id as string;
 
-                            // Middle Range
-                            middleRange.startElementId = container.id;
-                            middleRange.endElementId = selectedContainers[selectedContainers.length - 1].lastChild.id;
+                            // Second Range
+                            secondRange.startElementId = container.id;
+                            secondRange.endElementId = selectedContainers[selectedContainers.length - 1].lastChild.id;
 
-                            // End Range
-                            endRange.startElementId = selectedContainers[selectedContainers.length - 1].lastChild.nextChild?.container.id as string;
-                            endRange.endElementId = topList.lastChild.id;
-
-
-
-                            // start
-                            const startListContainer = topList.copy(topList.parent, { range: startRange });
-                            if (startListContainer) {
-                                topList.parent.children.splice(topListIndex, 0, startListContainer);
-                            }
+                            // Third Range
+                            thirdRange.startElementId = selectedContainers[selectedContainers.length - 1].lastChild.nextChild?.container.id as string;
+                            thirdRange.endElementId = topList.lastChild.id;
 
 
 
-                            // Middle
-                            const middleListContainer = topList.copy(topList.parent, { range: middleRange });
-                            if (middleListContainer) {
-                                topList.parent.children.splice(topListIndex + 1, 0, middleListContainer);
+                            // First List
+                            const firstList = topList.copy(topList.parent, { range: firstRange });
+                            topList.parent.children.splice(topListIndex, 0, firstList);
 
-                                const firstChild = middleListContainer.children[0];
 
-                                // Copy each child of the first child to the top list
-                                firstChild.children.forEach((child: Element) => {
-                                    const copy = child.copy(middleListContainer);
 
-                                    if (copy) {
-                                        middleListContainer.children.push(copy);
-                                    }
-                                });
+                            // Second List
+                            const secondList = topList.copy(topList.parent, { range: secondRange, preserveSelection: this.selection });
+                            topList.parent.children.splice(topListIndex + 1, 0, secondList);
 
-                                // Delete the orginal first child
-                                firstChild.delete();
-                            }
+                            const firstChild = secondList.children[0];
+
+                            // Copy each child of the first child to the top list
+                            firstChild.children.forEach((child: Element) => {
+                                const copy = child.copy(secondList, { preserveSelection: this.selection });
+
+                                secondList.children.push(copy);
+                            });
+
+                            // Reset the selection
+                            this.selection.resetSelection(firstChild, secondList, true);
+
+                            // Delete the orginal first child
+                            firstChild.delete();
 
 
 
 
-                            // End
-                            const endListContainer = topList.copy(topList.parent, { range: endRange });
-                            if (endListContainer) topList.parent.children.splice(topListIndex + 2, 0, endListContainer);
+                            // Third List
+                            const thirdList = topList.copy(topList.parent, { range: thirdRange });
+                            topList.parent.children.splice(topListIndex + 2, 0, thirdList);
 
 
                             topList.delete();

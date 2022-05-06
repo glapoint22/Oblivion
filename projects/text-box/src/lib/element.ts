@@ -144,7 +144,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Copy-----------------------------------------------------
-    public copy(parent: Element, options?: { range?: ElementRange, preserveSelection?: Selection }): Element {
+    public copy(parent: Element, options?: { range?: ElementRange, preserveSelection?: Selection, preserveIds?: boolean }): Element {
         let newElement!: Element;
 
         if (options && options.range && options.range.startElementId == this.id) {
@@ -159,11 +159,12 @@ export abstract class Element {
             newElement = this.create(parent);
 
             // If we are preserving the selection
-            if (options && options.preserveSelection &&
+            if ((options && options.preserveSelection &&
                 (options.preserveSelection.startElement.id == this.id ||
                     options.preserveSelection.endElement.id == this.id ||
                     Element.search(options.preserveSelection.startElement.id, this) ||
-                    Element.search(options.preserveSelection.endElement.id, this))) {
+                    Element.search(options.preserveSelection.endElement.id, this))) ||
+                options && options.preserveIds) {
 
                 newElement.id = this.id;
             }

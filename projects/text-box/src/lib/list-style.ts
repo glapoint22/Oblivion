@@ -88,7 +88,7 @@ export abstract class ListStyle extends Style {
                 child.parent = newList;
                 copiedChild = this.swapListType(child, options);
             } else {
-                copiedChild = child.copy(newList, { preserveSelection: this.selection });
+                copiedChild = child.copy(newList, { preserveIds: true });
             }
 
             newList.children.push(copiedChild);
