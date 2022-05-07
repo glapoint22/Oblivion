@@ -1,16 +1,15 @@
-import { NodeType } from "widgets";
 import { Element } from "./element";
+import { ElementType } from "./element-type";
 import { ListStyle } from "./list-style";
-import { Text } from "./text";
+import { Selection } from "./selection";
 import { UnorderedListElement } from "./unordered-list-element";
-
 
 export class BulletedList extends ListStyle {
 
-    constructor(text: Text) {
-        super(text);
+    constructor(selection: Selection) {
+        super(selection);
 
-        this.listType = NodeType.Ul;
+        this.listType = ElementType.UnorderedList;
     }
 
 

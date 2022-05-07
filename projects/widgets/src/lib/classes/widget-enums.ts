@@ -80,15 +80,3 @@ export enum PageType {
     Search,
     Grid
 }
-
-
-export enum NodeType {
-    Div,
-    Span,
-    Text,
-    Br,
-    Ul,
-    Ol,
-    Li,
-    A
-}

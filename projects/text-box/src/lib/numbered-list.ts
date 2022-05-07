@@ -1,16 +1,15 @@
-import { NodeType } from "widgets";
 import { Element } from "./element";
+import { ElementType } from "./element-type";
 import { ListStyle } from "./list-style";
 import { OrderedListElement } from "./ordered-list-element";
-import { Text } from "./text";
-
+import { Selection } from "./selection";
 
 export class NumberedList extends ListStyle {
 
-    constructor(text: Text) {
-        super(text);
+    constructor(selection: Selection) {
+        super(selection);
 
-        this.listType = NodeType.Ol;
+        this.listType = ElementType.OrderedList;
     }
 
 

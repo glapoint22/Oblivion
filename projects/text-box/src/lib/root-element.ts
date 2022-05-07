@@ -18,7 +18,7 @@ export class RootElement extends Element {
 
 
     // ---------------------------------------------------Create-----------------------------------------------------
-    protected create(parent: Element): Element {
+    public create(parent: Element): Element {
         throw new Error("Method not implemented.");
     }
 }

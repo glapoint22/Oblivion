@@ -100,37 +100,11 @@ export abstract class Style {
     }
 
 
-    // -----------------------------------------------------------------Set Selection-------------------------------------------------------------
-    protected setSelection(oldTextElement: TextElement, newTextElement: TextElement): void {
-        if (oldTextElement == this.selection.startElement) {
-            this.selection.startElement = newTextElement;
-            this.selection.startOffset = 0;
-            this.selection.startChildIndex = newTextElement.index;
-        }
-
-        if (oldTextElement == this.selection.endElement) {
-            this.selection.endElement = newTextElement;
-            this.selection.endOffset = newTextElement.text.length;
-            this.selection.endChildIndex = newTextElement.index;
-        }
-    }
+    
 
 
 
-    // -----------------------------------------------------------------Set Container Selection-------------------------------------------------------------
-    protected setContainerSelection(element: Element, container: Element) {
-        if (!(element instanceof Container)) {
-            if (element == this.selection.startElement) {
-                this.selection.startElement = container;
-                this.selection.startOffset = 0;
-            }
-
-            if (element == this.selection.endElement) {
-                this.selection.endElement = container;;
-                this.selection.endOffset = 1
-            }
-        }
-    }
+    
 
 
     // ---------------------------------------------------------Add Style At Beginning Of Text---------------------------------------------------
@@ -148,7 +122,7 @@ export abstract class Style {
         textElement.parent.children.splice(index + 1, 0, new TextElement(textElement.parent, endText));
 
         // Set the selection
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -172,7 +146,7 @@ export abstract class Style {
         textElement.parent.children.splice(index + 2, 0, new TextElement(textElement.parent, endText));
 
         // Set the selection
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -192,7 +166,7 @@ export abstract class Style {
         textElement.parent.children.splice(index + 1, 0, styleElement);
 
         // Set the selection
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -228,7 +202,7 @@ export abstract class Style {
         }
 
         // Set the selection
-        this.setSelection(textElement, newTextElement);
+        this.selection.resetSelection(textElement, newTextElement);
 
         return newTextElement;
     }
@@ -280,6 +254,50 @@ export abstract class Style {
 
         return null;
     }
+
+
+
+
+    // ---------------------------------------------------------Get Selected Containers------------------------------------------------------------------
+    protected getSelectedContainers(): Array<Element> {
+        let currentElement = this.selection.startElement;
+        let selectedContainers: Array<Element> = new Array<Element>();
+
+        while (true) {
+            const container = currentElement.container;
+            if (!selectedContainers.some(x => x == container)) selectedContainers.push(container);
+
+            if (currentElement == this.selection.endElement || container == this.selection.endElement) {
+                break;
+            }
+
+            const nextChild = currentElement.nextChild;
+
+            if (nextChild) {
+                currentElement = nextChild;
+            }
+        }
+
+        return selectedContainers;
+    }
+
+
+    // -----------------------------------------------------------------Set Container Selection-------------------------------------------------------------
+    protected setContainerSelection(element: Element, container: Element) {
+        if (!(element instanceof Container)) {
+            if (element == this.selection.startElement) {
+                this.selection.startElement = container;
+                this.selection.startOffset = 0;
+            }
+
+            if (element == this.selection.endElement) {
+                this.selection.endElement = container;;
+                this.selection.endOffset = 1
+            }
+        }
+    }
+
+
 
 
 

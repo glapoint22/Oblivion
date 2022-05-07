@@ -27,7 +27,7 @@ export class BreakElement extends Element {
 
 
     // ---------------------------------------------------Create-----------------------------------------------------
-    protected create(parent: Element): Element {
+    public create(parent: Element): Element {
         return new BreakElement(parent);
     }
 

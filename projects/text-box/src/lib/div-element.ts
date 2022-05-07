@@ -1,7 +1,6 @@
 import { Container } from "./container";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
-import { Selection } from "./selection";
 
 export class DivElement extends Container {
 
@@ -21,7 +20,7 @@ export class DivElement extends Container {
 
 
     // ---------------------------------------------------Create-----------------------------------------------------
-    protected create(parent: Element): Element {
+    public create(parent: Element): Element {
         return new DivElement(parent);
     }
 

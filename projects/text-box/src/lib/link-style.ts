@@ -96,7 +96,7 @@ export class LinkStyle extends ToggleStyle {
         // If there are no styles on the style parent copy, move the children outside the style parent copy
         if (styleParent.styles.length == 0) {
             styleParent.children.forEach((child: Element) => {
-                const childCopy = child.copy(styleParent.parent, undefined, textElementId);
+                const childCopy = child.copy(styleParent.parent, { preserveSelection: this.selection });
 
                 if (childCopy) styleParent.parent.children.splice(index, index == styleParentIndex + 1 ? 1 : 0, childCopy);
 
@@ -110,7 +110,7 @@ export class LinkStyle extends ToggleStyle {
 
             spanElement.styles = styleParent.styles;
             styleParent.children.forEach((child: Element) => {
-                const childCopy = child.copy(spanElement, undefined, textElementId);
+                const childCopy = child.copy(spanElement, { preserveSelection: this.selection });
 
                 if (childCopy) spanElement.children.push(childCopy);
             });
@@ -143,7 +143,7 @@ export class LinkStyle extends ToggleStyle {
 
             textElement.text = endText;
 
-            this.setSelection(textElement, newTextElement);
+            this.selection.resetSelection(textElement, newTextElement);
 
             return newTextElement;
         }
@@ -186,7 +186,7 @@ export class LinkStyle extends ToggleStyle {
             (endParent.children[childIndex] as TextElement).text = endText;
             textElement.parent.parent.children.splice(index + 2, 0, endParent);
 
-            this.setSelection(textElement, newTextElement);
+            this.selection.resetSelection(textElement, newTextElement);
 
             return newTextElement;
         }
@@ -224,7 +224,7 @@ export class LinkStyle extends ToggleStyle {
                 textElement.parent.parent.children.splice(index + 1, 0, spanElement);
             }
 
-            this.setSelection(textElement, newTextElement);
+            this.selection.resetSelection(textElement, newTextElement);
             return newTextElement;
         }
 
@@ -253,7 +253,7 @@ export class LinkStyle extends ToggleStyle {
                 textElement.parent.parent.children.splice(index, 1, spanElement);
             }
 
-            this.setSelection(textElement, newTextElement);
+            this.selection.resetSelection(textElement, newTextElement);
             return newTextElement;
         }
 

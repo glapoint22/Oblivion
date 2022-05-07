@@ -5,17 +5,22 @@ import { AlignLeft } from "./align-left";
 import { AlignRight } from "./align-right";
 import { Bold } from "./bold";
 import { BreakElement } from "./break-element";
+import { BulletedList } from "./bulleted-list";
+import { DecreaseIndent } from "./decrease-indent";
 import { DivElement } from "./div-element";
 import { Element } from "./element";
 import { ElementDeleteStatus } from "./element-delete-status";
 import { ElementRange } from "./element-range";
+import { ElementType } from "./element-type";
 import { FontColor } from "./font-color";
 import { FontFamily } from "./font-family";
 import { FontSize } from "./font-size";
 import { HighlightColor } from "./highlight-color";
+import { IncreaseIndent } from "./increase-indent";
 import { Italic } from "./italic";
 import { LinkStyle } from "./link-style";
 import { LowerCase } from "./lower-case";
+import { NumberedList } from "./numbered-list";
 import { Selection } from "./selection";
 import { SentenceCase } from "./sentence-case";
 import { TextBox } from "./text-box";
@@ -43,6 +48,10 @@ export class TextBoxDev extends TextBox {
     public lowerCase: LowerCase = new LowerCase(this.selection);
     public sentenceCase: SentenceCase = new SentenceCase(this.selection);
     public titleCase: TitleCase = new TitleCase(this.selection);
+    public bulletedList: BulletedList = new BulletedList(this.selection);
+    public numberedList: NumberedList = new NumberedList(this.selection);
+    public increaseIndent: IncreaseIndent = new IncreaseIndent(this.selection);
+    public decreaseIndent: DecreaseIndent = new DecreaseIndent(this.selection);
 
     constructor(htmlRootElement: HTMLElement) {
         super(htmlRootElement);
@@ -146,6 +155,7 @@ export class TextBoxDev extends TextBox {
 
     // ---------------------------------------------------------Set Text------------------------------------------------------------------
     public setText(): void {
+        this.merge();
         this.render();
         this.selection.setRange();
         this.htmlRootElement.focus();
@@ -318,5 +328,145 @@ export class TextBoxDev extends TextBox {
         this.alignRight.setSelectedStyle();
         this.alignJustify.setSelectedStyle();
         this.linkStyle.setSelectedStyle();
+        this.bulletedList.setSelectedStyle();
+        this.numberedList.setSelectedStyle();
+    }
+
+
+
+    // ---------------------------------------------------------Merge------------------------------------------------------------------
+    private merge(element: Element = this.rootElement): void {
+        for (let i = 0; i < element.children.length; i++) {
+            const currentElement = element.children[i];
+
+            // Current element's styles are the same as its parent
+            if (currentElement.styles.some(x => currentElement.parent.styles.map(z => z.name).includes(x.name) &&
+                currentElement.parent.styles.map(z => z.value).includes(x.value))) {
+
+
+                for (let j = 0; j < currentElement.styles.length; j++) {
+                    const currentStyle = currentElement.styles[j];
+
+                    if (currentElement.parent.styles.some(x => x.name == currentStyle.name && x.value == currentStyle.value)) {
+                        currentElement.styles.splice(j, 1);
+                        j--;
+                    }
+                }
+
+                if (currentElement.styles.length == 0) {
+                    const startIndex = currentElement.index;
+                    let index = startIndex;
+
+                    currentElement.children.forEach((child: Element) => {
+                        const copiedElement = child.copy(currentElement.parent, { preserveSelection: this.selection });
+
+                        currentElement.parent.children.splice(index, index == startIndex ? 1 : 0, copiedElement);
+                        index++;
+
+                        this.selection.resetSelection(child, copiedElement, true);
+                    });
+                }
+
+                i = -1;
+                continue;
+            }
+
+
+            // If we are NOT on the last element
+            if (i != element.children.length - 1) {
+                const nextElement = element.children[i + 1];
+
+                // Does the current and the next element's type match?
+                if (((currentElement.elementType == ElementType.Span && nextElement.elementType == ElementType.Span) ||
+                    (currentElement.elementType == ElementType.Anchor && nextElement.elementType == ElementType.Anchor))
+
+                    // Do their styles match?
+                    && currentElement.styles.every(x => nextElement.styles.map(z => z.name).includes(x.name) &&
+                        nextElement.styles.map(z => z.value).includes(x.value)) &&
+                    nextElement.styles.every(x => currentElement.styles.map(z => z.name).includes(x.name) &&
+                        currentElement.styles.map(z => z.value).includes(x.value))) {
+
+                    // Everyting matches, so copy the contents from the next element to the current element
+                    nextElement.children.forEach((child: Element) => {
+                        const copiedElement = child.copy(currentElement, { preserveSelection: this.selection });
+
+                        if (copiedElement) {
+                            currentElement.children.push(copiedElement);
+                        }
+                    });
+
+                    // Reset the selection
+                    this.selection.resetSelection(nextElement, currentElement);
+
+                    // Delete the next element
+                    nextElement.delete();
+
+                    i--;
+                    continue;
+                }
+
+
+
+
+                // Current element and next element are text
+                if (currentElement.elementType == ElementType.Text && nextElement.elementType == ElementType.Text) {
+                    const currentTextElement = currentElement as TextElement;
+                    const nextTextElement = nextElement as TextElement;
+
+
+                    // Next element is the selection start element
+                    if (nextTextElement.id == this.selection.startElement.id) {
+                        this.selection.startElement = currentTextElement;
+                        this.selection.startOffset = currentTextElement.text.length;
+                        this.selection.startChildIndex = currentTextElement.index;
+                    }
+
+
+                    // Next element is the selection end element
+                    if (nextTextElement.id == this.selection.endElement.id) {
+                        this.selection.endElement = currentTextElement;
+                        this.selection.endOffset = this.selection.collapsed ? this.selection.startOffset : currentTextElement.text.length + nextTextElement.text.length;
+                        this.selection.endChildIndex = currentTextElement.index;
+                    }
+
+                    // Merge the text
+                    currentTextElement.text += nextTextElement.text;
+                    nextTextElement.delete();
+
+                    i--;
+                    continue;
+                }
+
+
+
+                // Current element and next element list types match
+                if ((currentElement.elementType == ElementType.UnorderedList && nextElement.elementType == ElementType.UnorderedList) ||
+                    (currentElement.elementType == ElementType.OrderedList && nextElement.elementType == ElementType.OrderedList)) {
+
+                    nextElement.children.forEach((child: Element) => {
+                        const copiedElement = child.copy(currentElement, { preserveSelection: this.selection });
+
+                        if (copiedElement) {
+                            currentElement.children.push(copiedElement);
+                        }
+                    });
+
+                    // Reset the selection
+                    this.selection.resetSelection(nextElement, currentElement, true);
+
+                    // Delete the next element
+                    nextElement.delete();
+
+                    
+
+                    i--;
+                    continue;
+                }
+            }
+
+
+
+            this.merge(currentElement);
+        }
     }
 }

@@ -211,4 +211,32 @@ export class Selection {
 
         return result;
     }
+
+
+
+    // ---------------------------------------------------------Reset Selection------------------------------------------------------------------
+    public resetSelection(oldElement: Element, newElement: Element, preserveOffset?: boolean) {
+        const oldStartElement = Element.search(this.startElement.id, oldElement);
+        const oldEndElement = Element.search(this.endElement.id, oldElement);
+
+        if (oldStartElement) {
+            const newStartElement = newElement.elementType == ElementType.Text ? newElement : Element.search(oldStartElement.id, newElement);
+
+            if (newStartElement) {
+                this.startElement = newStartElement;
+                if (!preserveOffset) this.startOffset = 0;
+                this.startChildIndex = newStartElement.index;
+            }
+        }
+
+        if (oldEndElement) {
+            const newEndElement = newElement.elementType == ElementType.Text ? newElement : Element.search(oldEndElement.id, newElement);
+
+            if (newEndElement) {
+                this.endElement = newEndElement;
+                if (!preserveOffset) this.endOffset = newEndElement.elementType == ElementType.Text ? (newEndElement as TextElement).text.length : 0;
+                this.endChildIndex = newEndElement.index;
+            }
+        }
+    }
 }
