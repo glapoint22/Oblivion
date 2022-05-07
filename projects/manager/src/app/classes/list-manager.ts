@@ -9,6 +9,7 @@ import { PromptComponent } from "../components/prompt/prompt.component";
 import { Prompt } from "./prompt";
 
 export class ListManager {
+  prompt!: PromptComponent;
   sourceList!: Array<ListItem>;
   selectedItem!: ListItem;
   unselectedItem!: ListItem;
@@ -23,6 +24,7 @@ export class ListManager {
   newItem!: boolean;
   options!: ListOptions;
   overButton!: boolean;
+  overContextMenu!: boolean;
   overItem!: boolean;
   SelectType = ItemSelectType;
   addDisabled: boolean = false;
@@ -42,7 +44,7 @@ export class ListManager {
   promptOpen!: boolean;
   overContextMenuListener!: Subscription;
   contextMenuOpenListener!: Subscription;
-  trumpy!: ListItem;
+  mouseDownItem!: ListItem;
 
   constructor(public lazyLoadingService: LazyLoadingService) { }
 
@@ -60,21 +62,16 @@ export class ListManager {
 
 
   removeEventListeners() {
-    if (this.contextMenuOpen) {
-      this.closeContextMenu();
-      // this.setItemFocus(this.selectedItem)
-    } else {
-      if (this.unselectable) {
-        this.removeFocus();
-        this.eventListenersAdded = false;
-        this.shiftKeyDown = false;
-        this.ctrlKeyDown = false;
-        window.removeEventListener('keyup', this.onKeyUp);
-        window.removeEventListener('keydown', this.onKeyDown);
-        window.removeEventListener('blur', this.onInnerWindowBlur);
-        window.removeEventListener('mousedown', this.onMouseDown);
-        this.unSelectedItemsUpdate();
-      }
+    if (this.unselectable) {
+      this.removeFocus();
+      this.eventListenersAdded = false;
+      this.shiftKeyDown = false;
+      this.ctrlKeyDown = false;
+      window.removeEventListener('keyup', this.onKeyUp);
+      window.removeEventListener('keydown', this.onKeyDown);
+      window.removeEventListener('blur', this.onInnerWindowBlur);
+      window.removeEventListener('mousedown', this.onMouseDown);
+      this.unSelectedItemsUpdate();
     }
   }
 
@@ -179,8 +176,12 @@ export class ListManager {
   onMouseDown = () => {
     if (!this.promptOpen) {
 
+      if (!this.overItem && !this.overContextMenu) {
+        this.closeContextMenu();
+      }
+
       // As long as we're not over an item or over a button
-      if (!this.overItem && !this.overButton) {
+      if (!this.overItem && !this.overButton && !this.contextMenuOpen) {
 
         // If an item is being edited or added
         if (this.editedItem != null) {
@@ -196,8 +197,12 @@ export class ListManager {
         }
       }
 
+
+      // If we're over an item and an item is being edited
       if (this.overItem && this.editedItem != null) {
-        if (this.trumpy != this.editedItem) {
+        
+        // And as long as the item that's being edited is not being moused down
+        if (this.mouseDownItem != this.editedItem) {
           // Evaluate the state of the edit and then act accordingly
           this.evaluateEdit(null!, true);
         }
@@ -265,7 +270,7 @@ export class ListManager {
 
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
-    this.trumpy = listItem
+    this.mouseDownItem = listItem
     // As long as this item is NOT currently being edited
     if (this.editedItem != listItem) {
       // this.setItemFocus(listItem);
@@ -763,9 +768,12 @@ export class ListManager {
         // If an item is NOT being edited
       } else {
 
-
-        // Then remove all listeners and selections
-        this.removeEventListeners();
+        if (this.contextMenuOpen) {
+          this.closeContextMenu();
+        } else {
+          // Then remove all listeners and selections
+          this.removeEventListeners();
+        }
       }
 
       this.setButtonsState();
@@ -986,7 +994,7 @@ export class ListManager {
       contextMenu.parentObj = this.options.menu?.parentObj!;
       contextMenu.options = this.options.menu?.menuOptions!;
       this.overContextMenuListener = contextMenu.overMenu.subscribe((overMenu: boolean) => {
-        this.overButton = overMenu;
+        this.overContextMenu = overMenu;
       })
       this.contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
         this.contextMenuOpen = menuOpen;
@@ -998,7 +1006,10 @@ export class ListManager {
   closeContextMenu() {
     if (this.contextMenuOpen) {
       this.contextMenu.onHide();
-      this.contextMenuOpen = false;
+      // Delay so the context menu and a selected item doesn't close at the same time
+      window.setTimeout(() => {
+        this.contextMenuOpen = false;
+      }, 10)
       this.overContextMenuListener.unsubscribe();
       this.contextMenuOpenListener.unsubscribe();
     }
@@ -1024,6 +1035,7 @@ export class ListManager {
         module: PromptModule
       }
     }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      this.prompt = prompt;
       this.promptOpen = true;
       prompt.parentObj = promptOption.parentObj!;
       prompt.title = promptOption.title!;
@@ -1032,13 +1044,8 @@ export class ListManager {
       prompt.secondaryButton = promptOption.secondaryButton!;
       prompt.tertiaryButton = promptOption.tertiaryButton!;
 
-
-      // Delay so list does NOT show hover between context menu closing and prompt opening
-      window.setTimeout(() => {
-        this.contextMenuOpen = false;
-        if (this.overContextMenuListener != null) this.overContextMenuListener.unsubscribe();
-        if (this.contextMenuOpenListener != null) this.contextMenuOpenListener.unsubscribe();
-      }, 10)
+      // Close the context menu (if open)
+      this.closeContextMenu();
 
 
       // If the duplicate prompt is being opened

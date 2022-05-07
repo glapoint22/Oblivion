@@ -10,80 +10,98 @@
     <div class="bar">
 
         <!-- Search icon -->
-        <button style="margin-left: 0;"
-                class="icon-button"
-                (click)="toggleSearch()">
-            <i *ngIf="!searchMode" style="pointer-events: none;" class="fas fa-search"></i>
-            <i *ngIf="searchMode" class="fa fa-list"></i>
-        </button>
+        <icon-button class="search-icon-button"
+                     [icon]="nicheHierarchyManager.searchIcon"
+                     [title]="nicheHierarchyManager.searchIconButtonTitle"
+                     [isDisabled]="false"
+                     (onOver)="nicheHierarchyManager.overButton = $event"
+                     (onClick)="nicheHierarchyManager.toggleSearch()">
+        </icon-button>
 
         <div class="icons">
-            
             <!-- Delete icon -->
             <icon-button [icon]="'fas fa-trash-alt'"
-                         [title]="deleteButtonTitle"
-                         [isDisabled]="!searchMode ? hierarchyUpdate.deleteDisabled : searchListUpdate.deleteDisabled == null ? true : searchListUpdate.deleteDisabled"
-                         (onOver)="hierarchy ? hierarchy.overButton = $event : multiColumnList.overButton = $event"
-                         (onClick)="hierarchy ? hierarchy.delete() : multiColumnList.delete()">
+                         [title]="nicheHierarchyManager.deleteIconButtonTitle"
+                         [isDisabled]="nicheHierarchyManager.isDisabled('deleteDisabled')"
+                         (onOver)="nicheHierarchyManager.overButton = $event"
+                         (onClick)="nicheHierarchyManager.delete()">
             </icon-button>
-            
+
             <!-- Edit icon -->
             <icon-button [icon]="'fas fa-pencil-alt'"
-                         [title]="editButtonTitle"
-                         [isDisabled]="!searchMode ? hierarchyUpdate.editDisabled : searchListUpdate.editDisabled == null ? true : searchListUpdate.editDisabled"
-                         (onOver)="hierarchy ? hierarchy.overButton = $event : multiColumnList.overButton = $event"
-                         (onClick)="hierarchy ? hierarchy.delete() : multiColumnList.delete()">
+                         [title]="nicheHierarchyManager.editIconButtonTitle"
+                         [isDisabled]="nicheHierarchyManager.isDisabled('editDisabled')"
+                         (onOver)="nicheHierarchyManager.overButton = $event"
+                         (onClick)="nicheHierarchyManager.edit()">
             </icon-button>
+            
+            <ng-container *ngIf="!nicheHierarchyManager.searchMode">
+                <!-- Add icon -->
+                <icon-button [icon]="'fas fa-plus-circle'"
+                             [title]="nicheHierarchyManager.addIconButtonTitle"
+                             [isDisabled]="nicheHierarchyManager.isDisabled('addDisabled')"
+                             (onOver)="nicheHierarchyManager.overButton = $event"
+                             (onClick)="hierarchyComponent.add(null!, nicheHierarchyManager.isParent)">
+                </icon-button>
 
-            <!-- Add icon -->
-            <icon-button *ngIf="!searchMode"
-                         [icon]="'fas fa-plus-circle'"
-                         [title]="addButtonTitle"
-                         [isDisabled]="hierarchyUpdate.addDisabled"
-                         (onOver)="hierarchy.overButton = $event"
-                         (onClick)="hierarchy.add(null!, isParent)">
-            </icon-button>
-
-            <!-- Collapse icon -->
-            <icon-button *ngIf="!searchMode"
-                         [icon]="'fas fa-minus-square'"
-                         [title]="'Collapse'"
-                         [isDisabled]="hierarchyUpdate.collapseDisabled"
-                         (onOver)="hierarchy.overButton = $event"
-                         (onClick)="hierarchy.collapse()">
-            </icon-button>
+                <!-- Collapse icon -->
+                <icon-button [icon]="'fas fa-minus-square'"
+                             [title]="'Collapse'"
+                             [isDisabled]="nicheHierarchyManager.isDisabled('collapseDisabled')"
+                             (onOver)="nicheHierarchyManager.overButton = $event"
+                             (onClick)="nicheHierarchyManager.collapse()">
+                </icon-button>
+            </ng-container>
         </div>
     </div>
     <div class="drop-shadow"></div>
 
     
     <!-- Hierarchy -->
-    <ng-container *ngIf="!searchMode">
+    <ng-container *ngIf="!nicheHierarchyManager.searchMode">
         <div class="overflow-container" [style.height.px]="base.clientHeight - 40">
-            <hierarchy #hierarchy [sourceList]="nicheHierarchyService.niches" [options]="hierarchyOptions" (onListUpdate)="hierarchyUpdate = $event"></hierarchy>
+            <hierarchy #hierarchyComponent
+                    [sourceList]="nicheHierarchyManager.thisArray"
+                    [options]="nicheHierarchyManager.hierarchyOptions"
+                    (onListUpdate)="nicheHierarchyManager.hierarchyUpdate = $event">
+            </hierarchy>
         </div>
     </ng-container>
 
+
     <!-- Search -->
-    <ng-container *ngIf="searchMode">
-        <input id="searchInput" placeholder="Search" (input)="onSearchInputChange($event.target)">
+    <ng-container *ngIf="nicheHierarchyManager.searchMode">
+            
+        <input id="nicheHierarchySearchInput"
+                placeholder="Search"
+                (input)="nicheHierarchyManager.onSearchInputChange($event.target)">
 
-        <!-- Column Headers -->
-        <ng-container *ngIf="searchList.length > 0">
-            <div class="column-name-container">
-                <div class="column-name">Name</div>
-                <div class="column-name">Type</div>
-            </div>
+        <div class="column-name-container">
+            <div class="column-name">Name</div>
+            <div class="column-name">Type</div>
+        </div>
 
-            <div class="column-underline-container">
-                <div class="column-underline"></div>
-                <div class="column-underline"></div>
+        <div class="column-underline-container">
+            <div class="column-underline"></div>
+            <div class="column-underline"></div>
+        </div>
+
+
+        <ng-container *ngIf="nicheHierarchyManager.searchList.length == 0">
+            <div class="no-search-results">
+                No search results available
             </div>
         </ng-container>
+        
 
-        <!-- List -->
-        <div class="overflow-container" [style.height.px]="base.clientHeight - 116">
-            <multi-column-list #multiColumnList [sourceList]="searchList" [options]="searchListOptions" (onListUpdate)="searchListUpdate = $event"></multi-column-list>
-        </div>
+        <ng-container *ngIf="nicheHierarchyManager.searchList.length > 0">
+            <div class="overflow-container" [style.height.px]="base.clientHeight - 130">
+                <multi-column-list #searchComponent
+                                [sourceList]="nicheHierarchyManager.searchList"
+                                [options]="nicheHierarchyManager.searchOptions"
+                                (onListUpdate)="nicheHierarchyManager.searchUpdate = $event">
+                </multi-column-list>
+            </div>
+        </ng-container>
     </ng-container>
 </div>

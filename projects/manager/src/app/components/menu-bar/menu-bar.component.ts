@@ -311,22 +311,22 @@ export class MenuBarComponent {
 
     if (this.nicheHierarchyOpen) {
       // If the niche hierarchy is being displayed
-      if (this.nicheHierarchy.hierarchy) {
+      if (this.nicheHierarchy.hierarchyComponent) {
         if (!this.overNicheHierarchy &&
-          !this.nicheHierarchy.moveFormOpen &&
-          !this.nicheHierarchy.hierarchy.listManager.editedItem &&
-          !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen &&
-          !this.nicheHierarchy.hierarchy.listManager.promptOpen) {
+          !this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
+          !this.nicheHierarchy.hierarchyComponent.listManager.editedItem &&
+          !this.nicheHierarchy.hierarchyComponent.listManager.contextMenuOpen &&
+          !this.nicheHierarchy.hierarchyComponent.listManager.promptOpen) {
           this.closeNicheHierarchy();
         }
 
         // If the search text is being displayed
       } else {
         if (!this.overNicheHierarchy &&
-          !this.nicheHierarchy.moveFormOpen &&
-          !this.nicheHierarchy.multiColumnList.listManager.editedItem &&
-          !this.nicheHierarchy.multiColumnList.listManager.contextMenuOpen &&
-          !this.nicheHierarchy.multiColumnList.listManager.promptOpen) {
+          !this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
+          !this.nicheHierarchy.searchComponent.listManager.editedItem &&
+          !this.nicheHierarchy.searchComponent.listManager.contextMenuOpen &&
+          !this.nicheHierarchy.searchComponent.listManager.promptOpen) {
           this.closeNicheHierarchy();
         }
       }
@@ -340,20 +340,21 @@ export class MenuBarComponent {
 
       if (this.nicheHierarchyOpen) {
         // If the niche hierarchy is being displayed
-        if (this.nicheHierarchy.hierarchy) {
-          if (!this.nicheHierarchy.moveFormOpen &&
-            !this.nicheHierarchy.hierarchy.listManager.editedItem &&
-            !this.nicheHierarchy.hierarchy.listManager.contextMenuOpen &&
-            !this.nicheHierarchy.hierarchy.listManager.promptOpen) {
+        if (this.nicheHierarchy.hierarchyComponent) {
+
+          if (!this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
+            !this.nicheHierarchy.hierarchyComponent.listManager.editedItem &&
+            !this.nicheHierarchy.hierarchyComponent.listManager.contextMenuOpen &&
+            !this.nicheHierarchy.hierarchyComponent.listManager.promptOpen) {
             this.closeNicheHierarchy();
           }
 
           // If the search text is being displayed
         } else {
-          if (!this.nicheHierarchy.moveFormOpen &&
-            !this.nicheHierarchy.multiColumnList.listManager.editedItem &&
-            !this.nicheHierarchy.multiColumnList.listManager.contextMenuOpen &&
-            !this.nicheHierarchy.multiColumnList.listManager.promptOpen) {
+          if (!this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
+            !this.nicheHierarchy.searchComponent.listManager.editedItem &&
+            !this.nicheHierarchy.searchComponent.listManager.contextMenuOpen &&
+            !this.nicheHierarchy.searchComponent.listManager.promptOpen) {
             this.closeNicheHierarchy();
           }
         }
@@ -367,19 +368,19 @@ export class MenuBarComponent {
 
     if (this.nicheHierarchyOpen) {
       // If the niche hierarchy is being displayed
-      if (this.nicheHierarchy.hierarchy) {
-        if (!this.nicheHierarchy.moveFormOpen &&
-          !this.nicheHierarchy.hierarchy.listManager.promptOpen) {
+      if (this.nicheHierarchy.hierarchyComponent) {
+        if (!this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
+          !this.nicheHierarchy.hierarchyComponent.listManager.promptOpen) {
           this.closeNicheHierarchy();
-          this.nicheHierarchy.hierarchy.listManager.editedItem = null!;
+          this.nicheHierarchy.hierarchyComponent.listManager.editedItem = null!;
         }
 
         // If the search text is being displayed
       } else {
-        if (!this.nicheHierarchy.moveFormOpen &&
-          !this.nicheHierarchy.multiColumnList.listManager.promptOpen) {
+        if (!this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
+          !this.nicheHierarchy.searchComponent.listManager.promptOpen) {
           this.closeNicheHierarchy();
-          this.nicheHierarchy.multiColumnList.listManager.editedItem = null!;
+          this.nicheHierarchy.searchComponent.listManager.editedItem = null!;
         }
       }
     }

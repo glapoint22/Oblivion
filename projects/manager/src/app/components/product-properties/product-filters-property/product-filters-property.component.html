@@ -32,23 +32,23 @@
                              (onClick)="productFiltersManager.edit()">
                 </icon-button>
 
-                <!-- Add icon -->
-                <icon-button *ngIf="!productFiltersManager.searchMode"
-                             [icon]="'fas fa-plus-circle'"
-                             [title]="productFiltersManager.addIconButtonTitle"
-                             [isDisabled]="productFiltersManager.isDisabled('addDisabled')"
-                             (onOver)="productFiltersManager.overButton = $event"
-                             (onClick)="productFiltersManager.add()">
-                </icon-button>
-
-                <!-- Collapse icon -->
-                <icon-button *ngIf="!productFiltersManager.searchMode"
-                             [icon]="'fas fa-minus-square'"
-                             [title]="'Collapse'"
-                             [isDisabled]="productFiltersManager.isDisabled('collapseDisabled')"
-                             (onOver)="productFiltersManager.overButton = $event"
-                             (onClick)="productFiltersManager.collapse()">
-                </icon-button>
+                <ng-container *ngIf="!productFiltersManager.searchMode">
+                    <!-- Add icon -->
+                    <icon-button [icon]="'fas fa-plus-circle'"
+                                 [title]="productFiltersManager.addIconButtonTitle"
+                                 [isDisabled]="productFiltersManager.isDisabled('addDisabled')"
+                                 (onOver)="productFiltersManager.overButton = $event"
+                                 (onClick)="productFiltersManager.add()">
+                    </icon-button>
+    
+                    <!-- Collapse icon -->
+                    <icon-button [icon]="'fas fa-minus-square'"
+                                 [title]="'Collapse'"
+                                 [isDisabled]="productFiltersManager.isDisabled('collapseDisabled')"
+                                 (onOver)="productFiltersManager.overButton = $event"
+                                 (onClick)="productFiltersManager.collapse()">
+                    </icon-button>
+                </ng-container>
             </div>
         </div>
         
