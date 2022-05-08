@@ -43,23 +43,23 @@
                                  (onClick)="keywordsFormManager.edit()">
                     </icon-button>
 
-                    <!-- Add icon -->
-                    <icon-button *ngIf="!keywordsFormManager.searchMode"
-                                 [icon]="'fas fa-plus-circle'"
-                                 [title]="keywordsFormManager.addIconButtonTitle"
-                                 [isDisabled]="keywordsFormManager.isDisabled('addDisabled')"
-                                 (onOver)="keywordsFormManager.overButton = $event"
-                                 (onClick)="keywordsFormManager.add()">
-                    </icon-button>
-
-                    <!-- Collapse icon -->
-                    <icon-button *ngIf="!keywordsFormManager.searchMode"
-                                 [icon]="'fas fa-minus-square'"
-                                 [title]="'Collapse'"
-                                 [isDisabled]="keywordsFormManager.isDisabled('collapseDisabled')"
-                                 (onOver)="keywordsFormManager.overButton = $event"
-                                 (onClick)="keywordsFormManager.collapse()">
-                    </icon-button>
+                    <ng-container *ngIf="!keywordsFormManager.searchMode">
+                        <!-- Add icon -->
+                        <icon-button [icon]="'fas fa-plus-circle'"
+                                     [title]="keywordsFormManager.addIconButtonTitle"
+                                     [isDisabled]="keywordsFormManager.isDisabled('addDisabled')"
+                                     (onOver)="keywordsFormManager.overButton = $event"
+                                     (onClick)="keywordsFormManager.add()">
+                        </icon-button>
+        
+                        <!-- Collapse icon -->
+                        <icon-button [icon]="'fas fa-minus-square'"
+                                     [title]="'Collapse'"
+                                     [isDisabled]="keywordsFormManager.isDisabled('collapseDisabled')"
+                                     (onOver)="keywordsFormManager.overButton = $event"
+                                     (onClick)="keywordsFormManager.collapse()">
+                        </icon-button>
+                    </ng-container>
                 </div>
             </div>
 

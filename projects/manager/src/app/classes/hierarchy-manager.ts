@@ -36,7 +36,6 @@ export class HierarchyManager extends ListManager {
 
 
     onArrowClick(hierarchyItem: HierarchyItem) {
-        this.closeContextMenu();
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
         this.showHide(this.sourceList.findIndex(x => x.identity == hierarchyItem.identity));
         this.collapseDisabled = this.getIsCollapsed();

@@ -43,23 +43,23 @@
                                  (onClick)="filtersFormManager.edit()">
                     </icon-button>
 
-                    <!-- Add icon -->
-                    <icon-button *ngIf="!filtersFormManager.searchMode"
-                                 [icon]="'fas fa-plus-circle'"
-                                 [title]="filtersFormManager.addIconButtonTitle"
-                                 [isDisabled]="filtersFormManager.isDisabled('addDisabled')"
-                                 (onOver)="filtersFormManager.overButton = $event"
-                                 (onClick)="filtersFormManager.add()">
-                    </icon-button>
-
-                    <!-- Collapse icon -->
-                    <icon-button *ngIf="!filtersFormManager.searchMode"
-                                 [icon]="'fas fa-minus-square'"
-                                 [title]="'Collapse'"
-                                 [isDisabled]="filtersFormManager.isDisabled('collapseDisabled')"
-                                 (onOver)="filtersFormManager.overButton = $event"
-                                 (onClick)="filtersFormManager.collapse()">
-                    </icon-button>
+                    <ng-container *ngIf="!filtersFormManager.searchMode">
+                        <!-- Add icon -->
+                        <icon-button [icon]="'fas fa-plus-circle'"
+                                     [title]="filtersFormManager.addIconButtonTitle"
+                                     [isDisabled]="filtersFormManager.isDisabled('addDisabled')"
+                                     (onOver)="filtersFormManager.overButton = $event"
+                                     (onClick)="filtersFormManager.add()">
+                        </icon-button>
+        
+                        <!-- Collapse icon -->
+                        <icon-button [icon]="'fas fa-minus-square'"
+                                     [title]="'Collapse'"
+                                     [isDisabled]="filtersFormManager.isDisabled('collapseDisabled')"
+                                     (onOver)="filtersFormManager.overButton = $event"
+                                     (onClick)="filtersFormManager.collapse()">
+                        </icon-button>
+                    </ng-container>
                 </div>
             </div>
 
