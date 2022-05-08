@@ -9,11 +9,11 @@ corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px '
     [style.fontSize.px]="caption.fontSize">
 
     <!-- Web address -->
-    <a *ngIf="link && link.url && link.selectedOption == linkOption.WebAddress" [href]="link.url" target="_blank">
+    <a *ngIf="link && link.url && link.linkType == linkType.WebAddress" [href]="link.url" target="_blank">
         {{caption.text}}</a>
 
     <!-- local link -->
-    <a *ngIf="link && link.url && link.selectedOption != linkOption.WebAddress" [routerLink]="link.url">
+    <a *ngIf="link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
         {{caption.text}}</a>
 
     <ng-container *ngIf="!link || !link.url">{{caption.text}}</ng-container>

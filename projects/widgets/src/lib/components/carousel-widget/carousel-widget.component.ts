@@ -1,8 +1,8 @@
 import { Component, HostListener } from '@angular/core';
+import { LinkType } from 'common';
 import { CarouselBanner } from '../../classes/carousel-banner';
 import { CarouselWidgetData } from '../../classes/carousel-widget-data';
 import { Widget } from '../../classes/widget';
-import { LinkOption } from '../../classes/widget-enums';
 
 @Component({
   selector: 'carousel-widget',
@@ -11,7 +11,7 @@ import { LinkOption } from '../../classes/widget-enums';
 })
 export class CarouselWidgetComponent extends Widget {
   public banners!: Array<CarouselBanner>;
-  public linkOption = LinkOption;
+  public linkType = LinkType;
   public changeCount: number = 0;
   private setChangeCount!: boolean;
 

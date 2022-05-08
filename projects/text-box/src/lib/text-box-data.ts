@@ -1,5 +1,5 @@
+import { Link } from "common";
 import { ElementType } from "./element-type";
-import { Link } from "./link";
 import { StyleData } from "./style-data";
 
 export class TextBoxData {

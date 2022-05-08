@@ -44,12 +44,6 @@ export enum WidgetType {
 }
 
 
-export enum LinkOption {
-    None,
-    Page,
-    Product,
-    WebAddress,
-}
 
 
 export enum VerticalAlignmentType {

@@ -7,6 +7,7 @@ import { Padding } from '../../classes/padding';
 import { Row } from '../../classes/row';
 import { Shadow } from '../../classes/shadow';
 import { Widget } from '../../classes/widget';
+import { WidgetType } from '../../classes/widget-enums';
 import { ContainerComponent } from '../container/container.component';
 
 @Component({
@@ -16,12 +17,17 @@ import { ContainerComponent } from '../container/container.component';
 })
 export class ContainerWidgetComponent extends Widget {
   @ViewChild('container', { static: false }) container!: ContainerComponent;
-  public corners!: Corners;
-  public shadow!: Shadow;
-  public background!: Background;
-  public border!: Border;
-  private padding: Padding = new Padding();
+  public corners: Corners = new Corners();
+  public shadow: Shadow = new Shadow();
+  public background: Background = new Background('#484848');
+  public border: Border = new Border();
+  public padding: Padding = new Padding();
   private rows!: Array<Row>;
+
+
+  ngOnInit() {
+    this.type = WidgetType.Container;
+  }
 
 
   ngAfterViewInit(): void {
@@ -41,12 +47,12 @@ export class ContainerWidgetComponent extends Widget {
 
 
   setWidget(containerWidgetData: ContainerWidgetData) {
-    this.background = containerWidgetData.background;
-    this.border = containerWidgetData.border;
-    this.corners = containerWidgetData.corners;
-    this.shadow = containerWidgetData.shadow;
-    this.rows = containerWidgetData.rows;
+    this.background.setData(containerWidgetData.background);
+    this.border.setData(containerWidgetData.border);
+    this.corners.setData(containerWidgetData.corners);
+    this.shadow.setData(containerWidgetData.shadow);
     this.padding.setData(containerWidgetData.padding);
+    this.rows = containerWidgetData.rows;
 
     super.setWidget(containerWidgetData);
   }

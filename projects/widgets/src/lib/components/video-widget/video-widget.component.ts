@@ -5,6 +5,7 @@ import { Shadow } from '../../classes/shadow';
 import { Video } from '../../classes/video';
 import { VideoWidgetData } from '../../classes/video-widget-data';
 import { Widget } from '../../classes/widget';
+import { WidgetType } from '../../classes/widget-enums';
 
 @Component({
   selector: 'video-widget',
@@ -13,10 +14,14 @@ import { Widget } from '../../classes/widget';
 })
 export class VideoWidgetComponent extends Widget {
   @ViewChild('iframe', { static: false }) iframe!: ElementRef<HTMLIFrameElement>;
-  public border!: Border;
-  public corners!: Corners;
-  public shadow!: Shadow;
-  private video!: Video;
+  public border: Border = new Border();
+  public corners: Corners = new Corners();
+  public shadow: Shadow = new Shadow();
+  private video: Video = new Video();
+
+  ngOnInit() {
+    this.type = WidgetType.Video;
+  }
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -26,10 +31,10 @@ export class VideoWidgetComponent extends Widget {
   }
 
   setWidget(videoWidgetData: VideoWidgetData) {
-    this.border = videoWidgetData.border;
-    this.corners = videoWidgetData.corners;
-    this.shadow = videoWidgetData.shadow;
-    this.video = videoWidgetData.video;
+    this.border.setData(videoWidgetData.border);
+    this.corners.setData(videoWidgetData.corners);
+    this.shadow.setData(videoWidgetData.shadow);
+    this.video.setData(videoWidgetData.video);
 
     super.setWidget(videoWidgetData);
   }

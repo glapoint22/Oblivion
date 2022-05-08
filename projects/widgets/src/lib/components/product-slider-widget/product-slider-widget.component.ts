@@ -3,6 +3,7 @@ import { SummaryProduct } from 'common';
 import { Caption } from '../../classes/caption';
 import { ProductSliderWidgetData } from '../../classes/product-slider-widget-data';
 import { Widget } from '../../classes/widget';
+import { WidgetType } from '../../classes/widget-enums';
 
 @Component({
   selector: 'product-slider-widget',
@@ -18,6 +19,10 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
   public changeCount: number = 0;
   public caption: Caption = new Caption();
 
+  ngOnInit() {
+    this.type = WidgetType.ProductSlider;
+  }
+
   ngOnChanges() {
     if (this.sliderContainer) {
       this.productGroups = [];
@@ -25,12 +30,12 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
       this.changeCount++;
     };
 
-    if(!this.caption.text) this.caption.text = this.text;
+    if (!this.caption.text) this.caption.text = this.text;
   }
 
   setWidget(productSliderWidgetData: ProductSliderWidgetData) {
     this.products = productSliderWidgetData.products;
-    this.caption = productSliderWidgetData.caption;
+    this.caption.setData(productSliderWidgetData.caption);
 
     window.addEventListener('resize', this.onWindowResize);
   }

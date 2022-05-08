@@ -1,0 +1,63 @@
+<div #widget style="margin-bottom: 20px;">
+    <ng-container *ngIf="products.length > 0">
+        <div #sliderContainer class="product-slider-container">
+
+            <!-- Caption -->
+            <div class="caption" [style.fontFamily]="caption.font" [style.fontSize.px]="caption.fontSize"
+                [style.fontWeight]="caption.fontWeight" [style.fontStyle]="caption.fontStyle"
+                [style.textDecoration]="caption.textDecoration" [style.color]="caption.color">
+                {{caption.text}}
+            </div>
+
+            <!-- Slider -->
+            <div class="slider-container">
+                <div #slider slider [leftArrowButtonElement]="leftArrowButton"
+                    [rightArrowButtonElement]="rightArrowButton" [scrollbarElement]="scrollbar"
+                    [changeCount]="changeCount" [scrollbarContainer]="scrollbarContainer" [changeCount]="changeCount" class="slider">
+
+                    <!-- Products -->
+                    <div *ngFor="let productGroup of productGroups" [style.width.px]="sliderContainer.clientWidth"
+                        class="product-group">
+                        <div class="product-summary-container" *ngFor="let product of productGroup">
+                            <product-summary [product]="product"></product-summary>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Left Arrow Button -->
+                <div #leftArrowButton class="left-arrow-button">
+                    <i></i>
+                </div>
+
+                <!-- Right Arrow Button -->
+                <div #rightArrowButton class="right-arrow-button">
+                    <i></i>
+                </div>
+            </div>
+        </div>
+
+        <div #scrollbarContainer class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth">
+            <!-- Scroll Track -->
+            <div class="scroll-track"></div>
+
+            <!-- Scrollbar -->
+            <div #scrollbar class="scroll-thumb-container" (mousedown)="$event.preventDefault()">
+                <div [style.width.px]="sliderContainer.clientWidth / slider.childElementCount" class="scroll-thumb">
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+
+
+<!-- Handles -->
+<div *ngIf="widgetService.selectedWidget == this">
+    <div class="handle top-left"></div>
+    <div class="handle top"></div>
+    <div class="handle top-right"></div>
+    <div class="handle left"></div>
+    <div class="handle bottom-left"></div>
+    <div class="handle bottom"></div>
+    <div class="handle bottom-right"></div>
+    <div class="handle right"></div>
+</div>

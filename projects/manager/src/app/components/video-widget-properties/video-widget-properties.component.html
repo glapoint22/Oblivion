@@ -1,0 +1,11 @@
+<!-- Border -->
+<border [border]="widget.border" (onChange)="update()"></border>
+
+<!-- Corners -->
+<corners [corners]="widget.corners" (onChange)="update()"></corners>
+
+<!-- Shadow -->
+<shadow [shadow]="widget.shadow" (onChange)="update()"></shadow>
+
+<!-- Column Span -->
+<column-span [column]="widgetService.selectedColumn" (onChange)="updateColumnSpan()"></column-span>

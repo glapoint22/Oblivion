@@ -1,8 +1,8 @@
+import { Link } from "common";
 import { AnchorElement } from "./anchor-element";
 import { BreakElement } from "./break-element";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
-import { Link } from "./link";
 import { Selection } from "./selection";
 import { SpanElement } from "./span-element";
 import { TextElement } from "./text-element";

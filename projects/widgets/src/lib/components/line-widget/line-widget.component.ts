@@ -3,6 +3,7 @@ import { Border } from '../../classes/border';
 import { LineWidgetData } from '../../classes/line-widget-data';
 import { Shadow } from '../../classes/shadow';
 import { Widget } from '../../classes/widget';
+import { WidgetType } from '../../classes/widget-enums';
 
 @Component({
   selector: 'line-widget',
@@ -10,12 +11,16 @@ import { Widget } from '../../classes/widget';
   styleUrls: ['./line-widget.component.scss']
 })
 export class LineWidgetComponent extends Widget {
-  public border!: Border;
-  public shadow!: Shadow;
+  public border: Border = new Border();
+  public shadow: Shadow = new Shadow();
+
+  ngOnInit() {
+    this.type = WidgetType.Line;
+  }
   
   setWidget(lineWidgetData: LineWidgetData) {
-    this.border = lineWidgetData.border;
-    this.shadow = lineWidgetData.shadow;
+    this.border.setData(lineWidgetData.border);
+    this.shadow.setData(lineWidgetData.shadow);
 
     super.setWidget(lineWidgetData);
   }

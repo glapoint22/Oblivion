@@ -1,20 +1,20 @@
 <!-- Background -->
-<background [background]="buttonWidget.background" (onChange)="update()"></background>
+<background [background]="widget.background" (onChange)="update()"></background>
 
 <!-- Border -->
-<border [border]="buttonWidget.border" (onChange)="update()"></border>
+<border [border]="widget.border" (onChange)="update()"></border>
 
 <!-- Corners -->
-<corners [corners]="buttonWidget.corners" (onChange)="update()"></corners>
+<corners [corners]="widget.corners" (onChange)="update()"></corners>
 
 <!-- Shadow -->
-<shadow [shadow]="buttonWidget.shadow" (onChange)="update()"></shadow>
+<shadow [shadow]="widget.shadow" (onChange)="update()"></shadow>
 
 <!-- Padding -->
-<padding [padding]="buttonWidget.padding" (onChange)="buttonWidget.padding.setClasses(buttonWidget.widgetElement); update()"></padding>
+<padding [padding]="widget.padding" (onChange)="updatePadding(widget.padding)"></padding>
 
 <!-- Column Span -->
-<column-span [column]="widgetService.selectedColumn" (onChange)="widgetService.selectedColumn.columnSpan.setClasses(widgetService.selectedColumn.columnElement); update()"></column-span>
+<column-span [column]="widgetService.selectedColumn" (onChange)="updateColumnSpan()"></column-span>
 
 <!-- Caption -->
-<caption-property [caption]="buttonWidget.caption" (onChange)="update()"></caption-property>
+<caption-property [caption]="widget.caption" (onChange)="update()"></caption-property>

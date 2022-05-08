@@ -10,7 +10,6 @@ import { WidgetService } from '../../services/widget/widget.service';
 })
 export class TextWidgetDevComponent extends TextWidgetComponent implements OnInit {
   @ViewChild('htmlRootElement') htmlRootElement!: ElementRef<HTMLElement>;
-
   public textBoxDev!: TextBoxDev;
 
   constructor(public widgetService: WidgetService) { super() }
