@@ -11,8 +11,8 @@ export class FiltersFormManager extends ListUpdateManager {
         this.childType = 'Filter Option';
         this.parentDataServicePath = 'Filters';
         this.childDataServicePath = 'Filters/Options';
-        this.searchParentName = 'Filter';
-        this.searchChildName = 'Option';
+        this.parentSearchType = 'Filter';
+        this.childSearchType = 'Option';
         this.searchNameWidth = '246px';
         this.searchTypeWidth = '55px';
         this.sortType = SortType.Form;

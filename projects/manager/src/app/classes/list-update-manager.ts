@@ -4,6 +4,7 @@ import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { ListUpdateService } from "../services/list-update/list-update.service";
+import { DuplicateItem } from "./duplicate-item";
 import { ListUpdateType, MenuOptionType, SortType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
@@ -12,6 +13,7 @@ import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
+import { SearchItem } from "./search-item";
 
 export class ListUpdateManager {
     // private
@@ -27,8 +29,8 @@ export class ListUpdateManager {
     public searchMode!: boolean;
     public searchNameWidth!: string;
     public searchTypeWidth!: string;
-    public searchChildName!: string;
-    public searchParentName!: string;
+    public childSearchType!: string;
+    public parentSearchType!: string;
     public childDataServicePath!: string;
     public searchInput!: HTMLInputElement;
     public isThreeTierHierarchy!: boolean;
@@ -376,7 +378,7 @@ export class ListUpdateManager {
     // ==============================================================( ON SELECTED SEARCH ITEM )============================================================== \\
 
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.searchParentName) {
+        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
             this.editIconButtonTitle = 'Edit ' + this.parentType;
             this.deleteIconButtonTitle = 'Delete ' + this.parentType;
             this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.parentType;
@@ -384,7 +386,7 @@ export class ListUpdateManager {
             this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.parentType + ' in Hierarchy';
         }
 
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.searchChildName) {
+        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
             this.editIconButtonTitle = 'Edit ' + this.childType;
             this.deleteIconButtonTitle = 'Delete ' + this.childType;
             this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.childType;
@@ -431,6 +433,8 @@ export class ListUpdateManager {
                     hierarchyGroupID: this.thisArray[hierarchyUpdate.index!].hierarchyGroupID,
                     name: this.thisArray[hierarchyUpdate.index!].name
                 })
+                const addedOtherHierarchyItem: HierarchyItem = this.otherArray.find(x => x.id == this.otherArray[hierarchyUpdate.index!].id && x.hierarchyGroupID == this.otherArray[hierarchyUpdate.index!].hierarchyGroupID)!;
+                this.setOtherHierarchySort(addedOtherHierarchyItem);
             });
         }
 
@@ -451,11 +455,10 @@ export class ListUpdateManager {
                     name: this.thisArray[hierarchyUpdate.index!].name,
                     hidden: !this.otherArray[indexOfHierarchyItemParent].arrowDown
                 })
+                const addedOtherHierarchyItem: HierarchyItem = this.otherArray.find(x => x.id == this.otherArray[hierarchyUpdate.index!].id && x.hierarchyGroupID == this.otherArray[hierarchyUpdate.index!].hierarchyGroupID)!;
+                this.setOtherHierarchySort(addedOtherHierarchyItem);
             })
         }
-
-        const addedOtherHierarchyItem: HierarchyItem = this.otherArray.find(x => x.id == this.otherArray[hierarchyUpdate.index!].id && x.hierarchyGroupID == this.otherArray[hierarchyUpdate.index!].hierarchyGroupID)!;
-        this.setOtherHierarchySort(addedOtherHierarchyItem);
     }
 
 
@@ -487,7 +490,7 @@ export class ListUpdateManager {
 
     onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
         // Edit parent search item
-        if (searchUpdate.values![1].name == this.searchParentName) {
+        if (searchUpdate.values![1].name == this.parentSearchType) {
             this.dataService.put('api/' + this.parentDataServicePath, {
                 id: searchUpdate.id,
                 name: searchUpdate.values![0].name
@@ -504,7 +507,7 @@ export class ListUpdateManager {
         }
 
         // Edit child search item
-        if (searchUpdate.values![1].name == this.searchChildName) {
+        if (searchUpdate.values![1].name == this.childSearchType) {
             this.dataService.put('api/' + this.childDataServicePath, {
                 id: searchUpdate.id,
                 name: searchUpdate.values![0].name
@@ -626,7 +629,7 @@ export class ListUpdateManager {
         let matchFound: boolean = false;
 
         // If we're verifying a parent item
-        if (searchUpdate.values![1].name == this.searchParentName) {
+        if (searchUpdate.values![1].name == this.parentSearchType) {
             // Loop through each parent item and check for a duplicate
             this.thisArray.forEach(x => {
                 if (x.hierarchyGroupID == 0) {
@@ -649,19 +652,19 @@ export class ListUpdateManager {
         }
 
         // If we're verifying a child item
-        if (searchUpdate.values![1].name == this.searchChildName) {
+        if (searchUpdate.values![1].name == this.childSearchType) {
 
             // Query the database to check for a duplicate
-            this.dataService.get<{ id: null, name: null, parentId: null }>('api/' + this.childDataServicePath + '/CheckDuplicate', [{ key: 'childId', value: searchUpdate.id }, { key: 'childName', value: searchUpdate.name }])
-                .subscribe((item: { id: null, name: null, parentId: null }) => {
+            this.dataService.get<DuplicateItem>('api/' + this.childDataServicePath + '/CheckDuplicate', [{ key: 'childId', value: searchUpdate.id }, { key: 'childName', value: searchUpdate.name }])
+                .subscribe((duplicateItem: DuplicateItem) => {
 
                     // If no match was found
-                    if (item == null) {
+                    if (duplicateItem == null) {
                         this.searchComponent.commitAddEdit();
 
                         // If a match was found
                     } else {
-                        const parentItem = this.thisArray.find(x => x.id == item.parentId && x.hierarchyGroupID == 0);
+                        const parentItem = this.thisArray.find(x => x.id == duplicateItem.parentId && x.hierarchyGroupID == 0);
                         this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
                         this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.parentType + '<span style="color: #ffba00"> ' + parentItem!.name + '</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">' + searchUpdate.name + '</span>. Please choose a different name.');
                         this.searchComponent.openDuplicatePrompt();
@@ -728,13 +731,13 @@ export class ListUpdateManager {
 
     onSearchDeletePrompt(deletedItem: MultiColumnItem) {
         // If we're deleting a parent item
-        if (deletedItem.values[1].name == this.searchParentName) {
+        if (deletedItem.values[1].name == this.parentSearchType) {
             this.searchOptions.deletePrompt!.title = 'Delete ' + this.parentType;
             this.searchOptions.deletePrompt!.message = this.deletePromptParentMessage(this.parentType, deletedItem.values[0].name);
         }
 
         // If we're deleting a child item
-        if (deletedItem.values[1].name == this.searchChildName && !this.isThreeTierHierarchy) {
+        if (deletedItem.values[1].name == this.childSearchType && !this.isThreeTierHierarchy) {
 
             // Prefill the prompt so if the prompt opens before we get the parent name, it won't be an empty prompt
             this.searchOptions.deletePrompt!.title = 'Delete ' + this.childType;
@@ -786,7 +789,7 @@ export class ListUpdateManager {
 
     onSearchItemDelete(deletedItem: MultiColumnItem) {
         // If we're deleting a parent item
-        if (deletedItem.values[1].name == this.searchParentName) {
+        if (deletedItem.values[1].name == this.parentSearchType) {
             this.dataService.delete('api/' + this.parentDataServicePath, {
                 id: deletedItem.id
             }).subscribe();
@@ -799,7 +802,7 @@ export class ListUpdateManager {
         }
 
         // If we're deleting a child item
-        if (deletedItem.values[1].name == this.searchChildName) {
+        if (deletedItem.values[1].name == this.childSearchType) {
             this.dataService.delete('api/' + this.childDataServicePath, {
                 id: deletedItem.id
             }).subscribe();
@@ -894,29 +897,19 @@ export class ListUpdateManager {
     getSearchResults(value: string) {
         this.searchList.splice(0, this.searchList.length);
 
-        this.dataService.get<Array<MultiColumnItem>>('api/' + this.parentDataServicePath + '/Search', [{ key: 'searchWords', value: value }])
-            .subscribe((searchList: Array<MultiColumnItem>) => {
+        this.dataService.get<Array<SearchItem>>('api/' + this.parentDataServicePath + '/Search', [{ key: 'searchWords', value: value }])
+            .subscribe((searchResults: Array<SearchItem>) => {
 
-                searchList.forEach(x => {
-                    this.searchList.push({
+                // As long as search results were returned
+                if (searchResults) {
+                    searchResults.forEach(x => {
+                        this.searchList.push({
 
-                        id: x.id,
-                        values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: this.searchParentName, width: this.searchTypeWidth }]
+                            id: x.id!,
+                            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }]
+                        })
                     })
-                })
-            });
-
-
-        this.dataService.get<Array<MultiColumnItem>>('api/' + this.childDataServicePath + '/Search', [{ key: 'searchWords', value: value }])
-            .subscribe((searchList: Array<MultiColumnItem>) => {
-
-                searchList.forEach(x => {
-                    this.searchList.push({
-
-                        id: x.id,
-                        values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: this.searchChildName, width: this.searchTypeWidth }]
-                    })
-                })
+                }
             });
     }
 
@@ -959,7 +952,7 @@ export class ListUpdateManager {
     goToHierarchy() {
 
         // Go to parent item
-        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.searchParentName) {
+        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.parentSearchType) {
             const parentSearchItem: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
 
             // Now go to the hierarchy
@@ -974,7 +967,7 @@ export class ListUpdateManager {
 
 
         // Go to child item
-        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.searchChildName) {
+        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.childSearchType) {
             const child: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
 
             console.log(this.childDataServicePath)
@@ -1032,7 +1025,7 @@ export class ListUpdateManager {
     }
 
 
-    
+
     // ====================================================================( SELECT ITEM )==================================================================== \\
 
     selectItem(itemId: number, hierarchyGroupID: number) {

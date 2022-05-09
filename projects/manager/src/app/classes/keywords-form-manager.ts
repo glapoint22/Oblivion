@@ -12,8 +12,8 @@ export class KeywordsFormManager extends ListUpdateManager {
         this.childType = 'Keyword';
         this.parentDataServicePath = 'AvailableKeywords/Groups';
         this.childDataServicePath = 'AvailableKeywords';
-        this.searchParentName = 'Group';
-        this.searchChildName = 'Keyword';
+        this.parentSearchType = 'Group';
+        this.childSearchType = 'Keyword';
         this.searchNameWidth = '233px';
         this.searchTypeWidth = '68px';
         this.propertyService = this.keywordsService;
