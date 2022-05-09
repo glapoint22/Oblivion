@@ -3,3 +3,18 @@
 
 <!-- Text -->
 <text-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Text"></text-widget-properties>
+
+<!-- Line -->
+<line-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Line"></line-widget-properties>
+
+<!-- Image -->
+<image-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Image"></image-widget-properties>
+
+<!-- Container -->
+<container-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Container"></container-widget-properties>
+
+<!-- Video -->
+<video-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Video"></video-widget-properties>
+
+<!-- Video -->
+<product-slider-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.ProductSlider"></product-slider-widget-properties>

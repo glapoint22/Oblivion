@@ -1,8 +1,8 @@
+import { Link } from "common";
 import { Background } from "./background";
 import { Border } from "./border";
 import { Caption } from "./caption";
 import { Corners } from "./corners";
-import { Link } from "./link";
 import { Padding } from "./padding";
 import { Shadow } from "./shadow";
 import { WidgetData } from "./widget-data";

@@ -17,6 +17,8 @@ export * from './lib/classes/subniches-filter';
 export * from './lib/classes/hsb';
 export * from './lib/classes/hsl';
 export * from './lib/classes/color';
+export * from './lib/classes/link-type';
+export * from './lib/classes/link';
 
 // Components
 export * from './lib/components/dropdown/dropdown.component';

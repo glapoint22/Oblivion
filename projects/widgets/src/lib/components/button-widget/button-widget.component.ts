@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { Link, LinkType } from 'common';
 import { Background } from '../../classes/background';
 import { Border } from '../../classes/border';
 import { ButtonWidgetData } from '../../classes/button-widget-data';
 import { Caption } from '../../classes/caption';
 import { Corners } from '../../classes/corners';
-import { Link } from '../../classes/link';
 import { Padding } from '../../classes/padding';
 import { Shadow } from '../../classes/shadow';
 import { Widget } from '../../classes/widget';
-import { LinkOption, WidgetType } from '../../classes/widget-enums';
+import { WidgetType } from '../../classes/widget-enums';
 
 @Component({
   selector: 'button-widget',
@@ -20,7 +20,7 @@ export class ButtonWidgetComponent extends Widget {
   public corners: Corners = new Corners();
   public shadow: Shadow = new Shadow();
   public link: Link = new Link();
-  public linkOption = LinkOption;
+  public linkType = LinkType;
   public background: Background = new Background();
   public border: Border = new Border();
   public padding: Padding = new Padding();

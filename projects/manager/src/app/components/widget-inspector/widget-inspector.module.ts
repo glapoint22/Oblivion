@@ -26,6 +26,11 @@ import { ColumnSpanComponent } from '../column-span/column-span.component';
 import { CaptionComponent } from '../caption/caption.component';
 import { TextWidgetPropertiesComponent } from '../text-widget-properties/text-widget-properties.component';
 import { TextComponent } from '../text/text.component';
+import { LineWidgetPropertiesComponent } from '../line-widget-properties/line-widget-properties.component';
+import { ImageWidgetPropertiesComponent } from '../image-widget-properties/image-widget-properties.component';
+import { ContainerWidgetPropertiesComponent } from '../container-widget-properties/container-widget-properties.component';
+import { VideoWidgetPropertiesComponent } from '../video-widget-properties/video-widget-properties.component';
+import { ProductSliderWidgetPropertiesComponent } from '../product-slider-widget-properties/product-slider-widget-properties.component';
 
 
 
@@ -50,7 +55,12 @@ import { TextComponent } from '../text/text.component';
     ColumnSpanComponent,
     CaptionComponent,
     TextWidgetPropertiesComponent,
-    TextComponent
+    TextComponent,
+    LineWidgetPropertiesComponent,
+    ImageWidgetPropertiesComponent,
+    ContainerWidgetPropertiesComponent,
+    VideoWidgetPropertiesComponent,
+    ProductSliderWidgetPropertiesComponent
   ],
   imports: [
     CommonModule,

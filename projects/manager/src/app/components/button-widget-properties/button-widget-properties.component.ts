@@ -1,6 +1,6 @@
-import { Component, DoCheck } from '@angular/core';
+import { Component } from '@angular/core';
 import { ButtonState } from '../../classes/enums';
-import { WidgetService } from '../../services/widget/widget.service';
+import { WidgetProperties } from '../../classes/widget-properties';
 import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev.component';
 
 @Component({
@@ -8,13 +8,6 @@ import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev
   templateUrl: './button-widget-properties.component.html',
   styleUrls: ['./button-widget-properties.component.scss']
 })
-export class ButtonWidgetPropertiesComponent implements DoCheck {
-  public buttonWidget!: ButtonWidgetDevComponent
+export class ButtonWidgetPropertiesComponent extends WidgetProperties<ButtonWidgetDevComponent> {
   public buttonState = ButtonState;
-
-  constructor(public widgetService: WidgetService) { }
-
-  ngDoCheck(): void {
-    this.buttonWidget = this.widgetService.selectedWidget as ButtonWidgetDevComponent;
-  }
 }

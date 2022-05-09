@@ -19,7 +19,6 @@ export * from './lib/classes/horizontal-alignment';
 export * from './lib/classes/horizontal-alignment-value';
 export * from './lib/classes/image-widget-data';
 export * from './lib/classes/line-widget-data';
-export * from './lib/classes/link';
 export * from './lib/classes/padding';
 export * from './lib/classes/padding-value';
 export * from './lib/classes/page-content';

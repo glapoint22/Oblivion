@@ -15,7 +15,8 @@ export class ColumnDevComponent extends ColumnComponent {
   constructor(resolver: ComponentFactoryResolver, private widgetService: WidgetService) { super(resolver) }
 
 
-  async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
+  // ---------------------------------------------------------------------Create Widget Component Ref----------------------------------------------------------------
+  public async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
     const widgetComponentRef = await super.createWidgetComponentRef(widgetData);
 
     this.setSelectedWidget(widgetComponentRef.instance);
@@ -27,15 +28,26 @@ export class ColumnDevComponent extends ColumnComponent {
     return widgetComponentRef;
   }
 
-  setSelectedWidget(widget: Widget) {
+
+
+  // --------------------------------------------------------------------------Set Selected Widget----------------------------------------------------------------
+  public setSelectedWidget(widget: Widget) {
     this.widgetService.selectedWidget = widget;
     this.widgetService.selectedRow = this.rowComponent;
     this.widgetService.selectedColumn = this;
   }
 
 
-  // -----------------------------( GET WIDGET )------------------------------ \\
-  async getWidget(widgetType: WidgetType) {
+
+
+  // --------------------------------------------------------------------------Update Column Span----------------------------------------------------------------
+  public updateColumnSpan() {
+    this.columnSpan.setClasses(this.columnElement);
+  }
+
+
+  // --------------------------------------------------------------------------Get Widget----------------------------------------------------------------
+  public async getWidget(widgetType: WidgetType) {
     let widget: Type<Widget> = Widget;
 
     switch (widgetType) {
@@ -51,53 +63,53 @@ export class ColumnDevComponent extends ColumnComponent {
         widget = TextWidgetDevComponent;
         break;
 
-      // // Image
-      // case WidgetType.Image:
-      //   const { ImageWidgetComponent } = await import('../image-widget/image-widget.component');
-      //   widget = ImageWidgetComponent;
-      //   break;
+      // Image
+      case WidgetType.Image:
+        const { ImageWidgetDevComponent } = await import('../image-widget-dev/image-widget-dev.component');
+        widget = ImageWidgetDevComponent;
+        break;
 
 
-      // // Container
-      // case WidgetType.Container:
-      //   const { ContainerWidgetComponent } = await import('../container-widget/container-widget.component');
-      //   widget = ContainerWidgetComponent;
-      //   break;
+      // Container
+      case WidgetType.Container:
+        const { ContainerWidgetDevComponent } = await import('../container-widget-dev/container-widget-dev.component');
+        widget = ContainerWidgetDevComponent;
+        break;
 
 
-      // // Line
-      // case WidgetType.Line:
-      //   const { LineWidgetComponent } = await import('../line-widget/line-widget.component');
-      //   widget = LineWidgetComponent;
-      //   break;
+      // Line
+      case WidgetType.Line:
+        const { LineWidgetDevComponent } = await import('../line-widget-dev/line-widget-dev.component');
+        widget = LineWidgetDevComponent;
+        break;
 
 
-      // // Video
-      // case WidgetType.Video:
-      //   const { VideoWidgetComponent } = await import('../video-widget/video-widget.component');
-      //   widget = VideoWidgetComponent;
-      //   break;
+      // Video
+      case WidgetType.Video:
+        const { VideoWidgetDevComponent } = await import('../video-widget-dev/video-widget-dev.component');
+        widget = VideoWidgetDevComponent;
+        break;
 
 
-      // // Product Slider
-      // case WidgetType.ProductSlider:
-      //   const { ProductSliderWidgetComponent } = await import('../product-slider-widget/product-slider-widget.component');
-      //   widget = ProductSliderWidgetComponent;
-      //   break;
+      // Product Slider
+      case WidgetType.ProductSlider:
+        const { ProductSliderWidgetDevComponent } = await import('../product-slider-widget-dev/product-slider-widget-dev.component');
+        widget = ProductSliderWidgetDevComponent;
+        break;
 
 
 
-      // // Carousel
-      // case WidgetType.Carousel:
-      //   const { CarouselWidgetComponent } = await import('../carousel-widget/carousel-widget.component');
-      //   widget = CarouselWidgetComponent;
-      //   break;
+      // Carousel
+      case WidgetType.Carousel:
+        const { CarouselWidgetDevComponent } = await import('../carousel-widget-dev/carousel-widget-dev.component');
+        widget = CarouselWidgetDevComponent;
+        break;
 
-      // // Grid
-      // case WidgetType.Grid:
-      //   const { GridWidgetComponent } = await import('../grid-widget/grid-widget.component');
-      //   widget = GridWidgetComponent;
-      //   break;
+      // Grid
+      case WidgetType.Grid:
+        const { GridWidgetDevComponent } = await import('../grid-widget-dev/grid-widget-dev.component');
+        widget = GridWidgetDevComponent;
+        break;
     }
 
     return widget;

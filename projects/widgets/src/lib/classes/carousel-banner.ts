@@ -1,5 +1,4 @@
-import { Image } from "common";
-import { Link } from "./link";
+import { Image, Link } from "common";
 
 export class CarouselBanner {
     public image!: Image;
