@@ -285,7 +285,18 @@ export class ListManager {
         // As long as we're not in edit mode
         if (this.editedItem == null) {
           // Open the context menu
-          if (this.options && this.options.menu) this.openContextMenu(e);
+          if (this.options && this.options.menu) {
+            
+            window.setTimeout(()=> {
+              
+              
+              this.openContextMenu(e);
+            },100)
+            
+            
+            
+          
+          }
         }
 
 

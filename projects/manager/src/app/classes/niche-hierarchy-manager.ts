@@ -20,7 +20,7 @@ export class NicheHierarchyManager extends ListUpdateManager {
     public isParent!: boolean;
     public moveFormOpen!: boolean;
     public childOfChildType: string = 'Product';
-    public searchChildOfChildName: string = 'Product';
+    public childOfChildSearchType: string = 'Product';
     public childOfChildDataServicePath: string = 'Products';
 
 
@@ -33,8 +33,8 @@ export class NicheHierarchyManager extends ListUpdateManager {
         this.childType = 'Sub Niche';
         this.parentDataServicePath = 'Categories';
         this.childDataServicePath = 'Niches';
-        this.searchParentName = 'Niche';
-        this.searchChildName = 'Sub Niche';
+        this.parentSearchType = 'Niche';
+        this.childSearchType = 'Sub Niche';
         this.searchNameWidth = '295px';
         this.searchTypeWidth = '78px';
         this.propertyService = this.nicheHierarchyService;
@@ -148,19 +148,19 @@ export class NicheHierarchyManager extends ListUpdateManager {
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
         super.onSelectedSearchItem(searchUpdate);
 
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.searchParentName) {
+        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
             this.searchOptions.menu!.menuOptions[3].isDisabled = true;
             this.searchOptions.menu!.menuOptions[3].name = 'Move ' + this.parentType;
             this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.parentType + ' in Hierarchy';
         }
 
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.searchChildName) {
+        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
             this.searchOptions.menu!.menuOptions[3].isDisabled = false;
             this.searchOptions.menu!.menuOptions[3].name = 'Move ' + this.childType;
             this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.childType + ' in Hierarchy';
         }
 
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.searchChildOfChildName) {
+        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childOfChildSearchType) {
             this.editIconButtonTitle = 'Edit ' + this.childOfChildType;
             this.deleteIconButtonTitle = 'Delete ' + this.childOfChildType;
             this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.childOfChildType;
@@ -226,7 +226,7 @@ export class NicheHierarchyManager extends ListUpdateManager {
         super.onSearchItemEdit(searchUpdate);
 
         // Edit child of a child search item
-        if (searchUpdate.values![1].name == this.searchChildOfChildName) {
+        if (searchUpdate.values![1].name == this.childOfChildSearchType) {
             this.dataService.put('api/' + this.childOfChildDataServicePath, {
                 id: searchUpdate.id,
                 name: searchUpdate.values![0].name
@@ -268,7 +268,7 @@ export class NicheHierarchyManager extends ListUpdateManager {
         super.onSearchItemVerify(searchUpdate);
 
         // If we're verifying a child of a child item
-        if (searchUpdate.values![1].name == this.searchChildOfChildName) {
+        if (searchUpdate.values![1].name == this.childOfChildSearchType) {
             this.searchComponent.commitAddEdit();
         }
     }
@@ -321,7 +321,7 @@ export class NicheHierarchyManager extends ListUpdateManager {
         super.onSearchDeletePrompt(deletedItem);
 
         // If we're deleting a child item with children
-        if (deletedItem.values[1].name == this.searchChildName) {
+        if (deletedItem.values[1].name == this.childSearchType) {
 
             // Prefill the prompt so if the prompt opens before we get the child name, it won't be an empty prompt
             this.searchOptions.deletePrompt!.title = 'Delete ' + this.childType;
@@ -342,7 +342,7 @@ export class NicheHierarchyManager extends ListUpdateManager {
 
 
         // If we're deleting a child of a child item
-        if (deletedItem.values[1].name == this.searchChildOfChildName) {
+        if (deletedItem.values[1].name == this.childOfChildSearchType) {
 
             // Prefill the prompt so if the prompt opens before we get the child of a child name, it won't be an empty prompt
             this.searchOptions.deletePrompt!.title = 'Delete ' + this.childOfChildType;
@@ -419,26 +419,6 @@ export class NicheHierarchyManager extends ListUpdateManager {
                     });
             }
         }
-    }
-
-
-
-    // ================================================================( GET SEARCH RESULTS )================================================================= \\
-
-    getSearchResults(value: string) {
-        super.getSearchResults(value);
-
-        this.dataService.get<Array<MultiColumnItem>>('api/' + this.childOfChildDataServicePath + '/Search', [{ key: 'searchWords', value: value }])
-            .subscribe((searchList: Array<MultiColumnItem>) => {
-
-                searchList.forEach(x => {
-                    this.searchList.push({
-
-                        id: x.id,
-                        values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: this.searchChildOfChildName, width: this.searchTypeWidth }]
-                    })
-                })
-            });
     }
 
 
@@ -537,7 +517,7 @@ export class NicheHierarchyManager extends ListUpdateManager {
         super.goToHierarchy();
 
         // Go to child of a child item
-        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.searchChildOfChildName) {
+        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.childOfChildSearchType) {
             const childOfChild: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
 
             // Get the parent child of the selected child of a child
