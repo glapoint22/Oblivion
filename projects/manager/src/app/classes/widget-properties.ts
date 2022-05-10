@@ -13,7 +13,7 @@ export class WidgetProperties<T extends Widget> implements DoCheck {
     }
 
     update() {
-        this.widgetService.$update.next();
+        // this.widgetService.$update.next();
     }
 
     updateColumnSpan() {

@@ -1,8 +1,8 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { ContainerComponent, Row } from 'widgets';
 import { WidgetCursorType } from '../../classes/enums';
-import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
+import { PageDevComponent } from '../page-dev/page-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
 
 @Component({
@@ -11,41 +11,42 @@ import { RowDevComponent } from '../row-dev/row-dev.component';
   styleUrls: ['./container-dev.component.scss']
 })
 export class ContainerDevComponent extends ContainerComponent {
+  public page!: PageDevComponent;
   private rowElements: Array<HTMLElement> = new Array<HTMLElement>();
 
   constructor(resolver: ComponentFactoryResolver, private widgetService: WidgetService) { super(resolver) }
 
 
   onContainerMouseup(event: MouseEvent) {
-    const widgetCursor: WidgetCursor = this.widgetService.$widgetCursor.getValue();
+    // const widgetCursor: WidgetCursor = this.widgetService.$widgetCursor.getValue();
 
-    if (widgetCursor.widgetType) {
-      this.createRow(new Row(event.clientY - 4, widgetCursor.widgetType));
+    // if (widgetCursor.widgetType) {
+      this.createRow(new Row(event.clientY - 4, this.page.widgetCursor.widgetType));
 
-      // Clear the cursor
-      this.widgetService.clearWidgetCursor();
-    }
+    //   // Clear the cursor
+    //   this.widgetService.clearWidgetCursor();
+    // }
   }
 
   onContainerMousemove(event: MouseEvent, rowIndicator: HTMLElement) {
-    if (document.body.id == 'widget-cursor') {
+    // if (document.body.id == 'widget-cursor') {
       rowIndicator.style.top = event.clientY - 4 + 'px';
-    }
+    // }
 
   }
 
 
   onContainerMouseEnter() {
-    if (document.body.id == 'widget-cursor') {
+    // if (document.body.id == 'widget-cursor') {
       this.widgetService.setWidgetCursorType(WidgetCursorType.Allowed)
-    }
+    // }
   }
 
 
   onContainerMouseLeave() {
-    if (document.body.id == 'widget-cursor') {
+    // if (document.body.id == 'widget-cursor') {
       this.widgetService.setWidgetCursorType(WidgetCursorType.NotAllowed)
-    }
+    // }
   }
 
 
@@ -63,7 +64,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
   onRowMousedown = (mousedownEvent: MouseEvent) => {
     // If a widget is being resized, return
-    if (this.widgetService.$widgetResize.getValue() != 'default') return;
+    // if (this.widgetService.$widgetResize.getValue() != 'default') return;
 
     const rowElement = mousedownEvent.currentTarget as HTMLElement;
     const offset = mousedownEvent.clientY - rowElement.getBoundingClientRect().top;

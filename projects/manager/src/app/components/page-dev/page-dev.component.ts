@@ -1,6 +1,7 @@
-import { ApplicationRef, Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Background, PageComponent, PageContent } from 'widgets';
-import { WidgetService } from '../../services/widget/widget.service';
+import { WidgetCursor } from '../../classes/widget-cursor';
+import { ContainerDevComponent } from '../container-dev/container-dev.component';
 
 @Component({
   selector: 'page-dev',
@@ -8,22 +9,18 @@ import { WidgetService } from '../../services/widget/widget.service';
   styleUrls: ['./page-dev.component.scss']
 })
 export class PageDevComponent extends PageComponent {
+  @ViewChild('container') container!: ContainerDevComponent;
+  public widgetCursor!: WidgetCursor;
 
-  constructor(private widgetService: WidgetService, private appRef: ApplicationRef) { super() }
+  ngAfterViewInit(): void {
+    this.container.page = this;
 
-  ngOnInit() {
-    this.widgetService.page = this;
-
-    this.widgetService.$pageChange.subscribe(() => {
-      this.setBackground();
-      this.appRef.tick();
-    });
+    super.ngAfterViewInit();
   }
 
   newPage() {
     this.pageContent = new PageContent();
     this.pageContent.name = 'Untitled';
     this.pageContent.background = new Background();
-    this.widgetService.$pageChange.next();
   }
 }

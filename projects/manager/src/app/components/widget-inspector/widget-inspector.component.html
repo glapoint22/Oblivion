@@ -37,7 +37,7 @@
 
 
     <!-- Page, Row, Column, and Widget buttons -->
-    <div class="grooved-container" *ngIf="widgetService && widgetService.page && widgetService.page.pageContent">
+    <div class="grooved-container" *ngIf="page && page.pageContent">
         <!-- Page -->
         <button class="button-left" [ngClass]="{'button-selected': currentPropertyView == propertyView.Page}"
             (click)="currentPropertyView = propertyView.Page">Page</button>
@@ -45,24 +45,24 @@
         <!-- Row -->
         <button class="button-center" [ngClass]="{'button-selected': currentPropertyView == propertyView.Row}"
             (click)="currentPropertyView = propertyView.Row"
-            [disabled]="widgetService.page.container.viewContainerRef.length == 0">Row</button>
+            [disabled]="page.container.viewContainerRef.length == 0">Row</button>
 
 
         <!-- Column -->
         <button class="button-center" [ngClass]="{'button-selected': currentPropertyView == propertyView.Column}"
             (click)="currentPropertyView = propertyView.Column"
-            [disabled]="widgetService.page.container.viewContainerRef.length == 0">Column</button>
+            [disabled]="page.container.viewContainerRef.length == 0">Column</button>
 
 
         <!-- Widget -->
         <button class="button-right" [ngClass]="{'button-selected': currentPropertyView == propertyView.Widget}"
             (click)="currentPropertyView = propertyView.Widget"
-            [disabled]="widgetService.page.container.viewContainerRef.length == 0">Widget</button>
+            [disabled]="page.container.viewContainerRef.length == 0">Widget</button>
     </div>
 
 
     <!-- Properties -->
-    <page-properties *ngIf="currentPropertyView == propertyView.Page"></page-properties>
+    <page-properties [page]="page" *ngIf="currentPropertyView == propertyView.Page"></page-properties>
     <row-properties *ngIf="currentPropertyView == propertyView.Row"></row-properties>
     <column-properties *ngIf="currentPropertyView == propertyView.Column"></column-properties>
     <widget-properties *ngIf="currentPropertyView == propertyView.Widget"></widget-properties>

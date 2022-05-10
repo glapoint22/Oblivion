@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WidgetInspectorComponent } from './widget-inspector.component';
-import { WidgetService } from '../../services/widget/widget.service';
 import { PagePropertiesComponent } from '../page-properties/page-properties.component';
 import { DropdownModule } from 'common';
 import { FormsModule } from '@angular/forms';
@@ -70,12 +69,6 @@ import { ProductSliderWidgetPropertiesComponent } from '../product-slider-widget
     ImageBoxModule,
     NumberFieldModule
   ],
-  exports: [WidgetInspectorComponent],
-  providers: [
-    {
-      provide: WidgetService,
-      useValue: (window as any).widgetService
-    }
-  ]
+  exports: [WidgetInspectorComponent]
 })
 export class WidgetInspectorModule { }

@@ -10,7 +10,7 @@ import { ContainerComponent } from '../container/container.component';
 })
 export class PageComponent implements AfterViewInit, OnDestroy {
   @Input() pageContent!: PageContent;
-  @ViewChild('container', { static: false }) container!: ContainerComponent;
+  @ViewChild('container') container!: ContainerComponent;
 
   ngOnChanges() {
     if (this.container) {

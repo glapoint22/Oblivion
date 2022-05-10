@@ -53,7 +53,7 @@ export class RowDevComponent extends RowComponent {
     this.columnCount++;
 
     const columnSpan = this.getColumnSpan(this.columnCount);
-    const widgetType = this.widgetService.$widgetCursor.getValue().widgetType;
+    // const widgetType = this.widgetService.$widgetCursor.getValue().widgetType;
 
     this.columns.forEach((column: ColumnDevComponent) => {
       column.columnSpan = new ColumnSpan(columnSpan);
@@ -62,7 +62,7 @@ export class RowDevComponent extends RowComponent {
 
 
     const index = this.getColumnIndex(columnElement, addend);
-    this.createColumn(new Column(columnSpan, widgetType), index);
+    // this.createColumn(new Column(columnSpan, widgetType), index);
   }
 
   getColumnIndex(columnElement: HTMLElement, index: number) {
@@ -75,8 +75,8 @@ export class RowDevComponent extends RowComponent {
   }
 
   onMouseup() {
-    this.widgetService.clearWidgetCursor();
-    document.body.className = '';
+    // this.widgetService.clearWidgetCursor();
+    // document.body.className = '';
   }
 
 

@@ -17,6 +17,6 @@ export class TextWidgetPropertiesComponent {
   }
 
   update() {
-    this.widgetService.$update.next();
+    // this.widgetService.$update.next();
   }
 }

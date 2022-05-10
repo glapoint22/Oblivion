@@ -16,7 +16,7 @@
 
 
 
-    <!-- Link && link option is not web address -->
+    <!-- Link && link type is not web address -->
     <a *ngIf="image && image.url && link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
         <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
             [style.borderRadius]="
@@ -31,8 +31,9 @@
     </a>
 
 
-    <!-- Link && link option is web address -->
-    <a *ngIf="image && image.url && link && link.url && link.linkType == linkType.WebAddress" [href]="link.url" target="_blank">
+    <!-- Link && link type is web address -->
+    <a *ngIf="image && image.url && link && link.url && link.linkType == linkType.WebAddress" [href]="link.url"
+        target="_blank">
         <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
             [style.borderRadius]="
             corners && 

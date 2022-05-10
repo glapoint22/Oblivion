@@ -89,6 +89,15 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   }
 
 
+  // ------------------------------------------------------------ Add Buton Class To Document ----------------------------------------------------------
+  addButonClassToDocument(buttonClass: string) {
+    const document = this.widgetElement.getRootNode() as Document;
+    const style = document.createElement('style');
+    style.appendChild(document.createTextNode(buttonClass));
+    document.head.appendChild(style);
+  }
+
+
   // ------------------------------------------------------------ Get Background Color ----------------------------------------------------------
   getBackgroundColor(): string {
     let color: string;
@@ -162,15 +171,15 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
 
 
   onHandleMousedown() {
-    this.widgetService.$widgetResize.next('ns-resize');
+    // this.widgetService.$widgetResize.next('ns-resize');
 
-    window.addEventListener('mouseup', this.onHandleMouseup);
+    // window.addEventListener('mouseup', this.onHandleMouseup);
   }
 
 
   onHandleMouseup = () => {
-    this.widgetService.$widgetResize.next('default');
+    // this.widgetService.$widgetResize.next('default');
 
-    window.removeEventListener('mouseup', this.onHandleMouseup);
+    // window.removeEventListener('mouseup', this.onHandleMouseup);
   }
 }
