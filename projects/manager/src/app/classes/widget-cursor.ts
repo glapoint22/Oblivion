@@ -14,9 +14,7 @@ export class WidgetCursor {
             public fontSize: string,
             public y: number,
             public x: number,
-            public widgetCursorType: WidgetCursorType,
-            public cursor: string = 'default'
-        ) {
+    ) {
         this.canvas = document.createElement("canvas");
         this.canvas.width = 32;
         this.canvas.height = 32;
@@ -25,15 +23,7 @@ export class WidgetCursor {
 
 
     // ---------------------------------------------------------------Get Cursor------------------------------------------------
-    public getCursor(): string {
-        this.drawCursor();
-        return 'url(' + this.canvas.toDataURL() + '), auto';
-    }
-
-
-
-    // ---------------------------------------------------------------Draw Cursor------------------------------------------------
-    private drawCursor(): void {
+    public getCursor(widgetCursorType: WidgetCursorType = WidgetCursorType.NotAllowed): string {
         // Clear the canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -41,15 +31,15 @@ export class WidgetCursor {
         this.ctx.font = this.fontSize + ' fontawesome';
 
         // Background
-        this.ctx.fillStyle = this.widgetCursorType == WidgetCursorType.Allowed ? '#1898e382' : '#e3181882';
+        this.ctx.fillStyle = widgetCursorType == WidgetCursorType.Allowed ? '#1898e382' : '#e3181882';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Stroke
-        this.ctx.strokeStyle = this.widgetCursorType == WidgetCursorType.Allowed ? '#0a9bef' : '#ef0a0a';
+        this.ctx.strokeStyle = widgetCursorType == WidgetCursorType.Allowed ? '#0a9bef' : '#ef0a0a';
         this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Icon
-        this.ctx.fillStyle = this.widgetCursorType == WidgetCursorType.Allowed ? '#0d8af5' : '#f50d0d';
+        this.ctx.fillStyle = widgetCursorType == WidgetCursorType.Allowed ? '#0d8af5' : '#f50d0d';
         this.ctx.fillText(this.unicode, this.x, this.y);
 
         // Arrow
@@ -59,14 +49,16 @@ export class WidgetCursor {
         this.ctx.lineTo(10, 0);
         this.ctx.lineTo(0, 10);
         this.ctx.fill();
+
+        return 'url(' + this.canvas.toDataURL() + '), auto';
     }
 
 
-    // ---------------------------------------------------------------Draw Cursor------------------------------------------------
-    setCursorType(widgetCursorType: WidgetCursorType): void {
-        this.widgetCursorType = widgetCursorType;
-        this.cursor = this.getCursor();
-    }
+
+
+
+
+
 
 
 
@@ -83,9 +75,7 @@ export class WidgetCursor {
             '\uf036',
             '24px',
             25,
-            6,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            6));
 
 
 
@@ -98,9 +88,7 @@ export class WidgetCursor {
             '\uf49e',
             '24px',
             25,
-            1,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            1));
 
 
 
@@ -114,9 +102,7 @@ export class WidgetCursor {
             '\uf03e',
             '26px',
             26,
-            3,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            3));
 
 
 
@@ -133,9 +119,7 @@ export class WidgetCursor {
             '\uf04d',
             '32px',
             28,
-            4,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            4));
 
 
 
@@ -151,9 +135,7 @@ export class WidgetCursor {
             '\uf715',
             '22px',
             24,
-            1,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            1));
 
 
 
@@ -169,9 +151,7 @@ export class WidgetCursor {
             '\uf008',
             '24px',
             25,
-            4,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            4));
 
 
 
@@ -186,9 +166,7 @@ export class WidgetCursor {
             '\uf288',
             '24px',
             25,
-            4,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            4));
 
 
 
@@ -205,9 +183,7 @@ export class WidgetCursor {
             '\uf2f1',
             '25px',
             25,
-            4,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            4));
 
 
 
@@ -223,9 +199,7 @@ export class WidgetCursor {
             '\uf009',
             '24px',
             25,
-            4,
-            WidgetCursorType.NotAllowed,
-            'default'));
+            4));
 
 
         return widgetCursors;

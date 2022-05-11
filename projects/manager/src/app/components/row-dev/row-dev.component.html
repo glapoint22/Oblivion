@@ -13,7 +13,7 @@
                         'background-position': background && background.enabled && background.image ? background.image.position : null,
                         'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
                         'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"
-    (mouseup)="onMouseup()" (mousemove)="onMousemove()" (mouseleave)="onMouseleave()">
+    (mouseup)="onMouseup()" (mousemove)="onMousemove()" (mouseleave)="onMouseleave()" (mousedown)="onRowMousedown($event)">
 
     <ng-template #viewContainerRef>
         <!-- Columns go here -->

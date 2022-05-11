@@ -14,12 +14,13 @@ export class Selection {
     public collapsed!: boolean;
     public commonAncestorContainer!: Element;
     public selectedStyles!: StyleData[][];
+    public document!: Document;
     private range!: Range;
 
 
     // ---------------------------------------------------On Selection-----------------------------------------------------
     public onSelection(rootElement: Element) {
-        this.range = window.getSelection()?.getRangeAt(0) as Range;
+        this.range = this.document.getSelection()?.getRangeAt(0) as Range;
         this.startOffset = this.range.startOffset;
         this.endOffset = this.range.endOffset;
         this.collapsed = this.range.collapsed;
@@ -35,11 +36,11 @@ export class Selection {
     public setRange(): void {
         let elementId = this.startChildIndex == -1 ? this.startElement.id : this.startElement.parent.id;
 
-        let startNode = document.getElementById(elementId) as Node;
+        let startNode = this.document.getElementById(elementId) as Node;
         if (this.startChildIndex != -1) startNode = startNode.childNodes[this.startChildIndex];
 
         elementId = this.endChildIndex == -1 ? this.endElement.id : this.endElement.parent.id;
-        let endNode = document.getElementById(elementId) as Node;
+        let endNode = this.document.getElementById(elementId) as Node;
         if (this.endChildIndex != -1) endNode = endNode.childNodes[this.endChildIndex];
 
         this.range.setStart(startNode, this.startOffset);

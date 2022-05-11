@@ -30,7 +30,7 @@ import { Underline } from "./underline";
 import { UpperCase } from "./upper-case";
 
 export class TextBoxDev extends TextBox {
-    public selection = new Selection();
+    public selection: Selection = new Selection();
     public onSelection: Subject<void> = new Subject<void>();
     public bold: Bold = new Bold(this.selection);
     public italic: Italic = new Italic(this.selection);
@@ -57,6 +57,7 @@ export class TextBoxDev extends TextBox {
         super(htmlRootElement);
 
         this.htmlRootElement = htmlRootElement;
+        this.selection.document = htmlRootElement.getRootNode() as Document;
 
         // Create the first child
         const divElement = new DivElement(this.rootElement);
@@ -78,7 +79,7 @@ export class TextBoxDev extends TextBox {
                 });
             }
 
-            window.addEventListener('mouseup', onMouseup, { once: true });
+            htmlRootElement.addEventListener('mouseup', onMouseup, { once: true });
         });
 
 
@@ -457,7 +458,7 @@ export class TextBoxDev extends TextBox {
                     // Delete the next element
                     nextElement.delete();
 
-                    
+
 
                     i--;
                     continue;

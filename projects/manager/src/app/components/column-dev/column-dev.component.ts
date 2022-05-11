@@ -18,11 +18,12 @@ export class ColumnDevComponent extends ColumnComponent {
   // ---------------------------------------------------------------------Create Widget Component Ref----------------------------------------------------------------
   public async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
     const widgetComponentRef = await super.createWidgetComponentRef(widgetData);
+    const widgetComponent = widgetComponentRef.instance;
 
-    this.setSelectedWidget(widgetComponentRef.instance);
+    this.setSelectedWidget(widgetComponent);
 
     widgetComponentRef.location.nativeElement.firstElementChild.addEventListener('mousedown', () => {
-      this.setSelectedWidget(widgetComponentRef.instance);
+      this.setSelectedWidget(widgetComponent);
     });
 
     return widgetComponentRef;
@@ -117,13 +118,13 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
   onMouseenter() {
-    if (document.body.id == 'widget-cursor') {
+    if (this.widgetService.widgetCursor) {
       this.widgetService.setWidgetCursorType(WidgetCursorType.Allowed);
     }
   }
 
   onMouseleave() {
-    if (document.body.id == 'widget-cursor') {
+    if (this.widgetService.widgetCursor) {
       this.widgetService.setWidgetCursorType(WidgetCursorType.NotAllowed);
     }
   }

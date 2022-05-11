@@ -1,6 +1,5 @@
-import { Compiler, Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, NgModuleFactory, ViewChild, ViewContainerRef } from '@angular/core';
+import { Compiler, Component, ComponentFactoryResolver, ComponentRef, Injector, NgModuleFactory, ViewContainerRef } from '@angular/core';
 import { WidgetCursor } from '../../classes/widget-cursor';
-// import { ViewportComponent } from '../../pages/viewport/viewport.component';
 import { WidgetService } from '../../services/widget/widget.service';
 import { PageDevComponent } from '../page-dev/page-dev.component';
 import { PageDevModule } from '../page-dev/page-dev.module';
@@ -11,14 +10,10 @@ import { PageDevModule } from '../page-dev/page-dev.module';
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent {
-  // @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public page!: PageDevComponent;
-  // @ViewChild('widgetInspectorContainer', { read: ViewContainerRef }) widgetInspectorContainer!: ViewContainerRef;
-  // public widgetService!: WidgetService;
   public showResizeCover!: boolean;
   public document = document;
   public widgetCursors = WidgetCursor.getWidgetCursors();
-  private iframeContentDocument!: Document;
 
   constructor
     (
@@ -31,85 +26,27 @@ export class EditorComponent {
 
 
   onLoad(iframe: HTMLIFrameElement) {
-    this.iframeContentDocument = iframe.contentDocument!;
+    const iframeContentDocument = iframe.contentDocument!;
     const compFactory = this.resolver.resolveComponentFactory(PageDevComponent);
     const moduleFactory: NgModuleFactory<PageDevModule> = this.compiler.compileModuleSync(PageDevModule);
     const moduleRef = moduleFactory.create(this.injector);
     const componentRef: ComponentRef<PageDevComponent> = this.viewContainerRef.createComponent(compFactory, undefined, moduleRef.injector);
 
     this.page = componentRef.instance;
-    this.iframeContentDocument.head.innerHTML = document.head.innerHTML;
-    this.iframeContentDocument.body.appendChild(componentRef.location.nativeElement);
+    this.widgetService.widgetDocument = iframeContentDocument;
+    iframeContentDocument.head.innerHTML = document.head.innerHTML;
+    iframeContentDocument.body.appendChild(componentRef.location.nativeElement);
   }
-
-
-  ngOnInit() {
-    document.body.style.cursor = 'default';
-  }
-
-  // ngAfterViewInit() {
-  // // Set the iframe src
-  // this.iframe.nativeElement.src = 'viewport';
-
-
-  // this.iframe.nativeElement.onload = () => {
-  //   const contentWindow = this.iframe.nativeElement.contentWindow as any;
-
-  //   // This widget service is from the viewport in the iframe
-  //   this.widgetService = (window as any).widgetService = contentWindow.widgetService;
-
-  //   this.loadWidgetInspector();
-
-  //   // Subscribe to widget cursor changes
-  //   this.widgetService.$widgetCursor.subscribe((widgetCursor: WidgetCursor) => {
-  //     document.body.style.cursor = widgetCursor.cursor;
-  //     this.appRef.tick();
-
-  //     if (widgetCursor.cursor == 'default') {
-  //       window.removeEventListener('mouseup', this.onMouseup);
-  //     }
-  //   });
-
-  //   this.widgetService.$widgetResize.subscribe((resizeCursor: string) => {
-  //     this.showResizeCover = resizeCursor != 'default' ? true : false;
-  //     document.body.style.cursor = resizeCursor;
-  //     this.appRef.tick();
-  //   });
-  // }
-  // }
-
-  // async loadWidgetInspector() {
-  //   this.lazyLoadingService.load(async () => {
-  //     const { WidgetInspectorComponent } = await import('../widget-inspector/widget-inspector.component');
-  //     const { WidgetInspectorModule } = await import('../widget-inspector/widget-inspector.module');
-
-
-
-  //     return {
-  //       component: WidgetInspectorComponent,
-  //       module: WidgetInspectorModule
-  //     }
-  //   }, SpinnerAction.None, this.widgetInspectorContainer);
-  // }
 
 
   onIconMousedown(widgetCursor: WidgetCursor) {
-    const cursor = widgetCursor.getCursor();
+    this.widgetService.setWidgetCursor(widgetCursor);
 
-    document.body.style.cursor = cursor;
-    this.iframeContentDocument.body.style.cursor = cursor;
-    this.iframeContentDocument.body.id = 'widget-cursor';
-    this.page.widgetCursor = widgetCursor;
-
-    window.addEventListener('mouseup', this.onMouseup, { once: true });
+    window.addEventListener('mouseup', () => {
+      this.widgetService.clearWidgetCursor();
+    }, { once: true });
   }
 
-
-  onMouseup = () => {
-    document.body.style.cursor = 'default';
-    this.iframeContentDocument.body.style.cursor = 'default';
-    this.iframeContentDocument.body.id = '';
-  }
 
 
   onResizeMousedown(editorWindow: HTMLElement, direction?: number) {
@@ -139,7 +76,7 @@ export class EditorComponent {
 
     const onResizeMouseUp = () => {
       this.showResizeCover = false;
-      document.body.style.cursor = 'default';
+      document.body.style.cursor = '';
       window.removeEventListener('mousemove', onResizeMousemove);
       window.removeEventListener('mouseup', onResizeMouseUp);
     }

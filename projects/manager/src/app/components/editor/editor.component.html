@@ -11,7 +11,7 @@
     </div>
 
     <!-- widget cursor cover -->
-    <div *ngIf="document.body.style.cursor != 'default'" class="widget-cursor-cover"></div>
+    <div *ngIf="document.body.style.cursor != ''" class="widget-cursor-cover"></div>
 
 
     <!-- Editor Window -->
@@ -36,7 +36,7 @@
 
             <!-- Horizontal Resizer -->
             <div *ngIf="page && page.pageContent" class="horizontal-resizer"
-                [style.cursor]="document.body.style.cursor == 'default' ? 's-resize': ''"
+                [style.cursor]="document.body.style.cursor == '' ? 's-resize': ''"
                 (mousedown)="onResizeMousedown(editorWindow)"></div>
         </div>
 
@@ -45,12 +45,12 @@
             <!-- Left Resizer -->
             <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft - 4"
                 (mousedown)="onResizeMousedown(editorWindow, -1)"
-                [style.cursor]="document.body.style.cursor == 'default' ? 'e-resize': ''"></div>
+                [style.cursor]="document.body.style.cursor == '' ? 'e-resize': ''"></div>
 
             <!-- Right Resizer -->
             <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft + editorWindow.clientWidth - 5"
                 (mousedown)="onResizeMousedown(editorWindow, 1)"
-                [style.cursor]="document.body.style.cursor == 'default' ? 'e-resize': ''">
+                [style.cursor]="document.body.style.cursor == '' ? 'e-resize': ''">
             </div>
         </ng-container>
 
@@ -67,7 +67,7 @@
 </div>
 
 <!-- Top widget cursor cover -->
-<div *ngIf="document.body.style.cursor != 'default'" class="top-widget-cursor-cover"></div>
+<div *ngIf="document.body.style.cursor != ''" class="top-widget-cursor-cover"></div>
 
 <!-- Resize Cover -->
 <div *ngIf="showResizeCover" class="resize-cover"></div>

@@ -3,7 +3,7 @@
     (mouseenter)="onContainerMouseEnter()" (mouseleave)="onContainerMouseLeave()">
 
     <!-- Row Indicator -->
-    <div #rowIndicator class="row-indicator"></div>
+    <div [id]="showRowIndicator ? 'show-row-indicator': ''" #rowIndicator class="row-indicator"></div>
 
     <ng-template #viewContainerRef>
         <!-- Rows go here -->
