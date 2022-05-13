@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { MediaType } from '../../classes/enums';
-import { Media } from '../../classes/media';
+import { Media, MediaType } from 'common';
 
 @Pipe({
   name: 'mediaFilter'

@@ -49,7 +49,7 @@
 
 
 <!-- Handles -->
-<div *ngIf="widgetService.selectedWidget == this">
+<div *ngIf="image && image.url && widgetService.selectedWidget == this">
     <div class="handle top-left"></div>
     <div class="handle top"></div>
     <div class="handle top-right"></div>

@@ -19,6 +19,7 @@ export * from './lib/classes/hsl';
 export * from './lib/classes/color';
 export * from './lib/classes/link-type';
 export * from './lib/classes/link';
+export * from './lib/classes/media';
 
 // Components
 export * from './lib/components/dropdown/dropdown.component';

@@ -1,6 +1,5 @@
-import { SummaryProduct } from "common";
+import { Media, SummaryProduct } from "common";
 import { AdditionalInfo } from "./additional-info";
-import { Media } from "./media";
 import { Niche } from "./niche";
 import { PricePoint } from "./price-point";
 import { RelatedProducts } from "./related-products";

@@ -52,4 +52,4 @@ export enum MenuOptionType {
 export enum SortType {
     Form,
     Product
-  }
+}

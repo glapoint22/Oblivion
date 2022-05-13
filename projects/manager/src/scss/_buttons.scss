@@ -34,7 +34,7 @@
     margin-left: 10px;
     color: #b4b4b4;
 
-    &:hover {
+    &:hover:not(:disabled) {
         background: lighten(#282828, 6);
         border-color: lighten(#3d3d3d, 6);
         color: lighten(#b4b4b4, 6);
@@ -44,5 +44,12 @@
         background: lighten(#282828, 10);
         border-color: lighten(#3d3d3d, 10);
         color: lighten(#b4b4b4, 10);
+    }
+    
+    &:disabled {
+        background: #2828286c;
+        border-color: #3d3d3d5e;
+        color: #b4b4b459;
+        cursor: default;
     }
 }

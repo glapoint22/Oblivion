@@ -29,18 +29,3 @@ export enum RebillFrequency {
     Quarterly,
     Annual
 }
-
-
-export enum MediaType {
-    Image,
-    Video,
-}
-
-
-
-
-export enum VideoType {
-    YouTube,
-    Vimeo,
-    Wistia
-}

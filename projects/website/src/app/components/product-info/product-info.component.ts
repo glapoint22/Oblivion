@@ -1,9 +1,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { LazyLoadingService, SpinnerAction } from 'common';
+import { LazyLoadingService, Media, MediaType, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
 import { DetailProduct } from '../../classes/detail-product';
-import { MediaType } from '../../classes/enums';
-import { Media } from '../../classes/media';
 import { AddToListFormComponent } from '../../components/add-to-list-form/add-to-list-form.component';
 import { MediaPlayerComponent } from '../../components/media-player/media-player.component';
 import { ReportItemFormComponent } from '../../components/report-item-form/report-item-form.component';
