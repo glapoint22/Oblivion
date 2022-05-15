@@ -88,7 +88,7 @@
                                 <div class="image-container" (click)="onProductClick(product)">
 
                                     <div class="media-backdrop">
-                                        <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
+                                        <img [src]="product.image && product.image.src ? '/images/' + product.image.src : 'assets/no_image.png'"
                                             [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
                                             [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
                                     </div>
@@ -179,7 +179,7 @@
                         <div class="image-container" (click)="onProductClick(product)">
 
                             <div class="media-backdrop">
-                                <img [src]="product.image && product.image.url ? '/images/' + product.image.url : 'assets/no_image.png'"
+                                <img [src]="product.image && product.image.src ? '/images/' + product.image.src : 'assets/no_image.png'"
                                     [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
                                     [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
                             </div>

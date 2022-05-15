@@ -1,12 +1,12 @@
 export class Video {
     public id!: number;
-    public url!: string;
+    public src!: string;
     public thumbnail!: string;
 
     setData(video: Video) {
         if (video) {
             this.id = video.id;
-            this.url = video.url;
+            this.src = video.src;
             this.thumbnail = video.thumbnail;
         }
     }

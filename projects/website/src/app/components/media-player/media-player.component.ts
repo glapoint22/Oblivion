@@ -46,10 +46,10 @@ export class MediaPlayerComponent extends LazyLoad {
 
 
   setPlayer() {
+    this.iframe.nativeElement.src = Media.getVideoSrc(this.selectedVideo);
+
     switch (this.selectedVideo.videoType) {
       case VideoType.YouTube:
-        this.iframe.nativeElement.src = 'https://www.youtube.com/embed/' + this.selectedVideo.videoId + '?enablejsapi=1'; // &autoplay=1
-
         if (!this.youTubePlayer) {
           this.youTubePlayer = new this.videoApiService.youTube.Player(this.iframe.nativeElement, {
             events: {
@@ -66,8 +66,6 @@ export class MediaPlayerComponent extends LazyLoad {
         break;
 
       case VideoType.Vimeo:
-        this.iframe.nativeElement.src = 'https://player.vimeo.com/video/' + this.selectedVideo.videoId + '?autoplay=true';
-
         if (!this.vimeoPlayer) {
           this.vimeoPlayer = new this.videoApiService.vimeo.Player(this.iframe.nativeElement);
 
@@ -77,8 +75,6 @@ export class MediaPlayerComponent extends LazyLoad {
 
 
       case VideoType.Wistia:
-        this.iframe.nativeElement.src = '//fast.wistia.net/embed/iframe/' + this.selectedVideo.videoId +
-          '?autoPlay=true&playbar=true&playerColor=000000&fullscreenButton=true';
         this.iframe.nativeElement.name = 'wistia_embed';
 
         if (!this.wistiaPlayer) {

@@ -1,0 +1,168 @@
+@mixin inverted-border($side, $border-radius) {
+    // This is the side the border is applied
+    $border-side: if($side == 'left', 'right', 'left');
+
+    content: "";
+    position: absolute;
+    top: $border-radius - 2;
+    #{$side}: -$border-radius;
+    width: $border-radius + 1;
+    border-bottom-#{$border-side}-radius: $border-radius;
+    border-#{$border-side}: 1px solid;
+    border-bottom: 1px solid;
+}
+
+@mixin pseudo-border($selected-tab-border-color) {
+    content: '';
+    border-bottom: 1px solid $selected-tab-border-color;
+    z-index: 1;
+    flex: 1;
+}
+
+@mixin tabs(
+        $tab-width,
+        $tab-height, 
+        $selected-tab-height, 
+        $align-center,
+        $tab-border-color, 
+        $selected-tab-border-color, 
+        $tab-background-color, 
+        $selected-tab-background-color, 
+        $tab-font-color, 
+        $selected-tab-font-color
+    ) {
+
+        // Define the border radius
+        $border-radius: 3px;
+
+        // This is the container the tabs reside
+        .tabs-container {
+            display: flex;
+            overflow: hidden;
+            white-space: nowrap;
+            
+            // This will add a pseudo-element before the first tab used for centering and displaying a border
+            @if $align-center {
+                &:before {
+                    @include pseudo-border($selected-tab-border-color);
+                }
+            }
+        
+        
+            // This will add a pseudo-element after the last tab used for displaying a border
+            &:after {
+                @include pseudo-border($selected-tab-border-color);
+            }
+        
+            
+            
+            // Tab class
+            .tab {
+                margin-top: $selected-tab-height - $tab-height;
+                min-width: $tab-width;
+                min-height: $tab-height;
+                background: $tab-background-color;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-top: 1px solid;
+                border-color: $tab-border-color !important;
+                border-top-left-radius: $border-radius;
+                border-top-right-radius: $border-radius;
+                color: $tab-font-color;
+                user-select: none;
+                font-size: 11px;
+                position: relative;
+                padding: 0 10px;
+                cursor: pointer;
+        
+                &:before,&:after {
+                    border-color: $tab-border-color !important;
+                    bottom: -1px;
+                }
+        
+        
+                
+                // Add a inverted border to the left side of the tab
+                @if $align-center {
+                    &:first-child:not(.selected-tab) {
+                        &:before {
+                            @include inverted-border('left', $border-radius);
+                        }
+                    }
+                }
+        
+        
+                
+                // Add a inverted border to the right side of the tab
+                &:last-child:not(.selected-tab) {
+                    &:after {
+                        @include inverted-border('right', $border-radius);
+                    }
+                }
+
+
+
+
+                // Add a border to the side of the tab
+                &:first-child {
+                    border-left: 1px solid;
+                }
+                
+                
+                // Add a border to the bottom of the tab
+                &:not(.selected-tab) {
+                    border-bottom: 1px solid $selected-tab-border-color !important;
+                }
+
+                
+                &:hover:not(.selected-tab) {
+                    color: lighten($color: $tab-font-color, $amount: 20%);
+                }
+            }
+            
+
+            // Selected tab class
+            .selected-tab {
+                margin-top: 0px;
+                min-height: $selected-tab-height;
+                background: $selected-tab-background-color;
+                border-top: 1px solid;
+                color: $selected-tab-font-color;
+                z-index: 10;
+                border-color: $selected-tab-border-color !important;
+                cursor: default;
+                
+                
+                &:before,&:after {
+                    border-color: $selected-tab-border-color !important;
+                    bottom: 0;
+                }
+        
+                
+                // Add the inverted borders
+                @if $align-center {
+                    &:before {
+                        @include inverted-border('left', $border-radius);
+                    }
+                } @else {
+                    &:not(:first-child):before {
+                        @include inverted-border('left', $border-radius);
+                    }
+                }
+                
+        
+                &:after {
+                    @include inverted-border('right', $border-radius);
+                }
+
+
+
+                // Hide the left border to the tab after the selected tab
+                & + div {
+                    border-left-color: transparent !important;
+                }
+        
+            }
+        }
+}

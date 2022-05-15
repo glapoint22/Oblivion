@@ -1,5 +1,5 @@
 <div #widget [style.backgroundColor]="background && background.enabled && background.color ? background.color: null"
-    [style.maxWidth.px]="width ? width: null" [style.minHeight.px]="height" [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.url ? 'url(images/' + background.image.url + ')' : null,
+    [style.maxWidth.px]="width ? width: null" [style.minHeight.px]="height" [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
     'background-position': background && background.enabled && background.image ? background.image.position : null,
     'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
     'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"></div>

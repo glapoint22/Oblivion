@@ -6,7 +6,7 @@ export class Customer {
 
     constructor(public firstName: string, public lastName: string, public email: string, image: string, public externalLoginProvider: string, public hasPassword: boolean) {
         this.profileImage.name = firstName + ' ' + lastName;
-        this.profileImage.url = image ? 'images/' + image : 'assets/no-account-pic.png';
+        this.profileImage.src = image ? 'images/' + image : 'assets/no-account-pic.png';
         this.hasProfileImage = image != '';
     }
 }

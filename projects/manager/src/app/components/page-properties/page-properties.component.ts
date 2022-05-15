@@ -36,9 +36,9 @@ export class PagePropertiesComponent implements OnInit {
       }
 
       // Background image
-      if (background.image && background.image.url) {
+      if (background.image && background.image.src) {
         // Image
-        document.body.style.backgroundImage = 'url(images/' + background.image.url + ')';
+        document.body.style.backgroundImage = 'url(images/' + background.image.src + ')';
 
         // Position
         document.body.style.backgroundPosition = background.image.position;

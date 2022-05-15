@@ -16,7 +16,7 @@
 
                 <div class="profile-img-container" [title]="helpfulReviews.positiveReview.profileImage.name">
                     <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-                    <img [src]="helpfulReviews.positiveReview.profileImage.url ? 'images/' + helpfulReviews.positiveReview.profileImage.url: 'assets/no-account-pic.png'"
+                    <img [src]="helpfulReviews.positiveReview.profileImage.src ? 'images/' + helpfulReviews.positiveReview.profileImage.src: 'assets/no-account-pic.png'"
                         [alt]="helpfulReviews.positiveReview.profileImage.name" class="profile-pic">
                 </div>
 
@@ -62,7 +62,7 @@
             <div class="review-info-container">
                 <div class="profile-img-container" [title]="helpfulReviews.negativeReview.profileImage.name">
                     <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-                    <img [src]="helpfulReviews.negativeReview.profileImage.url ? 'images/' + helpfulReviews.negativeReview.profileImage.url : 'assets/no-account-pic.png'"
+                    <img [src]="helpfulReviews.negativeReview.profileImage.src ? 'images/' + helpfulReviews.negativeReview.profileImage.src : 'assets/no-account-pic.png'"
                         [alt]="helpfulReviews.negativeReview.profileImage.name" class="profile-pic">
                 </div>
 

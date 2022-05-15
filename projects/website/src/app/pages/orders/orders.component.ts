@@ -125,7 +125,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }, SpinnerAction.StartEnd)
       .then((writeReviewForm: WriteReviewFormComponent) => {
         writeReviewForm.productId = order.productId;
-        writeReviewForm.productImage = order.products[0].image.url;
+        writeReviewForm.productImage = order.products[0].image.src;
         writeReviewForm.productName = order.products[0].image.name;
       });
   }

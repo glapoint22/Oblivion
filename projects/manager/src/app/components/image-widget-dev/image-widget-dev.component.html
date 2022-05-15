@@ -1,7 +1,7 @@
 <div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%">
 
     <!-- No link -->
-    <img *ngIf="(!link || !link.url) && image && image.url"
+    <img *ngIf="(!link || !link.url) && image && image.src"
         [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
         [style.borderRadius]="
             corners &&
@@ -11,13 +11,13 @@
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
         [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
-        [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
+        [src]="'images/' + image.src" [alt]="image.name" [title]="image.name">
 
 
 
 
     <!-- Link && link type is not web address -->
-    <a *ngIf="image && image.url && link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
+    <a *ngIf="image && image.src && link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
         <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
             [style.borderRadius]="
             corners && 
@@ -27,12 +27,12 @@
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
             [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
-            [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
+            [src]="'images/' + image.src" [alt]="image.name" [title]="image.name">
     </a>
 
 
     <!-- Link && link type is web address -->
-    <a *ngIf="image && image.url && link && link.url && link.linkType == linkType.WebAddress" [href]="link.url"
+    <a *ngIf="image && image.src && link && link.url && link.linkType == linkType.WebAddress" [href]="link.url"
         target="_blank">
         <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
             [style.borderRadius]="
@@ -43,13 +43,13 @@
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
             [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
-            [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
+            [src]="'images/' + image.src" [alt]="image.name" [title]="image.name">
     </a>
 </div>
 
 
 <!-- Handles -->
-<div *ngIf="image && image.url && widgetService.selectedWidget == this">
+<div *ngIf="image && image.src && widgetService.selectedWidget == this">
     <div class="handle top-left"></div>
     <div class="handle top"></div>
     <div class="handle top-right"></div>

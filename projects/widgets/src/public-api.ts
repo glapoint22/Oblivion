@@ -30,7 +30,6 @@ export * from './lib/classes/shadow';
 export * from './lib/classes/text-widget-data';
 export * from './lib/classes/vertical-alignment';
 export * from './lib/classes/vertical-alignment-value';
-export * from './lib/classes/video';
 export * from './lib/classes/video-widget-data';
 export * from './lib/classes/widget';
 export * from './lib/classes/widget-data';

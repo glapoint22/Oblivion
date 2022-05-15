@@ -20,6 +20,7 @@ export * from './lib/classes/color';
 export * from './lib/classes/link-type';
 export * from './lib/classes/link';
 export * from './lib/classes/media';
+export * from './lib/classes/video';
 
 // Components
 export * from './lib/components/dropdown/dropdown.component';

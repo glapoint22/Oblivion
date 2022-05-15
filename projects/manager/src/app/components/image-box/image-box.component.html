@@ -10,7 +10,7 @@
 
 
             <!-- Delete icon -->
-            <button *ngIf="!noDelete" class="icon-button" [ngClass]="{'icon-disabled': !image || !image.url}"
+            <button *ngIf="!noDelete" class="icon-button" [ngClass]="{'icon-disabled': !image || !image.src}"
                 (click)="onDeleteImageClick()" title="Delete Image">
                 <i class="fas fa-trash-alt"></i>
             </button>
@@ -26,7 +26,7 @@
 
     <!-- Image -->
     <div class="img-container">
-        <img *ngIf="image && image.url" [src]="'images/' + image.url" (load)="onLoad.emit()">
-        <div *ngIf="!image || !image.url" class="no-property">No image available</div>
+        <img *ngIf="image && image.src" [src]="'images/' + image.src" (load)="onLoad.emit()">
+        <div *ngIf="!image || !image.src" class="no-property">No image available</div>
     </div>
 </div>

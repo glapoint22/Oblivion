@@ -109,7 +109,7 @@ export class ButtonWidgetComponent extends Widget {
 
       // Background
       '\n\tbackground-color: ' + this.background.color + ';' +
-      (this.background.image && this.background.image.url ? '\n\tbackground-image: url("images/' + this.background.image.url + '");' : '') +
+      (this.background.image && this.background.image.src ? '\n\tbackground-image: url("images/' + this.background.image.src + '");' : '') +
       (this.background.image && this.background.image.position ? '\n\tbackground-position: ' + this.background.image.position + ';' : '') +
       (this.background.image && this.background.image.repeat ? '\n\tbackground-repeat: ' + this.background.image.repeat + ';' : '') +
       (this.background.image && this.background.image.attachment ? '\n\tbackground-attachment: ' + this.background.image.attachment + ';' : '') +

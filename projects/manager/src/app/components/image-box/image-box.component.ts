@@ -18,19 +18,19 @@ export class ImageBoxComponent implements OnChanges, DoCheck {
 
 
   ngDoCheck() {
-    if (this.image && this.currentImage != this.image.url) {
-      this.currentImage = this.image.url;
+    if (this.image && this.currentImage != this.image.src) {
+      this.currentImage = this.image.src;
       this.onChange.emit();
     }
   }
 
 
   ngOnChanges() {
-    if (this.image) this.currentImage = this.image.url;
+    if (this.image) this.currentImage = this.image.src;
   }
 
   onDeleteImageClick() {
-    if (this.image.url) {
+    if (this.image.src) {
       // Prompt the user to delete the image
       let promptTitle = 'Delete Image';
       let promptMessage = 'Are you sure you want to delete this Image?';

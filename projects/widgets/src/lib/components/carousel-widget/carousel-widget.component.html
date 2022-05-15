@@ -10,20 +10,20 @@
             <!-- Web address -->
             <a *ngIf="banner.link && banner.link.url && banner.link.linkType == linkType.WebAddress"
                 [href]="banner.link.url" target="_blank" draggable="false">
-                <img [src]="'/images/' + banner.image.url" [alt]="banner.image.name" [title]="banner.image.name"
+                <img [src]="'/images/' + banner.image.src" [alt]="banner.image.name" [title]="banner.image.name"
                     draggable="false" (mousedown)="$event.preventDefault()">
             </a>
 
             <!-- local link -->
             <a *ngIf="banner.link && banner.link.url && banner.link.linkType != linkType.WebAddress"
                 [routerLink]="banner.link.url" draggable="false">
-                <img [src]="'/images/' + banner.image.url" [alt]="banner.image.name" [title]="banner.image.name"
+                <img [src]="'/images/' + banner.image.src" [alt]="banner.image.name" [title]="banner.image.name"
                     draggable="false" (mousedown)="$event.preventDefault()">
             </a>
 
 
             <!-- No link -->
-            <img *ngIf="!banner.link || !banner.link.url" [src]="'/images/' + banner.image.url"
+            <img *ngIf="!banner.link || !banner.link.url" [src]="'/images/' + banner.image.src"
                 [alt]="banner.image.name" [title]="banner.image.name" draggable="false">
         </div>
     </div>

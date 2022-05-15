@@ -101,7 +101,7 @@
             <!-- Account profile pic -->
             <div tabindex="10" class="profile-pic-container" (blur)="accountMenuPopupComponent ? accountMenuPopupComponent.close() : null" (keydown.enter)="onProfilePicClick()">
                 <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                <img [src]="accountService.customer.profileImage.url" class="profile-pic"
+                <img [src]="accountService.customer.profileImage.src" class="profile-pic"
                     [title]="accountService.customer.profileImage.name"
                     [alt]="accountService.customer.profileImage.name" (click)="onProfilePicClick()">
 

@@ -20,7 +20,7 @@
 
 
 <!-- Handles -->
-<div *ngIf="widgetService.selectedWidget == this">
+<div *ngIf="video && video.src && widgetService.selectedWidget == this">
     <div class="handle top-left"></div>
     <div class="handle top"></div>
     <div class="handle top-right"></div>

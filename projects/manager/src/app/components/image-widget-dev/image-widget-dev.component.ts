@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Image, LazyLoadingService, MediaType, SpinnerAction } from 'common';
+import { Image, LazyLoadingService, Media, MediaType, SpinnerAction } from 'common';
 import { ImageWidgetComponent, ImageWidgetData } from 'widgets';
 import { WidgetService } from '../../services/widget/widget.service';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
@@ -14,7 +14,7 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
   constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
 
   setWidget(imageWidgetData: ImageWidgetData): void {
-    if (imageWidgetData && imageWidgetData.image && imageWidgetData.image.url) {
+    if (imageWidgetData && imageWidgetData.image && imageWidgetData.image.src) {
       super.setWidget(imageWidgetData);
     } else {
       this.lazyLoadingService.load(async () => {
@@ -27,12 +27,16 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
       }, SpinnerAction.None)
         .then((mediaBrowser: MediaBrowserComponent) => {
           mediaBrowser.currentMediaType = MediaType.Image;
-          mediaBrowser.callback = (image: Image) => {
+          mediaBrowser.callback = (media: Media) => {
+            const image = new Image();
+
+            image.id = media.id;
+            image.name = media.name;
+            image.src = media.image;
             imageWidgetData.image = image;
             super.setWidget(imageWidgetData);
           }
         });
     }
   }
-
 }
