@@ -1,54 +1,52 @@
-import { Component, DoCheck, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { Image } from 'common';
+import { Component, Input } from '@angular/core';
+import { Image, LazyLoadingService, Media, MediaType, SpinnerAction } from 'common';
+import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
   selector: 'image-box',
   templateUrl: './image-box.component.html',
   styleUrls: ['./image-box.component.scss']
 })
-export class ImageBoxComponent implements OnChanges, DoCheck {
+export class ImageBoxComponent {
   @Input() image!: Image;
-  @Input() mediaType!: any; //MediaType
-  @Input() noDelete!: boolean;
-  @Output() onChange: EventEmitter<void> = new EventEmitter();
-  @Output() onLoad: EventEmitter<void> = new EventEmitter();
-  private currentImage!: string;
+  @Input() showRemoveImage!: boolean;
 
-  constructor() { } // private promptService: PromptService, private popupService: PopupService
+  constructor(private lazyLoadingService: LazyLoadingService) { }
 
 
-  ngDoCheck() {
-    if (this.image && this.currentImage != this.image.src) {
-      this.currentImage = this.image.src;
-      this.onChange.emit();
-    }
+  public openMediaBrowser(editMode?: boolean): void {
+    this.lazyLoadingService.load(async () => {
+      const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
+      const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
+      return {
+        component: MediaBrowserComponent,
+        module: MediaBrowserModule
+      }
+    }, SpinnerAction.None)
+      .then((mediaBrowser: MediaBrowserComponent) => {
+        mediaBrowser.currentMediaType = MediaType.Image;
+
+        if(editMode) {
+          mediaBrowser.editedImage = this.image;
+        }
+        
+
+        mediaBrowser.callback = (media: Media) => {
+          this.image.id = media.id;
+          this.image.name = media.name;
+          this.image.src = media.image;
+        }
+      });
   }
 
 
-  ngOnChanges() {
-    if (this.image) this.currentImage = this.image.src;
-  }
+
 
   onDeleteImageClick() {
     if (this.image.src) {
       // Prompt the user to delete the image
       let promptTitle = 'Delete Image';
       let promptMessage = 'Are you sure you want to delete this Image?';
-      // this.promptService.showPrompt(promptTitle, promptMessage, this.deleteImage, this);
     }
-  }
-
-  deleteImage() {
-    // this.image.id = 0;
-    // this.image.url = null;
-    // this.currentImage = null!;
-    // this.onChange.emit();
-  }
-
-  onClick() { // sourceElement: HTMLElement
-    // this.popupService.mediaType = this.mediaType;
-    // this.popupService.sourceElement = sourceElement;
-    // this.popupService.mediaBrowserPopup.show = !this.popupService.mediaBrowserPopup.show;
-    // this.popupService.mediaBrowserPopup.media = this.image;
   }
 }

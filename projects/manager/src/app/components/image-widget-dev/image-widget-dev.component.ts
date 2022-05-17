@@ -39,4 +39,11 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
         });
     }
   }
+
+
+  public onImageLoad(event: Event) {
+    const image = event.target as HTMLImageElement;
+
+    if (!this.width) this.width = image.naturalWidth;
+  }
 }

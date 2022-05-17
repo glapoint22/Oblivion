@@ -2,7 +2,7 @@
 
     <div class="modal-base">
         <div class="modal-bar">
-            <div>Media Browser - {{currentMediaType == mediaType.Image ? 'Images' : 'Videos'}}</div>
+            <div>Media Browser - {{currentMediaType == mediaType.Image ? 'Image' : 'Video'}}</div>
             <div class="modal-x-button" (click)="close()">
                 X
             </div>
@@ -12,12 +12,11 @@
         <div class="modal-content">
 
             <!-- Search Input -->
-            <div style="position: relative;">
+            <div *ngIf="!editedImage" style="position: relative;">
                 <input #searchInput class="search-input" (input)="searchMedia(searchInput.value)"
                     [placeholder]="currentMediaType == mediaType.Image ? 'Search for an image' : 'Search for a video'">
 
-                <div *ngIf="searchInput.value" class="close-button" style="right: 5px;"
-                    (click)="clear()">x</div>
+                <div *ngIf="searchInput.value" class="close-button" style="right: 5px;" (click)="clear()">x</div>
             </div>
 
 
@@ -39,15 +38,17 @@
 
 
             <!-- Media Type - Image -->
-            <div *ngIf="currentMediaType == mediaType.Image && !inSearchMode && !newImage" class="backdrop"
-                [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}" style="padding: 20px;">
+            <div *ngIf="currentMediaType == mediaType.Image && !searchMode && !newImage && !editedImage"
+                class="backdrop" [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}"
+                style="padding: 20px;">
 
                 <div (dragover)="onDragover($event)" (drop)="onDrop($event)"
                     [style.background]="dragover ? '#333333': null" (dragleave)="dragover = false"
                     class="content-container">
 
                     <div class="content-heading">Choose an Image</div>
-                    <div class="message">Drag & drop an image here, type in the search field above, or click to upload.
+                    <div class="message">Drag & drop an image, type in the search field, or click to open up the file
+                        exporer.
                     </div>
 
                     <!-- Button -->
@@ -65,6 +66,68 @@
 
 
 
+            <!-- Edit Mode -->
+            <ng-container *ngIf="editedImage && !updatingImage">
+                <div class="icons">
+                    <!-- Delete -->
+                    <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Image'" (onClick)="onDeleteImageClick()">
+                    </icon-button>
+
+
+                    <!-- Update -->
+                    <icon-button [icon]="'fa-solid fa-folder-open'" [title]="'Update Image'"
+                        (onClick)="updatingImage = true;">
+                    </icon-button>
+
+
+                    <!-- Rename -->
+                    <icon-button [icon]="'fas fa-pencil-alt'" [title]="'Rename Image'"
+                        (onClick)="onRenameImageClick(nameInput)">
+                    </icon-button>
+                </div>
+
+                <div class="backdrop backdrop-border" style="position: relative; height: 450px;">
+
+                    <!-- Media Container -->
+                    <div class="new-media-container">
+                        <img [src]="'images/' + editedImage.src" class="new-img">
+                    </div>
+
+                    <!-- Title -->
+                    <input id="title" #nameInput class="new-media-title" [value]="editedImage.name"
+                        (keydown.enter)="renameImage(nameInput.value)" [disabled]="!renamingImage">
+                </div>
+            </ng-container>
+
+
+
+
+
+            <!-- Update Image -->
+            <div *ngIf="updatingImage" class="backdrop"
+                [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}" style="padding: 20px;">
+
+                <div (dragover)="onDragover($event)" (drop)="onDrop($event)"
+                    [style.background]="dragover ? '#333333': null" (dragleave)="dragover = false"
+                    class="content-container">
+
+                    <div class="content-heading">Choose a new image</div>
+                    <div class="message">Drag & drop an image or click to open the file explorer.
+                    </div>
+
+                    <!-- Button -->
+                    <div class="upload-button" [style.pointerEvents]="dragover ? 'none': 'all'" title="Upload image"
+                        (click)="openFileExplorer(fileInput)">
+                        <i class="fa-solid fa-upload"></i>
+                    </div>
+
+
+                    <input #fileInput type="file" accept=".jpg, .png, .bmp" (change)="updateImage(fileInput.files![0])">
+
+                </div>
+            </div>
+
+
 
 
             <!-- New Image -->
@@ -80,13 +143,13 @@
                     </div>
 
                     <!-- Title -->
-                    <input id="title" #titleInput class="new-media-title"
-                        (keydown.enter)="saveNewImage(titleInput.value)">
+                    <input id="title" #nameInput class="new-media-title"
+                        (keydown.enter)="saveNewImage(nameInput.value)">
                 </div>
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button class="dark-button" (click)="saveNewImage(titleInput.value)" [disabled]="!titleInput.value">
+                    <button class="dark-button" (click)="saveNewImage(nameInput.value)" [disabled]="!nameInput.value">
                         Submit
                     </button>
                 </div>
@@ -113,13 +176,13 @@
                     </div>
 
                     <!-- Title -->
-                    <input id="title" #titleInput class="new-media-title"
-                        (keydown.enter)="saveNewVideo(titleInput.value)">
+                    <input id="title" #nameInput class="new-media-title"
+                        (keydown.enter)="saveNewVideo(nameInput.value)">
                 </div>
 
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button class="dark-button" (click)="saveNewVideo(titleInput.value)" [disabled]="!titleInput.value">
+                    <button class="dark-button" (click)="saveNewVideo(nameInput.value)" [disabled]="!nameInput.value">
                         Submit
                     </button>
                 </div>
@@ -137,7 +200,7 @@
 
 
             <!-- Media Type - Video -->
-            <div *ngIf="currentMediaType == mediaType.Video && !inSearchMode && !newVideo" class="backdrop"
+            <div *ngIf="currentMediaType == mediaType.Video && !searchMode && !newVideo" class="backdrop"
                 [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}" style="padding: 20px;">
 
                 <div class="content-container">
@@ -161,7 +224,7 @@
 
 
             <!-- Search Results -->
-            <ng-container *ngIf="inSearchMode && !noSearchResults">
+            <ng-container *ngIf="searchMode && !noSearchResults">
                 <div class="backdrop search-backdrop"
                     [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
                     <div style="display: flex; flex-wrap: wrap; padding-bottom: 13px;">
@@ -175,7 +238,8 @@
 
             <!-- No search results -->
             <div *ngIf="noSearchResults" class="backdrop"
-                [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
+                [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}"
+                style="display: flex; justify-content: center; align-items: center;">
                 <div class="content-heading">No results found</div>
             </div>
         </div>

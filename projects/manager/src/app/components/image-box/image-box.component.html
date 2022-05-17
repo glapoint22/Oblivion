@@ -10,15 +10,25 @@
 
 
             <!-- Delete icon -->
-            <button *ngIf="!noDelete" class="icon-button" [ngClass]="{'icon-disabled': !image || !image.src}"
+            <button *ngIf="showRemoveImage" class="icon-button" [ngClass]="{'icon-disabled': !image || !image.src}"
                 (click)="onDeleteImageClick()" title="Delete Image">
                 <i class="fas fa-trash-alt"></i>
             </button>
 
-            <!-- Media browser icon -->
-            <button class="icon-button" (click)="onClick()" title="Open Media Browser">
+
+
+            <!-- Edit Image -->
+            <button class="icon-button" (click)="openMediaBrowser(true)" title="Edit Image">
+                <i class="fa-solid fa-file-pen"></i>
+            </button>
+
+
+
+            <!-- Swap Image -->
+            <button class="icon-button" (click)="openMediaBrowser()" title="Change Image">
                 <i class="fas fa-image"></i>
             </button>
+
         </div>
 
     </div>
@@ -26,7 +36,7 @@
 
     <!-- Image -->
     <div class="img-container">
-        <img *ngIf="image && image.src" [src]="'images/' + image.src" (load)="onLoad.emit()">
+        <img *ngIf="image && image.src" [src]="'images/' + image.src" [title]="image.name">
         <div *ngIf="!image || !image.src" class="no-property">No image available</div>
     </div>
 </div>

@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { DataService, LazyLoad, LazyLoadingService, Media, MediaType, VideoType } from 'common';
+import { DataService, Image, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, VideoType } from 'common';
+import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
   selector: 'media-browser',
@@ -12,7 +13,10 @@ export class MediaBrowserComponent extends LazyLoad {
   public showAllMedia!: boolean;
   public currentMediaType!: MediaType;
   public mediaType = MediaType;
-  public inSearchMode!: boolean;
+  public searchMode!: boolean;
+  public editedImage!: Image;
+  public renamingImage!: boolean;
+  public updatingImage!: boolean;
   public newImage!: string;
   public newVideo!: SafeUrl;
   public dragover!: boolean;
@@ -88,7 +92,12 @@ export class MediaBrowserComponent extends LazyLoad {
   public onDrop(event: DragEvent): void {
     event.preventDefault();
     this.dragover = false;
-    this.setNewImage(event.dataTransfer!.files[0]);
+
+    if (this.updatingImage) {
+      this.updateImage(event.dataTransfer!.files[0])
+    } else {
+      this.setNewImage(event.dataTransfer!.files[0]);
+    }
   }
 
 
@@ -208,7 +217,7 @@ export class MediaBrowserComponent extends LazyLoad {
     this.clear(true);
 
     if (searchWords) {
-      this.inSearchMode = true;
+      this.searchMode = true;
 
       this.dataService.get<Array<Media>>('api/Media/Search', [{ key: 'type', value: this.currentMediaType }, { key: 'searchWords', value: searchWords }])
         .subscribe((media: Array<Media>) => {
@@ -223,7 +232,7 @@ export class MediaBrowserComponent extends LazyLoad {
 
   // --------------------------------------------------------------------Clear-------------------------------------------------------
   public clear(preserveSearchInput?: boolean): void {
-    this.inSearchMode = false;
+    this.searchMode = false;
     this.newImage = null!;
     this.newVideo = null!;
     this.noSearchResults = null!;
@@ -248,5 +257,99 @@ export class MediaBrowserComponent extends LazyLoad {
   public setMedia(media: Media): void {
     this.callback(media);
     this.close();
+  }
+
+
+
+
+
+
+
+
+
+  // ---------------------------------------------------------------On Rename Image Click--------------------------------------------------
+  onRenameImageClick(input: HTMLInputElement) {
+    this.renamingImage = true;
+
+    window.setTimeout(() => {
+      input.select();
+    });
+  }
+
+
+
+
+
+  // ---------------------------------------------------------------------Rename Image--------------------------------------------------------
+  renameImage(newName: string) {
+    this.dataService.put('api/Media/Name', { id: this.editedImage.id, name: newName })
+      .subscribe(() => {
+        this.editedImage.name = newName;
+        this.close();
+      });
+  }
+
+
+
+
+
+
+  // ------------------------------------------------------------------Update Image----------------------------------------------------
+  public updateImage(imageFile: File): void {
+    const formData = new FormData()
+
+    formData.append('image', imageFile);
+    formData.append('id', this.editedImage.id.toString());
+
+    this.dataService.post<any>('api/Media/UpdateImage', formData)
+      .subscribe((image: any) => {
+        this.editedImage.src = image.src;
+        this.close();
+      });
+  }
+
+
+
+
+
+  // ----------------------------------------------------------------On Delete Image Click-------------------------------------------------
+  async onDeleteImageClick() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../prompt/prompt.component');
+      const { PromptModule } = await import('../prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      const message = '<span style="color: #ff0000; font-weight: bold">Warning: </span><span>This operation cannot be undone. ' +
+        'Before proceeding, make sure there are no dependencies on this image. </span><span style="font-weight: bold; ' +
+        'text-decoration: underline">Continue at your own risk!</span>';
+
+      prompt.parentObj = this;
+      prompt.title = 'Delete Image';
+      prompt.message = this.sanitizer.bypassSecurityTrustHtml(message);
+      prompt.primaryButton = {
+        name: 'Delete',
+        buttonFunction: this.deleteImage
+      }
+      prompt.secondaryButton = {
+        name: 'Cancel'
+      }
+    });
+  }
+
+
+
+
+
+  // --------------------------------------------------------------------Delete Image------------------------------------------------------
+  deleteImage() {
+    this.dataService.delete('api/Media', {
+      id: this.editedImage.id
+    }).subscribe(() => {
+      this.close();
+    });
   }
 }
