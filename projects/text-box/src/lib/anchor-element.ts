@@ -4,7 +4,7 @@ import { ElementType } from "./element-type";
 
 export class AnchorElement extends Element {
 
-    constructor(public parent: Element, private link: Link) {
+    constructor(public parent: Element, public link: Link) {
         super();
         this.elementType = ElementType.Anchor;
     }

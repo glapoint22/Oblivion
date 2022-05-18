@@ -38,15 +38,4 @@ export class ImageBoxComponent {
         }
       });
   }
-
-
-
-
-  onDeleteImageClick() {
-    if (this.image.src) {
-      // Prompt the user to delete the image
-      let promptTitle = 'Delete Image';
-      let promptMessage = 'Are you sure you want to delete this Image?';
-    }
-  }
 }

@@ -2,7 +2,7 @@ import { LinkType } from "./link-type";
 
 export class Link {
     public url!: string;
-    public linkType!: LinkType;
+    public linkType: LinkType = LinkType.None;
 
     setData(link: Link) {
         if (link) {

@@ -1,0 +1,16 @@
+.link-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    overflow: hidden;
+    height: 22px;
+    font-size: 12px;
+}
+
+.link {
+    color: #ffba00;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

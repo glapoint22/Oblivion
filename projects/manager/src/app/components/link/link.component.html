@@ -1,0 +1,68 @@
+<div class="base hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <!-- Header -->
+    <div class="header">
+        <div class="close" (click)="close()">x</div>
+    </div>
+
+    <!-- Content -->
+    <div style="padding: 10px;">
+
+        <!-- None -->
+        <label class="radio">
+            <div>None</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.None"
+                (change)="setLinkType(linkType.None)" (keydown.enter)="setLink(linkInput.value)">
+            <span class="checkmark"></span>
+        </label>
+
+
+        <!-- Page -->
+        <label class="radio">
+            <div>Page</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.Page"
+                (change)="setLinkType(linkType.Page)">
+            <span class="checkmark"></span>
+        </label>
+
+
+        <!-- Product -->
+        <label class="radio">
+            <div>Product</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.Product"
+                (change)="setLinkType(linkType.Product)">
+            <span class="checkmark"></span>
+        </label>
+
+
+        <!-- Web Address -->
+        <label class="radio">
+            <div>Web Address</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.WebAddress"
+                (change)="setLinkType(linkType.WebAddress)">
+            <span class="checkmark"></span>
+        </label>
+
+        <!-- Input -->
+        <div style="position: relative">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                
+                <!-- Input -->
+                <input #linkInput (input)="search(linkInput.value)" [disabled]="currentLinkType == linkType.None"
+                    (keydown.enter)="setLink(linkInput.value)" [value]="link.url ? link.url : ''"
+                    style="width: 200px;">
+
+                <!-- Apply Button -->
+                <button class="dark-button" (click)="setLink(linkInput.value)"
+                    [disabled]="currentUrl == null && currentLinkType != linkType.None">Apply</button>
+            </div>
+
+            <div *ngIf="searchResults && searchResults.length > 0" class="list">
+                <div *ngFor="let result of searchResults" class="list-item"
+                    (click)="currentUrl = linkInput.value = result.link; searchResults = []; linkInput.focus();">
+                    {{result.name}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

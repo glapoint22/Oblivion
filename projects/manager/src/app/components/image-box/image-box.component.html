@@ -1,36 +1,27 @@
 <div class="property-box-dark">
-
-
     <!-- Property Box Bar -->
     <div class="property-box-bar">
 
         <!-- Icons -->
         <div class="icons">
-
-
-
-            <!-- Delete icon -->
-            <button *ngIf="showRemoveImage" class="icon-button" [ngClass]="{'icon-disabled': !image || !image.src}"
-                (click)="onDeleteImageClick()" title="Delete Image">
-                <i class="fas fa-trash-alt"></i>
-            </button>
+            <!-- Remove icon -->
+            <icon-button *ngIf="showRemoveImage" [icon]="'fas fa-trash-alt'" [title]="'Remove Image'"
+                [isDisabled]="!image || !image.src">
+            </icon-button>
 
 
 
             <!-- Edit Image -->
-            <button class="icon-button" (click)="openMediaBrowser(true)" title="Edit Image">
-                <i class="fa-solid fa-file-pen"></i>
-            </button>
+            <icon-button [icon]="'fa-solid fa-file-pen'" [title]="'Edit Image'" [isDisabled]="!image || !image.src"
+                (onClick)="openMediaBrowser(true)">
+            </icon-button>
 
 
-
-            <!-- Swap Image -->
-            <button class="icon-button" (click)="openMediaBrowser()" title="Change Image">
-                <i class="fas fa-image"></i>
-            </button>
-
+            <!-- Change Image -->
+            <icon-button [icon]="'fas fa-image'" [title]="!image || !image.src ? 'Add Image': 'Change Image'"
+                (onClick)="openMediaBrowser()">
+            </icon-button>
         </div>
-
     </div>
 
 
