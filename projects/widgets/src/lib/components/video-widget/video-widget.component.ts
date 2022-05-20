@@ -13,7 +13,7 @@ import { WidgetType } from '../../classes/widget-enums';
   styleUrls: ['./video-widget.component.scss']
 })
 export class VideoWidgetComponent extends Widget {
-  @ViewChild('iframe', { static: false }) iframe!: ElementRef<HTMLIFrameElement>;
+  @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public border: Border = new Border();
   public corners: Corners = new Corners();
   public shadow: Shadow = new Shadow();

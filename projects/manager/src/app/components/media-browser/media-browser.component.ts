@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { DataService, Image, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, VideoType } from 'common';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DataService, Image, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, Video } from 'common';
 import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
@@ -15,17 +15,20 @@ export class MediaBrowserComponent extends LazyLoad {
   public mediaType = MediaType;
   public searchMode!: boolean;
   public editedImage!: Image;
+  public editedVideo!: Video;
   public renamingImage!: boolean;
+  public renamingVideo!: boolean;
   public updatingImage!: boolean;
+  public updatingVideo!: boolean;
   public newImage!: string;
-  public newVideo!: SafeUrl;
+  public isNewVideo!: boolean;
+  public newVideo!: Video;
   public dragover!: boolean;
   public callback!: Function;
   public searchedMedia: Array<Media> = [];
   public invalidVideoLink!: boolean;
   public noSearchResults!: boolean;
   private imageFile!: File;
-  private videoMedia!: Media;
 
 
   constructor
@@ -115,7 +118,14 @@ export class MediaBrowserComponent extends LazyLoad {
 
     this.dataService.post<Media>('api/Media/Image', formData)
       .subscribe((media: Media) => {
-        this.setMedia(media);
+        const newImage = new Image();
+
+        newImage.id = media.id;
+        newImage.name = media.name;
+        newImage.src = media.image;
+        newImage.thumbnail = media.thumbnail;
+        this.callback(newImage);
+        this.close();
       });
   }
 
@@ -127,16 +137,19 @@ export class MediaBrowserComponent extends LazyLoad {
 
   // -------------------------------------------------------------------Save New Video-------------------------------------------------------
   public saveNewVideo(videoName: string): void {
-    this.videoMedia.name = videoName;
+    this.newVideo.name = videoName;
 
-    this.dataService.post<Media>('api/Media/Video', this.videoMedia)
-      .subscribe((media: Media) => {
-        if (media) {
-          this.setMedia(media);
+    this.dataService.post<Video>('api/Media/Video', this.newVideo)
+      .subscribe((video: Video) => {
+        if (video) {
+          this.newVideo.id = video.id;
+          this.newVideo.thumbnail = video.thumbnail;
+          this.callback(this.newVideo);
+          this.close();
         } else {
           // There was a problem saving the new video
           this.invalidVideoLink = true;
-          this.newVideo = null!;
+          this.isNewVideo = false!;
           window.setTimeout(() => {
             document.getElementById('videoInput')?.focus();
           });
@@ -149,55 +162,19 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
+
+
   // --------------------------------------------------------------------Set New Video-------------------------------------------------------
   public setNewVideo(url: string): void {
-    let videoId!: string;
-    let result!: RegExpExecArray;
-    let pattern!: RegExp;
-    let videoType!: VideoType;
+    this.newVideo = new Video({ url: url });
 
-    this.invalidVideoLink = false;
-
-    // YouTube
-    pattern = /(?:https?:\/\/)?(?:(?:(?:www\.?)?youtube\.com(?:\/(?:(?:watch\?.*?(?:v=([^&\s]+)).*)|(?:v\/(.*))|(?:embed\/(.+))))?)|(?:youtu\.be\/(.*)?))/;
-    result = pattern.exec(url)!;
-    videoType = VideoType.YouTube;
-
-    // Vimeo
-    if (!result) {
-      pattern = /(?:(?:https?:)?\/\/(?:[\w]+\.)*vimeo\.com(?:[\/\w:]*(?:\/videos)?)?\/([0-9]+)[^\s]*)/;
-      result = pattern.exec(url)!;
-      videoType = VideoType.Vimeo;
-    }
-
-
-    // Wistia
-    if (!result) {
-      pattern = /wvideo=([a-zA-Z0-9]+)|\/\/fast\.wistia\.net\/embed\/iframe\/([a-zA-Z0-9]+)/;
-      result = pattern.exec(url)!;
-      videoType = VideoType.Wistia;
-    }
-
-
-    if (result) {
-      // Get the video Id from the regex result
-      for (let i = 1; i < result.length; i++) {
-        if (result[i] != undefined) {
-          videoId = result[i];
-          break;
-        }
-      }
-
-      // Set the media properties
-      this.videoMedia = new Media();
-      this.videoMedia.videoId = videoId;
-      this.videoMedia.videoType = videoType;
-      this.videoMedia.type = MediaType.Video;
-
-      // Set the new video
-      this.newVideo = this.sanitizer.bypassSecurityTrustResourceUrl(Media.getVideoSrc(this.videoMedia));
+    if (this.newVideo.src) {
+      this.isNewVideo = true;
       window.setTimeout(() => {
         document.getElementById('title')?.focus();
+        const iframe = document.getElementById('newVideoIframe') as HTMLIFrameElement;
+
+        iframe.src = this.newVideo.src;
       });
     } else {
       this.invalidVideoLink = true;
@@ -234,7 +211,7 @@ export class MediaBrowserComponent extends LazyLoad {
   public clear(preserveSearchInput?: boolean): void {
     this.searchMode = false;
     this.newImage = null!;
-    this.newVideo = null!;
+    this.isNewVideo = false;
     this.noSearchResults = null!;
     this.searchedMedia = null!;
     this.invalidVideoLink = null!;
@@ -255,7 +232,30 @@ export class MediaBrowserComponent extends LazyLoad {
 
   // --------------------------------------------------------------------Set Media-------------------------------------------------------
   public setMedia(media: Media): void {
-    this.callback(media);
+    if (this.currentMediaType == MediaType.Video) {
+      const video = new Video({
+        video: {
+          id: media.id,
+          name: media.name,
+          thumbnail: media.thumbnail,
+          videoType: media.videoType,
+          videoId: media.videoId
+        }
+      });
+
+      this.callback(video);
+    } else {
+      const image = new Image();
+
+      image.id = media.id;
+      image.name = media.name;
+      image.src = media.image;
+      image.thumbnail = media.thumbnail;
+
+      this.callback(image);
+    }
+
+
     this.close();
   }
 
@@ -280,6 +280,7 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
+
   // ---------------------------------------------------------------------Rename Image--------------------------------------------------------
   renameImage(newName: string) {
     this.dataService.put('api/Media/Name', { id: this.editedImage.id, name: newName })
@@ -289,6 +290,34 @@ export class MediaBrowserComponent extends LazyLoad {
       });
   }
 
+
+
+
+
+
+
+  // ------------------------------------------------------------------On Rename Image Click----------------------------------------------------
+  onRenameVideoClick(input: HTMLInputElement) {
+    this.renamingVideo = true;
+
+    window.setTimeout(() => {
+      input.select();
+    });
+  }
+
+
+
+
+
+
+  // ---------------------------------------------------------------------Rename Video--------------------------------------------------------
+  renameVideo(newName: string) {
+    this.dataService.put('api/Media/Name', { id: this.editedVideo.id, name: newName })
+      .subscribe(() => {
+        this.editedVideo.name = newName;
+        this.close();
+      });
+  }
 
 
 
@@ -312,8 +341,31 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-  // ----------------------------------------------------------------On Delete Image Click-------------------------------------------------
-  async onDeleteImageClick() {
+
+  // ------------------------------------------------------------------Update Video----------------------------------------------------
+  public updateVideo(url: string): void {
+    const video = new Video({ url: url });
+
+    if (video.src) {
+      this.editedVideo.videoId = video.videoId;
+
+      this.dataService.put<Video>('api/Media/UpdateVideo', this.editedVideo)
+        .subscribe((updatedVideo: Video) => {
+          this.editedVideo.thumbnail = updatedVideo.thumbnail;
+          this.editedVideo.src = video.src;
+          this.close();
+        });
+    } else {
+      this.invalidVideoLink = true;
+    }
+  }
+
+
+
+
+
+  // ----------------------------------------------------------------On Delete Media Click-------------------------------------------------
+  async onDeleteMediaClick() {
     this.lazyLoadingService.load(async () => {
       const { PromptComponent } = await import('../prompt/prompt.component');
       const { PromptModule } = await import('../prompt/prompt.module');
@@ -323,16 +375,18 @@ export class MediaBrowserComponent extends LazyLoad {
         module: PromptModule
       }
     }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      const media = this.currentMediaType == MediaType.Image ? 'image' : 'video';
+
       const message = '<span style="color: #ff0000; font-weight: bold">Warning: </span><span>This operation cannot be undone. ' +
-        'Before proceeding, make sure there are no dependencies on this image. </span><span style="font-weight: bold; ' +
+        'Before proceeding, make sure there are no dependencies on this ' + media + '. </span><span style="font-weight: bold; ' +
         'text-decoration: underline">Continue at your own risk!</span>';
 
       prompt.parentObj = this;
-      prompt.title = 'Delete Image';
+      prompt.title = 'Delete ' + media;
       prompt.message = this.sanitizer.bypassSecurityTrustHtml(message);
       prompt.primaryButton = {
         name: 'Delete',
-        buttonFunction: this.deleteImage
+        buttonFunction: this.deleteMedia
       }
       prompt.secondaryButton = {
         name: 'Cancel'
@@ -345,11 +399,40 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
   // --------------------------------------------------------------------Delete Image------------------------------------------------------
-  deleteImage() {
+  deleteMedia() {
     this.dataService.delete('api/Media', {
-      id: this.editedImage.id
+      id: this.currentMediaType == MediaType.Image ? this.editedImage.id : this.editedVideo.id
     }).subscribe(() => {
       this.close();
     });
+  }
+
+
+
+
+
+
+
+
+
+
+  // --------------------------------------------------------------------Display Edited Video------------------------------------------------------
+  displayEditedVideo(video: Video) {
+    this.editedVideo = video;
+
+    window.setTimeout(() => {
+      const editedVideoIframe = document.getElementById('editedVideoIframe') as HTMLIFrameElement;
+
+      editedVideoIframe.src = this.editedVideo.src;
+    });
+  }
+
+
+
+
+  // ---------------------------------------------------------------------------On Escape-------------------------------------------------------------
+  onEscape(): void {
+    this.callback();
+    super.onEscape();
   }
 }

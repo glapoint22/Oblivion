@@ -1,4 +1,5 @@
-<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative;">
+<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative;"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && image && image.src}">
 
     <!-- No link -->
     <img *ngIf="(!link || !link.url) && image && image.src" (load)="onImageLoad($event)" style="width: inherit"

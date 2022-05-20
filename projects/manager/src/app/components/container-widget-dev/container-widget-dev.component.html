@@ -1,4 +1,5 @@
-<div #widget [style.backgroundColor]="background && background.enabled && background.rgbColor.toRGBString() ? background.rgbColor.toRGBString(): null"
+<div #widget
+    [style.backgroundColor]="background && background.enabled && background.rgbColor.toRGBString() ? background.rgbColor.toRGBString(): null"
     [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
     [style.borderRadius]="
         corners &&
@@ -8,11 +9,12 @@
         corners.bottomLeft > 0) ?
         corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
     [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
-    [style.maxWidth.px]="width ? width: null" [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
+    [style.maxWidth.px]="width ? width: null"
+    [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
                         'background-position': background && background.enabled && background.image ? background.image.position : null,
                         'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
                         'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"
-    [style.height.px]="height">
+    [style.height.px]="height" [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
 
     <container-dev #container></container-dev>
 </div>

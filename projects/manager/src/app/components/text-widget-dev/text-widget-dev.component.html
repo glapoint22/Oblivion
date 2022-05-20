@@ -4,13 +4,12 @@
     [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
     'background-position': background && background.enabled && background.image ? background.image.position : null,
     'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
-    'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}">
+    'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
 
 
     <div #htmlRootElement style="color: white; outline: none; cursor: text;" [style.minHeight.px]="height"
         contenteditable="true" spellcheck="false"></div>
-
-        
 
 
 

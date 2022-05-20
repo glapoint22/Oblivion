@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Image, LazyLoadingService, Media, MediaType, SpinnerAction } from 'common';
+import { Image, LazyLoadingService, MediaType, SpinnerAction } from 'common';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
@@ -26,15 +26,18 @@ export class ImageBoxComponent {
       .then((mediaBrowser: MediaBrowserComponent) => {
         mediaBrowser.currentMediaType = MediaType.Image;
 
-        if(editMode) {
+        if (editMode) {
           mediaBrowser.editedImage = this.image;
         }
-        
 
-        mediaBrowser.callback = (media: Media) => {
-          this.image.id = media.id;
-          this.image.name = media.name;
-          this.image.src = media.image;
+
+        mediaBrowser.callback = (image: Image) => {
+          if (image) {
+            this.image.id = image.id;
+            this.image.name = image.name;
+            this.image.src = image.src;
+            this.image.thumbnail = image.thumbnail;
+          }
         }
       });
   }

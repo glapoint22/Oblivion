@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { LazyLoad, LazyLoadingService, Media, MediaType, VideoType } from 'common';
+import { LazyLoad, LazyLoadingService, Media, MediaType, Video, VideoType } from 'common';
 import { VideoApiService } from '../../services/video-api/video-api.service';
 
 @Component({
@@ -46,7 +46,17 @@ export class MediaPlayerComponent extends LazyLoad {
 
 
   setPlayer() {
-    this.iframe.nativeElement.src = Media.getVideoSrc(this.selectedVideo);
+    const video = new Video({
+      video: {
+        id: this.selectedVideo.id,
+        name: this.selectedVideo.name,
+        thumbnail: this.selectedVideo.thumbnail,
+        videoType: this.selectedVideo.videoType,
+        videoId: this.selectedVideo.videoId
+      }
+    });
+
+    this.iframe.nativeElement.src = video.src;
 
     switch (this.selectedVideo.videoType) {
       case VideoType.YouTube:

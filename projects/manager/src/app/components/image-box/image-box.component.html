@@ -5,20 +5,20 @@
         <!-- Icons -->
         <div class="icons">
             <!-- Remove icon -->
-            <icon-button *ngIf="showRemoveImage" [icon]="'fas fa-trash-alt'" [title]="'Remove Image'"
+            <icon-button *ngIf="showRemoveImage" [icon]="'fas fa-trash-alt'" [title]="'Remove image'"
                 [isDisabled]="!image || !image.src">
             </icon-button>
 
 
 
             <!-- Edit Image -->
-            <icon-button [icon]="'fa-solid fa-file-pen'" [title]="'Edit Image'" [isDisabled]="!image || !image.src"
+            <icon-button [icon]="'fa-solid fa-file-pen'" [title]="'Edit image'" [isDisabled]="!image || !image.src"
                 (onClick)="openMediaBrowser(true)">
             </icon-button>
 
 
             <!-- Change Image -->
-            <icon-button [icon]="'fas fa-image'" [title]="!image || !image.src ? 'Add Image': 'Change Image'"
+            <icon-button [icon]="'fas fa-image'" [title]="!image || !image.src ? 'Add Image': 'Choose another image'"
                 (onClick)="openMediaBrowser()">
             </icon-button>
         </div>

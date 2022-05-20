@@ -32,6 +32,7 @@ import { VideoWidgetPropertiesComponent } from '../video-widget-properties/video
 import { ProductSliderWidgetPropertiesComponent } from '../product-slider-widget-properties/product-slider-widget-properties.component';
 import { LinkEditorComponent } from '../link-editor/link-editor.component';
 import { IconButtonModule } from '../icon-button/icon-button.module';
+import { VideoPropertiesEditorComponent } from '../video-properties-editor/video-properties-editor.component';
 
 
 
@@ -62,7 +63,8 @@ import { IconButtonModule } from '../icon-button/icon-button.module';
     ContainerWidgetPropertiesComponent,
     VideoWidgetPropertiesComponent,
     ProductSliderWidgetPropertiesComponent,
-    LinkEditorComponent
+    LinkEditorComponent,
+    VideoPropertiesEditorComponent
   ],
   imports: [
     CommonModule,

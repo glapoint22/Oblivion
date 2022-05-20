@@ -12,7 +12,7 @@
         <div class="modal-content">
 
             <!-- Search Input -->
-            <div *ngIf="!editedImage" style="position: relative;">
+            <div *ngIf="!editedImage && !editedVideo" style="position: relative;">
                 <input #searchInput class="search-input" (input)="searchMedia(searchInput.value)"
                     [placeholder]="currentMediaType == mediaType.Image ? 'Search for an image' : 'Search for a video'">
 
@@ -66,11 +66,11 @@
 
 
 
-            <!-- Edit Mode -->
+            <!-- Edit Image Mode -->
             <ng-container *ngIf="editedImage && !updatingImage">
                 <div class="icons">
                     <!-- Delete -->
-                    <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Image'" (onClick)="onDeleteImageClick()">
+                    <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Image'" (onClick)="onDeleteMediaClick()">
                     </icon-button>
 
 
@@ -98,6 +98,68 @@
                         (keydown.enter)="renameImage(nameInput.value)" [disabled]="!renamingImage">
                 </div>
             </ng-container>
+
+
+
+
+
+
+            <!-- Edit Video Mode -->
+            <ng-container *ngIf="editedVideo && !updatingVideo">
+                <div class="icons">
+                    <!-- Delete -->
+                    <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Video'" (onClick)="onDeleteMediaClick()">
+                    </icon-button>
+
+
+                    <!-- Update -->
+                    <icon-button [icon]="'fa-film fa-solid'" [title]="'Update Video'"
+                        (onClick)="updatingVideo = true;">
+                    </icon-button>
+
+
+                    <!-- Rename -->
+                    <icon-button [icon]="'fas fa-pencil-alt'" [title]="'Rename Video'"
+                        (onClick)="onRenameVideoClick(nameInput)">
+                    </icon-button>
+                </div>
+
+                <div class="backdrop backdrop-border" style="position: relative; height: 450px;">
+
+                    <!-- Media Container -->
+                    <div class="new-media-container">
+                        <iframe id="editedVideoIframe" class="video" allowfullscreen></iframe>
+                    </div>
+
+                    <!-- Title -->
+                    <input id="title" #nameInput class="new-media-title" [value]="editedVideo.name"
+                        (keydown.enter)="renameVideo(nameInput.value)" [disabled]="!renamingVideo">
+                </div>
+            </ng-container>
+
+
+
+
+
+
+            <!-- Update Video -->
+            <div *ngIf="updatingVideo" class="backdrop"
+                [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}" style="padding: 20px;">
+
+                <div class="content-container">
+                    <div class="content-heading">Choose a new video</div>
+                    <div class="message">Paste a link below</div>
+
+                    <div style="display: flex; margin-top: 10px;">
+                        <input id="videoInput" #videoInput class="video-input"
+                            (keydown.enter)="updateVideo(videoInput.value)">
+                        <button class="video-input-button" (click)="updateVideo(videoInput.value)">Enter</button>
+                    </div>
+
+                    <div *ngIf="invalidVideoLink" style="margin-top: 5px;
+                    color: red;">Invalid video link</div>
+                </div>
+            </div>
 
 
 
@@ -162,7 +224,7 @@
 
 
             <!-- New Video -->
-            <ng-container *ngIf="newVideo">
+            <ng-container *ngIf="isNewVideo">
 
                 <div class="backdrop new-media"
                     [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
@@ -172,7 +234,7 @@
 
                     <!-- Media Container -->
                     <div class="new-media-container">
-                        <iframe class="video" [src]="newVideo" allowfullscreen></iframe>
+                        <iframe id="newVideoIframe" class="video"  allowfullscreen></iframe>
                     </div>
 
                     <!-- Title -->
@@ -200,7 +262,7 @@
 
 
             <!-- Media Type - Video -->
-            <div *ngIf="currentMediaType == mediaType.Video && !searchMode && !newVideo" class="backdrop"
+            <div *ngIf="currentMediaType == mediaType.Video && !searchMode && !isNewVideo && !editedVideo" class="backdrop"
                 [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}" style="padding: 20px;">
 
                 <div class="content-container">

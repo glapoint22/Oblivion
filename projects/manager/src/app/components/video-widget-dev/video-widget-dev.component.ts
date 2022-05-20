@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LazyLoadingService, Media, MediaType, SpinnerAction, Video } from 'common';
+import { LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
 import { VideoWidgetComponent, VideoWidgetData } from 'widgets';
 import { WidgetService } from '../../services/widget/widget.service';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
@@ -12,6 +12,12 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
 export class VideoWidgetDevComponent extends VideoWidgetComponent {
 
   constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
+
+  ngOnInit(): void {
+    this.width = 500;
+    super.ngOnInit();
+  }
+
 
   setWidget(videoWidgetData: VideoWidgetData): void {
     if (videoWidgetData && videoWidgetData.video && videoWidgetData.video.src) {
@@ -27,18 +33,24 @@ export class VideoWidgetDevComponent extends VideoWidgetComponent {
       }, SpinnerAction.None)
         .then((mediaBrowser: MediaBrowserComponent) => {
           mediaBrowser.currentMediaType = MediaType.Video;
-          mediaBrowser.callback = (media: Media) => {
-            const video = new Video();
 
-            video.id = media.id;
-            video.thumbnail = media.thumbnail;
-            video.src = Media.getVideoSrc(media);
-
-            videoWidgetData.video = video;
-            super.setWidget(videoWidgetData);
-            this.iframe.nativeElement.src = this.video.src;
+          mediaBrowser.callback = (video: Video) => {
+            if (video) {
+              videoWidgetData.video = video;
+              super.setWidget(videoWidgetData);
+              this.iframe.nativeElement.src = this.video.src;
+            } else {
+              console.log('Delete')
+            }
           }
         });
+    }
+  }
+
+
+  ngAfterViewChecked() {
+    if (this.video && this.video.src && this.iframe.nativeElement.src != this.video.src) {
+      this.iframe.nativeElement.src = this.video.src;
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Image, LazyLoadingService, Media, MediaType, SpinnerAction } from 'common';
+import { Image, LazyLoadingService, MediaType, SpinnerAction } from 'common';
 import { ImageWidgetComponent, ImageWidgetData } from 'widgets';
 import { WidgetService } from '../../services/widget/widget.service';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
@@ -27,14 +27,14 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
       }, SpinnerAction.None)
         .then((mediaBrowser: MediaBrowserComponent) => {
           mediaBrowser.currentMediaType = MediaType.Image;
-          mediaBrowser.callback = (media: Media) => {
-            const image = new Image();
 
-            image.id = media.id;
-            image.name = media.name;
-            image.src = media.image;
-            imageWidgetData.image = image;
-            super.setWidget(imageWidgetData);
+          mediaBrowser.callback = (image: Image) => {
+            if (image) {
+              imageWidgetData.image = image;
+              super.setWidget(imageWidgetData);
+            } else {
+              console.log('Delete')
+            }
           }
         });
     }
@@ -44,6 +44,6 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
   public onImageLoad(event: Event) {
     const image = event.target as HTMLImageElement;
 
-    if (!this.width) this.width = image.naturalWidth;
+    if (!this.width || this.width != image.naturalWidth) this.width = image.naturalWidth;
   }
 }

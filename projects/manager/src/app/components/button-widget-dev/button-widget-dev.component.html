@@ -18,7 +18,8 @@ corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px '
     [ngStyle]="{ 'background-image': background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
                         'background-position': background.image ? background.image.position : null,
                         'background-repeat': background.image ? background.image.repeat : null,
-                        'background-attachment': background.image ? background.image.attachment : null}">
+                        'background-attachment': background.image ? background.image.attachment : null}"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
 
     <div [style.fontFamily]="caption.font.value" [style.fontSize]="caption.fontSize.value"
         [style.fontWeight]="caption.fontWeight" [style.fontStyle]="caption.fontStyle"
