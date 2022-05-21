@@ -1,8 +1,8 @@
-import { CheckboxListItem } from "./checkbox-list-item";
-import { ListUpdate } from "./list-update";
+import { CheckboxItem } from "./checkbox-item";
+import { HierarchyUpdate } from "./hierarchy-update";
 
-export class CheckboxListUpdate extends ListUpdate {
+export class CheckboxListUpdate extends HierarchyUpdate {
     isChecked?: boolean;
-    deletedCheckboxListItems?: Array<CheckboxListItem>;
-    selectedCheckboxListItems?: Array<CheckboxListItem>;
+    deletedCheckboxListItems?: Array<CheckboxItem>;
+    selectedCheckboxListItems?: Array<CheckboxItem>;
 }

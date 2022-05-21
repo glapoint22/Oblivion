@@ -16,7 +16,7 @@ export class KeywordsFormManager extends ListUpdateManager {
         this.childSearchType = 'Keyword';
         this.searchNameWidth = '233px';
         this.searchTypeWidth = '68px';
-        this.propertyService = this.keywordsService;
+        this.listUpdateService = this.keywordsService;
         this.thisArray = this.keywordsService.formArray;
         this.otherArray = this.keywordsService.productArray;
     }

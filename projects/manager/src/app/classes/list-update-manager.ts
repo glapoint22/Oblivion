@@ -19,9 +19,7 @@ export class ListUpdateManager {
     // private
     private _hierarchyUpdate!: HierarchyUpdate;
     private _searchUpdate!: MultiColumnListUpdate;
-    public searchInputSubscription!: Subscription;
-    public onChildrenLoad: Subject<void> = new Subject<void>();
-
+    
     // Public
     public childType!: string;
     public parentType!: string;
@@ -31,15 +29,16 @@ export class ListUpdateManager {
     public searchTypeWidth!: string;
     public childSearchType!: string;
     public parentSearchType!: string;
+    public addIconButtonTitle!: string;
     public childDataServicePath!: string;
     public searchInput!: HTMLInputElement;
     public isThreeTierHierarchy!: boolean;
     public parentDataServicePath!: string;
-    public propertyService?: ListUpdateService;
-    public addIconButtonTitle: string = 'Add';
-    public editIconButtonTitle: string = 'Edit';
+    public editIconButtonTitle: string = 'Rename';
     public deleteIconButtonTitle: string = 'Delete';
     public searchIconButtonTitle: string = 'Search';
+    public listUpdateService?: ListUpdateService;
+    public searchInputSubscription!: Subscription;
     public selectLastSelectedItemOnOpen!: boolean;
     public collapseHierarchyOnOpen: boolean = true;
     public hierarchyComponent!: HierarchyComponent;
@@ -49,6 +48,7 @@ export class ListUpdateManager {
     public onClose: Subject<void> = new Subject<void>();
     public searchOptions: ListOptions = new ListOptions();
     public hierarchyOptions: ListOptions = new ListOptions();
+    public onChildrenLoad: Subject<void> = new Subject<void>();
     public thisArray: Array<HierarchyItem> = new Array<HierarchyItem>();
     public otherArray: Array<HierarchyItem> = new Array<HierarchyItem>();
     public thisSortList: Array<HierarchyItem> = new Array<HierarchyItem>();
@@ -101,7 +101,7 @@ export class ListUpdateManager {
                     },
                     {
                         type: MenuOptionType.MenuItem,
-                        shortcut: 'Ctrl+Alt+R',
+                        shortcut: 'F2',
                         optionFunction: this.edit
                     },
                     {
@@ -169,6 +169,7 @@ export class ListUpdateManager {
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
+        this.addIconButtonTitle = 'Add ' + this.parentType;
         if (this.thisArray.length == 0) {
             this.dataService.get<Array<HierarchyItem>>('api/' + this.parentDataServicePath)
                 .subscribe((thisArray: Array<HierarchyItem>) => {
@@ -216,6 +217,69 @@ export class ListUpdateManager {
             if (this.collapseHierarchyOnOpen) this.hierarchyComponent.listManager.collapseHierarchy();
         }
         this.sortPendingHierarchyItems();
+    }
+
+
+
+    // ==================================================================( ON ARROW CLICK )=================================================================== \\
+
+    onArrowClick(hierarchyUpdate: HierarchyUpdate) {
+        // If a parent item was expanded and its children hasn't been loaded yet
+        if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
+
+            // If the hierarchy item is a top level hierarchy item
+            if (hierarchyUpdate.hierarchyGroupID == 0) {
+
+                this.dataService.get<Array<Item>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
+                    .subscribe((children: Array<Item>) => {
+                        let num = this.hierarchyComponent.listManager.editedItem ? 2 : 1;
+
+                        for (let i = children.length - 1; i >= 0; i--) {
+
+                            // This Array
+                            this.thisArray.splice(hierarchyUpdate.index! + num, 0,
+                                {
+                                    id: children[i].id,
+                                    name: children[i].name,
+                                    hierarchyGroupID: 1,
+                                    hidden: false,
+                                    arrowDown: false,
+                                    isParent: this.isSecondLevelHierarchyItemParent
+                                }
+                            )
+
+                            // Other Array
+                            this.otherArray.splice(hierarchyUpdate.index! + 1, 0,
+                                {
+                                    id: children[i].id,
+                                    name: children[i].name,
+                                    hierarchyGroupID: 1,
+                                    arrowDown: false,
+                                    isParent: this.isSecondLevelHierarchyItemParent,
+                                    hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
+                                }
+                            )
+                        }
+                        this.onChildrenLoad.next();
+                    })
+            }
+
+
+
+        } else if (hierarchyUpdate.arrowDown && hierarchyUpdate.hasChildren) {
+
+
+            let checkForIdentity = (hierarchyUpdate: HierarchyUpdate) => {
+                if (!this.thisArray[hierarchyUpdate.index! + 1].identity) {
+                    window.setTimeout(() => {
+                        checkForIdentity(hierarchyUpdate);
+                    })
+                } else {
+                    this.sortPendingHierarchyItems();
+                }
+            }
+            checkForIdentity(hierarchyUpdate);
+        }
     }
 
 
@@ -350,26 +414,35 @@ export class ListUpdateManager {
     onSelectedHierarchyItem(hierarchyUpdate: HierarchyUpdate) {
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
             this.addIconButtonTitle = 'Add ' + this.childType;
-            this.editIconButtonTitle = 'Edit ' + this.parentType;
+            this.editIconButtonTitle = 'Rename ' + this.parentType;
             this.deleteIconButtonTitle = 'Delete ' + this.parentType;
-            this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.parentType;
-            this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addParent;
-            this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
-            this.hierarchyOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
-            this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.add;
-            this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.parentType;
-            this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.parentType;
+            this.hierarchyOptions.deletePrompt!.title = 'Delete ' + this.parentType;
+
+            if (this.hierarchyOptions.menu) {
+                this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.parentType;
+                this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addParent;
+                this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
+                this.hierarchyOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
+                this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.add;
+                this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.parentType;
+                this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.parentType;
+            }
+
         }
 
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1) {
             this.addIconButtonTitle = 'Add ' + this.childType;
-            this.editIconButtonTitle = 'Edit ' + this.childType;
+            this.editIconButtonTitle = 'Rename ' + this.childType;
             this.deleteIconButtonTitle = 'Delete ' + this.childType;
-            this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
-            this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.add;
-            this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
-            this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.childType;
-            this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.childType;
+            this.hierarchyOptions.deletePrompt!.title = 'Delete ' + this.childType;
+
+            if (this.hierarchyOptions.menu) {
+                this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
+                this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.add;
+                this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
+                this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.childType;
+                this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.childType;
+            }
         }
     }
 
@@ -379,16 +452,19 @@ export class ListUpdateManager {
 
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
-            this.editIconButtonTitle = 'Edit ' + this.parentType;
+            this.editIconButtonTitle = 'Rename ' + this.parentType;
             this.deleteIconButtonTitle = 'Delete ' + this.parentType;
+            this.searchOptions.deletePrompt!.title = 'Delete ' + this.parentType;
+
             this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.parentType;
             this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.parentType;
             this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.parentType + ' in Hierarchy';
         }
 
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
-            this.editIconButtonTitle = 'Edit ' + this.childType;
+            this.editIconButtonTitle = 'Rename ' + this.childType;
             this.deleteIconButtonTitle = 'Delete ' + this.childType;
+            this.searchOptions.deletePrompt!.title = 'Delete ' + this.childType;
             this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.childType;
             this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.childType;
             this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.childType + ' in Hierarchy';
@@ -400,8 +476,8 @@ export class ListUpdateManager {
     // ===========================================================( ON UNSELECTED HIERARCHY ITEM )============================================================ \\
 
     onUnselectedHierarchyItem() {
-        this.addIconButtonTitle = 'Add';
-        this.editIconButtonTitle = 'Edit';
+        this.addIconButtonTitle = 'Add ' + this.parentType;
+        this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
     }
 
@@ -410,7 +486,7 @@ export class ListUpdateManager {
     // =============================================================( ON UNSELECTED SEARCH ITEM )============================================================= \\
 
     onUnselectedSearchItem() {
-        this.editIconButtonTitle = 'Edit';
+        this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
     }
 
@@ -468,18 +544,18 @@ export class ListUpdateManager {
     onHierarchyItemEdit(hierarchyUpdate: HierarchyUpdate) {
         // Edit parent hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 0) {
-            this.dataService.put('api/' + this.parentDataServicePath, {
-                id: hierarchyUpdate.id,
-                name: hierarchyUpdate.name
-            }).subscribe();
+            // this.dataService.put('api/' + this.parentDataServicePath, {
+            //     id: hierarchyUpdate.id,
+            //     name: hierarchyUpdate.name
+            // }).subscribe();
         }
 
         // Edit child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            this.dataService.put('api/' + this.childDataServicePath, {
-                id: hierarchyUpdate.id,
-                name: hierarchyUpdate.name
-            }).subscribe();
+            // this.dataService.put('api/' + this.childDataServicePath, {
+            //     id: hierarchyUpdate.id,
+            //     name: hierarchyUpdate.name
+            // }).subscribe();
         }
         this.setOtherHierarchyEdit<HierarchyUpdate>(hierarchyUpdate, hierarchyUpdate.hierarchyGroupID!);
     }
@@ -491,10 +567,10 @@ export class ListUpdateManager {
     onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
         // Edit parent search item
         if (searchUpdate.values![1].name == this.parentSearchType) {
-            this.dataService.put('api/' + this.parentDataServicePath, {
-                id: searchUpdate.id,
-                name: searchUpdate.values![0].name
-            }).subscribe();
+            // this.dataService.put('api/' + this.parentDataServicePath, {
+            //     id: searchUpdate.id,
+            //     name: searchUpdate.values![0].name
+            // }).subscribe();
 
             // Find the item in the hierarchy list that we just edited in this search list
             const editedSearchItem = this.thisArray.find(x => x.id == searchUpdate.id && x.hierarchyGroupID == 0)!;
@@ -508,10 +584,10 @@ export class ListUpdateManager {
 
         // Edit child search item
         if (searchUpdate.values![1].name == this.childSearchType) {
-            this.dataService.put('api/' + this.childDataServicePath, {
-                id: searchUpdate.id,
-                name: searchUpdate.values![0].name
-            }).subscribe();
+            // this.dataService.put('api/' + this.childDataServicePath, {
+            //     id: searchUpdate.id,
+            //     name: searchUpdate.values![0].name
+            // }).subscribe();
 
 
             // Find the item in the hierarchy list that we just edited in this search list
@@ -560,8 +636,8 @@ export class ListUpdateManager {
         } else {
 
             // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
-            this.propertyService!.otherSortList.push(otherHierarchyItem!);
-            this.propertyService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
+            this.listUpdateService!.otherSortList.push(otherHierarchyItem!);
+            this.listUpdateService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
         }
     }
 
@@ -681,11 +757,8 @@ export class ListUpdateManager {
         return this.sanitizer.bypassSecurityTrustHtml(
             'The ' +
             parentType +
-            ' <span style="color: #ffba00">' + parentName + '</span> ' +
-            'and its contents will be permanently deleted.' +
-            '<br>' +
-            '<br>' +
-            'Are you sure you want to continue?');
+            ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
+            ' and its contents will be permanently deleted.');
     }
 
 
@@ -696,13 +769,11 @@ export class ListUpdateManager {
         return this.sanitizer.bypassSecurityTrustHtml(
             'The ' +
             childType +
-            '<span style="color: #ffba00"> ' + childName + '</span>' +
+            ' <span style="color: #ffba00">\"' + childName + '\"</span>' +
             ' will be permanently deleted from the '
             + parentType +
-            '<span style="color: #ffba00"> ' + parentName + '</span>.' +
-            '<br>' +
-            '<br>' +
-            'Are you sure you want to continue?');
+            ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
+            '.');
     }
 
 
@@ -712,7 +783,6 @@ export class ListUpdateManager {
     onHierarchyDeletePrompt(deletedItem: HierarchyItem) {
         // If we're deleting a parent item
         if (deletedItem.hierarchyGroupID == 0) {
-            this.hierarchyOptions.deletePrompt!.title = 'Delete ' + this.parentType;
             this.hierarchyOptions.deletePrompt!.message = this.deletePromptParentMessage(this.parentType, deletedItem.name!);
         }
 
@@ -720,7 +790,6 @@ export class ListUpdateManager {
         if (deletedItem.hierarchyGroupID == 1 && !this.isThreeTierHierarchy) {
             const childItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
             const indexOfParentItem = this.hierarchyComponent.listManager.getIndexOfHierarchyItemParent(childItem!);
-            this.hierarchyOptions.deletePrompt!.title = 'Delete ' + this.childType;
             this.hierarchyOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.name!, this.parentType, this.thisArray[indexOfParentItem].name!);
         }
     }
@@ -732,7 +801,6 @@ export class ListUpdateManager {
     onSearchDeletePrompt(deletedItem: MultiColumnItem) {
         // If we're deleting a parent item
         if (deletedItem.values[1].name == this.parentSearchType) {
-            this.searchOptions.deletePrompt!.title = 'Delete ' + this.parentType;
             this.searchOptions.deletePrompt!.message = this.deletePromptParentMessage(this.parentType, deletedItem.values[0].name);
         }
 
@@ -740,7 +808,6 @@ export class ListUpdateManager {
         if (deletedItem.values[1].name == this.childSearchType && !this.isThreeTierHierarchy) {
 
             // Prefill the prompt so if the prompt opens before we get the parent name, it won't be an empty prompt
-            this.searchOptions.deletePrompt!.title = 'Delete ' + this.childType;
             this.searchOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.values[0].name, this.parentType, '');
 
             this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: deletedItem.id }])
@@ -790,9 +857,9 @@ export class ListUpdateManager {
     onSearchItemDelete(deletedItem: MultiColumnItem) {
         // If we're deleting a parent item
         if (deletedItem.values[1].name == this.parentSearchType) {
-            this.dataService.delete('api/' + this.parentDataServicePath, {
-                id: deletedItem.id
-            }).subscribe();
+            // this.dataService.delete('api/' + this.parentDataServicePath, {
+            //     id: deletedItem.id
+            // }).subscribe();
 
             const deletedItemIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
             this.thisArray.splice(deletedItemIndex, 1);
@@ -803,78 +870,15 @@ export class ListUpdateManager {
 
         // If we're deleting a child item
         if (deletedItem.values[1].name == this.childSearchType) {
-            this.dataService.delete('api/' + this.childDataServicePath, {
-                id: deletedItem.id
-            }).subscribe();
+            // this.dataService.delete('api/' + this.childDataServicePath, {
+            //     id: deletedItem.id
+            // }).subscribe();
 
             const deletedItemChildIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
             if (deletedItemChildIndex != -1) this.thisArray.splice(deletedItemChildIndex, 1);
 
             const otherDeletedItemChildIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
             if (otherDeletedItemChildIndex != -1) this.otherArray.splice(otherDeletedItemChildIndex, 1);
-        }
-    }
-
-
-
-    // ==================================================================( ON ARROW CLICK )=================================================================== \\
-
-    onArrowClick(hierarchyUpdate: HierarchyUpdate) {
-        // If a parent item was expanded and its children hasn't been loaded yet
-        if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
-
-            // If the hierarchy item is a top level hierarchy item
-            if (hierarchyUpdate.hierarchyGroupID == 0) {
-
-                this.dataService.get<Array<Item>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
-                    .subscribe((children: Array<Item>) => {
-                        let num = this.hierarchyComponent.listManager.editedItem ? 2 : 1;
-
-                        for (let i = children.length - 1; i >= 0; i--) {
-
-                            // This Array
-                            this.thisArray.splice(hierarchyUpdate.index! + num, 0,
-                                {
-                                    id: children[i].id,
-                                    name: children[i].name,
-                                    hierarchyGroupID: 1,
-                                    hidden: false,
-                                    arrowDown: false,
-                                    isParent: this.isSecondLevelHierarchyItemParent
-                                }
-                            )
-
-                            // Other Array
-                            this.otherArray.splice(hierarchyUpdate.index! + 1, 0,
-                                {
-                                    id: children[i].id,
-                                    name: children[i].name,
-                                    hierarchyGroupID: 1,
-                                    arrowDown: false,
-                                    isParent: this.isSecondLevelHierarchyItemParent,
-                                    hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
-                                }
-                            )
-                        }
-                        this.onChildrenLoad.next();
-                    })
-            }
-
-
-
-        } else if (hierarchyUpdate.arrowDown && hierarchyUpdate.hasChildren) {
-
-
-            let checkForIdentity = (hierarchyUpdate: HierarchyUpdate) => {
-                if (!this.thisArray[hierarchyUpdate.index! + 1].identity) {
-                    window.setTimeout(() => {
-                        checkForIdentity(hierarchyUpdate);
-                    })
-                } else {
-                    this.sortPendingHierarchyItems();
-                }
-            }
-            checkForIdentity(hierarchyUpdate);
         }
     }
 
@@ -931,15 +935,15 @@ export class ListUpdateManager {
         }
 
         // But if any items were added or edited from the other list whether it was done in search mode or hierarchy mode
-        if (this.propertyService!.otherSortList.length > 0 &&
-            this.propertyService!.targetSortType == this.sortType) {
+        if (this.listUpdateService!.otherSortList.length > 0 &&
+            this.listUpdateService!.targetSortType == this.sortType) {
 
             // Then we need to sort those items now in this hierarchy list
-            this.propertyService!.otherSortList.forEach(x => {
+            this.listUpdateService!.otherSortList.forEach(x => {
                 if (!x.hidden) {
                     this.hierarchyComponent.listManager.sort(x);
-                    const index = this.propertyService!.otherSortList.indexOf(x);
-                    this.propertyService!.otherSortList.splice(index, 1);
+                    const index = this.listUpdateService!.otherSortList.indexOf(x);
+                    this.listUpdateService!.otherSortList.splice(index, 1);
                 }
             })
         }
@@ -969,8 +973,6 @@ export class ListUpdateManager {
         // Go to child item
         if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.childSearchType) {
             const child: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
-
-            console.log(this.childDataServicePath)
 
             // Get the parent item of the selected child item
             this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: child.id }])
@@ -1014,7 +1016,7 @@ export class ListUpdateManager {
                 let onChildrenLoadListener = this.onChildrenLoad.subscribe(() => {
                     onChildrenLoadListener.unsubscribe();
                     func2.apply(this, func2Parameters);
-                })
+                });
             }
 
             // If the arrow of the parent is already down

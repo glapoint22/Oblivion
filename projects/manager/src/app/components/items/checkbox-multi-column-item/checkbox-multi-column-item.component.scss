@@ -1,16 +1,14 @@
-.item {
-    align-items: center;
-    padding-left: 5px;
-}
-
-
 .checkbox {
     padding-bottom: 3px;
 }
 
+.checkmark {
+    top: 3px;
+}
+
 
 .disabled-checkbox {
-    margin-left: 3px;
+    margin-left: 6px;
     margin-right: -6px;
 }
 
@@ -25,7 +23,7 @@
 
 .disabled-checkmark {
     position: absolute;
-    top: 0;
+    top: 3px;
     left: 0;
     height: 13px;
     width: 13px;

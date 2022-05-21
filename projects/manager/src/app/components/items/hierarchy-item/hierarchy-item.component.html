@@ -1,4 +1,4 @@
-<div class="item-container" >
+<div class="item-container" [style.opacity]="item.opacity">
 
     <div *ngIf="listManager.editedItem != null" class="disabled-arrow-container">
         <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
@@ -8,11 +8,11 @@
     <div #htmlItem
          class="item"
          tabindex="-1"
+         [style.color]="item.color"
          (contextmenu)="$event.preventDefault()"
          (mouseover)="listManager.overItem = true"
          (mouseout)="listManager.overItem = false"
          (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(item, $event) : null) : listManager.onArrowClick(item)"
-         (blur)="listManager.onItemBlur(item)"
          (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(item) : null"
          [contentEditable]="item == listManager.editedItem"
          [ngClass]="{'selected-item': item == listManager.selectedItem,

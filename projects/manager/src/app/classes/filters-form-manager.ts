@@ -16,7 +16,7 @@ export class FiltersFormManager extends ListUpdateManager {
         this.searchNameWidth = '246px';
         this.searchTypeWidth = '55px';
         this.sortType = SortType.Form;
-        this.propertyService = this.filtersService;
+        this.listUpdateService = this.filtersService;
         this.thisArray = this.filtersService.formArray;
         this.otherArray = this.filtersService.productArray;
     }
