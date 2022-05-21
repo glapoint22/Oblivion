@@ -1,14 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { LazyLoadingService, Link, SpinnerAction } from 'common';
+import { Link, LazyLoadingService, SpinnerAction, LinkType } from 'common';
 import { LinkComponent } from '../link/link.component';
 
 @Component({
-  selector: 'link-editor',
-  templateUrl: './link-editor.component.html',
-  styleUrls: ['./link-editor.component.scss']
+  selector: 'link-property',
+  templateUrl: './link-property.component.html',
+  styleUrls: ['./link-property.component.scss']
 })
-export class LinkEditorComponent {
+export class LinkPropertyComponent {
   @Input() link!: Link;
+  public linkType = LinkType;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 

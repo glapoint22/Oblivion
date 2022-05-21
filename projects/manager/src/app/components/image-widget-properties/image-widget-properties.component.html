@@ -4,7 +4,10 @@
 </panel>
 
 <!-- Link -->
-<link-editor [link]="widget.link"></link-editor>
+<panel [title]="'Link'">
+    <link-property [link]="widget.link"></link-property>
+</panel>
+
 
 <!-- Border -->
 <border [border]="widget.border" (onChange)="update()"></border>

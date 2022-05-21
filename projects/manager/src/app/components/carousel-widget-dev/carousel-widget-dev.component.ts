@@ -8,6 +8,7 @@ import { WidgetService } from '../../services/widget/widget.service';
   styleUrls: ['./carousel-widget-dev.component.scss']
 })
 export class CarouselWidgetDevComponent extends CarouselWidgetComponent {
+  public currentBannerIndex: number = 0;
 
   constructor(public widgetService: WidgetService) { super() }
 }

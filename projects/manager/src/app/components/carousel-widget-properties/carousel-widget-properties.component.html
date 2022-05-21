@@ -1,0 +1,44 @@
+<!-- Property Box -->
+<div class="property-box-light">
+
+    <!-- Container for counter & icons -->
+    <div class="property-box-light-icon-bar">
+
+        <!-- Counter -->
+        <counter #counter [itemCount]="widget.banners.length" (onItemChange)="widget.currentBannerIndex = $event">
+        </counter>
+
+
+        <!-- Icons -->
+        <div class="icons">
+
+            <!-- Delete Banner -->
+            <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Banner'" [isDisabled]="widget.banners.length == 0"
+                (click)="deleteBanner(counter)">
+            </icon-button>
+
+
+            <!-- Add Banner -->
+            <icon-button [icon]="'fas fa-plus-circle'" [title]="'Add Banner'" (click)="addBanner(counter)">
+            </icon-button>
+        </div>
+    </div>
+
+    <div *ngIf="widget.banners.length > 0; else placeholder">
+        <!-- Banner -->
+        <div class="property-label">Banner:</div>
+        <image-box [image]="widget.banners[widget.currentBannerIndex].image"></image-box>
+
+
+        <!-- Link -->
+        <div class="property-label">Link:</div>
+        <link-property [link]="widget.banners[widget.currentBannerIndex].link"></link-property>
+    </div>
+
+
+    <!-- Placeholder -->
+    <ng-template #placeholder>
+        <div class="placeholder">No banners available</div>
+    </ng-template>
+
+</div>

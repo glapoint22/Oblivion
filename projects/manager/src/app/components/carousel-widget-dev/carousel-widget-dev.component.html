@@ -1,40 +1,13 @@
-<div #widget class="carousel-container">
+<div #widget class="carousel-container" [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
 
-    <div carousel [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton" [changeCount]="changeCount"
-        class="carousel">
+    <ng-container
+        *ngIf="banners && banners.length > 0 && banners[currentBannerIndex].image && banners[currentBannerIndex].image.src; else placeholder">
+        <img [src]="'/images/' + banners[currentBannerIndex].image.src" [alt]="banners[currentBannerIndex].image.name"
+            [title]="banners[currentBannerIndex].image.name" draggable="false">
+    </ng-container>
 
-        <!-- Carousel element -->
-        <div *ngFor="let banner of banners" class="carousel-element">
-
-
-            <!-- Web address -->
-            <a *ngIf="banner.link && banner.link.url && banner.link.linkType == linkType.WebAddress"
-                [href]="banner.link.url" target="_blank" draggable="false">
-                <img [src]="'/images/' + banner.image.src" [alt]="banner.image.name" [title]="banner.image.name"
-                    draggable="false" (mousedown)="$event.preventDefault()">
-            </a>
-
-            <!-- local link -->
-            <a *ngIf="banner.link && banner.link.url && banner.link.linkType != linkType.WebAddress"
-                [routerLink]="banner.link.url" draggable="false">
-                <img [src]="'/images/' + banner.image.src" [alt]="banner.image.name" [title]="banner.image.name"
-                    draggable="false" (mousedown)="$event.preventDefault()">
-            </a>
-
-
-            <!-- No link -->
-            <img *ngIf="!banner.link || !banner.link.url" [src]="'/images/' + banner.image.src"
-                [alt]="banner.image.name" [title]="banner.image.name" draggable="false">
-        </div>
-    </div>
-
-    <!-- Left Arrow Button -->
-    <div #leftArrowButton class="left-arrow-button">
-        <i></i>
-    </div>
-
-    <!-- Right Arrow Button -->
-    <div #rightArrowButton class="right-arrow-button">
-        <i></i>
-    </div>
+    <!-- Placeholder -->
+    <ng-template #placeholder>
+        <img src="assets/NicheShackBanner.png">
+    </ng-template>
 </div>
