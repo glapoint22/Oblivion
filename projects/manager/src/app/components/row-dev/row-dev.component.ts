@@ -1,8 +1,8 @@
 import { Component, ComponentFactoryResolver } from '@angular/core';
 import { Column, ColumnSpan, RowComponent } from 'widgets';
-import { WidgetCursorType } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
+import { ContainerDevComponent } from '../container-dev/container-dev.component';
 
 @Component({
   selector: 'row-dev',
@@ -11,8 +11,97 @@ import { ColumnDevComponent } from '../column-dev/column-dev.component';
 })
 export class RowDevComponent extends RowComponent {
   public columns: Array<ColumnDevComponent> = new Array<ColumnDevComponent>();
+  public containerComponent!: ContainerDevComponent;
 
   constructor(resolver: ComponentFactoryResolver, private widgetService: WidgetService) { super(resolver); }
+
+
+
+  onRowMousedown(mousedownEvent: MouseEvent) {
+    mousedownEvent.stopPropagation();
+
+    const rowElement = mousedownEvent.currentTarget as HTMLElement;
+    const offset = mousedownEvent.clientY - rowElement.getBoundingClientRect().top;
+    const document = this.rowElement.getRootNode() as Document;
+    const top = this.containerComponent.viewContainerRef.element.nativeElement.parentElement.getBoundingClientRect().top;
+
+    const onRowMousemove = (mousemoveEvent: MouseEvent) => {
+      let newRowelementTop = Math.max(0, mousemoveEvent.clientY - offset - top);
+
+      const otherRowElements = this.containerComponent.rowElements
+        .filter(x => x != rowElement && x.getBoundingClientRect().bottom <= rowElement.getBoundingClientRect().top);
+
+      if (otherRowElements.length > 0) {
+        const total = otherRowElements
+          .map(x => x.getBoundingClientRect().height)
+          .reduce((a, b) => a + b);
+
+        if (newRowelementTop <= total) newRowelementTop = total;
+      }
+
+
+
+      if (newRowelementTop + rowElement.getBoundingClientRect().height > this.viewContainerRef.element.nativeElement.parentElement.clientHeight) {
+        console.log('colliding bottom container')
+      }
+
+
+      rowElement.style.top = newRowelementTop + 'px';
+
+      this.collision(rowElement, newRowelementTop, newRowelementTop + rowElement.getBoundingClientRect().height);
+    }
+
+    const onRowMouseup = () => {
+      document.removeEventListener('mousemove', onRowMousemove);
+      document.removeEventListener('mouseup', onRowMouseup);
+    }
+
+    document.addEventListener('mousemove', onRowMousemove);
+    document.addEventListener('mouseup', onRowMouseup);
+  }
+
+
+
+
+
+  collision(rowElement: HTMLElement, rowElementTop: number, rowElementBottom: number) {
+    this.containerComponent.rowElements.filter(x => x != rowElement)
+      .forEach((otherRowElement: HTMLElement) => {
+        const otherRowElementClientRect = otherRowElement.getBoundingClientRect();
+        const otherRowElementTop = parseInt(otherRowElement.style.top);
+        const otherRowElementBottom = otherRowElementTop + otherRowElementClientRect.height;
+
+        if (otherRowElementClientRect.bottom > this.viewContainerRef.element.nativeElement.parentElement.clientHeight) {
+          console.log('colliding bottom container')
+        }
+
+        if (rowElementTop < otherRowElementBottom && rowElementBottom > otherRowElementBottom) {
+          const otherRowElementNewTop = rowElementTop - otherRowElementClientRect.height;
+
+          otherRowElement.style.top = otherRowElementNewTop + 'px';
+
+
+          this.collision(otherRowElement, otherRowElementNewTop, otherRowElementNewTop + otherRowElementClientRect.height);
+
+        }
+
+        else if (rowElementBottom > otherRowElementTop && rowElementTop < otherRowElementTop) {
+
+          const otherRowElementNewTop = rowElementBottom
+          otherRowElement.style.top = otherRowElementNewTop + 'px';
+
+
+
+
+
+          this.collision(otherRowElement, otherRowElementNewTop, otherRowElementNewTop + otherRowElementClientRect.height);
+        }
+
+
+      });
+  }
+
+
 
 
   createColumns(columns: Array<Column>) {
@@ -29,9 +118,9 @@ export class RowDevComponent extends RowComponent {
     this.columns.splice(index, 0, columnComponentRef.instance);
 
 
-    columnComponentRef.instance.rowComponent = this;
     const columnComponent = columnComponentRef.instance;
 
+    columnComponent.rowComponent = this;
     columnComponent.columnElement = columnComponentRef.location.nativeElement;
 
     // Set the column with the column data
@@ -46,14 +135,14 @@ export class RowDevComponent extends RowComponent {
   }
 
 
-  
+
 
 
   addColumn(addend: number, columnElement: HTMLElement) {
     this.columnCount++;
 
     const columnSpan = this.getColumnSpan(this.columnCount);
-    const widgetType = this.widgetService.$widgetCursor.getValue().widgetType;
+    const widgetType = this.widgetService.widgetCursor.widgetType;
 
     this.columns.forEach((column: ColumnDevComponent) => {
       column.columnSpan = new ColumnSpan(columnSpan);
@@ -75,22 +164,19 @@ export class RowDevComponent extends RowComponent {
   }
 
   onMouseup() {
-    this.widgetService.clearWidgetCursor();
-    document.body.className = '';
+    if (this.widgetService.widgetCursor) {
+      this.widgetService.clearWidgetCursor();
+    }
   }
 
 
   onMousemove() {
-    if (document.body.id == 'widget-cursor') {
-      this.widgetService.setWidgetCursorType(WidgetCursorType.NotAllowed);
-      document.body.className = 'over-row';
+    if (this.widgetService.widgetCursor) {
     }
   }
 
   onMouseleave() {
-    if (document.body.id == 'widget-cursor') {
-      this.widgetService.setWidgetCursorType(WidgetCursorType.Allowed);
-      document.body.className = '';
+    if (this.widgetService.widgetCursor) {
     }
   }
 }

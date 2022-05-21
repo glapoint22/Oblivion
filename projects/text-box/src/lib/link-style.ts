@@ -2,6 +2,7 @@ import { Link } from "common";
 import { AnchorElement } from "./anchor-element";
 import { BreakElement } from "./break-element";
 import { Element } from "./element";
+import { ElementRange } from "./element-range";
 import { ElementType } from "./element-type";
 import { Selection } from "./selection";
 import { SpanElement } from "./span-element";
@@ -9,7 +10,7 @@ import { TextElement } from "./text-element";
 import { ToggleStyle } from "./toggle-style";
 
 export class LinkStyle extends ToggleStyle {
-    private link!: Link;
+    public link!: Link;
     private isRemoveLink!: boolean;
 
     constructor(selection: Selection) {
@@ -21,6 +22,7 @@ export class LinkStyle extends ToggleStyle {
     // ---------------------------------------------------------Is Style Selected------------------------------------------------------------------
     protected get styleSelected(): boolean {
         if (this.isRemoveLink) {
+            this.isRemoveLink = false;
             return true;
         }
 
@@ -39,6 +41,68 @@ export class LinkStyle extends ToggleStyle {
     protected createStyleElement(parent: Element): Element {
         return new AnchorElement(parent, this.link);
     }
+
+
+
+
+
+    // ----------------------------------------------------------------Get Link-----------------------------------------------------------------
+    public getLink(currentElement: Element = this.selection.startElement.root, range: ElementRange = new ElementRange()): Link {
+        let link!: Link;
+
+        if (currentElement.id == this.selection.startElement.id) {
+            range.inRange = true;
+        }
+
+
+        if (range.inRange) {
+            let element = currentElement;
+
+            while (true) {
+                if (element.elementType == ElementType.Anchor) {
+                    const anchorElement = element as AnchorElement;
+                    const firstChild = anchorElement.firstChild;
+
+                    if (firstChild.elementType == ElementType.Text) {
+                        if (firstChild == this.selection.startElement) {
+                            this.selection.startOffset = 0;
+                        }
+
+                        if (firstChild == this.selection.endElement) {
+                            this.selection.endOffset = (firstChild as TextElement).text.length;
+                        }
+                    }
+
+                    return anchorElement.link;
+                }
+
+
+                if (element.elementType == ElementType.Div || element.elementType == ElementType.ListItem) {
+                    break;
+                }
+
+                element = element.parent;
+            }
+
+        }
+
+        if (currentElement.id == this.selection.endElement.id) return new Link();
+
+
+        for (let i = 0; i < currentElement.children.length; i++) {
+            const child = currentElement.children[i];
+
+            link = this.getLink(child, range);
+            if (link) return link;
+        }
+
+        return link;
+    }
+
+
+
+
+
 
 
     // ---------------------------------------------------------Add Style To Element----------------------------------------------------------

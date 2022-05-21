@@ -1,8 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Video } from 'common';
 import { Border } from '../../classes/border';
 import { Corners } from '../../classes/corners';
 import { Shadow } from '../../classes/shadow';
-import { Video } from '../../classes/video';
 import { VideoWidgetData } from '../../classes/video-widget-data';
 import { Widget } from '../../classes/widget';
 import { WidgetType } from '../../classes/widget-enums';
@@ -13,11 +13,11 @@ import { WidgetType } from '../../classes/widget-enums';
   styleUrls: ['./video-widget.component.scss']
 })
 export class VideoWidgetComponent extends Widget {
-  @ViewChild('iframe', { static: false }) iframe!: ElementRef<HTMLIFrameElement>;
+  @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public border: Border = new Border();
   public corners: Corners = new Corners();
   public shadow: Shadow = new Shadow();
-  private video: Video = new Video();
+  public video: Video = new Video();
 
   ngOnInit() {
     this.type = WidgetType.Video;
@@ -27,7 +27,7 @@ export class VideoWidgetComponent extends Widget {
     super.ngAfterViewInit();
 
     // Set the video src
-    this.iframe.nativeElement.src = this.video.url;
+    if (this.video.src) this.iframe.nativeElement.src = this.video.src;
   }
 
   setWidget(videoWidgetData: VideoWidgetData) {

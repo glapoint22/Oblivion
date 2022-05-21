@@ -1,7 +1,9 @@
-<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%">
+<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative;"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && image && image.src}">
 
     <!-- No link -->
-    <img *ngIf="(!link || !link.url) && image && image.url"
+    <img *ngIf="(!link || !link.url) && image && image.src" (load)="onImageLoad($event)" style="width: inherit"
+        draggable="false"
         [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
         [style.borderRadius]="
             corners &&
@@ -11,14 +13,15 @@
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
         [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
-        [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
+        [src]="'images/' + image.src" [alt]="image.name" [title]="image.name">
 
 
 
 
-    <!-- Link && link option is not web address -->
-    <a *ngIf="image && image.url && link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
-        <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
+    <!-- Link && link type is not web address -->
+    <a *ngIf="image && image.src && link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
+        <img draggable="false" (load)="onImageLoad($event)" style="width: inherit"
+            [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
             [style.borderRadius]="
             corners && 
             (corners.topLeft > 0 ||
@@ -27,13 +30,15 @@
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
             [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
-            [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
+            [src]="'images/' + image.src" [alt]="image.name" [title]="image.name">
     </a>
 
 
-    <!-- Link && link option is web address -->
-    <a *ngIf="image && image.url && link && link.url && link.linkType == linkType.WebAddress" [href]="link.url" target="_blank">
-        <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
+    <!-- Link && link type is web address -->
+    <a *ngIf="image && image.src && link && link.url && link.linkType == linkType.WebAddress" [href]="link.url"
+        target="_blank">
+        <img draggable="false" (load)="onImageLoad($event)" style="width: inherit"
+            [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
             [style.borderRadius]="
             corners && 
             (corners.topLeft > 0 ||
@@ -42,19 +47,19 @@
             corners.bottomLeft > 0) ?
             corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
             [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
-            [src]="'images/' + image.url" [alt]="image.name" [title]="image.name">
+            [src]="'images/' + image.src" [alt]="image.name" [title]="image.name">
     </a>
-</div>
 
 
-<!-- Handles -->
-<div *ngIf="widgetService.selectedWidget == this">
-    <div class="handle top-left"></div>
-    <div class="handle top"></div>
-    <div class="handle top-right"></div>
-    <div class="handle left"></div>
-    <div class="handle bottom-left"></div>
-    <div class="handle bottom"></div>
-    <div class="handle bottom-right"></div>
-    <div class="handle right"></div>
+    <!-- Handles -->
+    <div *ngIf="image && image.src && widgetService.selectedWidget == this">
+        <div class="handle top-left"></div>
+        <div class="handle top"></div>
+        <div class="handle top-right"></div>
+        <div class="handle left"></div>
+        <div class="handle bottom-left"></div>
+        <div class="handle bottom"></div>
+        <div class="handle bottom-right"></div>
+        <div class="handle right"></div>
+    </div>
 </div>

@@ -1,7 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { LazyLoad, LazyLoadingService } from 'common';
-import { MediaType, VideoType } from '../../classes/enums';
-import { Media } from '../../classes/media';
+import { LazyLoad, LazyLoadingService, Media, MediaType, Video, VideoType } from 'common';
 import { VideoApiService } from '../../services/video-api/video-api.service';
 
 @Component({
@@ -48,10 +46,20 @@ export class MediaPlayerComponent extends LazyLoad {
 
 
   setPlayer() {
+    const video = new Video({
+      video: {
+        id: this.selectedVideo.id,
+        name: this.selectedVideo.name,
+        thumbnail: this.selectedVideo.thumbnail,
+        videoType: this.selectedVideo.videoType,
+        videoId: this.selectedVideo.videoId
+      }
+    });
+
+    this.iframe.nativeElement.src = video.src;
+
     switch (this.selectedVideo.videoType) {
       case VideoType.YouTube:
-        this.iframe.nativeElement.src = 'https://www.youtube.com/embed/' + this.selectedVideo.videoId + '?enablejsapi=1'; // &autoplay=1
-
         if (!this.youTubePlayer) {
           this.youTubePlayer = new this.videoApiService.youTube.Player(this.iframe.nativeElement, {
             events: {
@@ -68,8 +76,6 @@ export class MediaPlayerComponent extends LazyLoad {
         break;
 
       case VideoType.Vimeo:
-        this.iframe.nativeElement.src = 'https://player.vimeo.com/video/' + this.selectedVideo.videoId + '?autoplay=true';
-
         if (!this.vimeoPlayer) {
           this.vimeoPlayer = new this.videoApiService.vimeo.Player(this.iframe.nativeElement);
 
@@ -79,8 +85,6 @@ export class MediaPlayerComponent extends LazyLoad {
 
 
       case VideoType.Wistia:
-        this.iframe.nativeElement.src = '//fast.wistia.net/embed/iframe/' + this.selectedVideo.videoId +
-          '?autoPlay=true&playbar=true&playerColor=000000&fullscreenButton=true';
         this.iframe.nativeElement.name = 'wistia_embed';
 
         if (!this.wistiaPlayer) {

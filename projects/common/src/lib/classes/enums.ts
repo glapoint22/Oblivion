@@ -14,3 +14,17 @@ export enum SpinnerAction {
     End,
     StartEnd
 }
+
+
+export enum MediaType {
+    Image,
+    Video,
+}
+
+
+
+export enum VideoType {
+    YouTube,
+    Vimeo,
+    Wistia
+}

@@ -1,78 +1,52 @@
-import { AfterViewInit, ApplicationRef, Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { LazyLoadingService, SpinnerAction } from 'common';
+import { Compiler, Component, ComponentFactoryResolver, ComponentRef, Injector, NgModuleFactory, ViewContainerRef } from '@angular/core';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
+import { PageDevComponent } from '../page-dev/page-dev.component';
+import { PageDevModule } from '../page-dev/page-dev.module';
 
 @Component({
   selector: 'editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent implements AfterViewInit {
-  @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
-  @ViewChild('widgetInspectorContainer', { read: ViewContainerRef }) widgetInspectorContainer!: ViewContainerRef;
-  public widgetService!: WidgetService;
+export class EditorComponent {
+  public page!: PageDevComponent;
   public showResizeCover!: boolean;
   public document = document;
+  public widgetCursors = WidgetCursor.getWidgetCursors();
 
-  constructor(private appRef: ApplicationRef, private lazyLoadingService: LazyLoadingService) { }
+  constructor
+    (
+      public widgetService: WidgetService,
+      private viewContainerRef: ViewContainerRef,
+      private resolver: ComponentFactoryResolver,
+      private compiler: Compiler,
+      private injector: Injector
+    ) { }
 
 
-  ngAfterViewInit() {
-    // Set the iframe src
-    this.iframe.nativeElement.src = 'viewport';
+  onLoad(iframe: HTMLIFrameElement) {
+    const iframeContentDocument = iframe.contentDocument!;
+    const compFactory = this.resolver.resolveComponentFactory(PageDevComponent);
+    const moduleFactory: NgModuleFactory<PageDevModule> = this.compiler.compileModuleSync(PageDevModule);
+    const moduleRef = moduleFactory.create(this.injector);
+    const componentRef: ComponentRef<PageDevComponent> = this.viewContainerRef.createComponent(compFactory, undefined, moduleRef.injector);
 
-
-    this.iframe.nativeElement.onload = () => {
-      const contentWindow = this.iframe.nativeElement.contentWindow as any;
-
-      // This widget service is from the viewport in the iframe
-      this.widgetService = (window as any).widgetService = contentWindow.widgetService;
-
-      this.loadWidgetInspector();
-
-      // Subscribe to widget cursor changes
-      this.widgetService.$widgetCursor.subscribe((widgetCursor: WidgetCursor) => {
-        document.body.style.cursor = widgetCursor.cursor;
-        this.appRef.tick();
-
-        if (widgetCursor.cursor == 'default') {
-          window.removeEventListener('mouseup', this.onMouseup);
-        }
-      });
-
-      this.widgetService.$widgetResize.subscribe((resizeCursor: string) => {
-        this.showResizeCover = resizeCursor != 'default' ? true : false;
-        document.body.style.cursor = resizeCursor;
-        this.appRef.tick();
-      });
-    }
-  }
-
-  async loadWidgetInspector() {
-    this.lazyLoadingService.load(async () => {
-      const { WidgetInspectorComponent } = await import('../widget-inspector/widget-inspector.component');
-      const { WidgetInspectorModule } = await import('../widget-inspector/widget-inspector.module');
-
-      
-
-      return {
-        component: WidgetInspectorComponent,
-        module: WidgetInspectorModule
-      }
-    }, SpinnerAction.None, this.widgetInspectorContainer);
+    this.page = componentRef.instance;
+    this.widgetService.widgetDocument = iframeContentDocument;
+    iframeContentDocument.head.innerHTML = document.head.innerHTML;
+    iframeContentDocument.body.appendChild(componentRef.location.nativeElement);
   }
 
 
   onIconMousedown(widgetCursor: WidgetCursor) {
     this.widgetService.setWidgetCursor(widgetCursor);
-    window.addEventListener('mouseup', this.onMouseup);
+
+    window.addEventListener('mouseup', () => {
+      this.widgetService.clearWidgetCursor();
+    }, { once: true });
   }
 
-
-  onMouseup = () => {
-    this.widgetService.clearWidgetCursor();
-  }
 
 
   onResizeMousedown(editorWindow: HTMLElement, direction?: number) {
@@ -102,7 +76,7 @@ export class EditorComponent implements AfterViewInit {
 
     const onResizeMouseUp = () => {
       this.showResizeCover = false;
-      document.body.style.cursor = 'default';
+      document.body.style.cursor = '';
       window.removeEventListener('mousemove', onResizeMousemove);
       window.removeEventListener('mouseup', onResizeMouseUp);
     }

@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Background, PageType } from 'widgets';
-import { WidgetService } from '../../services/widget/widget.service';
+import { PageDevComponent } from '../page-dev/page-dev.component';
 
 @Component({
   selector: 'page-properties',
@@ -9,9 +9,9 @@ import { WidgetService } from '../../services/widget/widget.service';
   styleUrls: ['./page-properties.component.scss']
 })
 export class PagePropertiesComponent implements OnInit {
+  @Input() page!: PageDevComponent;
   public pageTypes: Array<KeyValue<string, number>> = new Array<KeyValue<string, number>>();
 
-  constructor(public widgetService: WidgetService) { }
 
   ngOnInit(): void {
     const pageTypesArray = Object.values(PageType);
@@ -25,8 +25,7 @@ export class PagePropertiesComponent implements OnInit {
   }
 
   onBackgroundChange() {
-    this.setBackground(this.widgetService.page.pageContent.background);
-    this.widgetService.$pageChange.next();
+    this.setBackground(this.page.pageContent.background);
   }
 
   setBackground(background: Background) {
@@ -37,9 +36,9 @@ export class PagePropertiesComponent implements OnInit {
       }
 
       // Background image
-      if (background.image && background.image.url) {
+      if (background.image && background.image.src) {
         // Image
-        document.body.style.backgroundImage = 'url(images/' + background.image.url + ')';
+        document.body.style.backgroundImage = 'url(images/' + background.image.src + ')';
 
         // Position
         document.body.style.backgroundPosition = background.image.position;

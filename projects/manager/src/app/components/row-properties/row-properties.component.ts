@@ -11,6 +11,6 @@ export class RowPropertiesComponent {
   constructor(public widgetService: WidgetService) { }
 
   update() {
-    this.widgetService.$update.next();
+    // this.widgetService.$update.next();
   }
 }

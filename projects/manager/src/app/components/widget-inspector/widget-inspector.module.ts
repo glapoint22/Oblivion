@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WidgetInspectorComponent } from './widget-inspector.component';
-import { WidgetService } from '../../services/widget/widget.service';
 import { PagePropertiesComponent } from '../page-properties/page-properties.component';
 import { DropdownModule } from 'common';
 import { FormsModule } from '@angular/forms';
@@ -31,6 +30,9 @@ import { ImageWidgetPropertiesComponent } from '../image-widget-properties/image
 import { ContainerWidgetPropertiesComponent } from '../container-widget-properties/container-widget-properties.component';
 import { VideoWidgetPropertiesComponent } from '../video-widget-properties/video-widget-properties.component';
 import { ProductSliderWidgetPropertiesComponent } from '../product-slider-widget-properties/product-slider-widget-properties.component';
+import { LinkEditorComponent } from '../link-editor/link-editor.component';
+import { IconButtonModule } from '../icon-button/icon-button.module';
+import { VideoPropertiesEditorComponent } from '../video-properties-editor/video-properties-editor.component';
 
 
 
@@ -60,7 +62,9 @@ import { ProductSliderWidgetPropertiesComponent } from '../product-slider-widget
     ImageWidgetPropertiesComponent,
     ContainerWidgetPropertiesComponent,
     VideoWidgetPropertiesComponent,
-    ProductSliderWidgetPropertiesComponent
+    ProductSliderWidgetPropertiesComponent,
+    LinkEditorComponent,
+    VideoPropertiesEditorComponent
   ],
   imports: [
     CommonModule,
@@ -68,14 +72,9 @@ import { ProductSliderWidgetPropertiesComponent } from '../product-slider-widget
     FormsModule,
     PanelModule,
     ImageBoxModule,
-    NumberFieldModule
+    NumberFieldModule,
+    IconButtonModule
   ],
-  exports: [WidgetInspectorComponent],
-  providers: [
-    {
-      provide: WidgetService,
-      useValue: (window as any).widgetService
-    }
-  ]
+  exports: [WidgetInspectorComponent]
 })
 export class WidgetInspectorModule { }

@@ -12,7 +12,7 @@
     <!-- Page Name -->
     <div class="property">
         <div class="label" style="margin-right: 9px;">Name:</div>
-        <input [(ngModel)]="widgetService.page.pageContent.name">
+        <input [(ngModel)]="page.pageContent.name">
     </div>
 
 
@@ -55,5 +55,5 @@
 
 
     <!-- Background color & image -->
-    <background [background]="widgetService.page.pageContent.background" (onChange)="onBackgroundChange()"></background>
+    <background [background]="page.pageContent.background" (onChange)="onBackgroundChange()"></background>
 </div>

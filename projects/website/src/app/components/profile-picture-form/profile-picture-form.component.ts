@@ -364,7 +364,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
   onSubmit() {
     const formData = new FormData()
     formData.append('newImage', this.imageFile);
-    formData.append('currentImage', !this.accountService.customer?.hasProfileImage ? '' : this.accountService.customer?.profileImage.url.substring(this.accountService.customer?.profileImage.url.indexOf("/") + 1));
+    formData.append('currentImage', !this.accountService.customer?.hasProfileImage ? '' : this.accountService.customer?.profileImage.src.substring(this.accountService.customer?.profileImage.src.indexOf("/") + 1));
     formData.append('percentLeft', this.circle.percentLeft.toString());
     formData.append('percentRight', this.circle.percentRight.toString());
     formData.append('percentTop', this.circle.percentTop.toString());

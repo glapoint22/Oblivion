@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Color, LazyLoadingService, SpinnerAction } from 'common';
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
 
@@ -12,7 +12,6 @@ export class ColorSwatchComponent {
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   @Output() onClick: EventEmitter<void> = new EventEmitter();
   @Output() onColorPickerClose: EventEmitter<void> = new EventEmitter();
-  @ViewChild('colorPickerContainer', { read: ViewContainerRef }) colorPickerContainer!: ViewContainerRef;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
@@ -31,7 +30,7 @@ export class ColorSwatchComponent {
         component: ColorPickerComponent,
         module: ColorPickerModule
       }
-    }, SpinnerAction.None, this.colorPickerContainer)
+    }, SpinnerAction.None)
       .then((colorPicker: ColorPickerComponent) => {
         colorPicker.color = this.color;
 
@@ -45,7 +44,6 @@ export class ColorSwatchComponent {
         colorPicker.$onClose.subscribe(() => {
           this.onColorPickerClose.emit();
         });
-
       });
   }
 }

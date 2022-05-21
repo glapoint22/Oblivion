@@ -18,10 +18,6 @@ const routes: Routes = [
   {
     path: 'email-builder',
     loadChildren: () => import('../app/pages/email-builder/email-builder.module').then(m => m.EmailBuilderModule)
-  },
-  {
-    path: 'viewport',
-    loadChildren: () => import('../app/pages/viewport/viewport.module').then(m => m.ViewportModule)
   }
 ];
 

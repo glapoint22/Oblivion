@@ -10,7 +10,7 @@ import { ContainerComponent } from '../container/container.component';
 })
 export class PageComponent implements AfterViewInit, OnDestroy {
   @Input() pageContent!: PageContent;
-  @ViewChild('container', { static: false }) container!: ContainerComponent;
+  @ViewChild('container') container!: ContainerComponent;
 
   ngOnChanges() {
     if (this.container) {
@@ -52,9 +52,9 @@ export class PageComponent implements AfterViewInit, OnDestroy {
       }
 
       // Background image
-      if (this.pageContent.background.image && this.pageContent.background.image.url) {
+      if (this.pageContent.background.image && this.pageContent.background.image.src) {
         // Image
-        document.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.url + ')';
+        document.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.src + ')';
 
         // Position
         document.body.style.backgroundPosition = this.pageContent.background.image.position;

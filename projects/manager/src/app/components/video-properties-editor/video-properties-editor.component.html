@@ -1,0 +1,24 @@
+<panel [title]="'Video'">
+    <div class="property-box-dark">
+        <!-- Property Box Bar -->
+        <div class="property-box-bar">
+
+            <!-- Icons -->
+            <div class="icons">
+                <!-- Edit Video -->
+                <icon-button [icon]="'fa-solid fa-file-pen'" [title]="'Edit video'" (onClick)="openMediaBrowser(true)">
+                </icon-button>
+
+
+                <!-- Change Video -->
+                <icon-button [icon]="'fa-solid fa-film'" [title]="'Choose another video'"
+                    (onClick)="openMediaBrowser()">
+                </icon-button>
+            </div>
+        </div>
+
+        <div class="video-thumbnail">
+            <img [src]="'images/' + video.thumbnail" [title]="video.name">
+        </div>
+    </div>
+</panel>

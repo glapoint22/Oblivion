@@ -1,0 +1,28 @@
+<panel [title]="'Link'">
+
+    <div class="property-box-dark">
+
+        <!-- Property Box Bar -->
+        <div class="property-box-bar">
+
+            <!-- Icons -->
+            <div class="icons">
+
+                <!-- Link icon -->
+                <icon-button [icon]="'fas fa-link'" [title]="'Link'" (onClick)="onClick()"></icon-button>
+            </div>
+        </div>
+        <div class="link-container">
+
+            <!-- No Link -->
+            <div *ngIf="!link.url" style="color: #888;">
+                No link available
+            </div>
+
+            <!-- Link -->
+            <div *ngIf="link.url" class="link" [title]="link.url">
+                {{link.url}}
+            </div>
+        </div>
+    </div>
+</panel>

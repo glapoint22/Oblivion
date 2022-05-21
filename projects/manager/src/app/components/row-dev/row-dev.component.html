@@ -9,11 +9,11 @@
         corners.bottomLeft > 0) ?
         corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px ' + corners.bottomLeft + 'px': null"
     [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
-    [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.url ? 'url(images/' + background.image.url + ')' : null,
+    [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
                         'background-position': background && background.enabled && background.image ? background.image.position : null,
                         'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
                         'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"
-    (mouseup)="onMouseup()" (mousemove)="onMousemove()" (mouseleave)="onMouseleave()">
+    (mouseup)="onMouseup()" (mousemove)="onMousemove()" (mouseleave)="onMouseleave()" (mousedown)="onRowMousedown($event)">
 
     <ng-template #viewContainerRef>
         <!-- Columns go here -->

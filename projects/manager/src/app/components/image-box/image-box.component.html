@@ -1,32 +1,33 @@
 <div class="property-box-dark">
-
-
     <!-- Property Box Bar -->
     <div class="property-box-bar">
 
         <!-- Icons -->
         <div class="icons">
+            <!-- Remove icon -->
+            <icon-button *ngIf="showRemoveImage" [icon]="'fas fa-trash-alt'" [title]="'Remove image'"
+                [isDisabled]="!image || !image.src">
+            </icon-button>
 
 
 
-            <!-- Delete icon -->
-            <button *ngIf="!noDelete" class="icon-button" [ngClass]="{'icon-disabled': !image || !image.url}"
-                (click)="onDeleteImageClick()" title="Delete Image">
-                <i class="fas fa-trash-alt"></i>
-            </button>
+            <!-- Edit Image -->
+            <icon-button [icon]="'fa-solid fa-file-pen'" [title]="'Edit image'" [isDisabled]="!image || !image.src"
+                (onClick)="openMediaBrowser(true)">
+            </icon-button>
 
-            <!-- Media browser icon -->
-            <button class="icon-button" (click)="onClick()" title="Open Media Browser">
-                <i class="fas fa-image"></i>
-            </button>
+
+            <!-- Change Image -->
+            <icon-button [icon]="'fas fa-image'" [title]="!image || !image.src ? 'Add Image': 'Choose another image'"
+                (onClick)="openMediaBrowser()">
+            </icon-button>
         </div>
-
     </div>
 
 
     <!-- Image -->
     <div class="img-container">
-        <img *ngIf="image && image.url" [src]="'images/' + image.url" (load)="onLoad.emit()">
-        <div *ngIf="!image || !image.url" class="no-property">No image available</div>
+        <img *ngIf="image && image.src" [src]="'images/' + image.src" [title]="image.name">
+        <div *ngIf="!image || !image.src" class="no-property">No image available</div>
     </div>
 </div>

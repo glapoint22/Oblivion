@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewportComponent } from './viewport.component';
+import { MediaBrowserComponent } from './media-browser.component';
 
-describe('ViewportComponent', () => {
-  let component: ViewportComponent;
-  let fixture: ComponentFixture<ViewportComponent>;
+describe('MediaBrowserComponent', () => {
+  let component: MediaBrowserComponent;
+  let fixture: ComponentFixture<MediaBrowserComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ViewportComponent ]
+      declarations: [ MediaBrowserComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ViewportComponent);
+    fixture = TestBed.createComponent(MediaBrowserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
