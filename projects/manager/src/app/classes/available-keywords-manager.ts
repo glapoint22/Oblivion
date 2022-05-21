@@ -69,39 +69,6 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===================================================================( TOGGLE SEARCH )=================================================================== \\
-
-    toggleSearch() {
-        super.toggleSearch();
-
-        // If we're toggling back to hierarchy mode
-        if (!this.searchMode) {
-            this.thisArray.forEach(x => {
-                const selectedItem = this.selectedHierarchyComponent.listManager.sourceList.find(y => y.id == x.id && y.hierarchyGroupID == 0);
-
-
-
-                if (!selectedItem) {
-
-                    if (x.hierarchyGroupID == 0 && x.opacity != null) {
-                        x.opacity = null!;
-
-                        const index = this.thisArray.findIndex(y => y.id == x.id && y.hierarchyGroupID == 0);
-
-
-                        // Remove the disabled look from it's children too (if available)
-                        for (let i = index + 1; i < this.thisArray.length; i++) {
-                            if (this.thisArray[i].hierarchyGroupID! <= this.thisArray[index].hierarchyGroupID!) break;
-                            this.thisArray[i].opacity = null!;
-                        }
-                    }
-                }
-            })
-        }
-    }
-
-
-
     // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
 
     onSelectedHierarchyItem(hierarchyUpdate: HierarchyUpdate) {

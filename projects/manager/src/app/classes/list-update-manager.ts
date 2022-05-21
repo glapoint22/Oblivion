@@ -268,7 +268,6 @@ export class ListUpdateManager {
 
         } else if (hierarchyUpdate.arrowDown && hierarchyUpdate.hasChildren) {
 
-
             let checkForIdentity = (hierarchyUpdate: HierarchyUpdate) => {
                 if (!this.thisArray[hierarchyUpdate.index! + 1].identity) {
                     window.setTimeout(() => {
@@ -544,18 +543,18 @@ export class ListUpdateManager {
     onHierarchyItemEdit(hierarchyUpdate: HierarchyUpdate) {
         // Edit parent hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 0) {
-            // this.dataService.put('api/' + this.parentDataServicePath, {
-            //     id: hierarchyUpdate.id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe();
+            this.dataService.put('api/' + this.parentDataServicePath, {
+                id: hierarchyUpdate.id,
+                name: hierarchyUpdate.name
+            }).subscribe();
         }
 
         // Edit child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            // this.dataService.put('api/' + this.childDataServicePath, {
-            //     id: hierarchyUpdate.id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe();
+            this.dataService.put('api/' + this.childDataServicePath, {
+                id: hierarchyUpdate.id,
+                name: hierarchyUpdate.name
+            }).subscribe();
         }
         this.setOtherHierarchyEdit<HierarchyUpdate>(hierarchyUpdate, hierarchyUpdate.hierarchyGroupID!);
     }
@@ -567,10 +566,10 @@ export class ListUpdateManager {
     onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
         // Edit parent search item
         if (searchUpdate.values![1].name == this.parentSearchType) {
-            // this.dataService.put('api/' + this.parentDataServicePath, {
-            //     id: searchUpdate.id,
-            //     name: searchUpdate.values![0].name
-            // }).subscribe();
+            this.dataService.put('api/' + this.parentDataServicePath, {
+                id: searchUpdate.id,
+                name: searchUpdate.values![0].name
+            }).subscribe();
 
             // Find the item in the hierarchy list that we just edited in this search list
             const editedSearchItem = this.thisArray.find(x => x.id == searchUpdate.id && x.hierarchyGroupID == 0)!;
@@ -584,10 +583,10 @@ export class ListUpdateManager {
 
         // Edit child search item
         if (searchUpdate.values![1].name == this.childSearchType) {
-            // this.dataService.put('api/' + this.childDataServicePath, {
-            //     id: searchUpdate.id,
-            //     name: searchUpdate.values![0].name
-            // }).subscribe();
+            this.dataService.put('api/' + this.childDataServicePath, {
+                id: searchUpdate.id,
+                name: searchUpdate.values![0].name
+            }).subscribe();
 
 
             // Find the item in the hierarchy list that we just edited in this search list
@@ -666,7 +665,7 @@ export class ListUpdateManager {
                 // If a match was found
             } else {
                 this.hierarchyOptions.duplicatePrompt!.title = 'Duplicate ' + this.parentType;
-                this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.parentType + ' with the name <span style="color: #ffba00">' + hierarchyUpdate.name + '</span> already exists. Please choose a different name.');
+                this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.parentType + ' with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
                 this.hierarchyComponent.openDuplicatePrompt();
             }
         }
@@ -691,7 +690,7 @@ export class ListUpdateManager {
                 // If a match was found
             } else {
                 this.hierarchyOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
-                this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.parentType + '<span style="color: #ffba00"> ' + this.thisArray[indexOfParentItem].name + '</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">' + hierarchyUpdate.name + '</span>. Please choose a different name.');
+                this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.parentType + '<span style="color: #ffba00"> \"' + this.thisArray[indexOfParentItem].name + '\"</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span>. Please choose a different name.');
                 this.hierarchyComponent.openDuplicatePrompt();
             }
         }
@@ -722,7 +721,7 @@ export class ListUpdateManager {
                 // If a match was found
             } else {
                 this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.parentType;
-                this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.parentType + ' with the name <span style="color: #ffba00">' + searchUpdate.name + '</span> already exists. Please choose a different name.');
+                this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.parentType + ' with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span> already exists. Please choose a different name.');
                 this.searchComponent.openDuplicatePrompt();
             }
         }
@@ -742,7 +741,7 @@ export class ListUpdateManager {
                     } else {
                         const parentItem = this.thisArray.find(x => x.id == duplicateItem.parentId && x.hierarchyGroupID == 0);
                         this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
-                        this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.parentType + '<span style="color: #ffba00"> ' + parentItem!.name + '</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">' + searchUpdate.name + '</span>. Please choose a different name.');
+                        this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.parentType + '<span style="color: #ffba00"> \"' + parentItem!.name + '\"</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span>. Please choose a different name.');
                         this.searchComponent.openDuplicatePrompt();
                     }
                 })
@@ -857,9 +856,9 @@ export class ListUpdateManager {
     onSearchItemDelete(deletedItem: MultiColumnItem) {
         // If we're deleting a parent item
         if (deletedItem.values[1].name == this.parentSearchType) {
-            // this.dataService.delete('api/' + this.parentDataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            this.dataService.delete('api/' + this.parentDataServicePath, {
+                id: deletedItem.id
+            }).subscribe();
 
             const deletedItemIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
             this.thisArray.splice(deletedItemIndex, 1);
@@ -870,9 +869,9 @@ export class ListUpdateManager {
 
         // If we're deleting a child item
         if (deletedItem.values[1].name == this.childSearchType) {
-            // this.dataService.delete('api/' + this.childDataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            this.dataService.delete('api/' + this.childDataServicePath, {
+                id: deletedItem.id
+            }).subscribe();
 
             const deletedItemChildIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
             if (deletedItemChildIndex != -1) this.thisArray.splice(deletedItemChildIndex, 1);

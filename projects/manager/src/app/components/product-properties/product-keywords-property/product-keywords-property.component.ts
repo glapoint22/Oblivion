@@ -2,7 +2,6 @@ import { Component, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from 'common';
 import { AvailableKeywordsManager } from '../../../classes/available-keywords-manager';
-import { CheckboxItem } from '../../../classes/checkbox-item';
 import { SelectedKeywordsManager } from '../../../classes/selected-keywords-manager';
 import { KeywordsService } from '../../../services/keywords/keywords.service';
 import { ProductService } from '../../../services/product/product.service';

@@ -22,7 +22,6 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     private sortList: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
 
     // Public
-    public selectedKeywordGroups: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
     public availableHierarchyComponent!: HierarchyComponent;
     public thisArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
     public searchList: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
@@ -34,7 +33,6 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         super(dataService, sanitizer, keywordsService);
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
-        this.thisArray = this.selectedKeywordGroups;
         this.parentDataServicePath = 'SelectedKeywords/Groups';
         this.childDataServicePath = 'SelectedKeywords';
         this.childType = 'Custom Keyword';
@@ -485,33 +483,137 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
     // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
-    private trumpy: number = 1000;
+    
     onHierarchyItemAdd(hierarchyUpdate: HierarchyUpdate) {
-        this.trumpy++;
         // Add parent hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 0) {
-            // this.dataService.post<number>('api/' + this.parentDataServicePath, {
-            //     id: this.productService.product.id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = this.trumpy//id;
+            this.dataService.post<number>('api/' + this.parentDataServicePath, {
+                id: this.productService.product.id,
+                name: hierarchyUpdate.name
+            }).subscribe((id: number) => {
+            this.thisArray[hierarchyUpdate.index!].id = id;
             this.thisArray[hierarchyUpdate.index!].forProduct = true;
-            // });
+            });
         }
 
         // Add child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
             const indexOfHierarchyItemParent = this.hierarchyComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
 
-            // this.dataService.post<number>('api/' + this.childDataServicePath, {
-            //     id: this.thisArray[indexOfHierarchyItemParent].id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = this.trumpy//id;
+            this.dataService.post<number>('api/' + this.childDataServicePath, {
+                id: this.thisArray[indexOfHierarchyItemParent].id,
+                name: hierarchyUpdate.name
+            }).subscribe((id: number) => {
+            this.thisArray[hierarchyUpdate.index!].id = id;
             this.thisArray[hierarchyUpdate.index!].forProduct = true;
-            // })
+            })
         }
         this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
+    }
+
+
+
+    // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
+
+    onHierarchyItemVerify(hierarchyUpdate: HierarchyUpdate) {
+        let matchFound: boolean = false;
+
+        // If we're verifying a parent item
+        if (hierarchyUpdate.hierarchyGroupID == 0) {
+            // Loop through each parent custom item and check for a duplicate
+            this.thisArray.forEach(x => {
+                if (x.hierarchyGroupID == 0 && x.forProduct) {
+                    if (x.name?.toLowerCase() == hierarchyUpdate.name?.toLowerCase()) {
+                        matchFound = true;
+                    }
+                }
+            })
+
+            if (matchFound) {
+                this.hierarchyOptions.duplicatePrompt!.title = 'Duplicate Custom Keyword Group';
+                this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Custom Keyword Group with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
+                this.hierarchyComponent.openDuplicatePrompt();
+            } else {
+
+                // Loop through each parent item and check for a duplicate
+                this.otherArray.forEach(x => {
+                    if (x.hierarchyGroupID == 0) {
+                        if (x.name?.toLowerCase() == hierarchyUpdate.name?.toLowerCase()) {
+                            matchFound = true;
+                        }
+                    }
+                })
+
+                if (matchFound) {
+                    this.hierarchyOptions.duplicatePrompt!.title = 'Duplicate Keyword Group';
+                    this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Keyword Group with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
+                    this.hierarchyComponent.openDuplicatePrompt();
+                }
+            }
+
+            // If no match was found
+            if (!matchFound) {
+                this.hierarchyComponent.commitAddEdit();
+            }
+        }
+
+        // If we're verifying a child item
+        if (hierarchyUpdate.hierarchyGroupID == 1) {
+            super.onHierarchyItemVerify(hierarchyUpdate);
+        }
+    }
+
+
+
+    // ===============================================================( ON SEARCH ITEM VERIFY )=============================================================== \\
+
+    onSearchItemVerify(searchUpdate: MultiColumnListUpdate) {
+        let matchFound: boolean = false;
+
+        // If we're verifying a parent item
+        if (searchUpdate.values![1].name == this.parentSearchType) {
+            // Loop through each parent custom item and check for a duplicate
+            this.thisArray.forEach(x => {
+                if (x.hierarchyGroupID == 0 && x.forProduct) {
+                    if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase()) {
+                        matchFound = true;
+                    }
+                }
+            })
+
+            if (matchFound) {
+                this.searchOptions.duplicatePrompt!.title = 'Duplicate Custom Keyword Group';
+                this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Custom Keyword Group with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span> already exists. Please choose a different name.');
+                this.searchComponent.openDuplicatePrompt();
+            }else {
+
+                // Loop through each parent item and check for a duplicate
+                this.otherArray.forEach(x => {
+                    if (x.hierarchyGroupID == 0) {
+                        if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase()) {
+                            matchFound = true;
+                        }
+                    }
+                })
+
+                if (matchFound) {
+                    this.searchOptions.duplicatePrompt!.title = 'Duplicate Keyword Group';
+                    this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Keyword Group with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span> already exists. Please choose a different name.');
+                    this.searchComponent.openDuplicatePrompt();
+                }
+            }
+
+
+            // If no match was found
+            if (!matchFound) {
+                this.searchComponent.commitAddEdit();
+            }
+        }
+
+        // If we're verifying a child item
+        if (searchUpdate.values![1].name == this.childSearchType) {
+            super.onSearchItemVerify(searchUpdate);
+        }
     }
 
 
@@ -544,38 +646,34 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         if (deletedItem.hierarchyGroupID == 0) {
 
             if (this.parentType == 'Keyword Group') {
-                // this.dataService.put('api/' + this.parentDataServicePath + '/Remove', {
-                //     productId: this.productService.product.id,
-                //     id: deletedItem.id
-                // }).subscribe();
+                this.dataService.put('api/' + this.parentDataServicePath + '/Remove', {
+                    productId: this.productService.product.id,
+                    id: deletedItem.id
+                }).subscribe();
 
-
-                // As long as the available hierarchy is visible
-                if (this.availableHierarchyComponent) {
-                    // Get the index of the parent in the available list that's the same as the parent that's being removed in this list
-                    const removedItemIndex = this.availableHierarchyComponent.listManager.sourceList.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
-                    // Remove the disabled look from the parent in the available list that has that index
-                    this.availableHierarchyComponent.listManager.sourceList[removedItemIndex].opacity = null!;
-                    // Remove the disabled look from it's children too (if available)
-                    for (let i = removedItemIndex + 1; i < this.availableHierarchyComponent.listManager.sourceList.length; i++) {
-                        if (this.availableHierarchyComponent.listManager.sourceList[i].hierarchyGroupID! <= deletedItem.hierarchyGroupID!) break;
-                        this.availableHierarchyComponent.listManager.sourceList[i].opacity = null!;
-                    }
+                // Get the index of the parent in the available list that's the same as the parent that's being removed in this list
+                const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
+                // Remove the disabled look from the parent in the available list that has that index
+                this.otherArray[removedItemIndex].opacity = null!;
+                // Remove the disabled look from it's children too (if available)
+                for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
+                    if (this.otherArray[i].hierarchyGroupID! <= deletedItem.hierarchyGroupID!) break;
+                    this.otherArray[i].opacity = null!;
                 }
 
 
             } else {
-                // this.dataService.delete('api/' + this.parentDataServicePath, {
-                //     id: deletedItem.id
-                // }).subscribe();
+                this.dataService.delete('api/' + this.parentDataServicePath, {
+                    id: deletedItem.id
+                }).subscribe();
             }
         }
 
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
-            // this.dataService.delete('api/' + this.childDataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            this.dataService.delete('api/' + this.childDataServicePath, {
+                id: deletedItem.id
+            }).subscribe();
         }
     }
 
@@ -584,22 +682,32 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
 
     onSearchItemDelete(deletedItem: KeywordCheckboxMultiColumnItem) {
-        super.onSearchItemDelete(deletedItem);
 
         // If we're deleting a parent item
         if (deletedItem.values[1].name == this.parentSearchType) {
-            // As long as the available hierarchy is visible
-            if (this.availableHierarchyComponent) {
-                // Get the index of the parent in the available list that's the same as the parent that's being removed in this list
-                const removedItemIndex = this.availableHierarchyComponent.listManager.sourceList.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
-                // Remove the disabled look from the parent in the available list that has that index
-                this.availableHierarchyComponent.listManager.sourceList[removedItemIndex].opacity = null!;
-                // Remove the disabled look from it's children too (if available)
-                for (let i = removedItemIndex + 1; i < this.availableHierarchyComponent.listManager.sourceList.length; i++) {
-                    if (this.availableHierarchyComponent.listManager.sourceList[i].hierarchyGroupID! <= this.availableHierarchyComponent.listManager.sourceList[removedItemIndex].hierarchyGroupID!) break;
-                    this.availableHierarchyComponent.listManager.sourceList[i].opacity = null!;
-                }
+            this.dataService.delete('api/' + this.parentDataServicePath, {
+                id: deletedItem.id
+            }).subscribe();
+
+            const deletedItemIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
+            this.thisArray.splice(deletedItemIndex, 1);
+
+            // Now get the index of the parent in the available list that's the same as the parent that's being removed in this list
+            const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
+
+            // Remove the disabled look from the parent in the available list that has that index
+            this.otherArray[removedItemIndex].opacity = null!;
+            // Remove the disabled look from it's children too (if available)
+            for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
+                if (this.otherArray[i].hierarchyGroupID! <= this.otherArray[removedItemIndex].hierarchyGroupID!) break;
+                this.otherArray[i].opacity = null!;
             }
+        }
+
+
+        // If we're deleting a child item
+        if (deletedItem.values[1].name == this.childSearchType) {
+            super.onSearchItemDelete(deletedItem);
         }
     }
 
@@ -711,20 +819,20 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             this.availableHierarchyComponent.listManager.selectedItem.opacity = 0.4;
 
             // Add the disabled look to it's children too (if available)
-            const index = this.availableHierarchyComponent.listManager.sourceList.indexOf(this.availableHierarchyComponent.listManager.selectedItem);
-            for (let i = index + 1; i < this.availableHierarchyComponent.listManager.sourceList.length; i++) {
-                if (this.availableHierarchyComponent.listManager.sourceList[i].hierarchyGroupID! <= this.availableHierarchyComponent.listManager.selectedItem.hierarchyGroupID!) break;
-                this.availableHierarchyComponent.listManager.sourceList[i].opacity = 0.4;
+            const index = this.otherArray.indexOf(this.availableHierarchyComponent.listManager.selectedItem);
+            for (let i = index + 1; i < this.otherArray.length; i++) {
+                if (this.otherArray[i].hierarchyGroupID! <= this.availableHierarchyComponent.listManager.selectedItem.hierarchyGroupID!) break;
+                this.otherArray[i].opacity = 0.4;
             }
 
-            // this.dataService.post('api/' + this.parentDataServicePath + '/Add', {
-            //     productId: this.productService.product.id,
-            //     id: keywordGroup.id
-            // }).subscribe();
+            this.dataService.post('api/' + this.parentDataServicePath + '/Add', {
+                productId: this.productService.product.id,
+                id: keywordGroup.id
+            }).subscribe();
 
         } else {
             const parentIndex = this.availableHierarchyComponent.listManager.getIndexOfHierarchyItemParent(this.availableHierarchyComponent.listManager.selectedItem);
-            const parent = this.availableHierarchyComponent.listManager.sourceList[parentIndex];
+            const parent = this.otherArray[parentIndex];
             const childId = this.availableHierarchyComponent.listManager.selectedItem.id;
             keywordGroup.id = parent.id;
             keywordGroup.name = parent.name;
@@ -733,16 +841,16 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
             // Add the disabled look to the keyword group and its children in the available list
             parent.opacity = 0.4;
-            for (let i = parentIndex + 1; i < this.availableHierarchyComponent.listManager.sourceList.length; i++) {
-                if (this.availableHierarchyComponent.listManager.sourceList[i].hierarchyGroupID! <= parent.hierarchyGroupID!) break;
-                this.availableHierarchyComponent.listManager.sourceList[i].opacity = 0.4;
+            for (let i = parentIndex + 1; i < this.otherArray.length; i++) {
+                if (this.otherArray[i].hierarchyGroupID! <= parent.hierarchyGroupID!) break;
+                this.otherArray[i].opacity = 0.4;
             }
 
-            // this.dataService.post('api/' + this.parentDataServicePath + '/AddKeyword', {
-            //     productId: this.productService.product.id,
-            //     keywordGroupId: keywordGroup.id,
-            //     KeywordId: childId
-            // }).subscribe();
+            this.dataService.post('api/' + this.parentDataServicePath + '/AddKeyword', {
+                productId: this.productService.product.id,
+                keywordGroupId: keywordGroup.id,
+                KeywordId: childId
+            }).subscribe();
         }
         this.thisArray.push(keywordGroup);
 
