@@ -1,69 +1,58 @@
-<div #widget class="grid-widget-container">
+<div #widget class="grid-widget-container" [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
 
-    <ng-container *ngIf="gridData">
-        <ng-container *ngIf="gridData.products.length > 0; else noMatch">
+    <ng-container *ngIf="gridData && gridData.products.length > 0; else noData">
 
-            <!-- Header -->
-            <div class="header">
-                <div class="results">
-                    <div style="color: #dadada;">
-                        {{gridData.productCountStart}} - {{gridData.productCountEnd}} of
-                        {{gridData.totalProducts}}
-                        results
-                    </div>
-
-                    <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParams.filters"
-                        (click)="clearFilters()">Clear Filters</button>
+        <!-- Header -->
+        <div class="header">
+            <div class="results">
+                <div style="color: #dadada;">
+                    {{gridData.productCountStart}} - {{gridData.productCountEnd}} of
+                    {{gridData.totalProducts}}
+                    results
                 </div>
 
-                <!-- Sort Options -->
-                <div class="dropdown-container">
-                    <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event)"
-                        [selectedListItem]="setSortOption()"></dropdown>
-                </div>
+                <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParams.filters"
+                    (click)="clearFilters()">Clear Filters</button>
+            </div>
 
-
-                <!-- Sort & Filters button -->
-                <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
+            <!-- Sort Options -->
+            <div class="dropdown-container">
+                <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event)"
+                    [selectedListItem]="setSortOption()"></dropdown>
             </div>
 
 
-            <div class="grid-container">
+            <!-- Sort & Filters button -->
+            <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
+        </div>
 
-                <!-- Filters -->
-                <div *ngIf="clientWidth >= 768" class="filters-container">
-                    <filters-panel [filters]="gridData.filters"></filters-panel>
-                </div>
 
-                <!-- Grid -->
-                <div style="width: 100%;">
-                    <div class="grid">
-                        <div class="row">
-                            <div class="column" *ngFor="let product of gridData.products; trackBy:trackProduct">
-                                <product-summary [product]="product"></product-summary>
-                            </div>
+        <div class="grid-container">
+
+            <!-- Filters -->
+            <div *ngIf="clientWidth >= 768" class="filters-container">
+                <filters-panel [filters]="gridData.filters"></filters-panel>
+            </div>
+
+            <!-- Grid -->
+            <div style="width: 100%;">
+                <div class="grid">
+                    <div class="row">
+                        <div class="column" *ngFor="let product of gridData.products; trackBy:trackProduct">
+                            <product-summary [product]="product"></product-summary>
                         </div>
                     </div>
-                    <paginator [currentPage]="getPageNumber()" [pageCount]="gridData.pageCount"></paginator>
                 </div>
+                <paginator [currentPage]="getPageNumber()" [pageCount]="gridData.pageCount"></paginator>
             </div>
+        </div>
 
-        </ng-container>
-
-        <!-- No Match -->
-        <ng-template #noMatch>
-            <div class="no-match">
-                <a routerLink="/home" title="Niche Shack Homepage">
-                    <img src="assets/logo.png">
-                </a>
-        
-                <div class="gold-text">Sorry...</div>
-                <div class="white-text">We couldn't find a match for "{{route.snapshot.queryParams.search}}"</div>
-                <ul>
-                    <li>Check your spelling</li>
-                    <li>Use different keywords and try again</li>
-                </ul>
-            </div>
-        </ng-template>
     </ng-container>
+
+    <!-- No Data -->
+    <ng-template #noData>
+        <div
+            style="width: 100%; height: 40px; background: #292929; display: flex; align-items: center; padding-left: 10px; color: #aaaaaa;">
+            0 Results</div>
+    </ng-template>
 </div>

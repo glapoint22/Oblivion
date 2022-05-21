@@ -36,7 +36,7 @@ export class LinkComponent extends LazyLoad {
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    if(this.currentLinkType == LinkType.WebAddress) {
+    if (this.currentLinkType == LinkType.WebAddress) {
       this.linkInput.nativeElement.select();
     }
   }
@@ -88,6 +88,9 @@ export class LinkComponent extends LazyLoad {
 
   // ---------------------------------------------------------------------------Set Link----------------------------------------------------------
   public setLink(url: string) {
+    // Retrun if there are search results
+    if (this.searchResults && this.searchResults.length > 0) return;
+    
     this.link.url = url;
     this.link.linkType = this.currentLinkType;
     this.close();

@@ -5,7 +5,6 @@ import { ProductPricePropertyComponent } from './product-price-property/product-
 import { AdditionalInfoPropertiesComponent } from './product-price-property/additional-info-properties/additional-info-properties.component';
 import { RecurringPaymentPropertiesComponent } from './product-price-property/additional-info-properties/recurring-payment-properties/recurring-payment-properties.component';
 import { ShippingPropertiesComponent } from './product-price-property/additional-info-properties/shipping-properties/shipping-properties.component';
-import { CounterComponent } from '../counter/counter.component';
 import { ProductVendorPropertyComponent } from './product-vendor-property/product-vendor-property.component';
 import { ProductHoplinkPropertyComponent } from './product-hoplink-property/product-hoplink-property.component';
 import { ProductFiltersPropertyComponent } from './product-filters-property/product-filters-property.component';
@@ -24,6 +23,7 @@ import { IconButtonModule } from '../icon-button/icon-button.module';
 import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
 import { MultiColumnListModule } from '../lists/multi-column-list/multi-column-list.module';
 import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
+import { CounterModule } from '../counter/counter.module';
 import { CheckboxMultiColumnListModule } from '../lists/checkbox-multi-column-list/checkbox-multi-column-list.module';
 
 
@@ -34,7 +34,6 @@ import { CheckboxMultiColumnListModule } from '../lists/checkbox-multi-column-li
     AdditionalInfoPropertiesComponent,
     RecurringPaymentPropertiesComponent,
     ShippingPropertiesComponent,
-    CounterComponent,
     ProductVendorPropertyComponent,
     ProductHoplinkPropertyComponent,
     ProductFiltersPropertyComponent,
@@ -56,6 +55,7 @@ import { CheckboxMultiColumnListModule } from '../lists/checkbox-multi-column-li
     HierarchyModule,
     MultiColumnListModule,
     CheckboxHierarchyModule,
+    CounterModule,
     CheckboxMultiColumnListModule
   ],
   exports: [ProductPropertiesComponent]

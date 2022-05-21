@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LinkEditorComponent } from './link-editor.component';
+import { LinkPropertyComponent } from './link-property.component';
 
-describe('LinkEditorComponent', () => {
-  let component: LinkEditorComponent;
-  let fixture: ComponentFixture<LinkEditorComponent>;
+describe('LinkPropertyComponent', () => {
+  let component: LinkPropertyComponent;
+  let fixture: ComponentFixture<LinkPropertyComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LinkEditorComponent ]
+      declarations: [ LinkPropertyComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LinkEditorComponent);
+    fixture = TestBed.createComponent(LinkPropertyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

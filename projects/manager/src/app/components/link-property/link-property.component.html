@@ -1,0 +1,27 @@
+<div class="property-box-dark">
+
+    <!-- Property Box Bar -->
+    <div class="property-box-bar">
+
+        <!-- Icons -->
+        <div class="icons">
+
+            <!-- Link icon -->
+            <icon-button [icon]="'fas fa-link'" [title]="'Link'" (onClick)="onClick()"></icon-button>
+        </div>
+    </div>
+    <div class="link-container">
+
+        <!-- No Link -->
+        <div *ngIf="!link || !link.url" style="color: #888;">
+            No link available
+        </div>
+
+        <!-- Link -->
+        <ng-container *ngIf="link && link.url">
+            <a class="link" [title]="link.url"
+                [href]="link.linkType != linkType.WebAddress ? 'http://localhost:4200/' + link.url : link.url"
+                target="_blank">{{link.url}}</a>
+        </ng-container>
+    </div>
+</div>

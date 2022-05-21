@@ -12,8 +12,8 @@ import { RouterModule } from '@angular/router';
 import { ContainerWidgetDevComponent } from '../container-widget-dev/container-widget-dev.component';
 import { VideoWidgetDevComponent } from '../video-widget-dev/video-widget-dev.component';
 import { ProductSliderWidgetDevModule } from '../product-slider-widget-dev/product-slider-widget-dev.module';
-import { CarouselWidgetDevModule } from '../carousel-widget-dev/carousel-widget-dev.module';
 import { GridWidgetDevModule } from '../grid-widget-dev/grid-widget-dev.module';
+import { CarouselWidgetDevComponent } from '../carousel-widget-dev/carousel-widget-dev.component';
 
 
 @NgModule({
@@ -28,12 +28,12 @@ import { GridWidgetDevModule } from '../grid-widget-dev/grid-widget-dev.module';
     ImageWidgetDevComponent,
     LineWidgetDevComponent,
     VideoWidgetDevComponent,
+    CarouselWidgetDevComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     ProductSliderWidgetDevModule,
-    CarouselWidgetDevModule,
     GridWidgetDevModule
   ],
   exports: [PageDevComponent]
