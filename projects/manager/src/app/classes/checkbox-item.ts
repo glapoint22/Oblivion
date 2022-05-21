@@ -1,5 +1,5 @@
 import { HierarchyItem } from "./hierarchy-item";
 
-export class CheckboxHierarchyItem extends HierarchyItem {
+export class CheckboxItem extends HierarchyItem {
     isChecked?: boolean;
 }

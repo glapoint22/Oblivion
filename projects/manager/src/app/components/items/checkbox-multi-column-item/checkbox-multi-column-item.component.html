@@ -1,0 +1,83 @@
+<div class="item-container">
+    
+    <div #htmlItem
+         class="item" 
+         tabindex="-1"
+         (contextmenu)="$event.preventDefault()"
+         (mouseover)="listManager.overItem = true"
+         (mouseout)="listManager.overItem = false"
+         
+         (mousedown)="!listManager.overButton ? listManager.onItemDown(item, $event) : null"
+         [ngClass]="{'selected-item': item == listManager.selectedItem,
+                    'unselected-item': item == listManager.unselectedItem,
+                    'selected-item-top': item.selectType == listManager.SelectType.Top,
+                    'selected-item-all': item.selectType == listManager.SelectType.All && item != listManager.editedItem,
+                    'selected-item-middle': item.selectType == listManager.SelectType.Middle,
+                    'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
+                    'transparent-item': listManager.editedItem != null && listManager.editedItem != item,
+                    'no-hover': listManager.contextMenuOpen || item == listManager.editedItem}">
+
+
+        <ng-container *ngIf="listManager.editedItem != null && item.values[1].name != parentSearchType">
+            <label class="checkbox disabled-checkbox">
+                
+                <input class="disabled-input"
+                    type="checkbox"
+                    [checked]="item.isChecked">
+                <span class="disabled-checkmark"></span>
+            </label>
+        </ng-container>
+
+        <div *ngIf="listManager.editedItem != null && item.values[1].name == parentSearchType" style="width: 21px;"></div>
+
+        <div #htmlValue
+            style="display: flex;"
+             class="value"
+             tabindex="-1"
+             [style.color]="item.values[0].color"
+             [contentEditable]="item.values[0].allowEdit && item == listManager.editedItem ? true : false"
+             [style.width]="listManager.editedItem == null ? item.values[0].width : setWidth(item.values[0].width)"
+             (dblclick)="listManager.onValueDoubleClick(item, item.values[0])"
+             [ngClass]="{'edited-value': item.values[0].allowEdit && item.values[0] == listManager.editableValue,
+                         'transparent-value': listManager.editableValue != null && item.values[0] != listManager.editableValue}">
+
+
+
+                         
+                         
+            <ng-container *ngIf="listManager.editedItem == null && item.values[1].name != parentSearchType">
+                <label class="checkbox"
+                        (mouseover)="listManager.overButton = true"
+                        (mouseout)="listManager.overButton = false">
+
+                    <input type="checkbox"
+                            [checked]="item.isChecked"
+                            (change)="listManager.onCheckboxChange(item)"
+                            >
+                    <span class="checkmark"></span>
+                </label>
+            </ng-container>
+
+            <div *ngIf="listManager.editedItem == null && item.values[1].name == parentSearchType" style="width: 21px;"></div>
+
+
+
+            {{item.values[0].name}}
+        </div>
+
+
+        <div 
+             #htmlValue
+             class="value"
+             tabindex="-1"
+             [style.color]="item.values[1].color"
+             [contentEditable]="item.values[1].allowEdit && item == listManager.editedItem ? true : false"
+             [style.width]="item.values[1].width"
+             (dblclick)="listManager.onValueDoubleClick(item, item.values[1])"
+             [ngClass]="{'edited-value': item.values[1].allowEdit && item.values[1] == listManager.editableValue,
+                         'transparent-value': listManager.editableValue != null && item.values[1] != listManager.editableValue}">
+            {{item.values[1].name}}
+        </div>
+
+    </div>
+</div>

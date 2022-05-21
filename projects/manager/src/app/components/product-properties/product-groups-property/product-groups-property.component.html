@@ -33,6 +33,6 @@
                 </icon-button>
             </div>
         </div>
-        <list #list [sourceList]="productGroups" [options]="listOptions" (onListUpdate)="listUpdate = $event"></list>
+        <checkbox-list #list [sourceList]="productGroups" [options]="listOptions" (onListUpdate)="listUpdate = $event"></checkbox-list>
     </div>
 </panel>

@@ -7,7 +7,6 @@
          (mouseover)="listManager.overItem = true"
          (mouseout)="listManager.overItem = false"
          (mousedown)="item != listManager.editedItem ? listManager.onItemDown(item, $event) : null"
-         (blur)="item != listManager.editedItem ? listManager.onItemBlur(item) : null"
          [ngClass]="{'selected-item': item == listManager.selectedItem,
                     'unselected-item': item == listManager.unselectedItem,
                     'selected-item-top': item.selectType == listManager.SelectType.Top,
@@ -21,9 +20,9 @@
              #htmlValue
              class="value"
              tabindex="-1"
+             [style.color]="item.color"
              [contentEditable]="value.allowEdit && item == listManager.editedItem ? true : false"
              [style.width]="value.width"
-             (blur)="listManager.onItemBlur(item)"
              (dblclick)="listManager.onValueDoubleClick(item, value)"
              [ngClass]="{'edited-value': value.allowEdit && value == listManager.editableValue,
                          'transparent-value': listManager.editableValue != null && value != listManager.editableValue}">

@@ -4,6 +4,7 @@ import { DataService, LazyLoad, LazyLoadingService } from 'common';
 import { Subject } from 'rxjs';
 import { NicheHierarchyManager } from '../../classes/niche-hierarchy-manager';
 import { NicheHierarchyService } from '../../services/niche-hierarchy/niche-hierarchy.service';
+import { ProductService } from '../../services/product/product.service';
 import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
 import { MultiColumnListComponent } from '../lists/multi-column-list/multi-column-list.component';
 
@@ -15,7 +16,7 @@ import { MultiColumnListComponent } from '../lists/multi-column-list/multi-colum
 export class NicheHierarchyComponent extends LazyLoad {
   // Public
   public overNicheHierarchy: Subject<boolean> = new Subject<boolean>();
-  public nicheHierarchyManager: NicheHierarchyManager = new NicheHierarchyManager(this.dataService, this.sanitizer, this.nicheHierarchyService, this.lazyLoadingService);
+  public nicheHierarchyManager: NicheHierarchyManager = new NicheHierarchyManager(this.dataService, this.sanitizer, this.nicheHierarchyService, this.lazyLoadingService, this.productService);
 
   // Decorators
   @ViewChild('hierarchyComponent') hierarchyComponent!: HierarchyComponent;
@@ -25,6 +26,7 @@ export class NicheHierarchyComponent extends LazyLoad {
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
     private sanitizer: DomSanitizer,
+    private productService: ProductService,
     public nicheHierarchyService: NicheHierarchyService) {
     super(lazyLoadingService);
   }

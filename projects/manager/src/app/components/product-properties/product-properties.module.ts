@@ -24,6 +24,7 @@ import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
 import { MultiColumnListModule } from '../lists/multi-column-list/multi-column-list.module';
 import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
 import { CounterModule } from '../counter/counter.module';
+import { CheckboxMultiColumnListModule } from '../lists/checkbox-multi-column-list/checkbox-multi-column-list.module';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { CounterModule } from '../counter/counter.module';
     HierarchyModule,
     MultiColumnListModule,
     CheckboxHierarchyModule,
-    CounterModule
+    CounterModule,
+    CheckboxMultiColumnListModule
   ],
   exports: [ProductPropertiesComponent]
 })

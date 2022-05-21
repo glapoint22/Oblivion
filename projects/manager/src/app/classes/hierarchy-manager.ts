@@ -76,10 +76,10 @@ export class HierarchyManager extends ListManager {
         // state and causes the error "Expression has changed
         // after it was checked". That's because we're updating
         // the button state at the same time here.
-        window.setTimeout(() => {
-            this.collapseDisabled = this.getIsCollapsed();
-            super.setButtonsState();
-        })
+        // window.setTimeout(() => {
+        this.collapseDisabled = this.getIsCollapsed();
+        super.setButtonsState();
+        // })
 
     }
 
@@ -185,7 +185,7 @@ export class HierarchyManager extends ListManager {
 
 
 
-    sort(hierarchyItem: HierarchyItem): HierarchyItem {
+    sort(hierarchyItem: HierarchyItem) {
         let parentHierarchyIndex: number = -1;
         let tempArray: Array<HierarchyItem> = new Array<HierarchyItem>();
         let newHierarchyGroup: Array<HierarchyItem> = new Array<HierarchyItem>();
@@ -234,28 +234,40 @@ export class HierarchyManager extends ListManager {
 
         // Remove the selected hierarchy item and then put it back so the indent can take effect
         const hierarchyItemIndex = this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity);
-        this.sourceList.splice(hierarchyItemIndex, 1);
-        this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent, selected: hierarchyItem.selected, htmlItem: hierarchyItem?.htmlItem, hidden: hierarchyItem.hidden } as HierarchyItem);
 
-        // And because we removed the selected hierarchy item, we lost our event listeners, so we have to put them back
-        // window.setTimeout(() => {
-        this.addEventListeners();
+        (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = true;
+
+        window.setTimeout(() => {
+            (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = false;
+        })
+        // this.sourceList.splice(hierarchyItemIndex, 1);
+        // this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent, selected: hierarchyItem.selected, htmlItem: hierarchyItem?.htmlItem, hidden: hierarchyItem.hidden } as HierarchyItem);
+
+        // // And because we removed the selected hierarchy item, we lost our event listeners, so we have to put them back
+        // // window.setTimeout(() => {
+        // this.addEventListeners();
         // }, 35)
-        return this.sourceList[hierarchyItemIndex];
+        // return this.sourceList[hierarchyItemIndex];
     }
 
 
 
 
-    resetItemTextContent() {
-        // Update the text content of the html item
-        this.editedItem!.htmlItem!.nativeElement.textContent = this.editedItem!.name!;
-
+    resetItemInnerText() {
+        // // Update the text content of the html item
+        // this.editedItem!.htmlItem!.nativeElement.textContent = this.editedItem!.name!;
         const hierarchyItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
-        this.sourceList.splice(hierarchyItemIndex, 1);
-        this.sourceList.splice(hierarchyItemIndex, 0, { id: this.editedItem!.id, name: this.editedItem!.name, hierarchyGroupID: this.editedItem!.hierarchyGroupID, isParent: (this.editedItem as HierarchyItem).isParent, selected: this.editedItem!.selected, htmlItem: this.editedItem?.htmlItem, hidden: (this.editedItem as HierarchyItem).hidden } as HierarchyItem);
 
-        this.editedItem = this.sourceList[hierarchyItemIndex];
+        (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = true;
+
+        window.setTimeout(() => {
+            (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = false;
+        })
+
+        // this.sourceList.splice(hierarchyItemIndex, 1);
+        // this.sourceList.splice(hierarchyItemIndex, 0, { id: this.editedItem!.id, name: this.editedItem!.name, hierarchyGroupID: this.editedItem!.hierarchyGroupID, isParent: (this.editedItem as HierarchyItem).isParent, selected: this.editedItem!.selected, htmlItem: this.editedItem?.htmlItem, hidden: (this.editedItem as HierarchyItem).hidden } as HierarchyItem);
+
+        // this.editedItem = this.sourceList[hierarchyItemIndex];
     }
 
 
@@ -287,6 +299,7 @@ export class HierarchyManager extends ListManager {
 
     selectedItemsUpdate(rightClick: boolean) {
         const selectedItems = this.sourceList.filter(x => x.selected == true);
+        selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.identity == x?.identity));
         this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
     }
 
@@ -294,13 +307,27 @@ export class HierarchyManager extends ListManager {
 
     unSelectedItemsUpdate() {
         this.onListUpdate.next({
-          type: ListUpdateType.UnselectedItems,
-          addDisabled: this.addDisabled,
-          editDisabled: this.editDisabled,
-          deleteDisabled: this.deleteDisabled,
-          collapseDisabled: this.collapseDisabled
+            type: ListUpdateType.UnselectedItems,
+            addDisabled: this.addDisabled,
+            editDisabled: this.editDisabled,
+            deleteDisabled: this.deleteDisabled,
+            collapseDisabled: this.collapseDisabled
         })
-      }
+    }
+
+
+
+    doubleClickUpdate() {
+        this.onListUpdate.next({
+            type: ListUpdateType.DoubleClick,
+            addDisabled: this.addDisabled,
+            editDisabled: this.editDisabled,
+            deleteDisabled: this.deleteDisabled,
+            collapseDisabled: this.collapseDisabled
+        })
+    }
+
+
 
 
 

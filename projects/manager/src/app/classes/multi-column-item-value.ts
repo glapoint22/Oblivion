@@ -5,4 +5,5 @@ export class MultiColumnItemValue {
     width!: string;
     allowEdit?: boolean;
     htmlValue?: ElementRef<HTMLElement>;
+    color?: string;
 }

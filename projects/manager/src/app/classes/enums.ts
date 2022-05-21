@@ -33,7 +33,8 @@ export enum ListUpdateType {
     UnselectedItems,
     CheckboxChange,
     ArrowClicked,
-    VerifyAddEdit
+    VerifyAddEdit,
+    DoubleClick
 }
 
 
