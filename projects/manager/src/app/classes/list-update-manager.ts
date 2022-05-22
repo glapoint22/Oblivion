@@ -13,7 +13,7 @@ import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
-import { SearchItem } from "./search-item";
+import { SearchResultItem } from "./search-result-item";
 
 export class ListUpdateManager {
     // private
@@ -900,8 +900,8 @@ export class ListUpdateManager {
     getSearchResults(value: string) {
         this.searchList.splice(0, this.searchList.length);
 
-        this.dataService.get<Array<SearchItem>>('api/' + this.parentDataServicePath + '/Search', [{ key: 'searchWords', value: value }])
-            .subscribe((searchResults: Array<SearchItem>) => {
+        this.dataService.get<Array<SearchResultItem>>('api/' + this.parentDataServicePath + '/Search', [{ key: 'searchWords', value: value }])
+            .subscribe((searchResults: Array<SearchResultItem>) => {
 
                 // As long as search results were returned
                 if (searchResults) {

@@ -116,9 +116,9 @@
             <icon-button style="margin-left: -10px;"
                          [icon]="'fa-solid fa-chevron-right'"
                          [title]="'Add to Selected Keywords'"
-                         [isDisabled]="availableKeywordsManager.addToSelectedKeywordsButtonDisabled"
+                         [isDisabled]="keywordsService.addToSelectedKeywordsButtonDisabled"
                          (onOver)="availableKeywordsManager.overButton = $event"
-                         (onClick)="selectedKeywordsManager.addToSelectedKeywords()">
+                         (onClick)="keywordsService.addToSelectedKeywords()">
             </icon-button>
         </div>
 
