@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Padding, PaddingType, PaddingValue } from 'widgets';
-import { WidgetService } from '../../services/widget/widget.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 
 @Component({
   selector: 'padding',
@@ -36,12 +36,12 @@ export class PaddingComponent {
   ]
 
 
-  constructor(private widgetService: WidgetService) { }
+  constructor(private breakpointService: BreakpointService) { }
 
 
   ngOnInit(): void {
     // Subscribe to breakpoint changes
-    this.widgetService.$breakpointChange.subscribe(() => {
+    this.breakpointService.$breakpointChange.subscribe(() => {
       this.setBreakpoints();
     });
   }
@@ -65,11 +65,11 @@ export class PaddingComponent {
 
     paddingTypes.forEach((paddingType: string) => {
       const paddingValues = this.padding.values.filter(x => x.paddingType == paddingType);
-      const breakpoints = this.widgetService.getBreakpoints(paddingValues.map(x => x.breakpoint as string));
+      const breakpoints = this.breakpointService.getBreakpoints(paddingValues.map(x => x.breakpoint as string));
 
       if (breakpoints) {
         if (paddingValues.some(x => breakpoints.includes(x.breakpoint as string))) {
-          const breakpoint = this.widgetService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
+          const breakpoint = this.breakpointService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
 
           this.setPaddingProperty(paddingType, this.padding.values.find(x => x.breakpoint == breakpoint)?.padding as number);
           this.setCheckbox(paddingType, true);
@@ -105,7 +105,7 @@ export class PaddingComponent {
     let paddingValue: PaddingValue | undefined;
 
     if (paddingValues.length > 0) {
-      const breakpoint = this.widgetService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
+      const breakpoint = this.breakpointService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
       paddingValue = this.padding.values.find(x => x.paddingType == paddingType && x.breakpoint == breakpoint);
 
       if (paddingValue) {
@@ -150,19 +150,19 @@ export class PaddingComponent {
       let paddingValue = this.padding.values.find(x => x.paddingType == paddingType && x.breakpoint == undefined);
 
       if (paddingValue) {
-        paddingValue.breakpoint = this.widgetService.currentBreakpoint;
+        paddingValue.breakpoint = this.breakpointService.currentBreakpoint;
       } else {
-        paddingValue = new PaddingValue(paddingType, 0, this.widgetService.currentBreakpoint);
+        paddingValue = new PaddingValue(paddingType, 0, this.breakpointService.currentBreakpoint);
         this.padding.values.push(paddingValue);
       }
     } else {
       const paddingValues = this.padding.values.filter(x => x.paddingType == paddingType);
-      let breakpoint = this.widgetService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
+      let breakpoint = this.breakpointService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
       let paddingValue = this.padding.values.find(x => x.paddingType == paddingType && x.breakpoint == breakpoint);
 
       if (paddingValue) {
         paddingValue.breakpoint = undefined;
-        breakpoint = this.widgetService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
+        breakpoint = this.breakpointService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
 
         if (breakpoint) {
           breakpointCheckbox.checked = true;

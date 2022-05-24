@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { HorizontalAlignment, HorizontalAlignmentType, HorizontalAlignmentValue } from 'widgets';
-import { WidgetService } from '../../services/widget/widget.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 
 @Component({
   selector: 'horizontal-alignment',
@@ -15,11 +15,11 @@ export class HorizontalAlignmentComponent implements OnInit, OnChanges {
   public horizontalAlignmentType = HorizontalAlignmentType;
   public isBreakpointCheckboxChecked: boolean = false;
 
-  constructor(private widgetService: WidgetService) { }
+  constructor(private breakpointService: BreakpointService) { }
 
   ngOnInit(): void {
     // Subscribe to breakpoint changes
-    this.widgetService.$breakpointChange.subscribe(() => {
+    this.breakpointService.$breakpointChange.subscribe(() => {
       if (this.horizontalAlignment.values && this.horizontalAlignment.values.length > 0 && this.horizontalAlignment.values.some(x => x.breakpoint)) {
         this.setSelectedHorizontalAlignmentType();
       }
@@ -33,7 +33,7 @@ export class HorizontalAlignmentComponent implements OnInit, OnChanges {
 
   setSelectedHorizontalAlignmentType() {
     // Get the current breakpoint based on the array of horizontal alignment values
-    const breakpoint = this.widgetService.getBreakpoint(this.horizontalAlignment.values.map(x => x.breakpoint as string));
+    const breakpoint = this.breakpointService.getBreakpoint(this.horizontalAlignment.values.map(x => x.breakpoint as string));
 
 
     if (breakpoint) {
@@ -81,7 +81,7 @@ export class HorizontalAlignmentComponent implements OnInit, OnChanges {
 
 
   onClick(horizontalAlignmentType: HorizontalAlignmentType) {
-    const horizontalAlignmentValue = this.horizontalAlignment.values.find(x => x.breakpoint == this.widgetService.getBreakpoint(this.horizontalAlignment.values.map(x => x.breakpoint as string)) || x.breakpoint == null);
+    const horizontalAlignmentValue = this.horizontalAlignment.values.find(x => x.breakpoint == this.breakpointService.getBreakpoint(this.horizontalAlignment.values.map(x => x.breakpoint as string)) || x.breakpoint == null);
 
     if (horizontalAlignmentValue) {
       horizontalAlignmentValue.horizontalAlignmentType = horizontalAlignmentType;
@@ -104,7 +104,7 @@ export class HorizontalAlignmentComponent implements OnInit, OnChanges {
         horizontalAlignmentValue = this.createValue(this.selectedHorizontalAlignmentType);
       }
 
-      horizontalAlignmentValue.breakpoint = this.widgetService.currentBreakpoint;
+      horizontalAlignmentValue.breakpoint = this.breakpointService.currentBreakpoint;
     } else {
       if (horizontalAlignmentValue) {
         horizontalAlignmentValue.breakpoint = null;
