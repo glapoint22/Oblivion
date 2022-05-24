@@ -18,10 +18,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     private addDisabled!: boolean;
     private editDisabled!: boolean;
     private deleteDisabled!: boolean;
-    
 
     // Public
-    public availableHierarchyComponent!: HierarchyComponent;
     public thisArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
     public searchList: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
 
@@ -35,6 +33,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.parentDataServicePath = 'SelectedKeywords/Groups';
         this.childDataServicePath = 'SelectedKeywords';
         this.childType = 'Custom Keyword';
+        this.keywordsService.selectedKeywordsArray = this.thisArray;
     }
 
 
@@ -482,7 +481,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
     // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
-    
+
     onHierarchyItemAdd(hierarchyUpdate: HierarchyUpdate) {
         // Add parent hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 0) {
@@ -490,8 +489,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 id: this.productService.product.id,
                 name: hierarchyUpdate.name
             }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = id;
-            this.thisArray[hierarchyUpdate.index!].forProduct = true;
+                this.thisArray[hierarchyUpdate.index!].id = id;
+                this.thisArray[hierarchyUpdate.index!].forProduct = true;
             });
         }
 
@@ -503,8 +502,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 id: this.thisArray[indexOfHierarchyItemParent].id,
                 name: hierarchyUpdate.name
             }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = id;
-            this.thisArray[hierarchyUpdate.index!].forProduct = true;
+                this.thisArray[hierarchyUpdate.index!].id = id;
+                this.thisArray[hierarchyUpdate.index!].forProduct = true;
             })
         }
         this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
@@ -584,7 +583,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.searchOptions.duplicatePrompt!.title = 'Duplicate Custom Keyword Group';
                 this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Custom Keyword Group with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span> already exists. Please choose a different name.');
                 this.searchComponent.openDuplicatePrompt();
-            }else {
+            } else {
 
                 // Loop through each parent item and check for a duplicate
                 this.otherArray.forEach(x => {
@@ -650,15 +649,30 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                     id: deletedItem.id
                 }).subscribe();
 
-                // Get the index of the parent in the available list that's the same as the parent that's being removed in this list
+                // If we're in hierarchy mode, get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this hierarchy list
                 const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
-                // Remove the disabled look from the parent in the available list that has that index
+                // Un-dim the parent in the available list that has that index
                 this.otherArray[removedItemIndex].opacity = null!;
-                // Remove the disabled look from it's children too (if available)
+                // Un-dim it's children too (if available)
                 for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
                     if (this.otherArray[i].hierarchyGroupID! <= deletedItem.hierarchyGroupID!) break;
                     this.otherArray[i].opacity = null!;
                 }
+
+
+                // If we're in search mode, check to see if the removed keyword group is present in the available search list
+                const searchItem = this.keywordsService.availableSearchList.find(y => y.id == deletedItem.id && y.values[1].name == 'Group');
+                // If it is, then un-dim it
+                if (searchItem) searchItem!.opacity = null!;
+
+                // Also, check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if found
+                this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: deletedItem.id }])
+                    .subscribe((children: Array<KeywordCheckboxItem>) => {
+                        children.forEach(x => {
+                            const searchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                            if (searchItem) searchItem.opacity = null!;
+                        })
+                    })
 
 
             } else {
@@ -688,19 +702,42 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 id: deletedItem.id
             }).subscribe();
 
+            // Remove the selected keyword group from the hierarchy list
             const deletedItemIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
             this.thisArray.splice(deletedItemIndex, 1);
 
-            // Now get the index of the parent in the available list that's the same as the parent that's being removed in this list
+            // If the available list is in hierarchy mode, get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this list
             const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
-
-            // Remove the disabled look from the parent in the available list that has that index
+            // Un-dim the parent in the available list that has that index
             this.otherArray[removedItemIndex].opacity = null!;
-            // Remove the disabled look from it's children too (if available)
+
+            // Also, un-dim it's children too (if available)
             for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
                 if (this.otherArray[i].hierarchyGroupID! <= this.otherArray[removedItemIndex].hierarchyGroupID!) break;
                 this.otherArray[i].opacity = null!;
             }
+
+
+            // But if the available list is in search mode, check to see if the removed keyword group is present in the available search list
+            const searchItem = this.keywordsService.availableSearchList.find(y => y.id == deletedItem.id && y.values[1].name == 'Group');
+            // If it is, then un-dim it
+            if (searchItem) searchItem!.opacity = null!;
+
+            // Grab all the children belonging to the keyword group that's being removed  
+            this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: deletedItem.id }])
+            .subscribe((children: Array<KeywordCheckboxItem>) => {
+                children.forEach(x => {
+                    // Check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if any
+                    const availableSearchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                    if (availableSearchItem) availableSearchItem.opacity = null!;
+
+                    // 
+                    const searchItemIndex = this.searchList.findIndex(y => y.id == x.id && y.values[1].name == 'Keyword');
+                    if(searchItemIndex != -1) {
+                        this.searchList.splice(searchItemIndex, 1);
+                    }
+                })
+            })
         }
 
 
