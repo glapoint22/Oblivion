@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { VerticalAlignmentType, VerticalAlignment, VerticalAlignmentValue } from 'widgets';
-import { WidgetService } from '../../services/widget/widget.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 
 @Component({
   selector: 'vertical-alignment',
@@ -15,11 +15,11 @@ export class VerticalAlignmentComponent implements OnInit, OnChanges {
   public verticalAlignmentType = VerticalAlignmentType;
   public isBreakpointCheckboxChecked: boolean = false;
 
-  constructor(private widgetServce: WidgetService) { }
+  constructor(private breakpointService: BreakpointService) { }
 
   ngOnInit(): void {
     // Subscribe to breakpoint changes
-    this.widgetServce.$breakpointChange.subscribe(() => {
+    this.breakpointService.$breakpointChange.subscribe(() => {
       if (this.verticalAlignment.values && this.verticalAlignment.values.length > 0 && this.verticalAlignment.values.some(x => x.breakpoint)) {
         this.setSelectedVerticalAlignmentType();
       }
@@ -33,7 +33,7 @@ export class VerticalAlignmentComponent implements OnInit, OnChanges {
 
   setSelectedVerticalAlignmentType() {
     // Get the current breakpoint based on the array of vertical alignment values
-    const breakpoint = this.widgetServce.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string));
+    const breakpoint = this.breakpointService.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string));
 
 
     if (breakpoint) {
@@ -81,7 +81,7 @@ export class VerticalAlignmentComponent implements OnInit, OnChanges {
 
 
   onClick(verticalAlignType: VerticalAlignmentType) {
-    const verticalAlignmentValue = this.verticalAlignment.values.find(x => x.breakpoint == this.widgetServce.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string)) || x.breakpoint == null);
+    const verticalAlignmentValue = this.verticalAlignment.values.find(x => x.breakpoint == this.breakpointService.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string)) || x.breakpoint == null);
 
     if (verticalAlignmentValue) {
       verticalAlignmentValue.verticalAlignmentType = verticalAlignType;
@@ -104,7 +104,7 @@ export class VerticalAlignmentComponent implements OnInit, OnChanges {
         verticalAlignmentValue = this.createValue(this.selectedVerticalAlignmentType);
       }
 
-      verticalAlignmentValue.breakpoint = this.widgetServce.currentBreakpoint;
+      verticalAlignmentValue.breakpoint = this.breakpointService.currentBreakpoint;
     } else {
       if (verticalAlignmentValue) {
         verticalAlignmentValue.breakpoint = null;

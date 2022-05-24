@@ -41,11 +41,11 @@ export class RowDevComponent extends RowComponent {
 
 
 
-      if (newRowelementTop + rowElement.getBoundingClientRect().height > this.viewContainerRef.element.nativeElement.parentElement.clientHeight) {
+      if (newRowelementTop + rowElement.getBoundingClientRect().height > this.containerComponent.viewContainerRef.element.nativeElement.parentElement.clientHeight) {
         console.log('colliding bottom container')
       }
 
-
+      this.top = newRowelementTop;
       rowElement.style.top = newRowelementTop + 'px';
 
       this.collision(rowElement, newRowelementTop, newRowelementTop + rowElement.getBoundingClientRect().height);
@@ -71,7 +71,7 @@ export class RowDevComponent extends RowComponent {
         const otherRowElementTop = parseInt(otherRowElement.style.top);
         const otherRowElementBottom = otherRowElementTop + otherRowElementClientRect.height;
 
-        if (otherRowElementClientRect.bottom > this.viewContainerRef.element.nativeElement.parentElement.clientHeight) {
+        if (otherRowElementClientRect.bottom > this.containerComponent.viewContainerRef.element.nativeElement.parentElement.clientHeight) {
           console.log('colliding bottom container')
         }
 

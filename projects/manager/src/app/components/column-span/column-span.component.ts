@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ColumnSpanValue } from 'widgets';
-import { WidgetService } from '../../services/widget/widget.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
 import { NumberFieldComponent } from '../number-field/number-field.component';
 
@@ -17,14 +17,14 @@ export class ColumnSpanComponent implements OnInit {
   public columnSpan!: number;
   public isBreakpointCheckboxChecked: boolean = false;
 
-  constructor(private widgetService: WidgetService) { }
+  constructor(private breakpointService: BreakpointService) { }
 
 
 
   // ----------------------------------------------------------- Ng On Init -----------------------------------------------------------------
   ngOnInit(): void {
     // Subscribe to breakpoint changes
-    this.widgetService.$breakpointChange.subscribe(() => {
+    this.breakpointService.$breakpointChange.subscribe(() => {
       if (this.column.columnSpan.values.length > 0 && this.column.columnSpan.values.some(x => x.breakpoint)) {
         this.setColumnSpan();
       }
@@ -43,7 +43,7 @@ export class ColumnSpanComponent implements OnInit {
   // ----------------------------------------------------------- Get Column Span Value Index -----------------------------------------------------------------
   getColumnSpanValueIndex(column: ColumnDevComponent): number {
     // Get the current breakpoint based on the array of column span values
-    const breakpoint = this.widgetService.getBreakpoint(column.columnSpan.values.map(x => x.breakpoint as string));
+    const breakpoint = this.breakpointService.getBreakpoint(column.columnSpan.values.map(x => x.breakpoint as string));
 
     if (breakpoint) {
       // Find the column span value that has this breakpoint
@@ -63,7 +63,7 @@ export class ColumnSpanComponent implements OnInit {
   // ----------------------------------------------------------- Set Column Span -----------------------------------------------------------------
   setColumnSpan() {
     // Get the current breakpoint based on the array of column span values
-    const breakpoint = this.widgetService.getBreakpoint(this.column.columnSpan.values.map(x => x.breakpoint as string));
+    const breakpoint = this.breakpointService.getBreakpoint(this.column.columnSpan.values.map(x => x.breakpoint as string));
 
 
     if (breakpoint) {
@@ -110,11 +110,11 @@ export class ColumnSpanComponent implements OnInit {
 
         // If found, assign the breakpoint value to it
         if (columnSpanValue) {
-          columnSpanValue.breakpoint = this.widgetService.currentBreakpoint;
+          columnSpanValue.breakpoint = this.breakpointService.currentBreakpoint;
 
           // Not found, create a new column span value
         } else {
-          column.columnSpan.values.push(new ColumnSpanValue(12, this.widgetService.currentBreakpoint));
+          column.columnSpan.values.push(new ColumnSpanValue(12, this.breakpointService.currentBreakpoint));
         }
 
         column.columnSpan.setClasses(column.columnElement);
@@ -124,7 +124,7 @@ export class ColumnSpanComponent implements OnInit {
       // Not Checked
     } else {
       // Get the current breakpoint and the index of the column span value that's in this breakpoint
-      let breakpoint = this.widgetService.getBreakpoint(this.column.columnSpan.values.map(x => x.breakpoint as string));
+      let breakpoint = this.breakpointService.getBreakpoint(this.column.columnSpan.values.map(x => x.breakpoint as string));
       let index = this.column.columnSpan.values.findIndex(x => x.breakpoint == breakpoint);
 
       // Loop through each colunm and remove the breakpoint
@@ -134,7 +134,7 @@ export class ColumnSpanComponent implements OnInit {
       });
 
       // Get any other breakpoints
-      breakpoint = this.widgetService.getBreakpoint(this.column.columnSpan.values.map(x => x.breakpoint as string));
+      breakpoint = this.breakpointService.getBreakpoint(this.column.columnSpan.values.map(x => x.breakpoint as string));
       
       // If found, set the checkbox and column span
       if (breakpoint) {
@@ -267,7 +267,7 @@ export class ColumnSpanComponent implements OnInit {
     }
 
     if (delta != 0) {
-      const columnSpanValue = this.column.columnSpan.values.find(x => x.breakpoint == this.widgetService
+      const columnSpanValue = this.column.columnSpan.values.find(x => x.breakpoint == this.breakpointService
         .getBreakpoint(this.column.columnSpan.values.map(x => x.breakpoint as string)) || x.breakpoint == null);
 
       if (columnSpanValue) {
