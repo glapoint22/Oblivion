@@ -1,5 +1,5 @@
 import { Item } from "./item";
 
-export class SearchItem extends Item {
+export class SearchResultItem extends Item {
     type!: string;
 }

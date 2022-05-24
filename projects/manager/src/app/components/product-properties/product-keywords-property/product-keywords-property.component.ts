@@ -2,7 +2,6 @@ import { Component, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from 'common';
 import { AvailableKeywordsManager } from '../../../classes/available-keywords-manager';
-import { CheckboxItem } from '../../../classes/checkbox-item';
 import { SelectedKeywordsManager } from '../../../classes/selected-keywords-manager';
 import { KeywordsService } from '../../../services/keywords/keywords.service';
 import { ProductService } from '../../../services/product/product.service';
@@ -22,17 +21,16 @@ export class ProductKeywordsPropertyComponent {
   @ViewChild('selectedHierarchyComponent') selectedHierarchyComponent!: HierarchyComponent;
   @ViewChild('selectedSearchComponent') selectedSearchComponent!: CheckboxMultiColumnListComponent;
 
-  public availableKeywordsManager: AvailableKeywordsManager = new AvailableKeywordsManager(this.dataService, this.sanitizer, this.keywordsService);
+  public availableKeywordsManager: AvailableKeywordsManager = new AvailableKeywordsManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
   public selectedKeywordsManager: SelectedKeywordsManager = new SelectedKeywordsManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
 
-  constructor(private dataService: DataService, private sanitizer: DomSanitizer, private keywordsService: KeywordsService, private productService: ProductService) { }
+  constructor(private dataService: DataService, private sanitizer: DomSanitizer, public keywordsService: KeywordsService, private productService: ProductService) { }
 
   ngAfterViewChecked() {
     this.availableKeywordsManager.searchComponent = this.availableSearchComponent;
     this.availableKeywordsManager.otherHierarchyComponent = this.keywordsService.formHierarchyComponent;
     this.availableKeywordsManager.hierarchyComponent = this.keywordsService.productHierarchyComponent = this.availableHierarchyComponent;
     this.availableKeywordsManager.searchInput = document.getElementById('availableKeywordsSearchInput') as HTMLInputElement;
-    this.availableKeywordsManager.selectedHierarchyComponent = this.selectedHierarchyComponent;
 
     this.selectedKeywordsManager.searchComponent = this.selectedSearchComponent;
     this.selectedKeywordsManager.hierarchyComponent = this.selectedHierarchyComponent;
