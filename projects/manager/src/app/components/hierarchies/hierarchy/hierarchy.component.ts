@@ -38,9 +38,9 @@ export class HierarchyComponent extends ListComponent {
 
       // If the selected hierarchy item has children or that selected hierarchy item belongs to the top level group or it is marked as a parent
       if (this.listManager.hasChildren(this.listManager.selectedItem) || this.listManager.selectedItem.hierarchyGroupID == 0 || (this.listManager.selectedItem as HierarchyItem).isParent) {
-
+        
         // If the item index is NOT specified
-        if (!itemIndex) {
+        if (itemIndex == null) {
           index = this.sourceList.indexOf(this.listManager.selectedItem) + 1;
           hierarchyGroupID = this.listManager.selectedItem.hierarchyGroupID! + 1;
 
@@ -51,11 +51,11 @@ export class HierarchyComponent extends ListComponent {
 
           // But if the item index is specified
         } else {
-          index = itemIndex + 1;
-          hierarchyGroupID = this.sourceList[itemIndex].hierarchyGroupID! + 1;
+          index = itemIndex! + 1;
+          hierarchyGroupID = this.sourceList[itemIndex!].hierarchyGroupID! + 1;
 
-          if (!(this.sourceList[itemIndex]).arrowDown) {
-            this.listManager.onArrowClick(this.sourceList[itemIndex]);
+          if (!(this.sourceList[itemIndex!]).arrowDown) {
+            this.listManager.onArrowClick(this.sourceList[itemIndex!]);
           }
         }
 

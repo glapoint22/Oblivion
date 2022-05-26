@@ -102,9 +102,15 @@ export class ListUpdateManager {
                         type: MenuOptionType.MenuItem
                     },
                     {
+                        type: MenuOptionType.Divider
+                    },
+                    {
                         type: MenuOptionType.MenuItem,
                         shortcut: 'F2',
                         optionFunction: this.edit
+                    },
+                    {
+                        type: MenuOptionType.Divider
                     },
                     {
                         type: MenuOptionType.MenuItem,
@@ -151,9 +157,15 @@ export class ListUpdateManager {
                         optionFunction: this.edit
                     },
                     {
+                        type: MenuOptionType.Divider
+                    },
+                    {
                         type: MenuOptionType.MenuItem,
                         shortcut: 'Delete',
                         optionFunction: this.delete
+                    },
+                    {
+                        type: MenuOptionType.Divider
                     },
                     {
                         type: MenuOptionType.MenuItem,
@@ -425,8 +437,8 @@ export class ListUpdateManager {
                 this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
                 this.hierarchyOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
                 this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.add;
-                this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.parentType;
-                this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.parentType;
+                this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.parentType;
+                this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.parentType;
             }
 
         }
@@ -441,8 +453,8 @@ export class ListUpdateManager {
                 this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
                 this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.add;
                 this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
-                this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.childType;
-                this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.childType;
+                this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.childType;
+                this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.childType;
             }
         }
     }
@@ -458,8 +470,8 @@ export class ListUpdateManager {
             this.searchOptions.deletePrompt!.title = 'Delete ' + this.parentType;
 
             this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.parentType;
-            this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.parentType;
-            this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.parentType + ' in Hierarchy';
+            this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.parentType;
+            this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.parentType + ' in Hierarchy';
         }
 
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
@@ -467,8 +479,8 @@ export class ListUpdateManager {
             this.deleteIconButtonTitle = 'Delete ' + this.childType;
             this.searchOptions.deletePrompt!.title = 'Delete ' + this.childType;
             this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.childType;
-            this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.childType;
-            this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.childType + ' in Hierarchy';
+            this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.childType;
+            this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.childType + ' in Hierarchy';
         }
     }
 

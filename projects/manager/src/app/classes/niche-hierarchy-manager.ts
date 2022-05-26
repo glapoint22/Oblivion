@@ -53,10 +53,11 @@ export class NicheHierarchyManager extends ListUpdateManager {
 
         this.hierarchyOptions.unselectable = false;
         this.hierarchyOptions.verifyAddEdit = true;
-        this.hierarchyOptions.menu!.menuOptions[4] = {
+        this.hierarchyOptions.menu!.menuOptions[6] = {
             type: MenuOptionType.Divider
         };
-        this.hierarchyOptions.menu!.menuOptions[5] = {
+
+        this.hierarchyOptions.menu!.menuOptions[7] = {
             type: MenuOptionType.MenuItem,
             shortcut: 'Ctrl+M',
             optionFunction: this.openMoveForm
@@ -66,21 +67,14 @@ export class NicheHierarchyManager extends ListUpdateManager {
 
         this.searchOptions.unselectable = false;
         this.searchOptions.verifyAddEdit = true;
-        this.searchOptions.menu!.menuOptions[2] = {
+        this.searchOptions.menu!.menuOptions[5] = {
             type: MenuOptionType.Divider
         };
 
-        this.searchOptions.menu!.menuOptions[3] = {
+        this.searchOptions.menu!.menuOptions[6] = {
             type: MenuOptionType.MenuItem,
             shortcut: 'Ctrl+M',
             optionFunction: this.openMoveForm
-        }
-
-        this.searchOptions.menu!.menuOptions[4] = {
-            type: MenuOptionType.MenuItem,
-            name: 'Go to Hierarchy',
-            shortcut: 'Alt+H',
-            optionFunction: this.goToHierarchy
         }
     }
 
@@ -158,8 +152,8 @@ export class NicheHierarchyManager extends ListUpdateManager {
 
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
             this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.addChildBelow;
-            this.hierarchyOptions.menu!.menuOptions[5].isDisabled = true;
-            this.hierarchyOptions.menu!.menuOptions[5].name = 'Move ' + this.parentType;
+            this.hierarchyOptions.menu!.menuOptions[7].isDisabled = true;
+            this.hierarchyOptions.menu!.menuOptions[7].name = 'Move ' + this.parentType;
         }
 
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1) {
@@ -168,8 +162,8 @@ export class NicheHierarchyManager extends ListUpdateManager {
             this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
             this.hierarchyOptions.menu!.menuOptions[1].name = 'Add ' + this.grandchildType;
             this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.add;
-            this.hierarchyOptions.menu!.menuOptions[5].isDisabled = false;
-            this.hierarchyOptions.menu!.menuOptions[5].name = 'Move ' + this.childType;
+            this.hierarchyOptions.menu!.menuOptions[7].isDisabled = false;
+            this.hierarchyOptions.menu!.menuOptions[7].name = 'Move ' + this.childType;
         }
 
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 2) {
@@ -180,10 +174,10 @@ export class NicheHierarchyManager extends ListUpdateManager {
             this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.grandchildType;
             this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.add;
             this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
-            this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.grandchildType;
-            this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.grandchildType;
-            this.hierarchyOptions.menu!.menuOptions[5].isDisabled = false;
-            this.hierarchyOptions.menu!.menuOptions[5].name = 'Move ' + this.grandchildType;
+            this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.grandchildType;
+            this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.grandchildType;
+            this.hierarchyOptions.menu!.menuOptions[7].isDisabled = false;
+            this.hierarchyOptions.menu!.menuOptions[7].name = 'Move ' + this.grandchildType;
 
             if (!hierarchyUpdate.rightClick) {
                 this.dataService.get<Product>('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: hierarchyUpdate.selectedItems![0].id }])
@@ -202,15 +196,15 @@ export class NicheHierarchyManager extends ListUpdateManager {
         super.onSelectedSearchItem(searchUpdate);
 
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
-            this.searchOptions.menu!.menuOptions[3].isDisabled = true;
-            this.searchOptions.menu!.menuOptions[3].name = 'Move ' + this.parentType;
             this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.parentType + ' in Hierarchy';
+            this.searchOptions.menu!.menuOptions[6].isDisabled = true;
+            this.searchOptions.menu!.menuOptions[6].name = 'Move ' + this.parentType;
         }
 
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
-            this.searchOptions.menu!.menuOptions[3].isDisabled = false;
-            this.searchOptions.menu!.menuOptions[3].name = 'Move ' + this.childType;
             this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.childType + ' in Hierarchy';
+            this.searchOptions.menu!.menuOptions[6].isDisabled = false;
+            this.searchOptions.menu!.menuOptions[6].name = 'Move ' + this.childType;
         }
 
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.grandchildSearchType) {
@@ -218,10 +212,10 @@ export class NicheHierarchyManager extends ListUpdateManager {
             this.deleteIconButtonTitle = 'Delete ' + this.grandchildType;
             this.searchOptions.deletePrompt!.title = 'Delete ' + this.grandchildType;
             this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.grandchildType;
-            this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.grandchildType;
-            this.searchOptions.menu!.menuOptions[3].isDisabled = false;
-            this.searchOptions.menu!.menuOptions[3].name = 'Move ' + this.grandchildType;
+            this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.grandchildType;
             this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.grandchildType + ' in Hierarchy';
+            this.searchOptions.menu!.menuOptions[6].isDisabled = false;
+            this.searchOptions.menu!.menuOptions[6].name = 'Move ' + this.grandchildType;
 
             if (!searchUpdate.rightClick) {
                 this.dataService.get('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: searchUpdate.selectedMultiColumnItems![0].id }]).subscribe(x => console.log(x));

@@ -27,15 +27,15 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
         this.thisSearchList = this.keywordsService.productSearchList;
         this.otherSearchList = this.keywordsService.formSearchList;
         this.keywordsService.availableSearchList = this.thisSearchList;
-        this.hierarchyOptions.menu!.menuOptions[4] = { type: MenuOptionType.Divider };
-        this.hierarchyOptions.menu!.menuOptions[5] = {
+        this.hierarchyOptions.menu!.menuOptions[6] = { type: MenuOptionType.Divider };
+        this.hierarchyOptions.menu!.menuOptions[7] = {
             type: MenuOptionType.MenuItem,
             name: 'Add to Selected Keywords',
             shortcut: 'Alt+A',
             optionFunction: this.addToSelectedKeywords
         };
-        this.searchOptions.menu!.menuOptions[3] = { type: MenuOptionType.Divider };
-        this.searchOptions.menu!.menuOptions[4] = {
+        this.searchOptions.menu!.menuOptions[5] = { type: MenuOptionType.Divider };
+        this.searchOptions.menu!.menuOptions[6] = {
             type: MenuOptionType.MenuItem,
             name: 'Add to Selected Keywords',
             shortcut: 'Alt+A',
@@ -111,7 +111,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
     onSelectedHierarchyItem(hierarchyUpdate: HierarchyUpdate) {
         super.onSelectedHierarchyItem(hierarchyUpdate);
         this.addToSelectedKeywordsButtonDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
-        this.hierarchyOptions.menu!.menuOptions[5].isDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
+        this.hierarchyOptions.menu!.menuOptions[7].isDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
     }
 
 
@@ -121,7 +121,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
         super.onSelectedSearchItem(searchUpdate);
         this.addToSelectedKeywordsButtonDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
-        this.searchOptions.menu!.menuOptions[4].isDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
+        this.searchOptions.menu!.menuOptions[6].isDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
     }
 
 
