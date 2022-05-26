@@ -1,5 +1,4 @@
-<div #widget [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
-    <!-- <ng-container *ngIf="products && products.length > 0"> -->
+<div #widget [ngClass]="{'selected-widget': widgetService.selectedWidget == this}" style="user-select: none;">
     <div #sliderContainer class="product-slider-container">
 
         <!-- Caption -->
@@ -47,19 +46,4 @@
             </div>
         </div>
     </div>
-    <!-- </ng-container> -->
-
-
-    <!-- Handles -->
-    <div *ngIf="widgetService.selectedWidget == this">
-        <div class="handle top-left"></div>
-        <div class="handle top"></div>
-        <div class="handle top-right"></div>
-        <div class="handle left"></div>
-        <div class="handle bottom-left"></div>
-        <div class="handle bottom"></div>
-        <div class="handle bottom-right"></div>
-        <div class="handle right"></div>
-    </div>
-
 </div>

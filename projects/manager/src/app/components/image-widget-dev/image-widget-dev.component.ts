@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Image, LazyLoadingService, MediaType, SpinnerAction } from 'common';
 import { ImageWidgetComponent, ImageWidgetData } from 'widgets';
+import { WidgetHandle } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
@@ -10,6 +11,7 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
   styleUrls: ['./image-widget-dev.component.scss']
 })
 export class ImageWidgetDevComponent extends ImageWidgetComponent {
+  public widgetHandle = WidgetHandle;
 
   constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
 
