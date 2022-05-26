@@ -1,4 +1,4 @@
-<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative;"
+<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative; user-select: none;"
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this && video && video.src}">
 
     <div style="position: relative;
@@ -22,16 +22,17 @@
         </div>
     </div>
 
+
     <!-- Handles -->
-    <div *ngIf="video && video.src && widgetService.selectedWidget == this">
-        <div class="handle top-left"></div>
-        <div class="handle top"></div>
-        <div class="handle top-right"></div>
-        <div class="handle left"></div>
-        <div class="handle bottom-left"></div>
-        <div class="handle bottom"></div>
-        <div class="handle bottom-right"></div>
-        <div class="handle right"></div>
+    <div id="handles" *ngIf="video && video.src && widgetService.selectedWidget == this">
+        <div class="handle top-left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.TopLeft, $event)">
+        </div>
+        <div class="handle top-right"
+            (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.TopRight, $event)"></div>
+        <div class="handle bottom-left"
+            (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.BottomLeft, $event)"></div>
+        <div class="handle bottom-right"
+            (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.BottomRight, $event)"></div>
     </div>
 
     <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;" [title]="video.name"></div>

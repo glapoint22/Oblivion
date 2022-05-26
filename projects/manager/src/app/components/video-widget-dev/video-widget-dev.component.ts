@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
 import { VideoWidgetComponent, VideoWidgetData } from 'widgets';
+import { WidgetHandle } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
@@ -10,6 +11,7 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
   styleUrls: ['./video-widget-dev.component.scss']
 })
 export class VideoWidgetDevComponent extends VideoWidgetComponent {
+  public widgetHandle = WidgetHandle;
 
   constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
 

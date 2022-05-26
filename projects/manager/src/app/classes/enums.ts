@@ -54,3 +54,15 @@ export enum SortType {
     Form,
     Product
 }
+
+
+export enum WidgetHandle {
+    TopLeft,
+    Top,
+    TopRight,
+    Right,
+    BottomRight,
+    Bottom,
+    BottomLeft,
+    Left
+}

@@ -1,16 +1,11 @@
-<div #widget [style.maxWidth.px]="width ? width : null" style="display: flex; align-items: center; height: 20px;"
+<div #widget [style.maxWidth.px]="width ? width : null"
+    style="display: flex; align-items: center; min-height: 20px; position: relative; width: 100%; user-select: none;"
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
 
     <!-- Handles -->
-    <div *ngIf="widgetService.selectedWidget == this">
-        <div class="handle top-left"></div>
-        <div class="handle top"></div>
-        <div class="handle top-right"></div>
-        <div class="handle left"></div>
-        <div class="handle bottom-left"></div>
-        <div class="handle bottom"></div>
-        <div class="handle bottom-right"></div>
-        <div class="handle right"></div>
+    <div id="handles" *ngIf="widgetService.selectedWidget == this">
+        <div class="handle left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Left, $event)"></div>
+        <div class="handle right" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Right, $event)"></div>
     </div>
 
     <div style=" width: 100%;"

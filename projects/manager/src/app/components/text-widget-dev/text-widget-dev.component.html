@@ -1,27 +1,27 @@
-<div #widget
+<div #widget style="position: relative; width: 100%; user-select: none;"
     [style.backgroundColor]="background && background.enabled && background.rgbColor ? background.rgbColor.toRGBString(): null"
     [style.maxWidth.px]="width ? width: null"
     [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
     'background-position': background && background.enabled && background.image ? background.image.position : null,
     'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
     'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"
-    [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this}" [style.minHeight.px]="height"
+    (mousedown)="inEditMode ? $event.stopPropagation(): null">
 
 
-    <div #htmlRootElement style="color: white; outline: none; cursor: text;" [style.minHeight.px]="height"
-        contenteditable="true" spellcheck="false"></div>
+    <div #htmlRootElement style="color: white; outline: none; cursor: text; user-select: none;" contenteditable="true" spellcheck="false">
+    </div>
 
 
+    <div *ngIf="!inEditMode || widgetService.widgetHandleMove" id="cover"
+        style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; user-select: none"
+        (dblclick)="inEditMode = true; textBoxDev.setFocus()"></div>
 
     <!-- Handles -->
-    <div *ngIf="widgetService.selectedWidget == this">
-        <div class="handle top-left"></div>
-        <div class="handle top"></div>
-        <div class="handle top-right"></div>
-        <div class="handle left"></div>
-        <div class="handle bottom-left"></div>
-        <div class="handle bottom"></div>
-        <div class="handle bottom-right"></div>
-        <div class="handle right"></div>
+    <div id="handles" *ngIf="widgetService.selectedWidget == this">
+        <div class="handle left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Left, $event)"></div>
+        <div class="handle bottom" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Bottom, $event)">
+        </div>
+        <div class="handle right" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Right, $event)"></div>
     </div>
 </div>
