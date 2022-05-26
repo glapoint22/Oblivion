@@ -1,5 +1,6 @@
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
+import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { KeywordsService } from "../services/keywords/keywords.service";
 import { ProductService } from "../services/product/product.service";
 import { MenuOptionType, SortType } from "./enums";
@@ -7,9 +8,12 @@ import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
 import { KeywordsFormManager } from "./keywords-form-manager";
+import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
 export class AvailableKeywordsManager extends KeywordsFormManager {
+    public addToSelectedKeywordsButtonDisabled!: boolean;
+    public selectedHierarchyComponent!: HierarchyComponent;
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -20,19 +24,20 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
         this.sortType = SortType.Product;
         this.thisArray = this.keywordsService.productArray;
         this.otherArray = this.keywordsService.formArray;
+        this.keywordsService.availableSearchList = this.searchList;
         this.hierarchyOptions.menu!.menuOptions[4] = { type: MenuOptionType.Divider };
-        this.hierarchyOptions.menu!.menuOptions[5] = { 
+        this.hierarchyOptions.menu!.menuOptions[5] = {
             type: MenuOptionType.MenuItem,
             name: 'Add to Selected Keywords',
             shortcut: 'Alt+A',
-            optionFunction: this.keywordsService.addToSelectedKeywords
+            optionFunction: this.addToSelectedKeywords
         };
         this.searchOptions.menu!.menuOptions[3] = { type: MenuOptionType.Divider };
-        this.searchOptions.menu!.menuOptions[4] = { 
+        this.searchOptions.menu!.menuOptions[4] = {
             type: MenuOptionType.MenuItem,
             name: 'Add to Selected Keywords',
             shortcut: 'Alt+A',
-            optionFunction: this.keywordsService.addToSelectedKeywords
+            optionFunction: this.addToSelectedKeywords
         };
     }
 
@@ -41,7 +46,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
-        this.keywordsService.addToSelectedKeywordsButtonDisabled = true;
+        this.addToSelectedKeywordsButtonDisabled = true;
         if (this.thisArray.length == 0) {
             this.addIconButtonTitle = 'Add ' + this.parentType;
             this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.parentDataServicePath, [{ key: 'productId', value: this.productService.product.id }])
@@ -103,7 +108,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     onSelectedHierarchyItem(hierarchyUpdate: HierarchyUpdate) {
         super.onSelectedHierarchyItem(hierarchyUpdate);
-        this.keywordsService.addToSelectedKeywordsButtonDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
+        this.addToSelectedKeywordsButtonDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
         this.hierarchyOptions.menu!.menuOptions[5].isDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
     }
 
@@ -113,7 +118,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
         super.onSelectedSearchItem(searchUpdate);
-        this.keywordsService.addToSelectedKeywordsButtonDisabled = this.searchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
+        this.addToSelectedKeywordsButtonDisabled = this.searchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
         this.searchOptions.menu!.menuOptions[4].isDisabled = this.searchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
     }
 
@@ -123,7 +128,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     onUnselectedHierarchyItem() {
         super.onUnselectedHierarchyItem();
-        this.keywordsService.addToSelectedKeywordsButtonDisabled = true;
+        this.addToSelectedKeywordsButtonDisabled = true;
     }
 
 
@@ -132,7 +137,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     onUnselectedSearchItem() {
         super.onUnselectedSearchItem();
-        this.keywordsService.addToSelectedKeywordsButtonDisabled = true;
+        this.addToSelectedKeywordsButtonDisabled = true;
     }
 
 
@@ -149,7 +154,6 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
                 if (searchResults) {
                     searchResults.forEach(x => {
                         this.searchList.push({
-
                             id: x.id!,
                             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
                             opacity: x.forProduct ? 0.4 : null!
@@ -157,5 +161,174 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
                     })
                 }
             });
+    }
+
+
+
+    // =============================================================( ADD TO SELECTED KEYWORDS )============================================================== \\
+    
+    addToSelectedKeywords() {
+        this.addToSelectedKeywordsButtonDisabled = true;
+        const keywordGroup: KeywordCheckboxItem = new KeywordCheckboxItem();
+
+        
+        if(this.hierarchyComponent) {
+            this.addHierarchyItemToSelectedKeywords(keywordGroup);
+
+        }else {
+            this.addSearchItemToSelectedKeywords(keywordGroup);
+        }
+
+        
+        this.keywordsService.selectedKeywordsArray.push(keywordGroup);
+
+        if (this.selectedHierarchyComponent) {
+            this.selectedHierarchyComponent.listManager.sort(keywordGroup);
+        } else {
+            // If any keyword items have been added from the available list to the selected list while the selected list was in search mode
+            this.keywordsService.sortList.push(keywordGroup);
+        }
+    }
+
+
+
+    // ======================================================( ADD HIERARCHY ITEM TO SELECTED KEYWORDS )====================================================== \\
+
+    addHierarchyItemToSelectedKeywords(keywordGroup: KeywordCheckboxItem) {
+        // If a keyword group is selected
+        if (this.hierarchyComponent.listManager.selectedItem.hierarchyGroupID == 0) {
+            keywordGroup.id = this.hierarchyComponent.listManager.selectedItem.id;
+            keywordGroup.name = this.hierarchyComponent.listManager.selectedItem.name;
+            keywordGroup.hierarchyGroupID = 0;
+            keywordGroup.forProduct = false;
+
+            // Add the disabled look to the keyword group in the available list
+            this.hierarchyComponent.listManager.selectedItem.opacity = 0.4;
+
+            // Add the disabled look to it's children too (if available)
+            const index = this.thisArray.indexOf(this.hierarchyComponent.listManager.selectedItem);
+            for (let i = index + 1; i < this.thisArray.length; i++) {
+                if (this.thisArray[i].hierarchyGroupID! <= this.hierarchyComponent.listManager.selectedItem.hierarchyGroupID!) break;
+                this.thisArray[i].opacity = 0.4;
+            }
+
+            this.dataService.post('api/SelectedKeywords/Groups/Add', {
+              productId: this.productService.product.id,
+              id: keywordGroup.id
+            }).subscribe();
+
+            // If a keyword is selected
+        } else {
+            const parentIndex = this.hierarchyComponent.listManager.getIndexOfHierarchyItemParent(this.hierarchyComponent.listManager.selectedItem);
+            const parent = this.thisArray[parentIndex];
+            const childId = this.hierarchyComponent.listManager.selectedItem.id;
+            keywordGroup.id = parent.id;
+            keywordGroup.name = parent.name;
+            keywordGroup.hierarchyGroupID = 0;
+            keywordGroup.forProduct = false;
+
+            // Add the disabled look to the keyword group and its children in the available list
+            parent.opacity = 0.4;
+            for (let i = parentIndex + 1; i < this.thisArray.length; i++) {
+                if (this.thisArray[i].hierarchyGroupID! <= parent.hierarchyGroupID!) break;
+                this.thisArray[i].opacity = 0.4;
+            }
+
+            this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
+              productId: this.productService.product.id,
+              keywordGroupId: keywordGroup.id,
+              KeywordId: childId
+            }).subscribe();
+        }
+    }
+
+
+
+    // =======================================================( ADD SEARCH ITEM TO SELECTED KEYWORDS )======================================================== \\
+
+    addSearchItemToSelectedKeywords(keywordGroup: KeywordCheckboxItem) {
+        // If a keyword group is selected
+        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == 'Group') {
+            keywordGroup.id = this.searchComponent.listManager.selectedItem.id;
+            keywordGroup.name = (this.searchComponent.listManager.selectedItem as MultiColumnItem).values[0].name;
+            keywordGroup.hierarchyGroupID = 0;
+            keywordGroup.forProduct = false;
+
+            // Set the disabled look to the selected keyword group in the search list
+            this.searchComponent.listManager.selectedItem.opacity = 0.4;
+
+            // Then if any children of the selected keyword group are in the search list, set the disabled look to them too
+            this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }])
+                .subscribe((children: Array<KeywordCheckboxItem>) => {
+                    children.forEach(x => {
+                        const searchItem = this.searchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                        if (searchItem) searchItem.opacity = 0.4;
+                    })
+                })
+
+            // Also, set the disabled look to the same keyword group in the hierarchy list too
+            const keywordGroupIndex = this.thisArray.findIndex(x => x.id == keywordGroup.id && x.hierarchyGroupID == 0);
+            this.thisArray[keywordGroupIndex].opacity = 0.4;
+
+            // And set the disabled look to it's children too (if available)
+            for (let i = keywordGroupIndex + 1; i < this.thisArray.length; i++) {
+                if (this.thisArray[i].hierarchyGroupID! <= 0) break;
+                this.thisArray[i].opacity = 0.4;
+            }
+
+            this.dataService.post('api/SelectedKeywords/Groups/Add', {
+                productId: this.productService.product.id,
+                id: keywordGroup.id
+            }).subscribe();
+
+
+            // If a keyword is selected 
+        } else {
+
+            // Get the parent of the selected keyword
+            this.dataService.get<KeywordCheckboxItem>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: this.searchComponent.listManager.selectedItem.id }])
+                .subscribe((keywordParent: KeywordCheckboxItem) => {
+                    const parentIndex = this.thisArray.findIndex(x => x.id == keywordParent.id && x.hierarchyGroupID == 0);
+                    const parent = this.thisArray[parentIndex];
+                    keywordGroup.id = parent.id;
+                    keywordGroup.name = parent.name;
+                    keywordGroup.hierarchyGroupID = 0;
+                    keywordGroup.forProduct = false;
+
+                    // Set the disabled look to the selected keyword in the search list
+                    this.searchComponent.listManager.selectedItem.opacity = 0.4;
+
+                    // Then if any siblings of the selected keyword are in the search list, set the disabled look to them too
+                    this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }])
+                        .subscribe((children: Array<KeywordCheckboxItem>) => {
+                            children.forEach(x => {
+                                const searchItem = this.searchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                                if (searchItem) searchItem.opacity = 0.4;
+                            })
+                        })
+
+                    // Also, if the parent of the selected keyword is in the search list, set the disabled look to it
+                    const selectedKeywordParent = this.searchList.find(x => x.id == keywordGroup.id && x.values[1].name == 'Group');
+                    if (selectedKeywordParent) selectedKeywordParent.opacity = 0.4;
+
+
+                    // Now set the disabled look to the same parent of the selected keyword in the hierarchy list
+                    const keywordGroupIndex = this.thisArray.findIndex(x => x.id == keywordGroup.id && x.hierarchyGroupID == 0);
+                    this.thisArray[keywordGroupIndex].opacity = 0.4;
+
+                    // And set the disabled look to it's children too (if available)
+                    for (let i = keywordGroupIndex + 1; i < this.thisArray.length; i++) {
+                        if (this.thisArray[i].hierarchyGroupID! <= 0) break;
+                        this.thisArray[i].opacity = 0.4;
+                    }
+
+
+                    this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
+                        productId: this.productService.product.id,
+                        keywordGroupId: keywordGroup.id,
+                        KeywordId: this.searchComponent.listManager.selectedItem.id
+                    }).subscribe();
+                })
+        }
     }
 }

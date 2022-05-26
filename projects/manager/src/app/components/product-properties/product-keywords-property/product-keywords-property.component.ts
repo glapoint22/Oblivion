@@ -17,7 +17,6 @@ import { MultiColumnListComponent } from '../../lists/multi-column-list/multi-co
 export class ProductKeywordsPropertyComponent {
   @ViewChild('availableHierarchyComponent') availableHierarchyComponent!: HierarchyComponent;
   @ViewChild('availableSearchComponent') availableSearchComponent!: MultiColumnListComponent;
-
   @ViewChild('selectedHierarchyComponent') selectedHierarchyComponent!: HierarchyComponent;
   @ViewChild('selectedSearchComponent') selectedSearchComponent!: CheckboxMultiColumnListComponent;
 
@@ -31,10 +30,10 @@ export class ProductKeywordsPropertyComponent {
     this.availableKeywordsManager.otherHierarchyComponent = this.keywordsService.formHierarchyComponent;
     this.availableKeywordsManager.hierarchyComponent = this.keywordsService.productHierarchyComponent = this.availableHierarchyComponent;
     this.availableKeywordsManager.searchInput = document.getElementById('availableKeywordsSearchInput') as HTMLInputElement;
+    this.availableKeywordsManager.selectedHierarchyComponent = this.selectedHierarchyComponent;
 
     this.selectedKeywordsManager.searchComponent = this.selectedSearchComponent;
     this.selectedKeywordsManager.hierarchyComponent = this.selectedHierarchyComponent;
     this.selectedKeywordsManager.searchInput = document.getElementById('selectedKeywordsSearchInput') as HTMLInputElement;
-    this.selectedKeywordsManager.availableHierarchyComponent = this.availableHierarchyComponent;
   }
 }
