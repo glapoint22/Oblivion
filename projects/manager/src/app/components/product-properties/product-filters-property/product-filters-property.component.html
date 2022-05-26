@@ -79,16 +79,16 @@
             </div>
 
 
-            <ng-container *ngIf="productFiltersManager.searchList.length == 0">
+            <ng-container *ngIf="productFiltersManager.thisSearchList.length == 0">
                 <div class="no-search-results">
                     No search results available
                 </div>
             </ng-container>
             
 
-            <ng-container *ngIf="productFiltersManager.searchList.length > 0">
+            <ng-container *ngIf="productFiltersManager.thisSearchList.length > 0">
                 <multi-column-list #searchComponent
-                                   [sourceList]="productFiltersManager.searchList"
+                                   [sourceList]="productFiltersManager.thisSearchList"
                                    [options]="productFiltersManager.searchOptions"
                                    (onListUpdate)="productFiltersManager.searchUpdate = $event">
                 </multi-column-list>

@@ -19,5 +19,7 @@ export class FiltersFormManager extends ListUpdateManager {
         this.listUpdateService = this.filtersService;
         this.thisArray = this.filtersService.formArray;
         this.otherArray = this.filtersService.productArray;
+        this.thisSearchList = this.filtersService.formSearchList;
+        this.otherSearchList = this.filtersService.productSearchList;
     }
 }

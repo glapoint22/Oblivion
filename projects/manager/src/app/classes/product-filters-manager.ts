@@ -12,6 +12,8 @@ export class ProductFiltersManager extends FiltersFormManager {
         this.sortType = SortType.Product;
         this.thisArray = this.filtersService.productArray;
         this.otherArray = this.filtersService.formArray;
+        this.thisSearchList = this.filtersService.productSearchList;
+        this.otherSearchList = this.filtersService.formSearchList;
     }
 
 

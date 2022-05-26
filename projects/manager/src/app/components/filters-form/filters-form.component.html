@@ -88,15 +88,15 @@
                 </div>
 
                 <div class="list-container">
-                    <ng-container *ngIf="filtersFormManager.searchList.length == 0">
+                    <ng-container *ngIf="filtersFormManager.thisSearchList.length == 0">
                         <div class="no-search-results">
                             No search results available
                         </div>
                     </ng-container>
                     
-                    <ng-container *ngIf="filtersFormManager.searchList.length > 0">
+                    <ng-container *ngIf="filtersFormManager.thisSearchList.length > 0">
                         <multi-column-list #searchComponent
-                                           [sourceList]="filtersFormManager.searchList"
+                                           [sourceList]="filtersFormManager.thisSearchList"
                                            [options]="filtersFormManager.searchOptions"
                                            (onListUpdate)="filtersFormManager.searchUpdate = $event">
                         </multi-column-list>

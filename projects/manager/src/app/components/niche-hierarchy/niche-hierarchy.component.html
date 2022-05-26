@@ -87,17 +87,17 @@
         </div>
 
 
-        <ng-container *ngIf="nicheHierarchyManager.searchList.length == 0">
+        <ng-container *ngIf="nicheHierarchyManager.thisSearchList.length == 0">
             <div class="no-search-results">
                 No search results available
             </div>
         </ng-container>
         
 
-        <ng-container *ngIf="nicheHierarchyManager.searchList.length > 0">
+        <ng-container *ngIf="nicheHierarchyManager.thisSearchList.length > 0">
             <div class="overflow-container" [style.height.px]="base.clientHeight - 130">
                 <multi-column-list #searchComponent
-                                [sourceList]="nicheHierarchyManager.searchList"
+                                [sourceList]="nicheHierarchyManager.thisSearchList"
                                 [options]="nicheHierarchyManager.searchOptions"
                                 (onListUpdate)="nicheHierarchyManager.searchUpdate = $event">
                 </multi-column-list>

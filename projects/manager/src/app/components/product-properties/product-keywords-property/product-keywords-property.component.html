@@ -95,16 +95,16 @@
                 </div>
 
 
-                <ng-container *ngIf="availableKeywordsManager.searchList.length == 0">
+                <ng-container *ngIf="availableKeywordsManager.thisSearchList.length == 0">
                     <div class="no-search-results">
                         No search results available
                     </div>
                 </ng-container>
                 
 
-                <ng-container *ngIf="availableKeywordsManager.searchList.length > 0">
+                <ng-container *ngIf="availableKeywordsManager.thisSearchList.length > 0">
                     <multi-column-list #availableSearchComponent
-                                    [sourceList]="availableKeywordsManager.searchList"
+                                    [sourceList]="availableKeywordsManager.thisSearchList"
                                     [options]="availableKeywordsManager.searchOptions"
                                     (onListUpdate)="availableKeywordsManager.searchUpdate = $event">
                     </multi-column-list>
@@ -201,17 +201,17 @@
                 </div>
 
 
-                <ng-container *ngIf="selectedKeywordsManager.searchList.length == 0">
+                <ng-container *ngIf="selectedKeywordsManager.thisSearchList.length == 0">
                     <div class="no-search-results">
                         No search results available
                     </div>
                 </ng-container>
                 
 
-                <ng-container *ngIf="selectedKeywordsManager.searchList.length > 0">
+                <ng-container *ngIf="selectedKeywordsManager.thisSearchList.length > 0">
                     <checkbox-multi-column-list #selectedSearchComponent
                                     [parentSearchType]="selectedKeywordsManager.parentSearchType"
-                                    [sourceList]="selectedKeywordsManager.searchList"
+                                    [sourceList]="selectedKeywordsManager.thisSearchList"
                                     [options]="selectedKeywordsManager.searchOptions"
                                     (onListUpdate)="selectedKeywordsManager.searchUpdate = $event">
                     </checkbox-multi-column-list>
