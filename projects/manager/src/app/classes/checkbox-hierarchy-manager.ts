@@ -8,7 +8,7 @@ export class CheckboxHierarchyManager extends HierarchyManager {
     onListUpdate = new Subject<CheckboxListUpdate>();
 
     onCheckboxChange(hierarchyItem: CheckboxItem) {
-        hierarchyItem.isChecked = !hierarchyItem.isChecked;
-        this.onListUpdate.next({ type: ListUpdateType.CheckboxChange, id: hierarchyItem.id, index: this.sourceList.indexOf(hierarchyItem), name: hierarchyItem.name, isChecked: hierarchyItem.isChecked, addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
+        hierarchyItem.checked = !hierarchyItem.checked;
+        this.onListUpdate.next({ type: ListUpdateType.CheckboxChange, id: hierarchyItem.id, index: this.sourceList.indexOf(hierarchyItem), name: hierarchyItem.name, checked: hierarchyItem.checked, addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
     }
 }

@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from 'common';
 import { ProductFiltersManager } from '../../../classes/product-filters-manager';
 import { FiltersService } from '../../../services/filters/filters.service';
+import { ProductService } from '../../../services/product/product.service';
 import { HierarchyComponent } from '../../hierarchies/hierarchy/hierarchy.component';
 import { MultiColumnListComponent } from '../../lists/multi-column-list/multi-column-list.component';
 
@@ -14,9 +15,9 @@ import { MultiColumnListComponent } from '../../lists/multi-column-list/multi-co
 export class ProductFiltersPropertyComponent {
   @ViewChild('hierarchyComponent') hierarchyComponent!: HierarchyComponent;
   @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
-  public productFiltersManager: ProductFiltersManager = new ProductFiltersManager(this.dataService, this.sanitizer, this.filtersService);
+  public productFiltersManager: ProductFiltersManager = new ProductFiltersManager(this.dataService, this.sanitizer, this.filtersService, this.productService);
 
-  constructor(private dataService: DataService, private sanitizer: DomSanitizer, private filtersService: FiltersService) { }
+  constructor(private dataService: DataService, private sanitizer: DomSanitizer, private filtersService: FiltersService, private productService: ProductService) { }
 
   ngAfterViewChecked() {
     this.productFiltersManager.searchComponent = this.searchComponent;

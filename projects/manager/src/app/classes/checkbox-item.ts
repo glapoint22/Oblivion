@@ -1,5 +1,5 @@
 import { HierarchyItem } from "./hierarchy-item";
 
 export class CheckboxItem extends HierarchyItem {
-    isChecked?: boolean;
+    checked?: boolean;
 }

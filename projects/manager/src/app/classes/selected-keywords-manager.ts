@@ -111,7 +111,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                                     name: children[i].name,
                                     hierarchyGroupID: 1,
                                     hidden: false,
-                                    isChecked: children[i].isChecked,
+                                    checked: children[i].checked,
                                     forProduct: children[i].forProduct,
                                     color: children[i].forProduct ? '#ffba00' : null!
                                 }
@@ -170,7 +170,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
         if (newKeyword?.hierarchyGroupID == 1) {
-            newKeyword!.isChecked = true;
+            newKeyword!.checked = true;
         }
     }
 
@@ -443,7 +443,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.dataService.put('api/' + this.childDataServicePath + '/Update', {
             productId: this.productService.product.id,
             id: hierarchyUpdate.id,
-            isChecked: hierarchyUpdate.isChecked
+            checked: hierarchyUpdate.checked
         }).subscribe();
     }
 
@@ -455,13 +455,13 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.dataService.put('api/' + this.childDataServicePath + '/Update', {
             productId: this.productService.product.id,
             id: checkboxMultiColumnListUpdate.id,
-            isChecked: checkboxMultiColumnListUpdate.isChecked
+            checked: checkboxMultiColumnListUpdate.checked
         }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
         const hierarchyItem = this.thisArray.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
         // If it is, make the change to its checkbox as well
-        if (hierarchyItem) hierarchyItem.isChecked = checkboxMultiColumnListUpdate.isChecked;
+        if (hierarchyItem) hierarchyItem.checked = checkboxMultiColumnListUpdate.checked;
     }
 
 
@@ -776,7 +776,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
                             id: x.id!,
                             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true, color: x.forProduct ? '#ffba00' : null! }, { name: x.type!, width: this.searchTypeWidth, color: x.forProduct ? '#ffba00' : null! }],
-                            isChecked: x.isChecked,
+                            checked: x.checked,
                             forProduct: x.forProduct
                         })
                     })
