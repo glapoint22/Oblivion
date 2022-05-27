@@ -12,10 +12,6 @@ export class ListItemComponent {
   @Input() listManager!: ListManager;
   @ViewChild('htmlItem') htmlItem!: ElementRef<HTMLElement>;
 
-  ngOnInit() {
-    this.item.identity = this;
-  }
-
   ngAfterViewInit() {
     this.item.htmlItem = this.htmlItem;
   }

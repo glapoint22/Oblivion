@@ -238,7 +238,7 @@ export class ListUpdateManager {
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
 
     onArrowClick(hierarchyUpdate: HierarchyUpdate) {
-        // If a parent item was expanded and its children hasn't been loaded yet
+        // If a parent item was expanded and its children has NOT been loaded yet
         if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
 
             // If the hierarchy item is a top level hierarchy item
@@ -278,20 +278,10 @@ export class ListUpdateManager {
                     })
             }
 
-
-
+            // But if a parent item was expanded and its children has ALREADY been loaded
         } else if (hierarchyUpdate.arrowDown && hierarchyUpdate.hasChildren) {
-
-            let checkForIdentity = (hierarchyUpdate: HierarchyUpdate) => {
-                if (!this.thisArray[hierarchyUpdate.index! + 1].identity) {
-                    window.setTimeout(() => {
-                        checkForIdentity(hierarchyUpdate);
-                    })
-                } else {
-                    this.sortPendingHierarchyItems();
-                }
-            }
-            checkForIdentity(hierarchyUpdate);
+            // Sort any pending edited items
+            this.sortPendingHierarchyItems();
         }
     }
 

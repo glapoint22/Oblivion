@@ -290,60 +290,7 @@ export class ListManager {
       this.setSelectedItems(listItem);
       // Then define what the selection type is for each item
       this.setItemsSelectType();
-
-      // If an item is being edited and another item that is NOT being edited is selected
     }
-
-
-
-    // else if (listItem != this.editedItem) {
-    //   const trimmedEditedItem = this.editedItem.htmlItem!.nativeElement.textContent?.trim();
-
-    //   // If the edited item has text written in it
-    //   if (trimmedEditedItem!.length > 0) {
-
-    //     // As long as the edited name is different from what it was before the edit
-    //     if (trimmedEditedItem != this.editedItem.name) {
-
-    //       // Update the name property
-    //       this.editedItem.name = trimmedEditedItem!;
-
-    //       // Resort list (as long as the list is sortable)
-    //       const editedItem: ListItem = this.sortable ? this.sort(this.editedItem)! : this.editedItem;
-
-    //       // Select the item that was renamed
-    //       this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == editedItem?.identity)]);
-
-    //       // Send update
-    //       this.addEditUpdate(editedItem);
-    //       this.buttonsUpdate();
-    //     }
-
-    //     // But if the item is empty
-    //   } else {
-
-    //     // If we were adding a new item
-    //     if (this.newItem) {
-
-    //       // Remove the item
-    //       this.sourceList.splice(this.sourceList.indexOf(this.editedItem), 1);
-
-    //       // If we were NOT adding a new item
-    //     } else {
-
-    //       // Reset the item back to the way it was before the edit
-    //       this.resetItemTextContent(this.editedItem);
-    //     }
-    //   }
-
-    //   this.editedItem.selected = false;
-    //   this.editedItem.selectType = null!;
-    //   this.selectedItem = listItem;
-    //   this.newItem = false;
-    //   this.editedItem = null!;
-    //   this.pivotItem = this.selectedItem;
-    //   this.selectedItem.selected = true;
-    // }
   }
 
 
@@ -521,11 +468,6 @@ export class ListManager {
     })
 
     if (!this.editable) {
-
-      // window.setTimeout(() => {?????????????????????????????????????????????????
-      // this.selectItem(listItem);
-      // });
-
       listItem.selected = true;
       this.selectedItem = listItem;
       this.editedItem = null!;
@@ -542,7 +484,6 @@ export class ListManager {
       this.editedItem = listItem;
       this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.htmlItem!.nativeElement.innerText?.trim()!;
       this.setItemFocus(this.editedItem);
-      // this.overButton = false; //??????????????????????????????????
       this.buttonsUpdate();
 
     }
@@ -878,10 +819,6 @@ export class ListManager {
               this.resetItemInnerText(); // * Used for hierarchy list * (calling this puts back the indent)
             }
 
-
-            // Select the item that was renamed
-            // this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == this.editedItem?.identity)]);
-            // this.setButtonsState();
             // Send update
             this.addEditUpdate(this.editedItem);
 
@@ -1090,7 +1027,7 @@ export class ListManager {
       {
         type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,
         id: listItem.id,
-        index: this.sourceList.findIndex(x => x.identity == listItem?.identity),
+        index: this.sourceList.findIndex(x => x.id == listItem.id && x.name == listItem.name),
         name: listItem.name
       }
     );
@@ -1102,7 +1039,7 @@ export class ListManager {
       {
         type: ListUpdateType.VerifyAddEdit,
         id: listItem.id,
-        index: this.sourceList.findIndex(x => x.identity == listItem?.identity),
+        index: this.sourceList.findIndex(x => x.id == listItem.id && x.name == listItem.name),
         name: name
       }
     );
@@ -1111,8 +1048,19 @@ export class ListManager {
 
   selectedItemsUpdate(rightClick: boolean) {
     const selectedItems = this.sourceList.filter(x => x.selected == true);
-    selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.identity == x?.identity));
-    this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
+    this.onListUpdate.next(
+      {
+        type: ListUpdateType.SelectedItems,
+        rightClick: rightClick,
+        selectedItems: selectedItems!.map((x) => {
+          return {
+            id: x.id,
+            index: this.sourceList.findIndex(y => y.id == x.id && y.name == x.name),
+            name: x.name
+          }
+        })
+      }
+    );
   }
 
 
@@ -1143,7 +1091,7 @@ export class ListManager {
         deletedItems: deletedItems!.map((x) => {
           return {
             id: x.id,
-            index: this.sourceList.findIndex(y => y.identity == x?.identity),
+            index: this.sourceList.findIndex(y => y.id == x.id && y.name == x.name),
             name: x.name
           }
         })
@@ -1159,7 +1107,7 @@ export class ListManager {
         deletedItems: deletedItems!.map((x) => {
           return {
             id: x.id,
-            index: this.sourceList.findIndex(y => y.identity == x?.identity),
+            index: this.sourceList.findIndex(y => y.id == x.id && y.name == x.name),
             name: x.name
           }
         })

@@ -110,24 +110,12 @@ export class MultiColumnListManager extends ListManager {
                     } else {
                         // Update the name property
                         this.editableValue.name = trimmedEditedValue!;
-                        // // Select the item that was renamed
-                        // this.selectItem(this.sourceList[this.sourceList.findIndex(x => x.identity == this.editedItem?.identity)]);
-                        // // Send update
-                        // this.addEditUpdate(this.editedItem as MultiColumnItem);
-                        // this.buttonsUpdate();
                     }
                 }else {
                     this.resetItemInnerText();
                 }
             }
 
-            // if (this.selectable) {
-            //     this.selectedItem = this.editedItem;
-            //     this.selectedItem.selected = true;
-            // }
-
-            // this.editedItem = null!;
-            // this.editableValue = null!;
 
             // But if the item is empty
         } else {
@@ -137,15 +125,6 @@ export class MultiColumnListManager extends ListManager {
 
                 // Reset the item back to the way it was before the edit
                 this.resetItemInnerText();
-
-                // if (this.selectable) {
-                //     this.selectedItem = this.editedItem;
-                //     this.selectedItem.selected = true;
-                // }
-
-                // // Reset
-                // this.editedItem = null!;
-                // this.editableValue = null!;
             }
         }
 
@@ -175,8 +154,7 @@ export class MultiColumnListManager extends ListManager {
             {
                 type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,
                 id: multiColumnItem.id,
-                index: this.sourceList.findIndex(x => x.identity == multiColumnItem?.identity),
-                name: multiColumnItem.name,
+                index: this.sourceList.findIndex(x => x.id == multiColumnItem.id && x.values[0].name == multiColumnItem.values[0].name && x.values[1].name == multiColumnItem.values[1].name),
                 values: multiColumnItem.values
             }
         );
@@ -188,8 +166,7 @@ export class MultiColumnListManager extends ListManager {
             {
                 type: ListUpdateType.VerifyAddEdit,
                 id: multiColumnItem.id,
-                index: this.sourceList.findIndex(x => x.identity == multiColumnItem?.identity),
-                name: name,
+                index: this.sourceList.findIndex(x => x.id == multiColumnItem.id && x.values[0].name == multiColumnItem.values[0].name && x.values[1].name == multiColumnItem.values[1].name),
                 values: multiColumnItem.values
             }
         );
@@ -200,15 +177,14 @@ export class MultiColumnListManager extends ListManager {
         this.onListUpdate.next(
             {
                 type: ListUpdateType.SelectedItems,
+                rightClick: rightClick,
                 selectedMultiColumnItems: selectedItems!.map((x) => {
                     return {
                         id: x.id,
-                        index: this.sourceList.findIndex(y => y.identity == x?.identity),
-                        name: x.name,
+                        index: this.sourceList.findIndex(y => y.id == x.id && y.values[0].name == x.values[0].name && y.values[1].name == x.values[1].name),
                         values: x.values
                     }
-                }),
-                rightClick: rightClick
+                })
             }
         );
     }
@@ -222,8 +198,7 @@ export class MultiColumnListManager extends ListManager {
                 deletedMultiColumnItems: deletedItems!.map((x) => {
                     return {
                         id: x.id,
-                        index: this.sourceList.findIndex(y => y.identity == x?.identity),
-                        name: x.name,
+                        index: this.sourceList.findIndex(y => y.id == x.id && y.values[0].name == x.values[0].name && y.values[1].name == x.values[1].name),
                         values: x.values
                     }
                 })
@@ -238,8 +213,7 @@ export class MultiColumnListManager extends ListManager {
                 deletedMultiColumnItems: deletedItems!.map((x) => {
                     return {
                         id: x.id,
-                        index: this.sourceList.findIndex(y => y.identity == x?.identity),
-                        name: x.name,
+                        index: this.sourceList.findIndex(y => y.id == x.id && y.values[0].name == x.values[0].name && y.values[1].name == x.values[1].name),
                         values: x.values
                     }
                 })
