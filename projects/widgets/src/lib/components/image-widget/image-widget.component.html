@@ -2,7 +2,7 @@
 
     <!-- No link -->
     <img *ngIf="(!link || !link.url) && image && image.src"
-        [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
+        [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
         [style.borderRadius]="
             corners &&
             (corners.topLeft > 0 ||
@@ -18,7 +18,7 @@
 
     <!-- Link && link type is not web address -->
     <a *ngIf="image && image.src && link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
-        <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
+        <img [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
             [style.borderRadius]="
             corners && 
             (corners.topLeft > 0 ||
@@ -34,7 +34,7 @@
     <!-- Link && link type is web address -->
     <a *ngIf="image && image.src && link && link.url && link.linkType == linkType.WebAddress" [href]="link.url"
         target="_blank">
-        <img [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
+        <img [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
             [style.borderRadius]="
             corners && 
             (corners.topLeft > 0 ||

@@ -31,4 +31,11 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
 
     this.textBoxDev.render();
   }
+
+
+  ngAfterViewChecked() {
+    if (this.widgetService.selectedWidget != this) {
+      this.inEditMode = false;
+    }
+  }
 }

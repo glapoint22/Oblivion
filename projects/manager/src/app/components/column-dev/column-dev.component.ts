@@ -2,6 +2,7 @@ import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angula
 import { ColumnComponent, Widget, WidgetData, WidgetType } from 'widgets';
 import { WidgetCursorType } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
+import { ContainerWidgetDevComponent } from '../container-widget-dev/container-widget-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
 
 @Component({
@@ -19,6 +20,12 @@ export class ColumnDevComponent extends ColumnComponent {
   public async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
     const widgetComponentRef = await super.createWidgetComponentRef(widgetData);
     const widgetComponent = widgetComponentRef.instance;
+
+    if(widgetData.widgetType == WidgetType.Container) {
+      const containerWidget = widgetComponent as ContainerWidgetDevComponent;
+
+      containerWidget.hostContainer = this.rowComponent.containerComponent;
+    }
 
     this.setSelectedWidget(widgetComponent);
 

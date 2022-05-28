@@ -1,4 +1,5 @@
-import { Compiler, Component, ComponentFactoryResolver, ComponentRef, Injector, NgModuleFactory, ViewContainerRef } from '@angular/core';
+import { Compiler, Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, NgModuleFactory, ViewChild, ViewContainerRef } from '@angular/core';
+import { ContainerHost } from '../../classes/container-host';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
 import { PageDevComponent } from '../page-dev/page-dev.component';
@@ -9,7 +10,9 @@ import { PageDevModule } from '../page-dev/page-dev.module';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent {
+export class EditorComponent implements ContainerHost {
+  @ViewChild('editorWindow') editorWindow!: ElementRef<HTMLElement>;
+  @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public page!: PageDevComponent;
   public showResizeCover!: boolean;
   public document = document;
@@ -33,6 +36,7 @@ export class EditorComponent {
     const componentRef: ComponentRef<PageDevComponent> = this.viewContainerRef.createComponent(compFactory, undefined, moduleRef.injector);
 
     this.page = componentRef.instance;
+    this.page.host = this;
     this.widgetService.widgetDocument = iframeContentDocument;
     iframeContentDocument.head.innerHTML = document.head.innerHTML;
     iframeContentDocument.body.appendChild(componentRef.location.nativeElement);
@@ -83,5 +87,14 @@ export class EditorComponent {
 
     window.addEventListener('mousemove', onResizeMousemove);
     window.addEventListener('mouseup', onResizeMouseUp);
+  }
+
+
+
+
+  onRowChange(maxBottom: number): void {
+    const height = Math.max(800, maxBottom + 148);
+
+    this.editorWindow.nativeElement.style.height = height + 'px';
   }
 }
