@@ -10,8 +10,8 @@ export class CheckboxMultiColumnListManager extends MultiColumnListManager {
     onListUpdate = new Subject<CheckboxMultiColumnListUpdate>();
 
     onCheckboxChange(checkboxMultiColumnItem: CheckboxMultiColumnItem) {
-        checkboxMultiColumnItem.isChecked = !checkboxMultiColumnItem.isChecked;
-        this.onListUpdate.next({ type: ListUpdateType.CheckboxChange, id: checkboxMultiColumnItem.id, index: this.sourceList.indexOf(checkboxMultiColumnItem), name: checkboxMultiColumnItem.values[0].name, isChecked: checkboxMultiColumnItem.isChecked, addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
+        checkboxMultiColumnItem.checked = !checkboxMultiColumnItem.checked;
+        this.onListUpdate.next({ type: ListUpdateType.CheckboxChange, id: checkboxMultiColumnItem.id, index: this.sourceList.indexOf(checkboxMultiColumnItem), name: checkboxMultiColumnItem.values[0].name, checked: checkboxMultiColumnItem.checked, addDisabled: this.addDisabled, editDisabled: this.editDisabled, deleteDisabled: this.deleteDisabled });
     }
 
 

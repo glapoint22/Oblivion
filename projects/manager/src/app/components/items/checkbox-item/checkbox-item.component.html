@@ -6,7 +6,7 @@
             
             <input class="disabled-input"
                 type="checkbox"
-                [checked]="item.isChecked">
+                [checked]="item.checked">
             <span class="disabled-checkmark"></span>
         </label>
     </ng-container>
@@ -39,7 +39,7 @@
                    (mouseout)="listManager.overButton = false">
 
                 <input type="checkbox"
-                        [checked]="item.isChecked"
+                        [checked]="item.checked"
                         (change)="listManager.selectable ? listManager.onCheckboxChange(item) : null"
                         [disabled] = "!listManager.selectable">
                 <span class="checkmark"></span>

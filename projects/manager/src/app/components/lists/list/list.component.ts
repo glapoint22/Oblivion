@@ -78,35 +78,29 @@ export class ListComponent implements OnInit {
 
 
   add(id?: number, name?: string) {
-
-    // NOT Editable
+    // If the list is NOT Editable and the id and name of the new item has already been established
     if (!this.listManager.editable) {
-
-      // Add the new item to the source list
+      // Add the new item to the list
       this.sourceList.push({ id: id!, name: name! });
 
+      // As long as the list is set to be sortable
+      if (this.listManager.sortable) {
+        // Sort the list
+        this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+      }
+      // Send it to the list manager to be selected
+      this.listManager.setAddItem(this.sourceList.find(x => x.id == id && x.name == name)!);
 
-      window.setTimeout(() => {
-        const identity = this.sourceList[this.sourceList.length - 1].identity;
-
-        if (this.listManager.sortable) {
-          // Sort the list
-          this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
-        }
 
 
-        window.setTimeout(() => {
-          this.listManager.setAddItem(this.sourceList.find(x => x.identity == identity)!);
-        })
-
-      })
-
-      // Editable
+      // If the list IS editable
     } else {
-
+      // Add the new item to the top of the list
       this.sourceList.unshift({ id: -1, name: '' });
 
+      // Wait for the html-item property to be assigned to the new item
       window.setTimeout(() => {
+        // Send it to the list manager to get the focus so it can be edited
         this.listManager.setAddItem(this.sourceList[0]);
       })
     }

@@ -75,7 +75,7 @@ export class ProductGroupsPropertyComponent {
 
     if (update.type == ListUpdateType.SelectedItems) {
 
-
+      
       if(update.selectedItems!.length > 1) {
         this.listOptions.menu!.menuOptions[1].isDisabled = true;
         this.listOptions.menu!.menuOptions[2].name = 'Delete Groups';
@@ -92,10 +92,12 @@ export class ProductGroupsPropertyComponent {
     }
 
     if (update.type == ListUpdateType.Edit) {
+      
       // console.log(update)
     }
 
     if(update.type == ListUpdateType.VerifyAddEdit) {
+      
       // No match
       // this.list.commitAddEdit();
       
@@ -106,12 +108,13 @@ export class ProductGroupsPropertyComponent {
     if(update.type == ListUpdateType.DeletePrompt) {
       // console.log(update.deletedItems)
 
-
+      
       this.listOptions.deletePrompt!.message = 'Make America Great Again';
       // this.list.delete()
     }
 
     if (update.type == ListUpdateType.Delete) {
+      console.log(update)
       // console.log(update.deletedItems)
     }
   }

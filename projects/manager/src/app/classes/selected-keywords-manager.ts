@@ -1,6 +1,5 @@
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
-import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { KeywordsService } from "../services/keywords/keywords.service";
 import { ProductService } from "../services/product/product.service";
 import { CheckboxListUpdate } from "./checkbox-list-update";
@@ -21,7 +20,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // Public
     public thisArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
-    public searchList: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
+    public thisSearchList: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -34,6 +33,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.childDataServicePath = 'SelectedKeywords';
         this.childType = 'Custom Keyword';
         this.keywordsService.selectedKeywordsArray = this.thisArray;
+        this.keywordsService.selectedKeywordsSearchList = this.thisSearchList;
     }
 
 
@@ -111,7 +111,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                                     name: children[i].name,
                                     hierarchyGroupID: 1,
                                     hidden: false,
-                                    isChecked: children[i].isChecked,
+                                    checked: children[i].checked,
                                     forProduct: children[i].forProduct,
                                     color: children[i].forProduct ? '#ffba00' : null!
                                 }
@@ -135,6 +135,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             window.setTimeout(() => {
                 // If any keyword items have been added from the available list to the selected list while the selected list was in search mode
                 this.keywordsService.sortList.forEach(x => {
+
                     // Sort the selected list
                     this.hierarchyComponent.listManager.sort(x);
                 });
@@ -169,7 +170,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
         if (newKeyword?.hierarchyGroupID == 1) {
-            newKeyword!.isChecked = true;
+            newKeyword!.checked = true;
         }
     }
 
@@ -200,11 +201,11 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             this.thisArray.forEach(x => x.forProduct && x != this.hierarchyComponent.listManager.editedItem ? x.color = '#6e5000' : null);
         } else {
 
-            if (this.searchList.length > 0) {
+            if (this.thisSearchList.length > 0) {
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Delete';
                 this.searchComponent.edit();
-                this.searchList.forEach(x => {
+                this.thisSearchList.forEach(x => {
                     x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[0].color = '#6e5000' : null;
                     x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
                     x.forProduct && x == this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
@@ -314,7 +315,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
 
             // If we're NOT selecting a custom keyword group
-            if (!this.searchList[searchUpdate.selectedMultiColumnItems![0].index!].forProduct) {
+            if (!this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].forProduct) {
                 this.parentType = 'Keyword Group';
                 this.editDisabled = true;
                 this.deleteDisabled = false;
@@ -324,9 +325,11 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.searchOptions.deletePrompt!.title = 'Remove ' + this.parentType;
                 this.searchOptions.deletePrompt!.primaryButton!.name = 'Remove';
                 this.searchOptions.menu!.menuOptions[0].hidden = true;
-                this.searchOptions.menu!.menuOptions[1].hidden = false;
-                this.searchOptions.menu!.menuOptions[1].name = 'Remove ' + this.parentType;
-                this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.parentType + ' in Hierarchy';
+                this.searchOptions.menu!.menuOptions[1].hidden = true;
+                this.searchOptions.menu!.menuOptions[2].hidden = false;
+                this.searchOptions.menu!.menuOptions[3].hidden = false;
+                this.searchOptions.menu!.menuOptions[2].name = 'Remove ' + this.parentType;
+                this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.parentType + ' in Hierarchy';
 
                 // If we ARE selecting a custom keyword group
             } else {
@@ -339,13 +342,15 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.searchOptions.deletePrompt!.primaryButton!.name = 'Delete';
                 this.searchOptions.menu!.menuOptions[0].hidden = false;
                 this.searchOptions.menu!.menuOptions[1].hidden = false;
+                this.searchOptions.menu!.menuOptions[2].hidden = false;
+                this.searchOptions.menu!.menuOptions[3].hidden = false;
                 this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.parentType;
-                this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.parentType;
-                this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.parentType + ' in Hierarchy';
+                this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.parentType;
+                this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.parentType + ' in Hierarchy';
 
                 // If the custom keyword was selected after it was in edit mode
                 if (this.searchComponent.listManager.editedItem != null) {
-                    this.searchList.forEach(x => {
+                    this.thisSearchList.forEach(x => {
                         x.forProduct ? x.values[0].color = '#ffba00' : null;
                         x.forProduct ? x.values[1].color = '#ffba00' : null;
                     });
@@ -356,7 +361,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
 
             // If we're NOT selecting a custom keyword
-            if (!this.searchList[searchUpdate.selectedMultiColumnItems![0].index!].forProduct) {
+            if (!this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].forProduct) {
                 this.childType = 'Keyword';
                 this.parentType = 'Keyword Group';
                 this.editDisabled = true;
@@ -366,7 +371,9 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 searchUpdate.selectedMultiColumnItems![0].values[0].allowEdit = false;
                 this.searchOptions.menu!.menuOptions[0].hidden = true;
                 this.searchOptions.menu!.menuOptions[1].hidden = true;
-                this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.childType + ' in Hierarchy';
+                this.searchOptions.menu!.menuOptions[2].hidden = true;
+                this.searchOptions.menu!.menuOptions[3].hidden = true;
+                this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.childType + ' in Hierarchy';
 
                 // If we ARE selecting a custom keyword
             } else {
@@ -381,13 +388,15 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.searchOptions.menu!.menuOptions[0].hidden = false;
                 this.searchOptions.menu!.menuOptions[1].hidden = false;
                 this.searchOptions.menu!.menuOptions[2].hidden = false;
+                this.searchOptions.menu!.menuOptions[3].hidden = false;
+                this.searchOptions.menu!.menuOptions[4].hidden = false;
                 this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.childType;
-                this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.childType;
-                this.searchOptions.menu!.menuOptions[2].name = 'Go to ' + this.childType + ' in Hierarchy';
+                this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.childType;
+                this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.childType + ' in Hierarchy';
 
                 // If the custom keyword was selected after it was in edit mode
                 if (this.searchComponent.listManager.editedItem != null) {
-                    this.searchList.forEach(x => {
+                    this.thisSearchList.forEach(x => {
                         x.forProduct ? x.values[0].color = '#ffba00' : null;
                         x.forProduct ? x.values[1].color = '#ffba00' : null;
                     });
@@ -418,7 +427,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         if (this.parentType == 'Custom Keyword Group') {
             this.editIconButtonTitle = 'Rename';
             this.deleteIconButtonTitle = 'Delete';
-            this.searchList.forEach(x => {
+            this.thisSearchList.forEach(x => {
                 x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[0].color = '#6e5000' : null;
                 x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
                 x.forProduct && x == this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
@@ -434,7 +443,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.dataService.put('api/' + this.childDataServicePath + '/Update', {
             productId: this.productService.product.id,
             id: hierarchyUpdate.id,
-            isChecked: hierarchyUpdate.isChecked
+            checked: hierarchyUpdate.checked
         }).subscribe();
     }
 
@@ -446,13 +455,13 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.dataService.put('api/' + this.childDataServicePath + '/Update', {
             productId: this.productService.product.id,
             id: checkboxMultiColumnListUpdate.id,
-            isChecked: checkboxMultiColumnListUpdate.isChecked
+            checked: checkboxMultiColumnListUpdate.checked
         }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
         const hierarchyItem = this.thisArray.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
         // If it is, make the change to its checkbox as well
-        if (hierarchyItem) hierarchyItem.isChecked = checkboxMultiColumnListUpdate.isChecked;
+        if (hierarchyItem) hierarchyItem.checked = checkboxMultiColumnListUpdate.checked;
     }
 
 
@@ -725,19 +734,22 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
             // Grab all the children belonging to the keyword group that's being removed  
             this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: deletedItem.id }])
-            .subscribe((children: Array<KeywordCheckboxItem>) => {
-                children.forEach(x => {
-                    // Check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if any
-                    const availableSearchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
-                    if (availableSearchItem) availableSearchItem.opacity = null!;
+                .subscribe((children: Array<KeywordCheckboxItem>) => {
+                    children.forEach(x => {
+                        // Check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if any
+                        const availableSearchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                        if (availableSearchItem) availableSearchItem.opacity = null!;
 
-                    // 
-                    const searchItemIndex = this.searchList.findIndex(y => y.id == x.id && y.values[1].name == 'Keyword');
-                    if(searchItemIndex != -1) {
-                        this.searchList.splice(searchItemIndex, 1);
-                    }
+                        // Plus, while we have the children of the keyword group that's being removed, remove those children from this selected keywords search list as well
+                        const searchItemIndex = this.thisSearchList.findIndex(y => y.id == x.id && y.values[1].name == 'Keyword');
+                        if (searchItemIndex != -1) this.thisSearchList.splice(searchItemIndex, 1);
+
+
+                        // And also, check to see if these children are present in this selected keywords hierarchy list and remove them if they are
+                        const hierarchyItemIndex = this.thisArray.findIndex(y => y.id == x.id && y.hierarchyGroupID == 1);
+                        if (hierarchyItemIndex != -1) this.thisArray.splice(hierarchyItemIndex, 1);
+                    })
                 })
-            })
         }
 
 
@@ -752,7 +764,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // ================================================================( GET SEARCH RESULTS )================================================================= \\
 
     getSearchResults(value: string) {
-        this.searchList.splice(0, this.searchList.length);
+        this.thisSearchList.splice(0, this.thisSearchList.length);
 
         this.dataService.get<Array<KeywordCheckboxSearchResultItem>>('api/' + this.parentDataServicePath + '/Search', [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: value }])
             .subscribe((searchResults: Array<KeywordCheckboxSearchResultItem>) => {
@@ -760,16 +772,24 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 // As long as search results were returned
                 if (searchResults) {
                     searchResults.forEach(x => {
-                        this.searchList.push({
+                        this.thisSearchList.push({
 
                             id: x.id!,
                             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true, color: x.forProduct ? '#ffba00' : null! }, { name: x.type!, width: this.searchTypeWidth, color: x.forProduct ? '#ffba00' : null! }],
-                            isChecked: x.isChecked,
+                            checked: x.checked,
                             forProduct: x.forProduct
                         })
                     })
                 }
             });
+    }
+
+
+
+    // ===========================================================( SORT PENDING HIERARCHY ITEMS )============================================================ \\
+
+    sortPendingHierarchyItems() {
+        // Selected keywords has its own sort pending function
     }
 
 
@@ -807,7 +827,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             }
 
             // If we're in search mode
-        } else if (this.searchMode && this.searchList.length > 0) {
+        } else if (this.searchMode && this.thisSearchList.length > 0) {
 
             // As long as the search update is not null
             if (this.searchUpdate) {
@@ -853,9 +873,15 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                     type: MenuOptionType.MenuItem
                 },
                 {
+                    type: MenuOptionType.Divider
+                },
+                {
                     type: MenuOptionType.MenuItem,
                     shortcut: 'F2',
                     optionFunction: this.edit
+                },
+                {
+                    type: MenuOptionType.Divider
                 },
                 {
                     type: MenuOptionType.MenuItem,
@@ -872,9 +898,10 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.hierarchyOptions.menu!.menuOptions[0].hidden = false;
                 this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
                 this.hierarchyOptions.menu!.menuOptions[2].hidden = true;
-                this.hierarchyOptions.menu!.menuOptions[3].hidden = false;
+                this.hierarchyOptions.menu!.menuOptions[3].hidden = true;
+                this.hierarchyOptions.menu!.menuOptions[5].hidden = false;
                 this.hierarchyOptions.menu!.menuOptions[0].name = 'Add Custom ' + this.parentType;
-                this.hierarchyOptions.menu!.menuOptions[3].name = 'Remove ' + this.parentType;
+                this.hierarchyOptions.menu!.menuOptions[5].name = 'Remove ' + this.parentType;
 
                 // If a custom keyword group WAS selected
             } else {
@@ -882,11 +909,12 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
                 this.hierarchyOptions.menu!.menuOptions[2].hidden = false;
                 this.hierarchyOptions.menu!.menuOptions[3].hidden = false;
+                this.hierarchyOptions.menu!.menuOptions[5].hidden = false;
                 this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.add;
                 this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.parentType;
                 this.hierarchyOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
-                this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.parentType;
-                this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.parentType;
+                this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.parentType;
+                this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.parentType;
             }
             this.hierarchyOptions.menu!.menuOptions[0].hidden = false;
             this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addParent;
@@ -897,10 +925,11 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
             this.hierarchyOptions.menu!.menuOptions[2].hidden = false;
             this.hierarchyOptions.menu!.menuOptions[3].hidden = false;
+            this.hierarchyOptions.menu!.menuOptions[5].hidden = false;
             this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.add;
             this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
-            this.hierarchyOptions.menu!.menuOptions[2].name = 'Rename ' + this.childType;
-            this.hierarchyOptions.menu!.menuOptions[3].name = 'Delete ' + this.childType;
+            this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.childType;
+            this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.childType;
         }
     }
 }

@@ -37,7 +37,7 @@ export class HierarchyManager extends ListManager {
 
     onArrowClick(hierarchyItem: HierarchyItem) {
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
-        this.showHide(this.sourceList.findIndex(x => x.identity == hierarchyItem.identity));
+        this.showHide(this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID));
         this.collapseDisabled = this.getIsCollapsed();
         this.onListUpdate.next({
             type: ListUpdateType.ArrowClicked,
@@ -216,7 +216,7 @@ export class HierarchyManager extends ListManager {
         // Loop through all the hierarchy items in the temp array
         tempArray.forEach(x => {
             // Get the index of that same hierarchy item from the source list
-            let index = this.sourceList.findIndex(y => y.identity == x.identity);
+            let index = this.sourceList.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID);
 
             // Copy the hierarchy item and all its children
             for (let i = index; i < this.sourceList.length; i++) {
@@ -233,21 +233,13 @@ export class HierarchyManager extends ListManager {
         this.sourceList.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
 
         // Remove the selected hierarchy item and then put it back so the indent can take effect
-        const hierarchyItemIndex = this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity);
+        const hierarchyItemIndex = this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID);
 
         (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = true;
 
         window.setTimeout(() => {
             (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = false;
         })
-        // this.sourceList.splice(hierarchyItemIndex, 1);
-        // this.sourceList.splice(hierarchyItemIndex, 0, { id: hierarchyItem.id, name: hierarchyItem.name, hierarchyGroupID: hierarchyItem.hierarchyGroupID, isParent: hierarchyItem.isParent, selected: hierarchyItem.selected, htmlItem: hierarchyItem?.htmlItem, hidden: hierarchyItem.hidden } as HierarchyItem);
-
-        // // And because we removed the selected hierarchy item, we lost our event listeners, so we have to put them back
-        // // window.setTimeout(() => {
-        // this.addEventListeners();
-        // }, 35)
-        // return this.sourceList[hierarchyItemIndex];
     }
 
 
@@ -299,8 +291,20 @@ export class HierarchyManager extends ListManager {
 
     selectedItemsUpdate(rightClick: boolean) {
         const selectedItems = this.sourceList.filter(x => x.selected == true);
-        selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.identity == x?.identity));
-        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
+        this.onListUpdate.next(
+            {
+                type: ListUpdateType.SelectedItems,
+                rightClick: rightClick,
+                selectedItems: selectedItems!.map((x) => {
+                    return {
+                        id: x.id,
+                        index: this.sourceList.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID),
+                        name: x.name,
+                        hierarchyGroupID: x.hierarchyGroupID
+                    }
+                })
+            }
+        );
     }
 
 
@@ -336,7 +340,7 @@ export class HierarchyManager extends ListManager {
             {
                 type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,
                 id: hierarchyItem.id,
-                index: this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity),
+                index: this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID),
                 name: hierarchyItem.name,
                 hierarchyGroupID: hierarchyItem.hierarchyGroupID
             }
@@ -349,7 +353,7 @@ export class HierarchyManager extends ListManager {
             {
                 type: ListUpdateType.VerifyAddEdit,
                 id: hierarchyItem.id,
-                index: this.sourceList.findIndex(x => x.identity == hierarchyItem?.identity),
+                index: this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID),
                 name: name,
                 hierarchyGroupID: hierarchyItem.hierarchyGroupID
             }
@@ -364,7 +368,7 @@ export class HierarchyManager extends ListManager {
                 deletedItems: deletedItems!.map((x) => {
                     return {
                         id: x.id,
-                        index: this.sourceList.findIndex(y => y.identity == x?.identity),
+                        index: this.sourceList.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID),
                         name: x.name,
                         hierarchyGroupID: x.hierarchyGroupID
                     }
@@ -380,7 +384,7 @@ export class HierarchyManager extends ListManager {
                 deletedItems: deletedItems!.map((x) => {
                     return {
                         id: x.id,
-                        index: this.sourceList.findIndex(y => y.identity == x?.identity),
+                        index: this.sourceList.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID),
                         name: x.name,
                         hierarchyGroupID: x.hierarchyGroupID
                     }

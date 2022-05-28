@@ -1,19 +1,19 @@
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
-import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { KeywordsService } from "../services/keywords/keywords.service";
 import { ProductService } from "../services/product/product.service";
 import { MenuOptionType, SortType } from "./enums";
+import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
 import { KeywordsFormManager } from "./keywords-form-manager";
+import { ListUpdate } from "./list-update";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
 export class AvailableKeywordsManager extends KeywordsFormManager {
     public addToSelectedKeywordsButtonDisabled!: boolean;
-    public selectedHierarchyComponent!: HierarchyComponent;
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -24,16 +24,18 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
         this.sortType = SortType.Product;
         this.thisArray = this.keywordsService.productArray;
         this.otherArray = this.keywordsService.formArray;
-        this.keywordsService.availableSearchList = this.searchList;
-        this.hierarchyOptions.menu!.menuOptions[4] = { type: MenuOptionType.Divider };
-        this.hierarchyOptions.menu!.menuOptions[5] = {
+        this.thisSearchList = this.keywordsService.productSearchList;
+        this.otherSearchList = this.keywordsService.formSearchList;
+        this.keywordsService.availableSearchList = this.thisSearchList;
+        this.hierarchyOptions.menu!.menuOptions[6] = { type: MenuOptionType.Divider };
+        this.hierarchyOptions.menu!.menuOptions[7] = {
             type: MenuOptionType.MenuItem,
             name: 'Add to Selected Keywords',
             shortcut: 'Alt+A',
             optionFunction: this.addToSelectedKeywords
         };
-        this.searchOptions.menu!.menuOptions[3] = { type: MenuOptionType.Divider };
-        this.searchOptions.menu!.menuOptions[4] = {
+        this.searchOptions.menu!.menuOptions[5] = { type: MenuOptionType.Divider };
+        this.searchOptions.menu!.menuOptions[6] = {
             type: MenuOptionType.MenuItem,
             name: 'Add to Selected Keywords',
             shortcut: 'Alt+A',
@@ -109,7 +111,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
     onSelectedHierarchyItem(hierarchyUpdate: HierarchyUpdate) {
         super.onSelectedHierarchyItem(hierarchyUpdate);
         this.addToSelectedKeywordsButtonDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
-        this.hierarchyOptions.menu!.menuOptions[5].isDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
+        this.hierarchyOptions.menu!.menuOptions[7].isDisabled = hierarchyUpdate.selectedItems![0].opacity != null ? true : false;
     }
 
 
@@ -118,8 +120,8 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
         super.onSelectedSearchItem(searchUpdate);
-        this.addToSelectedKeywordsButtonDisabled = this.searchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
-        this.searchOptions.menu!.menuOptions[4].isDisabled = this.searchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
+        this.addToSelectedKeywordsButtonDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
+        this.searchOptions.menu!.menuOptions[6].isDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
     }
 
 
@@ -142,10 +144,86 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
+    // =============================================================( SET OTHER HIERARCHY EDIT )============================================================== \\
+
+    setOtherHierarchyEdit<T extends ListUpdate>(update: T, hierarchyGroupID: number) {
+        super.setOtherHierarchyEdit<T>(update, hierarchyGroupID);
+
+        const editedSelectedHierarchyItem: KeywordCheckboxItem = this.keywordsService.selectedKeywordsArray.find(x => x.id == update.id && x.hierarchyGroupID == hierarchyGroupID)!;
+
+        // If the item in the other hierarchy list was found
+        if (editedSelectedHierarchyItem) {
+            // Then update the name of that item in the other list to the name of the item we just edited in this list
+            editedSelectedHierarchyItem!.name = (update as MultiColumnListUpdate).values ? (update as MultiColumnListUpdate).values![0].name : update.name;
+            // Then sort the other list
+            this.setSelectedHierarchySort(editedSelectedHierarchyItem);
+        }
+    }
+
+
+
+    // ===============================================================( SET OTHER SEARCH EDIT )=============================================================== \\
+
+    setOtherSearchEdit<T extends ListUpdate>(update: T, type: string) {
+        super.setOtherSearchEdit<ListUpdate>(update, type);
+
+        // Find itme in the other search list that we just edited in this list
+        const editedSelectedSearchItem: MultiColumnItem = this.keywordsService.selectedKeywordsSearchList.find(x => x.id == update.id && x.values[1].name == type)!;
+
+        // If the item in the other search list was found
+        if (editedSelectedSearchItem) {
+
+            // Then update the name of that item in the other search list to the name of the item we just edited in this list
+            editedSelectedSearchItem!.values[0].name = (update as MultiColumnListUpdate).values ? (update as MultiColumnListUpdate).values![0].name : update.name!;
+        }
+    }
+
+
+
+    // ============================================================( SET SELECTED HIERARCHY SORT )============================================================ \\
+
+    setSelectedHierarchySort(selectedHierarchyItem: KeywordCheckboxItem) {
+
+        // As long as the other hierarchy sort group is NOT hidden
+        if (!selectedHierarchyItem.hidden && this.keywordsService.selectedHierarchyComponent) {
+            
+            // Then sort the other hierarchy list
+            this.keywordsService.selectedHierarchyComponent.listManager.sort(selectedHierarchyItem);
+
+            // But if the other hierarchy sort group is NOT visible
+        } else {
+
+            // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
+            this.keywordsService.sortList.push(selectedHierarchyItem);
+        }
+    }
+
+
+
+    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+
+    onHierarchyItemDelete(deletedItem: HierarchyItem) {
+        super.onHierarchyItemDelete(deletedItem);
+        this.deleteItem<HierarchyItem>(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.hierarchyGroupID!);
+        this.deleteItem<MultiColumnItem>(this.keywordsService.selectedKeywordsSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
+    }
+
+
+
+    // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
+
+    onSearchItemDelete(deletedItem: MultiColumnItem) {
+        super.onSearchItemDelete(deletedItem);
+        this.deleteItem<MultiColumnItem>(this.keywordsService.selectedKeywordsSearchList, deletedItem, deletedItem.values[1].name);
+        this.deleteItem<HierarchyItem>(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
+    }
+
+
+
     // ================================================================( GET SEARCH RESULTS )================================================================= \\
 
     getSearchResults(value: string) {
-        this.searchList.splice(0, this.searchList.length);
+        this.thisSearchList.splice(0, this.thisSearchList.length);
 
         this.dataService.get<Array<KeywordSearchResultItem>>('api/' + this.parentDataServicePath + '/Search', [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: value }])
             .subscribe((searchResults: Array<KeywordSearchResultItem>) => {
@@ -153,7 +231,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
                 // As long as search results were returned
                 if (searchResults) {
                     searchResults.forEach(x => {
-                        this.searchList.push({
+                        this.thisSearchList.push({
                             id: x.id!,
                             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
                             opacity: x.forProduct ? 0.4 : null!
@@ -182,8 +260,8 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
         
         this.keywordsService.selectedKeywordsArray.push(keywordGroup);
 
-        if (this.selectedHierarchyComponent) {
-            this.selectedHierarchyComponent.listManager.sort(keywordGroup);
+        if (this.keywordsService.selectedHierarchyComponent) {
+            this.keywordsService.selectedHierarchyComponent.listManager.sort(keywordGroup);
         } else {
             // If any keyword items have been added from the available list to the selected list while the selected list was in search mode
             this.keywordsService.sortList.push(keywordGroup);
@@ -261,7 +339,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
             this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }])
                 .subscribe((children: Array<KeywordCheckboxItem>) => {
                     children.forEach(x => {
-                        const searchItem = this.searchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                        const searchItem = this.thisSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
                         if (searchItem) searchItem.opacity = 0.4;
                     })
                 })
@@ -302,13 +380,13 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
                     this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }])
                         .subscribe((children: Array<KeywordCheckboxItem>) => {
                             children.forEach(x => {
-                                const searchItem = this.searchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                                const searchItem = this.thisSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
                                 if (searchItem) searchItem.opacity = 0.4;
                             })
                         })
 
                     // Also, if the parent of the selected keyword is in the search list, set the disabled look to it
-                    const selectedKeywordParent = this.searchList.find(x => x.id == keywordGroup.id && x.values[1].name == 'Group');
+                    const selectedKeywordParent = this.thisSearchList.find(x => x.id == keywordGroup.id && x.values[1].name == 'Group');
                     if (selectedKeywordParent) selectedKeywordParent.opacity = 0.4;
 
 
