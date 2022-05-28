@@ -47,5 +47,8 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
     const image = event.target as HTMLImageElement;
 
     if (!this.width || this.width != image.naturalWidth) this.width = image.naturalWidth;
+    window.setTimeout(() => {
+      this.widgetService.onRowChange(this.widgetService.selectedRow.containerComponent);
+    });
   }
 }

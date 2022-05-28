@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Background, PageComponent, PageContent } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
+import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 
 @Component({
@@ -10,6 +11,8 @@ import { ContainerDevComponent } from '../container-dev/container-dev.component'
 })
 export class PageDevComponent extends PageComponent implements ContainerHost {
   public host!: ContainerHost;
+
+  constructor(private widgetService: WidgetService) { super() }
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -27,5 +30,10 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   onRowChange(maxBottom: number) {
     this.host.onRowChange(maxBottom);
+  }
+
+
+  onMousedown() {
+    this.widgetService.deselectWidget();
   }
 }

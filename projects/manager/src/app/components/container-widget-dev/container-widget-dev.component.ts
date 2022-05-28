@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ApplicationRef, Component } from '@angular/core';
 import { ContainerWidgetComponent } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { WidgetHandle } from '../../classes/enums';
@@ -15,7 +15,7 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
   public hostContainer!: ContainerDevComponent;
   private fixedHeight!: number;
 
-  constructor(public widgetService: WidgetService) { super() }
+  constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { super() }
 
 
   ngOnInit(): void {
@@ -41,7 +41,7 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
 
   onRowChange(maxBottom: number): void {
     this.height = Math.max(this.fixedHeight, maxBottom);
-
+    this.appRef.tick();
     this.widgetService.onRowChange(this.hostContainer);
   }
 }

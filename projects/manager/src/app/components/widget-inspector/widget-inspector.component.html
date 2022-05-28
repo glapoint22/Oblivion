@@ -39,31 +39,31 @@
     <!-- Page, Row, Column, and Widget buttons -->
     <div class="grooved-container" *ngIf="page && page.pageContent">
         <!-- Page -->
-        <button class="button-left" [ngClass]="{'button-selected': currentPropertyView == propertyView.Page}"
-            (click)="currentPropertyView = propertyView.Page">Page</button>
+        <button class="button-left" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"
+            (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Page">Page</button>
 
         <!-- Row -->
-        <button class="button-center" [ngClass]="{'button-selected': currentPropertyView == propertyView.Row}"
-            (click)="currentPropertyView = propertyView.Row"
-            [disabled]="page.container.viewContainerRef.length == 0">Row</button>
+        <button class="button-center" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Row}"
+            (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Row"
+            [disabled]="!widgetService.selectedWidget">Row</button>
 
 
         <!-- Column -->
-        <button class="button-center" [ngClass]="{'button-selected': currentPropertyView == propertyView.Column}"
-            (click)="currentPropertyView = propertyView.Column"
-            [disabled]="page.container.viewContainerRef.length == 0">Column</button>
+        <button class="button-center" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Column}"
+            (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Column"
+            [disabled]="!widgetService.selectedWidget">Column</button>
 
 
         <!-- Widget -->
-        <button class="button-right" [ngClass]="{'button-selected': currentPropertyView == propertyView.Widget}"
-            (click)="currentPropertyView = propertyView.Widget"
-            [disabled]="page.container.viewContainerRef.length == 0">Widget</button>
+        <button class="button-right" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+            (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Widget"
+            [disabled]="!widgetService.selectedWidget">Widget</button>
     </div>
 
 
     <!-- Properties -->
-    <page-properties [page]="page" *ngIf="currentPropertyView == propertyView.Page"></page-properties>
-    <row-properties *ngIf="currentPropertyView == propertyView.Row"></row-properties>
-    <column-properties *ngIf="currentPropertyView == propertyView.Column"></column-properties>
-    <widget-properties *ngIf="currentPropertyView == propertyView.Widget"></widget-properties>
+    <page-properties [page]="page" *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Page"></page-properties>
+    <row-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Row"></row-properties>
+    <column-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Column"></column-properties>
+    <widget-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Widget"></widget-properties>
 </div>

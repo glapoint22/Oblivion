@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HorizontalAlignmentType, VerticalAlignmentType, Widget, WidgetType } from 'widgets';
-import { ContainerHost } from '../../classes/container-host';
-import { WidgetCursorType, WidgetHandle } from '../../classes/enums';
+import { WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
 import { ContainerDevComponent } from '../../components/container-dev/container-dev.component';
@@ -21,6 +20,7 @@ export class WidgetService {
   public widgetCursor!: WidgetCursor;
   public widgetDocument!: Document;
   public widgetHandleMove!: boolean;
+  public currentWidgetInspectorView!: WidgetInspectorView;
 
 
   constructor(private breakpointService: BreakpointService) { }
@@ -52,6 +52,15 @@ export class WidgetService {
   }
 
 
+
+
+  // ------------------------------------------------------------------------Deselect Widget------------------------------------------------------------
+  public deselectWidget(): void {
+    this.selectedWidget = null!
+    this.selectedColumn = null!
+    this.selectedRow = null!;
+    this.currentWidgetInspectorView = WidgetInspectorView.Page;
+  }
 
 
   // ----------------------------------------------------------------------On Widget Handle Mousedown---------------------------------------------------------

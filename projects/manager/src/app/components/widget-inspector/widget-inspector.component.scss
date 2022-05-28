@@ -98,7 +98,7 @@
             cursor: pointer;
         }
 
-        &:active {
+        &:active:not(:disabled) {
             border-color: #424242;
             background: #555555;
             color: #b6b6b6;
