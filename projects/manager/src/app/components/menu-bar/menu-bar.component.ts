@@ -79,8 +79,9 @@ export class MenuBarComponent {
         },
         {
           type: MenuOptionType.MenuItem,
-          name: 'Groups',
-          shortcut: 'Alt+G'
+          name: 'Product Groups',
+          shortcut: 'Alt+G',
+          optionFunction: this.openProductGroupsForm
         }
       ]
     },
@@ -301,6 +302,19 @@ export class MenuBarComponent {
       return {
         component: KeywordsFormComponent,
         module: KeywordsFormModule
+      }
+    }, SpinnerAction.None)
+  }
+
+
+
+  openProductGroupsForm() {
+    this.lazyLoadingService.load(async () => {
+      const { ProductGroupsFormComponent } = await import('../../components/product-groups-form/product-groups-form.component');
+      const { ProductGroupsFormModule } = await import('../../components/product-groups-form/product-groups-form.module');
+      return {
+        component: ProductGroupsFormComponent,
+        module: ProductGroupsFormModule
       }
     }, SpinnerAction.None)
   }

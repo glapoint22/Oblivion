@@ -513,7 +513,7 @@ export class ListUpdateManager {
                     name: this.thisArray[hierarchyUpdate.index!].name
                 })
                 const addedOtherHierarchyItem: HierarchyItem = this.otherArray.find(x => x.id == this.otherArray[hierarchyUpdate.index!].id && x.hierarchyGroupID == this.otherArray[hierarchyUpdate.index!].hierarchyGroupID)!;
-                this.setOtherHierarchySort(addedOtherHierarchyItem);
+                this.setSort(addedOtherHierarchyItem);
             });
         }
 
@@ -535,7 +535,7 @@ export class ListUpdateManager {
                     hidden: !this.otherArray[indexOfHierarchyItemParent].arrowDown
                 })
                 const addedOtherHierarchyItem: HierarchyItem = this.otherArray.find(x => x.id == this.otherArray[hierarchyUpdate.index!].id && x.hierarchyGroupID == this.otherArray[hierarchyUpdate.index!].hierarchyGroupID)!;
-                this.setOtherHierarchySort(addedOtherHierarchyItem);
+                this.setSort(addedOtherHierarchyItem);
             })
         }
     }
@@ -547,25 +547,21 @@ export class ListUpdateManager {
     onHierarchyItemEdit(hierarchyUpdate: HierarchyUpdate) {
         // Edit parent hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 0) {
-            this.dataService.put('api/' + this.parentDataServicePath, {
-                id: hierarchyUpdate.id,
-                name: hierarchyUpdate.name
-            }).subscribe();
-
-            this.setOtherSearchEdit<HierarchyUpdate>(hierarchyUpdate, this.parentSearchType);
+            // this.dataService.put('api/' + this.parentDataServicePath, {
+            //     id: hierarchyUpdate.id,
+            //     name: hierarchyUpdate.name
+            // }).subscribe();
         }
 
         // Edit child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            this.dataService.put('api/' + this.childDataServicePath, {
-                id: hierarchyUpdate.id,
-                name: hierarchyUpdate.name
-            }).subscribe();
-
-            this.setOtherSearchEdit<HierarchyUpdate>(hierarchyUpdate, this.childSearchType);
+            // this.dataService.put('api/' + this.childDataServicePath, {
+            //     id: hierarchyUpdate.id,
+            //     name: hierarchyUpdate.name
+            // }).subscribe();
         }
-        this.setOtherHierarchyEdit<HierarchyUpdate>(hierarchyUpdate, hierarchyUpdate.hierarchyGroupID!);
-
+        this.setSort(this.editItem(this.otherArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID));
+        this.editItem(this.otherSearchList, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
     }
 
 
@@ -575,43 +571,43 @@ export class ListUpdateManager {
     onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
         // Edit parent search item
         if (searchUpdate.values![1].name == this.parentSearchType) {
-            this.dataService.put('api/' + this.parentDataServicePath, {
-                id: searchUpdate.id,
-                name: searchUpdate.values![0].name
-            }).subscribe();
-
-            // Find the item in the hierarchy list that we just edited in this search list
-            const editedSearchItem = this.thisArray.find(x => x.id == searchUpdate.id && x.hierarchyGroupID == 0)!;
-            // Then update the name of that item in the hierarchy list to the name of the item we just edited in the search list
-            editedSearchItem.name = searchUpdate.values![0].name;
-            // Now add the item we just edited in search mode to a sort list so that when we go back to hierarchy mode we can then sort the hierarchy list based on the items in that sort list
-            this.thisSortList.push(editedSearchItem);
-            // Update that same item in the ochyther list
-            this.setOtherHierarchyEdit<MultiColumnListUpdate>(searchUpdate, 0);
-            this.setOtherSearchEdit<MultiColumnListUpdate>(searchUpdate, this.parentSearchType);
+            // this.dataService.put('api/' + this.parentDataServicePath, {
+            //     id: searchUpdate.id,
+            //     name: searchUpdate.values![0].name
+            // }).subscribe();
         }
 
         // Edit child search item
         if (searchUpdate.values![1].name == this.childSearchType) {
-            this.dataService.put('api/' + this.childDataServicePath, {
-                id: searchUpdate.id,
-                name: searchUpdate.values![0].name
-            }).subscribe();
-
-
-            // Find the item in the hierarchy list that we just edited in this search list
-            const editedSearchItemChild = this.thisArray.find(x => x.id == searchUpdate.id && x.hierarchyGroupID == 1)!;
-            // If the item in the hierarchy list was found
-            if (editedSearchItemChild) {
-                // Then update the name of that item in the hierarchy list to the name of the item we just edited in the search list
-                editedSearchItemChild.name = searchUpdate.values![0].name;
-                // Now add the item we just edited in search mode to a sort list so that when we go back to hierarchy mode we can then sort the hierarchy list based on the items in that sort list
-                this.thisSortList.push(editedSearchItemChild);
-            }
-            // Update that same item in the other list
-            this.setOtherHierarchyEdit<MultiColumnListUpdate>(searchUpdate, 1);
-            this.setOtherSearchEdit<MultiColumnListUpdate>(searchUpdate, this.childSearchType);
+            // this.dataService.put('api/' + this.childDataServicePath, {
+            //     id: searchUpdate.id,
+            //     name: searchUpdate.values![0].name
+            // }).subscribe();
         }
+        this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1));
+        this.setSort(this.editItem(this.otherArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1));
+        this.editItem(this.otherSearchList, searchUpdate, searchUpdate.values![1].name);
+    }
+
+
+
+    // =====================================================================( EDIT ITEM )===================================================================== \\
+
+    editItem(list: Array<ListItem>, update: ListUpdate, type?: number | string): ListItem {
+        const editedItem: ListItem = typeof type == 'number' ? list.find(x => x.id == update.id && x.hierarchyGroupID == type)! : list.find(x => x.id == update.id && (x as MultiColumnItem).values[1].name == type)!;
+
+        if (editedItem) {
+            // Other hierarchy from this hierarchy
+            if (update.name && typeof type == 'number') editedItem.name = update.name;
+            // Other search from this hierarchy
+            if (update.name && typeof type != 'number') (editedItem as MultiColumnItem).values[0].name = update.name;
+            // Other search from this search
+            if (!update.name && typeof type != 'number') (editedItem as MultiColumnItem).values[0].name = (update as MultiColumnListUpdate).values![0].name;
+            // Other hierarchy from this search and this hierarchy from this search
+            if (!update.name && typeof type == 'number') editedItem.name = (update as MultiColumnListUpdate).values![0].name;
+        }
+
+        return editedItem;
     }
 
 
@@ -628,7 +624,7 @@ export class ListUpdateManager {
             // Then update the name of that item in the other list to the name of the item we just edited in this list
             editedOtherHierarchyItem!.name = (update as MultiColumnListUpdate).values ? (update as MultiColumnListUpdate).values![0].name : update.name;
             // Then sort the other list
-            this.setOtherHierarchySort(editedOtherHierarchyItem);
+            this.setSort(editedOtherHierarchyItem);
         }
     }
 
@@ -652,19 +648,21 @@ export class ListUpdateManager {
 
     // =============================================================( SET OTHER HIERARCHY SORT )============================================================== \\
 
-    setOtherHierarchySort(otherHierarchyItem: HierarchyItem) {
-        // As long as the other hierarchy sort group is NOT hidden
-        if (!otherHierarchyItem.hidden && this.otherHierarchyComponent) {
+    setSort(otherHierarchyItem: HierarchyItem) {
+        if (otherHierarchyItem) {
+            // As long as the other hierarchy sort group IS visible
+            if (!otherHierarchyItem.hidden && this.otherHierarchyComponent) {
 
-            // Then sort the other hierarchy list
-            this.otherHierarchyComponent.listManager.sort(otherHierarchyItem);
+                // Then sort the other hierarchy list
+                this.otherHierarchyComponent.listManager.sort(otherHierarchyItem);
 
-            // But if the other hierarchy sort group is NOT visible
-        } else {
+                // But if the other hierarchy sort group is NOT visible
+            } else {
 
-            // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
-            this.listUpdateService!.otherSortList.push(otherHierarchyItem!);
-            this.listUpdateService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
+                // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
+                this.listUpdateService!.otherSortList.push(otherHierarchyItem!);
+                this.listUpdateService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
+            }
         }
     }
 
@@ -869,8 +867,8 @@ export class ListUpdateManager {
                 id: deletedItem.id
             }).subscribe();
         }
-        this.deleteItem<HierarchyItem>(this.otherArray, deletedItem, deletedItem.hierarchyGroupID!);
-        this.deleteItem<MultiColumnItem>(this.otherSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
+        this.deleteItem(this.otherArray, deletedItem, deletedItem.hierarchyGroupID!);
+        this.deleteItem(this.otherSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
     }
 
 
@@ -892,16 +890,16 @@ export class ListUpdateManager {
             }).subscribe();
         }
         this.deleteChildren(this.thisSearchList, deletedItem, this.thisArray);
-        this.deleteItem<MultiColumnItem>(this.otherSearchList, deletedItem, deletedItem.values[1].name);
-        this.deleteItem<HierarchyItem>(this.thisArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
-        this.deleteItem<HierarchyItem>(this.otherArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
+        this.deleteItem(this.otherSearchList, deletedItem, deletedItem.values[1].name);
+        this.deleteItem(this.thisArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
+        this.deleteItem(this.otherArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
     }
 
 
 
     // ====================================================================( DELETE ITEM )==================================================================== \\
 
-    deleteItem<T extends MultiColumnItem | HierarchyItem>(list: Array<T>, deletedItem: T, type: number | string) {
+    deleteItem(list: Array<ListItem>, deletedItem: ListItem, type: number | string) {
         // Find the index of the item in the list
         const index = typeof type == 'number' ? list.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == type) : list.findIndex(x => x.id == deletedItem.id && (x as MultiColumnItem).values[1].name == type);
 
@@ -980,7 +978,7 @@ export class ListUpdateManager {
         if (this.thisSortList.length > 0) {
             // Then we need to sort those items now that we're in hierarchy mode
             this.thisSortList.forEach(x => {
-                if (!x.hidden) {
+                if (x && !x.hidden) {
                     this.hierarchyComponent.listManager.sort(x);
                     const index = this.thisSortList.indexOf(x);
                     this.thisSortList.splice(index, 1);
