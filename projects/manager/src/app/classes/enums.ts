@@ -17,7 +17,7 @@ export enum WidgetCursorType {
     Allowed
 }
 
-export enum PropertyView {
+export enum WidgetInspectorView {
     Page,
     Row,
     Column,

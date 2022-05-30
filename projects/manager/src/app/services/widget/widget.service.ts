@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HorizontalAlignmentType, VerticalAlignmentType, Widget, WidgetType } from 'widgets';
-import { WidgetCursorType, WidgetHandle } from '../../classes/enums';
+import { WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
 import { ContainerDevComponent } from '../../components/container-dev/container-dev.component';
+import { ContainerWidgetDevComponent } from '../../components/container-widget-dev/container-widget-dev.component';
 import { RowDevComponent } from '../../components/row-dev/row-dev.component';
 import { BreakpointService } from '../breakpoint/breakpoint.service';
 
@@ -19,6 +20,7 @@ export class WidgetService {
   public widgetCursor!: WidgetCursor;
   public widgetDocument!: Document;
   public widgetHandleMove!: boolean;
+  public currentWidgetInspectorView!: WidgetInspectorView;
 
 
   constructor(private breakpointService: BreakpointService) { }
@@ -52,6 +54,15 @@ export class WidgetService {
 
 
 
+  // ------------------------------------------------------------------------Deselect Widget------------------------------------------------------------
+  public deselectWidget(): void {
+    this.selectedWidget = null!
+    this.selectedColumn = null!
+    this.selectedRow = null!;
+    this.currentWidgetInspectorView = WidgetInspectorView.Page;
+  }
+
+
   // ----------------------------------------------------------------------On Widget Handle Mousedown---------------------------------------------------------
   public onWidgetHandleMousedown(widgetHandle: WidgetHandle, mousedownEvent: MouseEvent) {
     this.widgetHandleMove = true;
@@ -60,7 +71,7 @@ export class WidgetService {
       // Top Left
       case WidgetHandle.TopLeft:
         if (this.selectedWidget.type == WidgetType.Image || this.selectedWidget.type == WidgetType.Video) {
-          this.onCornerWidgetHandleMousedown(mousedownEvent, WidgetHandle.TopLeft);
+          this.onMediaWidgetHandleMousedown(mousedownEvent, widgetHandle);
         } else {
           this.onTopWidgetHandleMousedown(mousedownEvent);
           this.onLeftWidgetHandleMousedown(mousedownEvent);
@@ -77,7 +88,7 @@ export class WidgetService {
       // Top Right
       case WidgetHandle.TopRight:
         if (this.selectedWidget.type == WidgetType.Image || this.selectedWidget.type == WidgetType.Video) {
-          this.onCornerWidgetHandleMousedown(mousedownEvent, WidgetHandle.TopRight);
+          this.onMediaWidgetHandleMousedown(mousedownEvent, widgetHandle);
         } else {
           this.onTopWidgetHandleMousedown(mousedownEvent);
           this.onRightWidgetHandleMousedown(mousedownEvent);
@@ -93,7 +104,7 @@ export class WidgetService {
       // Bottom Right
       case WidgetHandle.BottomRight:
         if (this.selectedWidget.type == WidgetType.Image || this.selectedWidget.type == WidgetType.Video) {
-          this.onCornerWidgetHandleMousedown(mousedownEvent, WidgetHandle.BottomRight);
+          this.onMediaWidgetHandleMousedown(mousedownEvent, widgetHandle);
         } else {
           this.onBottomWidgetHandleMousedown(mousedownEvent);
           this.onRightWidgetHandleMousedown(mousedownEvent);
@@ -111,7 +122,7 @@ export class WidgetService {
       // Bottom Left
       case WidgetHandle.BottomLeft:
         if (this.selectedWidget.type == WidgetType.Image || this.selectedWidget.type == WidgetType.Video) {
-          this.onCornerWidgetHandleMousedown(mousedownEvent, WidgetHandle.BottomLeft);
+          this.onMediaWidgetHandleMousedown(mousedownEvent, widgetHandle);
         } else {
           this.onBottomWidgetHandleMousedown(mousedownEvent);
           this.onLeftWidgetHandleMousedown(mousedownEvent);
@@ -128,93 +139,11 @@ export class WidgetService {
   }
 
 
-  onCornerWidgetHandleMousedown(mousedownEvent: MouseEvent, widgetHandle: WidgetHandle) {
-    const document = this.widgetDocument;
-    const column = this.selectedColumn;
-    const widget = this.selectedWidget;
-    let breakpoint = this.breakpointService.getBreakpoint(widget.horizontalAlignment.values.map(x => x.breakpoint as string));
-    const horizontalAlignmentValue = widget.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
-    const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
-    const row = this.selectedRow;
-    breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint as string));
-    const verticalAlignmentValue = row.verticalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
-    const verticalAlignmentType = verticalAlignmentValue ? verticalAlignmentValue.verticalAlignmentType : VerticalAlignmentType.Top;
-    const rect = widget.widgetElement.getBoundingClientRect();
-    const startWidth = rect.width;
-    const startHeight = rect.height;
-    let width = startWidth;
-    let height = startHeight;
-    const rowHeight = this.getRowHeight();
-    const aspectRatio = widget.widgetElement.getBoundingClientRect().height / widget.widgetElement.getBoundingClientRect().width;
-    
-
-    const onMousemove = (mousemoveEvent: MouseEvent) => {
-      const previousHeight = widget.height;
-
-      switch (widgetHandle) {
-        case WidgetHandle.TopLeft:
-          width -= mousemoveEvent.movementX * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
-          height -= mousemoveEvent.movementY * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
-          break;
-
-
-        case WidgetHandle.TopRight:
-          width += mousemoveEvent.movementX * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
-          height -= mousemoveEvent.movementY * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
-          break;
-
-        case WidgetHandle.BottomRight:
-          width += mousemoveEvent.movementX * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
-          height += mousemoveEvent.movementY * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
-          break;
-
-
-
-        case WidgetHandle.BottomLeft:
-          width -= mousemoveEvent.movementX * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
-          height += mousemoveEvent.movementY * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
-          break;
-      }
 
 
 
 
-      const scale = (width + height) / (startWidth + startHeight);
 
-      widget.width = startWidth * scale;
-      widget.height = widget.width * aspectRatio;
-
-      
-      // Vertical alignment is set to middle
-      if (verticalAlignmentType == VerticalAlignmentType.Middle) {
-
-        // Adjust the row's position
-        if (widget.height > rowHeight) {
-          
-          row.top -= (widget.height - previousHeight - Math.max(0, rowHeight - previousHeight)) * 0.5
-          row.rowElement.style.top = row.top + 'px';
-        } else {
-          if (previousHeight > rowHeight) {
-            row.top += (previousHeight - rowHeight) * 0.5;
-            row.rowElement.style.top = row.top + 'px';
-          }
-        }
-      }
-
-
-
-      widget.widgetElement.style.maxWidth = widget.width + 'px';
-    }
-
-
-    const onMouseup = () => {
-      document.removeEventListener('mousemove', onMousemove);
-    }
-
-    document.addEventListener('mousemove', onMousemove);
-    document.addEventListener('mouseup', onMouseup, { once: true });
-    mousedownEvent.stopPropagation();
-  }
 
 
   // ----------------------------------------------------------------------On Bottom Widget Handle Mousedown--------------------------------------------------
@@ -228,6 +157,7 @@ export class WidgetService {
     const minHeight = this.getMinHeight();
     const widget = this.selectedWidget;
 
+    widget.height = widget.widgetElement.clientHeight;
 
     const onMousemove = (mousemoveEvent: MouseEvent) => {
       const previousHeight = widget.height;
@@ -248,35 +178,46 @@ export class WidgetService {
         // Adjust the row's position
         if (widget.height > rowHeight) {
           row.top -= delta - Math.max(0, rowHeight - previousHeight) * 0.5;
-          row.rowElement.style.top = row.top + 'px';
         } else {
           if (previousHeight > rowHeight) {
             row.top += (previousHeight - rowHeight) * 0.5;
-            row.rowElement.style.top = row.top + 'px';
           }
         }
-      } else
 
         // Vertical alignment is set to bottom
-        if (verticalAlignmentType == VerticalAlignmentType.Bottom) {
-          // Adjust the row's position
-          if (widget.height < rowHeight) {
-            if (previousHeight > rowHeight) {
-              row.top += widget.height - rowHeight;
-            } else {
-              row.top += delta;
-            }
-
-            row.rowElement.style.top = row.top + 'px';
+      } else if (verticalAlignmentType == VerticalAlignmentType.Bottom) {
+        // Adjust the row's position
+        if (widget.height < rowHeight) {
+          if (previousHeight > rowHeight) {
+            row.top += widget.height - rowHeight;
           } else {
-            if (previousHeight < rowHeight) {
-              row.top -= previousHeight - rowHeight;
-              row.rowElement.style.top = row.top + 'px';
-            }
+            row.top += delta;
+          }
+
+        } else {
+          if (previousHeight < rowHeight) {
+            row.top -= previousHeight - rowHeight;
           }
         }
+      }
 
+
+      // Get the new row top
+      const newRowTop = this.getNewRowTopAfterContainerTopCollision(row.top);
+
+      // If the new row top is different than the old row top
+      if (row.top != newRowTop) {
+        delta = newRowTop - row.top;
+        row.top = newRowTop;
+        // Set the new height
+        widget.height -= delta * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
+      }
+
+
+      row.rowElement.style.top = row.top + 'px';
       widget.widgetElement.style.minHeight = widget.height + 'px';
+      this.manageRowCollision(row);
+      this.onRowChange(row.containerComponent);
     }
 
 
@@ -306,6 +247,8 @@ export class WidgetService {
     const minHeight = this.getMinHeight();
     const widget = this.selectedWidget;
 
+    widget.height = widget.widgetElement.clientHeight;
+
     const onMousemove = (mousemoveEvent: MouseEvent) => {
       const previousHeight = widget.height;
       let delta = mousemoveEvent.movementY;
@@ -324,45 +267,52 @@ export class WidgetService {
       // Vertical alignment is set to top
       if (verticalAlignmentType == VerticalAlignmentType.Top) {
         row.top += delta;
-        row.rowElement.style.top = row.top + 'px';
-      } else
+
+
         // Vertical alignment is set to middle
-        if (verticalAlignmentType == VerticalAlignmentType.Middle) {
+      } else if (verticalAlignmentType == VerticalAlignmentType.Middle) {
 
-          // Adjust the row's position
-          if (widget.height > rowHeight) {
-            row.top += delta + Math.max(0, rowHeight - previousHeight) * 0.5;
-            row.rowElement.style.top = row.top + 'px';
+        // Adjust the row's position
+        if (widget.height > rowHeight) {
+          row.top += delta + Math.max(0, rowHeight - previousHeight) * 0.5;
+        } else {
+          if (previousHeight > rowHeight) {
+            row.top += (previousHeight - rowHeight) * 0.5;
+          }
+        }
+
+        // Vertical alignment is set to bottom
+      } else if (verticalAlignmentType == VerticalAlignmentType.Bottom) {
+        // Adjust the row's position
+        if (widget.height < rowHeight) {
+          if (previousHeight > rowHeight) {
+            row.top += previousHeight - rowHeight;
+          }
+        } else {
+
+          if (previousHeight < rowHeight) {
+            row.top -= widget.height - rowHeight;
           } else {
-            if (previousHeight > rowHeight) {
-              row.top += (previousHeight - rowHeight) * 0.5;
-              row.rowElement.style.top = row.top + 'px';
-            }
+            row.top += delta;
           }
-        } else
-          // Vertical alignment is set to bottom
-          if (verticalAlignmentType == VerticalAlignmentType.Bottom) {
-            // Adjust the row's position
-            if (widget.height < rowHeight) {
-              if (previousHeight > rowHeight) {
-                row.top += previousHeight - rowHeight;
-              }
+        }
+      }
 
-              row.rowElement.style.top = row.top + 'px';
-            } else {
+      // Get the new row top
+      const newRowTop = this.getNewRowTopAfterContainerTopCollision(row.top);
 
-              if (previousHeight < rowHeight) {
-                row.top -= widget.height - rowHeight;
-                row.rowElement.style.top = row.top + 'px';
-              } else {
-                row.top += delta;
-                row.rowElement.style.top = row.top + 'px';
-              }
-            }
-          }
+      // If the new row top is different than the old row top
+      if (row.top != newRowTop) {
+        delta = newRowTop - row.top;
+        row.top = newRowTop;
+        // Set the new height
+        widget.height -= delta * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
+      }
 
-
+      row.rowElement.style.top = row.top + 'px';
       widget.widgetElement.style.minHeight = widget.height + 'px';
+      this.manageRowCollision(row);
+      this.onRowChange(row.containerComponent);
     }
 
 
@@ -459,6 +409,151 @@ export class WidgetService {
 
 
 
+  // ------------------------------------------------------------------On Media Widget Handle Mousedown---------------------------------------------------------
+  onMediaWidgetHandleMousedown(mousedownEvent: MouseEvent, widgetHandle: WidgetHandle) {
+    const document = this.widgetDocument;
+    const widget = this.selectedWidget;
+    let breakpoint = this.breakpointService.getBreakpoint(widget.horizontalAlignment.values.map(x => x.breakpoint as string));
+    const horizontalAlignmentValue = widget.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
+    const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
+    const row = this.selectedRow;
+    breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint as string));
+    const verticalAlignmentValue = row.verticalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
+    const verticalAlignmentType = verticalAlignmentValue ? verticalAlignmentValue.verticalAlignmentType : VerticalAlignmentType.Top;
+    const rect = widget.widgetElement.getBoundingClientRect();
+    const startWidth = rect.width;
+    const startHeight = rect.height;
+    let width = startWidth;
+    let height = startHeight;
+    const rowHeight = this.getRowHeight();
+    const aspectRatio = widget.widgetElement.getBoundingClientRect().height / widget.widgetElement.getBoundingClientRect().width;
+    widget.height = widget.widgetElement.clientHeight;
+
+    const onMousemove = (mousemoveEvent: MouseEvent) => {
+      const previousHeight = widget.height;
+
+      // This is used to scale in the correct direction
+      switch (widgetHandle) {
+        case WidgetHandle.TopLeft:
+          width -= mousemoveEvent.movementX * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
+          height -= mousemoveEvent.movementY * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
+          break;
+
+
+        case WidgetHandle.TopRight:
+          width += mousemoveEvent.movementX * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
+          height -= mousemoveEvent.movementY * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
+          break;
+
+        case WidgetHandle.BottomRight:
+          width += mousemoveEvent.movementX * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
+          height += mousemoveEvent.movementY * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
+          break;
+
+
+
+        case WidgetHandle.BottomLeft:
+          width -= mousemoveEvent.movementX * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
+          height += mousemoveEvent.movementY * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
+          break;
+      }
+
+      // Get the new scale
+      const scale = (width + height) / (startWidth + startHeight);
+
+      // Set the new width and height
+      widget.width = startWidth * scale;
+      widget.height = widget.width * aspectRatio;
+
+
+      // Vertical alignment is set to middle
+      if (verticalAlignmentType == VerticalAlignmentType.Middle || verticalAlignmentType == VerticalAlignmentType.Bottom) {
+
+        // Adjust the row's position
+        if (widget.height > rowHeight) {
+          row.top -= (widget.height - previousHeight - Math.max(0, rowHeight - previousHeight)) * (verticalAlignmentType == VerticalAlignmentType.Middle ? 0.5 : 1);
+        } else {
+          if (previousHeight > rowHeight) {
+            row.top += (previousHeight - rowHeight) * (verticalAlignmentType == VerticalAlignmentType.Middle ? 0.5 : 1);
+          }
+        }
+      }
+
+
+      // Get the new row top
+      const newRowTop = this.getNewRowTopAfterContainerTopCollision(row.top);
+
+      // If the new row top is different than the old row top
+      if (row.top != newRowTop) {
+        const diff = newRowTop - row.top;
+
+        widget.width -= diff * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1) / aspectRatio;
+        widget.height -= diff * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
+        row.top = newRowTop;
+      }
+
+
+      row.rowElement.style.top = row.top + 'px';
+      widget.widgetElement.style.maxWidth = widget.width + 'px';
+      this.manageRowCollision(row);
+      this.onRowChange(row.containerComponent);
+    }
+
+
+    const onMouseup = () => {
+      document.removeEventListener('mousemove', onMousemove);
+    }
+
+    document.addEventListener('mousemove', onMousemove);
+    document.addEventListener('mouseup', onMouseup, { once: true });
+    mousedownEvent.stopPropagation();
+  }
+
+
+
+
+
+
+  // ----------------------------------------------------------------------On Row Mousedown------------------------------------------------
+  public onRowMousedown(mousedownEvent: MouseEvent): void {
+    mousedownEvent.stopPropagation();
+
+    const row = this.selectedRow;
+    const rowElement = row.rowElement;
+    const document = this.widgetDocument;
+
+    const onRowMousemove = (mousemoveEvent: MouseEvent) => {
+      row.top = this.getNewRowTopAfterContainerTopCollision(row.top + mousemoveEvent.movementY);
+      rowElement.style.top = row.top + 'px';
+
+      this.manageRowCollision(row);
+      this.onRowChange(row.containerComponent);
+    }
+
+    const onRowMouseup = () => {
+      document.removeEventListener('mousemove', onRowMousemove);
+      document.removeEventListener('mouseup', onRowMouseup);
+    }
+
+    document.addEventListener('mousemove', onRowMousemove);
+    document.addEventListener('mouseup', onRowMouseup);
+  }
+
+
+
+
+
+
+  // ----------------------------------------------------------------------On Row Change------------------------------------------------
+  public onRowChange(container: ContainerDevComponent): void {
+    const maxBottom = container.rows.map(x => x.rowElement.getBoundingClientRect().bottom).reduce((a, b) => Math.max(a, b));
+    container.host.onRowChange(maxBottom - container.viewContainerRef.element.nativeElement.parentElement.getBoundingClientRect().top);
+  }
+
+
+
+
+
 
   // ----------------------------------------------------------------------Get Row Height------------------------------------------------
   private getRowHeight(): number {
@@ -482,7 +577,80 @@ export class WidgetService {
 
   // ----------------------------------------------------------------------Get Min Height------------------------------------------------
   private getMinHeight(): number {
-    const children: Array<Element> = Array.from(this.selectedWidget.widgetElement.children).filter(x => x.id != 'handles' && x.id != 'cover');
+    if (this.selectedWidget.type == WidgetType.Container) {
+      const containerWidget = this.selectedWidget as ContainerWidgetDevComponent;
+      const container = containerWidget.container as ContainerDevComponent;
+      const maxBottom = container.rows && container.rows.length > 0 ?
+        container.rows.map(x => x.rowElement.getBoundingClientRect().bottom).reduce((a, b) => Math.max(a, b)) : 0;
+      const containerTop = container.viewContainerRef.element.nativeElement.parentElement.getBoundingClientRect().top;
+
+      return maxBottom - containerTop;
+    }
+
+    const children: Array<Element> = Array.from(this.selectedWidget.widgetElement.children).filter(x => x.id != 'handles' && x.id != 'cover' && x.id != 'selection');
     return Math.max(...children.map((x: any) => x.offsetHeight));
+  }
+
+
+
+
+
+  // --------------------------------------------------------------------Manage Row Collision---------------------------------------------
+  private manageRowCollision(row: RowDevComponent): void {
+    const rowTop = row.top;
+    const rowBottom = rowTop + row.rowElement.getBoundingClientRect().height;
+
+    row.containerComponent.rows
+      .filter(x => x != row)
+      .forEach((otherRow: RowDevComponent) => {
+        const otherRowElement = otherRow.rowElement;
+        const otherRowElementClientRect = otherRowElement.getBoundingClientRect();
+        const otherRowElementTop = parseInt(otherRowElement.style.top);
+        const otherRowElementBottom = otherRowElementTop + otherRowElementClientRect.height;
+
+        if (rowTop < otherRowElementBottom && rowBottom > otherRowElementBottom) {
+          const otherRowElementNewTop = rowTop - otherRowElementClientRect.height;
+
+          otherRow.top = otherRowElementNewTop;
+          otherRowElement.style.top = otherRowElementNewTop + 'px';
+
+
+          this.manageRowCollision(otherRow);
+        } else if (rowBottom > otherRowElementTop && rowTop < otherRowElementTop) {
+
+          const otherRowElementNewTop = rowBottom;
+
+          otherRow.top = otherRowElementNewTop;
+          otherRowElement.style.top = otherRowElementNewTop + 'px';
+
+          this.manageRowCollision(otherRow);
+        }
+      });
+  }
+
+
+
+
+  // ---------------------------------------------------------Get New Row Top After Container Top Collision---------------------------------------------
+  private getNewRowTopAfterContainerTopCollision(newTop: number): number {
+    const row = this.selectedRow;
+    const rowElement = row.rowElement;
+    const otherRowElements = row.containerComponent.rows
+      .map(x => x.rowElement)
+      .filter(x => x != rowElement && x.getBoundingClientRect().bottom <= rowElement.getBoundingClientRect().top);
+
+
+    newTop = Math.max(0, newTop);
+
+
+    if (otherRowElements.length > 0) {
+      const totalRowHeight = otherRowElements
+        .map(x => x.getBoundingClientRect().height)
+        .reduce((a, b) => a + b);
+
+      if (newTop <= totalRowHeight) newTop = totalRowHeight;
+    }
+
+    return newTop;
   }
 }

@@ -1,7 +1,8 @@
 import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angular/core';
 import { ColumnComponent, Widget, WidgetData, WidgetType } from 'widgets';
-import { WidgetCursorType } from '../../classes/enums';
+import { WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
+import { ContainerWidgetDevComponent } from '../container-widget-dev/container-widget-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
 
 @Component({
@@ -20,11 +21,22 @@ export class ColumnDevComponent extends ColumnComponent {
     const widgetComponentRef = await super.createWidgetComponentRef(widgetData);
     const widgetComponent = widgetComponentRef.instance;
 
+    if (widgetData.widgetType == WidgetType.Container) {
+      const containerWidget = widgetComponent as ContainerWidgetDevComponent;
+
+      containerWidget.hostContainer = this.rowComponent.containerComponent;
+    }
+
     this.setSelectedWidget(widgetComponent);
 
     widgetComponentRef.location.nativeElement.firstElementChild.addEventListener('mousedown', () => {
       this.setSelectedWidget(widgetComponent);
     });
+
+    window.setTimeout(()=> {
+      this.widgetService.onRowChange(this.rowComponent.containerComponent);
+    });
+    
 
     return widgetComponentRef;
   }
@@ -36,6 +48,7 @@ export class ColumnDevComponent extends ColumnComponent {
     this.widgetService.selectedWidget = widget;
     this.widgetService.selectedRow = this.rowComponent;
     this.widgetService.selectedColumn = this;
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
   }
 
 

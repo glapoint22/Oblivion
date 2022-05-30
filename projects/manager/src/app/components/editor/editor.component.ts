@@ -1,6 +1,8 @@
-import { Compiler, Component, ComponentFactoryResolver, ComponentRef, Injector, NgModuleFactory, ViewContainerRef } from '@angular/core';
+import { Compiler, Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, NgModuleFactory, ViewChild, ViewContainerRef } from '@angular/core';
+import { ContainerHost } from '../../classes/container-host';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
+import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { PageDevComponent } from '../page-dev/page-dev.component';
 import { PageDevModule } from '../page-dev/page-dev.module';
 
@@ -9,11 +11,16 @@ import { PageDevModule } from '../page-dev/page-dev.module';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent {
+export class EditorComponent implements ContainerHost {
+  @ViewChild('editorWindow') editorWindow!: ElementRef<HTMLElement>;
+  @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public page!: PageDevComponent;
   public showResizeCover!: boolean;
   public document = document;
   public widgetCursors = WidgetCursor.getWidgetCursors();
+  public windowWidth = 1600;
+  public windowHeight = 900;
+  private fixedHeight = this.windowHeight;
 
   constructor
     (
@@ -24,6 +31,12 @@ export class EditorComponent {
       private injector: Injector
     ) { }
 
+    
+    ngAfterViewInit() {
+      this.editorWindow.nativeElement.style.width = this.windowWidth + 'px';
+      this.editorWindow.nativeElement.style.height = this.windowHeight + 'px';
+    }
+
 
   onLoad(iframe: HTMLIFrameElement) {
     const iframeContentDocument = iframe.contentDocument!;
@@ -33,6 +46,7 @@ export class EditorComponent {
     const componentRef: ComponentRef<PageDevComponent> = this.viewContainerRef.createComponent(compFactory, undefined, moduleRef.injector);
 
     this.page = componentRef.instance;
+    this.page.host = this;
     this.widgetService.widgetDocument = iframeContentDocument;
     iframeContentDocument.head.innerHTML = document.head.innerHTML;
     iframeContentDocument.body.appendChild(componentRef.location.nativeElement);
@@ -50,6 +64,11 @@ export class EditorComponent {
 
 
   onResizeMousedown(editorWindow: HTMLElement, direction?: number) {
+    const container = this.page.container as ContainerDevComponent;
+    const minSize = Math.max(240, container.rows && container.rows.length > 0 ? container.rows.map(x => x.rowElement.getBoundingClientRect().bottom).reduce((a, b) => Math.max(a, b)) + 144 : 0);
+    const maxSize = 1600;
+
+
     // Assign the resize cursor
     if (direction) {
       document.body.style.cursor = 'e-resize'
@@ -60,8 +79,7 @@ export class EditorComponent {
     this.showResizeCover = true;
 
     const onResizeMousemove = (mousemoveEvent: MouseEvent) => {
-      const minSize = 240;
-      const maxSize = 1600;
+
 
       // Size the editor window
       if (direction) {
@@ -69,8 +87,9 @@ export class EditorComponent {
         editorWindow.style.width = width + 'px';
 
       } else {
-        const height = Math.max(minSize, editorWindow.clientHeight + mousemoveEvent.movementY);
-        editorWindow.style.height = height + 'px';
+        this.windowHeight = Math.max(minSize, editorWindow.clientHeight + mousemoveEvent.movementY);
+        this.fixedHeight = this.windowHeight;
+        editorWindow.style.height = this.windowHeight + 'px';
       }
     }
 
@@ -83,5 +102,18 @@ export class EditorComponent {
 
     window.addEventListener('mousemove', onResizeMousemove);
     window.addEventListener('mouseup', onResizeMouseUp);
+  }
+
+
+
+
+  onRowChange(maxBottom: number): void {
+    const height = Math.max(this.fixedHeight, maxBottom + 148);
+    const scroll = height > this.editorWindow.nativeElement.clientHeight;
+
+    this.editorWindow.nativeElement.style.height = height + 'px';
+
+    if (scroll)
+      this.editorWindow.nativeElement.parentElement?.scrollTo(0, this.editorWindow.nativeElement.parentElement.scrollHeight);
   }
 }

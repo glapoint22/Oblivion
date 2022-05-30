@@ -1,6 +1,6 @@
 <div #widget style="position: relative; width: 100%; user-select: none;"
     [style.backgroundColor]="background && background.enabled && background.rgbColor.toRGBString() ? background.rgbColor.toRGBString(): null"
-    [style.border]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
+    [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
     [style.borderRadius]="
         corners &&
         (corners.topLeft > 0 ||
@@ -14,19 +14,25 @@
                         'background-position': background && background.enabled && background.image ? background.image.position : null,
                         'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
                         'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"
-    [style.minHeight.px]="height" [ngClass]="{'selected-widget': widgetService.selectedWidget == this}">
+    [style.minHeight.px]="height">
 
     <container-dev #container></container-dev>
 
+    <!-- Selection -->
+    <div id="selection" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none;"
+        [ngClass]="{'selected-widget': widgetService.selectedWidget == this}"></div>
+
+
     <!-- Handles -->
     <div id="handles" *ngIf="widgetService.selectedWidget == this">
-        <div class="handle top-left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.TopLeft, $event)"></div>
-        <div class="handle top" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Top, $event)"></div>
-        <div class="handle top-right" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.TopRight, $event)"></div>
-        <div class="handle left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Left, $event)"></div>
-        <div class="handle bottom-left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.BottomLeft, $event)"></div>
-        <div class="handle bottom" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Bottom, $event)"></div>
-        <div class="handle bottom-right" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.BottomRight, $event)"></div>
-        <div class="handle right" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Right, $event)"></div>
+        <div class="handle top-left" (mousedown)="onWidgetHandleMousedown(widgetHandle.TopLeft, $event)">
+        </div>
+        <div class="handle top" (mousedown)="onWidgetHandleMousedown(widgetHandle.Top, $event)"></div>
+        <div class="handle top-right" (mousedown)="onWidgetHandleMousedown(widgetHandle.TopRight, $event)"></div>
+        <div class="handle left" (mousedown)="onWidgetHandleMousedown(widgetHandle.Left, $event)"></div>
+        <div class="handle bottom-left" (mousedown)="onWidgetHandleMousedown(widgetHandle.BottomLeft, $event)"></div>
+        <div class="handle bottom" (mousedown)="onWidgetHandleMousedown(widgetHandle.Bottom, $event)"></div>
+        <div class="handle bottom-right" (mousedown)="onWidgetHandleMousedown(widgetHandle.BottomRight, $event)"></div>
+        <div class="handle right" (mousedown)="onWidgetHandleMousedown(widgetHandle.Right, $event)"></div>
     </div>
 </div>

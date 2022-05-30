@@ -1,5 +1,6 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { ContainerComponent, Row } from 'widgets';
+import { ContainerHost } from '../../classes/container-host';
 import { WidgetCursorType } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { RowDevComponent } from '../row-dev/row-dev.component';
@@ -10,8 +11,9 @@ import { RowDevComponent } from '../row-dev/row-dev.component';
   styleUrls: ['./container-dev.component.scss']
 })
 export class ContainerDevComponent extends ContainerComponent {
-  public rowElements: Array<HTMLElement> = new Array<HTMLElement>();
+  public rows: Array<RowDevComponent> = new Array<RowDevComponent>();
   public showRowIndicator!: boolean;
+  public host!: ContainerHost;
 
   constructor(resolver: ComponentFactoryResolver, private widgetService: WidgetService) { super(resolver) }
 
@@ -67,12 +69,10 @@ export class ContainerDevComponent extends ContainerComponent {
   createRowComponentRef(): ComponentRef<RowDevComponent> {
     const rowComponentFactory: ComponentFactory<RowDevComponent> = this.resolver.resolveComponentFactory(RowDevComponent);
     const rowComponentRef: ComponentRef<RowDevComponent> = this.viewContainerRef.createComponent(rowComponentFactory);
-    const rowElement: HTMLElement = rowComponentRef.location.nativeElement.firstElementChild;
     const rowComponent: RowDevComponent = rowComponentRef.instance;
 
-    this.rowElements.push(rowElement);
+    this.rows.push(rowComponent);
     rowComponent.containerComponent = this;
-
     return rowComponentRef;
   }
 }
