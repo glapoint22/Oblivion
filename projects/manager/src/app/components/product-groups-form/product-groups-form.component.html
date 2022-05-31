@@ -1,0 +1,110 @@
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div class="modal-base">
+        <div class="modal-bar">
+            <div>Product Groups</div>
+            <div class="modal-x-button"
+                 (mouseover)="productGroupsFormManager.overButton = true"
+                 (mouseout)="productGroupsFormManager.overButton = false"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+        <div class="modal-bar-drop-shadow"></div>
+
+        <div class="modal-content">
+            <div class="icon-buttons-container">
+
+                <!-- Search icon -->
+                <icon-button class="search-icon-button"
+                             [icon]="productGroupsFormManager.searchIcon"
+                             [title]="productGroupsFormManager.searchIconButtonTitle"
+                             [isDisabled]="false"
+                             (onOver)="productGroupsFormManager.overButton = $event"
+                             (onClick)="productGroupsFormManager.toggleSearch()">
+                </icon-button>
+
+                <div class="icons">
+                    <!-- Delete icon -->
+                    <icon-button [icon]="'fas fa-trash-alt'"
+                                 [title]="productGroupsFormManager.deleteIconButtonTitle"
+                                 [isDisabled]="productGroupsFormManager.isDisabled('deleteDisabled')"
+                                 (onOver)="productGroupsFormManager.overButton = $event"
+                                 (onClick)="productGroupsFormManager.delete()">
+                    </icon-button>
+
+                    <!-- Edit icon -->
+                    <icon-button [icon]="'fas fa-pencil-alt'"
+                                 [title]="productGroupsFormManager.editIconButtonTitle"
+                                 [isDisabled]="productGroupsFormManager.isDisabled('editDisabled')"
+                                 (onOver)="productGroupsFormManager.overButton = $event"
+                                 (onClick)="productGroupsFormManager.edit()">
+                    </icon-button>
+
+                    <ng-container *ngIf="!productGroupsFormManager.searchMode">
+                        <!-- Add icon -->
+                        <icon-button [icon]="'fas fa-plus-circle'"
+                                     [title]="productGroupsFormManager.addIconButtonTitle"
+                                     [isDisabled]="productGroupsFormManager.isDisabled('addDisabled')"
+                                     (onOver)="productGroupsFormManager.overButton = $event"
+                                     (onClick)="productGroupsFormManager.add()">
+                        </icon-button>
+                    </ng-container>
+                </div>
+            </div>
+
+
+            <!-- Hierarchy -->
+            <ng-container *ngIf="!productGroupsFormManager.searchMode">
+                <div class="modal-list-container">
+                    <list #listComponent
+                               [sourceList]="productGroupsFormManager.thisArray"
+                               [options]="productGroupsFormManager.listOptions"
+                               (onListUpdate)="productGroupsFormManager.listUpdate = $event">
+                </list>
+                </div>
+            </ng-container>
+
+
+            <!-- Search -->
+            <ng-container *ngIf="productGroupsFormManager.searchMode">
+                <input id="productGroupsFormSearchInput"
+                       placeholder="Search"
+                       (input)="productGroupsFormManager.onSearchInputChange($event.target)">
+
+                <div class="column-name-container">
+                    <div class="column-name">Name</div>
+                    <div class="column-name">Type</div>
+                </div>
+
+                <div class="list-container">
+                    <ng-container *ngIf="productGroupsFormManager.thisSearchList.length == 0">
+                        <div class="no-search-results">
+                            No search results available
+                        </div>
+                    </ng-container>
+                    
+                    <ng-container *ngIf="productGroupsFormManager.thisSearchList.length > 0">
+                        <list #searchComponent
+                                           [sourceList]="productGroupsFormManager.thisSearchList"
+                                           [options]="productGroupsFormManager.searchOptions"
+                                           (onListUpdate)="productGroupsFormManager.searchUpdate = $event">
+                        </list>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button class="dark-button"
+                    (mouseover)="productGroupsFormManager.overButton = true"
+                    (mouseout)="productGroupsFormManager.overButton = false"
+                    (click)="close()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>

@@ -739,9 +739,8 @@ export class ListManager {
 
       // If the list is NOT sortable
     } else {
-      this.resetItemInnerText(); // * Used for hierarchy list * (calling this puts back the indent)
+      this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
     }
-
     this.addEditUpdate(this.editedItem);
 
     this.reselectItem();
@@ -758,7 +757,8 @@ export class ListManager {
 
       // If we pressed the (Escape) key
       if (isEscape) {
-        // If we were adding a new item 
+
+        // If we ARE adding a new item 
         if (this.newItem) {
 
           // Remove the item
@@ -774,8 +774,15 @@ export class ListManager {
           // As long as the edited name is different from what it was before the edit
           // if (trimmedEditedItem != this.editedItem.name!.trim()) {
 
+
+
           // Reset the item back to the way it was before the edit
-          this.resetItemInnerText(); // * Used for hierarchy list * (calling this puts back the indent)
+          this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.name!.trim()!;
+
+
+
+
+
           // }
           this.reselectItem();
         }
@@ -815,8 +822,7 @@ export class ListManager {
 
               // If the list is NOT sortable
             } else {
-
-              this.resetItemInnerText(); // * Used for hierarchy list * (calling this puts back the indent)
+              this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
             }
 
             // Send update
@@ -824,8 +830,10 @@ export class ListManager {
 
 
           }
+
+          // If the edited name has NOT changed
         } else {
-          this.resetItemInnerText(); // * Used for hierarchy list * (calling this puts back the indent)
+          this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
         }
 
         this.reselectItem();
@@ -859,8 +867,13 @@ export class ListManager {
           // If we were NOT adding a new list item
         } else {
 
+
+
           // Reset the item back to the way it was before the edit
-          this.resetItemInnerText();
+          this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.name!.trim()!;
+
+
+
 
           // if (this.selectable) {
           //   this.selectedItem = this.editedItem;
@@ -881,15 +894,14 @@ export class ListManager {
 
     }
 
-
-
-    this.setButtonsState();
+    // As long as the (Enter) key was NOT pressed
+    if (isEscape || isBlur) this.setButtonsState();
   }
 
 
   sort(listItem?: ListItem) {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
-    this.resetItemInnerText();
+    // listItem!.htmlItem!.nativeElement.innerText = listItem!.name?.trim()!;
     // return listItem
   }
 
@@ -937,9 +949,7 @@ export class ListManager {
 
 
 
-  resetItemInnerText() {
-    this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.name?.trim()!;
-  }
+  resetIndent() { }
 
 
 
@@ -1023,6 +1033,7 @@ export class ListManager {
 
 
   addEditUpdate(listItem: ListItem) {
+
     this.onListUpdate.next(
       {
         type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,

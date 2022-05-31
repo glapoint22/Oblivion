@@ -89,8 +89,8 @@ export class KeywordsFormManager extends ListUpdateManager {
 
     onHierarchyItemDelete(deletedItem: HierarchyItem) {
         super.onHierarchyItemDelete(deletedItem);
-        this.deleteItem<HierarchyItem>(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.hierarchyGroupID!);
-        this.deleteItem<MultiColumnItem>(this.keywordsService.selectedKeywordsSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
+        this.deleteItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.hierarchyGroupID!);
+        this.deleteItem(this.keywordsService.selectedKeywordsSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
     }
 
 
@@ -99,7 +99,7 @@ export class KeywordsFormManager extends ListUpdateManager {
 
     onSearchItemDelete(deletedItem: MultiColumnItem) {
         super.onSearchItemDelete(deletedItem);
-        this.deleteItem<MultiColumnItem>(this.keywordsService.selectedKeywordsSearchList, deletedItem, deletedItem.values[1].name);
-        this.deleteItem<HierarchyItem>(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
+        this.deleteItem(this.keywordsService.selectedKeywordsSearchList, deletedItem, deletedItem.values[1].name);
+        this.deleteItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
     }
 }

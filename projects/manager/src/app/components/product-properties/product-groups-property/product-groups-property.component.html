@@ -1,38 +1,90 @@
-<panel [title]="'Groups'">
-
+<panel [title]="'Product Groups'"
+       (onOpen)="productProductGroupsManager.onOpen()">
+       
     <div class="property-box-dark">
 
         <!-- Property Box Bar -->
         <div class="property-box-bar">
 
-            <!-- Icons -->
-            <div class="icons">
+            <!-- Search icon -->
+            <icon-button class="search-icon-button"
+                         [icon]="productProductGroupsManager.searchIcon"
+                         [title]="productProductGroupsManager.searchIconButtonTitle"
+                         [isDisabled]="false"
+                         (onOver)="productProductGroupsManager.overButton = $event"
+                         (onClick)="productProductGroupsManager.toggleSearch()">
+            </icon-button>
 
+            <div class="icons">
                 <!-- Delete icon -->
                 <icon-button [icon]="'fas fa-trash-alt'"
-                             [title]="'Delete'"
-                             [isDisabled]="listUpdate.deleteDisabled"
-                             (onOver)="list.overButton = $event"
-                             (onClick)="list.delete()">
+                             [title]="productProductGroupsManager.deleteIconButtonTitle"
+                             [isDisabled]="productProductGroupsManager.isDisabled('deleteDisabled')"
+                             (onOver)="productProductGroupsManager.overButton = $event"
+                             (onClick)="productProductGroupsManager.delete()">
                 </icon-button>
 
                 <!-- Edit icon -->
                 <icon-button [icon]="'fas fa-pencil-alt'"
-                             [title]="'Edit'"
-                             [isDisabled]="listUpdate.editDisabled"
-                             (onOver)="list.overButton = $event"
-                             (onClick)="list.edit()">
+                             [title]="productProductGroupsManager.editIconButtonTitle"
+                             [isDisabled]="productProductGroupsManager.isDisabled('editDisabled')"
+                             (onOver)="productProductGroupsManager.overButton = $event"
+                             (onClick)="productProductGroupsManager.edit()">
                 </icon-button>
 
-                <!-- Add icon -->
-                <icon-button [icon]="'fas fa-plus-circle'"
-                             [title]="'Add'"
-                             [isDisabled]="listUpdate.addDisabled"
-                             (onOver)="list.overButton = $event"
-                             (onClick)="list.add()">
-                </icon-button>
+                <ng-container *ngIf="!productProductGroupsManager.searchMode">
+                    <!-- Add icon -->
+                    <icon-button [icon]="'fas fa-plus-circle'"
+                                 [title]="productProductGroupsManager.addIconButtonTitle"
+                                 [isDisabled]="productProductGroupsManager.isDisabled('addDisabled')"
+                                 (onOver)="productProductGroupsManager.overButton = $event"
+                                 (onClick)="productProductGroupsManager.add()">
+                    </icon-button>
+                </ng-container>
             </div>
         </div>
-        <checkbox-list #list [sourceList]="productGroups" [options]="listOptions" (onListUpdate)="listUpdate = $event"></checkbox-list>
+        
+        <!-- Hierarchy -->
+        <ng-container *ngIf="!productProductGroupsManager.searchMode">
+            <list #listComponent
+                                [sourceList]="productProductGroupsManager.thisArray"
+                                [options]="productProductGroupsManager.listOptions"
+                                (onListUpdate)="productProductGroupsManager.listUpdate = $event">
+            </list>
+        </ng-container>
+
+        <!-- Search -->
+        <ng-container *ngIf="productProductGroupsManager.searchMode">
+            
+            <input id="productProductGroupsSearchInput"
+                    placeholder="Search"
+                    (input)="productProductGroupsManager.onSearchInputChange($event.target)">
+
+            <div class="column-name-container">
+                <div class="column-name">Name</div>
+                <div class="column-name">Type</div>
+            </div>
+
+            <div class="column-underline-container">
+                <div class="column-underline"></div>
+                <div class="column-underline"></div>
+            </div>
+
+
+            <ng-container *ngIf="productProductGroupsManager.thisSearchList.length == 0">
+                <div class="no-search-results">
+                    No search results available
+                </div>
+            </ng-container>
+            
+
+            <ng-container *ngIf="productProductGroupsManager.thisSearchList.length > 0">
+                <list #searchComponent
+                                   [sourceList]="productProductGroupsManager.thisSearchList"
+                                   [options]="productProductGroupsManager.searchOptions"
+                                   (onListUpdate)="productProductGroupsManager.searchUpdate = $event">
+                </list>
+            </ng-container>
+        </ng-container>
     </div>
 </panel>

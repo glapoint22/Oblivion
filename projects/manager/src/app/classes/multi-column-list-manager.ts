@@ -74,7 +74,7 @@ export class MultiColumnListManager extends ListManager {
 
 
     evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
-        
+
         const trimmedEditedValue = this.editableValue.htmlValue!.nativeElement.innerText.trim();
 
         // If the edited value has text written in it
@@ -86,8 +86,13 @@ export class MultiColumnListManager extends ListManager {
                 // As long as the edited name is different from what it was before the edit
                 // if (trimmedEditedValue != this.editableValue.name.trim()) {
 
-                    // Reset the item back to the way it was before the edit
-                    this.resetItemInnerText();
+
+                // Reset the item back to the way it was before the edit
+                this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
+
+
+
+
                 // }
 
                 // If we did NOT press the (Escape) key
@@ -110,9 +115,9 @@ export class MultiColumnListManager extends ListManager {
                     } else {
                         // Update the name property
                         this.editableValue.name = trimmedEditedValue!;
+
+                        this.addEditUpdate(this.editedItem as MultiColumnItem);
                     }
-                }else {
-                    this.resetItemInnerText();
                 }
             }
 
@@ -124,18 +129,16 @@ export class MultiColumnListManager extends ListManager {
             if (isEscape || isBlur) {
 
                 // Reset the item back to the way it was before the edit
-                this.resetItemInnerText();
+                this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
             }
         }
 
 
-
-
-        this.addEditUpdate(this.editedItem as MultiColumnItem);
-
-        this.reselectItem();
-
-        this.setButtonsState();
+        // As long as the (Enter) key was NOT pressed
+        if (isEscape || isBlur) {
+            this.reselectItem();
+            this.setButtonsState();
+        }
     }
 
 
@@ -145,9 +148,6 @@ export class MultiColumnListManager extends ListManager {
     }
 
 
-    resetItemInnerText() {
-        this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
-    }
 
     addEditUpdate(multiColumnItem: MultiColumnItem) {
         this.onListUpdate.next(
@@ -224,17 +224,17 @@ export class MultiColumnListManager extends ListManager {
     onDuplicatePromptClose() {
         // If a duplicate item was found while adding an item
         if (this.newItem) {
-          this.editableValue.htmlValue!.nativeElement.innerText = '';
-    
-          // If a duplicate item was found while editing an item
+            this.editableValue.htmlValue!.nativeElement.innerText = '';
+
+            // If a duplicate item was found while editing an item
         } else {
             this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
         }
-    
+
         this.setValueFocus();
         this.addDisabled = true;
         this.editDisabled = true;
         this.deleteDisabled = true;
         this.buttonsUpdate();
-      }
+    }
 }

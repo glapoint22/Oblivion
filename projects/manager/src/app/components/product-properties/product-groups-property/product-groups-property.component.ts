@@ -1,9 +1,9 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { ListUpdate } from '../../../classes/list-update';
-import { ListItem } from '../../../classes/list-item';
-import { ListUpdateType, MenuOptionType } from '../../../classes/enums';
-import { ListOptions } from '../../../classes/list-options';
-import { HierarchyComponent } from '../../hierarchies/hierarchy/hierarchy.component';
+import { Component, ViewChild } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DataService } from 'common';
+import { ProductProductGroupsManager } from '../../../classes/product-product-groups-manager';
+import { ProductGroupsService } from '../../../services/product-groups/product-groups.service';
+import { ListComponent } from '../../lists/list/list.component';
 
 @Component({
   selector: 'product-groups-property',
@@ -11,114 +11,16 @@ import { HierarchyComponent } from '../../hierarchies/hierarchy/hierarchy.compon
   styleUrls: ['./product-groups-property.component.scss']
 })
 export class ProductGroupsPropertyComponent {
-  @Input() productGroups!: Array<ListItem>;
-  @ViewChild('list') list!: HierarchyComponent;
-  public listOptions: ListOptions = new ListOptions();
+  @ViewChild('listComponent') listComponent!: ListComponent;
+  @ViewChild('searchComponent') searchComponent!: ListComponent;
+  public productProductGroupsManager: ProductProductGroupsManager = new ProductProductGroupsManager(this.dataService, this.sanitizer, this.productGroupsService);
 
+  constructor(private dataService: DataService, private sanitizer: DomSanitizer, private productGroupsService: ProductGroupsService) { }
 
-  ngAfterViewInit() {
-    this.listOptions = {
-      // verifyAddEdit: true,
-      deletePrompt: {
-        parentObj: this.list,
-        title: 'Delete',
-        primaryButton: {
-          name: 'Delete',
-          buttonFunction: this.list.delete
-        },
-        secondaryButton: {
-          name: 'Close'
-        },
-        tertiaryButton: {
-          name: 'Trumpy'
-        }
-      },
-      duplicatePrompt: {
-        parentObj: this.list,
-        title: 'Duplicate',
-        message: 'Duplicate Item',
-        secondaryButton: {
-          name: 'Close'
-        }
-      },
-      menu: {
-        parentObj: this.list,
-        menuOptions: [
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Add Group',
-            shortcut: 'Ctrl+A'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Edit Group',
-            shortcut: 'Ctrl+E'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Delete Group',
-            shortcut: 'Delete',
-            optionFunction: this.list.delete
-          }
-        ]
-      }
-    }
+  ngAfterViewChecked() {
+    this.productProductGroupsManager.searchComponent = this.searchComponent;
+    this.productProductGroupsManager.otherListComponent = this.productGroupsService.formListComponent;
+    this.productProductGroupsManager.listComponent = this.productGroupsService.productListComponent = this.listComponent;
+    this.productProductGroupsManager.searchInput = document.getElementById('productProductGroupsSearchInput') as HTMLInputElement;
   }
-  
-
-  private _listUpdate: ListUpdate = new ListUpdate();
-  public get listUpdate(): ListUpdate {
-    return this._listUpdate;
-  }
-  public set listUpdate(update: ListUpdate) {
-    this._listUpdate = update;
-
-    if (update.type == ListUpdateType.SelectedItems) {
-
-      
-      if(update.selectedItems!.length > 1) {
-        this.listOptions.menu!.menuOptions[1].isDisabled = true;
-        this.listOptions.menu!.menuOptions[2].name = 'Delete Groups';
-      }else {
-        this.listOptions.menu!.menuOptions[1].isDisabled = false;
-        this.listOptions.menu!.menuOptions[2].name = 'Delete Group';
-      }
-    }
-    
-    
-
-    if (update.type == ListUpdateType.Add) {
-      // this.productGroups[update.index!].id = 22;
-    }
-
-    if (update.type == ListUpdateType.Edit) {
-      
-      // console.log(update)
-    }
-
-    if(update.type == ListUpdateType.VerifyAddEdit) {
-      
-      // No match
-      // this.list.commitAddEdit();
-      
-      // Match found
-      // this.list.openDuplicatePrompt();
-    }
-
-    if(update.type == ListUpdateType.DeletePrompt) {
-      // console.log(update.deletedItems)
-
-      
-      this.listOptions.deletePrompt!.message = 'Make America Great Again';
-      // this.list.delete()
-    }
-
-    if (update.type == ListUpdateType.Delete) {
-      console.log(update)
-      // console.log(update.deletedItems)
-    }
-  }
-
-
-  
 }

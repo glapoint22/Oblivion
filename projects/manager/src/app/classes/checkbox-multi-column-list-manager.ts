@@ -1,5 +1,4 @@
 import { Subject } from "rxjs";
-import { CheckboxItem } from "./checkbox-item";
 import { CheckboxMultiColumnItem } from "./checkbox-multi-column-item";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
 import { ListUpdateType } from "./enums";
@@ -15,7 +14,7 @@ export class CheckboxMultiColumnListManager extends MultiColumnListManager {
     }
 
 
-    resetItemInnerText() {
+    resetIndent() {
         const index = this.sourceList.findIndex(x => x == this.editedItem);
 
         this.sourceList[index].hidden = true;

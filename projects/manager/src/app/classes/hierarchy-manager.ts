@@ -245,7 +245,7 @@ export class HierarchyManager extends ListManager {
 
 
 
-    resetItemInnerText() {
+    resetIndent() {
         // // Update the text content of the html item
         // this.editedItem!.htmlItem!.nativeElement.textContent = this.editedItem!.name!;
         const hierarchyItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
