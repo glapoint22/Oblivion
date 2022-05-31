@@ -19,10 +19,17 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
   public changeCount: number = 0;
   public caption: Caption = new Caption();
 
+
+
+
+  // -------------------------------------------------------------- Ng On Init ------------------------------------------------------------
   ngOnInit() {
     this.type = WidgetType.ProductSlider;
   }
 
+
+
+  // ------------------------------------------------------------ Ng On Changes -----------------------------------------------------------
   ngOnChanges() {
     if (this.sliderContainer) {
       this.productGroups = [];
@@ -33,6 +40,8 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
     if (!this.caption.text) this.caption.text = this.text;
   }
 
+
+  // ------------------------------------------------------------ Set Widget -----------------------------------------------------------
   setWidget(productSliderWidgetData: ProductSliderWidgetData) {
     this.products = productSliderWidgetData.products;
     this.caption.setData(productSliderWidgetData.caption);
@@ -40,11 +49,19 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
     window.addEventListener('resize', this.onWindowResize);
   }
 
+
+
+
+  // ------------------------------------------------------------ Ng After View Init -----------------------------------------------------------
   ngAfterViewInit() {
     if (this.products) this.setProductGroups();
   }
 
 
+
+
+
+  // ------------------------------------------------------------ Set Product Groups -----------------------------------------------------------
   setProductGroups() {
     if (this.sliderContainer) {
       const productsPerGroup = Math.round(this.sliderContainer.nativeElement.clientWidth / 250);
@@ -58,11 +75,20 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
   }
 
 
+  // ------------------------------------------------------------ On Window Resize -----------------------------------------------------------
   onWindowResize = () => {
     this.ngOnChanges();
   }
 
+
+  // ------------------------------------------------------------ Ng On Destroy -----------------------------------------------------------
   ngOnDestroy() {
     window.removeEventListener('resize', this.onWindowResize);
+  }
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): ProductSliderWidgetData {
+    throw new Error('Method not implemented.');
   }
 }

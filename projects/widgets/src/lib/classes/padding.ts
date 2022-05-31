@@ -15,6 +15,7 @@ export class Padding {
     setData(padding: Padding) {
         if (padding) {
             if (padding.values) this.values = padding.values;
+            if (padding.constrain) this.constrain = padding.constrain;
         }
     }
 
@@ -33,5 +34,18 @@ export class Padding {
             if (value.padding > 0 || value.breakpoint) element.classList.add(value.paddingType + '-' + value.padding +
                 (value.breakpoint ? '-' + value.breakpoint : ''));
         });
+    }
+
+
+    getData(): Padding {
+        const padding = new Padding();
+
+        padding.constrain = this.constrain;
+        padding.values = [];
+        this.values.forEach((paddingValue: PaddingValue) => {
+            padding.values.push(new PaddingValue(paddingValue.paddingType, paddingValue.padding, paddingValue.breakpoint));
+        });
+
+        return padding;
     }
 }

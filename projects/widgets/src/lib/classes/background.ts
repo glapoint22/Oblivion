@@ -3,7 +3,7 @@ import { BackgroundImage } from "./background-image";
 import { Enableable } from "./enableable";
 
 export class Background implements Enableable {
-    public image!: BackgroundImage;
+    public image: BackgroundImage = new BackgroundImage();
     public enabled!: boolean;
 
 
@@ -20,11 +20,8 @@ export class Background implements Enableable {
 
     private _rgbColor!: Color;
     public get rgbColor(): Color {
+        this._color = this._rgbColor.toHex();
         return this._rgbColor;
-    }
-    public set rgbColor(v: Color) {
-        this._color = v.toRGBString();
-        this._rgbColor = v;
     }
 
 
@@ -38,5 +35,17 @@ export class Background implements Enableable {
             if (background.image) this.image = background.image;
             if (background.enabled) this.enabled = background.enabled;
         }
+    }
+
+
+
+    getData(): Background {
+        const background = new Background();
+
+        background.color = this.color;
+        if (this.image) background.image = this.image.getData();
+        background.enabled = this.enabled;
+
+        return background;
     }
 }

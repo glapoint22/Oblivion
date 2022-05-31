@@ -43,6 +43,9 @@ export class GridWidgetComponent extends Widget {
     private gridWidgetService: GridWidgetService,
   ) { super() }
 
+
+
+  // ------------------------------------------------------------- Ng On Init ------------------------------------------------------------------
   ngOnInit() {
     if (this.route.snapshot.queryParamMap.has('search')) {
       this.sortOptions.unshift({
@@ -55,6 +58,7 @@ export class GridWidgetComponent extends Widget {
   }
 
 
+  // -------------------------------------------------------------- Set Widget ------------------------------------------------------------------
   setWidget(gridWidgetData: GridWidgetData): void {
     this.gridData = gridWidgetData.gridData;
     if (this.gridWidgetSideMenu) this.gridWidgetSideMenu.filters = this.gridData.filters;
@@ -68,6 +72,7 @@ export class GridWidgetComponent extends Widget {
 
 
 
+  // -------------------------------------------------------------- Clear Filters ------------------------------------------------------------------
   clearFilters() {
     this.router.navigate([], {
       queryParams: { filters: null },
@@ -76,17 +81,27 @@ export class GridWidgetComponent extends Widget {
   }
 
 
+
+  // -------------------------------------------------------------- Get Page Number ------------------------------------------------------------------
   getPageNumber() {
     return this.route.snapshot.queryParams.page ? parseInt(this.route.snapshot.queryParams.page) : 1;
   }
 
 
+
+
+  // -------------------------------------------------------------- Set Sort Option ------------------------------------------------------------------
   setSortOption() {
     const index = Math.max(0, this.sortOptions.findIndex(x => x.value == this.route.snapshot.queryParams['sort']));
     return this.sortOptions[index];
   }
 
 
+
+
+
+
+  // --------------------------------------------------------------- On Sort Change ------------------------------------------------------------------
   onSortChange(sortOption: KeyValue<string, string>) {
     this.router.navigate([], {
       queryParams: { sort: sortOption.value, page: null },
@@ -95,6 +110,11 @@ export class GridWidgetComponent extends Widget {
   }
 
 
+
+
+
+
+  // ---------------------------------------------------------- On Hamburger Button Click -----------------------------------------------------------
   async onHamburgerButtonClick() {
     this.lazyLoadingService.load(async () => {
       const { GridWidgetSideMenuComponent } = await import('../../components/grid-widget-side-menu/grid-widget-side-menu.component');
@@ -112,12 +132,26 @@ export class GridWidgetComponent extends Widget {
       });
   }
 
+
+  // ---------------------------------------------------------- Track Product -----------------------------------------------------------
   trackProduct(index: number, product: SummaryProduct) {
     return product.id;
   }
 
+
+
+
+  // --------------------------------------------------------- On Window Resize -----------------------------------------------------------
   @HostListener('window:resize')
   onWindowResize() {
     this.clientWidth = document.documentElement.clientWidth;
+  }
+
+
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): GridWidgetData {
+    throw new Error('Method not implemented.');
   }
 }

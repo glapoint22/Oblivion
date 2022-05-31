@@ -10,4 +10,14 @@ export class Link {
             if (link.url) this.url = link.url;
         }
     }
+
+
+    getData(): Link {
+        const link = new Link();
+
+        link.url = this.url;
+        link.linkType = this.linkType;
+
+        return link;
+    }
 }

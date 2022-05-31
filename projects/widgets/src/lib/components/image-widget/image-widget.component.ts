@@ -20,10 +20,16 @@ export class ImageWidgetComponent extends Widget {
   public image: Image = new Image();
   public linkType = LinkType;
 
+
+
+  // ------------------------------------------------------------ Ng On Init -----------------------------------------------------------
   ngOnInit() {
     this.type = WidgetType.Image;
   }
 
+
+
+  // ------------------------------------------------------------ Set Widget -----------------------------------------------------------
   setWidget(imageWidgetData: ImageWidgetData) {
     this.border.setData(imageWidgetData.border);
     this.corners.setData(imageWidgetData.corners);
@@ -32,5 +38,11 @@ export class ImageWidgetComponent extends Widget {
     this.image.setData(imageWidgetData.image);
 
     super.setWidget(imageWidgetData);
+  }
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): ImageWidgetData {
+    throw new Error('Method not implemented.');
   }
 }

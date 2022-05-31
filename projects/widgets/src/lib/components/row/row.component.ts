@@ -4,11 +4,9 @@ import { Border } from '../../classes/border';
 import { Column } from '../../classes/column';
 import { Corners } from '../../classes/corners';
 import { Padding } from '../../classes/padding';
-import { PaddingValue } from '../../classes/padding-value';
 import { Row } from '../../classes/row';
 import { Shadow } from '../../classes/shadow';
 import { VerticalAlignment } from '../../classes/vertical-alignment';
-import { PaddingType } from '../../classes/widget-enums';
 import { ColumnComponent } from '../column/column.component';
 
 @Component({

@@ -5,11 +5,8 @@ import { Corners } from "./corners";
 import { Padding } from "./padding";
 import { Shadow } from "./shadow";
 import { WidgetData } from "./widget-data";
-import { WidgetType } from "./widget-enums";
 
 export class Column {
-    public width!: number;
-    public widgetData!: WidgetData;
     public background!: Background;
     public border!: Border;
     public corners!: Corners;
@@ -17,8 +14,7 @@ export class Column {
     public padding!: Padding;
     public columnSpan!: ColumnSpan;
 
-    constructor(columnSpan: number, widgetType: WidgetType) { 
-        this.widgetData = new WidgetData(widgetType);
+    constructor(columnSpan: number, public widgetData: WidgetData) {
         this.columnSpan = new ColumnSpan(columnSpan);
     }
 }

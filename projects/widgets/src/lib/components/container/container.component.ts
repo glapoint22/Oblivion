@@ -15,7 +15,7 @@ export class ContainerComponent {
 
   createRow(row: Row): void {
     // Create the new row
-    const rowComponentRef = this.createRowComponentRef();
+    const rowComponentRef = this.createRowComponentRef(row.top);
     const rowComponent = rowComponentRef.instance;
 
     // Set the row with the row data
@@ -31,7 +31,7 @@ export class ContainerComponent {
   }
 
 
-  createRowComponentRef(): ComponentRef<RowComponent> {
+  createRowComponentRef(top: number): ComponentRef<RowComponent> {
     const rowComponentFactory: ComponentFactory<RowComponent> = this.resolver.resolveComponentFactory(RowComponent);
     return this.viewContainerRef.createComponent(rowComponentFactory);
   }

@@ -20,12 +20,10 @@ export class Shadow {
 
     private _rgbColor!: Color;
     public get rgbColor(): Color {
+        this._color = this._rgbColor.toHex();
         return this._rgbColor;
     }
-    public set rgbColor(v: Color) {
-        this._color = v.toRGBString();
-        this._rgbColor = v;
-    }
+    
 
 
     constructor(color?: string) {
@@ -41,5 +39,18 @@ export class Shadow {
             if (shadow.size) this.size = shadow.size;
             if (shadow.color) this.color = shadow.color;
         }
+    }
+
+    getData(): Shadow {
+        const shadow = new Shadow();
+
+        shadow.enabled = this.enabled;
+        shadow.x = this.x;
+        shadow.y = this.y;
+        shadow.blur = this.blur;
+        shadow.size = this.size;
+        shadow.color = this.color;
+
+        return shadow;
     }
 }

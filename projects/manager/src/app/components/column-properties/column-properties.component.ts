@@ -13,4 +13,10 @@ export class ColumnPropertiesComponent {
   update() {
     // this.widgetService.$update.next();
   }
+
+
+  updateColumnSpan() {
+    this.widgetService.selectedColumn.updateColumnSpan();
+    this.update();
+}
 }
