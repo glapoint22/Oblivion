@@ -89,7 +89,13 @@ export class ColumnDevComponent extends ColumnComponent {
               widgetOptions = widgetOptions.concat([
                 {
                   type: MenuOptionType.MenuItem,
-                  name: 'Add widget in container'
+                  name: 'Add widget in container',
+                  optionFunction: () => {
+                    const containerWidget = this.widgetService.selectedWidget as ContainerWidgetDevComponent;
+                    const container = containerWidget.container as ContainerDevComponent;
+
+                    container.addWidget(new WidgetData(WidgetType.Button), container.getRowTop(event.clientY));
+                  }
                 }
               ]);
             }
@@ -127,7 +133,7 @@ export class ColumnDevComponent extends ColumnComponent {
             // Concat the widget options
             menuOptions = menuOptions.concat(widgetOptions);
 
-            // Show the rest of the options
+            // Show the rest of the widget options
             menuOptions = menuOptions.concat([
               {
                 type: MenuOptionType.MenuItem,
@@ -152,7 +158,7 @@ export class ColumnDevComponent extends ColumnComponent {
                 shortcut: 'Ctrl+X',
                 optionFunction: () => {
                   this.widgetService.clipboard = this.widgetService.selectedWidget.getData();
-                  this.deleteWidget();
+                  this.deleteColumn();
                 }
               },
               {
@@ -180,192 +186,21 @@ export class ColumnDevComponent extends ColumnComponent {
                   this.rowComponent.addColumn(1, this.columnElement, widgetData);
                 }
               },
-
               {
                 type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Delete widget',
-                optionFunction: () => this.deleteWidget()
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-
-
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Cut column',
-                optionFunction: () => {
-                  this.widgetService.clipboard = this.getData();
-                  this.deleteWidget();
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Copy column',
-                optionFunction: () => this.widgetService.clipboard = this.getData()
-              },
-
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Move column left',
-                isDisabled: !this.isColumnLeft(),
-                optionFunction: () => {
-                  this.rowComponent.moveColumn(this, -1);
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Move column right',
-                isDisabled: !this.isColumnRight(),
-                optionFunction: () => {
-                  this.rowComponent.moveColumn(this, 1);
-                }
-              },
-
-
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Duplicate column left',
-                optionFunction: () => {
-                  const columnData = this.widgetService.selectedColumn.getData();
-                  this.rowComponent.addColumn(0, this.columnElement, columnData);
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Duplicate column right',
-                optionFunction: () => {
-                  const columnData = this.widgetService.selectedColumn.getData();
-                  this.rowComponent.addColumn(1, this.columnElement, columnData);
-                }
-              },
-
-
-
-              {
-                type: MenuOptionType.Divider
-              },
-
-
-
-
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Align column left'
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Align column center'
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Align column right'
-              },
-
-              {
-                type: MenuOptionType.Divider
-              },
-
-
-
-
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Cut row',
-                shortcut: 'Ctrl+R',
-                optionFunction: () => {
-                  const row = this.rowComponent;
-
-                  this.widgetService.clipboard = this.rowComponent.getData();
-                  row.containerComponent.deleteRow(row);
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Copy row',
-                shortcut: 'Ctrl+Y',
-                optionFunction: () => this.widgetService.clipboard = this.rowComponent.getData()
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Duplicate row above',
-                optionFunction: () => {
-                  const container = this.rowComponent.containerComponent;
-                  container.duplicateRowAbove(this.rowComponent);
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Duplicate row below',
-                optionFunction: () => {
-                  const container = this.rowComponent.containerComponent;
-                  container.duplicateRowBelow(this.rowComponent);
-                }
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Move row above',
-                isDisabled: !this.rowComponent.containerComponent.isRowAbove(this.rowComponent),
-                optionFunction: () => {
-                  const container = this.rowComponent.containerComponent;
-                  container.moveRowAbove(this.rowComponent);
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Move row below',
-                isDisabled: !this.rowComponent.containerComponent.isRowBelow(this.rowComponent),
-                optionFunction: () => {
-                  const container = this.rowComponent.containerComponent;
-                  container.moveRowBelow(this.rowComponent);
-                }
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Align row top'
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Align row middle'
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Align row bottom'
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Delete row',
-                shortcut: 'Delete',
-                optionFunction: () => {
-                  this.rowComponent.containerComponent.deleteRow(this.rowComponent);
-                }
               }
             ]);
 
 
-            contextMenu.options = menuOptions;
+            // Column options
+            menuOptions = menuOptions.concat(this.getColumnContextMenuOptions());
+            menuOptions = menuOptions.concat([{ type: MenuOptionType.Divider }]);
 
+            // Row options
+            menuOptions = menuOptions.concat(this.rowComponent.getRowContextMenuOptions());
+
+            // Assign the options
+            contextMenu.options = menuOptions;
           });
       }
     });
@@ -379,8 +214,9 @@ export class ColumnDevComponent extends ColumnComponent {
   }
 
 
-  // -------------------------------------------------------------------------- Delete Widget ----------------------------------------------------------
-  private deleteWidget(): void {
+
+  // -------------------------------------------------------------------------- Delete Column ----------------------------------------------------------
+  private deleteColumn(): void {
     if (this.rowComponent.columnCount == 1) {
       this.rowComponent.containerComponent.deleteRow(this.rowComponent);
     } else {
@@ -407,7 +243,7 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
   // --------------------------------------------------------------------------Set Selected Widget----------------------------------------------------------------
-  public setSelectedWidget(widget: Widget) {
+  public setSelectedWidget(widget: Widget): void {
     this.widgetService.selectedWidget = widget;
     this.widgetService.selectedRow = this.rowComponent;
     this.widgetService.selectedColumn = this;
@@ -418,13 +254,13 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
   // --------------------------------------------------------------------------Update Column Span----------------------------------------------------------------
-  public updateColumnSpan() {
+  public updateColumnSpan(): void {
     this.columnSpan.setClasses(this.columnElement);
   }
 
 
-  // --------------------------------------------------------------------------Get Widget----------------------------------------------------------------
-  public async getWidget(widgetType: WidgetType) {
+  // -------------------------------------------------------------------------------Get Widget--------------------------------------------------------------------
+  public async getWidget(widgetType: WidgetType): Promise<Type<Widget>> {
     let widget!: Type<Widget>;
 
     switch (widgetType) {
@@ -493,24 +329,42 @@ export class ColumnDevComponent extends ColumnComponent {
   }
 
 
-  onMouseenter() {
+
+
+  // -------------------------------------------------------------------------------On Mouseenter--------------------------------------------------------------------
+  public onMouseenter(): void {
     if (this.widgetService.widgetCursor) {
       this.widgetService.setWidgetCursorType(WidgetCursorType.Allowed);
     }
   }
 
-  onMouseleave() {
+
+
+
+
+  // --------------------------------------------------------------------------------On Mouseleave--------------------------------------------------------------------
+  public onMouseleave(): void {
     if (this.widgetService.widgetCursor) {
       this.widgetService.setWidgetCursorType(WidgetCursorType.NotAllowed);
     }
   }
 
-  onColumnIndicatorMouseup(addend: number) {
+
+
+
+
+  // ---------------------------------------------------------------------------On Column Indicator Mouseup------------------------------------------------------------
+  public onColumnIndicatorMouseup(addend: number): void {
     this.rowComponent.addColumn(addend, this.columnElement, new WidgetData(this.widgetService.widgetCursor.widgetType));
   }
 
 
-  onMousedown(event: MouseEvent) {
+
+
+
+
+  // --------------------------------------------------------------------------------On Mousedown--------------------------------------------------------------------
+  public onMousedown(event: MouseEvent): void {
     if (event.button == 2) {
       event.stopPropagation();
 
@@ -526,39 +380,85 @@ export class ColumnDevComponent extends ColumnComponent {
         contextMenu.parentObj = this;
         contextMenu.xPos = event.screenX;
         contextMenu.yPos = event.clientY + 74;
-        contextMenu.options = [
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Cut column'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Copy column'
-          },
-          {
-            type: MenuOptionType.Divider,
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Align column left'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Align column center'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Align column right'
-          }
-        ]
-
+        contextMenu.options = this.getColumnContextMenuOptions();
       });
     }
   }
 
 
-  getData(): Column {
-    const column = new Column(12, this.widget.getData());
+
+  // ------------------------------------------------------------------- Get Column Context Menu Options ------------------------------------------------------
+  public getColumnContextMenuOptions(): Array<MenuOption> {
+    return [
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Cut column',
+        optionFunction: () => {
+          this.widgetService.clipboard = this.getData();
+          this.deleteColumn();
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Copy column',
+        optionFunction: () => this.widgetService.clipboard = this.getData()
+      },
+
+      {
+        type: MenuOptionType.Divider
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Move column left',
+        isDisabled: !this.isColumnLeft(),
+        optionFunction: () => {
+          this.rowComponent.moveColumn(this, -1);
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Move column right',
+        isDisabled: !this.isColumnRight(),
+        optionFunction: () => {
+          this.rowComponent.moveColumn(this, 1);
+        }
+      },
+      {
+        type: MenuOptionType.Divider
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Duplicate column left',
+        optionFunction: () => {
+          const columnData = this.widgetService.selectedColumn.getData();
+          this.rowComponent.addColumn(0, this.columnElement, columnData);
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Duplicate column right',
+        optionFunction: () => {
+          const columnData = this.widgetService.selectedColumn.getData();
+          this.rowComponent.addColumn(1, this.columnElement, columnData);
+        }
+      },
+      {
+        type: MenuOptionType.Divider
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Delete column',
+        optionFunction: () => this.deleteColumn()
+      }
+    ]
+  }
+
+
+
+
+  // ------------------------------------------------------------------------------- Get Data --------------------------------------------------------------------
+  public getData(): Column {
+    const column = new Column(this.rowComponent.getColumnSpan(this.rowComponent.columnCount), this.widget.getData());
 
     column.background = this.background.getData();
     column.border = this.border.getData();

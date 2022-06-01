@@ -1,6 +1,6 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Column, ContainerComponent, Row, RowComponent, WidgetData } from 'widgets';
+import { Column, ContainerComponent, Row, RowComponent, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { MenuOptionType, WidgetCursorType } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
@@ -30,7 +30,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
   // ----------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.widgetService.$onContainerMousemove.subscribe((containerDevComponent: ContainerDevComponent) => {
       if (containerDevComponent == this) {
         this.showRowIndicator = true;
@@ -158,6 +158,9 @@ export class ContainerDevComponent extends ContainerComponent {
               {
                 type: MenuOptionType.MenuItem,
                 name: 'Add widget',
+                optionFunction: () => {
+                  this.addWidget(new WidgetData(WidgetType.Button), this.getRowTop(event.clientY));
+                }
               },
               {
                 type: MenuOptionType.Divider
@@ -192,8 +195,6 @@ export class ContainerDevComponent extends ContainerComponent {
           });
       }
     }
-
-
   }
 
 
@@ -327,17 +328,17 @@ export class ContainerDevComponent extends ContainerComponent {
 
     // Widget
     if (this.widgetService.clipboard instanceof WidgetData) {
-      this.pasteWidget(this.widgetService.clipboard, top);
+      this.addWidget(this.widgetService.clipboard, top);
     }
 
     // Row
     else if (this.widgetService.clipboard instanceof Row) {
-      this.pasteRow(this.widgetService.clipboard, top);
+      this.addRow(this.widgetService.clipboard, top);
     }
 
     // Column
     else if (this.widgetService.clipboard instanceof Column) {
-      this.pasteColumn(this.widgetService.clipboard, top);
+      this.addColumn(this.widgetService.clipboard, top);
     }
   }
 
@@ -346,7 +347,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
   // ----------------------------------------------------------------------- Move Row Index ---------------------------------------------------------
-  private moveRowIndex(from: number, to: number) {
+  private moveRowIndex(from: number, to: number): void {
     const cutOut = this.rows.splice(from, 1)[0];
     this.rows.splice(to, 0, cutOut);
   }
@@ -408,7 +409,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
   // ------------------------------------------------------------------------ Get Row Top ---------------------------------------------------------
-  private getRowTop(y: number): number {
+  public getRowTop(y: number): number {
     const top = this.viewContainerRef.element.nativeElement.parentElement.getBoundingClientRect().top;
     return y - top;
   }
@@ -416,8 +417,8 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
 
-  // --------------------------------------------------------------------------- Paste Widget ---------------------------------------------------------
-  private pasteWidget(widgetData: WidgetData, top: number): void {
+  // --------------------------------------------------------------------------- Add Widget ---------------------------------------------------------
+  public addWidget(widgetData: WidgetData, top: number): void {
     const row = new Row(top);
 
     row.columns.push(new Column(12, widgetData));
@@ -427,16 +428,16 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
 
-  // --------------------------------------------------------------------------- Paste Row ---------------------------------------------------------
-  private pasteRow(row: Row, top: number): void {
+  // --------------------------------------------------------------------------- Add Row ---------------------------------------------------------
+  private addRow(row: Row, top: number): void {
     row.top = top;
     this.createRow(row);
   }
 
 
 
-  // --------------------------------------------------------------------------- Paste Column ---------------------------------------------------------
-  private pasteColumn(column: Column, top: number): void {
+  // --------------------------------------------------------------------------- Add Column ---------------------------------------------------------
+  private addColumn(column: Column, top: number): void {
     const row = new Row(top);
 
     row.columns.push(column);

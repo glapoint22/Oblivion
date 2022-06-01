@@ -2,6 +2,7 @@ import { Component, ComponentFactoryResolver } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, Row, RowComponent, WidgetData } from 'widgets';
 import { MenuOptionType } from '../../classes/enums';
+import { MenuOption } from '../../classes/menu-option';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -19,14 +20,18 @@ export class RowDevComponent extends RowComponent {
   constructor(resolver: ComponentFactoryResolver, public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver); }
 
 
-  createColumns(columns: Array<Column>) {
+  // ------------------------------------------------------------------------ Create Columns ---------------------------------------------------------
+  public createColumns(columns: Array<Column>): void {
     columns.forEach((column: Column, index) => {
       this.createColumn(column, index);
     });
   }
 
 
-  createColumn(column: Column, index: number): void {
+
+
+  // ------------------------------------------------------------------------ Create Column ---------------------------------------------------------
+  public createColumn(column: Column, index: number): void {
     const componentFactory = this.resolver.resolveComponentFactory(ColumnDevComponent);
     const columnComponentRef = this.viewContainerRef.createComponent(componentFactory, index);
 
@@ -70,8 +75,8 @@ export class RowDevComponent extends RowComponent {
 
 
 
-
-  addColumn(addend: number, columnElement: HTMLElement, data: WidgetData | Column) {
+  // ------------------------------------------------------------------------ addColumn -------------------------------------------------------------
+  public addColumn(addend: number, columnElement: HTMLElement, data: WidgetData | Column): void {
     this.columnCount++;
 
 
@@ -86,16 +91,19 @@ export class RowDevComponent extends RowComponent {
       data.columnSpan.values[0].span = columnSpan;
       this.createColumn(data, index);
     }
-
   }
 
-  getColumnIndex(columnElement: HTMLElement, index: number) {
+
+
+  // --------------------------------------------------------------------- Get Column Index -----------------------------------------------------------
+  private getColumnIndex(columnElement: HTMLElement, index: number): number {
     return this.columns.findIndex(x => x.columnElement == columnElement) + index;
   }
 
 
 
-  setColumnSpans(columnSpan: number) {
+  // ---------------------------------------------------------------------- Set Column Spans ----------------------------------------------------------
+  private setColumnSpans(columnSpan: number): void {
     this.columns.forEach((column: ColumnDevComponent) => {
       column.columnSpan = new ColumnSpan(columnSpan);
       column.columnSpan.setClasses(column.columnElement);
@@ -103,11 +111,16 @@ export class RowDevComponent extends RowComponent {
   }
 
 
-  getColumnSpan(columnCount: number): number {
+
+  // ---------------------------------------------------------------------- Get Column Span ----------------------------------------------------------
+  public getColumnSpan(columnCount: number): number {
     return Math.max(2, Math.floor(12 / columnCount));
   }
 
-  onMouseup() {
+
+
+  // ------------------------------------------------------------------------ On Mouseup -------------------------------------------------------------
+  public onMouseup(): void {
     if (this.widgetService.widgetCursor) {
       this.widgetService.clearWidgetCursor();
     }
@@ -115,7 +128,8 @@ export class RowDevComponent extends RowComponent {
 
 
 
-  onMousedown(event: MouseEvent) {
+  // ------------------------------------------------------------------------ On Mousedown -------------------------------------------------------------
+  public onMousedown(event: MouseEvent): void {
     event.stopPropagation();
 
     if (event.button == 0) {
@@ -133,68 +147,91 @@ export class RowDevComponent extends RowComponent {
         contextMenu.parentObj = this;
         contextMenu.xPos = event.screenX;
         contextMenu.yPos = event.clientY + 74;
-        contextMenu.options = [
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Cut row',
-            shortcut: 'Ctrl+X'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Copy row',
-            shortcut: 'Ctrl+C'
-          },
-          {
-            type: MenuOptionType.Divider
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Duplicate row above'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Duplicate row below'
-          },
-          {
-            type: MenuOptionType.Divider
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Move row above'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Move row below'
-          },
-          {
-            type: MenuOptionType.Divider
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Align row top'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Align row middle'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Align row bottom'
-          },
-          {
-            type: MenuOptionType.Divider,
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Delete row',
-            shortcut: 'Delete'
-          }
-        ]
-
+        contextMenu.options = this.getRowContextMenuOptions();
       });
     }
   }
 
+
+  // ------------------------------------------------------------------- Get Row Context Menu Options ------------------------------------------------------
+  public getRowContextMenuOptions(): Array<MenuOption> {
+    return [
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Cut row',
+        shortcut: 'Ctrl+R',
+        optionFunction: () => {
+          this.widgetService.clipboard = this.getData();
+          this.containerComponent.deleteRow(this);
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Copy row',
+        shortcut: 'Ctrl+Y',
+        optionFunction: () => this.widgetService.clipboard = this.getData()
+      },
+      {
+        type: MenuOptionType.Divider
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Duplicate row above',
+        optionFunction: () => {
+          const container = this.containerComponent;
+          container.duplicateRowAbove(this);
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Duplicate row below',
+        optionFunction: () => {
+          const container = this.containerComponent;
+          container.duplicateRowBelow(this);
+        }
+      },
+      {
+        type: MenuOptionType.Divider
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Move row above',
+        isDisabled: !this.containerComponent.isRowAbove(this),
+        optionFunction: () => {
+          const container = this.containerComponent;
+          container.moveRowAbove(this);
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Move row below',
+        isDisabled: !this.containerComponent.isRowBelow(this),
+        optionFunction: () => {
+          const container = this.containerComponent;
+          container.moveRowBelow(this);
+        }
+      },
+      {
+        type: MenuOptionType.Divider
+      },
+
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Delete row',
+        shortcut: 'Delete',
+        optionFunction: () => {
+          this.containerComponent.deleteRow(this);
+        }
+      }
+    ]
+  }
+
+
+
+
+
+
+  // -------------------------------------------------------------------------- Get Data ------------------------------------------------------------
   public getData(): Row {
     const row = new Row(0);
 
@@ -210,7 +247,7 @@ export class RowDevComponent extends RowComponent {
   }
 
 
-  
+
 
 
   // -------------------------------------------------------------------------- Move Widget ------------------------------------------------------------
@@ -225,7 +262,7 @@ export class RowDevComponent extends RowComponent {
 
 
   // ----------------------------------------------------------------------- Move Column Index ---------------------------------------------------------
-  private moveColumnIndex(from: number, to: number) {
+  private moveColumnIndex(from: number, to: number): void {
     const cutOut = this.columns.splice(from, 1)[0];
     this.columns.splice(to, 0, cutOut);
   }
