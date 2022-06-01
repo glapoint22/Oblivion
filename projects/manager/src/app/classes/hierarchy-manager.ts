@@ -232,9 +232,11 @@ export class HierarchyManager extends ListManager {
         // Add the new hierarchy group to the source
         this.sourceList.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
 
+
         // Remove the selected hierarchy item and then put it back so the indent can take effect
         const hierarchyItemIndex = this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID);
 
+        
         (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = true;
 
         window.setTimeout(() => {
@@ -289,22 +291,12 @@ export class HierarchyManager extends ListManager {
     }
 
 
+
+
     selectedItemsUpdate(rightClick: boolean) {
         const selectedItems = this.sourceList.filter(x => x.selected == true);
-        this.onListUpdate.next(
-            {
-                type: ListUpdateType.SelectedItems,
-                rightClick: rightClick,
-                selectedItems: selectedItems!.map((x) => {
-                    return {
-                        id: x.id,
-                        index: this.sourceList.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID),
-                        name: x.name,
-                        hierarchyGroupID: x.hierarchyGroupID
-                    }
-                })
-            }
-        );
+        selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
+        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
     }
 
 

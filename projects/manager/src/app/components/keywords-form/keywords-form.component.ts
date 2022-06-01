@@ -26,8 +26,8 @@ export class KeywordsFormComponent extends LazyLoad {
 
   ngAfterViewChecked() {
     this.keywordsFormManager.searchComponent = this.searchComponent;
-    this.keywordsFormManager.otherHierarchyComponent = this.keywordsService.productHierarchyComponent;
-    this.keywordsFormManager.hierarchyComponent = this.keywordsService.formHierarchyComponent = this.hierarchyComponent;
+    this.keywordsFormManager.otherListComponent = this.keywordsService.productHierarchyComponent;
+    this.keywordsFormManager.listComponent = this.keywordsService.formHierarchyComponent = this.hierarchyComponent;
     this.keywordsFormManager.searchInput = document.getElementById('keywordsFormSearchInput') as HTMLInputElement;
   }
 

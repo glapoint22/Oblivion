@@ -26,8 +26,8 @@ export class FiltersFormComponent extends LazyLoad {
 
   ngAfterViewChecked() {
     this.filtersFormManager.searchComponent = this.searchComponent;
-    this.filtersFormManager.otherHierarchyComponent = this.filtersService.productHierarchyComponent;
-    this.filtersFormManager.hierarchyComponent = this.filtersService.formHierarchyComponent = this.hierarchyComponent;
+    this.filtersFormManager.otherListComponent = this.filtersService.productHierarchyComponent;
+    this.filtersFormManager.listComponent = this.filtersService.formHierarchyComponent = this.hierarchyComponent;
     this.filtersFormManager.searchInput = document.getElementById('filtersFormSearchInput') as HTMLInputElement;
   }
 

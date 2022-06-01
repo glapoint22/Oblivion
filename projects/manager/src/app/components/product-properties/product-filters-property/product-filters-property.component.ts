@@ -21,8 +21,8 @@ export class ProductFiltersPropertyComponent {
 
   ngAfterViewChecked() {
     this.productFiltersManager.searchComponent = this.searchComponent;
-    this.productFiltersManager.otherHierarchyComponent = this.filtersService.formHierarchyComponent;
-    this.productFiltersManager.hierarchyComponent = this.filtersService.productHierarchyComponent = this.hierarchyComponent;
+    this.productFiltersManager.otherListComponent = this.filtersService.formHierarchyComponent;
+    this.productFiltersManager.listComponent = this.filtersService.productHierarchyComponent = this.hierarchyComponent;
     this.productFiltersManager.searchInput = document.getElementById('productFiltersSearchInput') as HTMLInputElement;
   }
 }

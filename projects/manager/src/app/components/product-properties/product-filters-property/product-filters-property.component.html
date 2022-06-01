@@ -56,8 +56,8 @@
         <ng-container *ngIf="!productFiltersManager.searchMode">
             <checkbox-hierarchy #hierarchyComponent
                                 [sourceList]="productFiltersManager.thisArray"
-                                [options]="productFiltersManager.hierarchyOptions"
-                                (onListUpdate)="productFiltersManager.hierarchyUpdate = $event">
+                                [options]="productFiltersManager.listOptions"
+                                (onListUpdate)="productFiltersManager.listUpdate = $event">
             </checkbox-hierarchy>
         </ng-container>
 

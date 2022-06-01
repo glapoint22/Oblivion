@@ -660,7 +660,7 @@ export class ListManager {
 
       // If an item is being edited
       if (this.editedItem != null) {
-
+        
         // Evaluate the state of the edit and then act accordingly
         this.evaluateEdit(true);
 
@@ -775,11 +775,10 @@ export class ListManager {
           // if (trimmedEditedItem != this.editedItem.name!.trim()) {
 
 
-
           // Reset the item back to the way it was before the edit
           this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.name!.trim()!;
 
-
+          this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
 
 
 
@@ -873,7 +872,7 @@ export class ListManager {
           this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.name!.trim()!;
 
 
-
+          this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
 
           // if (this.selectable) {
           //   this.selectedItem = this.editedItem;
@@ -1057,22 +1056,13 @@ export class ListManager {
   }
 
 
+
+
   selectedItemsUpdate(rightClick: boolean) {
     const selectedItems = this.sourceList.filter(x => x.selected == true);
-    this.onListUpdate.next(
-      {
-        type: ListUpdateType.SelectedItems,
-        rightClick: rightClick,
-        selectedItems: selectedItems!.map((x) => {
-          return {
-            id: x.id,
-            index: this.sourceList.findIndex(y => y.id == x.id && y.name == x.name),
-            name: x.name
-          }
-        })
-      }
-    );
-  }
+    selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
+    this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
+}
 
 
   unSelectedItemsUpdate() {

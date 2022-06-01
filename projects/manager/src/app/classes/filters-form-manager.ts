@@ -7,9 +7,9 @@ import { ListUpdateManager } from "./list-update-manager";
 export class FiltersFormManager extends ListUpdateManager {
     constructor(dataService: DataService, sanitizer: DomSanitizer, public filtersService: FiltersService) {
         super(dataService, sanitizer);
-        this.parentType = 'Filter';
+        this.itemType = 'Filter';
         this.childType = 'Filter Option';
-        this.parentDataServicePath = 'Filters';
+        this.dataServicePath = 'Filters';
         this.childDataServicePath = 'Filters/Options';
         this.parentSearchType = 'Filter';
         this.childSearchType = 'Option';

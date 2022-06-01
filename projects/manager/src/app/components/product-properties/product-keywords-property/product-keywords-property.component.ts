@@ -27,12 +27,12 @@ export class ProductKeywordsPropertyComponent {
 
   ngAfterViewChecked() {
     this.availableKeywordsManager.searchComponent = this.availableSearchComponent;
-    this.availableKeywordsManager.otherHierarchyComponent = this.keywordsService.formHierarchyComponent;
-    this.availableKeywordsManager.hierarchyComponent = this.keywordsService.productHierarchyComponent = this.availableHierarchyComponent;
+    this.availableKeywordsManager.otherListComponent = this.keywordsService.formHierarchyComponent;
+    this.availableKeywordsManager.listComponent = this.keywordsService.productHierarchyComponent = this.availableHierarchyComponent;
     this.availableKeywordsManager.searchInput = document.getElementById('availableKeywordsSearchInput') as HTMLInputElement;
 
     this.selectedKeywordsManager.searchComponent = this.selectedSearchComponent;
-    this.selectedKeywordsManager.hierarchyComponent = this.keywordsService.selectedHierarchyComponent = this.selectedHierarchyComponent;
+    this.selectedKeywordsManager.listComponent = this.keywordsService.selectedHierarchyComponent = this.selectedHierarchyComponent;
     this.selectedKeywordsManager.searchInput = document.getElementById('selectedKeywordsSearchInput') as HTMLInputElement;
   }
 }

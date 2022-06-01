@@ -33,8 +33,8 @@ export class NicheHierarchyComponent extends LazyLoad {
 
   ngAfterViewChecked() {
     this.nicheHierarchyManager.searchComponent = this.searchComponent;
-    this.nicheHierarchyManager.otherHierarchyComponent = this.nicheHierarchyService.formHierarchyComponent;
-    this.nicheHierarchyManager.hierarchyComponent = this.nicheHierarchyService.productHierarchyComponent = this.hierarchyComponent;
+    this.nicheHierarchyManager.otherListComponent = this.nicheHierarchyService.formHierarchyComponent;
+    this.nicheHierarchyManager.listComponent = this.nicheHierarchyService.productHierarchyComponent = this.hierarchyComponent;
     this.nicheHierarchyManager.searchInput = document.getElementById('nicheHierarchySearchInput') as HTMLInputElement;
   }
 
