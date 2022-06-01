@@ -19,10 +19,16 @@ export class VideoWidgetComponent extends Widget {
   public shadow: Shadow = new Shadow();
   public video: Video = new Video();
 
+
+  // --------------------------------------------------------------- Ng On Init ---------------------------------------------------------------
   ngOnInit() {
     this.type = WidgetType.Video;
   }
 
+
+
+
+  // ------------------------------------------------------------ Ng After View Init -----------------------------------------------------------
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
@@ -30,6 +36,9 @@ export class VideoWidgetComponent extends Widget {
     if (this.video.src) this.iframe.nativeElement.src = this.video.src;
   }
 
+
+
+  // ------------------------------------------------------------ Set Widget -----------------------------------------------------------
   setWidget(videoWidgetData: VideoWidgetData) {
     this.border.setData(videoWidgetData.border);
     this.corners.setData(videoWidgetData.corners);
@@ -37,5 +46,12 @@ export class VideoWidgetComponent extends Widget {
     this.video.setData(videoWidgetData.video);
 
     super.setWidget(videoWidgetData);
+  }
+
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): VideoWidgetData {
+    throw new Error('Method not implemented.');
   }
 }

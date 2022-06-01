@@ -1,3 +1,4 @@
+import { KeyValue } from "@angular/common";
 import { Color } from "common";
 
 export class Caption {
@@ -5,7 +6,7 @@ export class Caption {
     public fontStyle: string = 'normal';
     public textDecoration: string = 'none';
     public text!: string;
-    public fontOptions = [
+    public fontOptions: Array<KeyValue<string, string>> = [
         {
             key: 'Arial',
             value: 'Arial, Helvetica, sans-serif'
@@ -64,10 +65,10 @@ export class Caption {
         }
     ]
 
-    public font = this.fontOptions[0];
+    public font: KeyValue<string, string> = this.fontOptions[0];
 
 
-    public fontSizes = [
+    public fontSizes: Array<KeyValue<string, string>> = [
         {
             key: '6',
             value: '6px'
@@ -126,7 +127,7 @@ export class Caption {
         },
     ]
 
-    public fontSize = this.fontSizes[6];
+    public fontSize: KeyValue<string, string> = this.fontSizes[6];
 
 
     private _color!: string;
@@ -142,12 +143,10 @@ export class Caption {
 
     private _rgbColor!: Color;
     public get rgbColor(): Color {
+        this._color = this._rgbColor.toHex();
         return this._rgbColor;
     }
-    public set rgbColor(v: Color) {
-        this._color = v.toRGBString();
-        this._rgbColor = v;
-    }
+    
 
 
     constructor(color?: string) {
@@ -165,5 +164,20 @@ export class Caption {
             if (caption.color) this.color = caption.color;
             if (caption.text) this.text = caption.text;
         }
+    }
+
+
+    getData(): Caption {
+        const caption = new Caption();
+
+        caption.fontWeight = this.fontWeight;
+        caption.fontStyle = this.fontStyle;
+        caption.textDecoration = this.textDecoration;
+        caption.font = { key: this.font.key, value: this.font.value };
+        caption.fontSize = { key: this.fontSize.key, value: this.fontSize.value };
+        caption.color = this.color;
+        caption.text = this.text;
+
+        return caption;
     }
 }

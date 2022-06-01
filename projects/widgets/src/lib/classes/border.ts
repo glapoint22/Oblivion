@@ -18,11 +18,8 @@ export class Border {
 
     private _rgbColor!: Color;
     public get rgbColor(): Color {
+        this._color = this._rgbColor.toHex();
         return this._rgbColor;
-    }
-    public set rgbColor(v: Color) {
-        this._color = v.toRGBString();
-        this._rgbColor = v;
     }
 
 
@@ -37,5 +34,17 @@ export class Border {
             if (border.style) this.style = border.style;
             if (border.color) this.color = border.color;
         }
+    }
+
+
+    getData(): Border {
+        const border = new Border();
+
+        border.enabled = this.enabled;
+        border.width = this.width;
+        border.style = this.style;
+        border.color = this.color;
+
+        return border;
     }
 }

@@ -21,7 +21,7 @@ export class ButtonWidgetComponent extends Widget {
   public shadow: Shadow = new Shadow();
   public link: Link = new Link();
   public linkType = LinkType;
-  public background: Background = new Background();
+  public background: Background = new Background('#808080');
   public border: Border = new Border();
   public padding: Padding = new Padding();
 
@@ -39,8 +39,6 @@ export class ButtonWidgetComponent extends Widget {
 
 
   ngOnInit() {
-    this.caption.text = 'Button';
-    this.background.color = '#808080';
     this.type = WidgetType.Button;
   }
 
@@ -70,6 +68,7 @@ export class ButtonWidgetComponent extends Widget {
 
   setWidget(buttonWidgetData: ButtonWidgetData) {
     this.height = 40;
+    this.caption.text = 'Button';
     this.background.setData(buttonWidgetData.background);
     this.border.setData(buttonWidgetData.border);
     this.caption.setData(buttonWidgetData.caption);
@@ -115,7 +114,7 @@ export class ButtonWidgetComponent extends Widget {
       (this.background.image && this.background.image.attachment ? '\n\tbackground-attachment: ' + this.background.image.attachment + ';' : '') +
 
       // Border
-      (this.border && this.border.enabled ? '\n\tborder: ' + this.border.width + 'px ' + this.border.style + ' ' + this.border.color + ';' : '') +
+      (this.border && this.border.enabled ? '\n\toutline: ' + this.border.width + 'px ' + this.border.style + ' ' + this.border.color + ';' : '') +
 
 
       // Caption
@@ -147,5 +146,30 @@ export class ButtonWidgetComponent extends Widget {
         (this.border && this.border.enabled && this.borderActiveColor ? '\n\tborder-color: ' + this.borderActiveColor + ';' : '') +
         (this.textActiveColor ? '\n\tcolor: ' + this.textActiveColor + ';' : '') +
         '\n}' : '');
+  }
+
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): ButtonWidgetData {
+    const buttonWidgetData = new ButtonWidgetData(WidgetType.Button);
+
+    buttonWidgetData.width = this.width;
+    buttonWidgetData.height = this.height;
+    buttonWidgetData.background = this.background.getData();
+    buttonWidgetData.border = this.border.getData();
+    buttonWidgetData.caption = this.caption.getData();
+    buttonWidgetData.corners = this.corners.getData();
+    buttonWidgetData.shadow = this.shadow.getData();
+    buttonWidgetData.padding = this.padding.getData();
+    buttonWidgetData.link = this.link.getData();
+    buttonWidgetData.backgroundHoverColor = this.backgroundHoverColor;
+    buttonWidgetData.backgroundActiveColor = this.backgroundActiveColor;
+    buttonWidgetData.borderHoverColor = this.borderHoverColor;
+    buttonWidgetData.borderActiveColor = this.borderActiveColor;
+    buttonWidgetData.textHoverColor = this.textHoverColor;
+    buttonWidgetData.textActiveColor = this.textActiveColor;
+
+    return buttonWidgetData;
   }
 }

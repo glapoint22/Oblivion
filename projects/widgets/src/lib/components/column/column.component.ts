@@ -66,7 +66,7 @@ export class ColumnComponent implements AfterViewInit {
 
   // -----------------------------( GET WIDGET )------------------------------ \\
   async getWidget(widgetType: WidgetType) {
-    let widget: Type<Widget> = Widget;
+    let widget!: Type<Widget>;
 
     switch (widgetType) {
       // Button

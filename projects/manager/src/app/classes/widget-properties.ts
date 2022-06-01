@@ -16,12 +16,6 @@ export class WidgetProperties<T extends Widget> implements DoCheck {
         // this.widgetService.$update.next();
     }
 
-    updateColumnSpan() {
-        this.widgetService.selectedColumn.updateColumnSpan();
-        this.update();
-    }
-
-
     updatePadding(padding: Padding) {
         padding.setClasses(this.widget.widgetElement);
         this.update();

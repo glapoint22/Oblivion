@@ -25,11 +25,16 @@ export class ContainerWidgetComponent extends Widget {
   private rows!: Array<Row>;
 
 
+  // ---------------------------------------------------------------- Ng On Init ---------------------------------------------------------------
   ngOnInit() {
     this.type = WidgetType.Container;
   }
 
 
+
+
+
+  // ------------------------------------------------------------ Ng After View Init -----------------------------------------------------------
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
@@ -46,6 +51,7 @@ export class ContainerWidgetComponent extends Widget {
   }
 
 
+  // ------------------------------------------------------------ Set Widget -----------------------------------------------------------
   setWidget(containerWidgetData: ContainerWidgetData) {
     this.background.setData(containerWidgetData.background);
     this.border.setData(containerWidgetData.border);
@@ -55,5 +61,12 @@ export class ContainerWidgetComponent extends Widget {
     this.rows = containerWidgetData.rows;
 
     super.setWidget(containerWidgetData);
+  }
+
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): ContainerWidgetData {
+    throw new Error('Method not implemented.');
   }
 }

@@ -14,14 +14,28 @@ export class LineWidgetComponent extends Widget {
   public border: Border = new Border();
   public shadow: Shadow = new Shadow();
 
+
+
+  // ------------------------------------------------------------ Ng On Init -----------------------------------------------------------
   ngOnInit() {
     this.type = WidgetType.Line;
   }
   
+
+
+
+  // ------------------------------------------------------------ Set Widget -----------------------------------------------------------
   setWidget(lineWidgetData: LineWidgetData) {
     this.border.setData(lineWidgetData.border);
     this.shadow.setData(lineWidgetData.shadow);
 
     super.setWidget(lineWidgetData);
+  }
+
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): LineWidgetData {
+    throw new Error('Method not implemented.');
   }
 }

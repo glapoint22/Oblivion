@@ -17,10 +17,14 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
   public textBoxData: Array<TextBoxData> = [];
   private textBox!: TextBox;
 
+  // ------------------------------------------------------------ Ng On Init -----------------------------------------------------------
   ngOnInit() {
     this.type = WidgetType.Text;
   }
 
+
+
+  // --------------------------------------------------------- Ng After View Init --------------------------------------------------------
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
@@ -28,6 +32,9 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
     this.setText();
   }
 
+
+
+  // ------------------------------------------------------------- Set Widget ----------------------------------------------------------------
   setWidget(textWidgetData: TextWidgetData) {
     this.background.setData(textWidgetData.background);
     this.padding.setData(textWidgetData.padding);
@@ -37,6 +44,11 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
     super.setWidget(textWidgetData);
   }
 
+
+
+
+
+  // ------------------------------------------------------------- Set Text ----------------------------------------------------------------
   setText() {
     this.textBox = new TextBox(this.widgetElement);
 
@@ -44,5 +56,11 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
       this.textBox.load(this.textBoxData);
       this.textBox.render();
     }
+  }
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): TextWidgetData {
+    throw new Error('Method not implemented.');
   }
 }

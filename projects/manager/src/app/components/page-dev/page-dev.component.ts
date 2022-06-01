@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { Background, PageComponent, PageContent } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
+import { MenuOptionType } from '../../classes/enums';
+import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 
@@ -12,7 +15,7 @@ import { ContainerDevComponent } from '../container-dev/container-dev.component'
 export class PageDevComponent extends PageComponent implements ContainerHost {
   public host!: ContainerHost;
 
-  constructor(private widgetService: WidgetService) { super() }
+  constructor(private widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -34,6 +37,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
   onMousedown() {
+    if (!this.pageContent) return;
+
     this.widgetService.deselectWidget();
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { HorizontalAlignmentType, VerticalAlignmentType, Widget, WidgetType } from 'widgets';
+import { Column, HorizontalAlignmentType, Row, VerticalAlignmentType, Widget, WidgetData, WidgetType } from 'widgets';
 import { WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
@@ -21,6 +21,7 @@ export class WidgetService {
   public widgetDocument!: Document;
   public widgetHandleMove!: boolean;
   public currentWidgetInspectorView!: WidgetInspectorView;
+  public clipboard!: Row | Column | WidgetData;
 
 
   constructor(private breakpointService: BreakpointService) { }
@@ -516,7 +517,7 @@ export class WidgetService {
 
   // ----------------------------------------------------------------------On Row Mousedown------------------------------------------------
   public onRowMousedown(mousedownEvent: MouseEvent): void {
-    mousedownEvent.stopPropagation();
+    if (mousedownEvent.button != 0) return;
 
     const row = this.selectedRow;
     const rowElement = row.rowElement;

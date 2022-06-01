@@ -16,10 +16,16 @@ export class CarouselWidgetComponent extends Widget {
   public changeCount: number = 0;
   private setChangeCount!: boolean;
 
+
+
+  // ----------------------------------------------------------- Ng On Init --------------------------------------------------------------
   ngOnInit() {
     this.type = WidgetType.Carousel
   }
 
+
+
+  // ----------------------------------------------------------- Set Widget --------------------------------------------------------------
   setWidget(carouselWidgetData: CarouselWidgetData): void {
     if (carouselWidgetData.banners && carouselWidgetData.banners.length > 0) {
       this.banners = carouselWidgetData.banners;
@@ -28,6 +34,10 @@ export class CarouselWidgetComponent extends Widget {
     super.setWidget(carouselWidgetData);
   }
 
+
+
+
+  // ------------------------------------------------------ Ng After View Checked --------------------------------------------------------
   ngAfterViewChecked() {
     if (this.setChangeCount) {
       window.setTimeout(() => {
@@ -38,8 +48,18 @@ export class CarouselWidgetComponent extends Widget {
     }
   }
 
+
+
+  // --------------------------------------------------------- On Window Resize --------------------------------------------------------
   @HostListener('window:resize')
   onWindowResize() {
     this.setChangeCount = true;
+  }
+
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): CarouselWidgetData {
+    throw new Error('Method not implemented.');
   }
 }

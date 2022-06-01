@@ -1,6 +1,7 @@
 <!-- Container -->
 <div class="container" (mouseup)="onContainerMouseup($event)" (mousemove)="onContainerMousemove($event, rowIndicator)"
-    (mouseenter)="onContainerMouseEnter()" (mouseleave)="onContainerMouseLeave()">
+    (mouseenter)="onContainerMouseenter()" (mouseleave)="onContainerMouseleave()" (mousedown)="onMousedown($event)"
+    (contextmenu)="$event.preventDefault()">
 
     <!-- Row Indicator -->
     <div [id]="showRowIndicator ? 'show-row-indicator': ''" #rowIndicator class="row-indicator"></div>

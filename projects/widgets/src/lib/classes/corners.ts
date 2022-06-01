@@ -14,4 +14,17 @@ export class Corners {
             if (corners.bottomRight) this.bottomRight = corners.bottomRight;
         }
     }
+
+
+    getData(): Corners {
+        const corners = new Corners();
+
+        corners.constrain = this.constrain;
+        corners.topLeft = this.topLeft;
+        corners.topRight = this.topRight;
+        corners.bottomLeft = this.bottomLeft;
+        corners.bottomRight = this.bottomRight;
+
+        return corners;
+    }
 }
