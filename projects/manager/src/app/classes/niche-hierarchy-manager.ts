@@ -9,12 +9,12 @@ import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { Item } from "./item";
 import { ListItem } from "./list-item";
-import { ListUpdateManager } from "./list-update-manager";
+import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { Product } from "./product";
 
-export class NicheHierarchyManager extends ListUpdateManager {
+export class NicheHierarchyManager extends HierarchyUpdateManager {
     // Private
     private onGrandchildrenLoad: Subject<void> = new Subject<void>();
 
@@ -39,7 +39,7 @@ export class NicheHierarchyManager extends ListUpdateManager {
         this.childSearchType = 'Sub Niche';
         this.searchNameWidth = '295px';
         this.searchTypeWidth = '78px';
-        this.listUpdateService = this.nicheHierarchyService;
+        this.hierarchyUpdateService = this.nicheHierarchyService;
         this.thisArray = this.nicheHierarchyService.formArray;
         this.otherArray = this.nicheHierarchyService.productArray;
         this.thisSearchList = this.nicheHierarchyService.formSearchList;

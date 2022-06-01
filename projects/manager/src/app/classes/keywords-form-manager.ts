@@ -5,12 +5,11 @@ import { SortType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
-import { ListUpdate } from "./list-update";
-import { ListUpdateManager } from "./list-update-manager";
+import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
-export class KeywordsFormManager extends ListUpdateManager {
+export class KeywordsFormManager extends HierarchyUpdateManager {
     constructor(dataService: DataService, sanitizer: DomSanitizer, public keywordsService: KeywordsService) {
         super(dataService, sanitizer);
         this.sortType = SortType.Form;
@@ -22,7 +21,7 @@ export class KeywordsFormManager extends ListUpdateManager {
         this.childSearchType = 'Keyword';
         this.searchNameWidth = '233px';
         this.searchTypeWidth = '68px';
-        this.listUpdateService = this.keywordsService;
+        this.hierarchyUpdateService = this.keywordsService;
         this.thisArray = this.keywordsService.formArray;
         this.otherArray = this.keywordsService.productArray;
         this.thisSearchList = this.keywordsService.formSearchList;

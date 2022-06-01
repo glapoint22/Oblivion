@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import { SortType } from '../../classes/enums';
-import { HierarchyItem } from '../../classes/hierarchy-item';
-import { MultiColumnItem } from '../../classes/multi-column-item';
-import { HierarchyComponent } from '../../components/hierarchies/hierarchy/hierarchy.component';
+import { ListItem } from '../../classes/list-item';
+import { ListComponent } from '../../components/lists/list/list.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ListUpdateService {
-  public formArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-  public formSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-  public productArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-  public productSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-  public otherSortList: Array<HierarchyItem> = new Array<HierarchyItem>();
-  public formHierarchyComponent!: HierarchyComponent;
-  public productHierarchyComponent!: HierarchyComponent;
+  public formArray: Array<ListItem> = new Array<ListItem>();
+  public formSearchList: Array<ListItem> = new Array<ListItem>();
+  public productArray: Array<ListItem> = new Array<ListItem>();
+  public productSearchList: Array<ListItem> = new Array<ListItem>();
+  public otherSortList: Array<ListItem> = new Array<ListItem>();
+  public formListComponent!: ListComponent;
+  public productListComponent!: ListComponent;
   public targetSortType!: SortType;
 }

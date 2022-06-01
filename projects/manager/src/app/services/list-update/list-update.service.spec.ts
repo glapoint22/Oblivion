@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ListUpdateService } from './list-update.service';
 
-describe('ListUpdateService', () => {
+describe('NewListUpdateService', () => {
   let service: ListUpdateService;
 
   beforeEach(() => {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ListUpdateService } from '../list-update/list-update.service';
+import { HierarchyUpdateService } from '../hierarchy-update/hierarchy-update.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class NicheHierarchyService extends ListUpdateService { }
+export class NicheHierarchyService extends HierarchyUpdateService { }
