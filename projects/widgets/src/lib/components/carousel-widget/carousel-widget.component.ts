@@ -60,6 +60,18 @@ export class CarouselWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): CarouselWidgetData {
-    throw new Error('Method not implemented.');
+    const carouselWidgetData = super.getData() as CarouselWidgetData;
+
+    carouselWidgetData.banners = [];
+
+    this.banners.forEach((banner: CarouselBanner) => {
+      const newBanner = new CarouselBanner();
+
+      newBanner.image = banner.image.getData();
+      newBanner.link = banner.link.getData();
+      carouselWidgetData.banners.push(newBanner);
+    });
+
+    return carouselWidgetData;
   }
 }

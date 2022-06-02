@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="video-thumbnail">
+        <div *ngIf="video && video.thumbnail" class="video-thumbnail">
             <img [src]="'images/' + video.thumbnail" [title]="video.name">
         </div>
     </div>

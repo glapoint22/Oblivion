@@ -12,4 +12,17 @@ export class Image {
             this.thumbnail = image.thumbnail;
         }
     }
+
+
+
+    getData(): Image {
+        const image = new Image();
+
+        image.id = this.id;
+        image.name = this.name;
+        image.src = this.src;
+        image.thumbnail = this.thumbnail;
+
+        return image;
+    }
 }
