@@ -1,6 +1,6 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Column, ContainerComponent, Row, RowComponent, WidgetData, WidgetType } from 'widgets';
+import { Column, ColumnSpan, ContainerComponent, Row, RowComponent, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { MenuOptionType, WidgetCursorType } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
@@ -338,7 +338,10 @@ export class ContainerDevComponent extends ContainerComponent {
 
     // Column
     else if (this.widgetService.clipboard instanceof Column) {
-      this.addColumn(this.widgetService.clipboard, top);
+      const column = this.widgetService.clipboard;
+
+      column.columnSpan = new ColumnSpan(12);
+      this.addColumn(column, top);
     }
   }
 

@@ -152,10 +152,8 @@ export class ButtonWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): ButtonWidgetData {
-    const buttonWidgetData = new ButtonWidgetData(WidgetType.Button);
+    const buttonWidgetData = super.getData() as ButtonWidgetData;
 
-    buttonWidgetData.width = this.width;
-    buttonWidgetData.height = this.height;
     buttonWidgetData.background = this.background.getData();
     buttonWidgetData.border = this.border.getData();
     buttonWidgetData.caption = this.caption.getData();

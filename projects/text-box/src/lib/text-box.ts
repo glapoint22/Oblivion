@@ -17,11 +17,11 @@ export class TextBox {
     constructor(protected htmlRootElement: HTMLElement) { }
 
     // ---------------------------------------------------Load-----------------------------------------------------
-    public load(elements: Array<TextBoxData>): void {
+    public load(textBoxData: Array<TextBoxData>): void {
         this.rootElement.children = [];
 
-        elements.forEach((element: TextBoxData) => {
-            this.rootElement.children.push(this.createElement(element, this.rootElement));
+        textBoxData.forEach((data: TextBoxData) => {
+            this.rootElement.children.push(this.createElement(data, this.rootElement));
         });
     }
 
@@ -53,61 +53,61 @@ export class TextBox {
     }
 
 
-    // ---------------------------------------------------Create Element-----------------------------------------------------
-    private createElement(currentElement: TextBoxData, parent: Element): Element {
+    // ----------------------------------------------------------Create Element------------------------------------------------------------------
+    private createElement(textBoxData: TextBoxData, parent: Element): Element {
         let newElement!: Element;
 
         // Div
-        if (currentElement.elementType == ElementType.Div) {
+        if (textBoxData.elementType == ElementType.Div) {
             newElement = new DivElement(parent);
         }
 
         // Span
-        else if (currentElement.elementType == ElementType.Span) {
+        else if (textBoxData.elementType == ElementType.Span) {
             newElement = new SpanElement(parent);
         }
 
         // Text
-        else if (currentElement.elementType == ElementType.Text) {
-            const textElement = new TextElement(parent, currentElement.text as string);
+        else if (textBoxData.elementType == ElementType.Text) {
+            const textElement = new TextElement(parent, textBoxData.text as string);
 
             newElement = textElement;
         }
 
         // Break
-        else if (currentElement.elementType == ElementType.Break) {
+        else if (textBoxData.elementType == ElementType.Break) {
             newElement = new BreakElement(parent);
         }
 
         // Unordered List
-        else if (currentElement.elementType == ElementType.UnorderedList) {
+        else if (textBoxData.elementType == ElementType.UnorderedList) {
             newElement = new UnorderedListElement(parent);
         }
 
         // Ordered List
-        else if (currentElement.elementType == ElementType.OrderedList) {
+        else if (textBoxData.elementType == ElementType.OrderedList) {
             newElement = new OrderedListElement(parent);
         }
 
         // List Item
-        else if (currentElement.elementType == ElementType.ListItem) {
+        else if (textBoxData.elementType == ElementType.ListItem) {
             newElement = new ListItemElement(parent);
         }
 
         // Anchor
-        else if (currentElement.elementType == ElementType.Anchor) {
-            newElement = new AnchorElement(parent, currentElement.link!);
+        else if (textBoxData.elementType == ElementType.Anchor) {
+            newElement = new AnchorElement(parent, textBoxData.link!);
         }
 
         // Styles
-        if (currentElement.styles) newElement.styles = currentElement.styles;
+        if (textBoxData.styles) newElement.styles = textBoxData.styles;
 
         // Indent
-        if (currentElement.indent) newElement.indent = currentElement.indent;
+        if (textBoxData.indent) newElement.indent = textBoxData.indent;
 
         // Create the children
-        if (currentElement.children) {
-            currentElement.children.forEach((childElement: TextBoxData) => {
+        if (textBoxData.children) {
+            textBoxData.children.forEach((childElement: TextBoxData) => {
                 newElement.children.push(this.createElement(childElement, newElement));
             });
         }

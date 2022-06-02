@@ -43,6 +43,8 @@ export class Selection {
         let endNode = this.document.getElementById(elementId) as Node;
         if (this.endChildIndex != -1) endNode = endNode.childNodes[this.endChildIndex];
 
+        this.range = this.document.getSelection()?.getRangeAt(0) as Range;
+
         this.range.setStart(startNode, this.startOffset);
         this.range.setEnd(endNode, this.endOffset);
         this.collapsed = this.range.collapsed;

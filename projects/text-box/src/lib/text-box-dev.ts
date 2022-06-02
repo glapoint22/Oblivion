@@ -1,11 +1,13 @@
-import { Subject } from "rxjs";
+import { Link } from "common";
 import { AlignCenter } from "./align-center";
 import { AlignJustify } from "./align-justify";
 import { AlignLeft } from "./align-left";
 import { AlignRight } from "./align-right";
+import { AnchorElement } from "./anchor-element";
 import { Bold } from "./bold";
 import { BreakElement } from "./break-element";
 import { BulletedList } from "./bulleted-list";
+import { Container } from "./container";
 import { DecreaseIndent } from "./decrease-indent";
 import { DivElement } from "./div-element";
 import { Element } from "./element";
@@ -23,7 +25,9 @@ import { LowerCase } from "./lower-case";
 import { NumberedList } from "./numbered-list";
 import { Selection } from "./selection";
 import { SentenceCase } from "./sentence-case";
+import { StyleData } from "./style-data";
 import { TextBox } from "./text-box";
+import { TextBoxData } from "./text-box-data";
 import { TextElement } from "./text-element";
 import { TitleCase } from "./title-case";
 import { Underline } from "./underline";
@@ -31,7 +35,6 @@ import { UpperCase } from "./upper-case";
 
 export class TextBoxDev extends TextBox {
     public selection: Selection = new Selection();
-    public onSelection: Subject<void> = new Subject<void>();
     public bold: Bold = new Bold(this.selection);
     public italic: Italic = new Italic(this.selection);
     public underline: Underline = new Underline(this.selection);
@@ -75,7 +78,6 @@ export class TextBoxDev extends TextBox {
                 window.setTimeout(() => {
                     this.selection.onSelection(this.rootElement);
                     this.setSelectedClasses();
-                    this.onSelection.next();
                 });
             }
 
@@ -147,7 +149,6 @@ export class TextBoxDev extends TextBox {
                 window.setTimeout(() => {
                     this.selection.onSelection(this.rootElement);
                     this.setSelectedClasses();
-                    this.onSelection.next();
                 });
             }
         });
@@ -167,6 +168,29 @@ export class TextBoxDev extends TextBox {
     // ---------------------------------------------------------Set Focus------------------------------------------------------------------
     public setFocus(): void {
         this.htmlRootElement.focus();
+
+        this.selection.startElement = this.rootElement.firstChild;
+        this.selection.endElement = this.rootElement.lastChild;
+
+        if (this.selection.startElement.elementType == ElementType.Break) {
+            this.selection.startElement = this.selection.startElement.container;
+            this.selection.startChildIndex = -1;
+        } else {
+            this.selection.startChildIndex = this.selection.startElement.index;
+        }
+        this.selection.startOffset = 0;
+
+        if (this.selection.endElement.elementType == ElementType.Break) {
+            this.selection.endElement = this.selection.endElement.container;
+            this.selection.endOffset = 0;
+            this.selection.endChildIndex = -1;
+        } else {
+            const textElement = this.selection.endElement as TextElement;
+            this.selection.endOffset = textElement.text.length;
+            this.selection.endChildIndex = this.selection.endElement.index;
+        }
+
+        this.selection.setRange();
         this.selection.onSelection(this.rootElement);
     }
 
@@ -234,32 +258,54 @@ export class TextBoxDev extends TextBox {
         // If current element is the end element
         else if (currentElement.id == this.selection.endElement.id) {
             const endContainer = currentElement.container;
-            const startContainerChildrenCount = startContainer.children.length;
-            const startContainerLastChild = startContainer.lastChild;
+            let startElement = this.selection.startOffset > 0 ? this.selection.startElement : currentElement.previousChild;
+
+            if (startElement && startElement.container != startContainer || startElement instanceof Container) startElement = undefined;
 
             status = currentElement.delete(this.selection.endOffset);
 
-            // If the start container is the same as the end container and is empty and we have nothing moving into it, insert a break element
-            if ((startContainer == endContainer && startContainer.children.length == 0) ||
-                (endContainer.children.length == 0 && startContainer.children.length == 0)) {
+            // Start container is the end container
+            if (startContainer == endContainer) {
 
-                // Insert a break element
-                startContainer.children.push(new BreakElement(startContainer));
-                startContainer.firstChild.parent.setSelection(this.selection);
+                // Container is empty
+                if (endContainer.children.length == 0) {
 
-                return ElementDeleteStatus.DeletionComplete;
+                    // Insert a break element
+                    startContainer.children.push(new BreakElement(startContainer));
+                    startContainer.firstChild.parent.setSelection(this.selection);
 
-                // Move the elements into the start container
-            } else if (startContainer != endContainer && endContainer.children.length > 0) {
-                if (status == ElementDeleteStatus.Deleted) currentElement = endContainer;
-                currentElement.moveTo(startContainer, this.selection);
-            }
-
-            // Set the selection
-            if (startContainerChildrenCount > 0) {
-                startContainerLastChild.setSelection(this.selection, Infinity)
+                } else {
+                    // Set the selection
+                    if (startElement) {
+                        startElement.setSelection(this.selection, Infinity);
+                    } else {
+                        startContainer.firstChild.setSelection(this.selection);
+                    }
+                }
             } else {
-                startContainer.firstChild.setSelection(this.selection);
+                // Start container and end container are empty
+                if (startContainer.children.length == 0 && (endContainer.children.length == 0 || endContainer.firstChild.elementType == ElementType.Break)) {
+                    // Insert a break element
+                    startContainer.children.push(new BreakElement(startContainer));
+                    startContainer.firstChild.parent.setSelection(this.selection);
+                }
+
+                // Start container has children and end container is empty
+                else if (startContainer.children.length > 0 && endContainer.children.length == 0) {
+                    startElement?.setSelection(this.selection, Infinity);
+                } else {
+                    // If the end container did not contain a break element, move the the contents from the end container to the start container
+                    if (endContainer.firstChild.elementType != ElementType.Break) {
+                        endContainer.moveTo(startContainer, this.selection);
+                    }
+
+                    // Set the selection
+                    if (startElement) {
+                        startElement.setSelection(this.selection, Infinity);
+                    } else {
+                        startContainer.firstChild.setSelection(this.selection);
+                    }
+                }
             }
 
             return ElementDeleteStatus.DeletionComplete;
@@ -469,5 +515,42 @@ export class TextBoxDev extends TextBox {
 
             this.merge(currentElement);
         }
+    }
+
+
+
+    // ----------------------------------------------------------Get Data------------------------------------------------------------------
+    public getData(): Array<TextBoxData> {
+        return this.getTextBoxData(this.rootElement.children);
+    }
+
+
+    getTextBoxData(elements: Array<Element>): Array<TextBoxData> {
+        const textBoxData = new Array<TextBoxData>();
+
+        elements.forEach((element: Element) => {
+            const data = new TextBoxData();
+
+            data.elementType = element.elementType;
+            data.indent = element.indent;
+            data.styles = [];
+            element.styles.forEach((style: StyleData) => {
+                data.styles?.push(new StyleData(style.name, style.value))
+            });
+            data.children = this.getTextBoxData(element.children);
+
+            if (element.elementType == ElementType.Text) {
+                data.text = (element as TextElement).text;
+            } else if (element.elementType == ElementType.Anchor) {
+                const anchor = element as AnchorElement;
+
+                data.link = new Link();
+                data.link.linkType = anchor.link.linkType;
+                data.link.url = anchor.link.url;
+            }
+            textBoxData.push(data);
+        });
+
+        return textBoxData;
     }
 }

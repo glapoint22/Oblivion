@@ -8,7 +8,7 @@
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this}" [style.minHeight.px]="height"
     (mousedown)="inEditMode ? $event.stopPropagation(): null">
 
-
+<!-- -webkit-backface-visibility: hidden; -->
     <div #htmlRootElement style="color: white; outline: none; cursor: text; user-select: none;" contenteditable="true" spellcheck="false">
     </div>
 

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { TextBox, TextBoxData } from 'text-box';
+import { Link, LinkType } from 'common';
+import { ElementType, TextBox, TextBoxData } from 'text-box';
 import { Background } from '../../classes/background';
 import { Padding } from '../../classes/padding';
 import { TextWidgetData } from '../../classes/text-widget-data';
@@ -36,10 +37,11 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
 
   // ------------------------------------------------------------- Set Widget ----------------------------------------------------------------
   setWidget(textWidgetData: TextWidgetData) {
+    this.height = 64;
     this.background.setData(textWidgetData.background);
     this.padding.setData(textWidgetData.padding);
 
-    if (textWidgetData.textData) this.textBoxData = textWidgetData.textData;
+    if (textWidgetData.textBoxData) this.textBoxData = textWidgetData.textBoxData;
 
     super.setWidget(textWidgetData);
   }
@@ -61,6 +63,10 @@ export class TextWidgetComponent extends Widget implements AfterViewInit {
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): TextWidgetData {
-    throw new Error('Method not implemented.');
+    const textWidgetData = super.getData() as TextWidgetData;
+
+    textWidgetData.background = this.background.getData();
+    textWidgetData.padding = this.padding.getData();
+    return textWidgetData;
   }
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TextBoxDev } from 'text-box';
-import { TextWidgetComponent } from 'widgets';
+import { TextWidgetComponent, TextWidgetData } from 'widgets';
 import { WidgetHandle } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -17,10 +17,6 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
 
   constructor(public widgetService: WidgetService) { super() }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.height = 64;
-  }
 
   setText() {
     this.textBoxDev = new TextBoxDev(this.htmlRootElement.nativeElement);
@@ -33,9 +29,17 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
   }
 
 
-  ngAfterViewChecked() {
+  ngDoCheck() {
     if (this.widgetService.selectedWidget != this) {
       this.inEditMode = false;
     }
+  }
+
+
+  getData(): TextWidgetData {
+    const textWidgetData = super.getData() as TextWidgetData;
+    
+    textWidgetData.textBoxData = this.textBoxDev.getData();
+    return textWidgetData;
   }
 }
