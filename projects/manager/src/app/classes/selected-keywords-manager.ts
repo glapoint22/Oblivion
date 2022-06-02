@@ -29,7 +29,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         super(dataService, sanitizer, keywordsService);
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
-        this.parentDataServicePath = 'SelectedKeywords/Groups';
+        this.dataServicePath = 'SelectedKeywords/Groups';
         this.childDataServicePath = 'SelectedKeywords';
         this.childType = 'Custom Keyword';
         this.keywordsService.selectedKeywordsArray = this.thisArray;
@@ -40,13 +40,13 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
-        this.parentType = 'Custom Keyword Group';
-        this.addIconButtonTitle = 'Add ' + this.parentType;
+        this.itemType = 'Custom Keyword Group';
+        this.addIconButtonTitle = 'Add ' + this.itemType;
         this.addDisabled = true;
         this.editDisabled = true;
         this.deleteDisabled = true;
         if (this.thisArray.length == 0) {
-            this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.parentDataServicePath, [{ key: 'productId', value: this.productService.product.id }])
+            this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.dataServicePath, [{ key: 'productId', value: this.productService.product.id }])
                 .subscribe((thisArray: Array<KeywordCheckboxItem>) => {
                     thisArray.forEach(x => {
                         this.thisArray.push({
@@ -69,7 +69,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 // If an item was selected
                 if (selectedItem) {
                     // Then select that item
-                    this.hierarchyComponent.listManager.onItemDown(selectedItem);
+                    this.listComponent.listManager.onItemDown(selectedItem);
                 }
 
                 // If it's not set to select the last selected item
@@ -83,7 +83,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             }
 
             // If the hierarchy is set to collapse on open, then collapse the hierarchy
-            if (this.collapseHierarchyOnOpen) this.hierarchyComponent.listManager.collapseHierarchy();
+            if (this.collapseHierarchyOnOpen) this.listComponent.listManager.collapseHierarchy();
         }
     }
 
@@ -100,7 +100,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
                 this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }, { key: 'productId', value: this.productService.product.id }])
                     .subscribe((children: Array<KeywordCheckboxItem>) => {
-                        let num = this.hierarchyComponent.listManager.editedItem ? 2 : 1;
+                        let num = this.listComponent.listManager.editedItem ? 2 : 1;
 
                         for (let i = children.length - 1; i >= 0; i--) {
 
@@ -137,7 +137,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.keywordsService.sortList.forEach(x => {
 
                     // Sort the selected list
-                    this.hierarchyComponent.listManager.sort(x);
+                    this.listComponent.listManager.sort(x);
                 });
                 this.keywordsService.sortList = [];
             })
@@ -150,11 +150,11 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // =======================================================================( ADD )========================================================================= \\
 
     add() {
-        this.hierarchyComponent.listManager.editable = true;
+        this.listComponent.listManager.editable = true;
         // If an item is selected and that item is a custom keyword group
-        if (this.hierarchyComponent.listManager.selectedItem != null && this.hierarchyComponent.listManager.selectedItem.hierarchyGroupID == 0) {
+        if (this.listComponent.listManager.selectedItem != null && this.listComponent.listManager.selectedItem.hierarchyGroupID == 0) {
             // Check to see if that custom keyword group has had its children loaded yet
-            if (!this.hierarchyComponent.listManager.hasChildren(this.hierarchyComponent.listManager.selectedItem)) {
+            if (!this.listComponent.listManager.hasChildren(this.listComponent.listManager.selectedItem)) {
                 // If not, wait for its children to load
                 let onChildrenLoadListener = this.onChildrenLoad.subscribe(() => {
                     onChildrenLoadListener.unsubscribe();
@@ -179,7 +179,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // ====================================================================( ADD PARENT )===================================================================== \\
 
     addParent() {
-        this.hierarchyComponent.listManager.editable = true;
+        this.listComponent.listManager.editable = true;
         super.addParent();
         this.deleteDisabled = true;
         this.deleteIconButtonTitle = 'Delete';
@@ -197,8 +197,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             this.addIconButtonTitle = 'Add';
             this.editIconButtonTitle = 'Rename';
             this.deleteIconButtonTitle = 'Delete';
-            this.hierarchyComponent.edit();
-            this.thisArray.forEach(x => x.forProduct && x != this.hierarchyComponent.listManager.editedItem ? x.color = '#6e5000' : null);
+            this.listComponent.edit();
+            this.thisArray.forEach(x => x.forProduct && x != this.listComponent.listManager.editedItem ? x.color = '#6e5000' : null);
         } else {
 
             if (this.thisSearchList.length > 0) {
@@ -218,19 +218,19 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
 
-    onHierarchyUpdate(hierarchyUpdate: CheckboxListUpdate) {
-        super.onHierarchyUpdate(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.CheckboxChange) this.onHierarchyItemCheckboxChange(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.DoubleClick) this.onHierarchyItemDoubleClick();
+    onListUpdate(hierarchyUpdate: CheckboxListUpdate) {
+        super.onListUpdate(hierarchyUpdate);
+        if (hierarchyUpdate.type == ListUpdateType.CheckboxChange) this.onItemCheckboxChange(hierarchyUpdate);
+        if (hierarchyUpdate.type == ListUpdateType.DoubleClick) this.onItemDoubleClick();
     }
 
 
 
     // =================================================================( ON SEARCH UPDATE )================================================================== \\
 
-    onSearchUpdate(searchUpdate: CheckboxMultiColumnListUpdate) {
-        super.onSearchUpdate(searchUpdate);
-        if (searchUpdate.type == ListUpdateType.CheckboxChange) this.onSearchCheckboxChange(searchUpdate);
+    onSearchListUpdate(searchUpdate: CheckboxMultiColumnListUpdate) {
+        super.onSearchListUpdate(searchUpdate);
+        if (searchUpdate.type == ListUpdateType.CheckboxChange) this.onSearchItemCheckboxChange(searchUpdate);
         if (searchUpdate.type == ListUpdateType.DoubleClick) this.onSearchItemDoubleClick();
     }
 
@@ -238,68 +238,68 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
 
-    onSelectedHierarchyItem(hierarchyUpdate: CheckboxListUpdate) {
+    onSelectedItem(hierarchyUpdate: CheckboxListUpdate) {
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
 
             // If we're NOT selecting a custom keyword group
             if (!this.thisArray[hierarchyUpdate.selectedItems![0].index!].forProduct) {
-                this.parentType = 'Keyword Group';
+                this.itemType = 'Keyword Group';
                 this.addDisabled = true;
                 this.editDisabled = true;
                 this.deleteDisabled = false;
                 this.addIconButtonTitle = 'Add';
                 this.editIconButtonTitle = 'Rename';
-                this.deleteIconButtonTitle = 'Remove ' + this.parentType;
-                this.hierarchyComponent.listManager.editable = false;
-                this.hierarchyOptions.deletePrompt!.title = 'Remove ' + this.parentType;
-                this.hierarchyOptions.deletePrompt!.primaryButton!.name = 'Remove';
+                this.deleteIconButtonTitle = 'Remove ' + this.itemType;
+                this.listComponent.listManager.editable = false;
+                this.listOptions.deletePrompt!.title = 'Remove ' + this.itemType;
+                this.listOptions.deletePrompt!.primaryButton!.name = 'Remove';
                 this.buildMenu(hierarchyUpdate);
 
                 // If we ARE selecting a custom keyword group
             } else {
-                this.parentType = 'Custom Keyword Group';
-                this.hierarchyComponent.listManager.editable = true;
+                this.itemType = 'Custom Keyword Group';
+                this.listComponent.listManager.editable = true;
                 this.addIconButtonTitle = 'Add ' + this.childType;
-                this.editIconButtonTitle = 'Rename ' + this.parentType;
-                this.deleteIconButtonTitle = 'Delete ' + this.parentType;
-                this.hierarchyOptions.deletePrompt!.title = 'Delete ' + this.parentType;
-                this.hierarchyOptions.deletePrompt!.primaryButton!.name = 'Delete';
+                this.editIconButtonTitle = 'Rename ' + this.itemType;
+                this.deleteIconButtonTitle = 'Delete ' + this.itemType;
+                this.listOptions.deletePrompt!.title = 'Delete ' + this.itemType;
+                this.listOptions.deletePrompt!.primaryButton!.name = 'Delete';
                 this.buildMenu(hierarchyUpdate);
 
                 // If the custom keyword was selected after it was in edit mode
-                if (this.hierarchyComponent.listManager.editedItem != null) {
+                if (this.listComponent.listManager.editedItem != null) {
                     this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
                 }
             }
         }
 
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1) {
-            this.parentType = 'Custom Keyword Group';
+            this.itemType = 'Custom Keyword Group';
 
             // If we're NOT selecting a custom keyword (a selection can NOT be made so we stay in custom mode)
             if (!this.thisArray[hierarchyUpdate.selectedItems![0].index!].forProduct) {
-                this.hierarchyOptions.menu = null!;
+                this.listOptions.menu = null!;
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Delete';
-                this.addIconButtonTitle = 'Add ' + this.parentType;
-                this.hierarchyComponent.listManager.editable = false;
-                this.hierarchyComponent.listManager.selectedItem.selected = false;
-                this.hierarchyComponent.listManager.selectedItem.selectType = null!;
-                this.hierarchyComponent.listManager.selectedItem = null!;
+                this.addIconButtonTitle = 'Add ' + this.itemType;
+                this.listComponent.listManager.editable = false;
+                this.listComponent.listManager.selectedItem.selected = false;
+                this.listComponent.listManager.selectedItem.selectType = null!;
+                this.listComponent.listManager.selectedItem = null!;
 
                 // If we ARE selecting a custom keyword
             } else {
 
-                this.hierarchyComponent.listManager.editable = true;
+                this.listComponent.listManager.editable = true;
                 this.addIconButtonTitle = 'Add ' + this.childType;
                 this.editIconButtonTitle = 'Rename ' + this.childType;
                 this.deleteIconButtonTitle = 'Delete ' + this.childType;
-                this.hierarchyOptions.deletePrompt!.title = 'Delete ' + this.childType;
-                this.hierarchyOptions.deletePrompt!.primaryButton!.name = 'Delete';
+                this.listOptions.deletePrompt!.title = 'Delete ' + this.childType;
+                this.listOptions.deletePrompt!.primaryButton!.name = 'Delete';
                 this.buildMenu(hierarchyUpdate);
 
                 // If the custom keyword was selected after it was in edit mode
-                if (this.hierarchyComponent.listManager.editedItem != null) {
+                if (this.listComponent.listManager.editedItem != null) {
                     this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
                 }
             }
@@ -316,37 +316,35 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
             // If we're NOT selecting a custom keyword group
             if (!this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].forProduct) {
-                this.parentType = 'Keyword Group';
+                this.itemType = 'Keyword Group';
                 this.editDisabled = true;
                 this.deleteDisabled = false;
                 this.editIconButtonTitle = 'Rename';
-                this.deleteIconButtonTitle = 'Remove ' + this.parentType;
+                this.deleteIconButtonTitle = 'Remove ' + this.itemType;
                 searchUpdate.selectedMultiColumnItems![0].values[0].allowEdit = false;
-                this.searchOptions.deletePrompt!.title = 'Remove ' + this.parentType;
+                this.searchOptions.deletePrompt!.title = 'Remove ' + this.itemType;
                 this.searchOptions.deletePrompt!.primaryButton!.name = 'Remove';
                 this.searchOptions.menu!.menuOptions[0].hidden = true;
-                this.searchOptions.menu!.menuOptions[1].hidden = true;
+                this.searchOptions.menu!.menuOptions[1].hidden = false;
                 this.searchOptions.menu!.menuOptions[2].hidden = false;
-                this.searchOptions.menu!.menuOptions[3].hidden = false;
-                this.searchOptions.menu!.menuOptions[2].name = 'Remove ' + this.parentType;
-                this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.parentType + ' in Hierarchy';
+                this.searchOptions.menu!.menuOptions[1].name = 'Remove ' + this.itemType;
+                this.searchOptions.menu!.menuOptions[3].name = 'Go to ' + this.itemType + ' in Hierarchy';
 
                 // If we ARE selecting a custom keyword group
             } else {
 
-                this.parentType = 'Custom Keyword Group';
+                this.itemType = 'Custom Keyword Group';
                 searchUpdate.selectedMultiColumnItems![0].values[0].allowEdit = true;
-                this.editIconButtonTitle = 'Rename ' + this.parentType;
-                this.deleteIconButtonTitle = 'Delete ' + this.parentType;
-                this.searchOptions.deletePrompt!.title = 'Delete ' + this.parentType;
+                this.editIconButtonTitle = 'Rename ' + this.itemType;
+                this.deleteIconButtonTitle = 'Delete ' + this.itemType;
+                this.searchOptions.deletePrompt!.title = 'Delete ' + this.itemType;
                 this.searchOptions.deletePrompt!.primaryButton!.name = 'Delete';
                 this.searchOptions.menu!.menuOptions[0].hidden = false;
                 this.searchOptions.menu!.menuOptions[1].hidden = false;
                 this.searchOptions.menu!.menuOptions[2].hidden = false;
-                this.searchOptions.menu!.menuOptions[3].hidden = false;
-                this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.parentType;
-                this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.parentType;
-                this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.parentType + ' in Hierarchy';
+                this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.itemType;
+                this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.itemType;
+                this.searchOptions.menu!.menuOptions[3].name = 'Go to ' + this.itemType + ' in Hierarchy';
 
                 // If the custom keyword was selected after it was in edit mode
                 if (this.searchComponent.listManager.editedItem != null) {
@@ -363,7 +361,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             // If we're NOT selecting a custom keyword
             if (!this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].forProduct) {
                 this.childType = 'Keyword';
-                this.parentType = 'Keyword Group';
+                this.itemType = 'Keyword Group';
                 this.editDisabled = true;
                 this.deleteDisabled = true;
                 this.editIconButtonTitle = 'Rename';
@@ -372,14 +370,13 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.searchOptions.menu!.menuOptions[0].hidden = true;
                 this.searchOptions.menu!.menuOptions[1].hidden = true;
                 this.searchOptions.menu!.menuOptions[2].hidden = true;
-                this.searchOptions.menu!.menuOptions[3].hidden = true;
-                this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.childType + ' in Hierarchy';
+                this.searchOptions.menu!.menuOptions[3].name = 'Go to ' + this.childType + ' in Hierarchy';
 
                 // If we ARE selecting a custom keyword
             } else {
 
                 this.childType = 'Custom Keyword';
-                this.parentType = 'Custom Keyword Group';
+                this.itemType = 'Custom Keyword Group';
                 searchUpdate.selectedMultiColumnItems![0].values[0].allowEdit = true;
                 this.editIconButtonTitle = 'Rename ' + this.childType;
                 this.deleteIconButtonTitle = 'Delete ' + this.childType;
@@ -388,11 +385,9 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.searchOptions.menu!.menuOptions[0].hidden = false;
                 this.searchOptions.menu!.menuOptions[1].hidden = false;
                 this.searchOptions.menu!.menuOptions[2].hidden = false;
-                this.searchOptions.menu!.menuOptions[3].hidden = false;
-                this.searchOptions.menu!.menuOptions[4].hidden = false;
                 this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.childType;
-                this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.childType;
-                this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.childType + ' in Hierarchy';
+                this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.childType;
+                this.searchOptions.menu!.menuOptions[3].name = 'Go to ' + this.childType + ' in Hierarchy';
 
                 // If the custom keyword was selected after it was in edit mode
                 if (this.searchComponent.listManager.editedItem != null) {
@@ -409,13 +404,13 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ==========================================================( ON HIERARCHY ITEM DOUBLE CLICK )=========================================================== \\
 
-    onHierarchyItemDoubleClick() {
+    onItemDoubleClick() {
         // As long as we're double clicking on a custom item
-        if (this.hierarchyComponent.listManager.editedItem != null) {
+        if (this.listComponent.listManager.editedItem != null) {
             this.addIconButtonTitle = 'Add';
             this.editIconButtonTitle = 'Rename';
             this.deleteIconButtonTitle = 'Delete';
-            this.thisArray.forEach(x => x.forProduct && x != this.hierarchyComponent.listManager.editedItem ? x.color = '#6e5000' : null);
+            this.thisArray.forEach(x => x.forProduct && x != this.listComponent.listManager.editedItem ? x.color = '#6e5000' : null);
         }
     }
 
@@ -424,7 +419,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // ============================================================( ON SEARCH ITEM DOUBLE CLICK )============================================================ \\
 
     onSearchItemDoubleClick() {
-        if (this.parentType == 'Custom Keyword Group') {
+        if (this.itemType == 'Custom Keyword Group') {
             this.editIconButtonTitle = 'Rename';
             this.deleteIconButtonTitle = 'Delete';
             this.thisSearchList.forEach(x => {
@@ -439,7 +434,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // =========================================================( ON HIERARCHY ITEM CHECKBOX CHANGE )========================================================= \\
 
-    onHierarchyItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
+    onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
         this.dataService.put('api/' + this.childDataServicePath + '/Update', {
             productId: this.productService.product.id,
             id: hierarchyUpdate.id,
@@ -451,7 +446,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // =============================================================( ON SEARCH CHECKBOX CHANGE )============================================================= \\
 
-    onSearchCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
+    onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
         this.dataService.put('api/' + this.childDataServicePath + '/Update', {
             productId: this.productService.product.id,
             id: checkboxMultiColumnListUpdate.id,
@@ -468,9 +463,9 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ===========================================================( ON UNSELECTED HIERARCHY ITEM )============================================================ \\
 
-    onUnselectedHierarchyItem() {
-        this.parentType = 'Custom Keyword Group';
-        this.addIconButtonTitle = 'Add ' + this.parentType;
+    onUnselectedItem() {
+        this.itemType = 'Custom Keyword Group';
+        this.addIconButtonTitle = 'Add ' + this.itemType;
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
         // When an item was going to be added but was cancelled
@@ -482,7 +477,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // =============================================================( ON UNSELECTED SEARCH ITEM )============================================================= \\
 
     onUnselectedSearchItem() {
-        this.parentType = 'Custom Keyword Group';
+        this.itemType = 'Custom Keyword Group';
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
     }
@@ -491,10 +486,10 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
 
-    onHierarchyItemAdd(hierarchyUpdate: HierarchyUpdate) {
+    onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         // Add parent hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 0) {
-            this.dataService.post<number>('api/' + this.parentDataServicePath, {
+            this.dataService.post<number>('api/' + this.dataServicePath, {
                 id: this.productService.product.id,
                 name: hierarchyUpdate.name
             }).subscribe((id: number) => {
@@ -505,7 +500,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
         // Add child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            const indexOfHierarchyItemParent = this.hierarchyComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
+            const indexOfHierarchyItemParent = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
 
             this.dataService.post<number>('api/' + this.childDataServicePath, {
                 id: this.thisArray[indexOfHierarchyItemParent].id,
@@ -522,7 +517,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
 
-    onHierarchyItemVerify(hierarchyUpdate: HierarchyUpdate) {
+    onItemVerify(hierarchyUpdate: HierarchyUpdate) {
         let matchFound: boolean = false;
 
         // If we're verifying a parent item
@@ -537,9 +532,9 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             })
 
             if (matchFound) {
-                this.hierarchyOptions.duplicatePrompt!.title = 'Duplicate Custom Keyword Group';
-                this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Custom Keyword Group with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
-                this.hierarchyComponent.openDuplicatePrompt();
+                this.listOptions.duplicatePrompt!.title = 'Duplicate Custom Keyword Group';
+                this.listOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Custom Keyword Group with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
+                this.listComponent.openDuplicatePrompt();
             } else {
 
                 // Loop through each parent item and check for a duplicate
@@ -552,21 +547,21 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 })
 
                 if (matchFound) {
-                    this.hierarchyOptions.duplicatePrompt!.title = 'Duplicate Keyword Group';
-                    this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Keyword Group with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
-                    this.hierarchyComponent.openDuplicatePrompt();
+                    this.listOptions.duplicatePrompt!.title = 'Duplicate Keyword Group';
+                    this.listOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A Keyword Group with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
+                    this.listComponent.openDuplicatePrompt();
                 }
             }
 
             // If no match was found
             if (!matchFound) {
-                this.hierarchyComponent.commitAddEdit();
+                this.listComponent.commitAddEdit();
             }
         }
 
         // If we're verifying a child item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            super.onHierarchyItemVerify(hierarchyUpdate);
+            super.onItemVerify(hierarchyUpdate);
         }
     }
 
@@ -627,18 +622,18 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ===========================================================( DELETE PROMPT PARENT MESSAGE )============================================================ \\
 
-    deletePromptParentMessage(parentType: string, parentName: string): SafeHtml {
+    deletePromptMessage(itemType: string, parentName: string): SafeHtml {
 
-        if (parentType == 'Keyword Group') {
+        if (itemType == 'Keyword Group') {
             return this.sanitizer.bypassSecurityTrustHtml(
                 'The ' +
-                parentType +
+                itemType +
                 ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
                 ' and its contents will be removed.');
         } else {
             return this.sanitizer.bypassSecurityTrustHtml(
                 'The ' +
-                parentType +
+                itemType +
                 ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
                 ' and its contents will be permanently deleted.');
         }
@@ -648,12 +643,12 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
 
-    onHierarchyItemDelete(deletedItem: KeywordCheckboxItem) {
+    onItemDelete(deletedItem: KeywordCheckboxItem) {
         // If we're deleting a parent item
         if (deletedItem.hierarchyGroupID == 0) {
 
-            if (this.parentType == 'Keyword Group') {
-                this.dataService.put('api/' + this.parentDataServicePath + '/Remove', {
+            if (this.itemType == 'Keyword Group') {
+                this.dataService.put('api/' + this.dataServicePath + '/Remove', {
                     productId: this.productService.product.id,
                     id: deletedItem.id
                 }).subscribe();
@@ -685,7 +680,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
             } else {
-                this.dataService.delete('api/' + this.parentDataServicePath, {
+                this.dataService.delete('api/' + this.dataServicePath, {
                     id: deletedItem.id
                 }).subscribe();
             }
@@ -707,7 +702,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
         // If we're deleting a parent item
         if (deletedItem.values[1].name == this.parentSearchType) {
-            this.dataService.delete('api/' + this.parentDataServicePath, {
+            this.dataService.delete('api/' + this.dataServicePath, {
                 id: deletedItem.id
             }).subscribe();
 
@@ -766,7 +761,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     getSearchResults(value: string) {
         this.thisSearchList.splice(0, this.thisSearchList.length);
 
-        this.dataService.get<Array<KeywordCheckboxSearchResultItem>>('api/' + this.parentDataServicePath + '/Search', [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: value }])
+        this.dataService.get<Array<KeywordCheckboxSearchResultItem>>('api/' + this.dataServicePath + '/Search', [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: value }])
             .subscribe((searchResults: Array<KeywordCheckboxSearchResultItem>) => {
 
                 // As long as search results were returned
@@ -788,7 +783,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ===========================================================( SORT PENDING HIERARCHY ITEMS )============================================================ \\
 
-    sortPendingHierarchyItems() {
+    sortPendingItems() {
         // Selected keywords has its own sort pending function
     }
 
@@ -802,10 +797,10 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         if (!this.searchMode) {
 
             // As long as the hierarchy update is not null
-            if (this.hierarchyUpdate) {
+            if (this.listUpdate) {
 
                 // NOT custom
-                if (this.parentType == 'Keyword Group') {
+                if (this.itemType == 'Keyword Group') {
                     if (disabledUpdateProperty == 'addDisabled') {
                         return this.addDisabled;
 
@@ -816,13 +811,13 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                         return this.deleteDisabled;
                     } else {
                         let hierarchyDisabledUpdateProperty = disabledUpdateProperty as keyof HierarchyUpdate;
-                        return this.hierarchyUpdate[hierarchyDisabledUpdateProperty] as boolean;
+                        return this.listUpdate[hierarchyDisabledUpdateProperty] as boolean;
                     }
 
                     // Custom
                 } else {
                     let hierarchyDisabledUpdateProperty = disabledUpdateProperty as keyof HierarchyUpdate;
-                    return this.hierarchyUpdate[hierarchyDisabledUpdateProperty] as boolean;
+                    return this.listUpdate[hierarchyDisabledUpdateProperty] as boolean;
                 }
             }
 
@@ -833,7 +828,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             if (this.searchUpdate) {
 
                 // NOT custom
-                if (this.parentType == 'Keyword Group') {
+                if (this.itemType == 'Keyword Group') {
 
                     if (disabledUpdateProperty == 'editDisabled') {
                         return this.editDisabled;
@@ -863,7 +858,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // ====================================================================( BUILD MENU )===================================================================== \\
 
     buildMenu(hierarchyUpdate: CheckboxListUpdate) {
-        this.hierarchyOptions.menu = {
+        this.listOptions.menu = {
             parentObj: this,
             menuOptions: [
                 {
@@ -895,41 +890,44 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
             // If a custom keyword group was NOT selected
             if (!this.thisArray[hierarchyUpdate.selectedItems![0].index!].forProduct) {
-                this.hierarchyOptions.menu!.menuOptions[0].hidden = false;
-                this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
-                this.hierarchyOptions.menu!.menuOptions[2].hidden = true;
-                this.hierarchyOptions.menu!.menuOptions[3].hidden = true;
-                this.hierarchyOptions.menu!.menuOptions[5].hidden = false;
-                this.hierarchyOptions.menu!.menuOptions[0].name = 'Add Custom ' + this.parentType;
-                this.hierarchyOptions.menu!.menuOptions[5].name = 'Remove ' + this.parentType;
+                this.listOptions.menu!.menuOptions[0].hidden = false;
+                this.listOptions.menu!.menuOptions[1].hidden = true;
+                this.listOptions.menu!.menuOptions[2].hidden = true;
+                this.listOptions.menu!.menuOptions[3].hidden = true;
+                this.listOptions.menu!.menuOptions[4].hidden = false;
+                this.listOptions.menu!.menuOptions[5].hidden = false;
+                this.listOptions.menu!.menuOptions[0].name = 'Add Custom ' + this.itemType;
+                this.listOptions.menu!.menuOptions[5].name = 'Remove ' + this.itemType;
 
                 // If a custom keyword group WAS selected
             } else {
 
-                this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
-                this.hierarchyOptions.menu!.menuOptions[2].hidden = false;
-                this.hierarchyOptions.menu!.menuOptions[3].hidden = false;
-                this.hierarchyOptions.menu!.menuOptions[5].hidden = false;
-                this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.add;
-                this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.parentType;
-                this.hierarchyOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
-                this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.parentType;
-                this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.parentType;
+                this.listOptions.menu!.menuOptions[1].hidden = false;
+                this.listOptions.menu!.menuOptions[2].hidden = false;
+                this.listOptions.menu!.menuOptions[3].hidden = false;
+                this.listOptions.menu!.menuOptions[4].hidden = false;
+                this.listOptions.menu!.menuOptions[5].hidden = false;
+                this.listOptions.menu!.menuOptions[1].optionFunction = this.add;
+                this.listOptions.menu!.menuOptions[0].name = 'Add ' + this.itemType;
+                this.listOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
+                this.listOptions.menu!.menuOptions[3].name = 'Rename ' + this.itemType;
+                this.listOptions.menu!.menuOptions[5].name = 'Delete ' + this.itemType;
             }
-            this.hierarchyOptions.menu!.menuOptions[0].hidden = false;
-            this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addParent;
+            this.listOptions.menu!.menuOptions[0].hidden = false;
+            this.listOptions.menu!.menuOptions[0].optionFunction = this.addParent;
         }
 
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1) {
-            this.hierarchyOptions.menu!.menuOptions[0].hidden = false;
-            this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
-            this.hierarchyOptions.menu!.menuOptions[2].hidden = false;
-            this.hierarchyOptions.menu!.menuOptions[3].hidden = false;
-            this.hierarchyOptions.menu!.menuOptions[5].hidden = false;
-            this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.add;
-            this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
-            this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.childType;
-            this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.childType;
+            this.listOptions.menu!.menuOptions[0].hidden = false;
+            this.listOptions.menu!.menuOptions[1].hidden = true;
+            this.listOptions.menu!.menuOptions[2].hidden = true;
+            this.listOptions.menu!.menuOptions[3].hidden = false;
+            this.listOptions.menu!.menuOptions[4].hidden = true;
+            this.listOptions.menu!.menuOptions[5].hidden = false;
+            this.listOptions.menu!.menuOptions[0].optionFunction = this.add;
+            this.listOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
+            this.listOptions.menu!.menuOptions[3].name = 'Rename ' + this.childType;
+            this.listOptions.menu!.menuOptions[5].name = 'Delete ' + this.childType;
         }
     }
 }

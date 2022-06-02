@@ -172,22 +172,14 @@ export class MultiColumnListManager extends ListManager {
         );
     }
 
+
+
     selectedItemsUpdate(rightClick: boolean) {
         const selectedItems = this.sourceList.filter(x => x.selected == true);
-        this.onListUpdate.next(
-            {
-                type: ListUpdateType.SelectedItems,
-                rightClick: rightClick,
-                selectedMultiColumnItems: selectedItems!.map((x) => {
-                    return {
-                        id: x.id,
-                        index: this.sourceList.findIndex(y => y.id == x.id && y.values[0].name == x.values[0].name && y.values[1].name == x.values[1].name),
-                        values: x.values
-                    }
-                })
-            }
-        );
+        selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
+        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedMultiColumnItems: selectedItems, rightClick: rightClick });
     }
+
 
 
 

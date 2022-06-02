@@ -69,8 +69,8 @@
                 <div class="modal-list-container">
                     <hierarchy #hierarchyComponent
                                [sourceList]="filtersFormManager.thisArray"
-                               [options]="filtersFormManager.hierarchyOptions"
-                               (onListUpdate)="filtersFormManager.hierarchyUpdate = $event">
+                               [options]="filtersFormManager.listOptions"
+                               (onListUpdate)="filtersFormManager.listUpdate = $event">
                     </hierarchy>
                 </div>
             </ng-container>

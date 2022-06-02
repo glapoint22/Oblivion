@@ -1,73 +1,57 @@
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
-import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
-import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
+import { ListComponent } from "../components/lists/list/list.component";
 import { ListUpdateService } from "../services/list-update/list-update.service";
-import { DuplicateItem } from "./duplicate-item";
 import { ListUpdateType, MenuOptionType, SortType } from "./enums";
-import { HierarchyItem } from "./hierarchy-item";
-import { HierarchyUpdate } from "./hierarchy-update";
-import { Item } from "./item";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
-import { MultiColumnItem } from "./multi-column-item";
-import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { SearchResultItem } from "./search-result-item";
 
 export class ListUpdateManager {
     // private
-    private _hierarchyUpdate!: HierarchyUpdate;
-    private _searchUpdate!: MultiColumnListUpdate;
+    private _listUpdate!: ListUpdate;
+    private _searchListUpdate!: ListUpdate;
 
     // Public
-    public childType!: string;
-    public parentType!: string;
+    public itemType!: string;
     public sortType!: SortType;
     public searchMode!: boolean;
-    public searchNameWidth!: string;
-    public searchTypeWidth!: string;
-    public childSearchType!: string;
     public parentSearchType!: string;
     public addIconButtonTitle!: string;
-    public childDataServicePath!: string;
     public searchInput!: HTMLInputElement;
-    public isThreeTierHierarchy!: boolean;
-    public parentDataServicePath!: string;
+    public dataServicePath!: string;
     public editIconButtonTitle: string = 'Rename';
     public deleteIconButtonTitle: string = 'Delete';
     public searchIconButtonTitle: string = 'Search';
-    public listUpdateService?: ListUpdateService;
+    public listUpdateService!: ListUpdateService;
     public searchInputSubscription!: Subscription;
     public selectLastSelectedItemOnOpen!: boolean;
-    public collapseHierarchyOnOpen: boolean = true;
-    public hierarchyComponent!: HierarchyComponent;
-    public searchComponent!: MultiColumnListComponent;
-    public isSecondLevelHierarchyItemParent!: boolean;
-    public otherHierarchyComponent!: HierarchyComponent;
+    public listComponent!: ListComponent;
+    public searchComponent!: ListComponent;
+    public otherListComponent!: ListComponent;
     public onClose: Subject<void> = new Subject<void>();
     public searchOptions: ListOptions = new ListOptions();
-    public hierarchyOptions: ListOptions = new ListOptions();
-    public onChildrenLoad: Subject<void> = new Subject<void>();
-    public thisArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-    public otherArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-    public thisSortList: Array<HierarchyItem> = new Array<HierarchyItem>();
-    public thisSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-    public otherSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-    public get hierarchyUpdate(): HierarchyUpdate { return this._hierarchyUpdate; }
-    public get searchUpdate(): MultiColumnListUpdate { return this._searchUpdate; }
-    public set searchUpdate(searchUpdate: MultiColumnListUpdate) { this.onSearchUpdate(searchUpdate); }
-    public set hierarchyUpdate(hierarchyUpdate: HierarchyUpdate) { this.onHierarchyUpdate(hierarchyUpdate); }
+    public listOptions: ListOptions = new ListOptions();
+    public thisArray: Array<ListItem> = new Array<ListItem>();
+    public otherArray: Array<ListItem> = new Array<ListItem>();
+    public thisSortList: Array<ListItem> = new Array<ListItem>();
+    public thisSearchList: Array<ListItem> = new Array<ListItem>();
+    public otherSearchList: Array<ListItem> = new Array<ListItem>();
+    public get listUpdate(): ListUpdate { return this._listUpdate; }
+    public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
+    public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
+    public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
     constructor(public dataService: DataService, public sanitizer: DomSanitizer) {
 
-        // ---------- HIERARCHY OPTIONS ---------- \\
+        // ---------- LIST OPTIONS ---------- \\
 
-        this.hierarchyOptions = {
+        this.listOptions = {
             multiselectable: false,
             verifyAddEdit: true,
 
@@ -96,21 +80,14 @@ export class ListUpdateManager {
                 parentObj: this,
                 menuOptions: [
                     {
-                        type: MenuOptionType.MenuItem
-                    },
-                    {
-                        type: MenuOptionType.MenuItem
-                    },
-                    {
-                        type: MenuOptionType.Divider
+                        type: MenuOptionType.MenuItem,
+                        shortcut: 'Alt+A',
+                        optionFunction: this.add
                     },
                     {
                         type: MenuOptionType.MenuItem,
                         shortcut: 'F2',
                         optionFunction: this.edit
-                    },
-                    {
-                        type: MenuOptionType.Divider
                     },
                     {
                         type: MenuOptionType.MenuItem,
@@ -126,6 +103,7 @@ export class ListUpdateManager {
         this.searchOptions = {
             multiselectable: false,
             verifyAddEdit: true,
+            sortable: false,
 
             // Delete Prompt
             deletePrompt: {
@@ -153,25 +131,13 @@ export class ListUpdateManager {
                 menuOptions: [
                     {
                         type: MenuOptionType.MenuItem,
-                        shortcut: 'Ctrl+Alt+R',
+                        shortcut: 'F2',
                         optionFunction: this.edit
-                    },
-                    {
-                        type: MenuOptionType.Divider
                     },
                     {
                         type: MenuOptionType.MenuItem,
                         shortcut: 'Delete',
                         optionFunction: this.delete
-                    },
-                    {
-                        type: MenuOptionType.Divider
-                    },
-                    {
-                        type: MenuOptionType.MenuItem,
-                        name: 'Go to Hierarchy',
-                        shortcut: 'Alt+H',
-                        optionFunction: this.goToHierarchy
                     }
                 ]
             }
@@ -183,38 +149,25 @@ export class ListUpdateManager {
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
-        this.addIconButtonTitle = 'Add ' + this.parentType;
+        this.addIconButtonTitle = 'Add ' + this.itemType;
         if (this.thisArray.length == 0) {
-            this.dataService.get<Array<HierarchyItem>>('api/' + this.parentDataServicePath)
-                .subscribe((thisArray: Array<HierarchyItem>) => {
+            this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath)
+                .subscribe((thisArray: Array<ListItem>) => {
                     thisArray.forEach(x => {
-                        this.thisArray.push({
-                            id: x.id,
-                            name: x.name,
-                            hierarchyGroupID: 0,
-                            hidden: false,
-                            arrowDown: false
-                        })
-
-                        this.otherArray.push({
-                            id: x.id,
-                            name: x.name,
-                            hierarchyGroupID: 0,
-                            hidden: false,
-                            arrowDown: false
-                        })
+                        this.thisArray.push(this.newItem(x));
+                        this.otherArray.push(this.newItem(x));
                     })
                 })
         } else {
 
-            // If the hierarchy is set to select the last selected item on open
+            // If the list is set to select the last selected item on open
             if (this.selectLastSelectedItemOnOpen) {
                 // Check to see if an item was selected before it last closed
                 const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
                 // If an item was selected
                 if (selectedItem) {
                     // Then select that item
-                    this.hierarchyComponent.listManager.onItemDown(selectedItem);
+                    this.listComponent.listManager.onItemDown(selectedItem);
                 }
 
                 // If it's not set to select the last selected item
@@ -226,63 +179,8 @@ export class ListUpdateManager {
                     x.selected = false;
                 })
             }
-
-            // If the hierarchy is set to collapse on open, then collapse the hierarchy
-            if (this.collapseHierarchyOnOpen) this.hierarchyComponent.listManager.collapseHierarchy();
         }
-        this.sortPendingHierarchyItems();
-    }
-
-
-
-    // ==================================================================( ON ARROW CLICK )=================================================================== \\
-
-    onArrowClick(hierarchyUpdate: HierarchyUpdate) {
-        // If a parent item was expanded and its children has NOT been loaded yet
-        if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
-
-            // If the hierarchy item is a top level hierarchy item
-            if (hierarchyUpdate.hierarchyGroupID == 0) {
-
-                this.dataService.get<Array<Item>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
-                    .subscribe((children: Array<Item>) => {
-                        let num = this.hierarchyComponent.listManager.editedItem ? 2 : 1;
-
-                        for (let i = children.length - 1; i >= 0; i--) {
-
-                            // This Array
-                            this.thisArray.splice(hierarchyUpdate.index! + num, 0,
-                                {
-                                    id: children[i].id,
-                                    name: children[i].name,
-                                    hierarchyGroupID: 1,
-                                    hidden: false,
-                                    arrowDown: false,
-                                    isParent: this.isSecondLevelHierarchyItemParent
-                                }
-                            )
-
-                            // Other Array
-                            this.otherArray.splice(hierarchyUpdate.index! + 1, 0,
-                                {
-                                    id: children[i].id,
-                                    name: children[i].name,
-                                    hierarchyGroupID: 1,
-                                    arrowDown: false,
-                                    isParent: this.isSecondLevelHierarchyItemParent,
-                                    hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
-                                }
-                            )
-                        }
-                        this.onChildrenLoad.next();
-                    })
-            }
-
-            // But if a parent item was expanded and its children has ALREADY been loaded
-        } else if (hierarchyUpdate.arrowDown && hierarchyUpdate.hasChildren) {
-            // Sort any pending edited items
-            this.sortPendingHierarchyItems();
-        }
+        this.sortPendingItems();
     }
 
 
@@ -294,7 +192,7 @@ export class ListUpdateManager {
 
         // If we're toggling to search mode
         if (this.searchMode) {
-            this.searchIconButtonTitle = 'Back to Hierarchy';
+            this.searchIconButtonTitle = 'Back to List';
             this.thisSearchList.splice(0, this.thisSearchList.length);
             window.setTimeout(() => {
                 this.searchInput!.focus();
@@ -306,26 +204,24 @@ export class ListUpdateManager {
             })
             this.onUnselectedSearchItem();
 
-            // If we're toggling back to hierarchy mode
+            // If we're toggling back to list mode
         } else {
 
             this.searchIconButtonTitle = 'Search';
 
             window.setTimeout(() => {
 
-                this.sortPendingHierarchyItems();
+                this.sortPendingItems();
                 this.searchInputSubscription.unsubscribe();
 
 
                 const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
                 if (selectedItem) {
-                    this.hierarchyComponent.listManager.onItemDown(selectedItem);
-                    this.hierarchyComponent.overButton = true;
+                    this.listComponent.listManager.onItemDown(selectedItem);
+                    this.listComponent.overButton = true;
                 } else {
-                    this.onUnselectedHierarchyItem();
+                    this.onUnselectedItem();
                 }
-
-                this.hierarchyComponent.listManager.collapseDisabled = this.hierarchyComponent.listManager.getIsCollapsed();
             })
         }
     }
@@ -335,16 +231,7 @@ export class ListUpdateManager {
     // =======================================================================( ADD )========================================================================= \\
 
     add() {
-        this.hierarchyComponent.add();
-    }
-
-
-
-    // ====================================================================( ADD PARENT )===================================================================== \\
-
-    addParent() {
-        this.hierarchyComponent.listManager.selectedItem = null!
-        this.hierarchyComponent.add();
+        this.listComponent.add();
     }
 
 
@@ -353,7 +240,7 @@ export class ListUpdateManager {
 
     edit() {
         if (!this.searchMode) {
-            this.hierarchyComponent.edit();
+            this.listComponent.edit();
         } else {
 
             if (this.thisSearchList.length > 0) this.searchComponent.edit();
@@ -366,7 +253,7 @@ export class ListUpdateManager {
 
     delete() {
         if (!this.searchMode) {
-            this.hierarchyComponent.delete();
+            this.listComponent.delete();
         } else {
             if (this.thisSearchList.length > 0) this.searchComponent.delete();
         }
@@ -374,112 +261,64 @@ export class ListUpdateManager {
 
 
 
-    // ======================================================================( COLLAPSE )===================================================================== \\
-
-    collapse() {
-        this.hierarchyComponent.collapse();
-    }
-
-
-
     // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
 
-    onHierarchyUpdate(hierarchyUpdate: HierarchyUpdate) {
-        this._hierarchyUpdate = hierarchyUpdate;
-        if (hierarchyUpdate.type == ListUpdateType.Add) this.onHierarchyItemAdd(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.ArrowClicked) this.onArrowClick(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.Edit) this.onHierarchyItemEdit(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.VerifyAddEdit) this.onHierarchyItemVerify(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.SelectedItems) this.onSelectedHierarchyItem(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.UnselectedItems) this.onUnselectedHierarchyItem();
-        if (hierarchyUpdate.type == ListUpdateType.Delete) this.onHierarchyItemDelete(hierarchyUpdate.deletedItems![0]);
-        if (hierarchyUpdate.type == ListUpdateType.DeletePrompt) this.onHierarchyDeletePrompt(hierarchyUpdate.deletedItems![0]);
+    onListUpdate(listUpdate: ListUpdate) {
+        this._listUpdate = listUpdate;
+        if (listUpdate.type == ListUpdateType.Add) this.onItemAdd(listUpdate);
+        if (listUpdate.type == ListUpdateType.Edit) this.onItemEdit(listUpdate);
+        if (listUpdate.type == ListUpdateType.VerifyAddEdit) this.onItemVerify(listUpdate);
+        if (listUpdate.type == ListUpdateType.SelectedItems) this.onSelectedItem(listUpdate);
+        if (listUpdate.type == ListUpdateType.UnselectedItems) this.onUnselectedItem();
+        if (listUpdate.type == ListUpdateType.Delete) this.onItemDelete(listUpdate.deletedItems![0]);
+        if (listUpdate.type == ListUpdateType.DeletePrompt) this.onDeletePrompt(listUpdate.deletedItems![0]);
     }
 
 
 
     // =================================================================( ON SEARCH UPDATE )================================================================== \\
 
-    onSearchUpdate(searchUpdate: MultiColumnListUpdate) {
-        this._searchUpdate = searchUpdate;
+    onSearchListUpdate(searchUpdate: ListUpdate) {
+        this._searchListUpdate = searchUpdate;
         if (searchUpdate.type == ListUpdateType.Edit) this.onSearchItemEdit(searchUpdate);
         if (searchUpdate.type == ListUpdateType.VerifyAddEdit) this.onSearchItemVerify(searchUpdate);
         if (searchUpdate.type == ListUpdateType.SelectedItems) this.onSelectedSearchItem(searchUpdate);
         if (searchUpdate.type == ListUpdateType.UnselectedItems) this.onUnselectedSearchItem();
-        if (searchUpdate.type == ListUpdateType.Delete) this.onSearchItemDelete(searchUpdate.deletedMultiColumnItems![0]);
-        if (searchUpdate.type == ListUpdateType.DeletePrompt) this.onSearchDeletePrompt(searchUpdate.deletedMultiColumnItems![0]);
+        if (searchUpdate.type == ListUpdateType.Delete) this.onSearchItemDelete(searchUpdate.deletedItems![0]);
+        if (searchUpdate.type == ListUpdateType.DeletePrompt) this.onSearchDeletePrompt(searchUpdate.deletedItems![0]);
     }
 
 
 
     // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
 
-    onSelectedHierarchyItem(hierarchyUpdate: HierarchyUpdate) {
-        if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
-            this.addIconButtonTitle = 'Add ' + this.childType;
-            this.editIconButtonTitle = 'Rename ' + this.parentType;
-            this.deleteIconButtonTitle = 'Delete ' + this.parentType;
-            this.hierarchyOptions.deletePrompt!.title = 'Delete ' + this.parentType;
-
-            if (this.hierarchyOptions.menu) {
-                this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.parentType;
-                this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.addParent;
-                this.hierarchyOptions.menu!.menuOptions[1].hidden = false;
-                this.hierarchyOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
-                this.hierarchyOptions.menu!.menuOptions[1].optionFunction = this.add;
-                this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.parentType;
-                this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.parentType;
-            }
-
-        }
-
-        if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1) {
-            this.addIconButtonTitle = 'Add ' + this.childType;
-            this.editIconButtonTitle = 'Rename ' + this.childType;
-            this.deleteIconButtonTitle = 'Delete ' + this.childType;
-            this.hierarchyOptions.deletePrompt!.title = 'Delete ' + this.childType;
-
-            if (this.hierarchyOptions.menu) {
-                this.hierarchyOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
-                this.hierarchyOptions.menu!.menuOptions[0].optionFunction = this.add;
-                this.hierarchyOptions.menu!.menuOptions[1].hidden = true;
-                this.hierarchyOptions.menu!.menuOptions[3].name = 'Rename ' + this.childType;
-                this.hierarchyOptions.menu!.menuOptions[5].name = 'Delete ' + this.childType;
-            }
-        }
+    onSelectedItem(listUpdate: ListUpdate) {
+        this.editIconButtonTitle = 'Rename ' + this.itemType;
+        this.deleteIconButtonTitle = 'Delete ' + this.itemType;
+        this.listOptions.deletePrompt!.title = 'Delete ' + this.itemType;
+        this.listOptions.menu!.menuOptions[0].name = 'Add ' + this.itemType;
+        this.listOptions.menu!.menuOptions[1].name = 'Rename ' + this.itemType;
+        this.listOptions.menu!.menuOptions[2].name = 'Delete ' + this.itemType;
     }
 
 
 
     // ==============================================================( ON SELECTED SEARCH ITEM )============================================================== \\
 
-    onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
-            this.editIconButtonTitle = 'Rename ' + this.parentType;
-            this.deleteIconButtonTitle = 'Delete ' + this.parentType;
-            this.searchOptions.deletePrompt!.title = 'Delete ' + this.parentType;
-
-            this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.parentType;
-            this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.parentType;
-            this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.parentType + ' in Hierarchy';
-        }
-
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
-            this.editIconButtonTitle = 'Rename ' + this.childType;
-            this.deleteIconButtonTitle = 'Delete ' + this.childType;
-            this.searchOptions.deletePrompt!.title = 'Delete ' + this.childType;
-            this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.childType;
-            this.searchOptions.menu!.menuOptions[2].name = 'Delete ' + this.childType;
-            this.searchOptions.menu!.menuOptions[4].name = 'Go to ' + this.childType + ' in Hierarchy';
-        }
+    onSelectedSearchItem(searchUpdate: ListUpdate) {
+        this.editIconButtonTitle = 'Rename ' + this.itemType;
+        this.deleteIconButtonTitle = 'Delete ' + this.itemType;
+        this.searchOptions.deletePrompt!.title = 'Delete ' + this.itemType;
+        this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.itemType;
+        this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.itemType;
     }
 
 
 
     // ===========================================================( ON UNSELECTED HIERARCHY ITEM )============================================================ \\
 
-    onUnselectedHierarchyItem() {
-        this.addIconButtonTitle = 'Add ' + this.parentType;
+    onUnselectedItem() {
+        this.addIconButtonTitle = 'Add ' + this.itemType;
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
     }
@@ -494,99 +333,51 @@ export class ListUpdateManager {
     }
 
 
+    addItem(list: Array<ListItem>, index: number, item: ListItem): ListItem {
+        list.splice(index, 0, {
+            id: item.id,
+            name: item.name
+        })
+        return list[index];
+    }
+
 
     // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
 
-    onHierarchyItemAdd(hierarchyUpdate: HierarchyUpdate) {
-
-        // Add parent hierarchy item
-        if (hierarchyUpdate.hierarchyGroupID == 0) {
-            this.dataService.post<number>('api/' + this.parentDataServicePath, {
-                name: hierarchyUpdate.name
-            }).subscribe((id: number) => {
-                this.thisArray[hierarchyUpdate.index!].id = id;
-
-                // Other array
-                this.otherArray.splice(hierarchyUpdate.index!, 0, {
-                    id: this.thisArray[hierarchyUpdate.index!].id,
-                    hierarchyGroupID: this.thisArray[hierarchyUpdate.index!].hierarchyGroupID,
-                    name: this.thisArray[hierarchyUpdate.index!].name
-                })
-                const addedOtherHierarchyItem: HierarchyItem = this.otherArray.find(x => x.id == this.otherArray[hierarchyUpdate.index!].id && x.hierarchyGroupID == this.otherArray[hierarchyUpdate.index!].hierarchyGroupID)!;
-                this.setSort(addedOtherHierarchyItem);
-            });
-        }
-
-        // Add child hierarchy item
-        if (hierarchyUpdate.hierarchyGroupID == 1) {
-            const indexOfHierarchyItemParent = this.hierarchyComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
-
-            this.dataService.post<number>('api/' + this.childDataServicePath, {
-                id: this.thisArray[indexOfHierarchyItemParent].id,
-                name: hierarchyUpdate.name
-            }).subscribe((id: number) => {
-                this.thisArray[hierarchyUpdate.index!].id = id;
-
-                // Other array
-                this.otherArray.splice(hierarchyUpdate.index!, 0, {
-                    id: this.thisArray[hierarchyUpdate.index!].id,
-                    hierarchyGroupID: this.thisArray[hierarchyUpdate.index!].hierarchyGroupID,
-                    name: this.thisArray[hierarchyUpdate.index!].name,
-                    hidden: !this.otherArray[indexOfHierarchyItemParent].arrowDown
-                })
-                const addedOtherHierarchyItem: HierarchyItem = this.otherArray.find(x => x.id == this.otherArray[hierarchyUpdate.index!].id && x.hierarchyGroupID == this.otherArray[hierarchyUpdate.index!].hierarchyGroupID)!;
-                this.setSort(addedOtherHierarchyItem);
-            })
-        }
+    onItemAdd(listUpdate: ListUpdate) {
+        // this.dataService.post<number>('api/' + this.dataServicePath, {
+        //     name: listUpdate.name
+        // }).subscribe((id: number) => {
+        this.thisArray[listUpdate.index!].id = 1000//id;
+        this.setSort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]));
+        // });
     }
 
 
 
     // ==============================================================( ON HIERARCHY ITEM EDIT )=============================================================== \\
 
-    onHierarchyItemEdit(hierarchyUpdate: HierarchyUpdate) {
-        // Edit parent hierarchy item
-        if (hierarchyUpdate.hierarchyGroupID == 0) {
-            // this.dataService.put('api/' + this.parentDataServicePath, {
-            //     id: hierarchyUpdate.id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe();
-        }
-
-        // Edit child hierarchy item
-        if (hierarchyUpdate.hierarchyGroupID == 1) {
-            // this.dataService.put('api/' + this.childDataServicePath, {
-            //     id: hierarchyUpdate.id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe();
-        }
-        this.setSort(this.editItem(this.otherArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID));
-        this.editItem(this.otherSearchList, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
+    onItemEdit(listUpdate: ListUpdate) {
+        // this.dataService.put('api/' + this.dataServicePath, {
+        //     id: listUpdate.id,
+        //     name: listUpdate.name
+        // }).subscribe();
+        this.setSort(this.editItem(this.otherArray, listUpdate, 0));
+        this.editItem(this.otherSearchList, listUpdate, this.parentSearchType);
     }
 
 
 
     // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
 
-    onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
-        // Edit parent search item
-        if (searchUpdate.values![1].name == this.parentSearchType) {
-            // this.dataService.put('api/' + this.parentDataServicePath, {
-            //     id: searchUpdate.id,
-            //     name: searchUpdate.values![0].name
-            // }).subscribe();
-        }
-
-        // Edit child search item
-        if (searchUpdate.values![1].name == this.childSearchType) {
-            // this.dataService.put('api/' + this.childDataServicePath, {
-            //     id: searchUpdate.id,
-            //     name: searchUpdate.values![0].name
-            // }).subscribe();
-        }
-        this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1));
-        this.setSort(this.editItem(this.otherArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1));
-        this.editItem(this.otherSearchList, searchUpdate, searchUpdate.values![1].name);
+    onSearchItemEdit(searchUpdate: ListUpdate) {
+        // this.dataService.put('api/' + this.dataServicePath, {
+        //     id: searchUpdate.id,
+        //     name: searchUpdate.values![0].name
+        // }).subscribe();
+        this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, 0));
+        this.setSort(this.editItem(this.otherArray, searchUpdate, 0));
+        this.editItem(this.otherSearchList, searchUpdate, this.parentSearchType);
     }
 
 
@@ -594,73 +385,28 @@ export class ListUpdateManager {
     // =====================================================================( EDIT ITEM )===================================================================== \\
 
     editItem(list: Array<ListItem>, update: ListUpdate, type?: number | string): ListItem {
-        const editedItem: ListItem = typeof type == 'number' ? list.find(x => x.id == update.id && x.hierarchyGroupID == type)! : list.find(x => x.id == update.id && (x as MultiColumnItem).values[1].name == type)!;
-
-        if (editedItem) {
-            // Other hierarchy from this hierarchy
-            if (update.name && typeof type == 'number') editedItem.name = update.name;
-            // Other search from this hierarchy
-            if (update.name && typeof type != 'number') (editedItem as MultiColumnItem).values[0].name = update.name;
-            // Other search from this search
-            if (!update.name && typeof type != 'number') (editedItem as MultiColumnItem).values[0].name = (update as MultiColumnListUpdate).values![0].name;
-            // Other hierarchy from this search and this hierarchy from this search
-            if (!update.name && typeof type == 'number') editedItem.name = (update as MultiColumnListUpdate).values![0].name;
-        }
-
+        const editedItem: ListItem = list.find(x => x.id == update.id)!;
+        if (editedItem) editedItem.name = update.name;
         return editedItem;
-    }
-
-
-
-    // =============================================================( SET OTHER HIERARCHY EDIT )============================================================== \\
-
-    setOtherHierarchyEdit<T extends ListUpdate>(update: T, hierarchyGroupID: number) {
-        // Find itme in the other hierarchy list that we just edited in this list
-        const editedOtherHierarchyItem: HierarchyItem = this.otherArray.find(x => x.id == update.id && x.hierarchyGroupID == hierarchyGroupID)!;
-
-        // If the item in the other hierarchy list was found
-        if (editedOtherHierarchyItem) {
-
-            // Then update the name of that item in the other list to the name of the item we just edited in this list
-            editedOtherHierarchyItem!.name = (update as MultiColumnListUpdate).values ? (update as MultiColumnListUpdate).values![0].name : update.name;
-            // Then sort the other list
-            this.setSort(editedOtherHierarchyItem);
-        }
-    }
-
-
-
-    // ===============================================================( SET OTHER SEARCH EDIT )=============================================================== \\
-
-    setOtherSearchEdit<T extends ListUpdate>(update: T, type: string) {
-        // Find itme in the other search list that we just edited in this list
-        const editedOtherSearchItem: MultiColumnItem = this.otherSearchList.find(x => x.id == update.id && x.values[1].name == type)!;
-
-        // If the item in the other search list was found
-        if (editedOtherSearchItem) {
-
-            // Then update the name of that item in the other search list to the name of the item we just edited in this list
-            editedOtherSearchItem!.values[0].name = (update as MultiColumnListUpdate).values ? (update as MultiColumnListUpdate).values![0].name : update.name!;
-        }
     }
 
 
 
     // =============================================================( SET OTHER HIERARCHY SORT )============================================================== \\
 
-    setSort(otherHierarchyItem: HierarchyItem) {
-        if (otherHierarchyItem) {
-            // As long as the other hierarchy sort group IS visible
-            if (!otherHierarchyItem.hidden && this.otherHierarchyComponent) {
+    setSort(otherListItem: ListItem) {
+        // As long as the other list item is NOT null
+        if (otherListItem) {
+            // And as long as the other list Is visible
+            if (this.otherListComponent) {
+                // Then sort the other list
+                this.otherListComponent.listManager.sort(otherListItem);
 
-                // Then sort the other hierarchy list
-                this.otherHierarchyComponent.listManager.sort(otherHierarchyItem);
-
-                // But if the other hierarchy sort group is NOT visible
+                // But if the other list is NOT visible
             } else {
 
-                // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
-                this.listUpdateService!.otherSortList.push(otherHierarchyItem!);
+                // Make a list of all the items we edited in this list so that when we go back to the other list we can then sort those items accordingly
+                this.listUpdateService!.otherSortList.push(otherListItem!);
                 this.listUpdateService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
             }
         }
@@ -670,55 +416,25 @@ export class ListUpdateManager {
 
     // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
 
-    onHierarchyItemVerify(hierarchyUpdate: HierarchyUpdate) {
+    onItemVerify(listUpdate: ListUpdate) {
         let matchFound: boolean = false;
 
-        // If we're verifying a parent item
-        if (hierarchyUpdate.hierarchyGroupID == 0) {
-            // Loop through each parent item and check for a duplicate
-            this.thisArray.forEach(x => {
-                if (x.hierarchyGroupID == 0) {
-                    if (x.name?.toLowerCase() == hierarchyUpdate.name?.toLowerCase()) {
-                        matchFound = true;
-                    }
-                }
-            })
-
-            // If no match was found
-            if (!matchFound) {
-                this.hierarchyComponent.commitAddEdit();
-
-                // If a match was found
-            } else {
-                this.hierarchyOptions.duplicatePrompt!.title = 'Duplicate ' + this.parentType;
-                this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.parentType + ' with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
-                this.hierarchyComponent.openDuplicatePrompt();
+        // Loop through each parent item and check for a duplicate
+        this.thisArray.forEach(x => {
+            if (x.name?.toLowerCase() == listUpdate.name?.toLowerCase() && x.index != listUpdate.index) {
+                matchFound = true;
             }
-        }
+        })
 
-        // If we're verifying a child item
-        if (hierarchyUpdate.hierarchyGroupID == 1) {
-            const childItem = this.thisArray.find(x => x.id == hierarchyUpdate.id && x.hierarchyGroupID == 1);
-            const indexOfParentItem = this.hierarchyComponent.listManager.getIndexOfHierarchyItemParent(childItem!);
+        // If no match was found
+        if (!matchFound) {
+            this.listComponent.commitAddEdit();
 
-            // Loop through each child item of the parent item and check for a duplicate
-            for (let i = indexOfParentItem + 1; i < this.thisArray.length; i++) {
-                if (this.thisArray[i].hierarchyGroupID == 0) break;
-                if (this.thisArray[i].name?.toLowerCase() == hierarchyUpdate.name?.toLowerCase()) {
-                    matchFound = true;
-                }
-            }
-
-            // If no match was found
-            if (!matchFound) {
-                this.hierarchyComponent.commitAddEdit();
-
-                // If a match was found
-            } else {
-                this.hierarchyOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
-                this.hierarchyOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.parentType + '<span style="color: #ffba00"> \"' + this.thisArray[indexOfParentItem].name + '\"</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span>. Please choose a different name.');
-                this.hierarchyComponent.openDuplicatePrompt();
-            }
+            // If a match was found
+        } else {
+            this.listOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
+            this.listOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.itemType + ' with the name <span style="color: #ffba00">\"' + listUpdate.name + '\"</span> already exists. Please choose a different name.');
+            this.listComponent.openDuplicatePrompt();
         }
     }
 
@@ -726,51 +442,24 @@ export class ListUpdateManager {
 
     // ===============================================================( ON SEARCH ITEM VERIFY )=============================================================== \\
 
-    onSearchItemVerify(searchUpdate: MultiColumnListUpdate) {
+    onSearchItemVerify(searchUpdate: ListUpdate) {
         let matchFound: boolean = false;
 
-        // If we're verifying a parent item
-        if (searchUpdate.values![1].name == this.parentSearchType) {
-            // Loop through each parent item and check for a duplicate
-            this.thisArray.forEach(x => {
-                if (x.hierarchyGroupID == 0) {
-                    if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase()) {
-                        matchFound = true;
-                    }
-                }
-            })
-
-            // If no match was found
-            if (!matchFound) {
-                this.searchComponent.commitAddEdit();
-
-                // If a match was found
-            } else {
-                this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.parentType;
-                this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.parentType + ' with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span> already exists. Please choose a different name.');
-                this.searchComponent.openDuplicatePrompt();
+        this.thisArray.forEach(x => {
+            if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase() && x.index != searchUpdate.index) {
+                matchFound = true;
             }
-        }
+        })
 
-        // If we're verifying a child item
-        if (searchUpdate.values![1].name == this.childSearchType) {
+        // If no match was found
+        if (!matchFound) {
+            this.searchComponent.commitAddEdit();
 
-            // Query the database to check for a duplicate
-            this.dataService.get<DuplicateItem>('api/' + this.childDataServicePath + '/CheckDuplicate', [{ key: 'childId', value: searchUpdate.id }, { key: 'childName', value: searchUpdate.name }])
-                .subscribe((duplicateItem: DuplicateItem) => {
-
-                    // If no match was found
-                    if (duplicateItem == null) {
-                        this.searchComponent.commitAddEdit();
-
-                        // If a match was found
-                    } else {
-                        const parentItem = this.thisArray.find(x => x.id == duplicateItem.parentId && x.hierarchyGroupID == 0);
-                        this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
-                        this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.parentType + '<span style="color: #ffba00"> \"' + parentItem!.name + '\"</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span>. Please choose a different name.');
-                        this.searchComponent.openDuplicatePrompt();
-                    }
-                })
+            // If a match was found
+        } else {
+            this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
+            this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.itemType + ' with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span> already exists. Please choose a different name.');
+            this.searchComponent.openDuplicatePrompt();
         }
     }
 
@@ -778,160 +467,63 @@ export class ListUpdateManager {
 
     // ===========================================================( DELETE PROMPT PARENT MESSAGE )============================================================ \\
 
-    deletePromptParentMessage(parentType: string, parentName: string): SafeHtml {
+    deletePromptMessage(itemType: string, parentName: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(
             'The ' +
-            parentType +
+            itemType +
             ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
-            ' and its contents will be permanently deleted.');
-    }
-
-
-
-    // ============================================================( DELETE PROMPT CHILD MESSAGE )============================================================ \\
-
-    deletePromptChildMessage(childType: string, childName: string, parentType: string, parentName: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(
-            'The ' +
-            childType +
-            ' <span style="color: #ffba00">\"' + childName + '\"</span>' +
-            ' will be permanently deleted from the '
-            + parentType +
-            ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
-            '.');
+            ' will be permanently deleted.');
     }
 
 
 
     // ============================================================( ON HIERARCHY DELETE PROMPT )============================================================= \\
 
-    onHierarchyDeletePrompt(deletedItem: HierarchyItem) {
-        // If we're deleting a parent item
-        if (deletedItem.hierarchyGroupID == 0) {
-            this.hierarchyOptions.deletePrompt!.message = this.deletePromptParentMessage(this.parentType, deletedItem.name!);
-        }
-
-        // If we're deleting a child item
-        if (deletedItem.hierarchyGroupID == 1 && !this.isThreeTierHierarchy) {
-            const childItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
-            const indexOfParentItem = this.hierarchyComponent.listManager.getIndexOfHierarchyItemParent(childItem!);
-            this.hierarchyOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.name!, this.parentType, this.thisArray[indexOfParentItem].name!);
-        }
+    onDeletePrompt(deletedItem: ListItem) {
+        this.listOptions.deletePrompt!.message = this.deletePromptMessage(this.itemType, deletedItem.name!);
     }
 
 
 
     // ==============================================================( ON SEARCH DELETE PROMPT )============================================================== \\
 
-    onSearchDeletePrompt(deletedItem: MultiColumnItem) {
-        // If we're deleting a parent item
-        if (deletedItem.values[1].name == this.parentSearchType) {
-            this.searchOptions.deletePrompt!.message = this.deletePromptParentMessage(this.parentType, deletedItem.values[0].name);
-        }
-
-        // If we're deleting a child item
-        if (deletedItem.values[1].name == this.childSearchType && !this.isThreeTierHierarchy) {
-
-            // Prefill the prompt so if the prompt opens before we get the parent name, it won't be an empty prompt
-            this.searchOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.values[0].name, this.parentType, '');
-
-            this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: deletedItem.id }])
-                .subscribe((parentItem: Item) => {
-                    // If the parent name comes back before the propmt is opened
-                    if (!this.searchComponent.listManager.prompt) {
-                        this.searchOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.values[0].name, this.parentType, parentItem.name!);
-
-                        // But if the prompt opens first before the parent name comes back
-                    } else {
-                        this.searchComponent.listManager.prompt.message = this.deletePromptChildMessage(this.childType, deletedItem.values[0].name, this.parentType, parentItem.name!);
-                    }
-                })
-        }
+    onSearchDeletePrompt(deletedItem: ListItem) {
+        this.searchOptions.deletePrompt!.message = this.deletePromptMessage(this.itemType, deletedItem.name!);
     }
 
 
 
     // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
 
-    onHierarchyItemDelete(deletedItem: HierarchyItem) {
-        // If we're deleting a parent item
-        if (deletedItem.hierarchyGroupID == 0) {
-            this.dataService.delete('api/' + this.parentDataServicePath, {
-                id: deletedItem.id
-            }).subscribe();
-        }
-
-        // If we're deleting a child item
-        if (deletedItem.hierarchyGroupID == 1) {
-            this.dataService.delete('api/' + this.childDataServicePath, {
-                id: deletedItem.id
-            }).subscribe();
-        }
-        this.deleteItem(this.otherArray, deletedItem, deletedItem.hierarchyGroupID!);
-        this.deleteItem(this.otherSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
+    onItemDelete(deletedItem: ListItem) {
+        // this.dataService.delete('api/' + this.dataServicePath, {
+        //     id: deletedItem.id
+        // }).subscribe();
+        this.deleteItem(this.otherArray, deletedItem, 0);
+        this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
     }
 
 
 
     // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
 
-    onSearchItemDelete(deletedItem: MultiColumnItem) {
-        // If we're deleting a parent item
-        if (deletedItem.values[1].name == this.parentSearchType) {
-            this.dataService.delete('api/' + this.parentDataServicePath, {
-                id: deletedItem.id
-            }).subscribe();
-        }
-
-        // If we're deleting a child item
-        if (deletedItem.values[1].name == this.childSearchType) {
-            this.dataService.delete('api/' + this.childDataServicePath, {
-                id: deletedItem.id
-            }).subscribe();
-        }
-        this.deleteChildren(this.thisSearchList, deletedItem, this.thisArray);
-        this.deleteItem(this.otherSearchList, deletedItem, deletedItem.values[1].name);
-        this.deleteItem(this.thisArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
-        this.deleteItem(this.otherArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
+    onSearchItemDelete(deletedItem: ListItem) { // MultiColumnItem
+        // this.dataService.delete('api/' + this.dataServicePath, {
+        //     id: deletedItem.id
+        // }).subscribe();
+        this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
+        this.deleteItem(this.thisArray, deletedItem, 0);
+        this.deleteItem(this.otherArray, deletedItem, 0);
     }
 
 
 
     // ====================================================================( DELETE ITEM )==================================================================== \\
 
-    deleteItem(list: Array<ListItem>, deletedItem: ListItem, type: number | string) {
-        // Find the index of the item in the list
-        const index = typeof type == 'number' ? list.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == type) : list.findIndex(x => x.id == deletedItem.id && (x as MultiColumnItem).values[1].name == type);
-
+    deleteItem(list: Array<ListItem>, deletedItem: ListItem, type?: number | string) {
+        const index = list.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.name);
         // If the index is found, delete the item of that index
         if (index != -1) list.splice(index, 1);
-
-        // If we're deleting a parent item from a search list, then check to see if any of its children is also included in the search list. If so, delete them
-        if (type == this.parentSearchType && list.length > 0) {
-            this.deleteChildren(list as Array<MultiColumnItem>, deletedItem as MultiColumnItem);
-        }
-    }
-
-
-
-    // ==================================================================( DELETE CHILDREN )================================================================== \\
-
-    deleteChildren(searchList: Array<MultiColumnItem>, deletedItem: MultiColumnItem, hierarchyList?: Array<HierarchyItem>) {
-        this.dataService.get<Array<MultiColumnItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: deletedItem.id }])
-            .subscribe((children: Array<MultiColumnItem>) => {
-                children.forEach(x => {
-                    // Check to see if any of the children of the parent item is present in the search list. If so, delete them
-                    const searchChildIndex = searchList.findIndex(y => y.id == x.id && (y as MultiColumnItem).values[0].name == x.name && (y as MultiColumnItem).values[1].name == this.childSearchType);
-                    if (searchChildIndex != -1) searchList.splice(searchChildIndex, 1);
-
-                    // If the hierarchy list has been passed in
-                    if (hierarchyList) {
-                        // Check to see if any of the children of the parent item is present in the hierarchy list. If so, delete those too
-                        const hierarchyChildIndex = hierarchyList!.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 1);
-                        if (hierarchyChildIndex != -1) hierarchyList.splice(hierarchyChildIndex, 1);
-                    }
-                })
-            })
     }
 
 
@@ -953,17 +545,13 @@ export class ListUpdateManager {
     getSearchResults(value: string) {
         this.thisSearchList.splice(0, this.thisSearchList.length);
 
-        this.dataService.get<Array<SearchResultItem>>('api/' + this.parentDataServicePath + '/Search', [{ key: 'searchWords', value: value }])
+        this.dataService.get<Array<SearchResultItem>>('api/' + this.dataServicePath + '/Search', [{ key: 'searchWords', value: value }])
             .subscribe((searchResults: Array<SearchResultItem>) => {
 
                 // As long as search results were returned
                 if (searchResults) {
                     searchResults.forEach(x => {
-                        this.thisSearchList.push({
-
-                            id: x.id!,
-                            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }]
-                        })
+                        this.thisSearchList.push(this.newSearchItem(x));
                     })
                 }
             });
@@ -973,135 +561,45 @@ export class ListUpdateManager {
 
     // ===========================================================( SORT PENDING HIERARCHY ITEMS )============================================================ \\
 
-    sortPendingHierarchyItems() {
+    sortPendingItems() {
         // If an item was edited in search mode
         if (this.thisSortList.length > 0) {
-            // Then we need to sort those items now that we're in hierarchy mode
+            // Then we need to sort those items once we return to list mode
             this.thisSortList.forEach(x => {
-                if (x && !x.hidden) {
-                    this.hierarchyComponent.listManager.sort(x);
-                    const index = this.thisSortList.indexOf(x);
-                    this.thisSortList.splice(index, 1);
+                // As long as the item that was added to the sort list is NOT null
+                if (x) {
+                    this.listComponent.listManager.sort(x);
                 }
+                const index = this.thisSortList.indexOf(x);
+                this.thisSortList.splice(index, 1);
             })
         }
 
-        // But if any items were added or edited from the other list whether it was done in search mode or hierarchy mode
+        // But if any items were added or edited from the other list whether it was done in search mode or list mode
         if (this.listUpdateService!.otherSortList.length > 0 &&
             this.listUpdateService!.targetSortType == this.sortType) {
 
-            // Then we need to sort those items now in this hierarchy list
+            // Then we need to sort those items now in this list
             this.listUpdateService!.otherSortList.forEach(x => {
-                if (!x.hidden) {
-                    this.hierarchyComponent.listManager.sort(x);
-                    const index = this.listUpdateService!.otherSortList.indexOf(x);
-                    this.listUpdateService!.otherSortList.splice(index, 1);
-                }
+                this.listComponent.listManager.sort(x);
+                const index = this.listUpdateService!.otherSortList.indexOf(x);
+                this.listUpdateService!.otherSortList.splice(index, 1);
             })
         }
-    }
-
-
-
-    // ==================================================================( GO TO HIERARCHY )================================================================== \\
-
-    goToHierarchy() {
-
-        // Go to parent item
-        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.parentSearchType) {
-            const parentSearchItem: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
-
-            // Now go to the hierarchy
-            this.searchMode = false;
-            window.setTimeout(() => {
-                this.searchInputSubscription.unsubscribe();
-
-                // Find and select the parent item
-                this.selectItem(parentSearchItem.id, 0);
-            })
-        }
-
-
-        // Go to child item
-        if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.childSearchType) {
-            const child: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
-
-            // Get the parent item of the selected child item
-            this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: child.id }])
-                .subscribe((parent: Item) => {
-
-                    // Now go to the hierarchy
-                    this.searchMode = false;
-                    window.setTimeout(() => {
-                        this.searchInputSubscription.unsubscribe();
-                        this.goToParent(parent.id, child.id, this.selectItem, [child.id, 1], this.selectItem, [child.id, 1]);
-                    })
-                })
-        }
-    }
-
-
-
-    // ===================================================================( GO TO PARENT )==================================================================== \\
-
-    goToParent(parentId: number, childId: number, func1: Function, func1Parameters: Array<any>, func2: Function, func2Parameters: Array<any>) {
-        // Find the parent in the hierarchy
-        const parent: HierarchyItem = this.thisArray.find(x => x.hierarchyGroupID == 0 && x.id == parentId)!;
-
-        // If the parent does NOT have its arrow down
-        if (!parent.arrowDown) {
-
-            // Check to see if its arrow was ever down and its children has already been loaded
-            const child: HierarchyItem = this.thisArray.find(x => x.hierarchyGroupID == 1 && x.id == childId)!;
-
-            // Then set that arrow of that parent to be down
-            this.hierarchyComponent.listManager.onArrowClick(parent);
-
-            // If the children has already been loaded
-            if (child) {
-                func1.apply(this, func1Parameters);
-
-                // But if its children were never loaded
-            } else {
-
-                // Now that the parent's arrow is down, wait for its children to load
-                let onChildrenLoadListener = this.onChildrenLoad.subscribe(() => {
-                    onChildrenLoadListener.unsubscribe();
-                    func2.apply(this, func2Parameters);
-                });
-            }
-
-            // If the arrow of the parent is already down
-        } else {
-
-            func1.apply(this, func1Parameters);
-        }
-    }
-
-
-
-    // ====================================================================( SELECT ITEM )==================================================================== \\
-
-    selectItem(itemId: number, hierarchyGroupID: number) {
-        // Find the child we're looking for in the hierarchy
-        const item: HierarchyItem = this.thisArray.find(x => x.id == itemId && x.hierarchyGroupID == hierarchyGroupID)!;
-        // Then select that child
-        this.hierarchyComponent.listManager.onItemDown(item);
     }
 
 
 
     // ====================================================================( IS DISABLED )==================================================================== \\
 
-    isDisabled(disabledUpdateProperty: keyof HierarchyUpdate | keyof MultiColumnListUpdate): boolean {
-        // If we're in hierarchy mode
+    isDisabled(disabledUpdateProperty: keyof ListUpdate): boolean {
+        // If we're in list mode
         if (!this.searchMode) {
 
-            // As long as the hierarchy update is not null
-            if (this.hierarchyUpdate) {
+            // As long as the update is not null
+            if (this.listUpdate) {
                 // Update it
-                let hierarchyDisabledUpdateProperty = disabledUpdateProperty as keyof HierarchyUpdate;
-                return this.hierarchyUpdate[hierarchyDisabledUpdateProperty] as boolean;
+                return this.listUpdate[disabledUpdateProperty] as boolean;
             }
 
             // If we're in search mode
@@ -1110,8 +608,7 @@ export class ListUpdateManager {
             // As long as the search update is not null
             if (this.searchUpdate) {
                 // Update it
-                let searchDisabledUpdateProperty = disabledUpdateProperty as keyof MultiColumnListUpdate;
-                return this.searchUpdate[searchDisabledUpdateProperty] as boolean;
+                return this.searchUpdate[disabledUpdateProperty] as boolean;
             }
         }
         // Otherwise, set as disabled
@@ -1124,11 +621,11 @@ export class ListUpdateManager {
 
     onEscape(): void {
         if (
-            // Hierarchy
+            // List
             (!this.searchMode &&
-                this.hierarchyComponent.listManager.selectedItem == null &&
-                this.hierarchyComponent.listManager.editedItem == null &&
-                !this.hierarchyComponent.listManager.promptOpen)
+                this.listComponent.listManager.selectedItem == null &&
+                this.listComponent.listManager.editedItem == null &&
+                !this.listComponent.listManager.promptOpen)
 
             ||
 
@@ -1158,7 +655,7 @@ export class ListUpdateManager {
         this._overButton = v;
 
         if (!this.searchMode) {
-            this.hierarchyComponent.overButton = v;
+            this.listComponent.overButton = v;
         } else {
 
             if (this.thisSearchList.length > 0) {
@@ -1173,5 +670,26 @@ export class ListUpdateManager {
 
     public get searchIcon(): string {
         return !this.searchMode ? 'fas fa-search' : 'fa fa-list';
+    }
+
+
+    // ======================================================================( NEW ITEM )===================================================================== \\
+
+    newItem(x: ListItem) {
+        return {
+            id: x.id,
+            name: x.name
+        }
+    }
+
+
+
+    // ==================================================================( NEW SEARCH ITEM )================================================================== \\
+
+    newSearchItem(x: ListItem) {
+        return {
+            id: x.id,
+            name: x.name
+        }
     }
 }

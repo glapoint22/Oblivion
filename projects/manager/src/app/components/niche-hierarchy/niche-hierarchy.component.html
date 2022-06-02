@@ -62,8 +62,8 @@
         <div class="overflow-container" [style.height.px]="base.clientHeight - 40">
             <hierarchy #hierarchyComponent
                     [sourceList]="nicheHierarchyManager.thisArray"
-                    [options]="nicheHierarchyManager.hierarchyOptions"
-                    (onListUpdate)="nicheHierarchyManager.hierarchyUpdate = $event">
+                    [options]="nicheHierarchyManager.listOptions"
+                    (onListUpdate)="nicheHierarchyManager.listUpdate = $event">
             </hierarchy>
         </div>
     </ng-container>

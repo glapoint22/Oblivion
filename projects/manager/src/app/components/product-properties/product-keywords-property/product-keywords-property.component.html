@@ -72,8 +72,8 @@
             <ng-container *ngIf="!availableKeywordsManager.searchMode">
                 <hierarchy #availableHierarchyComponent
                         [sourceList]="availableKeywordsManager.thisArray"
-                        [options]="availableKeywordsManager.hierarchyOptions"
-                        (onListUpdate)="availableKeywordsManager.hierarchyUpdate = $event">
+                        [options]="availableKeywordsManager.listOptions"
+                        (onListUpdate)="availableKeywordsManager.listUpdate = $event">
                 </hierarchy>
             </ng-container>
 
@@ -178,8 +178,8 @@
             <ng-container *ngIf="!selectedKeywordsManager.searchMode">
                 <checkbox-hierarchy #selectedHierarchyComponent
                         [sourceList]="selectedKeywordsManager.thisArray"
-                        [options]="selectedKeywordsManager.hierarchyOptions"
-                        (onListUpdate)="selectedKeywordsManager.hierarchyUpdate = $event">
+                        [options]="selectedKeywordsManager.listOptions"
+                        (onListUpdate)="selectedKeywordsManager.listUpdate = $event">
                 </checkbox-hierarchy>
             </ng-container>
 

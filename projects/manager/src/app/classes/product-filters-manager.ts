@@ -35,7 +35,7 @@ export class ProductFiltersManager extends FiltersFormManager {
 
                 this.dataService.get<Array<CheckboxListUpdate>>('api/Products/Filters', [{ key: 'productId', value: this.productService.product.id }, { key: 'filterId', value: hierarchyUpdate.id }])
                     .subscribe((children: Array<CheckboxListUpdate>) => {
-                        let num = this.hierarchyComponent.listManager.editedItem ? 2 : 1;
+                        let num = this.listComponent.listManager.editedItem ? 2 : 1;
 
                         for (let i = children.length - 1; i >= 0; i--) {
 
@@ -71,23 +71,23 @@ export class ProductFiltersManager extends FiltersFormManager {
             // But if a parent item was expanded and its children has ALREADY been loaded
         } else if (hierarchyUpdate.arrowDown && hierarchyUpdate.hasChildren) {
             // Sort any pending edited items
-            this.sortPendingHierarchyItems();
+            this.sortPendingItems();
         }
     }
 
 
     // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
 
-    onHierarchyUpdate(hierarchyUpdate: HierarchyUpdate) {
-        super.onHierarchyUpdate(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.CheckboxChange) this.onHierarchyItemCheckboxChange(hierarchyUpdate);
+    onListUpdate(hierarchyUpdate: HierarchyUpdate) {
+        super.onListUpdate(hierarchyUpdate);
+        if (hierarchyUpdate.type == ListUpdateType.CheckboxChange) this.onItemCheckboxChange(hierarchyUpdate);
     }
 
 
 
     // =========================================================( ON HIERARCHY ITEM CHECKBOX CHANGE )========================================================= \\
 
-    onHierarchyItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
+    onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
         this.dataService.put('api/Products/Filter', {
             productId: this.productService.product.id,
             id: hierarchyUpdate.id,
