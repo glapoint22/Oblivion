@@ -43,7 +43,12 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
 
   // ------------------------------------------------------------ Set Widget -----------------------------------------------------------
   setWidget(productSliderWidgetData: ProductSliderWidgetData) {
-    this.products = productSliderWidgetData.products;
+    // Set the defaults
+    this.caption.text = 'Check out these products!';
+    this.caption.fontSize = this.caption.fontSizes[8];
+    this.caption.color = '#ffba00';
+
+    this.products = productSliderWidgetData.products && productSliderWidgetData.products.length > 0 ? productSliderWidgetData.products : [];
     this.caption.setData(productSliderWidgetData.caption);
 
     window.addEventListener('resize', this.onWindowResize);
@@ -89,6 +94,10 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): ProductSliderWidgetData {
-    throw new Error('Method not implemented.');
+    const productSliderWidgetData = super.getData() as ProductSliderWidgetData;
+
+    productSliderWidgetData.caption = this.caption.getData();
+
+    return productSliderWidgetData;
   }
 }
