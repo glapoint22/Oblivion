@@ -90,21 +90,12 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     }
 
 
-
-
-
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
         super.onOpen();
         if (this.thisArray.length > 0) if (this.collapseHierarchyOnOpen) this.listComponent.listManager.collapseHierarchy();
     }
-
-
-
-
-
-
 
 
 
@@ -158,7 +149,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
 
     onListUpdate(hierarchyUpdate: HierarchyUpdate) {
         super.onListUpdate(hierarchyUpdate);
@@ -168,7 +159,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // =================================================================( ON SEARCH UPDATE )================================================================== \\
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
 
     onSearchListUpdate(searchUpdate: MultiColumnListUpdate) {
         this._searchUpdate = searchUpdate;
@@ -185,7 +176,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
+    // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(hierarchyUpdate: HierarchyUpdate) {
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
@@ -239,19 +230,8 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     }
 
 
-    addItem(list: Array<HierarchyItem>, index: number, item: HierarchyItem): HierarchyItem {
-        list.splice(index, 0, {
-            id: item.id,
-            name: item.name,
-            hierarchyGroupID: item.hierarchyGroupID
-        })
-        return list[index];
-    }
 
-
-
-
-    // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
     private hierarchyAddId: number = 2000;
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         this.hierarchyAddId++;
@@ -278,7 +258,20 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ==============================================================( ON HIERARCHY ITEM EDIT )=============================================================== \\
+    // ======================================================================( ADD ITEM )===================================================================== \\
+
+    addItem(list: Array<HierarchyItem>, index: number, item: HierarchyItem): HierarchyItem {
+        list.splice(index, 0, {
+            id: item.id,
+            name: item.name,
+            hierarchyGroupID: item.hierarchyGroupID
+        })
+        return list[index];
+    }
+
+
+
+    // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
         // Edit parent hierarchy item
@@ -347,7 +340,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // =============================================================( SET OTHER HIERARCHY SORT )============================================================== \\
+    // ======================================================================( SET SORT )===================================================================== \\
 
     setSort(otherHierarchyItem: HierarchyItem) {
         // As long as the other hierarchy item is NOT null
@@ -370,7 +363,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
+    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(hierarchyUpdate: HierarchyUpdate) {
         let matchFound: boolean = false;
@@ -380,7 +373,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             // Loop through each parent item and check for a duplicate
             this.thisArray.forEach(x => {
                 if (x.hierarchyGroupID == 0) {
-                    if (x.name?.toLowerCase() == hierarchyUpdate.name?.toLowerCase() && x.index != hierarchyUpdate.index) {
+                    if (x.name?.toLowerCase() == hierarchyUpdate.name?.toLowerCase()) {
                         matchFound = true;
                     }
                 }
@@ -406,7 +399,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             // Loop through each child item of the parent item and check for a duplicate
             for (let i = indexOfParentItem + 1; i < this.thisArray.length; i++) {
                 if (this.thisArray[i].hierarchyGroupID == 0) break;
-                if (this.thisArray[i].name?.toLowerCase() == hierarchyUpdate.name?.toLowerCase() && this.thisArray[i].index != hierarchyUpdate.index) {
+                if (this.thisArray[i].name?.toLowerCase() == hierarchyUpdate.name?.toLowerCase()) {
                     matchFound = true;
                 }
             }
@@ -436,7 +429,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             // Loop through each parent item and check for a duplicate
             this.thisArray.forEach(x => {
                 if (x.hierarchyGroupID == 0) {
-                    if (x.name?.toLowerCase() == searchUpdate.values![0].name.toLowerCase() && x.index != searchUpdate.index) {
+                    if (x.name?.toLowerCase() == searchUpdate.values![0].name.toLowerCase()) {
                         matchFound = true;
                     }
                 }
@@ -478,7 +471,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ===========================================================( DELETE PROMPT PARENT MESSAGE )============================================================ \\
+    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
 
     deletePromptMessage(itemType: string, parentName: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(
@@ -505,7 +498,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ============================================================( ON HIERARCHY DELETE PROMPT )============================================================= \\
+    // =================================================================( ON DELETE PROMPT )================================================================== \\
 
     onDeletePrompt(deletedItem: HierarchyItem) {
         // If we're deleting a parent item
@@ -551,7 +544,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: HierarchyItem) {
         // If we're deleting a parent item
@@ -635,7 +628,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ===========================================================( SORT PENDING HIERARCHY ITEMS )============================================================ \\
+    // ================================================================( SORT PENDING ITEMS )================================================================= \\
 
     sortPendingItems() {
         // If an item was edited in search mode
@@ -791,7 +784,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ======================================================================( NEW ITEM )===================================================================== \\
+    // ======================================================================( GET ITEM )====================================================================== \\
 
     getItem(x: HierarchyItem) {
         return {
@@ -804,6 +797,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     }
 
 
+    // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
     getChildItem(child: Item) {
         return {
@@ -816,6 +810,8 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
+    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
+
     getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
         return {
             id: child.id,
@@ -826,7 +822,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     }
 
 
-
+    // ===================================================================( GET CHILD ITEMS )================================================================== \\
 
     getChildItems(hierarchyUpdate: HierarchyUpdate) {
         this.dataService.get<Array<Item>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
@@ -844,7 +840,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ==================================================================( NEW SEARCH ITEM )================================================================== \\
+    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
 
     getSearchResultItem(x: SearchResultItem) {
         return {
@@ -853,15 +849,4 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }]
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 }

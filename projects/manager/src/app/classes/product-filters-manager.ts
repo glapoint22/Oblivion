@@ -11,6 +11,7 @@ import { HierarchyUpdate } from "./hierarchy-update";
 export class ProductFiltersManager extends FiltersFormManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
+
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
     constructor(dataService: DataService, sanitizer: DomSanitizer, filtersService: FiltersService, private productService: ProductService) {
@@ -25,11 +26,7 @@ export class ProductFiltersManager extends FiltersFormManager {
 
 
 
-
-
-
-
-    // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
 
     onListUpdate(hierarchyUpdate: HierarchyUpdate) {
         super.onListUpdate(hierarchyUpdate);
@@ -38,7 +35,7 @@ export class ProductFiltersManager extends FiltersFormManager {
 
 
 
-    // =========================================================( ON HIERARCHY ITEM CHECKBOX CHANGE )========================================================= \\
+    // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
 
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
         // ********* commited Data Service *********
@@ -50,6 +47,8 @@ export class ProductFiltersManager extends FiltersFormManager {
     }
 
 
+
+    // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
     getChildItem(child: CheckboxItem) {
         return {
@@ -65,6 +64,8 @@ export class ProductFiltersManager extends FiltersFormManager {
 
 
 
+    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
+
     getOtherChildItem(child: CheckboxItem, hierarchyUpdate: HierarchyUpdate) {
         return {
             id: child.id!,
@@ -77,6 +78,8 @@ export class ProductFiltersManager extends FiltersFormManager {
     }
 
 
+
+    // ===================================================================( GET CHILD ITEMS )================================================================== \\
 
     getChildItems(hierarchyUpdate: HierarchyUpdate) {
         this.dataService.get<Array<CheckboxItem>>('api/Products/Filters', [{ key: 'productId', value: this.productService.product.id }, { key: 'filterId', value: hierarchyUpdate.id }])
@@ -91,7 +94,4 @@ export class ProductFiltersManager extends FiltersFormManager {
                 })
             })
     }
-
-
-
 }

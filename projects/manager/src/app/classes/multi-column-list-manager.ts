@@ -1,5 +1,6 @@
 import { Subject } from "rxjs";
 import { ListUpdateType } from "./enums";
+import { HierarchyItem } from "./hierarchy-item";
 import { ListManager } from "./list-manager"
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnItemValue } from "./multi-column-item-value";
@@ -93,6 +94,9 @@ export class MultiColumnListManager extends ListManager {
 
                 this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
 
+
+                this.reselectItem();
+
                 // }
 
                 // If we did NOT press the (Escape) key
@@ -100,7 +104,7 @@ export class MultiColumnListManager extends ListManager {
             } else {
 
                 // As long as the edited name is different from what it was before the edit
-                if (trimmedEditedValue != this.editableValue.name.trim()) {
+                if (trimmedEditedValue.toLowerCase() != this.editableValue.name.trim().toLowerCase()) {
 
                     // If this list is set to verify add and edit
                     if (this.verifyAddEdit) {
@@ -124,8 +128,17 @@ export class MultiColumnListManager extends ListManager {
 
                     // If the edited name has NOT changed
                 } else {
+                    
+                    //If case was changed. i.e. lower case to upper case
+                    if (trimmedEditedValue != this.editableValue.name.trim()) {
+                        this.editableValue.name = trimmedEditedValue!;
+                        this.addEditUpdate(this.editedItem as MultiColumnItem);
+                    }
+
                     this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
                 }
+
+                this.reselectItem();
             }
 
 
@@ -139,15 +152,13 @@ export class MultiColumnListManager extends ListManager {
                 this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
 
                 this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
+
+                this.reselectItem();
             }
         }
 
-
         // As long as the (Enter) key was NOT pressed
-        if (isEscape || isBlur) {
-            this.reselectItem();
-            this.setButtonsState();
-        }
+        if (isEscape || isBlur) this.setButtonsState();
     }
 
 
@@ -155,6 +166,10 @@ export class MultiColumnListManager extends ListManager {
         super.reselectItem();
         this.editableValue = null!;
     }
+
+
+
+
 
 
 

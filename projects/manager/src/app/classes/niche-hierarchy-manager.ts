@@ -77,12 +77,6 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
     }
 
 
-
-
-
-
-
-
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
 
     onArrowClick(hierarchyUpdate: HierarchyUpdate) {
@@ -117,7 +111,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
+    // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(hierarchyUpdate: HierarchyUpdate) {
         super.onSelectedItem(hierarchyUpdate);
@@ -210,7 +204,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
     private nicheAddId: number = 3000;
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         this.nicheAddId++;
@@ -233,7 +227,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // ==============================================================( ON HIERARCHY ITEM EDIT )=============================================================== \\
+    // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
         // Edit grandchild hierarchy item
@@ -267,7 +261,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
+    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(hierarchyUpdate: HierarchyUpdate) {
         super.onItemVerify(hierarchyUpdate);
@@ -293,9 +287,9 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // =====================================================( DELETE PROMPT CHILD WITH CHILDREN MESSAGE )===================================================== \\
+    // =========================================================( DELETE PROMPT GRANDCHILD MESSAGE )========================================================== \\
 
-    deletePromptChildWithChildrenMessage(childType: string, childName: string, itemType: string, parentName: string): SafeHtml {
+    deletePromptGrandchildMessage(childType: string, childName: string, itemType: string, parentName: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(
             'The '
             + childType +
@@ -306,7 +300,8 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
     }
 
 
-    // ============================================================( ON HIERARCHY DELETE PROMPT )============================================================= \\
+
+    // =================================================================( ON DELETE PROMPT )================================================================== \\
 
     onDeletePrompt(deletedItem: HierarchyItem) {
         if (deletedItem.hierarchyGroupID == 0) super.onDeletePrompt(deletedItem);
@@ -315,7 +310,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
         if (deletedItem.hierarchyGroupID == 1) {
             const childItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
             const indexOfParentItem = this.listComponent.listManager.getIndexOfHierarchyItemParent(childItem!);
-            this.listOptions.deletePrompt!.message = this.deletePromptChildWithChildrenMessage(this.childType, deletedItem.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
+            this.listOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
         }
 
         // If we're deleting a grandchild item
@@ -337,17 +332,17 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
         if (deletedItem.values[1].name == this.childSearchType) {
 
             // Prefill the prompt so if the prompt opens before we get the child name, it won't be an empty prompt
-            this.searchOptions.deletePrompt!.message = this.deletePromptChildWithChildrenMessage(this.childType, deletedItem.values[0].name, this.itemType, '');
+            this.searchOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.values[0].name, this.itemType, '');
 
             this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: deletedItem.id }])
                 .subscribe((parentItem: Item) => {
                     // If the child name comes back before the propmt is opened
                     if (!this.searchComponent.listManager.prompt) {
-                        this.searchOptions.deletePrompt!.message = this.deletePromptChildWithChildrenMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
+                        this.searchOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
 
                         // But if the prompt opens first before the child name comes back
                     } else {
-                        this.searchComponent.listManager.prompt.message = this.deletePromptChildWithChildrenMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
+                        this.searchComponent.listManager.prompt.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
                     }
                 })
         }
@@ -375,7 +370,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: HierarchyItem) {
         // If we're deleting a grandchild item
@@ -652,6 +647,8 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
+    // ===================================================================( GET CHILD ITEM )=================================================================== \\
+
     getChildItem(child: Item) {
         return {
             id: child.id,
@@ -664,6 +661,8 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
     }
 
 
+
+    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
     getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
         return {
@@ -678,6 +677,8 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
+    // ================================================================( GET GRANDCHILD ITEM )================================================================= \\
+
     getGrandchildItem(grandchild: Item) {
         return {
             id: grandchild.id,
@@ -689,6 +690,8 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
+    // =============================================================( GET OTHER GRANDCHILD ITEM )============================================================== \\
+
     getOtherGrandchildItem(grandchild: Item, hierarchyUpdate: HierarchyUpdate) {
         return {
             id: grandchild.id,
@@ -699,6 +702,8 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
     }
 
 
+    
+    // ================================================================( GET GRANDCHILD ITEMS )================================================================ \\
 
     getGrandchildItems(hierarchyUpdate: HierarchyUpdate) {
         this.dataService.get<Array<Item>>('api/' + this.grandchildDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])

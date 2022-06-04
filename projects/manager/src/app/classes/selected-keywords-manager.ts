@@ -150,7 +150,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
 
     onListUpdate(hierarchyUpdate: CheckboxListUpdate) {
         super.onListUpdate(hierarchyUpdate);
@@ -160,7 +160,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =================================================================( ON SEARCH UPDATE )================================================================== \\
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
 
     onSearchListUpdate(searchUpdate: CheckboxMultiColumnListUpdate) {
         super.onSearchListUpdate(searchUpdate);
@@ -170,7 +170,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
+    // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(hierarchyUpdate: CheckboxListUpdate) {
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
@@ -336,7 +336,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ==========================================================( ON HIERARCHY ITEM DOUBLE CLICK )=========================================================== \\
+    // ===============================================================( ON ITEM DOUBLE CLICK )================================================================ \\
 
     onItemDoubleClick() {
         // As long as we're double clicking on a custom item
@@ -351,7 +351,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
     // ============================================================( ON SEARCH ITEM DOUBLE CLICK )============================================================ \\
-
+    
     onSearchItemDoubleClick() {
         if (this.itemType == 'Custom Keyword Group') {
             this.editIconButtonTitle = 'Rename';
@@ -366,7 +366,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =========================================================( ON HIERARCHY ITEM CHECKBOX CHANGE )========================================================= \\
+    // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
 
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
         // ********* commited Data Service *********
@@ -379,7 +379,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =============================================================( ON SEARCH CHECKBOX CHANGE )============================================================= \\
+    // ==========================================================( ON SEARCH ITEM CHECKBOX CHANGE )=========================================================== \\
 
     onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
         // ********* commited Data Service *********
@@ -397,7 +397,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===========================================================( ON UNSELECTED HIERARCHY ITEM )============================================================ \\
+    // ================================================================( ON UNSELECTED ITEM )================================================================= \\
 
     onUnselectedItem() {
         this.itemType = 'Custom Keyword Group';
@@ -420,7 +420,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
+
     private selectedKeywordsAdd: number = 4000;
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         this.selectedKeywordsAdd++;
@@ -453,7 +454,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
+    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(hierarchyUpdate: HierarchyUpdate) {
         let matchFound: boolean = false;
@@ -558,7 +559,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===========================================================( DELETE PROMPT PARENT MESSAGE )============================================================ \\
+    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
 
     deletePromptMessage(itemType: string, parentName: string): SafeHtml {
 
@@ -579,7 +580,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: KeywordCheckboxItem) {
         // If we're deleting a parent item
@@ -732,7 +733,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===========================================================( SORT PENDING HIERARCHY ITEMS )============================================================ \\
+    // ================================================================( SORT PENDING ITEMS )================================================================= \\
 
     sortPendingItems() {
         // Selected keywords has its own sort pending function
@@ -884,6 +885,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
+    // ======================================================================( GET ITEM )====================================================================== \\
+
     getItem(x: KeywordCheckboxItem) {
         return {
             id: x.id,
@@ -898,6 +901,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
     getOtherItem(x: KeywordCheckboxItem) {
         return null!
@@ -905,6 +909,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
+    // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
     getChildItem(child: KeywordCheckboxItem) {
         return {
@@ -920,6 +925,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
+    // ===================================================================( GET CHILD ITEMS )================================================================== \\
+
     getChildItems(hierarchyUpdate: HierarchyUpdate) {
         this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }, { key: 'productId', value: this.productService.product.id }])
             .subscribe((children: Array<KeywordCheckboxItem>) => {
@@ -932,8 +939,4 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 })
             })
     }
-
-
-
-
 }

@@ -11,6 +11,10 @@ import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { ProductService } from "../services/product/product.service";
 
 export class KeywordsFormManager extends HierarchyUpdateManager {
+
+
+    // ====================================================================( CONSTRUCTOR )==================================================================== \\
+
     constructor(dataService: DataService, sanitizer: DomSanitizer, public keywordsService: KeywordsService, public productService: ProductService) {
         super(dataService, sanitizer);
         this.sortType = SortType.Form;
@@ -28,10 +32,6 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
         this.thisSearchList = this.keywordsService.formSearchList;
         this.otherSearchList = this.keywordsService.productSearchList;
     }
-
-
-
-    
 
 
 
@@ -61,7 +61,7 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
 
 
 
-    // ==============================================================( ON HIERARCHY ITEM EDIT )=============================================================== \\
+    // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
         super.onItemEdit(hierarchyUpdate);
@@ -82,7 +82,7 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
 
 
 
-    // ============================================================( SET SELECTED HIERARCHY SORT )============================================================ \\
+    // ======================================================================( SET SORT )===================================================================== \\
 
     setSort(selectedHierarchyItem: KeywordCheckboxItem) {
         super.setSort(selectedHierarchyItem);
@@ -105,7 +105,7 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: HierarchyItem) {
         super.onItemDelete(deletedItem);
@@ -125,6 +125,7 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
 
 
 
+    // ======================================================================( GET ITEM )====================================================================== \\
 
     getItem(x: KeywordCheckboxItem) {
         return {
@@ -137,7 +138,8 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
     }
 
 
-
+    
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
     getOtherItem(x: KeywordCheckboxItem) {
         return {
@@ -152,6 +154,7 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
 
 
 
+    // ======================================================================( GET ITEMS )===================================================================== \\
 
     getItems() {
         this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.dataServicePath, [{ key: 'productId', value: this.productService.product.id }])
@@ -162,5 +165,4 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
                 })
             })
     }
-
 }

@@ -19,19 +19,19 @@ export class ListUpdateManager {
     public itemType!: string;
     public sortType!: SortType;
     public searchMode!: boolean;
+    public dataServicePath!: string;
     public parentSearchType!: string;
     public addIconButtonTitle!: string;
+    public listComponent!: ListComponent;
     public searchInput!: HTMLInputElement;
-    public dataServicePath!: string;
-    public editIconButtonTitle: string = 'Rename';
-    public deleteIconButtonTitle: string = 'Delete';
-    public searchIconButtonTitle: string = 'Search';
+    public searchComponent!: ListComponent;
+    public otherListComponent!: ListComponent;
     public listUpdateService!: ListUpdateService;
     public searchInputSubscription!: Subscription;
     public selectLastSelectedItemOnOpen!: boolean;
-    public listComponent!: ListComponent;
-    public searchComponent!: ListComponent;
-    public otherListComponent!: ListComponent;
+    public editIconButtonTitle: string = 'Rename';
+    public deleteIconButtonTitle: string = 'Delete';
+    public searchIconButtonTitle: string = 'Search';
     public onClose: Subject<void> = new Subject<void>();
     public searchOptions: ListOptions = new ListOptions();
     public listOptions: ListOptions = new ListOptions();
@@ -42,8 +42,8 @@ export class ListUpdateManager {
     public otherSearchList: Array<ListItem> = new Array<ListItem>();
     public get listUpdate(): ListUpdate { return this._listUpdate; }
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
-    public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
+    public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -145,9 +145,6 @@ export class ListUpdateManager {
         }
     }
 
-
-
-    
 
 
     // ======================================================================( ON OPEN )====================================================================== \\
@@ -259,8 +256,8 @@ export class ListUpdateManager {
 
 
 
-    // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
-
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
+    
     onListUpdate(listUpdate: ListUpdate) {
         this._listUpdate = listUpdate;
         if (listUpdate.type == ListUpdateType.Add) this.onItemAdd(listUpdate);
@@ -274,7 +271,7 @@ export class ListUpdateManager {
 
 
 
-    // =================================================================( ON SEARCH UPDATE )================================================================== \\
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
 
     onSearchListUpdate(searchUpdate: ListUpdate) {
         this._searchListUpdate = searchUpdate;
@@ -288,7 +285,7 @@ export class ListUpdateManager {
 
 
 
-    // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
+    // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(listUpdate: ListUpdate) {
         this.editIconButtonTitle = 'Rename ' + this.itemType;
@@ -313,7 +310,7 @@ export class ListUpdateManager {
 
 
 
-    // ===========================================================( ON UNSELECTED HIERARCHY ITEM )============================================================ \\
+    // ================================================================( ON UNSELECTED ITEM )================================================================= \\
 
     onUnselectedItem() {
         this.addIconButtonTitle = 'Add ' + this.itemType;
@@ -324,23 +321,16 @@ export class ListUpdateManager {
 
 
     // =============================================================( ON UNSELECTED SEARCH ITEM )============================================================= \\
-
+    
     onUnselectedSearchItem() {
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
     }
 
+    
 
-    addItem(list: Array<ListItem>, index: number, item: ListItem): ListItem {
-        list.splice(index, 0, {
-            id: item.id,
-            name: item.name
-        })
-        return list[index];
-    }
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
 
-
-    // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
     private listAddId: number = 1000;
     onItemAdd(listUpdate: ListUpdate) {
         this.listAddId++;
@@ -355,7 +345,19 @@ export class ListUpdateManager {
 
 
 
-    // ==============================================================( ON HIERARCHY ITEM EDIT )=============================================================== \\
+    // ======================================================================( ADD ITEM )===================================================================== \\
+
+    addItem(list: Array<ListItem>, index: number, item: ListItem): ListItem {
+        list.splice(index, 0, {
+            id: item.id,
+            name: item.name
+        })
+        return list[index];
+    }
+
+
+
+    // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(listUpdate: ListUpdate) {
         // ********* commited Data Service *********
@@ -394,7 +396,7 @@ export class ListUpdateManager {
 
 
 
-    // =============================================================( SET OTHER HIERARCHY SORT )============================================================== \\
+    // ======================================================================( SET SORT )===================================================================== \\
 
     setSort(otherListItem: ListItem) {
         // As long as the other list item is NOT null
@@ -416,14 +418,14 @@ export class ListUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
+    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(listUpdate: ListUpdate) {
         let matchFound: boolean = false;
 
         // Loop through each parent item and check for a duplicate
         this.thisArray.forEach(x => {
-            if (x.name?.toLowerCase() == listUpdate.name?.toLowerCase() && x.index != listUpdate.index) {
+            if (x.name?.toLowerCase() == listUpdate.name?.toLowerCase()) {
                 matchFound = true;
             }
         })
@@ -448,7 +450,7 @@ export class ListUpdateManager {
         let matchFound: boolean = false;
 
         this.thisArray.forEach(x => {
-            if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase() && x.index != searchUpdate.index) {
+            if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase()) {
                 matchFound = true;
             }
         })
@@ -467,7 +469,7 @@ export class ListUpdateManager {
 
 
 
-    // ===========================================================( DELETE PROMPT PARENT MESSAGE )============================================================ \\
+    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
 
     deletePromptMessage(itemType: string, parentName: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(
@@ -479,7 +481,7 @@ export class ListUpdateManager {
 
 
 
-    // ============================================================( ON HIERARCHY DELETE PROMPT )============================================================= \\
+    // =================================================================( ON DELETE PROMPT )================================================================== \\
 
     onDeletePrompt(deletedItem: ListItem) {
         this.listOptions.deletePrompt!.message = this.deletePromptMessage(this.itemType, deletedItem.name!);
@@ -495,7 +497,7 @@ export class ListUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: ListItem) {
         // ********* commited Data Service *********
@@ -563,7 +565,7 @@ export class ListUpdateManager {
 
 
 
-    // ===========================================================( SORT PENDING HIERARCHY ITEMS )============================================================ \\
+    // ================================================================( SORT PENDING ITEMS )================================================================= \\
 
     sortPendingItems() {
         // If an item was edited in search mode
@@ -677,7 +679,8 @@ export class ListUpdateManager {
     }
 
 
-    // ======================================================================( NEW ITEM )===================================================================== \\
+
+    // ======================================================================( GET ITEM )====================================================================== \\
 
     getItem(x: ListItem) {
         return {
@@ -688,6 +691,7 @@ export class ListUpdateManager {
 
 
 
+    // ======================================================================( GET ITEMS )===================================================================== \\
 
     getItems() {
         this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath)
@@ -701,8 +705,7 @@ export class ListUpdateManager {
 
 
 
-
-    // ==================================================================( NEW SEARCH ITEM )================================================================== \\
+    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
 
     getSearchResultItem(x: ListItem) {
         return {

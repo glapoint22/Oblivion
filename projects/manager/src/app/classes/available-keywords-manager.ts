@@ -45,8 +45,6 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
-
-
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
@@ -82,7 +80,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
+    // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(hierarchyUpdate: HierarchyUpdate) {
         super.onSelectedItem(hierarchyUpdate);
@@ -103,7 +101,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===========================================================( ON UNSELECTED HIERARCHY ITEM )============================================================ \\
+    // ================================================================( ON UNSELECTED ITEM )================================================================= \\
 
     onUnselectedItem() {
         super.onUnselectedItem();
@@ -119,6 +117,9 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
         this.addToSelectedKeywordsButtonDisabled = true;
     }
 
+
+
+    // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
         this.setSelectedKeywordsSort(this.editItem(this.keywordsService.selectedKeywordsArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem);
@@ -137,6 +138,8 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
     }
 
 
+
+    // =============================================================( ON SELECTED KEYWORDS SORT )============================================================= \\
 
     setSelectedKeywordsSort(selectedHierarchyItem: KeywordCheckboxItem) {
         if (selectedHierarchyItem) {
@@ -157,7 +160,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: HierarchyItem) {
         super.onItemDelete(deletedItem);
@@ -369,6 +372,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
+    // ======================================================================( GET ITEM )====================================================================== \\
 
     getItem(x: KeywordCheckboxItem) {
         return {
@@ -383,6 +387,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
     getOtherItem(x: KeywordCheckboxItem) {
         return {
@@ -394,5 +399,4 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
             opacity: null!
         }
     }
-
 }
