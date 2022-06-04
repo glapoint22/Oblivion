@@ -4,7 +4,7 @@ import { WidgetData } from "./widget-data";
 import { WidgetType } from "./widget-enums";
 
 @Directive()
-export abstract class Widget {
+export class Widget {
     @ViewChild('widget') private widgetElementRef!: ElementRef<HTMLElement>;
     public type!: WidgetType;
     public widgetElement!: HTMLElement;
@@ -29,5 +29,11 @@ export abstract class Widget {
 
 
     // ------------------------------------------------------------ Get Data -----------------------------------------------------------
-    abstract getData(): WidgetData;
+    public getData(): WidgetData {
+        const widgetData = new WidgetData(this.type);
+
+        widgetData.width = this.width;
+        widgetData.height = this.height;
+        return widgetData;
+    }
 }

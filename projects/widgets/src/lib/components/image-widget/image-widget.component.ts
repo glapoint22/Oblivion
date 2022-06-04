@@ -43,6 +43,14 @@ export class ImageWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): ImageWidgetData {
-    throw new Error('Method not implemented.');
+    const imageWidgetData = super.getData() as ImageWidgetData;
+
+    imageWidgetData.border = this.border.getData();
+    imageWidgetData.corners = this.corners.getData();
+    imageWidgetData.shadow = this.shadow.getData();
+    imageWidgetData.link = this.link.getData();
+    imageWidgetData.image = this.image.getData();
+
+    return imageWidgetData;
   }
 }

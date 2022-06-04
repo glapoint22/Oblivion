@@ -35,7 +35,7 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
               imageWidgetData.image = image;
               super.setWidget(imageWidgetData);
             } else {
-              console.log('Delete')
+              this.widgetService.selectedColumn.deleteColumn();
             }
           }
         });

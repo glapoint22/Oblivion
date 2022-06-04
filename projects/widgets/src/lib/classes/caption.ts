@@ -146,7 +146,7 @@ export class Caption {
         this._color = this._rgbColor.toHex();
         return this._rgbColor;
     }
-    
+
 
 
     constructor(color?: string) {
@@ -159,8 +159,8 @@ export class Caption {
             if (caption.fontWeight) this.fontWeight = caption.fontWeight;
             if (caption.fontStyle) this.fontStyle = caption.fontStyle;
             if (caption.textDecoration) this.textDecoration = caption.textDecoration;
-            if (caption.font) this.font = caption.font;
-            if (caption.fontSize) this.fontSize = caption.fontSize;
+            if (caption.font) this.font = this.fontOptions.find(x => x.key == caption.font.key)!;
+            if (caption.fontSize) this.fontSize = this.fontSizes.find(x => x.key == caption.fontSize.key)!;
             if (caption.color) this.color = caption.color;
             if (caption.text) this.text = caption.text;
         }

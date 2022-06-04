@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GridData, GridWidgetService, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
 import { GridWidgetData } from '../../classes/grid-widget-data';
 import { Widget } from '../../classes/widget';
+import { WidgetType } from '../../classes/widget-enums';
 import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
 
 @Component({
@@ -47,6 +48,8 @@ export class GridWidgetComponent extends Widget {
 
   // ------------------------------------------------------------- Ng On Init ------------------------------------------------------------------
   ngOnInit() {
+    this.type = WidgetType.Grid;
+
     if (this.route.snapshot.queryParamMap.has('search')) {
       this.sortOptions.unshift({
         key: 'Best Match',
@@ -152,6 +155,10 @@ export class GridWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): GridWidgetData {
-    throw new Error('Method not implemented.');
+    const gridWidgetData = super.getData() as GridWidgetData;
+
+    
+
+    return gridWidgetData;
   }
 }

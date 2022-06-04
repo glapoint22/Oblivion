@@ -101,4 +101,20 @@ export class Video {
                 break;
         }
     }
+
+
+
+
+    getData(): Video {
+        const video = new Video();
+
+        video.id = this.id;
+        video.name = this.name;
+        video.src = this.src;
+        video.thumbnail = this.thumbnail;
+        video.videoType = this.videoType;
+        video.videoId = this.videoId;
+
+        return video;
+    }
 }

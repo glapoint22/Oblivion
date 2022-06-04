@@ -1,5 +1,5 @@
-import { ApplicationRef, Component, Input, OnChanges } from '@angular/core';
-import { LazyLoadingService, Link, LinkType, SpinnerAction } from 'common';
+import { Component, Input } from '@angular/core';
+import { LazyLoadingService, LinkType, SpinnerAction } from 'common';
 import { TextBoxDev } from 'text-box';
 import { LinkComponent } from '../link/link.component';
 
@@ -8,18 +8,10 @@ import { LinkComponent } from '../link/link.component';
   templateUrl: './text.component.html',
   styleUrls: ['./text.component.scss']
 })
-export class TextComponent implements OnChanges {
+export class TextComponent {
   @Input() textBox!: TextBoxDev;
 
-  constructor(private appRef: ApplicationRef, private lazyLoadingService: LazyLoadingService) { }
-
-  // ---------------------------------------------------------On Changes------------------------------------------------------------------
-  ngOnChanges(): void {
-    if (this.textBox) {
-      this.textBox.setSelectedClasses();
-      this.textBox.onSelection.subscribe(() => this.appRef.tick());
-    }
-  }
+  constructor(private lazyLoadingService: LazyLoadingService) { }
 
 
   async onLinkClick() {

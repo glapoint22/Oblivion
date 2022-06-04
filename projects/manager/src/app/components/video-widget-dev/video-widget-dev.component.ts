@@ -42,7 +42,7 @@ export class VideoWidgetDevComponent extends VideoWidgetComponent {
               super.setWidget(videoWidgetData);
               this.iframe.nativeElement.src = this.video.src;
             } else {
-              console.log('Delete')
+              this.widgetService.selectedColumn.deleteColumn();
             }
           }
         });

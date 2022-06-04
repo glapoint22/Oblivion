@@ -36,6 +36,11 @@ export class LineWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): LineWidgetData {
-    throw new Error('Method not implemented.');
+    const lineWidgetData = super.getData() as LineWidgetData;
+
+    lineWidgetData.border = this.border.getData();
+    lineWidgetData.shadow = this.shadow.getData();
+
+    return lineWidgetData;
   }
 }

@@ -216,7 +216,7 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
   // -------------------------------------------------------------------------- Delete Column ----------------------------------------------------------
-  private deleteColumn(): void {
+  public deleteColumn(): void {
     if (this.rowComponent.columnCount == 1) {
       this.rowComponent.containerComponent.deleteRow(this.rowComponent);
     } else {

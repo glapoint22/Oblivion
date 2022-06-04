@@ -52,6 +52,13 @@ export class VideoWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): VideoWidgetData {
-    throw new Error('Method not implemented.');
+    const videoWidgetData = super.getData() as VideoWidgetData;
+
+    videoWidgetData.border = this.border.getData();
+    videoWidgetData.corners = this.corners.getData();
+    videoWidgetData.shadow = this.shadow.getData();
+    videoWidgetData.video = this.video.getData();
+
+    return videoWidgetData;
   }
 }

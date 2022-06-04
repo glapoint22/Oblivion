@@ -4,7 +4,7 @@ import { Padding } from "./padding";
 import { WidgetData } from "./widget-data";
 
 export class TextWidgetData extends WidgetData {
-    public textData!: Array<TextBoxData>;
+    public textBoxData!: Array<TextBoxData>;
     public background!: Background;
     public padding!: Padding;
 }
