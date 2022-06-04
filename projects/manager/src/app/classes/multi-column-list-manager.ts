@@ -91,7 +91,7 @@ export class MultiColumnListManager extends ListManager {
                 this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
 
 
-
+                this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
 
                 // }
 
@@ -113,11 +113,18 @@ export class MultiColumnListManager extends ListManager {
 
                         // If this list does NOT verify
                     } else {
+
                         // Update the name property
                         this.editableValue.name = trimmedEditedValue!;
 
+                        this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
+
                         this.addEditUpdate(this.editedItem as MultiColumnItem);
                     }
+
+                    // If the edited name has NOT changed
+                } else {
+                    this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
                 }
             }
 
@@ -130,6 +137,8 @@ export class MultiColumnListManager extends ListManager {
 
                 // Reset the item back to the way it was before the edit
                 this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
+
+                this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
             }
         }
 
@@ -167,7 +176,7 @@ export class MultiColumnListManager extends ListManager {
                 type: ListUpdateType.VerifyAddEdit,
                 id: multiColumnItem.id,
                 index: this.sourceList.findIndex(x => x.id == multiColumnItem.id && x.values[0].name == multiColumnItem.values[0].name && x.values[1].name == multiColumnItem.values[1].name),
-                values: multiColumnItem.values
+                values: [{ name: name, width: multiColumnItem.values[0].width }, { name: multiColumnItem.values[1].name, width: multiColumnItem.values[1].width }]
             }
         );
     }

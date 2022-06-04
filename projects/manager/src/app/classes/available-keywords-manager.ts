@@ -1,3 +1,4 @@
+import { KeyValue } from "@angular/common";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { KeywordsService } from "../services/keywords/keywords.service";
@@ -8,7 +9,6 @@ import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
 import { KeywordsFormManager } from "./keywords-form-manager";
-import { ListUpdate } from "./list-update";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
@@ -18,8 +18,8 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, keywordsService: KeywordsService, private productService: ProductService) {
-        super(dataService, sanitizer, keywordsService);
+    constructor(dataService: DataService, sanitizer: DomSanitizer, keywordsService: KeywordsService, productService: ProductService) {
+        super(dataService, sanitizer, keywordsService, productService);
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
         this.thisArray = this.keywordsService.productArray;
@@ -45,37 +45,13 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
+
+
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
         this.addToSelectedKeywordsButtonDisabled = true;
-        if (this.thisArray.length == 0) {
-            this.addIconButtonTitle = 'Add ' + this.itemType;
-            this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.dataServicePath, [{ key: 'productId', value: this.productService.product.id }])
-                .subscribe((thisArray: Array<KeywordCheckboxItem>) => {
-                    thisArray.forEach(x => {
-                        this.thisArray.push({
-                            id: x.id,
-                            name: x.name,
-                            hierarchyGroupID: 0,
-                            hidden: false,
-                            arrowDown: false,
-                            opacity: x.forProduct ? 0.4 : null!
-                        })
-
-                        this.otherArray.push({
-                            id: x.id,
-                            name: x.name,
-                            hierarchyGroupID: 0,
-                            hidden: false,
-                            arrowDown: false
-                        })
-                    })
-                })
-            this.sortPendingItems();
-        } else {
-            super.onOpen();
-        }
+        super.onOpen();
     }
 
 
@@ -145,8 +121,9 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
-        this.setSort(this.editItem(this.keywordsService.selectedKeywordsArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem);
+        this.setSelectedKeywordsSort(this.editItem(this.keywordsService.selectedKeywordsArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem);
         this.editItem(this.keywordsService.selectedKeywordsSearchList, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
+        this.setSort(this.editItem(this.otherArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem);
     }
 
 
@@ -155,13 +132,13 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
         this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1));
-        this.setSort(this.editItem(this.keywordsService.selectedKeywordsArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1) as KeywordCheckboxItem);
+        this.setSelectedKeywordsSort(this.editItem(this.keywordsService.selectedKeywordsArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1) as KeywordCheckboxItem);
         this.editItem(this.keywordsService.selectedKeywordsSearchList, searchUpdate, searchUpdate.values![1].name);
     }
 
 
 
-    setSort(selectedHierarchyItem: KeywordCheckboxItem) {
+    setSelectedKeywordsSort(selectedHierarchyItem: KeywordCheckboxItem) {
         if (selectedHierarchyItem) {
             // As long as the other hierarchy sort group is NOT hidden
             if (!selectedHierarchyItem.hidden && this.keywordsService.selectedHierarchyComponent) {
@@ -224,20 +201,20 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
     // =============================================================( ADD TO SELECTED KEYWORDS )============================================================== \\
-    
+
     addToSelectedKeywords() {
         this.addToSelectedKeywordsButtonDisabled = true;
         const keywordGroup: KeywordCheckboxItem = new KeywordCheckboxItem();
 
-        
-        if(this.listComponent) {
+
+        if (this.listComponent) {
             this.addHierarchyItemToSelectedKeywords(keywordGroup);
 
-        }else {
+        } else {
             this.addSearchItemToSelectedKeywords(keywordGroup);
         }
 
-        
+
         this.keywordsService.selectedKeywordsArray.push(keywordGroup);
 
         if (this.keywordsService.selectedHierarchyComponent) {
@@ -269,11 +246,11 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
                 if (this.thisArray[i].hierarchyGroupID! <= this.listComponent.listManager.selectedItem.hierarchyGroupID!) break;
                 this.thisArray[i].opacity = 0.4;
             }
-
-            this.dataService.post('api/SelectedKeywords/Groups/Add', {
-              productId: this.productService.product.id,
-              id: keywordGroup.id
-            }).subscribe();
+            // ********* commited Data Service *********
+            // this.dataService.post('api/SelectedKeywords/Groups/Add', {
+            //   productId: this.productService.product.id,
+            //   id: keywordGroup.id
+            // }).subscribe();
 
             // If a keyword is selected
         } else {
@@ -291,12 +268,12 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
                 if (this.thisArray[i].hierarchyGroupID! <= parent.hierarchyGroupID!) break;
                 this.thisArray[i].opacity = 0.4;
             }
-
-            this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
-              productId: this.productService.product.id,
-              keywordGroupId: keywordGroup.id,
-              KeywordId: childId
-            }).subscribe();
+            // ********* commited Data Service *********
+            // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
+            //   productId: this.productService.product.id,
+            //   keywordGroupId: keywordGroup.id,
+            //   KeywordId: childId
+            // }).subscribe();
         }
     }
 
@@ -333,11 +310,11 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
                 if (this.thisArray[i].hierarchyGroupID! <= 0) break;
                 this.thisArray[i].opacity = 0.4;
             }
-
-            this.dataService.post('api/SelectedKeywords/Groups/Add', {
-                productId: this.productService.product.id,
-                id: keywordGroup.id
-            }).subscribe();
+            // ********* commited Data Service *********
+            // this.dataService.post('api/SelectedKeywords/Groups/Add', {
+            //     productId: this.productService.product.id,
+            //     id: keywordGroup.id
+            // }).subscribe();
 
 
             // If a keyword is selected 
@@ -380,13 +357,42 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
                         this.thisArray[i].opacity = 0.4;
                     }
 
-
-                    this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
-                        productId: this.productService.product.id,
-                        keywordGroupId: keywordGroup.id,
-                        KeywordId: this.searchComponent.listManager.selectedItem.id
-                    }).subscribe();
+                    // ********* commited Data Service *********
+                    // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
+                    //     productId: this.productService.product.id,
+                    //     keywordGroupId: keywordGroup.id,
+                    //     KeywordId: this.searchComponent.listManager.selectedItem.id
+                    // }).subscribe();
                 })
         }
     }
+
+
+
+
+    getItem(x: KeywordCheckboxItem) {
+        return {
+            id: x.id,
+            name: x.name,
+            hierarchyGroupID: 0,
+            hidden: false,
+            arrowDown: false,
+            opacity: x.forProduct ? 0.4 : null!
+        }
+    }
+
+
+
+
+    getOtherItem(x: KeywordCheckboxItem) {
+        return {
+            id: x.id,
+            name: x.name,
+            hierarchyGroupID: 0,
+            hidden: false,
+            arrowDown: false,
+            opacity: null!
+        }
+    }
+
 }

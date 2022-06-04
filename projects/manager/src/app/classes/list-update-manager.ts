@@ -1,3 +1,4 @@
+import { KeyValue } from "@angular/common";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
@@ -146,18 +147,15 @@ export class ListUpdateManager {
 
 
 
+    
+
+
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
         this.addIconButtonTitle = 'Add ' + this.itemType;
         if (this.thisArray.length == 0) {
-            this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath)
-                .subscribe((thisArray: Array<ListItem>) => {
-                    thisArray.forEach(x => {
-                        this.thisArray.push(this.newItem(x));
-                        this.otherArray.push(this.newItem(x));
-                    })
-                })
+            this.getItems();
         } else {
 
             // If the list is set to select the last selected item on open
@@ -343,12 +341,14 @@ export class ListUpdateManager {
 
 
     // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
-
+    private listAddId: number = 1000;
     onItemAdd(listUpdate: ListUpdate) {
+        this.listAddId++;
+        // ********* commited Data Service *********
         // this.dataService.post<number>('api/' + this.dataServicePath, {
         //     name: listUpdate.name
         // }).subscribe((id: number) => {
-        this.thisArray[listUpdate.index!].id = 1000//id;
+        this.thisArray[listUpdate.index!].id = this.listAddId//id;
         this.setSort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]));
         // });
     }
@@ -358,6 +358,7 @@ export class ListUpdateManager {
     // ==============================================================( ON HIERARCHY ITEM EDIT )=============================================================== \\
 
     onItemEdit(listUpdate: ListUpdate) {
+        // ********* commited Data Service *********
         // this.dataService.put('api/' + this.dataServicePath, {
         //     id: listUpdate.id,
         //     name: listUpdate.name
@@ -371,6 +372,7 @@ export class ListUpdateManager {
     // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
 
     onSearchItemEdit(searchUpdate: ListUpdate) {
+        // ********* commited Data Service *********
         // this.dataService.put('api/' + this.dataServicePath, {
         //     id: searchUpdate.id,
         //     name: searchUpdate.values![0].name
@@ -496,6 +498,7 @@ export class ListUpdateManager {
     // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
 
     onItemDelete(deletedItem: ListItem) {
+        // ********* commited Data Service *********
         // this.dataService.delete('api/' + this.dataServicePath, {
         //     id: deletedItem.id
         // }).subscribe();
@@ -507,7 +510,8 @@ export class ListUpdateManager {
 
     // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
 
-    onSearchItemDelete(deletedItem: ListItem) { // MultiColumnItem
+    onSearchItemDelete(deletedItem: ListItem) {
+        // ********* commited Data Service *********
         // this.dataService.delete('api/' + this.dataServicePath, {
         //     id: deletedItem.id
         // }).subscribe();
@@ -551,7 +555,7 @@ export class ListUpdateManager {
                 // As long as search results were returned
                 if (searchResults) {
                     searchResults.forEach(x => {
-                        this.thisSearchList.push(this.newSearchItem(x));
+                        this.thisSearchList.push(this.getSearchResultItem(x));
                     })
                 }
             });
@@ -675,7 +679,7 @@ export class ListUpdateManager {
 
     // ======================================================================( NEW ITEM )===================================================================== \\
 
-    newItem(x: ListItem) {
+    getItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name
@@ -684,9 +688,23 @@ export class ListUpdateManager {
 
 
 
+
+    getItems() {
+        this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath)
+            .subscribe((thisArray: Array<ListItem>) => {
+                thisArray.forEach(x => {
+                    this.thisArray.push(this.getItem(x));
+                    this.otherArray.push(this.getItem(x));
+                })
+            })
+    }
+
+
+
+
     // ==================================================================( NEW SEARCH ITEM )================================================================== \\
 
-    newSearchItem(x: ListItem) {
+    getSearchResultItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name

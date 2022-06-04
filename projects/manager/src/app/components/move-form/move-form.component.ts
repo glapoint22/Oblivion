@@ -136,13 +136,13 @@ export class MoveFormComponent extends LazyLoad {
     }
 
     let itemToBeMovedType = this.itemToBeMovedType == 'Sub Niche' ? 'Niches' : 'Products';
-
-    this.dataService.put('api/' + itemToBeMovedType + '/Move', {
-      itemToBeMovedId: this.itemToBeMoved.id,
-      destinationItemId: this.destinationItem.id
-    }).subscribe(()=> {
+    // ********* commited Data Service *********
+    // this.dataService.put('api/' + itemToBeMovedType + '/Move', {
+    //   itemToBeMovedId: this.itemToBeMoved.id,
+    //   destinationItemId: this.destinationItem.id
+    // }).subscribe(()=> {
       this.openSuccessPrompt();
-    });
+    // });
   }
 
   async openSuccessPrompt(){

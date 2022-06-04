@@ -982,11 +982,10 @@ export class ListManager {
         this.editedItem.htmlItem?.nativeElement.blur();
       }
 
+      // If the duplicate prompt is being closed
       let promptCloseListener: Subscription = prompt.onClose.subscribe(() => {
-        // If the duplicate prompt is being closed
         if (this.addEditVerificationInProgress) {
           this.addEditVerificationInProgress = false;
-
           this.onDuplicatePromptClose();
         }
 

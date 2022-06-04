@@ -232,11 +232,11 @@ export class HierarchyManager extends ListManager {
         // Add the new hierarchy group to the source
         this.sourceList.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
 
+        
 
         // Remove the selected hierarchy item and then put it back so the indent can take effect
         const hierarchyItemIndex = this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID);
 
-        
         (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = true;
 
         window.setTimeout(() => {
