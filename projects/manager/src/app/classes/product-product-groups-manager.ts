@@ -1,16 +1,131 @@
+import { KeyValue } from "@angular/common";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { ProductGroupsService } from "../services/product-groups/product-groups.service";
-import { SortType } from "./enums";
+import { ProductService } from "../services/product/product.service";
+import { CheckboxItem } from "./checkbox-item";
+import { CheckboxListUpdate } from "./checkbox-list-update";
+import { ListUpdateType, SortType } from "./enums";
 import { ProductGroupsFormManager } from "./product-groups-form-manager";
 
 export class ProductProductGroupsManager extends ProductGroupsFormManager {
-    constructor(dataService: DataService, sanitizer: DomSanitizer, public productGroupsService: ProductGroupsService) {
+    public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+
+
+    // ====================================================================( CONSTRUCTOR )==================================================================== \\
+
+    constructor(dataService: DataService, sanitizer: DomSanitizer, public productGroupsService: ProductGroupsService, private productService: ProductService) {
         super(dataService, sanitizer, productGroupsService);
         this.sortType = SortType.Product;
         this.thisArray = this.productGroupsService.productArray;
         this.otherArray = this.productGroupsService.formArray;
         this.thisSearchList = this.productGroupsService.productSearchList;
         this.otherSearchList = this.productGroupsService.formSearchList;
+    }
+
+
+
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
+
+    onListUpdate(checkboxListUpdate: CheckboxListUpdate) {
+        super.onListUpdate(checkboxListUpdate);
+        if (checkboxListUpdate.type == ListUpdateType.CheckboxChange) this.onItemCheckboxChange(checkboxListUpdate);
+    }
+
+
+
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
+
+    onSearchListUpdate(searchUpdate: CheckboxListUpdate) {
+        super.onSearchListUpdate(searchUpdate);
+        if (searchUpdate.type == ListUpdateType.CheckboxChange) this.onSearchItemCheckboxChange(searchUpdate);
+    }
+
+
+
+    // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
+
+    onItemCheckboxChange(checkboxListUpdate: CheckboxListUpdate) {
+        // ********* commited Data Service *********
+        // this.dataService.put('api/Products/Subgroup', {
+        //     productId: this.productService.product.id,
+        //     id: checkboxListUpdate.id,
+        //     checked: checkboxListUpdate.checked
+        // }).subscribe();
+    }
+
+
+
+    // ==========================================================( ON SEARCH ITEM CHECKBOX CHANGE )=========================================================== \\
+
+    onSearchItemCheckboxChange(checkboxListUpdate: CheckboxListUpdate) {
+        // ********* commited Data Service *********
+        // this.dataService.put('api/Products/Subgroup', {
+        //     productId: this.productService.product.id,
+        //     id: checkboxListUpdate.id,
+        //     checked: checkboxListUpdate.checked
+        // }).subscribe();
+
+        // Check to see if the search item that had the checkbox change is visible in the hierarchy
+        const listItem = this.thisArray.find(x => x.id == checkboxListUpdate.id && x.name == checkboxListUpdate.name);
+        // If it is, make the change to its checkbox as well
+        if (listItem) listItem.checked = checkboxListUpdate.checked;
+    }
+
+
+
+    // ======================================================================( GET ITEM )====================================================================== \\
+
+    getItem(x: CheckboxItem) {
+        return {
+            id: x.id,
+            name: x.name,
+            checked: x.checked
+        }
+    }
+
+
+
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+
+    getOtherItem(x: CheckboxItem) {
+        return {
+            id: x.id,
+            name: x.name
+        }
+    }
+
+
+
+    // ======================================================================( GET ITEMS )===================================================================== \\
+
+    getItems() {
+        this.dataService.get<Array<CheckboxItem>>('api/Products/Subgroup', [{key: 'ProductId', value: this.productService.product.id}])
+            .subscribe((thisArray: Array<CheckboxItem>) => {
+                thisArray.forEach(x => {
+                    this.thisArray.push(this.getItem(x));
+                    this.otherArray.push(this.getOtherItem(x));
+                })
+            })
+    }
+
+
+
+    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
+
+    getSearchResultItem(x: CheckboxItem) {
+        return {
+            id: x.id,
+            name: x.name,
+            checked: x.checked
+        }
+    }
+
+
+
+    // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
+
+    getSearchResultsParameters(searchWords: string) : Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
     }
 }

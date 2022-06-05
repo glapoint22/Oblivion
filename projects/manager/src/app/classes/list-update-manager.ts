@@ -548,10 +548,9 @@ export class ListUpdateManager {
 
     // ================================================================( GET SEARCH RESULTS )================================================================= \\
 
-    getSearchResults(value: string) {
+    getSearchResults(searchWords: string) {
         this.thisSearchList.splice(0, this.thisSearchList.length);
-
-        this.dataService.get<Array<SearchResultItem>>('api/' + this.dataServicePath + '/Search', [{ key: 'searchWords', value: value }])
+        this.dataService.get<Array<SearchResultItem>>('api/' + this.dataServicePath + '/Search', this.getSearchResultsParameters(searchWords))
             .subscribe((searchResults: Array<SearchResultItem>) => {
 
                 // As long as search results were returned
@@ -707,10 +706,18 @@ export class ListUpdateManager {
 
     // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
 
-    getSearchResultItem(x: ListItem) {
+    getSearchResultItem(x: SearchResultItem) {
         return {
             id: x.id,
             name: x.name
         }
+    }
+
+
+
+    // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
+
+    getSearchResultsParameters(searchWords: string) : Array<KeyValue<any, any>> {
+        return [{ key: 'searchWords', value: searchWords }];
     }
 }

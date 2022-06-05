@@ -12,6 +12,7 @@ import { KeywordsFormManager } from "./keywords-form-manager";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
+import { KeyValue } from "@angular/common";
 
 export class SelectedKeywordsManager extends KeywordsFormManager {
     // Private
@@ -351,7 +352,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
     // ============================================================( ON SEARCH ITEM DOUBLE CLICK )============================================================ \\
-    
+
     onSearchItemDoubleClick() {
         if (this.itemType == 'Custom Keyword Group') {
             this.editIconButtonTitle = 'Rename';
@@ -707,32 +708,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     }
 
 
-
-    // ================================================================( GET SEARCH RESULTS )================================================================= \\
-
-    getSearchResults(value: string) {
-        this.thisSearchList.splice(0, this.thisSearchList.length);
-
-        this.dataService.get<Array<KeywordCheckboxSearchResultItem>>('api/' + this.dataServicePath + '/Search', [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: value }])
-            .subscribe((searchResults: Array<KeywordCheckboxSearchResultItem>) => {
-
-                // As long as search results were returned
-                if (searchResults) {
-                    searchResults.forEach(x => {
-                        this.thisSearchList.push({
-
-                            id: x.id!,
-                            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true, color: x.forProduct ? '#ffba00' : null! }, { name: x.type!, width: this.searchTypeWidth, color: x.forProduct ? '#ffba00' : null! }],
-                            checked: x.checked,
-                            forProduct: x.forProduct
-                        })
-                    })
-                }
-            });
-    }
-
-
-
+    
     // ================================================================( SORT PENDING ITEMS )================================================================= \\
 
     sortPendingItems() {
@@ -938,5 +914,27 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                     this.onChildrenLoad.next();
                 })
             })
+    }
+
+
+
+    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
+
+    getSearchResultItem(x: KeywordCheckboxSearchResultItem) {
+        return {
+            id: x.id!,
+            name: null!,
+            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true, color: x.forProduct ? '#ffba00' : null! }, { name: x.type!, width: this.searchTypeWidth, color: x.forProduct ? '#ffba00' : null! }],
+            checked: x.checked,
+            forProduct: x.forProduct
+        }
+    }
+
+
+
+    // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
+
+    getSearchResultsParameters(searchWords: string) : Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
     }
 }

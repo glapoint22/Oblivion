@@ -180,29 +180,6 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ================================================================( GET SEARCH RESULTS )================================================================= \\
-
-    getSearchResults(value: string) {
-        this.thisSearchList.splice(0, this.thisSearchList.length);
-
-        this.dataService.get<Array<KeywordSearchResultItem>>('api/' + this.dataServicePath + '/Search', [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: value }])
-            .subscribe((searchResults: Array<KeywordSearchResultItem>) => {
-
-                // As long as search results were returned
-                if (searchResults) {
-                    searchResults.forEach(x => {
-                        this.thisSearchList.push({
-                            id: x.id!,
-                            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
-                            opacity: x.forProduct ? 0.4 : null!
-                        })
-                    })
-                }
-            });
-    }
-
-
-
     // =============================================================( ADD TO SELECTED KEYWORDS )============================================================== \\
 
     addToSelectedKeywords() {
@@ -398,5 +375,26 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
             arrowDown: false,
             opacity: null!
         }
+    }
+
+
+
+    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
+
+    getSearchResultItem(x: KeywordSearchResultItem) {
+        return {
+            id: x.id!,
+            name: null!,
+            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
+            opacity: x.forProduct ? 0.4 : null!
+        }
+    }
+
+
+
+    // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
+
+    getSearchResultsParameters(searchWords: string) : Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
     }
 }
