@@ -11,6 +11,10 @@ import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-resul
 import { KeywordsFormManager } from "./keywords-form-manager";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
+import { HierarchyUpdateManager } from "./hierarchy-update-manager";
+import { KeyValue } from "@angular/common";
+import { ListItem } from "./list-item";
+import { HierarchyItem } from "./hierarchy-item";
 
 export class SelectedKeywordsManager extends KeywordsFormManager {
     // Private
@@ -25,8 +29,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, keywordsService: KeywordsService, private productService: ProductService) {
-        super(dataService, sanitizer, keywordsService);
+    constructor(dataService: DataService, sanitizer: DomSanitizer, keywordsService: KeywordsService, productService: ProductService) {
+        super(dataService, sanitizer, keywordsService, productService);
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
         this.dataServicePath = 'SelectedKeywords/Groups';
@@ -41,50 +45,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     onOpen() {
         this.itemType = 'Custom Keyword Group';
-        this.addIconButtonTitle = 'Add ' + this.itemType;
-        this.addDisabled = true;
-        this.editDisabled = true;
-        this.deleteDisabled = true;
-        if (this.thisArray.length == 0) {
-            this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.dataServicePath, [{ key: 'productId', value: this.productService.product.id }])
-                .subscribe((thisArray: Array<KeywordCheckboxItem>) => {
-                    thisArray.forEach(x => {
-                        this.thisArray.push({
-                            id: x.id,
-                            name: x.name,
-                            hierarchyGroupID: 0,
-                            hidden: false,
-                            arrowDown: false,
-                            forProduct: x.forProduct,
-                            color: x.forProduct ? '#ffba00' : null!
-                        })
-                    })
-                })
-        } else {
-
-            // If the hierarchy is set to select the last selected item on open
-            if (this.selectLastSelectedItemOnOpen) {
-                // Check to see if an item was selected before it last closed
-                const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
-                // If an item was selected
-                if (selectedItem) {
-                    // Then select that item
-                    this.listComponent.listManager.onItemDown(selectedItem);
-                }
-
-                // If it's not set to select the last selected item
-            } else {
-
-                // Clear all selections
-                this.thisArray.forEach(x => {
-                    x.selectType = null!;
-                    x.selected = false;
-                })
-            }
-
-            // If the hierarchy is set to collapse on open, then collapse the hierarchy
-            if (this.collapseHierarchyOnOpen) this.listComponent.listManager.collapseHierarchy();
-        }
+        super.onOpen();
     }
 
 
@@ -92,35 +53,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
 
     onArrowClick(hierarchyUpdate: HierarchyUpdate) {
-        // If a parent item was expanded and its children hasn't been loaded yet
-        if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
-
-            // If the hierarchy item is a top level hierarchy item
-            if (hierarchyUpdate.hierarchyGroupID == 0) {
-
-                this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }, { key: 'productId', value: this.productService.product.id }])
-                    .subscribe((children: Array<KeywordCheckboxItem>) => {
-                        let num = this.listComponent.listManager.editedItem ? 2 : 1;
-
-                        for (let i = children.length - 1; i >= 0; i--) {
-
-                            // This Array
-                            (this.thisArray as KeywordCheckboxItem[]).splice(hierarchyUpdate.index! + num, 0,
-                                {
-                                    id: children[i].id,
-                                    name: children[i].name,
-                                    hierarchyGroupID: 1,
-                                    hidden: false,
-                                    checked: children[i].checked,
-                                    forProduct: children[i].forProduct,
-                                    color: children[i].forProduct ? '#ffba00' : null!
-                                }
-                            )
-                        }
-                        this.onChildrenLoad.next();
-                    })
-            }
-        }
+        HierarchyUpdateManager.prototype.onArrowClick.call(this, hierarchyUpdate);
     }
 
 
@@ -166,6 +99,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
         super.add();
         this.addIconButtonTitle = 'Add';
+        this.editIconButtonTitle = 'Edit';
+        this.deleteIconButtonTitle = 'Delete';
         this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
@@ -182,6 +117,8 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.listComponent.listManager.editable = true;
         super.addParent();
         this.deleteDisabled = true;
+        this.addIconButtonTitle = 'Add';
+        this.editIconButtonTitle = 'Edit';
         this.deleteIconButtonTitle = 'Delete';
         this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
         const newKeyword = this.thisArray.find(x => x.id == -1);
@@ -216,7 +153,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
 
     onListUpdate(hierarchyUpdate: CheckboxListUpdate) {
         super.onListUpdate(hierarchyUpdate);
@@ -226,7 +163,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =================================================================( ON SEARCH UPDATE )================================================================== \\
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
 
     onSearchListUpdate(searchUpdate: CheckboxMultiColumnListUpdate) {
         super.onSearchListUpdate(searchUpdate);
@@ -236,7 +173,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
+    // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(hierarchyUpdate: CheckboxListUpdate) {
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
@@ -402,7 +339,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ==========================================================( ON HIERARCHY ITEM DOUBLE CLICK )=========================================================== \\
+    // ===============================================================( ON ITEM DOUBLE CLICK )================================================================ \\
 
     onItemDoubleClick() {
         // As long as we're double clicking on a custom item
@@ -432,26 +369,28 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =========================================================( ON HIERARCHY ITEM CHECKBOX CHANGE )========================================================= \\
+    // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
 
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
-        this.dataService.put('api/' + this.childDataServicePath + '/Update', {
-            productId: this.productService.product.id,
-            id: hierarchyUpdate.id,
-            checked: hierarchyUpdate.checked
-        }).subscribe();
+        // ********* commited Data Service *********
+        // this.dataService.put('api/' + this.childDataServicePath + '/Update', {
+        //     productId: this.productService.product.id,
+        //     id: hierarchyUpdate.id,
+        //     checked: hierarchyUpdate.checked
+        // }).subscribe();
     }
 
 
 
-    // =============================================================( ON SEARCH CHECKBOX CHANGE )============================================================= \\
+    // ==========================================================( ON SEARCH ITEM CHECKBOX CHANGE )=========================================================== \\
 
     onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
-        this.dataService.put('api/' + this.childDataServicePath + '/Update', {
-            productId: this.productService.product.id,
-            id: checkboxMultiColumnListUpdate.id,
-            checked: checkboxMultiColumnListUpdate.checked
-        }).subscribe();
+        // ********* commited Data Service *********
+        // this.dataService.put('api/' + this.childDataServicePath + '/Update', {
+        //     productId: this.productService.product.id,
+        //     id: checkboxMultiColumnListUpdate.id,
+        //     checked: checkboxMultiColumnListUpdate.checked
+        // }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
         const hierarchyItem = this.thisArray.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
@@ -461,7 +400,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===========================================================( ON UNSELECTED HIERARCHY ITEM )============================================================ \\
+    // ================================================================( ON UNSELECTED ITEM )================================================================= \\
 
     onUnselectedItem() {
         this.itemType = 'Custom Keyword Group';
@@ -484,38 +423,41 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
 
+    private selectedKeywordsAdd: number = 4000;
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
+        this.selectedKeywordsAdd++;
         // Add parent hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 0) {
-            this.dataService.post<number>('api/' + this.dataServicePath, {
-                id: this.productService.product.id,
-                name: hierarchyUpdate.name
-            }).subscribe((id: number) => {
-                this.thisArray[hierarchyUpdate.index!].id = id;
-                this.thisArray[hierarchyUpdate.index!].forProduct = true;
-            });
+            // ********* commited Data Service *********
+            // this.dataService.post<number>('api/' + this.dataServicePath, {
+            //     id: this.productService.product.id,
+            //     name: hierarchyUpdate.name
+            // }).subscribe((id: number) => {
+            this.thisArray[hierarchyUpdate.index!].id = this.selectedKeywordsAdd//id;
+            this.thisArray[hierarchyUpdate.index!].forProduct = true;
+            // });
         }
 
         // Add child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
             const indexOfHierarchyItemParent = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
-
-            this.dataService.post<number>('api/' + this.childDataServicePath, {
-                id: this.thisArray[indexOfHierarchyItemParent].id,
-                name: hierarchyUpdate.name
-            }).subscribe((id: number) => {
-                this.thisArray[hierarchyUpdate.index!].id = id;
-                this.thisArray[hierarchyUpdate.index!].forProduct = true;
-            })
+            // ********* commited Data Service *********
+            // this.dataService.post<number>('api/' + this.childDataServicePath, {
+            //     id: this.thisArray[indexOfHierarchyItemParent].id,
+            //     name: hierarchyUpdate.name
+            // }).subscribe((id: number) => {
+            this.thisArray[hierarchyUpdate.index!].id = this.selectedKeywordsAdd//id;
+            this.thisArray[hierarchyUpdate.index!].forProduct = true;
+            // })
         }
         this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
     }
 
 
 
-    // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
+    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(hierarchyUpdate: HierarchyUpdate) {
         let matchFound: boolean = false;
@@ -620,7 +562,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ===========================================================( DELETE PROMPT PARENT MESSAGE )============================================================ \\
+    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
 
     deletePromptMessage(itemType: string, parentName: string): SafeHtml {
 
@@ -641,31 +583,34 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: KeywordCheckboxItem) {
         // If we're deleting a parent item
         if (deletedItem.hierarchyGroupID == 0) {
 
             if (this.itemType == 'Keyword Group') {
-                this.dataService.put('api/' + this.dataServicePath + '/Remove', {
-                    productId: this.productService.product.id,
-                    id: deletedItem.id
-                }).subscribe();
+                // ********* commited Data Service *********
+                // this.dataService.put('api/' + this.dataServicePath + '/Remove', {
+                //     productId: this.productService.product.id,
+                //     id: deletedItem.id
+                // }).subscribe();
 
-                // If we're in hierarchy mode, get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this hierarchy list
-                const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
-                // Un-dim the parent in the available list that has that index
-                this.otherArray[removedItemIndex].opacity = null!;
-                // Un-dim it's children too (if available)
-                for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
-                    if (this.otherArray[i].hierarchyGroupID! <= deletedItem.hierarchyGroupID!) break;
-                    this.otherArray[i].opacity = null!;
+
+                // Get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this hierarchy list
+                const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.name && x.hierarchyGroupID == 0);
+                if (removedItemIndex) {
+                    // Un-dim the parent in the available list that has that index
+                    this.otherArray[removedItemIndex].opacity = null!;
+                    // Un-dim it's children too (if available)
+                    for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
+                        if (this.otherArray[i].hierarchyGroupID! <= deletedItem.hierarchyGroupID!) break;
+                        this.otherArray[i].opacity = null!;
+                    }
                 }
 
-
-                // If we're in search mode, check to see if the removed keyword group is present in the available search list
-                const searchItem = this.keywordsService.availableSearchList.find(y => y.id == deletedItem.id && y.values[1].name == 'Group');
+                // Check to see if the removed keyword group is present in the available search list
+                const searchItem = this.keywordsService.availableSearchList.find(y => y.id == deletedItem.id && y.values[0].name == deletedItem.name && y.values[1].name == 'Group');
                 // If it is, then un-dim it
                 if (searchItem) searchItem!.opacity = null!;
 
@@ -673,24 +618,26 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
                 this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: deletedItem.id }])
                     .subscribe((children: Array<KeywordCheckboxItem>) => {
                         children.forEach(x => {
-                            const searchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                            const searchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
                             if (searchItem) searchItem.opacity = null!;
                         })
                     })
 
 
             } else {
-                this.dataService.delete('api/' + this.dataServicePath, {
-                    id: deletedItem.id
-                }).subscribe();
+                // ********* commited Data Service *********
+                // this.dataService.delete('api/' + this.dataServicePath, {
+                //     id: deletedItem.id
+                // }).subscribe();
             }
         }
 
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
-            this.dataService.delete('api/' + this.childDataServicePath, {
-                id: deletedItem.id
-            }).subscribe();
+            // ********* commited Data Service *********
+            // this.dataService.delete('api/' + this.childDataServicePath, {
+            //     id: deletedItem.id
+            // }).subscribe();
         }
     }
 
@@ -702,46 +649,54 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
         // If we're deleting a parent item
         if (deletedItem.values[1].name == this.parentSearchType) {
-            this.dataService.delete('api/' + this.dataServicePath, {
-                id: deletedItem.id
-            }).subscribe();
+            // ********* commited Data Service *********
+            // this.dataService.delete('api/' + this.dataServicePath, {
+            //     id: deletedItem.id
+            // }).subscribe();
+
 
             // Remove the selected keyword group from the hierarchy list
-            const deletedItemIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
-            this.thisArray.splice(deletedItemIndex, 1);
+            const deletedItemIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.values[0].name && x.hierarchyGroupID == 0);
+            if (deletedItemIndex) this.thisArray.splice(deletedItemIndex, 1);
 
-            // If the available list is in hierarchy mode, get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this list
-            const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == 0);
-            // Un-dim the parent in the available list that has that index
-            this.otherArray[removedItemIndex].opacity = null!;
+            if (this.itemType == 'Keyword Group') {
 
-            // Also, un-dim it's children too (if available)
-            for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
-                if (this.otherArray[i].hierarchyGroupID! <= this.otherArray[removedItemIndex].hierarchyGroupID!) break;
-                this.otherArray[i].opacity = null!;
+                // If the available list is in hierarchy mode, get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this list
+                const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.values[0].name && x.hierarchyGroupID == 0);
+
+                if (removedItemIndex) {
+                    // Un-dim the parent in the available list that has that index
+                    this.otherArray[removedItemIndex].opacity = null!;
+
+                    // Also, un-dim it's children too (if available)
+                    for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
+                        if (this.otherArray[i].hierarchyGroupID! <= this.otherArray[removedItemIndex].hierarchyGroupID!) break;
+                        this.otherArray[i].opacity = null!;
+                    }
+                }
+
+                // But if the available list is in search mode, check to see if the removed keyword group is present in the available search list
+                const searchItem = this.keywordsService.availableSearchList.find(y => y.id == deletedItem.id && y.values[0].name == deletedItem.values[0].name && y.values[1].name == 'Group');
+                // If it is, then un-dim it
+                if (searchItem) searchItem!.opacity = null!;
             }
-
-
-            // But if the available list is in search mode, check to see if the removed keyword group is present in the available search list
-            const searchItem = this.keywordsService.availableSearchList.find(y => y.id == deletedItem.id && y.values[1].name == 'Group');
-            // If it is, then un-dim it
-            if (searchItem) searchItem!.opacity = null!;
 
             // Grab all the children belonging to the keyword group that's being removed  
             this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: deletedItem.id }])
                 .subscribe((children: Array<KeywordCheckboxItem>) => {
+
                     children.forEach(x => {
+
                         // Check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if any
-                        const availableSearchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                        const availableSearchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
                         if (availableSearchItem) availableSearchItem.opacity = null!;
 
                         // Plus, while we have the children of the keyword group that's being removed, remove those children from this selected keywords search list as well
-                        const searchItemIndex = this.thisSearchList.findIndex(y => y.id == x.id && y.values[1].name == 'Keyword');
+                        const searchItemIndex = this.thisSearchList.findIndex(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
                         if (searchItemIndex != -1) this.thisSearchList.splice(searchItemIndex, 1);
 
-
                         // And also, check to see if these children are present in this selected keywords hierarchy list and remove them if they are
-                        const hierarchyItemIndex = this.thisArray.findIndex(y => y.id == x.id && y.hierarchyGroupID == 1);
+                        const hierarchyItemIndex = this.thisArray.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 1);
                         if (hierarchyItemIndex != -1) this.thisArray.splice(hierarchyItemIndex, 1);
                     })
                 })
@@ -756,32 +711,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
 
 
-    // ================================================================( GET SEARCH RESULTS )================================================================= \\
-
-    getSearchResults(value: string) {
-        this.thisSearchList.splice(0, this.thisSearchList.length);
-
-        this.dataService.get<Array<KeywordCheckboxSearchResultItem>>('api/' + this.dataServicePath + '/Search', [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: value }])
-            .subscribe((searchResults: Array<KeywordCheckboxSearchResultItem>) => {
-
-                // As long as search results were returned
-                if (searchResults) {
-                    searchResults.forEach(x => {
-                        this.thisSearchList.push({
-
-                            id: x.id!,
-                            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true, color: x.forProduct ? '#ffba00' : null! }, { name: x.type!, width: this.searchTypeWidth, color: x.forProduct ? '#ffba00' : null! }],
-                            checked: x.checked,
-                            forProduct: x.forProduct
-                        })
-                    })
-                }
-            });
-    }
-
-
-
-    // ===========================================================( SORT PENDING HIERARCHY ITEMS )============================================================ \\
+    // ================================================================( SORT PENDING ITEMS )================================================================= \\
 
     sortPendingItems() {
         // Selected keywords has its own sort pending function
@@ -929,5 +859,83 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
             this.listOptions.menu!.menuOptions[3].name = 'Rename ' + this.childType;
             this.listOptions.menu!.menuOptions[5].name = 'Delete ' + this.childType;
         }
+    }
+
+
+
+    // ======================================================================( GET ITEM )====================================================================== \\
+
+    getItem(x: ListItem) {
+        return {
+            id: x.id,
+            name: x.name,
+            hierarchyGroupID: 0,
+            hidden: false,
+            arrowDown: false,
+            forProduct: (x as KeywordCheckboxItem).forProduct,
+            color: (x as KeywordCheckboxItem).forProduct ? '#ffba00' : null!
+        }
+    }
+
+
+
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+
+    getOtherItem(x: ListItem) {
+        return null!
+    }
+
+
+
+    // ===================================================================( GET CHILD ITEM )=================================================================== \\
+
+    getChildItem(child: HierarchyItem) {
+        return {
+            id: child.id,
+            name: child.name,
+            hierarchyGroupID: 1,
+            hidden: false,
+            checked: (child as KeywordCheckboxItem).checked,
+            forProduct: (child as KeywordCheckboxItem).forProduct,
+            color: (child as KeywordCheckboxItem).forProduct ? '#ffba00' : null!
+        }
+    }
+
+
+
+    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
+
+    getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
+        return null!
+    }
+
+
+
+    // =============================================================( GET CHILD ITEM PARAMETERS )============================================================== \\
+
+    getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
+    }
+
+
+
+    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
+
+    getSearchResultItem(x: KeywordCheckboxSearchResultItem) {
+        return {
+            id: x.id!,
+            name: null!,
+            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true, color: x.forProduct ? '#ffba00' : null! }, { name: x.type!, width: this.searchTypeWidth, color: x.forProduct ? '#ffba00' : null! }],
+            checked: x.checked,
+            forProduct: x.forProduct
+        }
+    }
+
+
+
+    // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
+
+    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
     }
 }

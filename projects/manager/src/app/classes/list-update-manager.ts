@@ -1,3 +1,4 @@
+import { KeyValue } from "@angular/common";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
@@ -18,19 +19,19 @@ export class ListUpdateManager {
     public itemType!: string;
     public sortType!: SortType;
     public searchMode!: boolean;
+    public dataServicePath!: string;
     public parentSearchType!: string;
     public addIconButtonTitle!: string;
+    public listComponent!: ListComponent;
     public searchInput!: HTMLInputElement;
-    public dataServicePath!: string;
-    public editIconButtonTitle: string = 'Rename';
-    public deleteIconButtonTitle: string = 'Delete';
-    public searchIconButtonTitle: string = 'Search';
+    public searchComponent!: ListComponent;
+    public otherListComponent!: ListComponent;
     public listUpdateService!: ListUpdateService;
     public searchInputSubscription!: Subscription;
     public selectLastSelectedItemOnOpen!: boolean;
-    public listComponent!: ListComponent;
-    public searchComponent!: ListComponent;
-    public otherListComponent!: ListComponent;
+    public editIconButtonTitle: string = 'Rename';
+    public deleteIconButtonTitle: string = 'Delete';
+    public searchIconButtonTitle: string = 'Search';
     public onClose: Subject<void> = new Subject<void>();
     public searchOptions: ListOptions = new ListOptions();
     public listOptions: ListOptions = new ListOptions();
@@ -41,8 +42,8 @@ export class ListUpdateManager {
     public otherSearchList: Array<ListItem> = new Array<ListItem>();
     public get listUpdate(): ListUpdate { return this._listUpdate; }
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
-    public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
+    public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -151,11 +152,11 @@ export class ListUpdateManager {
     onOpen() {
         this.addIconButtonTitle = 'Add ' + this.itemType;
         if (this.thisArray.length == 0) {
-            this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath)
+            this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath, this.getItemParameters())
                 .subscribe((thisArray: Array<ListItem>) => {
                     thisArray.forEach(x => {
-                        this.thisArray.push(this.newItem(x));
-                        this.otherArray.push(this.newItem(x));
+                        this.thisArray.push(this.getItem(x));
+                        if (this.getOtherItem(x)) this.otherArray.push(this.getOtherItem(x));
                     })
                 })
         } else {
@@ -261,7 +262,7 @@ export class ListUpdateManager {
 
 
 
-    // ================================================================( ON HIERARCHY UPDATE )================================================================ \\
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
 
     onListUpdate(listUpdate: ListUpdate) {
         this._listUpdate = listUpdate;
@@ -276,7 +277,7 @@ export class ListUpdateManager {
 
 
 
-    // =================================================================( ON SEARCH UPDATE )================================================================== \\
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
 
     onSearchListUpdate(searchUpdate: ListUpdate) {
         this._searchListUpdate = searchUpdate;
@@ -290,7 +291,7 @@ export class ListUpdateManager {
 
 
 
-    // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
+    // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(listUpdate: ListUpdate) {
         this.editIconButtonTitle = 'Rename ' + this.itemType;
@@ -315,7 +316,7 @@ export class ListUpdateManager {
 
 
 
-    // ===========================================================( ON UNSELECTED HIERARCHY ITEM )============================================================ \\
+    // ================================================================( ON UNSELECTED ITEM )================================================================= \\
 
     onUnselectedItem() {
         this.addIconButtonTitle = 'Add ' + this.itemType;
@@ -333,6 +334,25 @@ export class ListUpdateManager {
     }
 
 
+
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
+
+    private listAddId: number = 1000;
+    onItemAdd(listUpdate: ListUpdate) {
+        this.listAddId++;
+        // ********* commited Data Service *********
+        // this.dataService.post<number>('api/' + this.dataServicePath, {
+        //     name: listUpdate.name
+        // }).subscribe((id: number) => {
+        this.thisArray[listUpdate.index!].id = this.listAddId//id;
+        this.setSort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]));
+        // });
+    }
+
+
+
+    // ======================================================================( ADD ITEM )===================================================================== \\
+
     addItem(list: Array<ListItem>, index: number, item: ListItem): ListItem {
         list.splice(index, 0, {
             id: item.id,
@@ -342,22 +362,11 @@ export class ListUpdateManager {
     }
 
 
-    // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
 
-    onItemAdd(listUpdate: ListUpdate) {
-        // this.dataService.post<number>('api/' + this.dataServicePath, {
-        //     name: listUpdate.name
-        // }).subscribe((id: number) => {
-        this.thisArray[listUpdate.index!].id = 1000//id;
-        this.setSort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]));
-        // });
-    }
-
-
-
-    // ==============================================================( ON HIERARCHY ITEM EDIT )=============================================================== \\
+    // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(listUpdate: ListUpdate) {
+        // ********* commited Data Service *********
         // this.dataService.put('api/' + this.dataServicePath, {
         //     id: listUpdate.id,
         //     name: listUpdate.name
@@ -371,6 +380,7 @@ export class ListUpdateManager {
     // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
 
     onSearchItemEdit(searchUpdate: ListUpdate) {
+        // ********* commited Data Service *********
         // this.dataService.put('api/' + this.dataServicePath, {
         //     id: searchUpdate.id,
         //     name: searchUpdate.values![0].name
@@ -392,7 +402,7 @@ export class ListUpdateManager {
 
 
 
-    // =============================================================( SET OTHER HIERARCHY SORT )============================================================== \\
+    // ======================================================================( SET SORT )===================================================================== \\
 
     setSort(otherListItem: ListItem) {
         // As long as the other list item is NOT null
@@ -414,14 +424,14 @@ export class ListUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
+    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(listUpdate: ListUpdate) {
         let matchFound: boolean = false;
 
         // Loop through each parent item and check for a duplicate
         this.thisArray.forEach(x => {
-            if (x.name?.toLowerCase() == listUpdate.name?.toLowerCase() && x.index != listUpdate.index) {
+            if (x.name?.toLowerCase() == listUpdate.name?.toLowerCase()) {
                 matchFound = true;
             }
         })
@@ -446,7 +456,7 @@ export class ListUpdateManager {
         let matchFound: boolean = false;
 
         this.thisArray.forEach(x => {
-            if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase() && x.index != searchUpdate.index) {
+            if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase()) {
                 matchFound = true;
             }
         })
@@ -465,7 +475,7 @@ export class ListUpdateManager {
 
 
 
-    // ===========================================================( DELETE PROMPT PARENT MESSAGE )============================================================ \\
+    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
 
     deletePromptMessage(itemType: string, parentName: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(
@@ -477,7 +487,7 @@ export class ListUpdateManager {
 
 
 
-    // ============================================================( ON HIERARCHY DELETE PROMPT )============================================================= \\
+    // =================================================================( ON DELETE PROMPT )================================================================== \\
 
     onDeletePrompt(deletedItem: ListItem) {
         this.listOptions.deletePrompt!.message = this.deletePromptMessage(this.itemType, deletedItem.name!);
@@ -493,9 +503,10 @@ export class ListUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: ListItem) {
+        // ********* commited Data Service *********
         // this.dataService.delete('api/' + this.dataServicePath, {
         //     id: deletedItem.id
         // }).subscribe();
@@ -507,7 +518,8 @@ export class ListUpdateManager {
 
     // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
 
-    onSearchItemDelete(deletedItem: ListItem) { // MultiColumnItem
+    onSearchItemDelete(deletedItem: ListItem) {
+        // ********* commited Data Service *********
         // this.dataService.delete('api/' + this.dataServicePath, {
         //     id: deletedItem.id
         // }).subscribe();
@@ -542,16 +554,15 @@ export class ListUpdateManager {
 
     // ================================================================( GET SEARCH RESULTS )================================================================= \\
 
-    getSearchResults(value: string) {
+    getSearchResults(searchWords: string) {
         this.thisSearchList.splice(0, this.thisSearchList.length);
-
-        this.dataService.get<Array<SearchResultItem>>('api/' + this.dataServicePath + '/Search', [{ key: 'searchWords', value: value }])
+        this.dataService.get<Array<SearchResultItem>>('api/' + this.dataServicePath + '/Search', this.getSearchResultsParameters(searchWords))
             .subscribe((searchResults: Array<SearchResultItem>) => {
 
                 // As long as search results were returned
                 if (searchResults) {
                     searchResults.forEach(x => {
-                        this.thisSearchList.push(this.newSearchItem(x));
+                        this.thisSearchList.push(this.getSearchResultItem(x));
                     })
                 }
             });
@@ -559,7 +570,7 @@ export class ListUpdateManager {
 
 
 
-    // ===========================================================( SORT PENDING HIERARCHY ITEMS )============================================================ \\
+    // ================================================================( SORT PENDING ITEMS )================================================================= \\
 
     sortPendingItems() {
         // If an item was edited in search mode
@@ -673,9 +684,10 @@ export class ListUpdateManager {
     }
 
 
-    // ======================================================================( NEW ITEM )===================================================================== \\
 
-    newItem(x: ListItem) {
+    // ======================================================================( GET ITEM )====================================================================== \\
+
+    getItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name
@@ -684,12 +696,39 @@ export class ListUpdateManager {
 
 
 
-    // ==================================================================( NEW SEARCH ITEM )================================================================== \\
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    newSearchItem(x: ListItem) {
+    getOtherItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name
         }
+    }
+
+
+
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
+
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [];
+    }
+
+
+
+    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
+
+    getSearchResultItem(x: SearchResultItem) {
+        return {
+            id: x.id,
+            name: x.name
+        }
+    }
+
+
+
+    // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
+
+    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
+        return [{ key: 'searchWords', value: searchWords }];
     }
 }

@@ -660,7 +660,7 @@ export class ListManager {
 
       // If an item is being edited
       if (this.editedItem != null) {
-        
+
         // Evaluate the state of the edit and then act accordingly
         this.evaluateEdit(true);
 
@@ -793,7 +793,7 @@ export class ListManager {
       } else {
 
         // As long as the edited name is different from what it was before the edit
-        if (trimmedEditedItem != this.editedItem.name!.trim()) {
+        if (trimmedEditedItem.toLowerCase() != this.editedItem.name!.trim().toLowerCase()) {
 
           // If this list is set to verify add and edit
           if (this.verifyAddEdit) {
@@ -832,6 +832,13 @@ export class ListManager {
 
           // If the edited name has NOT changed
         } else {
+
+          //If case was changed. i.e. lower case to upper case
+          if (trimmedEditedItem != this.editedItem.name!.trim()) {
+            this.editedItem.name = trimmedEditedItem;
+            this.addEditUpdate(this.editedItem);
+          }
+
           this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
         }
 
@@ -982,11 +989,10 @@ export class ListManager {
         this.editedItem.htmlItem?.nativeElement.blur();
       }
 
+      // If the duplicate prompt is being closed
       let promptCloseListener: Subscription = prompt.onClose.subscribe(() => {
-        // If the duplicate prompt is being closed
         if (this.addEditVerificationInProgress) {
           this.addEditVerificationInProgress = false;
-
           this.onDuplicatePromptClose();
         }
 
@@ -1062,7 +1068,7 @@ export class ListManager {
     const selectedItems = this.sourceList.filter(x => x.selected == true);
     selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
     this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
-}
+  }
 
 
   unSelectedItemsUpdate() {

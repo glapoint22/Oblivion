@@ -1,5 +1,6 @@
 import { Subject } from "rxjs";
 import { ListUpdateType } from "./enums";
+import { HierarchyItem } from "./hierarchy-item";
 import { ListManager } from "./list-manager"
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnItemValue } from "./multi-column-item-value";
@@ -91,7 +92,10 @@ export class MultiColumnListManager extends ListManager {
                 this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
 
 
+                this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
 
+
+                this.reselectItem();
 
                 // }
 
@@ -100,7 +104,7 @@ export class MultiColumnListManager extends ListManager {
             } else {
 
                 // As long as the edited name is different from what it was before the edit
-                if (trimmedEditedValue != this.editableValue.name.trim()) {
+                if (trimmedEditedValue.toLowerCase() != this.editableValue.name.trim().toLowerCase()) {
 
                     // If this list is set to verify add and edit
                     if (this.verifyAddEdit) {
@@ -113,12 +117,28 @@ export class MultiColumnListManager extends ListManager {
 
                         // If this list does NOT verify
                     } else {
+
                         // Update the name property
                         this.editableValue.name = trimmedEditedValue!;
 
+                        this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
+
                         this.addEditUpdate(this.editedItem as MultiColumnItem);
                     }
+
+                    // If the edited name has NOT changed
+                } else {
+                    
+                    //If case was changed. i.e. lower case to upper case
+                    if (trimmedEditedValue != this.editableValue.name.trim()) {
+                        this.editableValue.name = trimmedEditedValue!;
+                        this.addEditUpdate(this.editedItem as MultiColumnItem);
+                    }
+
+                    this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
                 }
+
+                this.reselectItem();
             }
 
 
@@ -130,15 +150,15 @@ export class MultiColumnListManager extends ListManager {
 
                 // Reset the item back to the way it was before the edit
                 this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
+
+                this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
+
+                this.reselectItem();
             }
         }
 
-
         // As long as the (Enter) key was NOT pressed
-        if (isEscape || isBlur) {
-            this.reselectItem();
-            this.setButtonsState();
-        }
+        if (isEscape || isBlur) this.setButtonsState();
     }
 
 
@@ -146,6 +166,10 @@ export class MultiColumnListManager extends ListManager {
         super.reselectItem();
         this.editableValue = null!;
     }
+
+
+
+
 
 
 
@@ -167,7 +191,7 @@ export class MultiColumnListManager extends ListManager {
                 type: ListUpdateType.VerifyAddEdit,
                 id: multiColumnItem.id,
                 index: this.sourceList.findIndex(x => x.id == multiColumnItem.id && x.values[0].name == multiColumnItem.values[0].name && x.values[1].name == multiColumnItem.values[1].name),
-                values: multiColumnItem.values
+                values: [{ name: name, width: multiColumnItem.values[0].width }, { name: multiColumnItem.values[1].name, width: multiColumnItem.values[1].width }]
             }
         );
     }

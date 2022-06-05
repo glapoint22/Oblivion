@@ -26,6 +26,7 @@ input {
     color: #b4b4b4;
     height: 26px;
     border-radius: 0;
+    margin-bottom: 15px;
 
     &:focus {
         outline: 1px solid #a97b00;
@@ -53,7 +54,7 @@ input {
 }
 
 .list-container {
-    height: 198px;
+    height: 221px;
     background: #171717;
     border: 1px solid #2c2c2c;
     border-left-color: rgb(10, 10, 10);

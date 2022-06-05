@@ -71,9 +71,9 @@
             <!-- Hierarchy -->
             <ng-container *ngIf="!availableKeywordsManager.searchMode">
                 <hierarchy #availableHierarchyComponent
-                        [sourceList]="availableKeywordsManager.thisArray"
-                        [options]="availableKeywordsManager.listOptions"
-                        (onListUpdate)="availableKeywordsManager.listUpdate = $event">
+                           [sourceList]="availableKeywordsManager.thisArray"
+                           [options]="availableKeywordsManager.listOptions"
+                           (onListUpdate)="availableKeywordsManager.listUpdate = $event">
                 </hierarchy>
             </ng-container>
 
@@ -104,9 +104,9 @@
 
                 <ng-container *ngIf="availableKeywordsManager.thisSearchList.length > 0">
                     <multi-column-list #availableSearchComponent
-                                    [sourceList]="availableKeywordsManager.thisSearchList"
-                                    [options]="availableKeywordsManager.searchOptions"
-                                    (onListUpdate)="availableKeywordsManager.searchUpdate = $event">
+                                       [sourceList]="availableKeywordsManager.thisSearchList"
+                                       [options]="availableKeywordsManager.searchOptions"
+                                       (onListUpdate)="availableKeywordsManager.searchUpdate = $event">
                     </multi-column-list>
                 </ng-container>
             </ng-container>
@@ -177,9 +177,9 @@
             <!-- Hierarchy -->
             <ng-container *ngIf="!selectedKeywordsManager.searchMode">
                 <checkbox-hierarchy #selectedHierarchyComponent
-                        [sourceList]="selectedKeywordsManager.thisArray"
-                        [options]="selectedKeywordsManager.listOptions"
-                        (onListUpdate)="selectedKeywordsManager.listUpdate = $event">
+                                    [sourceList]="selectedKeywordsManager.thisArray"
+                                    [options]="selectedKeywordsManager.listOptions"
+                                    (onListUpdate)="selectedKeywordsManager.listUpdate = $event">
                 </checkbox-hierarchy>
             </ng-container>
 
@@ -210,10 +210,10 @@
 
                 <ng-container *ngIf="selectedKeywordsManager.thisSearchList.length > 0">
                     <checkbox-multi-column-list #selectedSearchComponent
-                                    [parentSearchType]="selectedKeywordsManager.parentSearchType"
-                                    [sourceList]="selectedKeywordsManager.thisSearchList"
-                                    [options]="selectedKeywordsManager.searchOptions"
-                                    (onListUpdate)="selectedKeywordsManager.searchUpdate = $event">
+                                                [parentSearchType]="selectedKeywordsManager.parentSearchType"
+                                                [sourceList]="selectedKeywordsManager.thisSearchList"
+                                                [options]="selectedKeywordsManager.searchOptions"
+                                                (onListUpdate)="selectedKeywordsManager.searchUpdate = $event">
                     </checkbox-multi-column-list>
                 </ng-container>
             </ng-container>

@@ -46,11 +46,11 @@
         
         <!-- Hierarchy -->
         <ng-container *ngIf="!productProductGroupsManager.searchMode">
-            <list #listComponent
-                                [sourceList]="productProductGroupsManager.thisArray"
-                                [options]="productProductGroupsManager.listOptions"
-                                (onListUpdate)="productProductGroupsManager.listUpdate = $event">
-            </list>
+            <checkbox-list #listComponent
+                           [sourceList]="productProductGroupsManager.thisArray"
+                           [options]="productProductGroupsManager.listOptions"
+                           (onListUpdate)="productProductGroupsManager.listUpdate = $event">
+            </checkbox-list>
         </ng-container>
 
         <!-- Search -->
@@ -60,17 +60,6 @@
                     placeholder="Search"
                     (input)="productProductGroupsManager.onSearchInputChange($event.target)">
 
-            <div class="column-name-container">
-                <div class="column-name">Name</div>
-                <div class="column-name">Type</div>
-            </div>
-
-            <div class="column-underline-container">
-                <div class="column-underline"></div>
-                <div class="column-underline"></div>
-            </div>
-
-
             <ng-container *ngIf="productProductGroupsManager.thisSearchList.length == 0">
                 <div class="no-search-results">
                     No search results available
@@ -79,11 +68,11 @@
             
 
             <ng-container *ngIf="productProductGroupsManager.thisSearchList.length > 0">
-                <list #searchComponent
-                                   [sourceList]="productProductGroupsManager.thisSearchList"
-                                   [options]="productProductGroupsManager.searchOptions"
-                                   (onListUpdate)="productProductGroupsManager.searchUpdate = $event">
-                </list>
+                <checkbox-list #searchComponent
+                               [sourceList]="productProductGroupsManager.thisSearchList"
+                               [options]="productProductGroupsManager.searchOptions"
+                               (onListUpdate)="productProductGroupsManager.searchUpdate = $event">
+                </checkbox-list>
             </ng-container>
         </ng-container>
     </div>

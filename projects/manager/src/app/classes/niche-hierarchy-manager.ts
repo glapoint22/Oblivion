@@ -46,7 +46,6 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
         this.otherSearchList = this.nicheHierarchyService.productSearchList;
         this.collapseHierarchyOnOpen = false;
         this.selectLastSelectedItemOnOpen = true;
-        this.isSecondLevelHierarchyItemParent = true;
 
         // ---------- HIERARCHY OPTIONS ---------- \\
 
@@ -78,7 +77,6 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
     }
 
 
-
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
 
     onArrowClick(hierarchyUpdate: HierarchyUpdate) {
@@ -89,34 +87,16 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
             // If the hierarchy item is a second level hierarchy item
             if (hierarchyUpdate.hierarchyGroupID == 1) {
-
                 this.dataService.get<Array<Item>>('api/' + this.grandchildDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
                     .subscribe((grandchildren: Array<Item>) => {
-                        let num = this.listComponent.listManager.editedItem ? 2 : 1;
-
-                        for (let i = grandchildren.length - 1; i >= 0; i--) {
-
-                            // This Array
-                            this.thisArray.splice(hierarchyUpdate.index! + num, 0,
-                                {
-                                    id: grandchildren[i].id,
-                                    name: grandchildren[i].name,
-                                    hierarchyGroupID: 2,
-                                    hidden: false,
-                                }
-                            )
-
-                            // Other Array
-                            this.otherArray.splice(hierarchyUpdate.index! + 1, 0,
-                                {
-                                    id: grandchildren[i].id,
-                                    name: grandchildren[i].name,
-                                    hierarchyGroupID: 2,
-                                    hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
-                                }
-                            )
-                        }
-                        this.onGrandchildrenLoad.next();
+                        window.setTimeout(() => {
+                            let num = this.listComponent.listManager.editedItem ? 2 : 1;
+                            for (let i = grandchildren.length - 1; i >= 0; i--) {
+                                this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getGrandchildItem(grandchildren[i]));
+                                this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherGrandchildItem(grandchildren[i], hierarchyUpdate));
+                            }
+                            this.onGrandchildrenLoad.next();
+                        })
                     });
             }
         }
@@ -141,7 +121,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // ============================================================( ON SELECTED HIERARCHY ITEM )============================================================= \\
+    // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(hierarchyUpdate: HierarchyUpdate) {
         super.onSelectedItem(hierarchyUpdate);
@@ -234,37 +214,39 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // ===============================================================( ON HIERARCHY ITEM ADD )=============================================================== \\
-
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
+    private nicheAddId: number = 3000;
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
+        this.nicheAddId++;
         // Add grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
             const indexOfHierarchyItemParent = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
-
-            this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
-                id: this.thisArray[indexOfHierarchyItemParent].id,
-                name: hierarchyUpdate.name
-            }).subscribe((id: number) => {
-                this.thisArray[hierarchyUpdate.index!].id = id;
-                const addedOtherGrandchildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
-                addedOtherGrandchildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
-                this.setSort(addedOtherGrandchildItem);
-            })
+            // ********* commited Data Service *********
+            // this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
+            //     id: this.thisArray[indexOfHierarchyItemParent].id,
+            //     name: hierarchyUpdate.name
+            // }).subscribe((id: number) => {
+            this.thisArray[hierarchyUpdate.index!].id = this.nicheAddId;//id;
+            const addedOtherGrandchildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
+            addedOtherGrandchildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
+            this.setSort(addedOtherGrandchildItem);
+            // })
         }
         super.onItemAdd(hierarchyUpdate);
     }
 
 
 
-    // ==============================================================( ON HIERARCHY ITEM EDIT )=============================================================== \\
+    // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
         // Edit grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
-            this.dataService.put('api/' + this.grandchildDataServicePath, {
-                id: hierarchyUpdate.id,
-                name: hierarchyUpdate.name
-            }).subscribe();
+            // ********* commited Data Service *********
+            // this.dataService.put('api/' + this.grandchildDataServicePath, {
+            //     id: hierarchyUpdate.id,
+            //     name: hierarchyUpdate.name
+            // }).subscribe();
         }
         super.onItemEdit(hierarchyUpdate);
     }
@@ -278,17 +260,18 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
         // Edit grandchild search item
         if (searchUpdate.values![1].name == this.grandchildSearchType) {
-            this.dataService.put('api/' + this.grandchildDataServicePath, {
-                id: searchUpdate.id,
-                name: searchUpdate.values![0].name
-            }).subscribe();
+            // ********* commited Data Service *********
+            // this.dataService.put('api/' + this.grandchildDataServicePath, {
+            //     id: searchUpdate.id,
+            //     name: searchUpdate.values![0].name
+            // }).subscribe();
             this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, 2));
         }
     }
 
 
 
-    // =============================================================( ON HIERARCHY ITEM VERIFY )============================================================== \\
+    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(hierarchyUpdate: HierarchyUpdate) {
         super.onItemVerify(hierarchyUpdate);
@@ -314,9 +297,9 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // =====================================================( DELETE PROMPT CHILD WITH CHILDREN MESSAGE )===================================================== \\
+    // =========================================================( DELETE PROMPT GRANDCHILD MESSAGE )========================================================== \\
 
-    deletePromptChildWithChildrenMessage(childType: string, childName: string, itemType: string, parentName: string): SafeHtml {
+    deletePromptGrandchildMessage(childType: string, childName: string, itemType: string, parentName: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(
             'The '
             + childType +
@@ -327,7 +310,8 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
     }
 
 
-    // ============================================================( ON HIERARCHY DELETE PROMPT )============================================================= \\
+
+    // =================================================================( ON DELETE PROMPT )================================================================== \\
 
     onDeletePrompt(deletedItem: HierarchyItem) {
         if (deletedItem.hierarchyGroupID == 0) super.onDeletePrompt(deletedItem);
@@ -336,7 +320,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
         if (deletedItem.hierarchyGroupID == 1) {
             const childItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
             const indexOfParentItem = this.listComponent.listManager.getIndexOfHierarchyItemParent(childItem!);
-            this.listOptions.deletePrompt!.message = this.deletePromptChildWithChildrenMessage(this.childType, deletedItem.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
+            this.listOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
         }
 
         // If we're deleting a grandchild item
@@ -358,17 +342,17 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
         if (deletedItem.values[1].name == this.childSearchType) {
 
             // Prefill the prompt so if the prompt opens before we get the child name, it won't be an empty prompt
-            this.searchOptions.deletePrompt!.message = this.deletePromptChildWithChildrenMessage(this.childType, deletedItem.values[0].name, this.itemType, '');
+            this.searchOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.values[0].name, this.itemType, '');
 
             this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: deletedItem.id }])
                 .subscribe((parentItem: Item) => {
                     // If the child name comes back before the propmt is opened
                     if (!this.searchComponent.listManager.prompt) {
-                        this.searchOptions.deletePrompt!.message = this.deletePromptChildWithChildrenMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
+                        this.searchOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
 
                         // But if the prompt opens first before the child name comes back
                     } else {
-                        this.searchComponent.listManager.prompt.message = this.deletePromptChildWithChildrenMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
+                        this.searchComponent.listManager.prompt.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
                     }
                 })
         }
@@ -396,11 +380,12 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
 
 
-    // =============================================================( ON HIERARCHY ITEM DELETE )============================================================== \\
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: HierarchyItem) {
         // If we're deleting a grandchild item
         if (deletedItem.hierarchyGroupID == 2) {
+            // ********* commited Data Service *********
             // this.dataService.delete('api/' + this.grandchildDataServicePath, {
             //     id: deletedItem.id
             // }).subscribe();
@@ -415,6 +400,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
     onSearchItemDelete(deletedItem: MultiColumnItem) {
         // If we're deleting a grandchild item
         if (deletedItem.values[1].name == this.grandchildSearchType) {
+            // ********* commited Data Service *********
             // this.dataService.delete('api/' + this.grandchildDataServicePath, {
             //     id: deletedItem.id
             // }).subscribe();
@@ -667,5 +653,61 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
     onEscape(): void {
         // Prevent escacpe from happening here and let the menu bar component take care of it
+    }
+
+
+
+    // ===================================================================( GET CHILD ITEM )=================================================================== \\
+
+    getChildItem(child: Item) {
+        return {
+            id: child.id,
+            name: child.name,
+            hierarchyGroupID: 1,
+            hidden: false,
+            arrowDown: false,
+            isParent: true
+        }
+    }
+
+
+
+    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
+
+    getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
+        return {
+            id: child.id,
+            name: child.name,
+            hierarchyGroupID: 1,
+            arrowDown: false,
+            isParent: true,
+            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown
+        }
+    }
+
+
+
+    // ================================================================( GET GRANDCHILD ITEM )================================================================= \\
+
+    getGrandchildItem(grandchild: Item) {
+        return {
+            id: grandchild.id,
+            name: grandchild.name,
+            hierarchyGroupID: 2,
+            hidden: false
+        }
+    }
+
+
+
+    // =============================================================( GET OTHER GRANDCHILD ITEM )============================================================== \\
+
+    getOtherGrandchildItem(grandchild: Item, hierarchyUpdate: HierarchyUpdate) {
+        return {
+            id: grandchild.id,
+            name: grandchild.name,
+            hierarchyGroupID: 2,
+            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown
+        }
     }
 }
