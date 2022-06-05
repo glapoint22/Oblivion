@@ -9,6 +9,7 @@ import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
 import { KeywordsFormManager } from "./keywords-form-manager";
+import { ListItem } from "./list-item";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
@@ -351,14 +352,14 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: KeywordCheckboxItem) {
+    getItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name,
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
-            opacity: x.forProduct ? 0.4 : null!
+            opacity: (x as KeywordCheckboxItem).forProduct ? 0.4 : null!
         }
     }
 
@@ -366,7 +367,7 @@ export class AvailableKeywordsManager extends KeywordsFormManager {
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: KeywordCheckboxItem) {
+    getOtherItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name,

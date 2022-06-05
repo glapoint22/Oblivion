@@ -9,6 +9,8 @@ import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { ProductService } from "../services/product/product.service";
+import { ListItem } from "./list-item";
+import { KeyValue } from "@angular/common";
 
 export class KeywordsFormManager extends HierarchyUpdateManager {
 
@@ -127,7 +129,7 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: KeywordCheckboxItem) {
+    getItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name,
@@ -141,28 +143,22 @@ export class KeywordsFormManager extends HierarchyUpdateManager {
     
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: KeywordCheckboxItem) {
+    getOtherItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name,
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
-            opacity: x.forProduct ? 0.4 : null!
+            opacity: (x as KeywordCheckboxItem).forProduct ? 0.4 : null!
         }
     }
 
 
 
-    // ======================================================================( GET ITEMS )===================================================================== \\
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 
-    getItems() {
-        this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.dataServicePath, [{ key: 'productId', value: this.productService.product.id }])
-            .subscribe((thisArray: Array<KeywordCheckboxItem>) => {
-                thisArray.forEach(x => {
-                    this.thisArray.push(this.getItem(x));
-                    if (this.getOtherItem(x)) this.otherArray.push(this.getOtherItem(x));
-                })
-            })
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }];
     }
 }

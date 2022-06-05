@@ -87,7 +87,17 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
             // If the hierarchy item is a second level hierarchy item
             if (hierarchyUpdate.hierarchyGroupID == 1) {
-                this.getGrandchildItems(hierarchyUpdate);
+                this.dataService.get<Array<Item>>('api/' + this.grandchildDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
+                    .subscribe((grandchildren: Array<Item>) => {
+                        window.setTimeout(() => {
+                            let num = this.listComponent.listManager.editedItem ? 2 : 1;
+                            for (let i = grandchildren.length - 1; i >= 0; i--) {
+                                this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getGrandchildItem(grandchildren[i]));
+                                this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherGrandchildItem(grandchildren[i], hierarchyUpdate));
+                            }
+                            this.onGrandchildrenLoad.next();
+                        })
+                    });
             }
         }
     }
@@ -699,23 +709,5 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
             hierarchyGroupID: 2,
             hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown
         }
-    }
-
-
-    
-    // ================================================================( GET GRANDCHILD ITEMS )================================================================ \\
-
-    getGrandchildItems(hierarchyUpdate: HierarchyUpdate) {
-        this.dataService.get<Array<Item>>('api/' + this.grandchildDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
-            .subscribe((grandchildren: Array<Item>) => {
-                window.setTimeout(() => {
-                    let num = this.listComponent.listManager.editedItem ? 2 : 1;
-                    for (let i = grandchildren.length - 1; i >= 0; i--) {
-                        this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getGrandchildItem(grandchildren[i]));
-                        this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherGrandchildItem(grandchildren[i], hierarchyUpdate));
-                    }
-                    this.onGrandchildrenLoad.next();
-                })
-            });
     }
 }

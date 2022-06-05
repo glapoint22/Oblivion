@@ -1,3 +1,4 @@
+import { KeyValue } from "@angular/common";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { FiltersService } from "../services/filters/filters.service";
@@ -6,6 +7,7 @@ import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { ListUpdateType, SortType } from "./enums";
 import { FiltersFormManager } from "./filters-form-manager";
+import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 
 export class ProductFiltersManager extends FiltersFormManager {
@@ -79,19 +81,9 @@ export class ProductFiltersManager extends FiltersFormManager {
 
 
 
-    // ===================================================================( GET CHILD ITEMS )================================================================== \\
+    // =============================================================( GET CHILD ITEM PARAMETERS )============================================================== \\
 
-    getChildItems(hierarchyUpdate: HierarchyUpdate) {
-        this.dataService.get<Array<CheckboxItem>>('api/Products/Filters', [{ key: 'productId', value: this.productService.product.id }, { key: 'filterId', value: hierarchyUpdate.id }])
-            .subscribe((children: Array<CheckboxItem>) => {
-                window.setTimeout(() => {
-                    let num = this.listComponent.listManager.editedItem ? 2 : 1;
-                    for (let i = children.length - 1; i >= 0; i--) {
-                        this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getChildItem(children[i]));
-                        this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherChildItem(children[i], hierarchyUpdate));
-                    }
-                    this.onChildrenLoad.next();
-                })
-            })
+    getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
     }
 }

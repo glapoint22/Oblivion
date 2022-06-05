@@ -13,6 +13,8 @@ import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { KeyValue } from "@angular/common";
+import { ListItem } from "./list-item";
+import { HierarchyItem } from "./hierarchy-item";
 
 export class SelectedKeywordsManager extends KeywordsFormManager {
     // Private
@@ -708,7 +710,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     }
 
 
-    
+
     // ================================================================( SORT PENDING ITEMS )================================================================= \\
 
     sortPendingItems() {
@@ -863,15 +865,15 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: KeywordCheckboxItem) {
+    getItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name,
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
-            forProduct: x.forProduct,
-            color: x.forProduct ? '#ffba00' : null!
+            forProduct: (x as KeywordCheckboxItem).forProduct,
+            color: (x as KeywordCheckboxItem).forProduct ? '#ffba00' : null!
         }
     }
 
@@ -879,7 +881,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: KeywordCheckboxItem) {
+    getOtherItem(x: ListItem) {
         return null!
     }
 
@@ -887,33 +889,32 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
-    getChildItem(child: KeywordCheckboxItem) {
+    getChildItem(child: HierarchyItem) {
         return {
             id: child.id,
             name: child.name,
             hierarchyGroupID: 1,
             hidden: false,
-            checked: child.checked,
-            forProduct: child.forProduct,
-            color: child.forProduct ? '#ffba00' : null!
+            checked: (child as KeywordCheckboxItem).checked,
+            forProduct: (child as KeywordCheckboxItem).forProduct,
+            color: (child as KeywordCheckboxItem).forProduct ? '#ffba00' : null!
         }
     }
 
 
 
-    // ===================================================================( GET CHILD ITEMS )================================================================== \\
+    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
-    getChildItems(hierarchyUpdate: HierarchyUpdate) {
-        this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }, { key: 'productId', value: this.productService.product.id }])
-            .subscribe((children: Array<KeywordCheckboxItem>) => {
-                window.setTimeout(() => {
-                    let num = this.listComponent.listManager.editedItem ? 2 : 1;
-                    for (let i = children.length - 1; i >= 0; i--) {
-                        (this.thisArray as KeywordCheckboxItem[]).splice(hierarchyUpdate.index! + num, 0, this.getChildItem(children[i]));
-                    }
-                    this.onChildrenLoad.next();
-                })
-            })
+    getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
+        return null!
+    }
+
+
+
+    // =============================================================( GET CHILD ITEM PARAMETERS )============================================================== \\
+
+    getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
     }
 
 
@@ -934,7 +935,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string) : Array<KeyValue<any, any>> {
+    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
         return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
     }
 }

@@ -6,6 +6,7 @@ import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { ListUpdateType, SortType } from "./enums";
+import { ListItem } from "./list-item";
 import { ProductGroupsFormManager } from "./product-groups-form-manager";
 
 export class ProductProductGroupsManager extends ProductGroupsFormManager {
@@ -76,37 +77,20 @@ export class ProductProductGroupsManager extends ProductGroupsFormManager {
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: CheckboxItem) {
+    getItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name,
-            checked: x.checked
+            checked: (x as CheckboxItem).checked
         }
     }
 
 
 
-    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 
-    getOtherItem(x: CheckboxItem) {
-        return {
-            id: x.id,
-            name: x.name
-        }
-    }
-
-
-
-    // ======================================================================( GET ITEMS )===================================================================== \\
-
-    getItems() {
-        this.dataService.get<Array<CheckboxItem>>('api/Products/Subgroup', [{key: 'ProductId', value: this.productService.product.id}])
-            .subscribe((thisArray: Array<CheckboxItem>) => {
-                thisArray.forEach(x => {
-                    this.thisArray.push(this.getItem(x));
-                    this.otherArray.push(this.getOtherItem(x));
-                })
-            })
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }];
     }
 
 
@@ -125,7 +109,7 @@ export class ProductProductGroupsManager extends ProductGroupsFormManager {
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string) : Array<KeyValue<any, any>> {
+    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
         return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
     }
 }

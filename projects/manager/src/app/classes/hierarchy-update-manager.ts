@@ -14,6 +14,8 @@ import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { ListUpdateManager } from "./list-update-manager";
 import { SearchResultItem } from "./search-result-item";
+import { ListItem } from "./list-item";
+import { KeyValue } from "@angular/common";
 
 export class HierarchyUpdateManager extends ListUpdateManager {
     // private
@@ -107,7 +109,17 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
             // If the hierarchy item is a top level hierarchy item
             if (hierarchyUpdate.hierarchyGroupID == 0) {
-                this.getChildItems(hierarchyUpdate);
+                this.dataService.get<Array<HierarchyItem>>('api/' + this.childDataServicePath, this.getChildItemParameters(hierarchyUpdate))
+                    .subscribe((children: Array<HierarchyItem>) => {
+                        window.setTimeout(() => {
+                            let num = this.listComponent.listManager.editedItem ? 2 : 1;
+                            for (let i = children.length - 1; i >= 0; i--) {
+                                this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getChildItem(children[i]));
+                                if (this.getOtherChildItem(children[i], hierarchyUpdate)) this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherChildItem(children[i], hierarchyUpdate));
+                            }
+                            this.onChildrenLoad.next();
+                        })
+                    })
             }
 
             // But if a parent item was expanded and its children has ALREADY been loaded
@@ -786,7 +798,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: HierarchyItem) {
+    getItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name,
@@ -822,25 +834,15 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     }
 
 
-    // ===================================================================( GET CHILD ITEMS )================================================================== \\
+    // =============================================================( GET CHILD ITEM PARAMETERS )============================================================== \\
 
-    getChildItems(hierarchyUpdate: HierarchyUpdate) {
-        this.dataService.get<Array<Item>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
-            .subscribe((children: Array<Item>) => {
-                window.setTimeout(() => {
-                    let num = this.listComponent.listManager.editedItem ? 2 : 1;
-                    for (let i = children.length - 1; i >= 0; i--) {
-                        this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getChildItem(children[i]));
-                        this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherChildItem(children[i], hierarchyUpdate));
-                    }
-                    this.onChildrenLoad.next();
-                })
-            })
+    getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
+        return [{ key: 'parentId', value: hierarchyUpdate.id }];
     }
 
 
 
-    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
+    // ===============================================================( GET SEARCH RESULT ITEM )=============================================================== \\
 
     getSearchResultItem(x: SearchResultItem) {
         return {

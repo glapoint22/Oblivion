@@ -152,7 +152,13 @@ export class ListUpdateManager {
     onOpen() {
         this.addIconButtonTitle = 'Add ' + this.itemType;
         if (this.thisArray.length == 0) {
-            this.getItems();
+            this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath, this.getItemParameters())
+                .subscribe((thisArray: Array<ListItem>) => {
+                    thisArray.forEach(x => {
+                        this.thisArray.push(this.getItem(x));
+                        if (this.getOtherItem(x)) this.otherArray.push(this.getOtherItem(x));
+                    })
+                })
         } else {
 
             // If the list is set to select the last selected item on open
@@ -257,7 +263,7 @@ export class ListUpdateManager {
 
 
     // ==================================================================( ON LIST UPDATE )=================================================================== \\
-    
+
     onListUpdate(listUpdate: ListUpdate) {
         this._listUpdate = listUpdate;
         if (listUpdate.type == ListUpdateType.Add) this.onItemAdd(listUpdate);
@@ -321,13 +327,13 @@ export class ListUpdateManager {
 
 
     // =============================================================( ON UNSELECTED SEARCH ITEM )============================================================= \\
-    
+
     onUnselectedSearchItem() {
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
     }
 
-    
+
 
     // ====================================================================( ON ITEM ADD )==================================================================== \\
 
@@ -690,16 +696,21 @@ export class ListUpdateManager {
 
 
 
-    // ======================================================================( GET ITEMS )===================================================================== \\
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getItems() {
-        this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath)
-            .subscribe((thisArray: Array<ListItem>) => {
-                thisArray.forEach(x => {
-                    this.thisArray.push(this.getItem(x));
-                    this.otherArray.push(this.getItem(x));
-                })
-            })
+    getOtherItem(x: ListItem) {
+        return {
+            id: x.id,
+            name: x.name
+        }
+    }
+
+
+
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
+
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [];
     }
 
 
@@ -717,7 +728,7 @@ export class ListUpdateManager {
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string) : Array<KeyValue<any, any>> {
+    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
         return [{ key: 'searchWords', value: searchWords }];
     }
 }
