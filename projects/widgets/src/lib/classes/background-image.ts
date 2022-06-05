@@ -6,6 +6,7 @@ export class BackgroundImage extends Image {
     public attachment!: string;
 
     getData(): BackgroundImage {
+        if (!this.src) return null!;
         const backgroundImage = new BackgroundImage();
 
         backgroundImage.src = this.src;

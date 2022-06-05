@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Image, LazyLoadingService, MediaType, SpinnerAction } from 'common';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
@@ -10,6 +10,7 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
 export class ImageBoxComponent {
   @Input() image!: Image;
   @Input() showRemoveImage!: boolean;
+  @Output() onChange: EventEmitter<void> = new EventEmitter();
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
@@ -37,6 +38,7 @@ export class ImageBoxComponent {
             this.image.name = image.name;
             this.image.src = image.src;
             this.image.thumbnail = image.thumbnail;
+            this.onChange.emit();
           }
         }
       });

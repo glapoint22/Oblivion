@@ -1,33 +1,10 @@
-import { Color } from "common";
 import { BackgroundImage } from "./background-image";
+import { ColorProperty } from "./color-property";
 import { Enableable } from "./enableable";
 
-export class Background implements Enableable {
+export class Background extends ColorProperty implements Enableable {
     public image: BackgroundImage = new BackgroundImage();
     public enabled!: boolean;
-
-
-    private _color!: string;
-    public get color(): string {
-        return this._color;
-    }
-    public set color(v: string) {
-        this._rgbColor = Color.hexToRGB(v);
-        this._color = v;
-    }
-
-
-
-    private _rgbColor!: Color;
-    public get rgbColor(): Color {
-        this._color = this._rgbColor.toHex();
-        return this._rgbColor;
-    }
-
-
-    constructor(color?: string) {
-        this.color = color ? color : '#ffffff';
-    }
 
     setData(background: Background) {
         if (background) {
@@ -47,5 +24,10 @@ export class Background implements Enableable {
         background.enabled = this.enabled;
 
         return background;
+    }
+
+
+    public getDefaultColor(): string {
+        return '#ffffff';
     }
 }

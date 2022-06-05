@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
@@ -9,6 +9,7 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
 })
 export class VideoPropertiesEditorComponent {
   @Input() video!: Video;
+  @Output() onChange: EventEmitter<void> = new EventEmitter();
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
@@ -37,6 +38,7 @@ export class VideoPropertiesEditorComponent {
             this.video.thumbnail = video.thumbnail;
             this.video.videoId = video.videoId;
             this.video.videoType = video.videoType;
+            this.onChange.emit();
           }
         }
       });

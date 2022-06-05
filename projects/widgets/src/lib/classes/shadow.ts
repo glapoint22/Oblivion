@@ -1,34 +1,11 @@
-import { Color } from "common";
+import { ColorProperty } from "./color-property";
 
-export class Shadow {
+export class Shadow extends ColorProperty {
     public enabled: boolean = false;
     public x: number = 5;
     public y: number = 5;
     public blur: number = 5;
     public size: number = 5;
-
-    private _color!: string;
-    public get color(): string {
-        return this._color;
-    }
-    public set color(v: string) {
-        this._rgbColor = Color.hexToRGB(v);
-        this._color = v;
-    }
-
-
-
-    private _rgbColor!: Color;
-    public get rgbColor(): Color {
-        this._color = this._rgbColor.toHex();
-        return this._rgbColor;
-    }
-    
-
-
-    constructor(color?: string) {
-        this.color = color ? color : '#000000bf';
-    }
 
     setData(shadow: Shadow) {
         if (shadow) {
@@ -42,6 +19,7 @@ export class Shadow {
     }
 
     getData(): Shadow {
+        if (!this.enabled) return null!;
         const shadow = new Shadow();
 
         shadow.enabled = this.enabled;
@@ -52,5 +30,10 @@ export class Shadow {
         shadow.color = this.color;
 
         return shadow;
+    }
+
+
+    public getDefaultColor(): string {
+        return '#000000bf';
     }
 }

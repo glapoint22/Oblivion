@@ -4,6 +4,7 @@ import { Border } from '../../classes/border';
 import { Column } from '../../classes/column';
 import { ColumnSpan } from '../../classes/column-span';
 import { Corners } from '../../classes/corners';
+import { HorizontalAlignment } from '../../classes/horizontal-alignment';
 import { Padding } from '../../classes/padding';
 import { Shadow } from '../../classes/shadow';
 import { Widget } from '../../classes/widget';
@@ -24,6 +25,7 @@ export class ColumnComponent implements AfterViewInit {
   public padding: Padding = new Padding();
   public columnSpan: ColumnSpan = new ColumnSpan();
   public columnElement!: HTMLElement;
+  public horizontalAlignment: HorizontalAlignment = new HorizontalAlignment();
 
   constructor(public resolver: ComponentFactoryResolver) { }
 
@@ -40,6 +42,7 @@ export class ColumnComponent implements AfterViewInit {
     this.shadow.setData(column.shadow);
     this.padding.setData(column.padding);
     this.columnSpan.setData(column.columnSpan);
+    this.horizontalAlignment.setData(column.horizontalAlignment);
   }
 
 
@@ -49,7 +52,6 @@ export class ColumnComponent implements AfterViewInit {
 
     // Set the widget with the widget data
     widgetComponent.setWidget(widgetData);
-
 
     // Detect changes
     widgetComponentRef.hostView.detectChanges();

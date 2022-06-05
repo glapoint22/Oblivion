@@ -1,16 +1,8 @@
 import { PaddingValue } from "./padding-value";
-import { PaddingType } from "./widget-enums";
 
 export class Padding {
     public constrain!: boolean;
     public values: Array<PaddingValue> = Array<PaddingValue>();
-
-    constructor() {
-        this.values.push(new PaddingValue(PaddingType.Top, 0));
-        this.values.push(new PaddingValue(PaddingType.Right, 0));
-        this.values.push(new PaddingValue(PaddingType.Bottom, 0));
-        this.values.push(new PaddingValue(PaddingType.Left, 0));
-    }
 
     setData(padding: Padding) {
         if (padding) {
@@ -38,6 +30,7 @@ export class Padding {
 
 
     getData(): Padding {
+        if (this.values.length == 0) return null!;
         const padding = new Padding();
 
         padding.constrain = this.constrain;

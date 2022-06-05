@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Link, LazyLoadingService, SpinnerAction, LinkType } from 'common';
 import { LinkComponent } from '../link/link.component';
 
@@ -9,6 +9,7 @@ import { LinkComponent } from '../link/link.component';
 })
 export class LinkPropertyComponent {
   @Input() link!: Link;
+  @Output() onChange: EventEmitter<void> = new EventEmitter();
   public linkType = LinkType;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
@@ -24,6 +25,7 @@ export class LinkPropertyComponent {
     }, SpinnerAction.None)
       .then((linkComponent: LinkComponent) => {
         linkComponent.link = this.link;
+        linkComponent.callback = () => this.onChange.emit();
       });
   }
 }

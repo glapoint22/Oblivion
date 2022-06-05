@@ -178,13 +178,6 @@ export class ContainerDevComponent extends ContainerComponent {
               },
               {
                 type: MenuOptionType.MenuItem,
-                name: 'Page type',
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
                 name: 'Clear page',
               },
               {
@@ -464,5 +457,18 @@ export class ContainerDevComponent extends ContainerComponent {
     }
 
     return index + 1;
+  }
+
+
+
+  // ---------------------------------------------------------------------------- Get Data --------------------------------------------------------
+  public getData(): Array<Row> {
+    const rows: Array<Row> = [];
+
+    this.rows.forEach((row: RowDevComponent) => {
+      rows.push(row.getData());
+    });
+
+    return rows;
   }
 }

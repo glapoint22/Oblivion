@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
-import { PageDevComponent } from '../page-dev/page-dev.component';
 
 @Component({
   selector: 'widget-inspector',
@@ -9,7 +8,6 @@ import { PageDevComponent } from '../page-dev/page-dev.component';
   styleUrls: ['./widget-inspector.component.scss']
 })
 export class WidgetInspectorComponent {
-  @Input() page!: PageDevComponent;
   public widgetInspectorView = WidgetInspectorView;
 
   constructor(public widgetService: WidgetService) { }
@@ -17,6 +15,6 @@ export class WidgetInspectorComponent {
 
   onNewPageClick() {
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Page;
-    this.page.newPage();
+    this.widgetService.page.new();
   }
 }

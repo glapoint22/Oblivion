@@ -1,16 +1,15 @@
 import { Component } from '@angular/core';
-import { WidgetService } from '../../services/widget/widget.service';
+import { Properties } from '../../classes/properties';
 
 @Component({
   selector: 'row-properties',
   templateUrl: './row-properties.component.html',
   styleUrls: ['./row-properties.component.scss']
 })
-export class RowPropertiesComponent {
+export class RowPropertiesComponent extends Properties { 
 
-  constructor(public widgetService: WidgetService) { }
-
-  update() {
-    // this.widgetService.$update.next();
+  updateVerticalAlignment() {
+    this.widgetService.selectedRow.verticalAlignment.setClasses(this.widgetService.selectedRow.rowElement);
+    this.update();
   }
 }

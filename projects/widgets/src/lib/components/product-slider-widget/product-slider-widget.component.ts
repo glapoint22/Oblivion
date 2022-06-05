@@ -59,6 +59,7 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
 
   // ------------------------------------------------------------ Ng After View Init -----------------------------------------------------------
   ngAfterViewInit() {
+    super.ngAfterViewInit();
     if (this.products) this.setProductGroups();
   }
 

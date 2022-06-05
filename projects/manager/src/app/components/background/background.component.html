@@ -52,5 +52,5 @@
 
 
     <!-- Image -->
-    <image-box [image]="background.image"></image-box>
+    <image-box [image]="background.image" (onChange)="onChange.emit()"></image-box>
 </panel>

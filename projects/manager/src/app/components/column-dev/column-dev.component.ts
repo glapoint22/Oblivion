@@ -215,6 +215,25 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
 
+
+
+  // ------------------------------------------------------------------------------- Create Widget --------------------------------------------------------------------
+  public async createWidget(widgetData: WidgetData): Promise<void> {
+    await super.createWidget(widgetData);
+
+    // Set the horizontal alignment
+    this.horizontalAlignment.setClasses(this.widget.widgetElement);
+
+    // Retrun if we don't have an image or video
+    if ((widgetData.widgetType == WidgetType.Image && !widgetData.width) || (widgetData.widgetType == WidgetType.Video && !widgetData.width)) return;
+
+    // Save the page
+    this.widgetService.page.save();
+  }
+
+
+
+
   // -------------------------------------------------------------------------- Delete Column ----------------------------------------------------------
   public deleteColumn(): void {
     if (this.rowComponent.columnCount == 1) {
@@ -465,6 +484,7 @@ export class ColumnDevComponent extends ColumnComponent {
     column.corners = this.corners.getData();
     column.shadow = this.shadow.getData();
     column.padding = this.padding.getData();
+    column.horizontalAlignment = this.horizontalAlignment.getData();
     return column;
   }
 }

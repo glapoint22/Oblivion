@@ -1,11 +1,11 @@
 <!-- Image -->
 <panel [title]="'Image'">
-    <image-box [image]="widget.image"></image-box>
+    <image-box [image]="widget.image" (onChange)="update()"></image-box>
 </panel>
 
 <!-- Link -->
 <panel [title]="'Link'">
-    <link-property [link]="widget.link"></link-property>
+    <link-property [link]="widget.link" (onChange)="update()"></link-property>
 </panel>
 
 

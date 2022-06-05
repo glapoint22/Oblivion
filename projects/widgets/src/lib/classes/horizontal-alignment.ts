@@ -26,4 +26,24 @@ export class HorizontalAlignment {
             });
         }
     }
+
+
+
+
+    getData(): HorizontalAlignment {
+        if (this.values.length == 0) return null!;
+        const horizontalAlignment = new HorizontalAlignment();
+
+        horizontalAlignment.values = [];
+        this.values.forEach((horizontalAlignmentValue: HorizontalAlignmentValue) => {
+            const newHorizontalAlignmentValue = new HorizontalAlignmentValue();
+
+            newHorizontalAlignmentValue.horizontalAlignmentType = horizontalAlignmentValue.horizontalAlignmentType;
+            newHorizontalAlignmentValue.breakpoint = horizontalAlignmentValue.breakpoint;
+
+            horizontalAlignment.values.push(newHorizontalAlignmentValue);
+        });
+
+        return horizontalAlignment;
+    }
 }

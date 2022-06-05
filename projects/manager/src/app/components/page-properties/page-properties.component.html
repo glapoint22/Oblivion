@@ -3,8 +3,13 @@
     <div class="property">
         <div class="label" style="margin-right: 15px;">Type:</div>
         <div style="width: 100%;">
-            <dropdown [listItems]="pageTypes">
-            </dropdown>
+            <!-- <dropdown [listItems]="pageTypes">
+            </dropdown> -->
+
+            <select [(ngModel)]="selectedPageType" (change)="widgetService.page.save()">
+                <option *ngFor="let pageType of pageTypes" [ngValue]="pageType">
+                    {{pageType.key}}</option>
+            </select>
         </div>
     </div>
 
@@ -12,7 +17,7 @@
     <!-- Page Name -->
     <div class="property">
         <div class="label" style="margin-right: 9px;">Name:</div>
-        <input [(ngModel)]="page.pageContent.name">
+        <input [(ngModel)]="widgetService.page.name" (input)="widgetService.page.save()">
     </div>
 
 
@@ -55,5 +60,5 @@
 
 
     <!-- Background color & image -->
-    <background [background]="page.pageContent.background" (onChange)="onBackgroundChange()"></background>
+    <background [background]="widgetService.page.pageContent.background" (onChange)="onBackgroundChange()"></background>
 </div>

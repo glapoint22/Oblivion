@@ -16,6 +16,7 @@ export class Image {
 
 
     getData(): Image {
+        if (!this.src) return null!;
         const image = new Image();
 
         image.id = this.id;

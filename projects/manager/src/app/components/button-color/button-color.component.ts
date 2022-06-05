@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Color } from 'common';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -11,6 +11,7 @@ export class ButtonColorComponent {
   @Input() backgroundColor!: Color;
   @Input() borderColor!: Color;
   @Input() textColor!: Color;
+  @Output() onChange: EventEmitter<void> = new EventEmitter();
 
   constructor(public widgetService: WidgetService) { }
 }

@@ -26,7 +26,7 @@ export class PageComponent implements AfterViewInit, OnDestroy {
   loadPage() {
     if (this.pageContent) {
       if (this.pageContent.background) {
-        this.setBackground();
+        this.setBackground(document);
       }
 
       // This will create the widgets starting with the rows
@@ -44,7 +44,7 @@ export class PageComponent implements AfterViewInit, OnDestroy {
   }
 
 
-  setBackground() {
+  setBackground(document: Document) {
     if (this.pageContent.background.enabled) {
       // Background color
       if (this.pageContent.background.color) {
@@ -66,11 +66,11 @@ export class PageComponent implements AfterViewInit, OnDestroy {
         document.body.style.backgroundAttachment = this.pageContent.background.image.attachment;
       }
     } else {
-      this.clearBackground();
+      this.clearBackground(document);
     }
   }
 
-  clearBackground() {
+  clearBackground(document: Document) {
     document.body.style.backgroundColor = '';
     document.body.style.backgroundImage = '';
     document.body.style.backgroundPosition = '';
@@ -80,6 +80,6 @@ export class PageComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     // Clear the background
-    this.clearBackground();
+    this.clearBackground(document);
   }
 }

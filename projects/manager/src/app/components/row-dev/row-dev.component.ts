@@ -233,7 +233,7 @@ export class RowDevComponent extends RowComponent {
 
   // -------------------------------------------------------------------------- Get Data ------------------------------------------------------------
   public getData(): Row {
-    const row = new Row(0);
+    const row = new Row(this.top);
 
     row.columns = [];
     row.background = this.background.getData();

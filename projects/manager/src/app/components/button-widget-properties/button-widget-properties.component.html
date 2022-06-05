@@ -2,15 +2,15 @@
     <div class="light-tabs-container">
         <!-- Normal Tab -->
         <div class="light-tab" [ngClass]="{'selected-light-tab': widget.currentState == buttonState.Normal}"
-            (click)="widget.currentState = buttonState.Normal; update()">Normal</div>
+            (click)="widget.currentState = buttonState.Normal">Normal</div>
 
         <!-- Hover Tab -->
         <div class="light-tab" [ngClass]="{'selected-light-tab': widget.currentState == buttonState.Hover}"
-            (click)="widget.currentState = buttonState.Hover; update()">Hover</div>
+            (click)="widget.currentState = buttonState.Hover">Hover</div>
 
         <!-- Active Tab -->
         <div id="active" class="light-tab" [ngClass]="{'selected-light-tab': widget.currentState == buttonState.Active}"
-            (click)="widget.currentState = buttonState.Active; update()">Active</div>
+            (click)="widget.currentState = buttonState.Active">Active</div>
     </div>
 </div>
 
@@ -19,9 +19,9 @@
 
 <!-- Hover Colors -->
 <button-color *ngIf="widget.currentState == buttonState.Hover" [backgroundColor]="widget.backgroundHoverColorDev"
-    [borderColor]="widget.borderHoverColorDev" [textColor]="widget.textHoverColorDev"></button-color>
+    [borderColor]="widget.borderHoverColorDev" [textColor]="widget.textHoverColorDev" (onChange)="update()"></button-color>
 
 
 <!-- Active Colors -->
 <button-color *ngIf="widget.currentState == buttonState.Active" [backgroundColor]="widget.backgroundActiveColorDev"
-    [borderColor]="widget.borderActiveColorDev" [textColor]="widget.textActiveColorDev"></button-color>
+    [borderColor]="widget.borderActiveColorDev" [textColor]="widget.textActiveColorDev" (onChange)="update()"></button-color>
