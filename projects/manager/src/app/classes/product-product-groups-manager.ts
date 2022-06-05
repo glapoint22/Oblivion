@@ -5,6 +5,7 @@ import { ProductGroupsService } from "../services/product-groups/product-groups.
 import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
+import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
 import { ListUpdateType, SortType } from "./enums";
 import { ListItem } from "./list-item";
 import { ProductGroupsFormManager } from "./product-groups-form-manager";
@@ -97,7 +98,7 @@ export class ProductProductGroupsManager extends ProductGroupsFormManager {
 
     // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
 
-    getSearchResultItem(x: CheckboxItem) {
+    getSearchResultItem(x: CheckboxSearchResultItem) {
         return {
             id: x.id,
             name: x.name,

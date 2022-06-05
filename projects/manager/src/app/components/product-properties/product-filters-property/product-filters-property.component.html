@@ -87,11 +87,12 @@
             
 
             <ng-container *ngIf="productFiltersManager.thisSearchList.length > 0">
-                <multi-column-list #searchComponent
+                <checkbox-multi-column-list #searchComponent
+                                    [parentSearchType]="productFiltersManager.parentSearchType"
                                    [sourceList]="productFiltersManager.thisSearchList"
                                    [options]="productFiltersManager.searchOptions"
                                    (onListUpdate)="productFiltersManager.searchUpdate = $event">
-                </multi-column-list>
+                </checkbox-multi-column-list>
             </ng-container>
         </ng-container>
     </div>

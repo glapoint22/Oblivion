@@ -5,10 +5,13 @@ import { FiltersService } from "../services/filters/filters.service";
 import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
+import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
+import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
 import { ListUpdateType, SortType } from "./enums";
 import { FiltersFormManager } from "./filters-form-manager";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
+import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
 
 export class ProductFiltersManager extends FiltersFormManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
@@ -37,6 +40,15 @@ export class ProductFiltersManager extends FiltersFormManager {
 
 
 
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
+
+    onSearchListUpdate(searchUpdate: CheckboxMultiColumnListUpdate) {
+        super.onSearchListUpdate(searchUpdate);
+        if (searchUpdate.type == ListUpdateType.CheckboxChange) this.onSearchItemCheckboxChange(searchUpdate);
+    }
+
+
+
     // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
 
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
@@ -46,6 +58,24 @@ export class ProductFiltersManager extends FiltersFormManager {
         //     id: hierarchyUpdate.id,
         //     checked: hierarchyUpdate.checked
         // }).subscribe();
+    }
+
+
+
+    // ==========================================================( ON SEARCH ITEM CHECKBOX CHANGE )=========================================================== \\
+
+    onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
+        // ********* commited Data Service *********
+        // this.dataService.put('api/Products/Filter', {
+        //     productId: this.productService.product.id,
+        //     id: checkboxMultiColumnListUpdate.id,
+        //     checked: checkboxMultiColumnListUpdate.checked
+        // }).subscribe();
+
+        // Check to see if the search item that had the checkbox change is visible in the hierarchy
+        const hierarchyItem = this.thisArray.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
+        // If it is, make the change to its checkbox as well
+        if (hierarchyItem) hierarchyItem.checked = checkboxMultiColumnListUpdate.checked;
     }
 
 
@@ -85,5 +115,26 @@ export class ProductFiltersManager extends FiltersFormManager {
 
     getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
         return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
+    }
+
+
+
+    // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
+
+    getSearchResultItem(x: CheckboxSearchResultItem) {
+        return {
+            id: x.id!,
+            name: null!,
+            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
+            checked: x.checked
+        }
+    }
+
+
+
+    // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
+
+    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
     }
 }
