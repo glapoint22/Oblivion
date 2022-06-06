@@ -16,8 +16,8 @@ export class ProductProductGroupsManager extends ProductGroupsFormManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, public productGroupsService: ProductGroupsService, private productService: ProductService) {
-        super(dataService, sanitizer, productGroupsService);
+    constructor(dataService: DataService, sanitizer: DomSanitizer, productService: ProductService, public productGroupsService: ProductGroupsService) {
+        super(dataService, sanitizer, productGroupsService, productService);
         this.sortType = SortType.Product;
         this.thisArray = this.productGroupsService.productArray;
         this.otherArray = this.productGroupsService.formArray;
@@ -86,7 +86,7 @@ export class ProductProductGroupsManager extends ProductGroupsFormManager {
         }
     }
 
-
+    
 
     // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 

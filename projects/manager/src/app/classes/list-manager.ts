@@ -14,12 +14,10 @@ export class ListManager {
   selectedItem!: ListItem;
   unselectedItem!: ListItem;
   editedItem!: ListItem;
-  // currentFocusedItem!: Element;
   pivotItem!: ListItem;
   shiftKeyDown!: boolean;
   ctrlKeyDown!: boolean;
   eventListenersAdded!: boolean;
-  // itemDeletionPending!: boolean
   preventUnselectionFromRightMousedown!: boolean;
   newItem!: boolean;
   options!: ListOptions;
@@ -46,11 +44,15 @@ export class ListManager {
   contextMenuOpenListener!: Subscription;
   mouseDownItem!: ListItem;
 
+
+  // ====================================================================( CONSTRUCTOR )==================================================================== \\
+
   constructor(public lazyLoadingService: LazyLoadingService) { }
 
 
+  // ================================================================( ADD EVENT LISTENERS )================================================================ \\
+  
   addEventListeners() {
-
     if (!this.eventListenersAdded) {
       this.eventListenersAdded = true;
       window.addEventListener('keyup', this.onKeyUp);
@@ -61,9 +63,11 @@ export class ListManager {
   }
 
 
+
+  // ==============================================================( REMOVE EVENT LISTENERS )=============================================================== \\
+  
   removeEventListeners() {
     if (this.unselectable) {
-
       this.removeFocus();
       this.eventListenersAdded = false;
       this.shiftKeyDown = false;
@@ -77,11 +81,17 @@ export class ListManager {
   }
 
 
+
+  // ====================================================================( ON KEY DOWN )==================================================================== \\
+  
   onKeyDown = (e: KeyboardEvent) => {
     this.keydown(e);
   }
 
 
+
+  // ======================================================================( KEY DOWN )===================================================================== \\
+  
   keydown(e: KeyboardEvent) {
     if (e.key === 'Delete') if (this.editedItem == null) this.setDelete();
     if (e.key === 'Escape') this.escape();
@@ -93,19 +103,21 @@ export class ListManager {
       if (e.key === 'Control') this.ctrlKeyDown = true;
       if (e.key === 'Shift') this.shiftKeyDown = true;
     }
-
-    // ****** Add shortcut key functionality here i.e ctrl + e ******
   }
 
 
 
-
+  // =====================================================================( ON KEY UP )===================================================================== \\
+  
   onKeyUp = (e: KeyboardEvent) => {
     if (e.key === 'Control') this.ctrlKeyDown = false;
     if (e.key === 'Shift') this.shiftKeyDown = false;
   }
 
 
+
+  // =================================================================( SET BUTTONS STATE )================================================================= \\
+  
   setButtonsState() {
     const itemSelectedCount = this.sourceList.filter(x => x.selected == true).length;
 
@@ -130,6 +142,9 @@ export class ListManager {
   }
 
 
+
+  // ===============================================================( ON INNER WINDOW BLUR )================================================================ \\
+  
   onInnerWindowBlur = () => {
     // * When the focus gets set to something that is outside the inner-window * \\
 
@@ -150,6 +165,9 @@ export class ListManager {
   }
 
 
+
+  // ==================================================================( SET ITEM FOCUS )=================================================================== \\
+  
   setItemFocus(listItem: ListItem) {
     // window.setTimeout(() => { //????????????????????????????????????????????????????????????????????????????????????????????????
     // Set focus to the html item of the list item
@@ -174,6 +192,8 @@ export class ListManager {
 
 
 
+  // ===================================================================( ON MOUSE DOWN )=================================================================== \\
+  
   onMouseDown = () => {
     if (!this.promptOpen) {
 
@@ -198,7 +218,6 @@ export class ListManager {
         }
       }
 
-
       // If we're over an item and an item is being edited
       if (this.overItem && this.editedItem != null) {
 
@@ -217,9 +236,8 @@ export class ListManager {
 
 
 
-
-
-
+  // ===================================================================( ON ITEM DOWN )==================================================================== \\
+  
   onItemDown(listItem: ListItem, e?: MouseEvent) {
     this.mouseDownItem = listItem
     // As long as this item is NOT currently being edited
@@ -241,7 +259,6 @@ export class ListManager {
             this.openContextMenu(e);
           }, 100)
         }
-
 
         // Check to see if this item is already selected
         if (listItem.selected) {
@@ -278,7 +295,8 @@ export class ListManager {
 
 
 
-
+  // ================================================================( SET ITEM SELECTION )================================================================= \\
+  
   setItemSelection(listItem: ListItem) {
     // If an item is NOT being edited
     if (this.editedItem == null) {
@@ -294,6 +312,9 @@ export class ListManager {
   }
 
 
+
+  // ================================================================( SET SELECTED ITEMS )================================================================= \\
+  
   setSelectedItems(listItem: ListItem) {
     // If the shift key is down
     if (this.shiftKeyDown) {
@@ -310,6 +331,9 @@ export class ListManager {
   }
 
 
+
+  // ==============================================================( SET ITEMS SELECT TYPE )================================================================ \\
+  
   setItemsSelectType() {
     // If there is only one item in the list
     if (this.sourceList.length == 1) {
@@ -368,6 +392,9 @@ export class ListManager {
   }
 
 
+
+  // ===========================================================( SET SELECTED ITEMS SHIFT KEY )============================================================ \\
+  
   setSelectedItemsShiftKey() {
     // Clear the selection for all items
     this.sourceList.forEach(x => x.selected = false);
@@ -398,6 +425,9 @@ export class ListManager {
   }
 
 
+
+  // ============================================================( SET SELECTED ITEMS CTRL KEY )============================================================ \\
+  
   setSelectedItemsCtrlKey(listItem: ListItem) {
     // If the item we are pressing down on is already selected
     if (listItem.selected) {
@@ -408,7 +438,6 @@ export class ListManager {
         this.unselectedItem = listItem;
         this.selectedItem = null!;
       }
-
 
       // If the item we are pressing down on is NOT yet selected
     } else {
@@ -423,6 +452,9 @@ export class ListManager {
   }
 
 
+
+  // ========================================================( SET SELECTED ITEMS NO MODIFIER KEY )========================================================= \\
+  
   setSelectedItemsNoModifierKey(listItem: ListItem) {
     // Clear the selection for all items
     this.sourceList.forEach(x => x.selected = false);
@@ -433,18 +465,9 @@ export class ListManager {
   }
 
 
-  // selectItem(listItem: ListItem) {
-  //   window.setTimeout(() => {
-  //     listItem.selected = true;
-  //     this.selectedItem = listItem;
-  //     this.editedItem = null!;
-  //     this.unselectedItem = null!;
-  //     // this.setItemFocus(this.selectedItem);
-  //   })
-  // }
 
-
-
+  // ===================================================================( REMOVE FOCUS )==================================================================== \\
+  
   removeFocus() {
     this.pivotItem = null!;
     this.selectedItem = null!;
@@ -459,6 +482,8 @@ export class ListManager {
 
 
 
+  // ===================================================================( SET ADD ITEM )==================================================================== \\
+  
   setAddItem(listItem: ListItem) {
     this.addEventListeners();
 
@@ -473,7 +498,6 @@ export class ListManager {
       this.editedItem = null!;
       this.unselectedItem = null!;
 
-
     } else {
       this.addDisabled = true;
       this.editDisabled = true;
@@ -485,13 +509,13 @@ export class ListManager {
       this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.htmlItem!.nativeElement.innerText?.trim()!;
       this.setItemFocus(this.editedItem);
       this.buttonsUpdate();
-
     }
   }
 
 
 
-
+  // ===================================================================( SET EDIT ITEM )=================================================================== \\
+  
   setEditItem(listItem: ListItem) {
     if (listItem && this.editable) {
       this.addDisabled = true;
@@ -518,6 +542,9 @@ export class ListManager {
   }
 
 
+
+  // =====================================================================( SET DELETE )==================================================================== \\
+  
   setDelete() {
     if (this.editedItem == null) {
       // If a delete prompt is being used with this list
@@ -552,7 +579,8 @@ export class ListManager {
 
 
 
-
+  // =======================================================================( DELETE )====================================================================== \\
+  
   delete() {
     // If an item is selected
     if (this.sourceList.filter(x => x.selected).length > 0 && this.deletable) {
@@ -566,7 +594,6 @@ export class ListManager {
       let nextSelectedItem: ListItem = this.unselectedItem != null ? this.unselectedItem : this.getNextSelectedItemAfterDelete(deletedItems);
       // Update the list
       this.deleteUpdate(deletedItems);
-
 
       // Loop through all the deleted items
       deletedItems.forEach(() => {
@@ -614,6 +641,9 @@ export class ListManager {
   }
 
 
+
+  // =================================================================( GET DELETED ITEMS )================================================================= \\
+  
   getDeletedItems(selectedItems: Array<ListItem>): Array<ListItem> {
     let deletedItems: Array<ListItem> = new Array<ListItem>();
 
@@ -626,6 +656,9 @@ export class ListManager {
   }
 
 
+
+  // ========================================================( GET NEXT SELECTED ITEM AFTER DELETE )======================================================== \\
+  
   getNextSelectedItemAfterDelete(deletedItems?: Array<ListItem>): ListItem {
     let nextSelectedItem!: ListItem;
     const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
@@ -644,17 +677,19 @@ export class ListManager {
 
 
 
+  // ===============================================================( ON ITEM DOUBLE CLICK )================================================================ \\
+  
   onItemDoubleClick(listItem: ListItem) {
     if (!this.shiftKeyDown && !this.ctrlKeyDown) {
       this.setEditItem(listItem);
       this.doubleClickUpdate();
-
     }
   }
 
 
 
-
+  // ======================================================================( ESCAPE )======================================================================= \\
+  
   escape() {
     if (!this.promptOpen) {
 
@@ -680,6 +715,9 @@ export class ListManager {
   }
 
 
+
+  // =====================================================================( ARROW UP )====================================================================== \\
+  
   arrowUp() {
     let index: number = this.selectedItem != null ? this.sourceList.indexOf(this.selectedItem) : this.sourceList.indexOf(this.unselectedItem);
 
@@ -690,6 +728,9 @@ export class ListManager {
   }
 
 
+
+  // ====================================================================( ARROW DOWN )===================================================================== \\
+  
   arrowDown() {
     let index: number = this.selectedItem != null ? this.sourceList.indexOf(this.selectedItem) : this.sourceList.indexOf(this.unselectedItem);
 
@@ -699,6 +740,9 @@ export class ListManager {
     }
   }
 
+
+
+  // =======================================================================( ENTER )======================================================================= \\
 
   enter(e: KeyboardEvent) {
     if (!this.promptOpen) {
@@ -714,6 +758,7 @@ export class ListManager {
 
 
 
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   reselectItem() {
     this.newItem = false;
@@ -725,6 +770,9 @@ export class ListManager {
     this.editedItem = null!;
   }
 
+
+
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   commitAddEdit() {
     this.addEditVerificationInProgress = false;
@@ -748,6 +796,9 @@ export class ListManager {
     this.setButtonsState();
   }
 
+
+
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
     const trimmedEditedItem = this.editedItem.htmlItem!.nativeElement.innerText.trim();
@@ -785,9 +836,6 @@ export class ListManager {
           // }
           this.reselectItem();
         }
-
-
-
         // If we did NOT press the (Escape) key
         // But the (Enter) key was pressed or the list item was (Blurred)
       } else {
@@ -905,12 +953,18 @@ export class ListManager {
   }
 
 
+
+  // ======================================================================( ON OPEN )====================================================================== \\
+
   sort(listItem?: ListItem) {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
     // listItem!.htmlItem!.nativeElement.innerText = listItem!.name?.trim()!;
     // return listItem
   }
 
+
+
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   async openContextMenu(e: MouseEvent) {
     if (this.options && this.options.menu) {
@@ -940,6 +994,9 @@ export class ListManager {
   }
 
 
+
+  // ======================================================================( ON OPEN )====================================================================== \\
+
   closeContextMenu() {
     if (this.contextMenuOpen) {
       this.contextMenu.onHide();
@@ -954,11 +1011,13 @@ export class ListManager {
 
 
 
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   resetIndent() { }
 
 
 
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   async openPrompt(promptOption: Prompt) {
     this.lazyLoadingService.load(async () => {
@@ -1008,6 +1067,8 @@ export class ListManager {
 
 
 
+  // ======================================================================( ON OPEN )====================================================================== \\
+
   onDuplicatePromptClose() {
     // If a duplicate item was found while adding an item
     if (this.newItem) {
@@ -1026,6 +1087,9 @@ export class ListManager {
   }
 
 
+
+  // ======================================================================( ON OPEN )====================================================================== \\
+
   buttonsUpdate() {
     this.onListUpdate.next(
       {
@@ -1036,6 +1100,9 @@ export class ListManager {
     );
   }
 
+
+
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   addEditUpdate(listItem: ListItem) {
 
@@ -1050,6 +1117,9 @@ export class ListManager {
   }
 
 
+
+  // ======================================================================( ON OPEN )====================================================================== \\
+
   verifyAddEditUpdate(listItem: ListItem, name: string) {
     this.onListUpdate.next(
       {
@@ -1063,6 +1133,7 @@ export class ListManager {
 
 
 
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   selectedItemsUpdate(rightClick: boolean) {
     const selectedItems = this.sourceList.filter(x => x.selected == true);
@@ -1070,6 +1141,9 @@ export class ListManager {
     this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
   }
 
+
+
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   unSelectedItemsUpdate() {
     this.onListUpdate.next({
@@ -1081,6 +1155,9 @@ export class ListManager {
   }
 
 
+
+  // ======================================================================( ON OPEN )====================================================================== \\
+
   doubleClickUpdate() {
     this.onListUpdate.next({
       type: ListUpdateType.DoubleClick,
@@ -1090,6 +1167,9 @@ export class ListManager {
     })
   }
 
+
+
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   deletePromptUpdate(deletedItems: Array<ListItem>) {
     this.onListUpdate.next(
@@ -1106,6 +1186,9 @@ export class ListManager {
     );
   }
 
+
+
+  // ======================================================================( ON OPEN )====================================================================== \\
 
   deleteUpdate(deletedItems: Array<ListItem>) {
     this.onListUpdate.next(

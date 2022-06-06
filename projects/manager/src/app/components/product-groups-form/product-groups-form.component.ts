@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService } from 'common';
 import { ProductGroupsFormManager } from '../../classes/product-groups-form-manager';
 import { ProductGroupsService } from '../../services/product-groups/product-groups.service';
+import { ProductService } from '../../services/product/product.service';
 import { ListComponent } from '../lists/list/list.component';
 
 @Component({
@@ -13,10 +14,10 @@ import { ListComponent } from '../lists/list/list.component';
 export class ProductGroupsFormComponent extends LazyLoad {
   @ViewChild('listComponent') listComponent!: ListComponent;
   @ViewChild('searchComponent') searchComponent!: ListComponent;
-  public productGroupsFormManager: ProductGroupsFormManager = new ProductGroupsFormManager(this.dataService, this.sanitizer, this.productGroupsService);
+  public productGroupsFormManager: ProductGroupsFormManager = new ProductGroupsFormManager(this.dataService, this.sanitizer, this.productGroupsService, this.productService);
   
   
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private productGroupsService: ProductGroupsService) {
+  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private productGroupsService: ProductGroupsService, private productService: ProductService) {
     super(lazyLoadingService);
     this.productGroupsFormManager.onClose.subscribe(() => {
       this.close();

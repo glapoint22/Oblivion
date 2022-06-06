@@ -117,7 +117,7 @@ export class ProductFiltersManager extends FiltersFormManager {
         return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
     }
 
-
+    
 
     // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
 

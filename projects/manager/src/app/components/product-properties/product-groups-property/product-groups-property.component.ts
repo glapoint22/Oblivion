@@ -14,7 +14,7 @@ import { ListComponent } from '../../lists/list/list.component';
 export class ProductGroupsPropertyComponent {
   @ViewChild('listComponent') listComponent!: ListComponent;
   @ViewChild('searchComponent') searchComponent!: ListComponent;
-  public productProductGroupsManager: ProductProductGroupsManager = new ProductProductGroupsManager(this.dataService, this.sanitizer, this.productGroupsService, this.productService);
+  public productProductGroupsManager: ProductProductGroupsManager = new ProductProductGroupsManager(this.dataService, this.sanitizer, this.productService, this.productGroupsService);
 
   constructor(private dataService: DataService, private sanitizer: DomSanitizer, private productGroupsService: ProductGroupsService, private productService: ProductService) { }
 
