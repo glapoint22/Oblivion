@@ -9,9 +9,7 @@ import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-upda
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
 import { ListUpdateType, SortType } from "./enums";
 import { FiltersFormManager } from "./filters-form-manager";
-import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
-import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
 
 export class ProductFiltersManager extends FiltersFormManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
@@ -19,8 +17,8 @@ export class ProductFiltersManager extends FiltersFormManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, filtersService: FiltersService, private productService: ProductService) {
-        super(dataService, sanitizer, filtersService);
+    constructor(dataService: DataService, sanitizer: DomSanitizer, filtersService: FiltersService, productService: ProductService) {
+        super(dataService, sanitizer, filtersService, productService);
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
         this.thisArray = this.filtersService.productArray;
@@ -105,7 +103,8 @@ export class ProductFiltersManager extends FiltersFormManager {
             hierarchyGroupID: 1,
             arrowDown: false,
             isParent: false,
-            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown
+            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
+            checked: false
         }
     }
 

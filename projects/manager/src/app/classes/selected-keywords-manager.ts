@@ -98,9 +98,6 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         }
 
         super.add();
-        this.addIconButtonTitle = 'Add';
-        this.editIconButtonTitle = 'Edit';
-        this.deleteIconButtonTitle = 'Delete';
         this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
@@ -117,9 +114,6 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.listComponent.listManager.editable = true;
         super.addParent();
         this.deleteDisabled = true;
-        this.addIconButtonTitle = 'Add';
-        this.editIconButtonTitle = 'Edit';
-        this.deleteIconButtonTitle = 'Delete';
         this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
@@ -130,18 +124,12 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // =======================================================================( EDIT )======================================================================== \\
 
     edit() {
+        super.edit();
         if (!this.searchMode) {
-            this.addIconButtonTitle = 'Add';
-            this.editIconButtonTitle = 'Rename';
-            this.deleteIconButtonTitle = 'Delete';
-            this.listComponent.edit();
             this.thisArray.forEach(x => x.forProduct && x != this.listComponent.listManager.editedItem ? x.color = '#6e5000' : null);
         } else {
 
             if (this.thisSearchList.length > 0) {
-                this.editIconButtonTitle = 'Rename';
-                this.deleteIconButtonTitle = 'Delete';
-                this.searchComponent.edit();
                 this.thisSearchList.forEach(x => {
                     x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[0].color = '#6e5000' : null;
                     x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
@@ -158,7 +146,6 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     onListUpdate(hierarchyUpdate: CheckboxListUpdate) {
         super.onListUpdate(hierarchyUpdate);
         if (hierarchyUpdate.type == ListUpdateType.CheckboxChange) this.onItemCheckboxChange(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.DoubleClick) this.onItemDoubleClick();
     }
 
 
@@ -344,9 +331,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     onItemDoubleClick() {
         // As long as we're double clicking on a custom item
         if (this.listComponent.listManager.editedItem != null) {
-            this.addIconButtonTitle = 'Add';
-            this.editIconButtonTitle = 'Rename';
-            this.deleteIconButtonTitle = 'Delete';
+            super.onItemDoubleClick();
             this.thisArray.forEach(x => x.forProduct && x != this.listComponent.listManager.editedItem ? x.color = '#6e5000' : null);
         }
     }
