@@ -6,6 +6,7 @@ import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
 import { ContainerDevComponent } from '../../components/container-dev/container-dev.component';
 import { ContainerWidgetDevComponent } from '../../components/container-widget-dev/container-widget-dev.component';
+import { PageDevComponent } from '../../components/page-dev/page-dev.component';
 import { RowDevComponent } from '../../components/row-dev/row-dev.component';
 import { BreakpointService } from '../breakpoint/breakpoint.service';
 
@@ -22,6 +23,7 @@ export class WidgetService {
   public widgetHandleMove!: boolean;
   public currentWidgetInspectorView!: WidgetInspectorView;
   public clipboard!: Row | Column | WidgetData;
+  public page!: PageDevComponent;
 
 
   constructor(private breakpointService: BreakpointService) { }
@@ -225,6 +227,7 @@ export class WidgetService {
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
       this.widgetHandleMove = false;
+      this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -320,6 +323,7 @@ export class WidgetService {
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
       this.widgetHandleMove = false;
+      this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -337,8 +341,8 @@ export class WidgetService {
     const document = this.widgetDocument;
     const column = this.selectedColumn;
     const widget = this.selectedWidget;
-    const breakpoint = this.breakpointService.getBreakpoint(widget.horizontalAlignment.values.map(x => x.breakpoint as string));
-    const horizontalAlignmentValue = widget.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
+    const breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint as string));
+    const horizontalAlignmentValue = column.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
 
     if (!widget.width) widget.width = column.columnElement.clientWidth;
@@ -358,6 +362,7 @@ export class WidgetService {
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
       this.widgetHandleMove = false;
+      this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -376,8 +381,8 @@ export class WidgetService {
     const document = this.widgetDocument;
     const column = this.selectedColumn;
     const widget = this.selectedWidget;
-    const breakpoint = this.breakpointService.getBreakpoint(widget.horizontalAlignment.values.map(x => x.breakpoint as string));
-    const horizontalAlignmentValue = widget.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
+    const breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint as string));
+    const horizontalAlignmentValue = column.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
 
     if (!widget.width) widget.width = column.columnElement.clientWidth;
@@ -397,6 +402,7 @@ export class WidgetService {
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
       this.widgetHandleMove = false;
+      this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -414,8 +420,9 @@ export class WidgetService {
   onMediaWidgetHandleMousedown(mousedownEvent: MouseEvent, widgetHandle: WidgetHandle) {
     const document = this.widgetDocument;
     const widget = this.selectedWidget;
-    let breakpoint = this.breakpointService.getBreakpoint(widget.horizontalAlignment.values.map(x => x.breakpoint as string));
-    const horizontalAlignmentValue = widget.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
+    const column = this.selectedColumn;
+    let breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint as string));
+    const horizontalAlignmentValue = column.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
     const row = this.selectedRow;
     breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint as string));
@@ -503,6 +510,7 @@ export class WidgetService {
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
+      this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -534,6 +542,7 @@ export class WidgetService {
     const onRowMouseup = () => {
       document.removeEventListener('mousemove', onRowMousemove);
       document.removeEventListener('mouseup', onRowMouseup);
+      this.page.save();
     }
 
     document.addEventListener('mousemove', onRowMousemove);

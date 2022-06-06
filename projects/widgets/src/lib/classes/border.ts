@@ -1,31 +1,9 @@
-import { Color } from "common";
+import { ColorProperty } from "./color-property";
 
-export class Border {
+export class Border extends ColorProperty {
     public enabled: boolean = false;
     public width: number = 1;
     public style: string = 'solid';
-
-    private _color!: string;
-    public get color(): string {
-        return this._color;
-    }
-    public set color(v: string) {
-        this._rgbColor = Color.hexToRGB(v);
-        this._color = v;
-    }
-
-
-
-    private _rgbColor!: Color;
-    public get rgbColor(): Color {
-        this._color = this._rgbColor.toHex();
-        return this._rgbColor;
-    }
-
-
-    constructor(color?: string) {
-        this.color = color ? color : '#bebebe';
-    }
 
     setData(border: Border) {
         if (border) {
@@ -38,6 +16,7 @@ export class Border {
 
 
     getData(): Border {
+        if (!this.enabled) return null!;
         const border = new Border();
 
         border.enabled = this.enabled;
@@ -46,5 +25,10 @@ export class Border {
         border.color = this.color;
 
         return border;
+    }
+
+
+    public getDefaultColor(): string {
+        return '#bebebe';
     }
 }

@@ -27,12 +27,12 @@
     <div *ngIf="widget.banners.length > 0; else placeholder">
         <!-- Banner -->
         <div class="property-label">Banner:</div>
-        <image-box [image]="widget.banners[widget.currentBannerIndex].image"></image-box>
+        <image-box [image]="widget.banners[widget.currentBannerIndex].image" (onChange)="update()"></image-box>
 
 
         <!-- Link -->
         <div class="property-label">Link:</div>
-        <link-property [link]="widget.banners[widget.currentBannerIndex].link"></link-property>
+        <link-property [link]="widget.banners[widget.currentBannerIndex].link" (onChange)="update()"></link-property>
     </div>
 
 

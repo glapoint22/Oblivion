@@ -30,6 +30,7 @@ export class VerticalAlignment {
 
 
     getData(): VerticalAlignment {
+        if (this.values.length == 0) return null!;
         const verticalAlignment = new VerticalAlignment();
 
         verticalAlignment.values = [];

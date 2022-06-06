@@ -12,12 +12,12 @@
 
 <!-- Padding -->
 <padding [padding]="widgetService.selectedColumn.padding"
-    (onChange)="widgetService.selectedColumn.padding.setClasses(widgetService.selectedColumn.columnElement); update()">
+    (onChange)="updatePadding(widgetService.selectedColumn.padding, widgetService.selectedColumn.columnElement)">
 </padding>
 
 <!-- Horizontal Alignment -->
-<horizontal-alignment [horizontalAlignment]="widgetService.selectedWidget.horizontalAlignment"
-    (onChange)="widgetService.selectedWidget.horizontalAlignment.setClasses(widgetService.selectedWidget.widgetElement); update()">
+<horizontal-alignment [horizontalAlignment]="widgetService.selectedColumn.horizontalAlignment"
+    (onChange)="updateHorizontalAlignment()">
 </horizontal-alignment>
 
 

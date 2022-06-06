@@ -16,26 +16,36 @@ import { WidgetType } from '../../classes/widget-enums';
   styleUrls: ['./button-widget.component.scss']
 })
 export class ButtonWidgetComponent extends Widget {
+  // Defaults
+  private defaultBackground = '#808080';
+  private defaultBackgroundHoverColor = '#969696';
+  private defaultBackgroundActiveColor = '#878787';
+  private defaultBorderHoverColor = '#f0f0f0';
+  private defaultBorderActiveColor = '#dcdcdc';
+  private defaultTextHoverColor = '#ffffff';
+  private defaultTextActiveColor = '#e1e1e1';
+
+
   public caption: Caption = new Caption();
   public corners: Corners = new Corners();
   public shadow: Shadow = new Shadow();
   public link: Link = new Link();
   public linkType = LinkType;
-  public background: Background = new Background('#808080');
+  public background: Background = new Background(this.defaultBackground);
   public border: Border = new Border();
   public padding: Padding = new Padding();
 
   // Background Hover & Active colors
-  public backgroundHoverColor: string = '#969696';
-  public backgroundActiveColor: string = '#878787';
+  public backgroundHoverColor: string = this.defaultBackgroundHoverColor;
+  public backgroundActiveColor: string = this.defaultBackgroundActiveColor;
 
   // Border Hover & Active colors
-  public borderHoverColor: string = '#f0f0f0';
-  public borderActiveColor: string = '#dcdcdc';
+  public borderHoverColor: string = this.defaultBorderHoverColor;
+  public borderActiveColor: string = this.defaultBorderActiveColor;
 
   // Text Hover & Active colors
-  public textHoverColor: string = '#ffffff';
-  public textActiveColor: string = '#e1e1e1';
+  public textHoverColor: string = this.defaultTextHoverColor;
+  public textActiveColor: string = this.defaultTextActiveColor;
 
 
   ngOnInit() {
@@ -154,19 +164,19 @@ export class ButtonWidgetComponent extends Widget {
   getData(): ButtonWidgetData {
     const buttonWidgetData = super.getData() as ButtonWidgetData;
 
-    buttonWidgetData.background = this.background.getData();
+    buttonWidgetData.background = this.background.color != this.defaultBackground || this.background.image.src != null ? this.background.getData() : null!;
     buttonWidgetData.border = this.border.getData();
     buttonWidgetData.caption = this.caption.getData();
     buttonWidgetData.corners = this.corners.getData();
     buttonWidgetData.shadow = this.shadow.getData();
     buttonWidgetData.padding = this.padding.getData();
     buttonWidgetData.link = this.link.getData();
-    buttonWidgetData.backgroundHoverColor = this.backgroundHoverColor;
-    buttonWidgetData.backgroundActiveColor = this.backgroundActiveColor;
-    buttonWidgetData.borderHoverColor = this.borderHoverColor;
-    buttonWidgetData.borderActiveColor = this.borderActiveColor;
-    buttonWidgetData.textHoverColor = this.textHoverColor;
-    buttonWidgetData.textActiveColor = this.textActiveColor;
+    buttonWidgetData.backgroundHoverColor = this.backgroundHoverColor != this.defaultBackgroundHoverColor ? this.backgroundHoverColor : null!;
+    buttonWidgetData.backgroundActiveColor = this.backgroundActiveColor != this.defaultBackgroundActiveColor ? this.backgroundActiveColor : null!;
+    buttonWidgetData.borderHoverColor = this.borderHoverColor != this.defaultBorderHoverColor ? this.borderHoverColor : null!;
+    buttonWidgetData.borderActiveColor = this.borderActiveColor != this.defaultBorderActiveColor ? this.borderActiveColor : null!;
+    buttonWidgetData.textHoverColor = this.textHoverColor != this.defaultTextHoverColor ? this.textHoverColor : null!;
+    buttonWidgetData.textActiveColor = this.textActiveColor != this.defaultTextActiveColor ? this.textActiveColor : null!;
 
     return buttonWidgetData;
   }

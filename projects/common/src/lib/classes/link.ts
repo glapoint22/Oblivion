@@ -13,6 +13,7 @@ export class Link {
 
 
     getData(): Link {
+        if (this.linkType == LinkType.None) return null!;
         const link = new Link();
 
         link.url = this.url;

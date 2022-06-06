@@ -37,7 +37,7 @@
 
 
     <!-- Page, Row, Column, and Widget buttons -->
-    <div class="grooved-container" *ngIf="page && page.pageContent">
+    <div class="grooved-container" *ngIf="widgetService.page && widgetService.page.pageContent">
         <!-- Page -->
         <button class="button-left" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"
             (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Page">Page</button>
@@ -62,7 +62,7 @@
 
 
     <!-- Properties -->
-    <page-properties [page]="page" *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Page"></page-properties>
+    <page-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Page"></page-properties>
     <row-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Row"></row-properties>
     <column-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Column"></column-properties>
     <widget-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Widget"></widget-properties>

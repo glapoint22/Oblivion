@@ -16,7 +16,7 @@ import { ContainerComponent } from '../container/container.component';
   styleUrls: ['./container-widget.component.scss']
 })
 export class ContainerWidgetComponent extends Widget {
-  @ViewChild('container', { static: false }) container!: ContainerComponent;
+  @ViewChild('container') container!: ContainerComponent;
   public corners: Corners = new Corners();
   public shadow: Shadow = new Shadow();
   public background: Background = new Background('#484848');
@@ -53,6 +53,7 @@ export class ContainerWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Set Widget -----------------------------------------------------------
   setWidget(containerWidgetData: ContainerWidgetData) {
+    this.height = 250;
     this.background.setData(containerWidgetData.background);
     this.border.setData(containerWidgetData.border);
     this.corners.setData(containerWidgetData.corners);
@@ -67,6 +68,14 @@ export class ContainerWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Get Data -----------------------------------------------------------
   getData(): ContainerWidgetData {
-    throw new Error('Method not implemented.');
+    const containerWidgetData = super.getData() as ContainerWidgetData;
+
+    containerWidgetData.background = this.background.getData();
+    containerWidgetData.border = this.border.getData();
+    containerWidgetData.corners = this.corners.getData();
+    containerWidgetData.shadow = this.shadow.getData();
+    containerWidgetData.padding = this.padding.getData();
+
+    return containerWidgetData;
   }
 }

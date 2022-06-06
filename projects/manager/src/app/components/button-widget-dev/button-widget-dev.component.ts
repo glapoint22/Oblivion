@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Color } from 'common';
-import { ButtonWidgetComponent } from 'widgets';
+import { ButtonWidgetComponent, ButtonWidgetData } from 'widgets';
 import { ButtonState, WidgetHandle } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -16,6 +16,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   // Background Hover Color
   private _backgroundHoverColorDev: Color = Color.hexToRGB(this.backgroundHoverColor);
   public get backgroundHoverColorDev(): Color {
+    this.backgroundHoverColor = this._backgroundHoverColorDev.toHex();
     return this._backgroundHoverColorDev;
   }
   public set backgroundHoverColorDev(color: Color) {
@@ -27,6 +28,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   // Background Active Color
   private _backgroundActiveColorDev: Color = Color.hexToRGB(this.backgroundActiveColor);
   public get backgroundActiveColorDev(): Color {
+    this.backgroundActiveColor = this._backgroundActiveColorDev.toHex();
     return this._backgroundActiveColorDev;
   }
   public set backgroundActiveColorDev(color: Color) {
@@ -39,6 +41,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   // Border Hover Color
   private _borderHoverColorDev: Color = Color.hexToRGB(this.borderHoverColor);
   public get borderHoverColorDev(): Color {
+    this.borderHoverColor = this._borderHoverColorDev.toHex();
     return this._borderHoverColorDev;
   }
   public set borderHoverColorDev(color: Color) {
@@ -50,6 +53,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   // Border Active Color
   private _borderActiveColorDev: Color = Color.hexToRGB(this.borderActiveColor);
   public get borderActiveColorDev(): Color {
+    this.borderActiveColor = this._borderActiveColorDev.toHex();
     return this._borderActiveColorDev;
   }
   public set borderActiveColorDev(color: Color) {
@@ -63,6 +67,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   // Text Hover Color
   private _textHoverColorDev: Color = Color.hexToRGB(this.textHoverColor);
   public get textHoverColorDev(): Color {
+    this.textHoverColor = this._textHoverColorDev.toHex();
     return this._textHoverColorDev;
   }
   public set textHoverColorDev(color: Color) {
@@ -74,6 +79,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   // Text Active Color
   private _textActiveColorDev: Color = Color.hexToRGB(this.textActiveColor);
   public get textActiveColorDev(): Color {
+    this.textActiveColor = this._textActiveColorDev.toHex();
     return this._textActiveColorDev;
   }
   public set textActiveColorDev(color: Color) {
@@ -85,6 +91,21 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   constructor(public widgetService: WidgetService) { super() }
 
 
+  setWidget(buttonWidgetData: ButtonWidgetData): void {
+    super.setWidget(buttonWidgetData);
+
+    // Background Color
+    if (buttonWidgetData.backgroundHoverColor) this.backgroundHoverColorDev = Color.hexToRGB(buttonWidgetData.backgroundHoverColor);
+    if (buttonWidgetData.backgroundActiveColor) this.backgroundActiveColorDev = Color.hexToRGB(buttonWidgetData.backgroundActiveColor);
+
+    // Border Color
+    if (buttonWidgetData.borderHoverColor) this.borderHoverColorDev = Color.hexToRGB(buttonWidgetData.borderHoverColor);
+    if (buttonWidgetData.borderActiveColor) this.borderActiveColorDev = Color.hexToRGB(buttonWidgetData.borderActiveColor);
+
+    // Text Color
+    if (buttonWidgetData.textHoverColor) this.textHoverColorDev = Color.hexToRGB(buttonWidgetData.textHoverColor);
+    if (buttonWidgetData.textActiveColor) this.textActiveColorDev = Color.hexToRGB(buttonWidgetData.textActiveColor);
+  }
 
 
   // ------------------------------------------------------------------- Ng On Init ---------------------------------------------------------------

@@ -1,12 +1,13 @@
 import { KeyValue } from "@angular/common";
-import { Color } from "common";
+import { ColorProperty } from "./color-property";
 
-export class Caption {
+export class Caption extends ColorProperty {
     public fontWeight: string = 'normal';
     public fontStyle: string = 'normal';
     public textDecoration: string = 'none';
     public text!: string;
-    public fontOptions: Array<KeyValue<string, string>> = [
+
+    private _fontOptions: Array<KeyValue<string, string>> = [
         {
             key: 'Arial',
             value: 'Arial, Helvetica, sans-serif'
@@ -64,11 +65,13 @@ export class Caption {
             value: 'Verdana, Geneva, sans-serif'
         }
     ]
-
+    public get fontOptions(): Array<KeyValue<string, string>> {
+        return this._fontOptions;
+    }
     public font: KeyValue<string, string> = this.fontOptions[0];
 
 
-    public fontSizes: Array<KeyValue<string, string>> = [
+    private _fontSizes: Array<KeyValue<string, string>> = [
         {
             key: '6',
             value: '6px'
@@ -126,32 +129,38 @@ export class Caption {
             value: '72px'
         },
     ]
+    public get fontSizes(): Array<KeyValue<string, string>> {
+        return this._fontSizes;
+    }
+
 
     public fontSize: KeyValue<string, string> = this.fontSizes[6];
 
 
-    private _color!: string;
-    public get color(): string {
-        return this._color;
+    constructor() {
+        super();
+
+        Object.defineProperty(
+            this,
+            '_fontOptions',
+            {
+                enumerable: false
+            }
+        );
+
+
+        Object.defineProperty(
+            this,
+            '_fontSizes',
+            {
+                enumerable: false
+            }
+        );
+
+        Object.assign(this);
     }
-    public set color(v: string) {
-        this._rgbColor = Color.hexToRGB(v);
-        this._color = v;
-    }
 
 
-
-    private _rgbColor!: Color;
-    public get rgbColor(): Color {
-        this._color = this._rgbColor.toHex();
-        return this._rgbColor;
-    }
-
-
-
-    constructor(color?: string) {
-        this.color = color ? color : '#c8c8c8';
-    }
 
 
     setData(caption: Caption) {
@@ -170,14 +179,19 @@ export class Caption {
     getData(): Caption {
         const caption = new Caption();
 
-        caption.fontWeight = this.fontWeight;
-        caption.fontStyle = this.fontStyle;
-        caption.textDecoration = this.textDecoration;
-        caption.font = { key: this.font.key, value: this.font.value };
-        caption.fontSize = { key: this.fontSize.key, value: this.fontSize.value };
+        caption.fontWeight = this.fontWeight != 'normal' ? this.fontWeight : null!;
+        caption.fontStyle = this.fontStyle != 'normal' ? this.fontStyle : null!;
+        caption.textDecoration = this.textDecoration != 'none' ? this.textDecoration : null!;
+        caption.font = this.font.key != this.fontOptions[0].key ? { key: this.font.key, value: this.font.value } : null!;
+        caption.fontSize = this.fontSize.key != this.fontSizes[6].key ? { key: this.fontSize.key, value: this.fontSize.value } : null!;
         caption.color = this.color;
         caption.text = this.text;
 
         return caption;
+    }
+
+
+    public getDefaultColor(): string {
+        return '#c8c8c8';
     }
 }

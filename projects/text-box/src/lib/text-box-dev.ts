@@ -1,4 +1,5 @@
 import { Link } from "common";
+import { Subject } from "rxjs";
 import { AlignCenter } from "./align-center";
 import { AlignJustify } from "./align-justify";
 import { AlignLeft } from "./align-left";
@@ -55,6 +56,7 @@ export class TextBoxDev extends TextBox {
     public numberedList: NumberedList = new NumberedList(this.selection);
     public increaseIndent: IncreaseIndent = new IncreaseIndent(this.selection);
     public decreaseIndent: DecreaseIndent = new DecreaseIndent(this.selection);
+    public onChange = new Subject<void>();
 
     constructor(htmlRootElement: HTMLElement) {
         super(htmlRootElement);
@@ -161,6 +163,7 @@ export class TextBoxDev extends TextBox {
         this.render();
         this.selection.setRange();
         this.htmlRootElement.focus();
+        this.onChange.next();
     }
 
 
@@ -532,7 +535,7 @@ export class TextBoxDev extends TextBox {
             const data = new TextBoxData();
 
             data.elementType = element.elementType;
-            data.indent = element.indent;
+            data.indent = element.indent != 0 ? element.indent : null!;
             data.styles = [];
             element.styles.forEach((style: StyleData) => {
                 data.styles?.push(new StyleData(style.name, style.value))

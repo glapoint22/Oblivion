@@ -41,6 +41,7 @@ export class VideoWidgetDevComponent extends VideoWidgetComponent {
               videoWidgetData.video = video;
               super.setWidget(videoWidgetData);
               this.iframe.nativeElement.src = this.video.src;
+              this.widgetService.page.save();
             } else {
               this.widgetService.selectedColumn.deleteColumn();
             }

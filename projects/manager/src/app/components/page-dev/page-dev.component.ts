@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { LazyLoadingService, SpinnerAction } from 'common';
-import { Background, PageComponent, PageContent } from 'widgets';
+import { DataService } from 'common';
+import { debounceTime, Subject } from 'rxjs';
+import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { MenuOptionType } from '../../classes/enums';
-import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 
@@ -13,9 +12,35 @@ import { ContainerDevComponent } from '../container-dev/container-dev.component'
   styleUrls: ['./page-dev.component.scss']
 })
 export class PageDevComponent extends PageComponent implements ContainerHost {
+  public id!: number;
+  public name!: string;
+  public pageType: PageType = PageType.Custom;
   public host!: ContainerHost;
+  public saveData = new Subject<void>();
 
-  constructor(private widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
+  constructor(private widgetService: WidgetService, private dataService: DataService) { super(); }
+
+  ngOnInit() {
+    this.widgetService.page = this;
+
+    this.saveData
+      .pipe(debounceTime(200))
+      .subscribe(() => {
+        console.log('saving')
+        const container = this.container as ContainerDevComponent;
+
+        // Get the updated rows
+        this.pageContent.rows = container.getData();
+
+        // Update the database
+        this.dataService.put('api/Pages', {
+          id: this.id,
+          name: this.name,
+          pageType: this.pageType,
+          content: this.pageContent.toString()
+        }).subscribe();
+      });
+  }
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -24,11 +49,27 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
     container.host = this;
   }
 
-  newPage() {
+  new(content?: PageContent) {
+    this.name = 'Untitled';
     this.pageContent = new PageContent();
-    this.pageContent.name = 'Untitled';
-    this.pageContent.background = new Background();
+
+    this.dataService.post<number>('api/Pages', {
+      name: this.name,
+      pageType: this.pageType,
+      content: content ? content.toString() : null
+    }).subscribe((pageId: number) => {
+      this.id = pageId;
+    });
   }
+
+
+  save() {
+    this.saveData.next();
+  }
+
+
+
+
 
 
   onRowChange(maxBottom: number) {

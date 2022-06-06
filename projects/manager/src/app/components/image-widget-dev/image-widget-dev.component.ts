@@ -34,6 +34,7 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
             if (image) {
               imageWidgetData.image = image;
               super.setWidget(imageWidgetData);
+              this.widgetService.page.save();
             } else {
               this.widgetService.selectedColumn.deleteColumn();
             }

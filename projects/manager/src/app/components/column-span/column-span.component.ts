@@ -154,6 +154,8 @@ export class ColumnSpanComponent implements OnInit {
         });
       }
     }
+
+    this.onChange.emit();
   }
 
 

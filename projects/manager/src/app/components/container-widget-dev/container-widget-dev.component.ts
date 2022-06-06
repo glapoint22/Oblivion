@@ -1,9 +1,10 @@
 import { ApplicationRef, Component } from '@angular/core';
-import { ContainerWidgetComponent } from 'widgets';
+import { ContainerWidgetComponent, ContainerWidgetData } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { WidgetHandle } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
+import { RowDevComponent } from '../row-dev/row-dev.component';
 
 @Component({
   selector: 'container-widget-dev',
@@ -19,7 +20,6 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
 
 
   ngOnInit(): void {
-    this.height = 250;
     super.ngOnInit();
   }
 
@@ -43,5 +43,20 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
     this.height = Math.max(this.fixedHeight, maxBottom);
     this.appRef.tick();
     this.widgetService.onRowChange(this.hostContainer);
+  }
+
+
+  // ------------------------------------------------------------ Get Data -----------------------------------------------------------
+  getData(): ContainerWidgetData {
+    const containerWidgetData = super.getData() as ContainerWidgetData;
+    const container = this.container as ContainerDevComponent;
+
+    containerWidgetData.rows = [];
+
+    container.rows.forEach((row: RowDevComponent) => {
+      containerWidgetData.rows.push(row.getData());
+    });
+
+    return containerWidgetData;
   }
 }

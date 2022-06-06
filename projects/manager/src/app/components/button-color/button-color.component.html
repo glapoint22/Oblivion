@@ -3,8 +3,7 @@
     <div class="property">
         <div class="label">Background</div>
         <div style="flex: 1;">
-            <color-swatch [color]="backgroundColor" ></color-swatch>
-            <!-- (onChange)="widgetService.$update.next()" -->
+            <color-swatch [color]="backgroundColor" (onColorPickerClose)="onChange.emit()"></color-swatch>
         </div>
     </div>
 
@@ -13,8 +12,7 @@
     <div class="property">
         <div class="label">Border</div>
         <div style="flex: 1;">
-            <color-swatch [color]="borderColor" ></color-swatch>
-            <!-- (onChange)="widgetService.$update.next()" -->
+            <color-swatch [color]="borderColor" (onColorPickerClose)="onChange.emit()"></color-swatch>
         </div>
     </div>
 
@@ -23,8 +21,7 @@
     <div class="property">
         <div class="label">Text</div>
         <div style="flex: 1;">
-            <color-swatch [color]="textColor" ></color-swatch>
-            <!-- (onChange)="widgetService.$update.next()" -->
+            <color-swatch [color]="textColor" (onColorPickerClose)="onChange.emit()"></color-swatch>
         </div>
     </div>
 </div>
