@@ -3,7 +3,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService } from 'common';
 import { Subject } from 'rxjs';
 import { NicheHierarchyManager } from '../../classes/niche-hierarchy-manager';
-import { NicheHierarchyService } from '../../services/niche-hierarchy/niche-hierarchy.service';
 import { ProductService } from '../../services/product/product.service';
 import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
 import { MultiColumnListComponent } from '../lists/multi-column-list/multi-column-list.component';

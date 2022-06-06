@@ -415,9 +415,14 @@ export class ListUpdateManager {
                 // But if the other list is NOT visible
             } else {
 
-                // Make a list of all the items we edited in this list so that when we go back to the other list we can then sort those items accordingly
-                this.listUpdateService!.otherSortList.push(otherListItem!);
-                this.listUpdateService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
+                // As long as a list is using the list update service
+                if (this.listUpdateService) {
+
+                    // Make a list of all the items we edited in this list so that when we go back to the other list we can then sort those items accordingly
+                    this.listUpdateService!.otherSortList.push(otherListItem!);
+                    this.listUpdateService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
+                }
+
             }
         }
     }
@@ -586,16 +591,20 @@ export class ListUpdateManager {
             })
         }
 
-        // But if any items were added or edited from the other list whether it was done in search mode or list mode
-        if (this.listUpdateService!.otherSortList.length > 0 &&
-            this.listUpdateService!.targetSortType == this.sortType) {
+        // As long as a list is using the list update service
+        if (this.listUpdateService) {
 
-            // Then we need to sort those items now in this list
-            this.listUpdateService!.otherSortList.forEach(x => {
-                this.listComponent.listManager.sort(x);
-                const index = this.listUpdateService!.otherSortList.indexOf(x);
-                this.listUpdateService!.otherSortList.splice(index, 1);
-            })
+            // But if any items were added or edited from the other list whether it was done in search mode or list mode
+            if (this.listUpdateService!.otherSortList.length > 0 &&
+                this.listUpdateService!.targetSortType == this.sortType) {
+
+                // Then we need to sort those items now in this list
+                this.listUpdateService!.otherSortList.forEach(x => {
+                    this.listComponent.listManager.sort(x);
+                    const index = this.listUpdateService!.otherSortList.indexOf(x);
+                    this.listUpdateService!.otherSortList.splice(index, 1);
+                })
+            }
         }
     }
 
