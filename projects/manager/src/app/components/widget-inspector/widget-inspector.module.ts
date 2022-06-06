@@ -35,6 +35,7 @@ import { VideoPropertiesEditorComponent } from '../video-properties-editor/video
 import { CarouselWidgetPropertiesComponent } from '../carousel-widget-properties/carousel-widget-properties.component';
 import { CounterModule } from '../counter/counter.module';
 import { LinkPropertyComponent } from '../link-property/link-property.component';
+import { ListModule } from '../lists/list/list.module';
 
 
 
@@ -77,7 +78,8 @@ import { LinkPropertyComponent } from '../link-property/link-property.component'
     ImageBoxModule,
     NumberFieldModule,
     IconButtonModule,
-    CounterModule
+    CounterModule,
+    ListModule
   ],
   exports: [WidgetInspectorComponent]
 })

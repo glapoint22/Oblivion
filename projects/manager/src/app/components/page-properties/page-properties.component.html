@@ -25,38 +25,41 @@
 
 
     <!-- <ng-container *ngIf="page.displayType == pageDisplayType.Browse || page.displayType == pageDisplayType.Search || page.displayType == pageDisplayType.Product"> -->
-    <div style="font-size: 12px;">Niches:</div>
+    <!-- <div style="font-size: 12px;">Niches:</div> -->
 
-
-    <!-- Property Box -->
-    <div class="property-box-dark" style="position: relative;">
-
-
-        <div class="icons" style="background: #3b3b3b;">
-            <input>
-
-            <div class="icon-container">
-                <i class="fas fa-trash-alt"></i>
-            </div>
+    <div class="icon-buttons-container">
 
 
 
-            <div class="icon-container">
-                <i class="fas fa-plus-circle"></i>
-            </div>
+        <div class="icons">
+            <!-- Delete icon -->
+            <icon-button [icon]="'fas fa-trash-alt'" [title]="nichesList.deleteIconButtonTitle"
+                [isDisabled]="nichesList.isDisabled('deleteDisabled')" (onClick)="nichesList.delete()">
+            </icon-button>
+
+
+
+
+            <!-- Add icon -->
+            <icon-button [icon]="'fas fa-plus-circle'" [title]="nichesList.addIconButtonTitle"
+                [isDisabled]="nichesList.isDisabled('addDisabled')" (onClick)="nichesList.add()">
+            </icon-button>
+
         </div>
-
-
-
-        <!-- <item-list #itemList [listItems]="page.referenceItems" [listOptions]="itemListOptions">
-            </item-list> -->
-
-
-
-        <div class="no-property">No
-            available</div>
     </div>
-    <!-- </ng-container> -->
+
+
+
+    <!-- <div class="modal-list-container">
+        <list #listComponent [sourceList]="nichesList.thisArray" 
+        (onListUpdate)="nichesList.listUpdate = $event"></list>
+    </div> -->
+
+
+
+
+
+
 
 
     <!-- Background color & image -->
