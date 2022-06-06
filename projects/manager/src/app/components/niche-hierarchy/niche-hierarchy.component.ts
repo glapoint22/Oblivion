@@ -16,7 +16,7 @@ import { MultiColumnListComponent } from '../lists/multi-column-list/multi-colum
 export class NicheHierarchyComponent extends LazyLoad {
   // Public
   public overNicheHierarchy: Subject<boolean> = new Subject<boolean>();
-  public nicheHierarchyManager: NicheHierarchyManager = new NicheHierarchyManager(this.dataService, this.sanitizer, this.nicheHierarchyService, this.lazyLoadingService, this.productService);
+  public nicheHierarchyManager: NicheHierarchyManager = new NicheHierarchyManager(this.dataService, this.sanitizer, this.lazyLoadingService, this.productService);
 
   // Decorators
   @ViewChild('hierarchyComponent') hierarchyComponent!: HierarchyComponent;
@@ -26,15 +26,13 @@ export class NicheHierarchyComponent extends LazyLoad {
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
     private sanitizer: DomSanitizer,
-    private productService: ProductService,
-    public nicheHierarchyService: NicheHierarchyService) {
+    private productService: ProductService) {
     super(lazyLoadingService);
   }
 
   ngAfterViewChecked() {
     this.nicheHierarchyManager.searchComponent = this.searchComponent;
-    this.nicheHierarchyManager.otherListComponent = this.nicheHierarchyService.formHierarchyComponent;
-    this.nicheHierarchyManager.listComponent = this.nicheHierarchyService.productHierarchyComponent = this.hierarchyComponent;
+    this.nicheHierarchyManager.listComponent = this.hierarchyComponent;
     this.nicheHierarchyManager.searchInput = document.getElementById('nicheHierarchySearchInput') as HTMLInputElement;
   }
 

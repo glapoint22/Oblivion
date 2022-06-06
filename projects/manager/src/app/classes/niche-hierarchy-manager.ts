@@ -2,7 +2,6 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService, LazyLoadingService, SpinnerAction } from "common";
 import { Subject } from "rxjs";
 import { MoveFormComponent } from "../components/move-form/move-form.component";
-import { NicheHierarchyService } from "../services/niche-hierarchy/niche-hierarchy.service";
 import { ProductService } from "../services/product/product.service";
 import { MenuOptionType, SortType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
@@ -28,7 +27,7 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, private nicheHierarchyService: NicheHierarchyService, private lazyLoadingService: LazyLoadingService, private productService: ProductService) {
+    constructor(dataService: DataService, sanitizer: DomSanitizer, private lazyLoadingService: LazyLoadingService, private productService: ProductService) {
         super(dataService, sanitizer);
         this.sortType = SortType.Product;
         this.itemType = 'Niche';
@@ -39,11 +38,6 @@ export class NicheHierarchyManager extends HierarchyUpdateManager {
         this.childSearchType = 'Sub Niche';
         this.searchNameWidth = '295px';
         this.searchTypeWidth = '78px';
-        this.hierarchyUpdateService = this.nicheHierarchyService;
-        this.thisArray = this.nicheHierarchyService.formArray;
-        this.otherArray = this.nicheHierarchyService.productArray;
-        this.thisSearchList = this.nicheHierarchyService.formSearchList;
-        this.otherSearchList = this.nicheHierarchyService.productSearchList;
         this.collapseHierarchyOnOpen = false;
         this.selectLastSelectedItemOnOpen = true;
 

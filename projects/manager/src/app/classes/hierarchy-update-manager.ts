@@ -366,9 +366,13 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                 // But if the other hierarchy list is NOT visible or the other hierarchy item IS hidden
             } else {
 
-                // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
-                this.hierarchyUpdateService!.otherSortList.push(otherHierarchyItem!);
-                this.hierarchyUpdateService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
+                // As long as a list is using the hierarchy update service
+                if (this.hierarchyUpdateService) {
+
+                    // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
+                    this.hierarchyUpdateService.otherSortList.push(otherHierarchyItem!);
+                    this.hierarchyUpdateService.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
+                }
             }
         }
     }
@@ -662,18 +666,21 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             })
         }
 
-        // But if any items were added or edited from the other list whether it was done in search mode or hierarchy mode
-        if (this.hierarchyUpdateService!.otherSortList.length > 0 &&
-            this.hierarchyUpdateService!.targetSortType == this.sortType) {
+        // As long as a list is using the hierarchy update service
+        if (this.hierarchyUpdateService) {
+            // But if any items were added or edited from the other list whether it was done in search mode or hierarchy mode
+            if (this.hierarchyUpdateService.otherSortList.length > 0 &&
+                this.hierarchyUpdateService.targetSortType == this.sortType) {
 
-            // Then we need to sort those items now in this hierarchy list
-            this.hierarchyUpdateService!.otherSortList.forEach(x => {
-                if (!x.hidden) {
-                    this.listComponent.listManager.sort(x);
-                    const index = this.hierarchyUpdateService!.otherSortList.indexOf(x);
-                    this.hierarchyUpdateService!.otherSortList.splice(index, 1);
-                }
-            })
+                // Then we need to sort those items now in this hierarchy list
+                this.hierarchyUpdateService.otherSortList.forEach(x => {
+                    if (!x.hidden) {
+                        this.listComponent.listManager.sort(x);
+                        const index = this.hierarchyUpdateService.otherSortList.indexOf(x);
+                        this.hierarchyUpdateService.otherSortList.splice(index, 1);
+                    }
+                })
+            }
         }
     }
 
