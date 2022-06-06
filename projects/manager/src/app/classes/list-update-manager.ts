@@ -16,12 +16,12 @@ export class ListUpdateManager {
     private _searchListUpdate!: ListUpdate;
 
     // Public
-    public itemType!: string;
+    // public itemType!: string;
     public sortType!: SortType;
     public searchMode!: boolean;
     public dataServicePath!: string;
     public parentSearchType!: string;
-    public addIconButtonTitle!: string;
+    public addIconButtonTitle!: string
     public listComponent!: ListComponent;
     public searchInput!: HTMLInputElement;
     public searchComponent!: ListComponent;
@@ -44,6 +44,17 @@ export class ListUpdateManager {
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
     public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
+
+    
+    private _itemType! : string;
+    public get itemType() : string {
+        return this._itemType;
+    }
+    public set itemType(v : string) {
+        this._itemType = v;
+        this.addIconButtonTitle = 'Add ' + v;
+    }
+    
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -143,6 +154,10 @@ export class ListUpdateManager {
                 ]
             }
         }
+
+        // window.setTimeout(()=> {
+        //     this.addIconButtonTitle = 'Add ' + this.itemType;
+        // })
     }
 
 
@@ -150,7 +165,6 @@ export class ListUpdateManager {
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
-        this.addIconButtonTitle = 'Add ' + this.itemType;
         if (this.thisArray.length == 0) {
             this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath, this.getItemParameters())
                 .subscribe((thisArray: Array<ListItem>) => {

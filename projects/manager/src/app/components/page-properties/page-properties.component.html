@@ -33,16 +33,22 @@
 
         <div class="icons">
             <!-- Delete icon -->
-            <icon-button [icon]="'fas fa-trash-alt'" [title]="nichesList.deleteIconButtonTitle"
-                [isDisabled]="nichesList.isDisabled('deleteDisabled')" (onClick)="nichesList.delete()">
+            <icon-button [icon]="'fas fa-trash-alt'"
+                [title]="nichesList.deleteIconButtonTitle"
+                [isDisabled]="nichesList.isDisabled('deleteDisabled')"
+                (onOver)="nichesList.overButton = $event"
+                (onClick)="nichesList.delete()">
             </icon-button>
 
 
 
 
             <!-- Add icon -->
-            <icon-button [icon]="'fas fa-plus-circle'" [title]="nichesList.addIconButtonTitle"
-                [isDisabled]="nichesList.isDisabled('addDisabled')" (onClick)="nichesList.add()">
+            <icon-button [icon]="'fas fa-plus-circle'"
+                         [title]="nichesList.addIconButtonTitle"
+                         [isDisabled]="nichesList.isDisabled('addDisabled')"
+                         (onOver)="nichesList.overButton = $event"
+                         (onClick)="nichesList.add()">
             </icon-button>
 
         </div>
@@ -50,10 +56,10 @@
 
 
 
-    <!-- <div class="modal-list-container">
+    <div class="modal-list-container">
         <list #listComponent [sourceList]="nichesList.thisArray" 
         (onListUpdate)="nichesList.listUpdate = $event"></list>
-    </div> -->
+    </div>
 
 
 
