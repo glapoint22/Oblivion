@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService } from 'common';
-import { KeywordsFormManager } from '../../classes/keywords-form-manager';
+import { KeywordsFormUpdateManager } from '../../classes/keywords-form-update-manager';
 import { KeywordsService } from '../../services/keywords/keywords.service';
 import { ProductService } from '../../services/product/product.service';
 import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
@@ -15,7 +15,7 @@ import { MultiColumnListComponent } from '../lists/multi-column-list/multi-colum
 export class KeywordsFormComponent extends LazyLoad {
   @ViewChild('hierarchyComponent') hierarchyComponent!: HierarchyComponent;
   @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
-  public keywordsFormManager: KeywordsFormManager = new KeywordsFormManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
+  public keywordsFormManager: KeywordsFormUpdateManager = new KeywordsFormUpdateManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
   
 
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private keywordsService: KeywordsService, private productService: ProductService) {

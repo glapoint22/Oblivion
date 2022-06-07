@@ -1,19 +1,15 @@
 import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { DataService } from "common";
 import { ListComponent } from "../components/lists/list/list.component";
-import { ProductGroupsService } from "../services/product-groups/product-groups.service";
-import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
 import { ListUpdateType, SortType } from "./enums";
 import { ListItem } from "./list-item";
-import { ProductGroupsFormManager } from "./product-groups-form-manager";
+import { ProductGroupsFormUpdateManager } from "./product-groups-form-update-manager";
 
 @Directive()
-export class ProductProductGroupsManager extends ProductGroupsFormManager {
+export class ProductGroupsUpdateManager extends ProductGroupsFormUpdateManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
     @ViewChild('listComponent') listComponent!: ListComponent;
     @ViewChild('searchComponent') searchComponent!: ListComponent;

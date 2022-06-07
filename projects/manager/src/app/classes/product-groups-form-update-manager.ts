@@ -10,7 +10,7 @@ import { ListItem } from "./list-item";
 import { ListUpdateManager } from "./list-update-manager";
 
 @Directive()
-export class ProductGroupsFormManager extends ListUpdateManager {
+export class ProductGroupsFormUpdateManager extends ListUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 

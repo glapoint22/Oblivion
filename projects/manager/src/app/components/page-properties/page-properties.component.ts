@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from 'common';
 import { PageType } from 'widgets';
-import { NichesList } from '../../classes/niches-list';
+import { NicheListUpdateManager } from '../../classes/niche-list-update-manager';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ListComponent } from '../lists/list/list.component';
 
@@ -15,7 +15,7 @@ import { ListComponent } from '../lists/list/list.component';
 export class PagePropertiesComponent implements OnInit {
   public pageTypes: Array<KeyValue<string, number>> = new Array<KeyValue<string, number>>();
   public selectedPageType!: KeyValue<string, number>;
-  public nichesList: NichesList = new NichesList(this.dataService, this.sanitizer);
+  public nichesList: NicheListUpdateManager = new NicheListUpdateManager(this.dataService, this.sanitizer);
   @ViewChild('listComponent') listComponent!: ListComponent;
 
   constructor(public widgetService: WidgetService, private dataService: DataService, private sanitizer: DomSanitizer) { }

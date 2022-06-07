@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from 'common';
-import { AvailableKeywordsManager } from '../../../classes/available-keywords-manager';
-import { SelectedKeywordsManager } from '../../../classes/selected-keywords-manager';
+import { AvailableKeywordsUpdateManager } from '../../../classes/available-keywords-update-manager';
+import { SelectedKeywordsUpdateManager } from '../../../classes/selected-keywords-update-manager';
 import { KeywordsService } from '../../../services/keywords/keywords.service';
 import { ProductService } from '../../../services/product/product.service';
 import { HierarchyComponent } from '../../hierarchies/hierarchy/hierarchy.component';
@@ -20,8 +20,8 @@ export class ProductKeywordsPropertyComponent {
   @ViewChild('selectedHierarchyComponent') selectedHierarchyComponent!: HierarchyComponent;
   @ViewChild('selectedSearchComponent') selectedSearchComponent!: CheckboxMultiColumnListComponent;
 
-  public availableKeywordsManager: AvailableKeywordsManager = new AvailableKeywordsManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
-  public selectedKeywordsManager: SelectedKeywordsManager = new SelectedKeywordsManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
+  public availableKeywordsManager: AvailableKeywordsUpdateManager = new AvailableKeywordsUpdateManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
+  public selectedKeywordsManager: SelectedKeywordsUpdateManager = new SelectedKeywordsUpdateManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
 
   constructor(private dataService: DataService, private sanitizer: DomSanitizer, public keywordsService: KeywordsService, private productService: ProductService) {
     this.availableKeywordsManager.searchInputName = 'availableKeywordsSearchInput';

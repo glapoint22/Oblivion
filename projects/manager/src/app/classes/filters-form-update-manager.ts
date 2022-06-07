@@ -10,7 +10,7 @@ import { HierarchyUpdate } from "./hierarchy-update";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 
 @Directive()
-export class FiltersFormManager extends HierarchyUpdateManager {
+export class FiltersFormUpdateManager extends HierarchyUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 

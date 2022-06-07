@@ -1,21 +1,17 @@
 import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { DataService } from "common";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
-import { FiltersService } from "../services/filters/filters.service";
-import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
 import { ListUpdateType, SortType } from "./enums";
-import { FiltersFormManager } from "./filters-form-manager";
+import { FiltersFormUpdateManager } from "./filters-form-update-manager";
 import { HierarchyUpdate } from "./hierarchy-update";
 
 @Directive()
-export class ProductFiltersManager extends FiltersFormManager {
+export class ProductFiltersUpdateManager extends FiltersFormUpdateManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
@@ -28,6 +24,7 @@ export class ProductFiltersManager extends FiltersFormManager {
         this.otherArray = this.filtersService.formArray;
         this.thisSearchList = this.filtersService.productSearchList;
         this.otherSearchList = this.filtersService.formSearchList;
+        this.searchInputName = 'productFiltersSearchInput';
     }
 
 

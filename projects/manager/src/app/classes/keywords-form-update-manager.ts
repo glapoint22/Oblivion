@@ -12,7 +12,7 @@ import { ProductService } from "../services/product/product.service";
 import { ListItem } from "./list-item";
 import { KeyValue } from "@angular/common";
 
-export class KeywordsFormManager extends HierarchyUpdateManager {
+export class KeywordsFormUpdateManager extends HierarchyUpdateManager {
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\

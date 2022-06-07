@@ -2,7 +2,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { ListUpdateManager } from "./list-update-manager";
 
-export class NichesList extends ListUpdateManager {
+export class NicheListUpdateManager extends ListUpdateManager {
     constructor(dataService: DataService, sanitizer: DomSanitizer) {
         super(dataService, sanitizer);
         this.itemType = 'Niche';

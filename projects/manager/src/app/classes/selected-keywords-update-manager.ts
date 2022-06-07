@@ -8,7 +8,7 @@ import { ListUpdateType, MenuOptionType, SortType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
-import { KeywordsFormManager } from "./keywords-form-manager";
+import { KeywordsFormUpdateManager } from "./keywords-form-update-manager";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
@@ -16,7 +16,7 @@ import { KeyValue } from "@angular/common";
 import { ListItem } from "./list-item";
 import { HierarchyItem } from "./hierarchy-item";
 
-export class SelectedKeywordsManager extends KeywordsFormManager {
+export class SelectedKeywordsUpdateManager extends KeywordsFormUpdateManager {
     // Private
     private addDisabled!: boolean;
     private editDisabled!: boolean;

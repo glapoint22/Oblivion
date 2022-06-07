@@ -8,12 +8,12 @@ import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
-import { KeywordsFormManager } from "./keywords-form-manager";
+import { KeywordsFormUpdateManager } from "./keywords-form-update-manager";
 import { ListItem } from "./list-item";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
-export class AvailableKeywordsManager extends KeywordsFormManager {
+export class AvailableKeywordsUpdateManager extends KeywordsFormUpdateManager {
     public addToSelectedKeywordsButtonDisabled!: boolean;
 
 
