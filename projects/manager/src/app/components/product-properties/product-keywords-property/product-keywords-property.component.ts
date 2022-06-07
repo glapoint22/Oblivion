@@ -23,16 +23,19 @@ export class ProductKeywordsPropertyComponent {
   public availableKeywordsManager: AvailableKeywordsManager = new AvailableKeywordsManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
   public selectedKeywordsManager: SelectedKeywordsManager = new SelectedKeywordsManager(this.dataService, this.sanitizer, this.keywordsService, this.productService);
 
-  constructor(private dataService: DataService, private sanitizer: DomSanitizer, public keywordsService: KeywordsService, private productService: ProductService) { }
+  constructor(private dataService: DataService, private sanitizer: DomSanitizer, public keywordsService: KeywordsService, private productService: ProductService) {
+    this.availableKeywordsManager.searchInputName = 'availableKeywordsSearchInput';
+    this.selectedKeywordsManager.searchInputName = 'selectedKeywordsSearchInput';
+   }
 
   ngAfterViewChecked() {
     this.availableKeywordsManager.searchComponent = this.availableSearchComponent;
     this.availableKeywordsManager.otherListComponent = this.keywordsService.formHierarchyComponent;
     this.availableKeywordsManager.listComponent = this.keywordsService.productHierarchyComponent = this.availableHierarchyComponent;
-    this.availableKeywordsManager.searchInput = document.getElementById('availableKeywordsSearchInput') as HTMLInputElement;
+    
 
     this.selectedKeywordsManager.searchComponent = this.selectedSearchComponent;
     this.selectedKeywordsManager.listComponent = this.keywordsService.selectedHierarchyComponent = this.selectedHierarchyComponent;
-    this.selectedKeywordsManager.searchInput = document.getElementById('selectedKeywordsSearchInput') as HTMLInputElement;
+    
   }
 }

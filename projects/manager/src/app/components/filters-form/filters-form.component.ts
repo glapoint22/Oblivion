@@ -23,13 +23,15 @@ export class FiltersFormComponent extends LazyLoad {
     this.filtersFormManager.onClose.subscribe(() => {
       this.close();
     })
+
+    this.filtersFormManager.searchInputName = 'filtersFormSearchInput';
   }
 
   ngAfterViewChecked() {
     this.filtersFormManager.searchComponent = this.searchComponent;
     this.filtersFormManager.otherListComponent = this.filtersService.productHierarchyComponent;
     this.filtersFormManager.listComponent = this.filtersService.formHierarchyComponent = this.hierarchyComponent;
-    this.filtersFormManager.searchInput = document.getElementById('filtersFormSearchInput') as HTMLInputElement;
+    
   }
 
   onOpen(): void {

@@ -23,13 +23,15 @@ export class KeywordsFormComponent extends LazyLoad {
     this.keywordsFormManager.onClose.subscribe(() => {
       this.close();
     })
+
+    this.keywordsFormManager.searchInputName = 'keywordsFormSearchInput';
   }
 
   ngAfterViewChecked() {
     this.keywordsFormManager.searchComponent = this.searchComponent;
     this.keywordsFormManager.otherListComponent = this.keywordsService.productHierarchyComponent;
     this.keywordsFormManager.listComponent = this.keywordsService.formHierarchyComponent = this.hierarchyComponent;
-    this.keywordsFormManager.searchInput = document.getElementById('keywordsFormSearchInput') as HTMLInputElement;
+    
   }
 
   onOpen(): void {

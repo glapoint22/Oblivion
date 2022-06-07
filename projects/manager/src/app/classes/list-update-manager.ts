@@ -1,4 +1,5 @@
 import { KeyValue } from "@angular/common";
+import { Directive } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
@@ -10,6 +11,7 @@ import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
 import { SearchResultItem } from "./search-result-item";
 
+@Directive()
 export class ListUpdateManager {
     // private
     private _itemType!: string;
@@ -17,14 +19,13 @@ export class ListUpdateManager {
     private _searchListUpdate!: ListUpdate;
 
     // Public
-    // public itemType!: string;
     public sortType!: SortType;
     public searchMode!: boolean;
     public dataServicePath!: string;
+    public searchInputName!: string;
     public parentSearchType!: string;
     public addIconButtonTitle!: string
     public listComponent!: ListComponent;
-    public searchInput!: HTMLInputElement;
     public searchComponent!: ListComponent;
     public otherListComponent!: ListComponent;
     public listUpdateService!: ListUpdateService;
@@ -203,10 +204,11 @@ export class ListUpdateManager {
             this.searchIconButtonTitle = 'Back to List';
             this.thisSearchList.splice(0, this.thisSearchList.length);
             window.setTimeout(() => {
-                this.searchInput!.focus();
-                this.searchInputSubscription = fromEvent(this.searchInput, 'input').pipe(debounceTime(500)).subscribe(() => {
-                    if (this.searchInput.value.length > 1) {
-                        this.getSearchResults(this.searchInput.value);
+                const searchInput = document.getElementById(this.searchInputName) as HTMLInputElement;
+                searchInput.focus();
+                this.searchInputSubscription = fromEvent(searchInput, 'input').pipe(debounceTime(500)).subscribe(() => {
+                    if (searchInput.value.length > 1) {
+                        this.getSearchResults(searchInput.value);
                     }
                 });
             })

@@ -1,4 +1,5 @@
 import { KeyValue } from "@angular/common";
+import { Directive } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { FiltersService } from "../services/filters/filters.service";
@@ -8,6 +9,7 @@ import { SortType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 
+@Directive()
 export class FiltersFormManager extends HierarchyUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\

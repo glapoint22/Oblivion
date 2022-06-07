@@ -1,6 +1,8 @@
 import { KeyValue } from "@angular/common";
+import { Directive, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
+import { ListComponent } from "../components/lists/list/list.component";
 import { ProductGroupsService } from "../services/product-groups/product-groups.service";
 import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
@@ -10,19 +12,31 @@ import { ListUpdateType, SortType } from "./enums";
 import { ListItem } from "./list-item";
 import { ProductGroupsFormManager } from "./product-groups-form-manager";
 
+@Directive()
 export class ProductProductGroupsManager extends ProductGroupsFormManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+    @ViewChild('listComponent') listComponent!: ListComponent;
+    @ViewChild('searchComponent') searchComponent!: ListComponent;
 
 
-    // ====================================================================( CONSTRUCTOR )==================================================================== \\
-
-    constructor(dataService: DataService, sanitizer: DomSanitizer, productService: ProductService, public productGroupsService: ProductGroupsService) {
-        super(dataService, sanitizer, productGroupsService, productService);
+    ngOnInit() {
+        // super.ngOnInit();
         this.sortType = SortType.Product;
         this.thisArray = this.productGroupsService.productArray;
         this.otherArray = this.productGroupsService.formArray;
         this.thisSearchList = this.productGroupsService.productSearchList;
         this.otherSearchList = this.productGroupsService.formSearchList;
+        this.searchInputName = 'productProductGroupsSearchInput';
+    }
+
+
+    ngAfterViewInit() {
+        this.productGroupsService.productListComponent = this.listComponent;
+    }
+
+
+    ngAfterViewChecked() {
+        this.otherListComponent = this.productGroupsService.formListComponent;
     }
 
 
@@ -86,7 +100,7 @@ export class ProductProductGroupsManager extends ProductGroupsFormManager {
         }
     }
 
-    
+
 
     // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 

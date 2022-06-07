@@ -1,5 +1,5 @@
 <panel [title]="'Product Groups'"
-       (onOpen)="productProductGroupsManager.onOpen()">
+       (onOpen)="onOpen()">
        
     <div class="property-box-dark">
 
@@ -8,70 +8,70 @@
 
             <!-- Search icon -->
             <icon-button class="search-icon-button"
-                         [icon]="productProductGroupsManager.searchIcon"
-                         [title]="productProductGroupsManager.searchIconButtonTitle"
+                         [icon]="searchIcon"
+                         [title]="searchIconButtonTitle"
                          [isDisabled]="false"
-                         (onOver)="productProductGroupsManager.overButton = $event"
-                         (onClick)="productProductGroupsManager.toggleSearch()">
+                         (onOver)="overButton = $event"
+                         (onClick)="toggleSearch()">
             </icon-button>
 
             <div class="icons">
                 <!-- Delete icon -->
                 <icon-button [icon]="'fas fa-trash-alt'"
-                             [title]="productProductGroupsManager.deleteIconButtonTitle"
-                             [isDisabled]="productProductGroupsManager.isDisabled('deleteDisabled')"
-                             (onOver)="productProductGroupsManager.overButton = $event"
-                             (onClick)="productProductGroupsManager.delete()">
+                             [title]="deleteIconButtonTitle"
+                             [isDisabled]="isDisabled('deleteDisabled')"
+                             (onOver)="overButton = $event"
+                             (onClick)="delete()">
                 </icon-button>
 
                 <!-- Edit icon -->
                 <icon-button [icon]="'fas fa-pencil-alt'"
-                             [title]="productProductGroupsManager.editIconButtonTitle"
-                             [isDisabled]="productProductGroupsManager.isDisabled('editDisabled')"
-                             (onOver)="productProductGroupsManager.overButton = $event"
-                             (onClick)="productProductGroupsManager.edit()">
+                             [title]="editIconButtonTitle"
+                             [isDisabled]="isDisabled('editDisabled')"
+                             (onOver)="overButton = $event"
+                             (onClick)="edit()">
                 </icon-button>
 
-                <ng-container *ngIf="!productProductGroupsManager.searchMode">
+                <ng-container *ngIf="!searchMode">
                     <!-- Add icon -->
                     <icon-button [icon]="'fas fa-plus-circle'"
-                                 [title]="productProductGroupsManager.addIconButtonTitle"
-                                 [isDisabled]="productProductGroupsManager.isDisabled('addDisabled')"
-                                 (onOver)="productProductGroupsManager.overButton = $event"
-                                 (onClick)="productProductGroupsManager.add()">
+                                 [title]="addIconButtonTitle"
+                                 [isDisabled]="isDisabled('addDisabled')"
+                                 (onOver)="overButton = $event"
+                                 (onClick)="add()">
                     </icon-button>
                 </ng-container>
             </div>
         </div>
         
         <!-- Hierarchy -->
-        <ng-container *ngIf="!productProductGroupsManager.searchMode">
+        <ng-container *ngIf="!searchMode">
             <checkbox-list #listComponent
-                           [sourceList]="productProductGroupsManager.thisArray"
-                           [options]="productProductGroupsManager.listOptions"
-                           (onListUpdate)="productProductGroupsManager.listUpdate = $event">
+                           [sourceList]="thisArray"
+                           [options]="listOptions"
+                           (onListUpdate)="listUpdate = $event">
             </checkbox-list>
         </ng-container>
 
         <!-- Search -->
-        <ng-container *ngIf="productProductGroupsManager.searchMode">
+        <ng-container *ngIf="searchMode">
             
             <input id="productProductGroupsSearchInput"
                     placeholder="Search"
-                    (input)="productProductGroupsManager.onSearchInputChange($event.target)">
+                    (input)="onSearchInputChange($event.target)">
 
-            <ng-container *ngIf="productProductGroupsManager.thisSearchList.length == 0">
+            <ng-container *ngIf="thisSearchList.length == 0">
                 <div class="no-search-results">
                     No search results available
                 </div>
             </ng-container>
             
 
-            <ng-container *ngIf="productProductGroupsManager.thisSearchList.length > 0">
+            <ng-container *ngIf="thisSearchList.length > 0">
                 <checkbox-list #searchComponent
-                               [sourceList]="productProductGroupsManager.thisSearchList"
-                               [options]="productProductGroupsManager.searchOptions"
-                               (onListUpdate)="productProductGroupsManager.searchUpdate = $event">
+                               [sourceList]="thisSearchList"
+                               [options]="searchOptions"
+                               (onListUpdate)="searchUpdate = $event">
                 </checkbox-list>
             </ng-container>
         </ng-container>

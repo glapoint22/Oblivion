@@ -27,12 +27,14 @@ export class NicheHierarchyComponent extends LazyLoad {
     private sanitizer: DomSanitizer,
     private productService: ProductService) {
     super(lazyLoadingService);
+
+    this.nicheHierarchyManager.searchInputName = 'nicheHierarchySearchInput';
   }
 
   ngAfterViewChecked() {
     this.nicheHierarchyManager.searchComponent = this.searchComponent;
     this.nicheHierarchyManager.listComponent = this.hierarchyComponent;
-    this.nicheHierarchyManager.searchInput = document.getElementById('nicheHierarchySearchInput') as HTMLInputElement;
+    
   }
 
   onOpen(): void {

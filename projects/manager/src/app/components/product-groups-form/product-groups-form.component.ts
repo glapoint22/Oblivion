@@ -22,13 +22,14 @@ export class ProductGroupsFormComponent extends LazyLoad {
     this.productGroupsFormManager.onClose.subscribe(() => {
       this.close();
     })
+
+    this.productGroupsFormManager.searchInputName = 'productGroupsFormSearchInput';
   }
 
   ngAfterViewChecked() {
     this.productGroupsFormManager.searchComponent = this.searchComponent;
     this.productGroupsFormManager.otherListComponent = this.productGroupsService.productListComponent;
     this.productGroupsFormManager.listComponent = this.productGroupsService.formListComponent = this.listComponent;
-    this.productGroupsFormManager.searchInput = document.getElementById('productGroupsFormSearchInput') as HTMLInputElement;
   }
 
   onOpen(): void {

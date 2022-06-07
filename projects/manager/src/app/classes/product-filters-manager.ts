@@ -1,6 +1,9 @@
 import { KeyValue } from "@angular/common";
+import { Directive, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
+import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
+import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { FiltersService } from "../services/filters/filters.service";
 import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
@@ -11,14 +14,14 @@ import { ListUpdateType, SortType } from "./enums";
 import { FiltersFormManager } from "./filters-form-manager";
 import { HierarchyUpdate } from "./hierarchy-update";
 
+@Directive()
 export class ProductFiltersManager extends FiltersFormManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+    @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
+    @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 
 
-    // ====================================================================( CONSTRUCTOR )==================================================================== \\
-
-    constructor(dataService: DataService, sanitizer: DomSanitizer, filtersService: FiltersService, productService: ProductService) {
-        super(dataService, sanitizer, filtersService, productService);
+    ngOnInit() {
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
         this.thisArray = this.filtersService.productArray;
@@ -27,6 +30,16 @@ export class ProductFiltersManager extends FiltersFormManager {
         this.otherSearchList = this.filtersService.formSearchList;
     }
 
+
+    ngAfterViewInit() {
+        this.filtersService.productHierarchyComponent = this.listComponent;
+    }
+
+
+
+    ngAfterViewChecked() {
+        this.otherListComponent = this.filtersService.formHierarchyComponent;
+    }
 
 
     // ==================================================================( ON LIST UPDATE )=================================================================== \\
@@ -116,7 +129,7 @@ export class ProductFiltersManager extends FiltersFormManager {
         return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
     }
 
-    
+
 
     // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
 
