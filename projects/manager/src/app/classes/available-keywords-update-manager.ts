@@ -1,6 +1,9 @@
 import { KeyValue } from "@angular/common";
+import { Directive, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
+import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
+import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { KeywordsService } from "../services/keywords/keywords.service";
 import { ProductService } from "../services/product/product.service";
 import { MenuOptionType, SortType } from "./enums";
@@ -13,15 +16,16 @@ import { ListItem } from "./list-item";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
+@Directive()
 export class AvailableKeywordsUpdateManager extends KeywordsFormUpdateManager {
     public addToSelectedKeywordsButtonDisabled!: boolean;
+    @ViewChild('availableHierarchyComponent') listComponent!: HierarchyComponent;
+    @ViewChild('availableSearchComponent') searchComponent!: MultiColumnListComponent;
 
 
-    // ====================================================================( CONSTRUCTOR )==================================================================== \\
-
-    constructor(dataService: DataService, sanitizer: DomSanitizer, keywordsService: KeywordsService, productService: ProductService) {
-        super(dataService, sanitizer, keywordsService, productService);
+    ngOnInit() {
         this.searchNameWidth = '296px';
+        this.searchInputName = 'availableKeywordsSearchInput';
         this.sortType = SortType.Product;
         this.thisArray = this.keywordsService.productArray;
         this.otherArray = this.keywordsService.formArray;
@@ -42,6 +46,17 @@ export class AvailableKeywordsUpdateManager extends KeywordsFormUpdateManager {
             shortcut: 'Alt+A',
             optionFunction: this.addToSelectedKeywords
         };
+    }
+
+
+    ngAfterViewInit() {
+        this.keywordsService.productHierarchyComponent = this.listComponent;
+    }
+
+
+
+    ngAfterViewChecked() {
+        this.otherListComponent = this.keywordsService.formHierarchyComponent;
     }
 
 
@@ -395,7 +410,7 @@ export class AvailableKeywordsUpdateManager extends KeywordsFormUpdateManager {
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string) : Array<KeyValue<any, any>> {
+    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
         return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
     }
 }

@@ -11,7 +11,9 @@ import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { ProductService } from "../services/product/product.service";
 import { ListItem } from "./list-item";
 import { KeyValue } from "@angular/common";
+import { Directive } from "@angular/core";
 
+@Directive()
 export class KeywordsFormUpdateManager extends HierarchyUpdateManager {
 
 

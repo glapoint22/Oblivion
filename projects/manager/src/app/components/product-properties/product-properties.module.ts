@@ -25,6 +25,8 @@ import { MultiColumnListModule } from '../lists/multi-column-list/multi-column-l
 import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
 import { CounterModule } from '../counter/counter.module';
 import { CheckboxMultiColumnListModule } from '../lists/checkbox-multi-column-list/checkbox-multi-column-list.module';
+import { AvailableKeywordsModule } from '../available-keywords/available-keywords.module';
+import { SelectedKeywordsModule } from '../selected-keywords/selected-keywords.module';
 
 
 @NgModule({
@@ -56,7 +58,9 @@ import { CheckboxMultiColumnListModule } from '../lists/checkbox-multi-column-li
     MultiColumnListModule,
     CheckboxHierarchyModule,
     CounterModule,
-    CheckboxMultiColumnListModule
+    CheckboxMultiColumnListModule,
+    AvailableKeywordsModule,
+    SelectedKeywordsModule
   ],
   exports: [ProductPropertiesComponent]
 })

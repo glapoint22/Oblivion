@@ -15,7 +15,11 @@ import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { KeyValue } from "@angular/common";
 import { ListItem } from "./list-item";
 import { HierarchyItem } from "./hierarchy-item";
+import { Directive, ViewChild } from "@angular/core";
+import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
+import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
 
+@Directive()
 export class SelectedKeywordsUpdateManager extends KeywordsFormUpdateManager {
     // Private
     private addDisabled!: boolean;
@@ -26,11 +30,13 @@ export class SelectedKeywordsUpdateManager extends KeywordsFormUpdateManager {
     public thisArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
     public thisSearchList: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
 
+    @ViewChild('selectedHierarchyComponent') listComponent!: HierarchyComponent;
+    @ViewChild('selectedSearchComponent') searchComponent!: CheckboxMultiColumnListComponent;
 
-    // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, keywordsService: KeywordsService, productService: ProductService) {
-        super(dataService, sanitizer, keywordsService, productService);
+
+
+    ngOnInit() {
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
         this.dataServicePath = 'SelectedKeywords/Groups';
@@ -38,7 +44,14 @@ export class SelectedKeywordsUpdateManager extends KeywordsFormUpdateManager {
         this.childType = 'Custom Keyword';
         this.keywordsService.selectedKeywordsArray = this.thisArray;
         this.keywordsService.selectedKeywordsSearchList = this.thisSearchList;
+        this.searchInputName = 'selectedKeywordsSearchInput';
     }
+
+
+    ngAfterViewInit() {
+        this.keywordsService.selectedHierarchyComponent = this.listComponent;
+    }
+
 
 
     // ======================================================================( ON OPEN )====================================================================== \\

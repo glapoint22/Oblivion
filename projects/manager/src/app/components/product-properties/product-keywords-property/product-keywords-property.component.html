@@ -1,5 +1,5 @@
 <panel [title]="'Keywords'"
-       (onOpen)="availableKeywordsManager.onOpen(); selectedKeywordsManager.onOpen()">
+       (onOpen)="availableKeywords.onOpen(); selectedKeywords.onOpen()">
        
     
     <div style="margin-bottom: 5px; padding-left: 5px; display: flex; justify-content: space-between; font-size: 13px; color: #707070;">
@@ -17,207 +17,25 @@
 
     <div class="property-box-dark" style="display: flex;">
 
+        <!-- Available Keywords -->
         <div style="width: 100%;">
-
-            <!-- Property Box Bar -->
-            <div class="property-box-bar">
-
-                <!-- Search icon -->
-                <icon-button class="search-icon-button"
-                            [icon]="availableKeywordsManager.searchIcon"
-                            [title]="availableKeywordsManager.searchIconButtonTitle"
-                            [isDisabled]="false"
-                            (onOver)="availableKeywordsManager.overButton = $event"
-                            (onClick)="availableKeywordsManager.toggleSearch()">
-                </icon-button>
-
-                <div class="icons">
-                    <!-- Delete icon -->
-                    <icon-button [icon]="'fas fa-trash-alt'"
-                                [title]="availableKeywordsManager.deleteIconButtonTitle"
-                                [isDisabled]="availableKeywordsManager.isDisabled('deleteDisabled')"
-                                (onOver)="availableKeywordsManager.overButton = $event"
-                                (onClick)="availableKeywordsManager.delete()">
-                    </icon-button>
-
-                    <!-- Edit icon -->
-                    <icon-button [icon]="'fas fa-pencil-alt'"
-                                [title]="availableKeywordsManager.editIconButtonTitle"
-                                [isDisabled]="availableKeywordsManager.isDisabled('editDisabled')"
-                                (onOver)="availableKeywordsManager.overButton = $event"
-                                (onClick)="availableKeywordsManager.edit()">
-                    </icon-button>
-
-                    <ng-container *ngIf="!availableKeywordsManager.searchMode">
-                        <!-- Add icon -->
-                        <icon-button [icon]="'fas fa-plus-circle'"
-                                    [title]="availableKeywordsManager.addIconButtonTitle"
-                                    [isDisabled]="availableKeywordsManager.isDisabled('addDisabled')"
-                                    (onOver)="availableKeywordsManager.overButton = $event"
-                                    (onClick)="availableKeywordsManager.add()">
-                        </icon-button>
-        
-                        <!-- Collapse icon -->
-                        <icon-button [icon]="'fas fa-minus-square'"
-                                    [title]="'Collapse'"
-                                    [isDisabled]="availableKeywordsManager.isDisabled('collapseDisabled')"
-                                    (onOver)="availableKeywordsManager.overButton = $event"
-                                    (onClick)="availableKeywordsManager.collapse()">
-                        </icon-button>
-                    </ng-container>
-                </div>
-            </div>
-            
-            <!-- Hierarchy -->
-            <ng-container *ngIf="!availableKeywordsManager.searchMode">
-                <hierarchy #availableHierarchyComponent
-                           [sourceList]="availableKeywordsManager.thisArray"
-                           [options]="availableKeywordsManager.listOptions"
-                           (onListUpdate)="availableKeywordsManager.listUpdate = $event">
-                </hierarchy>
-            </ng-container>
-
-            <!-- Search -->
-            <ng-container *ngIf="availableKeywordsManager.searchMode">
-                
-                <input id="availableKeywordsSearchInput"
-                        placeholder="Search"
-                        (input)="availableKeywordsManager.onSearchInputChange($event.target)">
-
-                <div class="column-name-container">
-                    <div class="column-name">Name</div>
-                    <div class="column-name">Type</div>
-                </div>
-
-                <div class="column-underline-container">
-                    <div class="column-underline"></div>
-                    <div class="column-underline"></div>
-                </div>
-
-
-                <ng-container *ngIf="availableKeywordsManager.thisSearchList.length == 0">
-                    <div class="no-search-results">
-                        No search results available
-                    </div>
-                </ng-container>
-                
-
-                <ng-container *ngIf="availableKeywordsManager.thisSearchList.length > 0">
-                    <multi-column-list #availableSearchComponent
-                                       [sourceList]="availableKeywordsManager.thisSearchList"
-                                       [options]="availableKeywordsManager.searchOptions"
-                                       (onListUpdate)="availableKeywordsManager.searchUpdate = $event">
-                    </multi-column-list>
-                </ng-container>
-            </ng-container>
+            <available-keywords #availableKeywords></available-keywords>
         </div>
 
+        <!-- Add To Selected Keywords Button -->
         <div class="add-to-selected-keywords-button-container">
             <icon-button style="margin-left: -10px;"
                          [icon]="'fa-solid fa-chevron-right'"
                          [title]="'Add to Selected Keywords'"
-                         [isDisabled]="availableKeywordsManager.addToSelectedKeywordsButtonDisabled"
-                         (onOver)="availableKeywordsManager.overButton = $event"
-                         (onClick)="availableKeywordsManager.addToSelectedKeywords()">
+                         [isDisabled]="availableKeywords.addToSelectedKeywordsButtonDisabled"
+                         (onOver)="availableKeywords.overButton = $event"
+                         (onClick)="availableKeywords.addToSelectedKeywords()">
             </icon-button>
         </div>
 
-        
+        <!-- Selected Keywords -->
         <div style="width: 100%;">
-
-            <!-- Property Box Bar -->
-            <div class="property-box-bar">
-
-                <!-- Search icon -->
-                <icon-button class="search-icon-button"
-                            [icon]="selectedKeywordsManager.searchIcon"
-                            [title]="selectedKeywordsManager.searchIconButtonTitle"
-                            [isDisabled]="false"
-                            (onOver)="selectedKeywordsManager.overButton = $event"
-                            (onClick)="selectedKeywordsManager.toggleSearch()">
-                </icon-button>
-
-                <div class="icons">
-                    <!-- Delete icon -->
-                    <icon-button [icon]="'fas fa-trash-alt'"
-                                [title]="selectedKeywordsManager.deleteIconButtonTitle"
-                                [isDisabled]="selectedKeywordsManager.isDisabled('deleteDisabled')"
-                                (onOver)="selectedKeywordsManager.overButton = $event"
-                                (onClick)="selectedKeywordsManager.delete()">
-                    </icon-button>
-
-                    <!-- Edit icon -->
-                    <icon-button [icon]="'fas fa-pencil-alt'"
-                                [title]="selectedKeywordsManager.editIconButtonTitle"
-                                [isDisabled]="selectedKeywordsManager.isDisabled('editDisabled')"
-                                (onOver)="selectedKeywordsManager.overButton = $event"
-                                (onClick)="selectedKeywordsManager.edit()">
-                    </icon-button>
-
-                    <ng-container *ngIf="!selectedKeywordsManager.searchMode">
-                        <!-- Add icon -->
-                        <icon-button [icon]="'fas fa-plus-circle'"
-                                    [title]="selectedKeywordsManager.addIconButtonTitle"
-                                    [isDisabled]="selectedKeywordsManager.isDisabled('addDisabled')"
-                                    (onOver)="selectedKeywordsManager.overButton = $event"
-                                    (onClick)="selectedKeywordsManager.add()">
-                        </icon-button>
-        
-                        <!-- Collapse icon -->
-                        <icon-button [icon]="'fas fa-minus-square'"
-                                    [title]="'Collapse'"
-                                    [isDisabled]="selectedKeywordsManager.isDisabled('collapseDisabled')"
-                                    (onOver)="selectedKeywordsManager.overButton = $event"
-                                    (onClick)="selectedKeywordsManager.collapse()">
-                        </icon-button>
-                    </ng-container>
-                </div>
-            </div>
-            
-            <!-- Hierarchy -->
-            <ng-container *ngIf="!selectedKeywordsManager.searchMode">
-                <checkbox-hierarchy #selectedHierarchyComponent
-                                    [sourceList]="selectedKeywordsManager.thisArray"
-                                    [options]="selectedKeywordsManager.listOptions"
-                                    (onListUpdate)="selectedKeywordsManager.listUpdate = $event">
-                </checkbox-hierarchy>
-            </ng-container>
-
-            <!-- Search -->
-            <ng-container *ngIf="selectedKeywordsManager.searchMode">
-                
-                <input id="selectedKeywordsSearchInput"
-                        placeholder="Search"
-                        (input)="selectedKeywordsManager.onSearchInputChange($event.target)">
-
-                <div class="column-name-container">
-                    <div class="column-name">Name</div>
-                    <div class="column-name">Type</div>
-                </div>
-
-                <div class="column-underline-container">
-                    <div class="column-underline"></div>
-                    <div class="column-underline"></div>
-                </div>
-
-
-                <ng-container *ngIf="selectedKeywordsManager.thisSearchList.length == 0">
-                    <div class="no-search-results">
-                        No search results available
-                    </div>
-                </ng-container>
-                
-
-                <ng-container *ngIf="selectedKeywordsManager.thisSearchList.length > 0">
-                    <checkbox-multi-column-list #selectedSearchComponent
-                                                [parentSearchType]="selectedKeywordsManager.parentSearchType"
-                                                [sourceList]="selectedKeywordsManager.thisSearchList"
-                                                [options]="selectedKeywordsManager.searchOptions"
-                                                (onListUpdate)="selectedKeywordsManager.searchUpdate = $event">
-                    </checkbox-multi-column-list>
-                </ng-container>
-            </ng-container>
+            <selected-keywords #selectedKeywords></selected-keywords>
         </div>
-
     </div>
 </panel>
