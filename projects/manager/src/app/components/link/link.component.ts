@@ -45,7 +45,7 @@ export class LinkComponent extends LazyLoad {
   // -------------------------------------------------------------------------Search----------------------------------------------------------
   public search(searchWords: string) {
     if (this.currentLinkType != LinkType.WebAddress) {
-      this.dataService.get<Array<LinkItem>>(this.apiUrl, [{ key: 'searchWords', value: searchWords }])
+      this.dataService.get<Array<LinkItem>>(this.apiUrl, [{ key: 'searchTerm', value: searchWords }])
         .subscribe((results: Array<LinkItem>) => {
           this.searchResults = results;
         });

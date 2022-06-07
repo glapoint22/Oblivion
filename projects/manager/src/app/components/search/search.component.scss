@@ -1,0 +1,17 @@
+.search-container {
+    position: relative;
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    padding-left: 18px;
+}
+
+.fa-magnifying-glass {
+    position: absolute;
+    top: 7px;
+    left: 4px;
+    font-size: 10px;
+    color: #919191;
+}

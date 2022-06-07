@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { WidgetInspectorView } from '../../classes/enums';
+import { Item } from '../../classes/item';
 import { WidgetService } from '../../services/widget/widget.service';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'widget-inspector',
@@ -16,5 +18,9 @@ export class WidgetInspectorComponent {
   onNewPageClick() {
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Page;
     this.widgetService.page.new();
+  }
+
+  loadPage(page: Item, searchComponent: SearchComponent) {
+    searchComponent.searchInput.nativeElement.value = '';
   }
 }

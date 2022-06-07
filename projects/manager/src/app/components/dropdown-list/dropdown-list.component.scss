@@ -1,0 +1,26 @@
+.list {
+    position: absolute;
+    max-height: 220px;
+    background: #262626;
+    border-radius: 5px;
+    outline: 1px solid #444444;
+    overflow: auto;
+}
+
+.item {
+    height: 22px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    padding: 5px;
+    height: 22px;
+    color: #b4b4b4;
+    cursor: pointer;
+}
+
+.highlight {
+    background: rgba(255, 187, 0, 0.08);
+    color: #dddddd;
+}

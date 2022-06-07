@@ -1,0 +1,7 @@
+<div #listElement class="hide list" [ngClass]="{'show': show}" (transitionend)="onHide()" [style.top.px]="top" [style.left.px]="left"
+    [style.width.px]="width">
+    <div *ngFor="let item of list; let i = index" class="item" (click)="onItemSelect()"
+        (mousemove)="itemIndex = i" [ngClass]="{'highlight': i == itemIndex}">
+        {{item.name}}
+    </div>
+</div>
