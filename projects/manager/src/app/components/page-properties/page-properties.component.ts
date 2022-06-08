@@ -13,6 +13,7 @@ import { WidgetService } from '../../services/widget/widget.service';
 export class PagePropertiesComponent implements OnInit {
   public pageTypes: Array<KeyValue<string, number>> = new Array<KeyValue<string, number>>();
   public selectedPageType!: KeyValue<string, number>;
+  public pageType = PageType;
   
 
   constructor(public widgetService: WidgetService, private dataService: DataService, private sanitizer: DomSanitizer) { }

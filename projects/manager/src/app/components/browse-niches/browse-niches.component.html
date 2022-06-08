@@ -1,0 +1,23 @@
+<div class="icon-buttons-container">
+    <div class="icons">
+        <!-- Delete icon -->
+        <icon-button [icon]="'fas fa-trash-alt'"
+                     [title]="deleteIconButtonTitle"
+                     [isDisabled]="isDisabled('deleteDisabled')"
+                     (onOver)="overButton = $event"
+                     (onClick)="delete()">
+        </icon-button>
+
+        
+    </div>
+</div>
+
+
+<!-- List -->
+<div class="modal-list-container">
+    <list #listComponent
+        [sourceList]="thisArray"
+        [options]="listOptions"
+        (onListUpdate)="listUpdate = $event">
+    </list>
+</div>
