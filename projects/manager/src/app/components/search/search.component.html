@@ -1,4 +1,4 @@
 <div #searchContainer class="search-container">
-    <input #searchInput [placeholder]="placeholderText" spellcheck="false">
+    <input #searchInput [placeholder]="placeholderText" spellcheck="false" (click)="$event.stopPropagation()">
     <i class="fa-solid fa-magnifying-glass"></i>
 </div>
