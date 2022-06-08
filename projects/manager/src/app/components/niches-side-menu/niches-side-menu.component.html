@@ -1,0 +1,11 @@
+<div class="backdrop hide" [ngClass]="{'show': show}" (transitionend)="onHide()"></div>
+
+<div #base
+     class="base translate-start"
+     [ngClass]="{'translate-end': show}"
+     (transitionend)="onHide()"
+     (mouseenter)="overNichesSideMenu.next(true)"
+     (mouseleave)="overNichesSideMenu.next(false)">
+    
+    <side-menu-niches #sideMenuNiches [base]="base"></side-menu-niches>
+</div>

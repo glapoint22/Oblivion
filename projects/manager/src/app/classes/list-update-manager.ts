@@ -147,10 +147,6 @@ export class ListUpdateManager {
                 ]
             }
         }
-
-        // window.setTimeout(()=> {
-        //     this.addIconButtonTitle = 'Add ' + this.itemType;
-        // })
     }
 
 

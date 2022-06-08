@@ -16,7 +16,7 @@ import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarch
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 
 @Directive()
-export class KeywordsFormUpdateManager extends HierarchyUpdateManager {
+export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 

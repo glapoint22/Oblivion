@@ -11,7 +11,7 @@ import { ListItem } from "./list-item";
 import { ListUpdateManager } from "./list-update-manager";
 
 @Directive()
-export class ProductGroupsFormUpdateManager extends ListUpdateManager {
+export class FormProductGroupsUpdateManager extends ListUpdateManager {
     @ViewChild('listComponent') listComponent!: ListComponent;
     @ViewChild('searchComponent') searchComponent!: ListComponent;
 

@@ -11,13 +11,13 @@ import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
-import { KeywordsFormUpdateManager } from "./keywords-form-update-manager";
+import { FormKeywordsUpdateManager } from "./form-keywords-update-manager";
 import { ListItem } from "./list-item";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
 @Directive()
-export class AvailableKeywordsUpdateManager extends KeywordsFormUpdateManager {
+export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
     public addToSelectedKeywordsButtonDisabled!: boolean;
     @ViewChild('availableHierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('availableSearchComponent') searchComponent!: MultiColumnListComponent;

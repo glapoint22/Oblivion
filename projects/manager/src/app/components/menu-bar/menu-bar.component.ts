@@ -4,7 +4,7 @@ import { LazyLoadingService, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
 import { MenuOptionType } from '../../classes/enums';
 import { MenuBarOption } from '../../classes/menu-bar-option';
-import { NicheHierarchyComponent } from '../../components/niche-hierarchy/niche-hierarchy.component';
+import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 
 @Component({
@@ -15,17 +15,17 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 export class MenuBarComponent {
   // Private
   private menuOpen!: boolean;
-  private nicheHierarchyOpen!: boolean;
+  private nichesSideMenuOpen!: boolean;
   private eventListenersAdded!: boolean;
   private overMenuListener!: Subscription;
   private menuOpenListener!: Subscription;
   private contextMenu!: ContextMenuComponent;
-  private overNicheHierarchyListener!: Subscription;
+  private overNichesSideMenuListener!: Subscription;
 
   // Public
   public overMenu!: boolean;
-  public overNicheHierarchy!: boolean;
-  public nicheHierarchy!: NicheHierarchyComponent;
+  public overNichesSideMenu!: boolean;
+  public nichesSideMenu!: NichesSideMenuComponent;
   public selectedMenuBarOption!: MenuBarOption;
   public menuBarOptions: Array<MenuBarOption> = [
 
@@ -250,35 +250,35 @@ export class MenuBarComponent {
   }
 
 
-  async openNicheHierarchy() {
-    if (!this.nicheHierarchyOpen) {
-      this.nicheHierarchyOpen = true;
+  async openNichesSideMenu() {
+    if (!this.nichesSideMenuOpen) {
+      this.nichesSideMenuOpen = true;
       this.addEventListeners();
 
       this.lazyLoadingService.load(async () => {
-        const { NicheHierarchyComponent } = await import('../../components/niche-hierarchy/niche-hierarchy.component');
-        const { NicheHierarchyModule } = await import('../../components/niche-hierarchy/niche-hierarchy.module');
+        const { NichesSideMenuComponent } = await import('../niches-side-menu/niches-side-menu.component');
+        const { NichesSideMenuModule } = await import('../niches-side-menu/niches-side-menu.module');
         return {
-          component: NicheHierarchyComponent,
-          module: NicheHierarchyModule
+          component: NichesSideMenuComponent,
+          module: NichesSideMenuModule
         }
-      }, SpinnerAction.None).then((nicheHierarchy: NicheHierarchyComponent) => {
-        this.nicheHierarchy = nicheHierarchy;
-        this.overNicheHierarchyListener = nicheHierarchy.overNicheHierarchy.subscribe((overNicheHierarchy: boolean) => {
-          this.overNicheHierarchy = overNicheHierarchy;
+      }, SpinnerAction.None).then((nichesSideMenu: NichesSideMenuComponent) => {
+        this.nichesSideMenu = nichesSideMenu;
+        this.overNichesSideMenuListener = nichesSideMenu.overNichesSideMenu.subscribe((overNichesSideMenu: boolean) => {
+          this.overNichesSideMenu = overNichesSideMenu;
         })
       })
 
     } else {
-      this.closeNicheHierarchy();
+      this.closeNichesSideMenu();
     }
   }
 
 
-  closeNicheHierarchy() {
-    this.nicheHierarchy.close();
-    this.nicheHierarchyOpen = false;
-    this.overNicheHierarchyListener.unsubscribe();
+  closeNichesSideMenu() {
+    this.nichesSideMenu.close();
+    this.nichesSideMenuOpen = false;
+    this.overNichesSideMenuListener.unsubscribe();
     this.removeEventListeners();
   }
 
@@ -323,25 +323,25 @@ export class MenuBarComponent {
   onMouseDown = () => {
     if (!this.overMenu && this.menuOpen) this.closeMenu();
 
-    if (this.nicheHierarchyOpen) {
+    if (this.nichesSideMenuOpen) {
       // If the niche hierarchy is being displayed
-      if (this.nicheHierarchy.hierarchyComponent) {
-        if (!this.overNicheHierarchy &&
-          !this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
-          !this.nicheHierarchy.hierarchyComponent.listManager.editedItem &&
-          !this.nicheHierarchy.hierarchyComponent.listManager.contextMenuOpen &&
-          !this.nicheHierarchy.hierarchyComponent.listManager.promptOpen) {
-          this.closeNicheHierarchy();
+      if (this.nichesSideMenu.sideMenuNiches.listComponent) {
+        if (!this.overNichesSideMenu &&
+          !this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
+          !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.editedItem &&
+          !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.contextMenuOpen &&
+          !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.promptOpen) {
+          this.closeNichesSideMenu();
         }
 
         // If the search text is being displayed
       } else {
-        if (!this.overNicheHierarchy &&
-          !this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
-          !this.nicheHierarchy.searchComponent.listManager.editedItem &&
-          !this.nicheHierarchy.searchComponent.listManager.contextMenuOpen &&
-          !this.nicheHierarchy.searchComponent.listManager.promptOpen) {
-          this.closeNicheHierarchy();
+        if (!this.overNichesSideMenu &&
+          !this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
+          !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.editedItem &&
+          !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.contextMenuOpen &&
+          !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.promptOpen) {
+          this.closeNichesSideMenu();
         }
       }
     }
@@ -352,24 +352,24 @@ export class MenuBarComponent {
     if (e.key === 'Escape') {
       if (this.menuOpen) this.closeMenu();
 
-      if (this.nicheHierarchyOpen) {
+      if (this.nichesSideMenuOpen) {
         // If the niche hierarchy is being displayed
-        if (this.nicheHierarchy.hierarchyComponent) {
+        if (this.nichesSideMenu.sideMenuNiches.listComponent) {
 
-          if (!this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
-            !this.nicheHierarchy.hierarchyComponent.listManager.editedItem &&
-            !this.nicheHierarchy.hierarchyComponent.listManager.contextMenuOpen &&
-            !this.nicheHierarchy.hierarchyComponent.listManager.promptOpen) {
-            this.closeNicheHierarchy();
+          if (!this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
+            !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.editedItem &&
+            !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.contextMenuOpen &&
+            !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.promptOpen) {
+            this.closeNichesSideMenu();
           }
 
           // If the search text is being displayed
         } else {
-          if (!this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
-            !this.nicheHierarchy.searchComponent.listManager.editedItem &&
-            !this.nicheHierarchy.searchComponent.listManager.contextMenuOpen &&
-            !this.nicheHierarchy.searchComponent.listManager.promptOpen) {
-            this.closeNicheHierarchy();
+          if (!this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
+            !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.editedItem &&
+            !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.contextMenuOpen &&
+            !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.promptOpen) {
+            this.closeNichesSideMenu();
           }
         }
       }
@@ -380,21 +380,21 @@ export class MenuBarComponent {
   onInnerWindowBlur = () => {
     if (this.menuOpen) this.closeMenu();
 
-    if (this.nicheHierarchyOpen) {
+    if (this.nichesSideMenuOpen) {
       // If the niche hierarchy is being displayed
-      if (this.nicheHierarchy.hierarchyComponent) {
-        if (!this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
-          !this.nicheHierarchy.hierarchyComponent.listManager.promptOpen) {
-          this.closeNicheHierarchy();
-          this.nicheHierarchy.hierarchyComponent.listManager.editedItem = null!;
+      if (this.nichesSideMenu.sideMenuNiches.listComponent) {
+        if (!this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
+          !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.promptOpen) {
+          this.closeNichesSideMenu();
+          this.nichesSideMenu.sideMenuNiches.listComponent.listManager.editedItem = null!;
         }
 
         // If the search text is being displayed
       } else {
-        if (!this.nicheHierarchy.nicheHierarchyManager.moveFormOpen &&
-          !this.nicheHierarchy.searchComponent.listManager.promptOpen) {
-          this.closeNicheHierarchy();
-          this.nicheHierarchy.searchComponent.listManager.editedItem = null!;
+        if (!this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
+          !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.promptOpen) {
+          this.closeNichesSideMenu();
+          this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.editedItem = null!;
         }
       }
     }

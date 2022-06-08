@@ -12,8 +12,12 @@ import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { Product } from "./product";
+import { Directive, ViewChild } from "@angular/core";
+import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
+import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 
-export class NicheHierarchyUpdateManager extends HierarchyUpdateManager {
+@Directive()
+export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     // Private
     private onGrandchildrenLoad: Subject<void> = new Subject<void>();
 
@@ -24,11 +28,21 @@ export class NicheHierarchyUpdateManager extends HierarchyUpdateManager {
     public grandchildSearchType: string = 'Product';
     public grandchildDataServicePath: string = 'Products';
 
+    // Decorators
+    @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
+    @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
+
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
     constructor(dataService: DataService, sanitizer: DomSanitizer, private lazyLoadingService: LazyLoadingService, private productService: ProductService) {
         super(dataService, sanitizer);
+        
+    }
+
+
+
+    ngOnInit() {
         this.sortType = SortType.Product;
         this.itemType = 'Niche';
         this.childType = 'Sub Niche';
@@ -40,6 +54,7 @@ export class NicheHierarchyUpdateManager extends HierarchyUpdateManager {
         this.searchTypeWidth = '78px';
         this.collapseHierarchyOnOpen = false;
         this.selectLastSelectedItemOnOpen = true;
+        this.searchInputName = 'nicheHierarchySearchInput';
 
         // ---------- HIERARCHY OPTIONS ---------- \\
 
@@ -69,6 +84,18 @@ export class NicheHierarchyUpdateManager extends HierarchyUpdateManager {
             optionFunction: this.openMoveForm
         }
     }
+
+
+
+    // =======================================================================( ADD )========================================================================= \\
+
+    add() {
+        this.listComponent.add(null!, this.isParent);
+        this.addIconButtonTitle = 'Add';
+        this.editIconButtonTitle = 'Rename';
+        this.deleteIconButtonTitle = 'Delete';
+    }
+
 
 
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
