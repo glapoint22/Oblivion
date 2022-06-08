@@ -36,6 +36,8 @@ import { CarouselWidgetPropertiesComponent } from '../carousel-widget-properties
 import { CounterModule } from '../counter/counter.module';
 import { LinkPropertyComponent } from '../link-property/link-property.component';
 import { SearchModule } from '../search/search.module';
+import { BrowseNichesComponent } from '../browse-niches/browse-niches.component';
+import { ListModule } from '../lists/list/list.module';
 
 
 
@@ -68,7 +70,8 @@ import { SearchModule } from '../search/search.module';
     ProductSliderWidgetPropertiesComponent,
     VideoPropertiesEditorComponent,
     CarouselWidgetPropertiesComponent,
-    LinkPropertyComponent
+    LinkPropertyComponent,
+    BrowseNichesComponent
   ],
   imports: [
     CommonModule,
@@ -79,7 +82,8 @@ import { SearchModule } from '../search/search.module';
     NumberFieldModule,
     IconButtonModule,
     CounterModule,
-    SearchModule
+    SearchModule,
+    ListModule
   ],
   exports: [WidgetInspectorComponent]
 })

@@ -236,8 +236,8 @@ export class ListUpdateManager {
 
     // =======================================================================( ADD )========================================================================= \\
 
-    add() {
-        this.listComponent.add();
+    add(id?: number, name?: string) {
+        this.listComponent.add(id, name);
         this.addIconButtonTitle = 'Add';
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';

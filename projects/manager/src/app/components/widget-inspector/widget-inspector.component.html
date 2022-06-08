@@ -1,26 +1,16 @@
 <!-- Property Box -->
 <div class="property-box-light">
-    <div class="icon-container" (click)="onNewPageClick()">
-        <i class="fas fa-plus-circle"></i>
-    </div>
-    <search #search [apiUrl]="'Products/Link'" [placeholderText]="'Search for a page'"
-        (onItemSelect)="loadPage($event, search)"></search>
+    
+    
 
 
     <!-- Container for icons -->
-    <!-- <div class="icons-container">
+    <div class="icons-container">
         
         
         
         
-        <div style="position: relative;">
-            <input style="max-width: 165px; padding-left: 18px;" placeholder="Search for a page">
-            <i class="fa-solid fa-magnifying-glass" style="    position: absolute;
-            top: 7px;
-            left: 4px;
-            font-size: 10px;
-            color: #919191;"></i>
-        </div>
+        
 
 
         
@@ -43,9 +33,10 @@
                 <i class="fas fa-trash-alt"></i>
             </div>
         </div>
-    </div> -->
+    </div>
 
-
+    <search #search [apiUrl]="'Pages/Link'" [placeholderText]="'Search for a page'"
+    (onItemSelect)="loadPage($event, search)"></search>
 
     <!-- Page, Row, Column, and Widget buttons -->
     <div class="grooved-container" *ngIf="widgetService.page && widgetService.page.pageContent">

@@ -1,4 +1,10 @@
 <div class="properties">
+    <!-- Page Name -->
+    <div class="property">
+        <div class="label" style="margin-right: 9px;">Name:</div>
+        <input [(ngModel)]="widgetService.page.name" (input)="widgetService.page.save()">
+    </div>
+
     <!-- Page type -->
     <div class="property">
         <div class="label" style="margin-right: 15px;">Type:</div>
@@ -12,13 +18,15 @@
             </select>
         </div>
     </div>
+    
+    <ng-container *ngIf="selectedPageType.value == pageType.Browse">
+        <div>Niches:</div>
+        <search [apiUrl]="'Products/Link'" [placeholderText]="'Add a niche'" (onItemSelect)="browseNiches.add($event.id, $event.name)"></search>
+        <browse-niches #browseNiches></browse-niches>
+    </ng-container>
 
 
-    <!-- Page Name -->
-    <div class="property">
-        <div class="label" style="margin-right: 9px;">Name:</div>
-        <input [(ngModel)]="widgetService.page.name" (input)="widgetService.page.save()">
-    </div>
+    
 
 
 
