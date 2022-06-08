@@ -39,14 +39,14 @@
 </div>
 
 
-<!-- Hierarchy -->
+<!-- List -->
 <ng-container *ngIf="!searchMode">
     <div class="modal-list-container">
         <list #listComponent
-                   [sourceList]="thisArray"
-                   [options]="listOptions"
-                   (onListUpdate)="listUpdate = $event">
-    </list>
+              [sourceList]="thisArray"
+              [options]="listOptions"
+              (onListUpdate)="listUpdate = $event">
+        </list>
     </div>
 </ng-container>
 
@@ -66,9 +66,9 @@
         
         <ng-container *ngIf="thisSearchList.length > 0">
             <list #searchComponent
-                               [sourceList]="thisSearchList"
-                               [options]="searchOptions"
-                               (onListUpdate)="searchUpdate = $event">
+                  [sourceList]="thisSearchList"
+                  [options]="searchOptions"
+                  (onListUpdate)="searchUpdate = $event">
             </list>
         </ng-container>
     </div>
