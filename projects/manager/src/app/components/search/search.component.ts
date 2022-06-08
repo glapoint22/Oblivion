@@ -12,7 +12,7 @@ import { DropdownListComponent } from '../dropdown-list/dropdown-list.component'
 export class SearchComponent {
   @Input() apiUrl!: string;
   @Input() placeholderText!: string;
-  @Output() selectedItem: EventEmitter<Item> = new EventEmitter();
+  @Output() onItemSelect: EventEmitter<Item> = new EventEmitter();
   @ViewChild('searchContainer') searchContainer!: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   private dropdownList!: DropdownListComponent;
@@ -21,28 +21,28 @@ export class SearchComponent {
 
   // ------------------------------------------------------------------------ Ng After View Init ----------------------------------------------------------
   ngAfterViewInit() {
-    fromEvent(this.searchInput.nativeElement, 'input',)
+    fromEvent(this.searchInput.nativeElement, 'input')
       .pipe(
         debounceTime(200),
         switchMap(input => {
           const searchTerm = (input.target as HTMLInputElement).value;
 
-          if (searchTerm == '') return of([]);
+          if (searchTerm == '') {
+            this.dropdownList.close();
+            this.dropdownList = null!;
+            return of([]);
+          }
           return this.dataService.get<Array<Item>>('api/' + this.apiUrl, [{ key: 'searchTerm', value: searchTerm }])
         })
       ).subscribe((results: Array<Item>) => {
-        if (!this.dropdownList) {
-          if (results.length > 0) {
-            this.loadDropdownList(results);
-          }
 
+        // See if dropdown list is already loaded
+        if (!document.getElementById('dropdownList')) {
+          this.loadDropdownList(results);
+
+          // The dropdown list is already loaded
         } else {
-          if (results.length > 0) {
-            this.dropdownList.list = results;
-          } else {
-            this.dropdownList.close();
-            this.dropdownList = null!;
-          }
+          if (this.dropdownList) this.dropdownList.list = results;
         }
       })
   }
@@ -70,8 +70,25 @@ export class SearchComponent {
         this.dropdownList.callback = (item: Item) => {
           this.searchInput.nativeElement.value = item.name!;
           this.dropdownList = null!;
-          this.selectedItem.emit(item);
+          this.searchInput.nativeElement.focus();
+          this.onItemSelect.emit(item);
         }
       });
+  }
+
+
+
+  // ------------------------------------------------------------------------------ Clear -------------------------------------------------------------
+  public clear() {
+    this.searchInput.nativeElement.value = '';
+  }
+
+
+
+  // -------------------------------------------------------------------------- Ng On Destroy ----------------------------------------------------------
+  ngOnDestroy() {
+    if (this.dropdownList) {
+      this.dropdownList.close();
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
 import { Item } from '../../classes/item';
 
@@ -9,7 +9,7 @@ import { Item } from '../../classes/item';
 })
 export class DropdownListComponent extends LazyLoad {
   @ViewChild('listElement') listElement!: ElementRef<HTMLElement>;
-  public list: Array<Item> = [];
+  public list!: Array<Item>;
   public top!: number;
   public left!: number;
   public width!: number;
@@ -19,6 +19,8 @@ export class DropdownListComponent extends LazyLoad {
 
   // ------------------------------------------------------------------------ On Arrow Down ----------------------------------------------------------
   onArrowDown(e: KeyboardEvent): void {
+    if (!this.list || this.list.length == 0) return;
+
     const input = e.target as HTMLInputElement;
     const scrollOffset = this.listElement.nativeElement.scrollTop % 22;
 
@@ -50,6 +52,8 @@ export class DropdownListComponent extends LazyLoad {
 
   // ------------------------------------------------------------------------- On Arrow Up ----------------------------------------------------------
   onArrowUp(e: KeyboardEvent): void {
+    if (!this.list || this.list.length == 0) return;
+
     const input = e.target as HTMLInputElement;
     const scrollOffset = 22 - this.listElement.nativeElement.scrollTop % 22;
 
@@ -82,7 +86,8 @@ export class DropdownListComponent extends LazyLoad {
 
 
   // ------------------------------------------------------------------------- On Item Select ----------------------------------------------------------
-  onItemSelect() {
+  onItemSelect(event: Event) {
+    event.stopPropagation();
     this.callback(this.list[this.itemIndex]);
     this.close()
   }
@@ -94,6 +99,16 @@ export class DropdownListComponent extends LazyLoad {
 
   // ----------------------------------------------------------------------------- On Enter --------------------------------------------------------------
   onEnter(e: KeyboardEvent): void {
-    this.onItemSelect();
+    if (!this.list || this.list.length == 0) return;
+    this.onItemSelect(e);
+  }
+
+
+
+
+  // --------------------------------------------------------------------------- On Window Click -----------------------------------------------------------
+  @HostListener('window:click')
+  onWindowClick() {
+    this.close();
   }
 }

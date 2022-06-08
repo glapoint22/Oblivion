@@ -1,8 +1,10 @@
 <!-- Property Box -->
 <div class="property-box-light">
-
+    <div class="icon-container" (click)="onNewPageClick()">
+        <i class="fas fa-plus-circle"></i>
+    </div>
     <search #search [apiUrl]="'Products/Link'" [placeholderText]="'Search for a page'"
-        (selectedItem)="loadPage($event, search)"></search>
+        (onItemSelect)="loadPage($event, search)"></search>
 
 
     <!-- Container for icons -->

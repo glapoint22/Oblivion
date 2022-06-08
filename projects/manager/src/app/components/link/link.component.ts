@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DataService, LazyLoad, LazyLoadingService, Link, LinkType } from 'common';
+import { LazyLoad, Link, LinkType } from 'common';
+import { Item } from '../../classes/item';
 import { LinkItem } from '../../classes/link-item';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'link-property',
@@ -9,52 +11,53 @@ import { LinkItem } from '../../classes/link-item';
 })
 export class LinkComponent extends LazyLoad {
   @ViewChild('linkInput') linkInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('search') search!: SearchComponent;
   public link!: Link;
   public linkType = LinkType;
-  public searchResults!: Array<LinkItem>;
   public apiUrl!: string;
   public callback!: Function;
   public currentLinkType!: LinkType;
-  public currentUrl!: string;
-
-
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) { super(lazyLoadingService) }
+  public isApplyButtonDisabled!: boolean;
+  private linkItem!: LinkItem;
 
 
 
   // ---------------------------------------------------------------------Ng On Init----------------------------------------------------
   public ngOnInit(): void {
     super.ngOnInit();
-    this.setApiUrl();
+
     this.currentLinkType = this.link.linkType;
-    this.currentUrl = this.link.url;
+    if (this.currentLinkType != LinkType.None) {
+      this.isApplyButtonDisabled = true;
+    }
+
+    this.setApiUrl();
   }
 
 
 
 
+  // -------------------------------------------------------------------Ng After View Init-------------------------------------------------
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
     if (this.currentLinkType == LinkType.WebAddress) {
+      this.linkInput.nativeElement.value = this.link.url;
       this.linkInput.nativeElement.select();
+    } else if (this.currentLinkType == LinkType.Page || this.currentLinkType == LinkType.Product) {
+      this.search.searchInput.nativeElement.value = this.link.name;
     }
   }
 
 
-  // -------------------------------------------------------------------------Search----------------------------------------------------------
-  public search(searchWords: string) {
-    if (this.currentLinkType != LinkType.WebAddress) {
-      this.dataService.get<Array<LinkItem>>(this.apiUrl, [{ key: 'searchTerm', value: searchWords }])
-        .subscribe((results: Array<LinkItem>) => {
-          this.searchResults = results;
-        });
-    } else {
-      this.currentUrl = searchWords;
-    }
+
+
+
+  // -------------------------------------------------------------------On Search Item Select-------------------------------------------------
+  onSearchItemSelect(item: Item) {
+    this.linkItem = item as LinkItem;
+    this.isApplyButtonDisabled = false;
   }
-
-
 
 
 
@@ -62,9 +65,7 @@ export class LinkComponent extends LazyLoad {
   // ------------------------------------------------------------------------Set Link Type------------------------------------------------------
   public setLinkType(linkType: LinkType) {
     this.currentLinkType = linkType;
-    this.linkInput.nativeElement.value = '';
-    this.currentUrl = null!;
-    this.searchResults = [];
+    this.linkItem = null!;
     this.setApiUrl();
   }
 
@@ -75,7 +76,11 @@ export class LinkComponent extends LazyLoad {
 
   // -------------------------------------------------------------------------Set Api Url-------------------------------------------------------
   public setApiUrl() {
-    this.apiUrl = this.link.linkType == LinkType.Page ? 'api/Pages/Link' : 'api/Products/Link';
+    if (this.currentLinkType == LinkType.Page) {
+      this.apiUrl = 'Pages/Link';
+    } else if (this.currentLinkType == LinkType.Product) {
+      this.apiUrl = 'Products/Link';
+    }
   }
 
 
@@ -87,12 +92,22 @@ export class LinkComponent extends LazyLoad {
 
 
   // ---------------------------------------------------------------------------Set Link----------------------------------------------------------
-  public setLink(url: string) {
-    // Retrun if there are search results
-    if (this.searchResults && this.searchResults.length > 0) return;
-    
-    this.link.url = url;
+  public setLink() {
+    if (document.getElementById('dropdownList')) return;
+
     this.link.linkType = this.currentLinkType;
+
+    if (this.link.linkType == LinkType.WebAddress) {
+      this.link.url = this.linkInput.nativeElement.value;
+    } else if (this.link.linkType == LinkType.Page || this.link.linkType == LinkType.Product) {
+      this.link.url = this.linkItem.link;
+      this.link.name = this.linkItem.name!;
+    } else if (this.link.linkType == LinkType.None) {
+      this.link.url = null!;
+      this.link.name = null!;
+    }
+
+
     this.close();
     if (this.callback) this.callback();
   }
@@ -102,10 +117,8 @@ export class LinkComponent extends LazyLoad {
 
   // ---------------------------------------------------------------------------On Escape----------------------------------------------------------
   onEscape(): void {
-    if (this.searchResults && this.searchResults.length > 0) {
-      this.searchResults = [];
-    } else {
-      super.onEscape();
-    }
+    if (document.getElementById('dropdownList')) return;
+
+    super.onEscape();
   }
 }

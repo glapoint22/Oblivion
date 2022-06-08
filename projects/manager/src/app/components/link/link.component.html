@@ -12,7 +12,8 @@
         <label class="radio">
             <div>None</div>
             <input type="radio" name="link-option" [checked]="link.linkType == linkType.None"
-                (change)="setLinkType(linkType.None)" (keydown.enter)="setLink(linkInput.value)">
+                (change)="setLinkType(linkType.None); isApplyButtonDisabled = false" (keydown.enter)="setLink()">
+
             <span class="checkmark"></span>
         </label>
 
@@ -21,7 +22,7 @@
         <label class="radio">
             <div>Page</div>
             <input type="radio" name="link-option" [checked]="link.linkType == linkType.Page"
-                (change)="setLinkType(linkType.Page)">
+                (change)="setLinkType(linkType.Page); search ? search.clear() : null; isApplyButtonDisabled = true">
             <span class="checkmark"></span>
         </label>
 
@@ -30,7 +31,7 @@
         <label class="radio">
             <div>Product</div>
             <input type="radio" name="link-option" [checked]="link.linkType == linkType.Product"
-                (change)="setLinkType(linkType.Product)">
+                (change)="setLinkType(linkType.Product); search ? search.clear() : null; isApplyButtonDisabled = true">
             <span class="checkmark"></span>
         </label>
 
@@ -39,30 +40,33 @@
         <label class="radio">
             <div>Web Address</div>
             <input type="radio" name="link-option" [checked]="link.linkType == linkType.WebAddress"
-                (change)="setLinkType(linkType.WebAddress)">
+                (change)="setLinkType(linkType.WebAddress); isApplyButtonDisabled = true">
             <span class="checkmark"></span>
         </label>
 
-        <!-- Input -->
-        <div style="position: relative">
-            <div style="display: flex; justify-content: center; align-items: center;">
-                
-                <!-- Input -->
-                <input #linkInput (input)="search(linkInput.value)" [disabled]="currentLinkType == linkType.None"
-                    (keydown.enter)="setLink(linkInput.value)" [value]="link.url ? link.url : ''"
-                    style="width: 200px;">
+        <!-- Inputs and button container -->
+        <div class="inputs-button-container">
 
-                <!-- Apply Button -->
-                <button class="dark-button" (click)="setLink(linkInput.value)"
-                    [disabled]="currentUrl == null && currentLinkType != linkType.None">Apply</button>
+            <div style="width: 196px;">
+                <!-- Search -->
+                <search #search *ngIf="currentLinkType == linkType.Product || currentLinkType == linkType.Page"
+                    [apiUrl]="apiUrl"
+                    [placeholderText]="currentLinkType == linkType.Product ? 'Search for a product' : 'Search for a page'"
+                    (input)="isApplyButtonDisabled = true" (onItemSelect)="onSearchItemSelect($event);"
+                    (keydown.enter)="setLink()">
+                </search>
+
+                <!-- Link Input -->
+                <input #linkInput *ngIf="currentLinkType != linkType.Product && currentLinkType != linkType.Page"
+                    [disabled]="currentLinkType == linkType.None" (keydown.enter)="setLink()"
+                    (input)="linkInput.value != '' ? isApplyButtonDisabled = false : isApplyButtonDisabled = true"
+                    [placeholder]="currentLinkType == linkType.WebAddress ? 'Enter a web address' : ''"
+                    spellcheck="false">
             </div>
 
-            <div *ngIf="searchResults && searchResults.length > 0" class="list">
-                <div *ngFor="let result of searchResults" class="list-item"
-                    (click)="currentUrl = linkInput.value = result.link; searchResults = []; linkInput.focus();">
-                    {{result.name}}
-                </div>
-            </div>
+
+            <!-- Apply Button -->
+            <button class="dark-button" [disabled]="isApplyButtonDisabled" (click)="setLink()">Apply</button>
         </div>
     </div>
 </div>
