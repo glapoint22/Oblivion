@@ -28,6 +28,7 @@ import { CheckboxMultiColumnListModule } from '../lists/checkbox-multi-column-li
 import { AvailableKeywordsModule } from '../available-keywords/available-keywords.module';
 import { SelectedKeywordsModule } from '../selected-keywords/selected-keywords.module';
 import { ProductProductGroupsModule } from '../product-product-groups/product-product-groups.module';
+import { ProductFiltersModule } from '../product-filters/product-filters.module';
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import { ProductProductGroupsModule } from '../product-product-groups/product-pr
     CheckboxMultiColumnListModule,
     AvailableKeywordsModule,
     SelectedKeywordsModule,
-    ProductProductGroupsModule
+    ProductProductGroupsModule,
+    ProductFiltersModule
   ],
   exports: [ProductPropertiesComponent]
 })
