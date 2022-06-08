@@ -1,11 +1,9 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from 'common';
 import { PageType } from 'widgets';
-import { NicheListUpdateManager } from '../../classes/niche-list-update-manager';
 import { WidgetService } from '../../services/widget/widget.service';
-import { ListComponent } from '../lists/list/list.component';
 
 @Component({
   selector: 'page-properties',
@@ -15,8 +13,7 @@ import { ListComponent } from '../lists/list/list.component';
 export class PagePropertiesComponent implements OnInit {
   public pageTypes: Array<KeyValue<string, number>> = new Array<KeyValue<string, number>>();
   public selectedPageType!: KeyValue<string, number>;
-  public nichesList: NicheListUpdateManager = new NicheListUpdateManager(this.dataService, this.sanitizer);
-  @ViewChild('listComponent') listComponent!: ListComponent;
+  
 
   constructor(public widgetService: WidgetService, private dataService: DataService, private sanitizer: DomSanitizer) { }
 
@@ -42,16 +39,5 @@ export class PagePropertiesComponent implements OnInit {
 
 
 
-  ngAfterViewChecked() {
-    this.nichesList.listComponent = this.listComponent;
-  }
-
-  onOpen(): void {
-    this.nichesList.onOpen();
-  }
-
-
-  onEscape(): void {
-    this.nichesList.onEscape();
-  }
+  
 }

@@ -24,42 +24,7 @@
 
 
 
-    <!-- <ng-container *ngIf="page.displayType == pageDisplayType.Browse || page.displayType == pageDisplayType.Search || page.displayType == pageDisplayType.Product"> -->
-    <!-- <div style="font-size: 12px;">Niches:</div> -->
-
-    <div class="icon-buttons-container">
-
-
-
-        <div class="icons">
-            <!-- Delete icon -->
-            <icon-button [icon]="'fas fa-trash-alt'"
-                [title]="nichesList.deleteIconButtonTitle"
-                [isDisabled]="nichesList.isDisabled('deleteDisabled')"
-                (onOver)="nichesList.overButton = $event"
-                (onClick)="nichesList.delete()">
-            </icon-button>
-
-
-
-
-            <!-- Add icon -->
-            <icon-button [icon]="'fas fa-plus-circle'"
-                         [title]="nichesList.addIconButtonTitle"
-                         [isDisabled]="nichesList.isDisabled('addDisabled')"
-                         (onOver)="nichesList.overButton = $event"
-                         (onClick)="nichesList.add()">
-            </icon-button>
-
-        </div>
-    </div>
-
-
-
-    <div class="modal-list-container">
-        <list #listComponent [sourceList]="nichesList.thisArray" 
-        (onListUpdate)="nichesList.listUpdate = $event"></list>
-    </div>
+    
 
 
 

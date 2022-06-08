@@ -1,7 +1,16 @@
 <!-- Property Box -->
 <div class="property-box-light">
+
+    <search #search [apiUrl]="'Products/Link'" [placeholderText]="'Search for a page'"
+        (selectedItem)="loadPage($event, search)"></search>
+
+
     <!-- Container for icons -->
-    <div class="icons-container">
+    <!-- <div class="icons-container">
+        
+        
+        
+        
         <div style="position: relative;">
             <input style="max-width: 165px; padding-left: 18px;" placeholder="Search for a page">
             <i class="fa-solid fa-magnifying-glass" style="    position: absolute;
@@ -12,50 +21,54 @@
         </div>
 
 
-        <!-- Icons -->
+        
         <div class="icons" style="margin: 0; padding: 0;">
-            <!-- New Page Icon -->
+            
             <div class="icon-container" (click)="onNewPageClick()">
                 <i class="fas fa-plus-circle"></i>
             </div>
 
 
-            <!-- Duplicate Page Icon -->
+            
             <div class="icon-container">
                 <i class="fas fa-clone"></i>
             </div>
 
 
 
-            <!-- Delete Page Icon -->
+            
             <div class="icon-container">
                 <i class="fas fa-trash-alt"></i>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
 
     <!-- Page, Row, Column, and Widget buttons -->
     <div class="grooved-container" *ngIf="widgetService.page && widgetService.page.pageContent">
         <!-- Page -->
-        <button class="button-left" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"
+        <button class="button-left"
+            [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"
             (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Page">Page</button>
 
         <!-- Row -->
-        <button class="button-center" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Row}"
+        <button class="button-center"
+            [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Row}"
             (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Row"
             [disabled]="!widgetService.selectedWidget">Row</button>
 
 
         <!-- Column -->
-        <button class="button-center" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Column}"
+        <button class="button-center"
+            [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Column}"
             (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Column"
             [disabled]="!widgetService.selectedWidget">Column</button>
 
 
         <!-- Widget -->
-        <button class="button-right" [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+        <button class="button-right"
+            [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
             (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Widget"
             [disabled]="!widgetService.selectedWidget">Widget</button>
     </div>
@@ -64,6 +77,8 @@
     <!-- Properties -->
     <page-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Page"></page-properties>
     <row-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Row"></row-properties>
-    <column-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Column"></column-properties>
-    <widget-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Widget"></widget-properties>
+    <column-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Column">
+    </column-properties>
+    <widget-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Widget">
+    </widget-properties>
 </div>
