@@ -27,6 +27,8 @@ import { CounterModule } from '../counter/counter.module';
 import { CheckboxMultiColumnListModule } from '../lists/checkbox-multi-column-list/checkbox-multi-column-list.module';
 import { AvailableKeywordsModule } from '../available-keywords/available-keywords.module';
 import { SelectedKeywordsModule } from '../selected-keywords/selected-keywords.module';
+import { ProductProductGroupsModule } from '../product-product-groups/product-product-groups.module';
+import { ProductFiltersModule } from '../product-filters/product-filters.module';
 
 
 @NgModule({
@@ -60,7 +62,9 @@ import { SelectedKeywordsModule } from '../selected-keywords/selected-keywords.m
     CounterModule,
     CheckboxMultiColumnListModule,
     AvailableKeywordsModule,
-    SelectedKeywordsModule
+    SelectedKeywordsModule,
+    ProductProductGroupsModule,
+    ProductFiltersModule
   ],
   exports: [ProductPropertiesComponent]
 })

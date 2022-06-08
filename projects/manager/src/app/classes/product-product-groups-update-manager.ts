@@ -9,14 +9,14 @@ import { ListItem } from "./list-item";
 import { FormProductGroupsUpdateManager } from "./form-product-groups-update-manager";
 
 @Directive()
-export class ProductGroupsUpdateManager extends FormProductGroupsUpdateManager {
+export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
     @ViewChild('listComponent') listComponent!: ListComponent;
     @ViewChild('searchComponent') searchComponent!: ListComponent;
 
 
     ngOnInit() {
-        // super.ngOnInit();
+        super.ngOnInit();
         this.sortType = SortType.Product;
         this.thisArray = this.productGroupsService.productArray;
         this.otherArray = this.productGroupsService.formArray;

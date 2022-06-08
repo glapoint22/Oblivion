@@ -24,6 +24,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
     ngOnInit() {
+        super.ngOnInit();
         this.searchNameWidth = '296px';
         this.searchInputName = 'availableKeywordsSearchInput';
         this.sortType = SortType.Product;
