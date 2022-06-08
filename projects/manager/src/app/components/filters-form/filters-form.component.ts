@@ -10,12 +10,11 @@ import { FormFiltersComponent } from '../form-filters/form-filters.component';
 export class FiltersFormComponent extends LazyLoad {
   @ViewChild('formFilters') formFilters!: FormFiltersComponent;
 
+
+  
   ngAfterViewInit() {
     super.ngAfterViewInit();
-
-    this.formFilters.onClose.subscribe(() => {
-      this.close();
-    })
+    this.formFilters.onClose.subscribe(() => this.close());
   }
 
 

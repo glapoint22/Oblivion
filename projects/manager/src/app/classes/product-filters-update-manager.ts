@@ -7,11 +7,11 @@ import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
 import { ListUpdateType, SortType } from "./enums";
-import { FiltersFormUpdateManager } from "./filters-form-update-manager";
+import { FormFiltersUpdateManager } from "./form-filters-update-manager";
 import { HierarchyUpdate } from "./hierarchy-update";
 
 @Directive()
-export class ProductFiltersUpdateManager extends FiltersFormUpdateManager {
+export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;

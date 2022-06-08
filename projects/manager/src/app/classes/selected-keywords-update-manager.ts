@@ -8,7 +8,7 @@ import { ListUpdateType, MenuOptionType, SortType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
-import { KeywordsFormUpdateManager } from "./keywords-form-update-manager";
+import { FormKeywordsUpdateManager } from "./form-keywords-update-manager";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
@@ -20,7 +20,7 @@ import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarch
 import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
 
 @Directive()
-export class SelectedKeywordsUpdateManager extends KeywordsFormUpdateManager {
+export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // Private
     private addDisabled!: boolean;
     private editDisabled!: boolean;

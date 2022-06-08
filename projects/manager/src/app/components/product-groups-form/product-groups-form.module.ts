@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductGroupsFormComponent } from './product-groups-form.component';
-import { IconButtonModule } from '../icon-button/icon-button.module';
-import { ListModule } from '../lists/list/list.module';
+import { FormProductGroupsModule } from '../form-product-groups/form-product-groups.module';
 
 
 @NgModule({
   declarations: [ProductGroupsFormComponent],
   imports: [
     CommonModule,
-    IconButtonModule,
-    ListModule
+    FormProductGroupsModule
   ],
   exports:[ProductGroupsFormComponent]
 })

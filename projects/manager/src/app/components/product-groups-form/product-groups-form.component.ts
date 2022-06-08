@@ -1,10 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, LazyLoad, LazyLoadingService } from 'common';
-import { ProductGroupsFormUpdateManager } from '../../classes/product-groups-form-update-manager';
-import { ProductGroupsService } from '../../services/product-groups/product-groups.service';
-import { ProductService } from '../../services/product/product.service';
-import { ListComponent } from '../lists/list/list.component';
+import { LazyLoad } from 'common';
+import { FormProductGroupsComponent } from '../form-product-groups/form-product-groups.component';
 
 @Component({
   selector: 'product-groups-form',
@@ -12,31 +8,20 @@ import { ListComponent } from '../lists/list/list.component';
   styleUrls: ['./product-groups-form.component.scss']
 })
 export class ProductGroupsFormComponent extends LazyLoad {
-  @ViewChild('listComponent') listComponent!: ListComponent;
-  @ViewChild('searchComponent') searchComponent!: ListComponent;
-  public productGroupsFormManager: ProductGroupsFormUpdateManager = new ProductGroupsFormUpdateManager(this.dataService, this.sanitizer, this.productGroupsService, this.productService);
-  
-  
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private productGroupsService: ProductGroupsService, private productService: ProductService) {
-    super(lazyLoadingService);
-    this.productGroupsFormManager.onClose.subscribe(() => {
-      this.close();
-    })
+  @ViewChild('formProductGroups') formProductGroups!: FormProductGroupsComponent;
 
-    this.productGroupsFormManager.searchInputName = 'productGroupsFormSearchInput';
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    this.formProductGroups.onClose.subscribe(() => this.close());
   }
 
-  ngAfterViewChecked() {
-    this.productGroupsFormManager.searchComponent = this.searchComponent;
-    this.productGroupsFormManager.otherListComponent = this.productGroupsService.productListComponent;
-    this.productGroupsFormManager.listComponent = this.productGroupsService.formListComponent = this.listComponent;
-  }
 
   onOpen(): void {
-    this.productGroupsFormManager.onOpen();
+    this.formProductGroups.onOpen();
   }
 
   onEscape(): void {
-    this.productGroupsFormManager.onEscape();
+    this.formProductGroups.onEscape();
   }
 }

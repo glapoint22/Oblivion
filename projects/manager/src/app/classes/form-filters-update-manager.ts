@@ -12,7 +12,7 @@ import { HierarchyUpdate } from "./hierarchy-update";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 
 @Directive()
-export class FiltersFormUpdateManager extends HierarchyUpdateManager {
+export class FormFiltersUpdateManager extends HierarchyUpdateManager {
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 

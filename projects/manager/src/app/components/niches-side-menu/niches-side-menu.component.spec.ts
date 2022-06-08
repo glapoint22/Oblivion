@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NicheHierarchyComponent } from './niche-hierarchy.component';
+import { NichesSideMenuComponent } from './niches-side-menu.component';
 
-describe('NicheHierarchyComponent', () => {
-  let component: NicheHierarchyComponent;
-  let fixture: ComponentFixture<NicheHierarchyComponent>;
+describe('NichesSideMenuComponent', () => {
+  let component: NichesSideMenuComponent;
+  let fixture: ComponentFixture<NichesSideMenuComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NicheHierarchyComponent ]
+      declarations: [ NichesSideMenuComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NicheHierarchyComponent);
+    fixture = TestBed.createComponent(NichesSideMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

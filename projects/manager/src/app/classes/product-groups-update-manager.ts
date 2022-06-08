@@ -6,10 +6,10 @@ import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
 import { ListUpdateType, SortType } from "./enums";
 import { ListItem } from "./list-item";
-import { ProductGroupsFormUpdateManager } from "./product-groups-form-update-manager";
+import { FormProductGroupsUpdateManager } from "./form-product-groups-update-manager";
 
 @Directive()
-export class ProductGroupsUpdateManager extends ProductGroupsFormUpdateManager {
+export class ProductGroupsUpdateManager extends FormProductGroupsUpdateManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
     @ViewChild('listComponent') listComponent!: ListComponent;
     @ViewChild('searchComponent') searchComponent!: ListComponent;
