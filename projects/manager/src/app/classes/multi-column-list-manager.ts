@@ -129,7 +129,7 @@ export class MultiColumnListManager extends ListManager {
                     // If the edited name has NOT changed
                 } else {
                     
-                    //If case was changed. i.e. lower case to upper case
+                    //If the case was changed. i.e. lower case to upper case
                     if (trimmedEditedValue != this.editableValue.name.trim()) {
                         this.editableValue.name = trimmedEditedValue!;
                         this.addEditUpdate(this.editedItem as MultiColumnItem);

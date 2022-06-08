@@ -1,5 +1,5 @@
 <panel [title]="'Filters'"
-       (onOpen)="productFiltersManager.onOpen()">
+       (onOpen)="onOpen()">
        
     <div class="property-box-dark">
 
@@ -8,65 +8,65 @@
 
             <!-- Search icon -->
             <icon-button class="search-icon-button"
-                         [icon]="productFiltersManager.searchIcon"
-                         [title]="productFiltersManager.searchIconButtonTitle"
+                         [icon]="searchIcon"
+                         [title]="searchIconButtonTitle"
                          [isDisabled]="false"
-                         (onOver)="productFiltersManager.overButton = $event"
-                         (onClick)="productFiltersManager.toggleSearch()">
+                         (onOver)="overButton = $event"
+                         (onClick)="toggleSearch()">
             </icon-button>
 
             <div class="icons">
                 <!-- Delete icon -->
                 <icon-button [icon]="'fas fa-trash-alt'"
-                             [title]="productFiltersManager.deleteIconButtonTitle"
-                             [isDisabled]="productFiltersManager.isDisabled('deleteDisabled')"
-                             (onOver)="productFiltersManager.overButton = $event"
-                             (onClick)="productFiltersManager.delete()">
+                             [title]="deleteIconButtonTitle"
+                             [isDisabled]="isDisabled('deleteDisabled')"
+                             (onOver)="overButton = $event"
+                             (onClick)="delete()">
                 </icon-button>
 
                 <!-- Edit icon -->
                 <icon-button [icon]="'fas fa-pencil-alt'"
-                             [title]="productFiltersManager.editIconButtonTitle"
-                             [isDisabled]="productFiltersManager.isDisabled('editDisabled')"
-                             (onOver)="productFiltersManager.overButton = $event"
-                             (onClick)="productFiltersManager.edit()">
+                             [title]="editIconButtonTitle"
+                             [isDisabled]="isDisabled('editDisabled')"
+                             (onOver)="overButton = $event"
+                             (onClick)="edit()">
                 </icon-button>
 
-                <ng-container *ngIf="!productFiltersManager.searchMode">
+                <ng-container *ngIf="!searchMode">
                     <!-- Add icon -->
                     <icon-button [icon]="'fas fa-plus-circle'"
-                                 [title]="productFiltersManager.addIconButtonTitle"
-                                 [isDisabled]="productFiltersManager.isDisabled('addDisabled')"
-                                 (onOver)="productFiltersManager.overButton = $event"
-                                 (onClick)="productFiltersManager.add()">
+                                 [title]="addIconButtonTitle"
+                                 [isDisabled]="isDisabled('addDisabled')"
+                                 (onOver)="overButton = $event"
+                                 (onClick)="add()">
                     </icon-button>
     
                     <!-- Collapse icon -->
                     <icon-button [icon]="'fas fa-minus-square'"
                                  [title]="'Collapse'"
-                                 [isDisabled]="productFiltersManager.isDisabled('collapseDisabled')"
-                                 (onOver)="productFiltersManager.overButton = $event"
-                                 (onClick)="productFiltersManager.collapse()">
+                                 [isDisabled]="isDisabled('collapseDisabled')"
+                                 (onOver)="overButton = $event"
+                                 (onClick)="collapse()">
                     </icon-button>
                 </ng-container>
             </div>
         </div>
         
         <!-- Hierarchy -->
-        <ng-container *ngIf="!productFiltersManager.searchMode">
+        <ng-container *ngIf="!searchMode">
             <checkbox-hierarchy #hierarchyComponent
-                                [sourceList]="productFiltersManager.thisArray"
-                                [options]="productFiltersManager.listOptions"
-                                (onListUpdate)="productFiltersManager.listUpdate = $event">
+                                [sourceList]="thisArray"
+                                [options]="listOptions"
+                                (onListUpdate)="listUpdate = $event">
             </checkbox-hierarchy>
         </ng-container>
 
         <!-- Search -->
-        <ng-container *ngIf="productFiltersManager.searchMode">
+        <ng-container *ngIf="searchMode">
             
             <input id="productFiltersSearchInput"
                     placeholder="Search"
-                    (input)="productFiltersManager.onSearchInputChange($event.target)">
+                    (input)="onSearchInputChange($event.target)">
 
             <div class="column-name-container">
                 <div class="column-name">Name</div>
@@ -79,19 +79,19 @@
             </div>
 
 
-            <ng-container *ngIf="productFiltersManager.thisSearchList.length == 0">
+            <ng-container *ngIf="thisSearchList.length == 0">
                 <div class="no-search-results">
                     No search results available
                 </div>
             </ng-container>
             
 
-            <ng-container *ngIf="productFiltersManager.thisSearchList.length > 0">
+            <ng-container *ngIf="thisSearchList.length > 0">
                 <checkbox-multi-column-list #searchComponent
-                                    [parentSearchType]="productFiltersManager.parentSearchType"
-                                   [sourceList]="productFiltersManager.thisSearchList"
-                                   [options]="productFiltersManager.searchOptions"
-                                   (onListUpdate)="productFiltersManager.searchUpdate = $event">
+                                    [parentSearchType]="parentSearchType"
+                                   [sourceList]="thisSearchList"
+                                   [options]="searchOptions"
+                                   (onListUpdate)="searchUpdate = $event">
                 </checkbox-multi-column-list>
             </ng-container>
         </ng-container>

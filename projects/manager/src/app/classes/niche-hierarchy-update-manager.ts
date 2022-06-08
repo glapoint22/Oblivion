@@ -13,7 +13,7 @@ import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { Product } from "./product";
 
-export class NicheHierarchyManager extends HierarchyUpdateManager {
+export class NicheHierarchyUpdateManager extends HierarchyUpdateManager {
     // Private
     private onGrandchildrenLoad: Subject<void> = new Subject<void>();
 

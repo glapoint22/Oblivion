@@ -1,4 +1,5 @@
 import { KeyValue } from "@angular/common";
+import { Directive } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
@@ -10,20 +11,21 @@ import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
 import { SearchResultItem } from "./search-result-item";
 
+@Directive()
 export class ListUpdateManager {
     // private
+    private _itemType!: string;
     private _listUpdate!: ListUpdate;
     private _searchListUpdate!: ListUpdate;
 
     // Public
-    // public itemType!: string;
     public sortType!: SortType;
     public searchMode!: boolean;
     public dataServicePath!: string;
+    public searchInputName!: string;
     public parentSearchType!: string;
     public addIconButtonTitle!: string
     public listComponent!: ListComponent;
-    public searchInput!: HTMLInputElement;
     public searchComponent!: ListComponent;
     public otherListComponent!: ListComponent;
     public listUpdateService!: ListUpdateService;
@@ -44,17 +46,8 @@ export class ListUpdateManager {
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
     public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
-
-    
-    private _itemType! : string;
-    public get itemType() : string {
-        return this._itemType;
-    }
-    public set itemType(v : string) {
-        this._itemType = v;
-        this.addIconButtonTitle = 'Add ' + v;
-    }
-    
+    public get itemType(): string {return this._itemType;}
+    public set itemType(v: string) {this._itemType = v; this.addIconButtonTitle = 'Add ' + v;}
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -174,9 +167,10 @@ export class ListUpdateManager {
                     })
                 })
         } else {
-
+            
             // If the list is set to select the last selected item on open
             if (this.selectLastSelectedItemOnOpen) {
+                
                 // Check to see if an item was selected before it last closed
                 const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
                 // If an item was selected
@@ -187,7 +181,7 @@ export class ListUpdateManager {
 
                 // If it's not set to select the last selected item
             } else {
-
+                
                 // Clear all selections
                 this.thisArray.forEach(x => {
                     x.selectType = null!;
@@ -210,10 +204,11 @@ export class ListUpdateManager {
             this.searchIconButtonTitle = 'Back to List';
             this.thisSearchList.splice(0, this.thisSearchList.length);
             window.setTimeout(() => {
-                this.searchInput!.focus();
-                this.searchInputSubscription = fromEvent(this.searchInput, 'input').pipe(debounceTime(500)).subscribe(() => {
-                    if (this.searchInput.value.length > 1) {
-                        this.getSearchResults(this.searchInput.value);
+                const searchInput = document.getElementById(this.searchInputName) as HTMLInputElement;
+                searchInput.focus();
+                this.searchInputSubscription = fromEvent(searchInput, 'input').pipe(debounceTime(500)).subscribe(() => {
+                    if (searchInput.value.length > 1) {
+                        this.getSearchResults(searchInput.value);
                     }
                 });
             })
@@ -247,6 +242,9 @@ export class ListUpdateManager {
 
     add() {
         this.listComponent.add();
+        this.addIconButtonTitle = 'Add';
+        this.editIconButtonTitle = 'Rename';
+        this.deleteIconButtonTitle = 'Delete';
     }
 
 
@@ -256,9 +254,16 @@ export class ListUpdateManager {
     edit() {
         if (!this.searchMode) {
             this.listComponent.edit();
+            this.addIconButtonTitle = 'Add';
+            this.editIconButtonTitle = 'Rename';
+            this.deleteIconButtonTitle = 'Delete';
         } else {
 
-            if (this.thisSearchList.length > 0) this.searchComponent.edit();
+            if (this.thisSearchList.length > 0) {
+                this.searchComponent.edit();
+                this.editIconButtonTitle = 'Rename';
+                this.deleteIconButtonTitle = 'Delete';
+            }
         }
     }
 
@@ -287,6 +292,7 @@ export class ListUpdateManager {
         if (listUpdate.type == ListUpdateType.UnselectedItems) this.onUnselectedItem();
         if (listUpdate.type == ListUpdateType.Delete) this.onItemDelete(listUpdate.deletedItems![0]);
         if (listUpdate.type == ListUpdateType.DeletePrompt) this.onDeletePrompt(listUpdate.deletedItems![0]);
+        if (listUpdate.type == ListUpdateType.DoubleClick) this.onItemDoubleClick();
     }
 
 
@@ -326,6 +332,16 @@ export class ListUpdateManager {
         this.searchOptions.deletePrompt!.title = 'Delete ' + this.itemType;
         this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.itemType;
         this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.itemType;
+    }
+
+
+
+    // ===============================================================( ON ITEM DOUBLE CLICK )================================================================ \\
+
+    onItemDoubleClick() {
+        this.addIconButtonTitle = 'Add';
+        this.editIconButtonTitle = 'Rename';
+        this.deleteIconButtonTitle = 'Delete';
     }
 
 

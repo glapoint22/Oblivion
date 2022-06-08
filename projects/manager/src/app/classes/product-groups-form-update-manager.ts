@@ -1,4 +1,5 @@
 import { KeyValue } from "@angular/common";
+import { Directive } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { ProductGroupsService } from "../services/product-groups/product-groups.service";
@@ -8,7 +9,11 @@ import { SortType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListUpdateManager } from "./list-update-manager";
 
-export class ProductGroupsFormManager extends ListUpdateManager {
+@Directive()
+export class ProductGroupsFormUpdateManager extends ListUpdateManager {
+
+    // ====================================================================( CONSTRUCTOR )==================================================================== \\
+
     constructor(dataService: DataService, sanitizer: DomSanitizer, public productGroupsService: ProductGroupsService, public productService: ProductService) {
         super(dataService, sanitizer);
         this.itemType = 'Product Group';
@@ -20,7 +25,6 @@ export class ProductGroupsFormManager extends ListUpdateManager {
         this.thisSearchList = this.productGroupsService.formSearchList;
         this.otherSearchList = this.productGroupsService.productSearchList;
     }
-
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 

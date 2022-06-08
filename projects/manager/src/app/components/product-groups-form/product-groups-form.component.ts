@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService } from 'common';
-import { ProductGroupsFormManager } from '../../classes/product-groups-form-manager';
+import { ProductGroupsFormUpdateManager } from '../../classes/product-groups-form-update-manager';
 import { ProductGroupsService } from '../../services/product-groups/product-groups.service';
 import { ProductService } from '../../services/product/product.service';
 import { ListComponent } from '../lists/list/list.component';
@@ -14,7 +14,7 @@ import { ListComponent } from '../lists/list/list.component';
 export class ProductGroupsFormComponent extends LazyLoad {
   @ViewChild('listComponent') listComponent!: ListComponent;
   @ViewChild('searchComponent') searchComponent!: ListComponent;
-  public productGroupsFormManager: ProductGroupsFormManager = new ProductGroupsFormManager(this.dataService, this.sanitizer, this.productGroupsService, this.productService);
+  public productGroupsFormManager: ProductGroupsFormUpdateManager = new ProductGroupsFormUpdateManager(this.dataService, this.sanitizer, this.productGroupsService, this.productService);
   
   
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private productGroupsService: ProductGroupsService, private productService: ProductService) {
@@ -22,13 +22,14 @@ export class ProductGroupsFormComponent extends LazyLoad {
     this.productGroupsFormManager.onClose.subscribe(() => {
       this.close();
     })
+
+    this.productGroupsFormManager.searchInputName = 'productGroupsFormSearchInput';
   }
 
   ngAfterViewChecked() {
     this.productGroupsFormManager.searchComponent = this.searchComponent;
     this.productGroupsFormManager.otherListComponent = this.productGroupsService.productListComponent;
     this.productGroupsFormManager.listComponent = this.productGroupsService.formListComponent = this.listComponent;
-    this.productGroupsFormManager.searchInput = document.getElementById('productGroupsFormSearchInput') as HTMLInputElement;
   }
 
   onOpen(): void {

@@ -776,12 +776,13 @@ export class ListManager {
 
   commitAddEdit() {
     this.addEditVerificationInProgress = false;
-
+    
     // Update the name property
     this.editedItem.name = this.editedItem.htmlItem!.nativeElement.innerText.trim()!;
 
     // As long as the list is sortable
     if (this.sortable) {
+      
       // Sort the list
       this.sort(this.editedItem)!
 
@@ -821,7 +822,7 @@ export class ListManager {
 
           // If we were NOT adding a new item
         } else {
-
+          
           // As long as the edited name is different from what it was before the edit
           // if (trimmedEditedItem != this.editedItem.name!.trim()) {
 
@@ -865,7 +866,7 @@ export class ListManager {
             if (this.sortable) {
 
               // Sort the list
-              this.sort(this.editedItem)!
+              this.sort(this.editedItem);
 
               // If the list is NOT sortable
             } else {
@@ -881,9 +882,13 @@ export class ListManager {
           // If the edited name has NOT changed
         } else {
 
-          //If case was changed. i.e. lower case to upper case
+          //If the case was changed. i.e. lower case to upper case
           if (trimmedEditedItem != this.editedItem.name!.trim()) {
             this.editedItem.name = trimmedEditedItem;
+
+            if (this.sortable) this.sort(this.editedItem);
+
+
             this.addEditUpdate(this.editedItem);
           }
 

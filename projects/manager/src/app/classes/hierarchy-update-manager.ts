@@ -149,6 +149,9 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     addParent() {
         this.listComponent.listManager.selectedItem = null!
         this.listComponent.add();
+        this.addIconButtonTitle = 'Add';
+        this.editIconButtonTitle = 'Rename';
+        this.deleteIconButtonTitle = 'Delete';
     }
 
 
@@ -824,6 +827,20 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             name: child.name,
             hierarchyGroupID: 1,
             hidden: false,
+        }
+    }
+
+
+
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+
+    getOtherItem(x: ListItem) {
+        return {
+            id: x.id,
+            name: x.name,
+            hierarchyGroupID: 0,
+            hidden: false,
+            arrowDown: false,
         }
     }
 

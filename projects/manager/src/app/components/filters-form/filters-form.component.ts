@@ -1,8 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService } from 'common';
-import { FiltersFormManager } from '../../classes/filters-form-manager';
+import { FiltersFormUpdateManager } from '../../classes/filters-form-update-manager';
 import { FiltersService } from '../../services/filters/filters.service';
+import { ProductService } from '../../services/product/product.service';
 import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
 import { MultiColumnListComponent } from '../lists/multi-column-list/multi-column-list.component';
 
@@ -14,21 +15,23 @@ import { MultiColumnListComponent } from '../lists/multi-column-list/multi-colum
 export class FiltersFormComponent extends LazyLoad {
   @ViewChild('hierarchyComponent') hierarchyComponent!: HierarchyComponent;
   @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
-  public filtersFormManager: FiltersFormManager = new FiltersFormManager(this.dataService, this.sanitizer, this.filtersService);
+  public filtersFormManager: FiltersFormUpdateManager = new FiltersFormUpdateManager(this.dataService, this.sanitizer, this.filtersService, this.productService);
   
   
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private filtersService: FiltersService) {
+  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private filtersService: FiltersService, private productService: ProductService) {
     super(lazyLoadingService);
     this.filtersFormManager.onClose.subscribe(() => {
       this.close();
     })
+
+    this.filtersFormManager.searchInputName = 'filtersFormSearchInput';
   }
 
   ngAfterViewChecked() {
     this.filtersFormManager.searchComponent = this.searchComponent;
     this.filtersFormManager.otherListComponent = this.filtersService.productHierarchyComponent;
     this.filtersFormManager.listComponent = this.filtersService.formHierarchyComponent = this.hierarchyComponent;
-    this.filtersFormManager.searchInput = document.getElementById('filtersFormSearchInput') as HTMLInputElement;
+    
   }
 
   onOpen(): void {

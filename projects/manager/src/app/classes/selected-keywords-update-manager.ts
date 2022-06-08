@@ -8,15 +8,19 @@ import { ListUpdateType, MenuOptionType, SortType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
-import { KeywordsFormManager } from "./keywords-form-manager";
+import { KeywordsFormUpdateManager } from "./keywords-form-update-manager";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { KeyValue } from "@angular/common";
 import { ListItem } from "./list-item";
 import { HierarchyItem } from "./hierarchy-item";
+import { Directive, ViewChild } from "@angular/core";
+import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
+import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
 
-export class SelectedKeywordsManager extends KeywordsFormManager {
+@Directive()
+export class SelectedKeywordsUpdateManager extends KeywordsFormUpdateManager {
     // Private
     private addDisabled!: boolean;
     private editDisabled!: boolean;
@@ -26,11 +30,13 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     public thisArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
     public thisSearchList: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
 
+    @ViewChild('selectedHierarchyComponent') listComponent!: HierarchyComponent;
+    @ViewChild('selectedSearchComponent') searchComponent!: CheckboxMultiColumnListComponent;
 
-    // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, keywordsService: KeywordsService, productService: ProductService) {
-        super(dataService, sanitizer, keywordsService, productService);
+
+
+    ngOnInit() {
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
         this.dataServicePath = 'SelectedKeywords/Groups';
@@ -38,7 +44,14 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.childType = 'Custom Keyword';
         this.keywordsService.selectedKeywordsArray = this.thisArray;
         this.keywordsService.selectedKeywordsSearchList = this.thisSearchList;
+        this.searchInputName = 'selectedKeywordsSearchInput';
     }
+
+
+    ngAfterViewInit() {
+        this.keywordsService.selectedHierarchyComponent = this.listComponent;
+    }
+
 
 
     // ======================================================================( ON OPEN )====================================================================== \\
@@ -98,9 +111,6 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         }
 
         super.add();
-        this.addIconButtonTitle = 'Add';
-        this.editIconButtonTitle = 'Edit';
-        this.deleteIconButtonTitle = 'Delete';
         this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
@@ -117,9 +127,6 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
         this.listComponent.listManager.editable = true;
         super.addParent();
         this.deleteDisabled = true;
-        this.addIconButtonTitle = 'Add';
-        this.editIconButtonTitle = 'Edit';
-        this.deleteIconButtonTitle = 'Delete';
         this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
@@ -130,18 +137,12 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     // =======================================================================( EDIT )======================================================================== \\
 
     edit() {
+        super.edit();
         if (!this.searchMode) {
-            this.addIconButtonTitle = 'Add';
-            this.editIconButtonTitle = 'Rename';
-            this.deleteIconButtonTitle = 'Delete';
-            this.listComponent.edit();
             this.thisArray.forEach(x => x.forProduct && x != this.listComponent.listManager.editedItem ? x.color = '#6e5000' : null);
         } else {
 
             if (this.thisSearchList.length > 0) {
-                this.editIconButtonTitle = 'Rename';
-                this.deleteIconButtonTitle = 'Delete';
-                this.searchComponent.edit();
                 this.thisSearchList.forEach(x => {
                     x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[0].color = '#6e5000' : null;
                     x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
@@ -158,7 +159,6 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     onListUpdate(hierarchyUpdate: CheckboxListUpdate) {
         super.onListUpdate(hierarchyUpdate);
         if (hierarchyUpdate.type == ListUpdateType.CheckboxChange) this.onItemCheckboxChange(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.DoubleClick) this.onItemDoubleClick();
     }
 
 
@@ -344,9 +344,7 @@ export class SelectedKeywordsManager extends KeywordsFormManager {
     onItemDoubleClick() {
         // As long as we're double clicking on a custom item
         if (this.listComponent.listManager.editedItem != null) {
-            this.addIconButtonTitle = 'Add';
-            this.editIconButtonTitle = 'Rename';
-            this.deleteIconButtonTitle = 'Delete';
+            super.onItemDoubleClick();
             this.thisArray.forEach(x => x.forProduct && x != this.listComponent.listManager.editedItem ? x.color = '#6e5000' : null);
         }
     }

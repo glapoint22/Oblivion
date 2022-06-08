@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService } from 'common';
 import { Subject } from 'rxjs';
-import { NicheHierarchyManager } from '../../classes/niche-hierarchy-manager';
+import { NicheHierarchyUpdateManager } from '../../classes/niche-hierarchy-update-manager';
 import { ProductService } from '../../services/product/product.service';
 import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
 import { MultiColumnListComponent } from '../lists/multi-column-list/multi-column-list.component';
@@ -15,7 +15,7 @@ import { MultiColumnListComponent } from '../lists/multi-column-list/multi-colum
 export class NicheHierarchyComponent extends LazyLoad {
   // Public
   public overNicheHierarchy: Subject<boolean> = new Subject<boolean>();
-  public nicheHierarchyManager: NicheHierarchyManager = new NicheHierarchyManager(this.dataService, this.sanitizer, this.lazyLoadingService, this.productService);
+  public nicheHierarchyManager: NicheHierarchyUpdateManager = new NicheHierarchyUpdateManager(this.dataService, this.sanitizer, this.lazyLoadingService, this.productService);
 
   // Decorators
   @ViewChild('hierarchyComponent') hierarchyComponent!: HierarchyComponent;
@@ -27,12 +27,14 @@ export class NicheHierarchyComponent extends LazyLoad {
     private sanitizer: DomSanitizer,
     private productService: ProductService) {
     super(lazyLoadingService);
+
+    this.nicheHierarchyManager.searchInputName = 'nicheHierarchySearchInput';
   }
 
   ngAfterViewChecked() {
     this.nicheHierarchyManager.searchComponent = this.searchComponent;
     this.nicheHierarchyManager.listComponent = this.hierarchyComponent;
-    this.nicheHierarchyManager.searchInput = document.getElementById('nicheHierarchySearchInput') as HTMLInputElement;
+    
   }
 
   onOpen(): void {
