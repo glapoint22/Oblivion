@@ -1,11 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, LazyLoad, LazyLoadingService } from 'common';
-import { FiltersFormUpdateManager } from '../../classes/filters-form-update-manager';
-import { FiltersService } from '../../services/filters/filters.service';
-import { ProductService } from '../../services/product/product.service';
-import { HierarchyComponent } from '../hierarchies/hierarchy/hierarchy.component';
-import { MultiColumnListComponent } from '../lists/multi-column-list/multi-column-list.component';
+import { LazyLoad } from 'common';
+import { FormFiltersComponent } from '../form-filters/form-filters.component';
 
 @Component({
   selector: 'filters-form',
@@ -13,32 +8,22 @@ import { MultiColumnListComponent } from '../lists/multi-column-list/multi-colum
   styleUrls: ['./filters-form.component.scss']
 })
 export class FiltersFormComponent extends LazyLoad {
-  @ViewChild('hierarchyComponent') hierarchyComponent!: HierarchyComponent;
-  @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
-  public filtersFormManager: FiltersFormUpdateManager = new FiltersFormUpdateManager(this.dataService, this.sanitizer, this.filtersService, this.productService);
-  
-  
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private filtersService: FiltersService, private productService: ProductService) {
-    super(lazyLoadingService);
-    this.filtersFormManager.onClose.subscribe(() => {
+  @ViewChild('formFilters') formFilters!: FormFiltersComponent;
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+
+    this.formFilters.onClose.subscribe(() => {
       this.close();
     })
-
-    this.filtersFormManager.searchInputName = 'filtersFormSearchInput';
   }
 
-  ngAfterViewChecked() {
-    this.filtersFormManager.searchComponent = this.searchComponent;
-    this.filtersFormManager.otherListComponent = this.filtersService.productHierarchyComponent;
-    this.filtersFormManager.listComponent = this.filtersService.formHierarchyComponent = this.hierarchyComponent;
-    
-  }
 
   onOpen(): void {
-    this.filtersFormManager.onOpen();
+    this.formFilters.onOpen();
   }
 
   onEscape(): void {
-    this.filtersFormManager.onEscape();
+    this.formFilters.onEscape();
   }
 }

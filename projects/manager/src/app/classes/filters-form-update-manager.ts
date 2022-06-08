@@ -1,7 +1,9 @@
 import { KeyValue } from "@angular/common";
-import { Directive } from "@angular/core";
+import { Directive, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
+import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
+import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { FiltersService } from "../services/filters/filters.service";
 import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
@@ -11,11 +13,19 @@ import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 
 @Directive()
 export class FiltersFormUpdateManager extends HierarchyUpdateManager {
+    @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
+    @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
     constructor(dataService: DataService, sanitizer: DomSanitizer, public filtersService: FiltersService, public productService: ProductService) {
         super(dataService, sanitizer);
+
+    }
+
+
+
+    ngOnInit() {
         this.itemType = 'Filter';
         this.childType = 'Filter Option';
         this.dataServicePath = 'Filters';
@@ -30,6 +40,18 @@ export class FiltersFormUpdateManager extends HierarchyUpdateManager {
         this.otherArray = this.filtersService.productArray;
         this.thisSearchList = this.filtersService.formSearchList;
         this.otherSearchList = this.filtersService.productSearchList;
+        this.searchInputName = 'filtersFormSearchInput';
+    }
+
+
+    ngAfterViewInit() {
+        this.filtersService.formHierarchyComponent = this.listComponent;
+    }
+
+
+
+    ngAfterViewChecked() {
+        this.otherListComponent = this.filtersService.productHierarchyComponent;
     }
 
 
