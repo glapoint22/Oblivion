@@ -1,7 +1,8 @@
 import { KeyValue } from "@angular/common";
-import { Directive } from "@angular/core";
+import { Directive, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
+import { ListComponent } from "../components/lists/list/list.component";
 import { ProductGroupsService } from "../services/product-groups/product-groups.service";
 import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
@@ -11,11 +12,18 @@ import { ListUpdateManager } from "./list-update-manager";
 
 @Directive()
 export class ProductGroupsFormUpdateManager extends ListUpdateManager {
+    @ViewChild('listComponent') listComponent!: ListComponent;
+    @ViewChild('searchComponent') searchComponent!: ListComponent;
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
     constructor(dataService: DataService, sanitizer: DomSanitizer, public productGroupsService: ProductGroupsService, public productService: ProductService) {
         super(dataService, sanitizer);
+        
+    }
+
+
+    ngOnInit() {
         this.itemType = 'Product Group';
         this.dataServicePath = 'Subgroups';
         this.sortType = SortType.Form;
@@ -24,7 +32,21 @@ export class ProductGroupsFormUpdateManager extends ListUpdateManager {
         this.otherArray = this.productGroupsService.productArray;
         this.thisSearchList = this.productGroupsService.formSearchList;
         this.otherSearchList = this.productGroupsService.productSearchList;
+        this.searchInputName = 'productGroupsFormSearchInput';
     }
+
+
+    ngAfterViewInit() {
+        this.productGroupsService.formListComponent = this.listComponent;
+    }
+
+
+
+    ngAfterViewChecked() {
+        this.otherListComponent = this.productGroupsService.productListComponent;
+    }
+
+
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 

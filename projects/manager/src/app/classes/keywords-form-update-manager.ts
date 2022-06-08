@@ -11,16 +11,24 @@ import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { ProductService } from "../services/product/product.service";
 import { ListItem } from "./list-item";
 import { KeyValue } from "@angular/common";
-import { Directive } from "@angular/core";
+import { Directive, ViewChild } from "@angular/core";
+import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
+import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 
 @Directive()
 export class KeywordsFormUpdateManager extends HierarchyUpdateManager {
-
+    @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
+    @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
     constructor(dataService: DataService, sanitizer: DomSanitizer, public keywordsService: KeywordsService, public productService: ProductService) {
         super(dataService, sanitizer);
+
+    }
+
+
+    ngOnInit() {
         this.sortType = SortType.Form;
         this.itemType = 'Keyword Group';
         this.childType = 'Keyword';
@@ -35,8 +43,19 @@ export class KeywordsFormUpdateManager extends HierarchyUpdateManager {
         this.otherArray = this.keywordsService.productArray;
         this.thisSearchList = this.keywordsService.formSearchList;
         this.otherSearchList = this.keywordsService.productSearchList;
+        this.searchInputName = 'keywordsFormSearchInput';
     }
 
+
+    ngAfterViewInit() {
+        this.keywordsService.formHierarchyComponent = this.listComponent;
+    }
+
+
+
+    ngAfterViewChecked() {
+        this.otherListComponent = this.keywordsService.productHierarchyComponent;
+    }
 
 
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
@@ -142,7 +161,7 @@ export class KeywordsFormUpdateManager extends HierarchyUpdateManager {
     }
 
 
-    
+
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
     getOtherItem(x: ListItem) {

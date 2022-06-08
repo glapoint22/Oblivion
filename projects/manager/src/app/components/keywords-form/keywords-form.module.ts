@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { KeywordsFormComponent } from './keywords-form.component';
-import { IconButtonModule } from '../icon-button/icon-button.module';
-import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
-import { MultiColumnListModule } from '../lists/multi-column-list/multi-column-list.module';
+import { FormKeywordsModule } from '../form-keywords/form-keywords.module';
 
 
 
@@ -11,9 +9,7 @@ import { MultiColumnListModule } from '../lists/multi-column-list/multi-column-l
   declarations: [KeywordsFormComponent],
   imports: [
     CommonModule,
-    IconButtonModule,
-    HierarchyModule,
-    MultiColumnListModule
+    FormKeywordsModule
   ],
   exports: [
     KeywordsFormComponent

@@ -1,0 +1,75 @@
+<div class="icon-buttons-container">
+
+    <!-- Search icon -->
+    <icon-button class="search-icon-button"
+                 [icon]="searchIcon"
+                 [title]="searchIconButtonTitle"
+                 [isDisabled]="false"
+                 (onOver)="overButton = $event"
+                 (onClick)="toggleSearch()">
+    </icon-button>
+
+    <div class="icons">
+        <!-- Delete icon -->
+        <icon-button [icon]="'fas fa-trash-alt'"
+                     [title]="deleteIconButtonTitle"
+                     [isDisabled]="isDisabled('deleteDisabled')"
+                     (onOver)="overButton = $event"
+                     (onClick)="delete()">
+        </icon-button>
+
+        <!-- Edit icon -->
+        <icon-button [icon]="'fas fa-pencil-alt'"
+                     [title]="editIconButtonTitle"
+                     [isDisabled]="isDisabled('editDisabled')"
+                     (onOver)="overButton = $event"
+                     (onClick)="edit()">
+        </icon-button>
+
+        <ng-container *ngIf="!searchMode">
+            <!-- Add icon -->
+            <icon-button [icon]="'fas fa-plus-circle'"
+                         [title]="addIconButtonTitle"
+                         [isDisabled]="isDisabled('addDisabled')"
+                         (onOver)="overButton = $event"
+                         (onClick)="add()">
+            </icon-button>
+        </ng-container>
+    </div>
+</div>
+
+
+<!-- Hierarchy -->
+<ng-container *ngIf="!searchMode">
+    <div class="modal-list-container">
+        <list #listComponent
+                   [sourceList]="thisArray"
+                   [options]="listOptions"
+                   (onListUpdate)="listUpdate = $event">
+    </list>
+    </div>
+</ng-container>
+
+
+<!-- Search -->
+<ng-container *ngIf="searchMode">
+    <input id="productGroupsFormSearchInput"
+           placeholder="Search"
+           (input)="onSearchInputChange($event.target)">
+
+    <div class="list-container">
+        <ng-container *ngIf="thisSearchList.length == 0">
+            <div class="no-search-results">
+                No search results available
+            </div>
+        </ng-container>
+        
+        <ng-container *ngIf="thisSearchList.length > 0">
+            <list #searchComponent
+                               [sourceList]="thisSearchList"
+                               [options]="searchOptions"
+                               (onListUpdate)="searchUpdate = $event">
+            </list>
+        </ng-container>
+    </div>
+</ng-container>
