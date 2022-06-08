@@ -1,0 +1,72 @@
+<!-- Property Box Bar -->
+<div class="property-box-bar">
+
+    <!-- Search icon -->
+    <icon-button class="search-icon-button"
+                 [icon]="searchIcon"
+                 [title]="searchIconButtonTitle"
+                 [isDisabled]="false"
+                 (onOver)="overButton = $event"
+                 (onClick)="toggleSearch()">
+    </icon-button>
+
+    <div class="icons">
+        <!-- Delete icon -->
+        <icon-button [icon]="'fas fa-trash-alt'"
+                     [title]="deleteIconButtonTitle"
+                     [isDisabled]="isDisabled('deleteDisabled')"
+                     (onOver)="overButton = $event"
+                     (onClick)="delete()">
+        </icon-button>
+
+        <!-- Edit icon -->
+        <icon-button [icon]="'fas fa-pencil-alt'"
+                     [title]="editIconButtonTitle"
+                     [isDisabled]="isDisabled('editDisabled')"
+                     (onOver)="overButton = $event"
+                     (onClick)="edit()">
+        </icon-button>
+
+        <ng-container *ngIf="!searchMode">
+            <!-- Add icon -->
+            <icon-button [icon]="'fas fa-plus-circle'"
+                         [title]="addIconButtonTitle"
+                         [isDisabled]="isDisabled('addDisabled')"
+                         (onOver)="overButton = $event"
+                         (onClick)="add()">
+            </icon-button>
+        </ng-container>
+    </div>
+</div>
+
+<!-- Hierarchy -->
+<ng-container *ngIf="!searchMode">
+    <checkbox-list #listComponent
+                   [sourceList]="thisArray"
+                   [options]="listOptions"
+                   (onListUpdate)="listUpdate = $event">
+    </checkbox-list>
+</ng-container>
+
+<!-- Search -->
+<ng-container *ngIf="searchMode">
+    
+    <input id="productProductGroupsSearchInput"
+            placeholder="Search"
+            (input)="onSearchInputChange($event.target)">
+
+    <ng-container *ngIf="thisSearchList.length == 0">
+        <div class="no-search-results">
+            No search results available
+        </div>
+    </ng-container>
+    
+
+    <ng-container *ngIf="thisSearchList.length > 0">
+        <checkbox-list #searchComponent
+                       [sourceList]="thisSearchList"
+                       [options]="searchOptions"
+                       (onListUpdate)="searchUpdate = $event">
+        </checkbox-list>
+    </ng-container>
+</ng-container>

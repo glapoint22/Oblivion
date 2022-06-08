@@ -18,6 +18,7 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
 
 
     ngOnInit() {
+        super.ngOnInit();
         this.searchNameWidth = '296px';
         this.sortType = SortType.Product;
         this.thisArray = this.filtersService.productArray;
