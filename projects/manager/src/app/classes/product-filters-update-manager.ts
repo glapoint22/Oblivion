@@ -6,21 +6,25 @@ import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
-import { ListUpdateType, SortType } from "./enums";
+import { ListUpdateType } from "./enums";
 import { FormFiltersUpdateManager } from "./form-filters-update-manager";
 import { HierarchyUpdate } from "./hierarchy-update";
 
 @Directive()
 export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
+    // Public
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+
+    // Decorators
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 
 
+    // ====================================================================( NG ON INIT )===================================================================== \\
+
     ngOnInit() {
         super.ngOnInit();
         this.searchNameWidth = '296px';
-        this.sortType = SortType.Product;
         this.thisArray = this.filtersService.productArray;
         this.otherArray = this.filtersService.formArray;
         this.thisSearchList = this.filtersService.productSearchList;
@@ -28,16 +32,6 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
         this.searchInputName = 'productFiltersSearchInput';
     }
 
-
-    ngAfterViewInit() {
-        this.filtersService.productHierarchyComponent = this.listComponent;
-    }
-
-
-
-    ngAfterViewChecked() {
-        this.otherListComponent = this.filtersService.formHierarchyComponent;
-    }
 
 
     // ==================================================================( ON LIST UPDATE )=================================================================== \\
@@ -101,30 +95,6 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
             isParent: false,
             checked: child.checked
         }
-    }
-
-
-
-    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
-
-    getOtherChildItem(child: CheckboxItem, hierarchyUpdate: HierarchyUpdate) {
-        return {
-            id: child.id!,
-            name: child.name,
-            hierarchyGroupID: 1,
-            arrowDown: false,
-            isParent: false,
-            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
-            checked: false
-        }
-    }
-
-
-
-    // =============================================================( GET CHILD ITEM PARAMETERS )============================================================== \\
-
-    getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
     }
 
 

@@ -7,14 +7,15 @@ import { MultiColumnListComponent } from "../components/lists/multi-column-list/
 import { FiltersService } from "../services/filters/filters.service";
 import { ProductService } from "../services/product/product.service";
 import { CheckboxItem } from "./checkbox-item";
-import { SortType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 
 @Directive()
 export class FormFiltersUpdateManager extends HierarchyUpdateManager {
+    // Decorators
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
+
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
@@ -25,6 +26,8 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
 
 
 
+    // ====================================================================( NG ON INIT )===================================================================== \\
+
     ngOnInit() {
         this.itemType = 'Filter';
         this.childType = 'Filter Option';
@@ -34,7 +37,6 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
         this.childSearchType = 'Option';
         this.searchNameWidth = '246px';
         this.searchTypeWidth = '55px';
-        this.sortType = SortType.Form;
         this.hierarchyUpdateService = this.filtersService;
         this.thisArray = this.filtersService.formArray;
         this.otherArray = this.filtersService.productArray;
@@ -43,17 +45,7 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
         this.searchInputName = 'filtersFormSearchInput';
     }
 
-
-    ngAfterViewInit() {
-        this.filtersService.formHierarchyComponent = this.listComponent;
-    }
-
-
-
-    ngAfterViewChecked() {
-        this.otherListComponent = this.filtersService.productHierarchyComponent;
-    }
-
+    
 
     // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
@@ -62,7 +54,7 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
             id: child.id!,
             name: child.name,
             hierarchyGroupID: 1,
-            hidden: false,
+            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
             arrowDown: false,
             isParent: false,
             checked: child.checked

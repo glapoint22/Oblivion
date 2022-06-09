@@ -5,7 +5,7 @@ import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarch
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { HierarchyUpdateService } from "../services/hierarchy-update/hierarchy-update.service";
 import { DuplicateItem } from "./duplicate-item";
-import { ListUpdateType, MenuOptionType, SortType } from "./enums";
+import { ListUpdateType, MenuOptionType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { Item } from "./item";
@@ -30,13 +30,11 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     public childDataServicePath!: string;
     public listComponent!: HierarchyComponent;
     public collapseHierarchyOnOpen: boolean = true;
-    public otherListComponent!: HierarchyComponent;
     public searchComponent!: MultiColumnListComponent;
     public hierarchyUpdateService!: HierarchyUpdateService;
     public onChildrenLoad: Subject<void> = new Subject<void>();
     public thisArray: Array<HierarchyItem> = new Array<HierarchyItem>();
     public otherArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-    public thisSortList: Array<HierarchyItem> = new Array<HierarchyItem>();
     public thisSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
     public otherSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
     public get listUpdate(): HierarchyUpdate { return this._hierarchyUpdate; }
@@ -106,7 +104,6 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     onArrowClick(hierarchyUpdate: HierarchyUpdate) {
         // If a parent item was expanded and its children has NOT been loaded yet
         if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
-
             // If the hierarchy item is a top level hierarchy item
             if (hierarchyUpdate.hierarchyGroupID == 0) {
                 this.dataService.get<Array<HierarchyItem>>('api/' + this.childDataServicePath, this.getChildItemParameters(hierarchyUpdate))
@@ -121,12 +118,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                         })
                     })
             }
-
-            // But if a parent item was expanded and its children has ALREADY been loaded
-        } else if (hierarchyUpdate.arrowDown && hierarchyUpdate.hasChildren) {
-            // Sort any pending edited items
-            this.sortPendingItems();
-        }
+        } 
     }
 
 
@@ -257,16 +249,20 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // Add child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            const indexOfHierarchyItemParent = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
+            const indexOfHierarchyItemParent = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
             // ********* commited Data Service *********
             // this.dataService.post<number>('api/' + this.childDataServicePath, {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
             // }).subscribe((id: number) => {
             this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
+
+
             const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
             addedOtherChildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
-            this.setSort(addedOtherChildItem);
+            this.sort(addedOtherChildItem, this.otherArray);
+
+
             // })
         }
     }
@@ -275,13 +271,13 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     // ======================================================================( ADD ITEM )===================================================================== \\
 
-    addItem(list: Array<HierarchyItem>, index: number, item: HierarchyItem): HierarchyItem {
-        list.splice(index, 0, {
-            id: item.id,
-            name: item.name,
-            hierarchyGroupID: item.hierarchyGroupID
+    addItem(array: Array<HierarchyItem>, index: number, hierarchyItem: HierarchyItem): HierarchyItem {
+        array.splice(index, 0, {
+            id: hierarchyItem.id,
+            name: hierarchyItem.name,
+            hierarchyGroupID: hierarchyItem.hierarchyGroupID
         })
-        return list[index];
+        return array[index];
     }
 
 
@@ -302,7 +298,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             //     name: hierarchyUpdate.name
             // }).subscribe();
 
-            this.setSort(this.editItem(this.otherArray, hierarchyUpdate, 1));
+            this.sort(this.editItem(this.otherArray, hierarchyUpdate, 1), this.otherArray);
             this.editItem(this.otherSearchList, hierarchyUpdate, this.childSearchType);
         }
     }
@@ -325,11 +321,10 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             //     name: searchUpdate.values![0].name
             // }).subscribe();
 
-            this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, 1));
-            this.setSort(this.editItem(this.otherArray, searchUpdate, 1));
+            this.sort(this.editItem(this.thisArray, searchUpdate, 1), this.thisArray);
+            this.sort(this.editItem(this.otherArray, searchUpdate, 1), this.otherArray);
             this.editItem(this.otherSearchList, searchUpdate, this.childSearchType);
         }
-
     }
 
 
@@ -355,29 +350,74 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ======================================================================( SET SORT )===================================================================== \\
+    // ========================================================================( SORT )======================================================================= \\
 
-    setSort(otherHierarchyItem: HierarchyItem) {
-        // As long as the other hierarchy item is NOT null
-        if (otherHierarchyItem) {
-            // And as long as the other hierarchy list IS visible and the other hierarchy item is NOT hidden
-            if (this.otherListComponent && !otherHierarchyItem.hidden) {
+    sort(hierarchyItem: HierarchyItem, array: Array<HierarchyItem>) {
+        // As long as the hierarchy item is NOT null (meaning the hierarchy item in the specified array needs to be already loaded)
+        if (hierarchyItem) {
+            let parentHierarchyIndex: number = -1;
+            let tempArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+            let newHierarchyGroup: Array<HierarchyItem> = new Array<HierarchyItem>();
 
-                // Then sort the other hierarchy list
-                this.otherListComponent.listManager.sort(otherHierarchyItem);
+            // If the selected hierarchy item belongs to the top level group
+            if (hierarchyItem.hierarchyGroupID == 0) {
+                // Copy all the hierarchy items from that group to the temp array
+                tempArray = (array as Array<HierarchyItem>).filter(x => x.hierarchyGroupID == 0);
 
-                // But if the other hierarchy list is NOT visible or the other hierarchy item IS hidden
+                // If the selected hierarchy item belongs to any other group
             } else {
 
-                // As long as a list is using the hierarchy update service
-                if (this.hierarchyUpdateService) {
+                // First get the parent of the selected hierarchy item
+                parentHierarchyIndex = this.getIndexOfHierarchyItemParent(hierarchyItem, array);
 
-                    // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
-                    this.hierarchyUpdateService.otherSortList.push(otherHierarchyItem!);
-                    this.hierarchyUpdateService.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
+                // Then copy all the children belonging to that hierarchy parent to the temp array
+                for (let i = parentHierarchyIndex + 1; i < array.length; i++) {
+                    if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID) break;
+                    if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID! + 1) {
+                        tempArray.push(array[i] as HierarchyItem)
+                    }
                 }
             }
+
+            // Sort the temp array
+            tempArray.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+
+            // Loop through all the hierarchy items in the temp array
+            tempArray.forEach(x => {
+                // Get the index of that same hierarchy item from the source list
+                let index = array.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID);
+
+                // Copy the hierarchy item and all its children
+                for (let i = index; i < array.length; i++) {
+                    if (i != index && array[i].hierarchyGroupID! <= array[index].hierarchyGroupID!) break;
+
+                    // And add them to the new hierarchy group
+                    newHierarchyGroup.push(array[i] as HierarchyItem);
+                }
+            })
+
+            // Remove the old hierarchy group from the source
+            array.splice(parentHierarchyIndex + 1, newHierarchyGroup.length);
+            // Add the new hierarchy group to the source
+            array.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
         }
+    }
+
+
+
+    // ========================================================( GET INDEX OF HIERARCHY ITEM PARENT )========================================================= \\
+
+    getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem, array: Array<HierarchyItem>): number {
+        let parentHierarchyIndex!: number;
+        const hierarchyItemIndex = array.indexOf(hierarchyItem);
+
+        for (let i = hierarchyItemIndex; i >= 0; i--) {
+            if (array[i].hierarchyGroupID! < array[hierarchyItemIndex].hierarchyGroupID!) {
+                parentHierarchyIndex = i;
+                break;
+            }
+        }
+        return parentHierarchyIndex;
     }
 
 
@@ -413,7 +453,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // If we're verifying a child item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
             const childItem = this.thisArray.find(x => x.id == hierarchyUpdate.id && x.hierarchyGroupID == 1);
-            const indexOfParentItem = this.listComponent.listManager.getIndexOfHierarchyItemParent(childItem!);
+            const indexOfParentItem = this.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
 
             // Loop through each child item of the parent item and check for a duplicate
             for (let i = indexOfParentItem + 1; i < this.thisArray.length; i++) {
@@ -526,7 +566,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
             const childItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
-            const indexOfParentItem = this.listComponent.listManager.getIndexOfHierarchyItemParent(childItem!);
+            const indexOfParentItem = this.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
             this.listOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
         }
     }
@@ -643,48 +683,6 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                     }
                 })
             })
-    }
-
-
-
-    // ================================================================( SORT PENDING ITEMS )================================================================= \\
-
-    sortPendingItems() {
-        // If an item was edited in search mode
-        if (this.thisSortList.length > 0) {
-            // Then we need to sort those items once we return to hierarchy mode
-            this.thisSortList.forEach(x => {
-                // As long as the item that was added to the sort list is NOT null and it is NOT hidden
-                if (x && !x.hidden) {
-                    this.listComponent.listManager.sort(x);
-                    const index = this.thisSortList.indexOf(x);
-                    this.thisSortList.splice(index, 1);
-                }
-                // If the item that was added to the sort list is null
-                if (!x) {
-                    // No sense of having it in the list so remove it
-                    const index = this.thisSortList.indexOf(x);
-                    this.thisSortList.splice(index, 1);
-                }
-            })
-        }
-
-        // As long as a list is using the hierarchy update service
-        if (this.hierarchyUpdateService) {
-            // But if any items were added or edited from the other list whether it was done in search mode or hierarchy mode
-            if (this.hierarchyUpdateService.otherSortList.length > 0 &&
-                this.hierarchyUpdateService.targetSortType == this.sortType) {
-
-                // Then we need to sort those items now in this hierarchy list
-                this.hierarchyUpdateService.otherSortList.forEach(x => {
-                    if (!x.hidden) {
-                        this.listComponent.listManager.sort(x);
-                        const index = this.hierarchyUpdateService.otherSortList.indexOf(x);
-                        this.hierarchyUpdateService.otherSortList.splice(index, 1);
-                    }
-                })
-            }
-        }
     }
 
 

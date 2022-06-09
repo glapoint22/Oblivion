@@ -1,12 +1,8 @@
 import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { DataService } from "common";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
-import { KeywordsService } from "../services/keywords/keywords.service";
-import { ProductService } from "../services/product/product.service";
-import { MenuOptionType, SortType } from "./enums";
+import { MenuOptionType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
@@ -18,16 +14,20 @@ import { MultiColumnListUpdate } from "./multi-column-list-update";
 
 @Directive()
 export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
+    // Public
     public addToSelectedKeywordsButtonDisabled!: boolean;
+
+    // Decorators
     @ViewChild('availableHierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('availableSearchComponent') searchComponent!: MultiColumnListComponent;
 
+
+    // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
         super.ngOnInit();
         this.searchNameWidth = '296px';
         this.searchInputName = 'availableKeywordsSearchInput';
-        this.sortType = SortType.Product;
         this.thisArray = this.keywordsService.productArray;
         this.otherArray = this.keywordsService.formArray;
         this.thisSearchList = this.keywordsService.productSearchList;
@@ -47,17 +47,6 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             shortcut: 'Alt+A',
             optionFunction: this.addToSelectedKeywords
         };
-    }
-
-
-    ngAfterViewInit() {
-        this.keywordsService.productHierarchyComponent = this.listComponent;
-    }
-
-
-
-    ngAfterViewChecked() {
-        this.otherListComponent = this.keywordsService.formHierarchyComponent;
     }
 
 
@@ -136,47 +125,6 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
-    // ===================================================================( ON ITEM EDIT )==================================================================== \\
-
-    onItemEdit(hierarchyUpdate: HierarchyUpdate) {
-        this.setSelectedKeywordsSort(this.editItem(this.keywordsService.selectedKeywordsArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem);
-        this.editItem(this.keywordsService.selectedKeywordsSearchList, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
-        this.setSort(this.editItem(this.otherArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem);
-    }
-
-
-
-    // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
-
-    onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
-        this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1));
-        this.setSelectedKeywordsSort(this.editItem(this.keywordsService.selectedKeywordsArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1) as KeywordCheckboxItem);
-        this.editItem(this.keywordsService.selectedKeywordsSearchList, searchUpdate, searchUpdate.values![1].name);
-    }
-
-
-
-    // =============================================================( ON SELECTED KEYWORDS SORT )============================================================= \\
-
-    setSelectedKeywordsSort(selectedHierarchyItem: KeywordCheckboxItem) {
-        if (selectedHierarchyItem) {
-            // As long as the other hierarchy sort group is NOT hidden
-            if (!selectedHierarchyItem.hidden && this.keywordsService.selectedHierarchyComponent) {
-
-                // Then sort the other hierarchy list
-                this.keywordsService.selectedHierarchyComponent.listManager.sort(selectedHierarchyItem);
-
-                // But if the other hierarchy sort group is NOT visible
-            } else {
-
-                // Make a list of all the items we edited in this hierarchy so that when we go back to the other hierarchy we can then sort those items accordingly
-                this.keywordsService.sortList.push(selectedHierarchyItem);
-            }
-        }
-    }
-
-
-
     // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: HierarchyItem) {
@@ -210,16 +158,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         } else {
             this.addSearchItemToSelectedKeywords(keywordGroup);
         }
-
-
         this.keywordsService.selectedKeywordsArray.push(keywordGroup);
-
-        if (this.keywordsService.selectedHierarchyComponent) {
-            this.keywordsService.selectedHierarchyComponent.listManager.sort(keywordGroup);
-        } else {
-            // If any keyword items have been added from the available list to the selected list while the selected list was in search mode
-            this.keywordsService.sortList.push(keywordGroup);
-        }
+        this.sort(keywordGroup, this.keywordsService.selectedKeywordsArray);
     }
 
 
@@ -251,7 +191,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
             // If a keyword is selected
         } else {
-            const parentIndex = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem);
+            const parentIndex = this.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisArray);
             const parent = this.thisArray[parentIndex];
             const childId = this.listComponent.listManager.selectedItem.id;
             keywordGroup.id = parent.id;

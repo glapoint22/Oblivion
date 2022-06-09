@@ -3,7 +3,7 @@ import { DataService, LazyLoadingService, SpinnerAction } from "common";
 import { Subject } from "rxjs";
 import { MoveFormComponent } from "../components/move-form/move-form.component";
 import { ProductService } from "../services/product/product.service";
-import { MenuOptionType, SortType } from "./enums";
+import { MenuOptionType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { Item } from "./item";
@@ -41,9 +41,10 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     }
 
 
+    
+    // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
-        this.sortType = SortType.Product;
         this.itemType = 'Niche';
         this.childType = 'Sub Niche';
         this.dataServicePath = 'Categories';
@@ -241,16 +242,13 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         this.nicheAddId++;
         // Add grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
-            const indexOfHierarchyItemParent = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
+            const indexOfHierarchyItemParent = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
             // ********* commited Data Service *********
             // this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
             // }).subscribe((id: number) => {
             this.thisArray[hierarchyUpdate.index!].id = this.nicheAddId;//id;
-            const addedOtherGrandchildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
-            addedOtherGrandchildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
-            this.setSort(addedOtherGrandchildItem);
             // })
         }
         super.onItemAdd(hierarchyUpdate);
@@ -286,7 +284,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             //     id: searchUpdate.id,
             //     name: searchUpdate.values![0].name
             // }).subscribe();
-            this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, 2));
+            this.sort(this.editItem(this.thisArray, searchUpdate, 2), this.thisArray);
         }
     }
 
@@ -340,14 +338,14 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
             const childItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
-            const indexOfParentItem = this.listComponent.listManager.getIndexOfHierarchyItemParent(childItem!);
+            const indexOfParentItem = this.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
             this.listOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
         }
 
         // If we're deleting a grandchild item
         if (deletedItem.hierarchyGroupID == 2) {
             const grandchildItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 2);
-            const indexOfChildItem = this.listComponent.listManager.getIndexOfHierarchyItemParent(grandchildItem!);
+            const indexOfChildItem = this.getIndexOfHierarchyItemParent(grandchildItem!, this.thisArray);
             this.listOptions.deletePrompt!.message = this.deletePromptChildMessage(this.grandchildType, deletedItem.name!, this.childType, this.thisArray[indexOfChildItem].name!);
         }
     }
@@ -505,7 +503,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                     const itemToBeMovedType = this.listComponent.listManager.selectedItem.hierarchyGroupID == 1 ? this.childType : this.grandchildType;
                     const destinationItemType = this.listComponent.listManager.selectedItem.hierarchyGroupID == 1 ? this.itemType : this.childType;
                     const itemToBeMoved = this.listComponent.listManager.selectedItem;
-                    const index = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem);
+                    const index = this.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisArray);
                     const fromItem = this.thisArray[index];
                     const path = this.listComponent.listManager.selectedItem.hierarchyGroupID == 1 ? 'api/' + this.dataServicePath : 'api/' + this.childDataServicePath + '/All';
                     this.setMoveForm(moveForm, itemToBeMovedType, destinationItemType, itemToBeMoved, fromItem, path);

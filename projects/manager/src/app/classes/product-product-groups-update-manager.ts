@@ -4,35 +4,30 @@ import { ListComponent } from "../components/lists/list/list.component";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
-import { ListUpdateType, SortType } from "./enums";
+import { ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
 import { FormProductGroupsUpdateManager } from "./form-product-groups-update-manager";
 
 @Directive()
 export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateManager {
+    // Public
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+
+    // Decorators
     @ViewChild('listComponent') listComponent!: ListComponent;
     @ViewChild('searchComponent') searchComponent!: ListComponent;
 
 
+    // ====================================================================( NG ON INIT )===================================================================== \\
+
     ngOnInit() {
         super.ngOnInit();
-        this.sortType = SortType.Product;
         this.thisArray = this.productGroupsService.productArray;
         this.otherArray = this.productGroupsService.formArray;
         this.thisSearchList = this.productGroupsService.productSearchList;
         this.otherSearchList = this.productGroupsService.formSearchList;
         this.searchInputName = 'productProductGroupsSearchInput';
-    }
-
-
-    ngAfterViewInit() {
-        this.productGroupsService.productListComponent = this.listComponent;
-    }
-
-
-    ngAfterViewChecked() {
-        this.otherListComponent = this.productGroupsService.formListComponent;
+        this.searchOptions.sortable = false;
     }
 
 

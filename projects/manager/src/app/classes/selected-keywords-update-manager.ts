@@ -1,10 +1,7 @@
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { DataService } from "common";
-import { KeywordsService } from "../services/keywords/keywords.service";
-import { ProductService } from "../services/product/product.service";
+import { SafeHtml } from "@angular/platform-browser";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
-import { ListUpdateType, MenuOptionType, SortType } from "./enums";
+import { ListUpdateType, MenuOptionType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
@@ -30,15 +27,15 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     public thisArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
     public thisSearchList: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
 
+    // Decorators
     @ViewChild('selectedHierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('selectedSearchComponent') searchComponent!: CheckboxMultiColumnListComponent;
 
 
-
+    // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
         this.searchNameWidth = '296px';
-        this.sortType = SortType.Product;
         this.dataServicePath = 'SelectedKeywords/Groups';
         this.childDataServicePath = 'SelectedKeywords';
         this.childType = 'Custom Keyword';
@@ -47,12 +44,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         this.searchInputName = 'selectedKeywordsSearchInput';
     }
 
-
-    ngAfterViewInit() {
-        this.keywordsService.selectedHierarchyComponent = this.listComponent;
-    }
-
-
+    
 
     // ======================================================================( ON OPEN )====================================================================== \\
 
@@ -67,28 +59,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     onArrowClick(hierarchyUpdate: HierarchyUpdate) {
         HierarchyUpdateManager.prototype.onArrowClick.call(this, hierarchyUpdate);
-    }
-
-
-
-    // ===================================================================( TOGGLE SEARCH )=================================================================== \\
-
-    toggleSearch() {
-        super.toggleSearch();
-
-        // If we're toggling back to hierarchy mode
-        if (!this.searchMode) {
-            window.setTimeout(() => {
-                // If any keyword items have been added from the available list to the selected list while the selected list was in search mode
-                this.keywordsService.sortList.forEach(x => {
-
-                    // Sort the selected list
-                    this.listComponent.listManager.sort(x);
-                });
-                this.keywordsService.sortList = [];
-            })
-
-        }
     }
 
 
@@ -440,7 +410,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
         // Add child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            const indexOfHierarchyItemParent = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!]);
+            const indexOfHierarchyItemParent = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
             // ********* commited Data Service *********
             // this.dataService.post<number>('api/' + this.childDataServicePath, {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
@@ -705,14 +675,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         if (deletedItem.values[1].name == this.childSearchType) {
             super.onSearchItemDelete(deletedItem);
         }
-    }
-
-
-
-    // ================================================================( SORT PENDING ITEMS )================================================================= \\
-
-    sortPendingItems() {
-        // Selected keywords has its own sort pending function
     }
 
 
