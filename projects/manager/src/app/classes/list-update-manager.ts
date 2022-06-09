@@ -237,10 +237,10 @@ export class ListUpdateManager {
     // =======================================================================( ADD )========================================================================= \\
 
     add(id?: number, name?: string) {
-        this.listComponent.add(id, name);
         this.addIconButtonTitle = 'Add';
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
+        this.listComponent.add(id, name);
     }
 
 
