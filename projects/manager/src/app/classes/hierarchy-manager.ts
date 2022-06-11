@@ -282,7 +282,8 @@ export class HierarchyManager extends ListManager {
             id: this.editedItem.id,
             name: this.editedItem.name,
             hierarchyGroupID: this.editedItem.hierarchyGroupID,
-            arrowDown: (this.editedItem as HierarchyItem).arrowDown
+            arrowDown: (this.editedItem as HierarchyItem).arrowDown,
+            isParent: (this.editedItem as HierarchyItem).isParent
         }
     }
 
