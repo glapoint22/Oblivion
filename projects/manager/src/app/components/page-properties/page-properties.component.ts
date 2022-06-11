@@ -1,7 +1,5 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { DataService } from 'common';
 import { PageType } from 'widgets';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -12,11 +10,24 @@ import { WidgetService } from '../../services/widget/widget.service';
 })
 export class PagePropertiesComponent implements OnInit {
   public pageTypes: Array<KeyValue<string, number>> = new Array<KeyValue<string, number>>();
-  public selectedPageType!: KeyValue<string, number>;
   public pageType = PageType;
-  
 
-  constructor(public widgetService: WidgetService, private dataService: DataService, private sanitizer: DomSanitizer) { }
+
+  private _selectedPageType!: KeyValue<string, number>;
+  public get selectedPageType(): KeyValue<string, number> {
+    const pageType = this.pageTypes.find(x => x.value == this.widgetService.page.pageType);
+
+    this._selectedPageType = pageType!;
+    return this._selectedPageType;
+  }
+  public set selectedPageType(v: KeyValue<string, number>) {
+    this.widgetService.page.pageType = v.value;
+    this._selectedPageType = v;
+    this.widgetService.page.save();
+  }
+
+
+  constructor(public widgetService: WidgetService) { }
 
 
   ngOnInit(): void {
@@ -29,16 +40,13 @@ export class PagePropertiesComponent implements OnInit {
       });
     }
 
-    this.selectedPageType = this.pageTypes[0];
+
   }
+
 
   onBackgroundChange() {
     this.widgetService.page.setBackground(document);
     this.widgetService.page.setBackground(this.widgetService.widgetDocument);
     this.widgetService.page.save();
   }
-
-
-
-  
 }

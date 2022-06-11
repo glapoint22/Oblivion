@@ -159,12 +159,15 @@ export class WidgetService {
     const rowHeight = this.getRowHeight();
     const minHeight = this.getMinHeight();
     const widget = this.selectedWidget;
+    let handleMoved: boolean;
 
     widget.height = widget.widgetElement.clientHeight;
 
     const onMousemove = (mousemoveEvent: MouseEvent) => {
       const previousHeight = widget.height;
       let delta = mousemoveEvent.movementY;
+
+      handleMoved = true;
 
       // Set the new height
       widget.height += delta * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
@@ -227,7 +230,7 @@ export class WidgetService {
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
       this.widgetHandleMove = false;
-      this.page.save();
+      if (handleMoved) this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -250,6 +253,7 @@ export class WidgetService {
     const rowHeight = this.getRowHeight();
     const minHeight = this.getMinHeight();
     const widget = this.selectedWidget;
+    let handleMoved: boolean;
 
     widget.height = widget.widgetElement.clientHeight;
 
@@ -323,7 +327,7 @@ export class WidgetService {
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
       this.widgetHandleMove = false;
-      this.page.save();
+      if (handleMoved) this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -344,6 +348,7 @@ export class WidgetService {
     const breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint as string));
     const horizontalAlignmentValue = column.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
+    let handleMoved: boolean;
 
     if (!widget.width) widget.width = column.columnElement.clientWidth;
 
@@ -362,7 +367,7 @@ export class WidgetService {
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
       this.widgetHandleMove = false;
-      this.page.save();
+      if (handleMoved) this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -384,6 +389,7 @@ export class WidgetService {
     const breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint as string));
     const horizontalAlignmentValue = column.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
+    let handleMoved: boolean;
 
     if (!widget.width) widget.width = column.columnElement.clientWidth;
 
@@ -402,7 +408,7 @@ export class WidgetService {
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
       this.widgetHandleMove = false;
-      this.page.save();
+      if (handleMoved) this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -433,6 +439,7 @@ export class WidgetService {
     const startHeight = rect.height;
     let width = startWidth;
     let height = startHeight;
+    let handleMoved: boolean;
     const rowHeight = this.getRowHeight();
     const aspectRatio = widget.widgetElement.getBoundingClientRect().height / widget.widgetElement.getBoundingClientRect().width;
     widget.height = widget.widgetElement.clientHeight;
@@ -510,7 +517,7 @@ export class WidgetService {
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
-      this.page.save();
+      if (handleMoved) this.page.save();
     }
 
     document.addEventListener('mousemove', onMousemove);
@@ -530,8 +537,10 @@ export class WidgetService {
     const row = this.selectedRow;
     const rowElement = row.rowElement;
     const document = this.widgetDocument;
+    let rowMoved: boolean;
 
     const onRowMousemove = (mousemoveEvent: MouseEvent) => {
+      rowMoved = true;
       row.top = this.getNewRowTopAfterContainerTopCollision(row.top + mousemoveEvent.movementY);
       rowElement.style.top = row.top + 'px';
 
@@ -542,7 +551,7 @@ export class WidgetService {
     const onRowMouseup = () => {
       document.removeEventListener('mousemove', onRowMousemove);
       document.removeEventListener('mouseup', onRowMouseup);
-      this.page.save();
+      if (rowMoved) this.page.save();
     }
 
     document.addEventListener('mousemove', onRowMousemove);

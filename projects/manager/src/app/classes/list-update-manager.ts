@@ -513,9 +513,9 @@ export class ListUpdateManager {
 
     onItemDelete(deletedItem: ListItem) {
         // ********* commited Data Service *********
-        // this.dataService.delete('api/' + this.dataServicePath, {
-        //     id: deletedItem.id
-        // }).subscribe();
+        this.dataService.delete('api/' + this.dataServicePath, {
+            id: deletedItem.id
+        }).subscribe();
         this.deleteItem(this.otherArray, deletedItem, 0);
         this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
     }

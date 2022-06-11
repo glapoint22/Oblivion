@@ -38,6 +38,8 @@ import { LinkPropertyComponent } from '../link-property/link-property.component'
 import { SearchModule } from '../search/search.module';
 import { BrowseNichesComponent } from '../browse-niches/browse-niches.component';
 import { ListModule } from '../lists/list/list.module';
+import { SearchKeywordsComponent } from '../search-keywords/search-keywords.component';
+import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
 
 
 
@@ -71,7 +73,8 @@ import { ListModule } from '../lists/list/list.module';
     VideoPropertiesEditorComponent,
     CarouselWidgetPropertiesComponent,
     LinkPropertyComponent,
-    BrowseNichesComponent
+    BrowseNichesComponent,
+    SearchKeywordsComponent
   ],
   imports: [
     CommonModule,
@@ -83,7 +86,8 @@ import { ListModule } from '../lists/list/list.module';
     IconButtonModule,
     CounterModule,
     SearchModule,
-    ListModule
+    ListModule,
+    CheckboxHierarchyModule
   ],
   exports: [WidgetInspectorComponent]
 })

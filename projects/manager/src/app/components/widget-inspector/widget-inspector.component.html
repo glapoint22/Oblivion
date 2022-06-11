@@ -35,8 +35,8 @@
         </div>
     </div>
 
-    <search #search [apiUrl]="'Pages/Link'" [placeholderText]="'Search for a page'"
-    (onItemSelect)="loadPage($event, search)"></search>
+    <search #search [apiUrl]="'Pages/Search'" [placeholderText]="'Search for a page'"
+    (onItemSelect)="getPage($event, search)"></search>
 
     <!-- Page, Row, Column, and Widget buttons -->
     <div class="grooved-container" *ngIf="widgetService.page && widgetService.page.pageContent">

@@ -14,16 +14,16 @@ export class PageComponent implements AfterViewInit, OnDestroy {
 
   ngOnChanges() {
     if (this.container) {
-      this.loadPage();
+      this.load();
     }
   }
 
   ngAfterViewInit(): void {
-    this.loadPage();
+    this.load();
   }
 
 
-  loadPage() {
+  load() {
     if (this.pageContent) {
       if (this.pageContent.background) {
         this.setBackground(document);

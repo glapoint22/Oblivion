@@ -28,8 +28,11 @@ export class SearchComponent {
           const searchTerm = (input.target as HTMLInputElement).value;
 
           if (searchTerm == '') {
-            this.dropdownList.close();
-            this.dropdownList = null!;
+            if (this.dropdownList) {
+              this.dropdownList.close();
+              this.dropdownList = null!;
+            }
+
             return of([]);
           }
           return this.dataService.get<Array<Item>>('api/' + this.apiUrl, [{ key: 'searchTerm', value: searchTerm }])
