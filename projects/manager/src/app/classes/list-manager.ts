@@ -50,6 +50,7 @@ export class ListManager {
   constructor(public lazyLoadingService: LazyLoadingService) { }
 
 
+
   // ================================================================( ADD EVENT LISTENERS )================================================================ \\
 
   addEventListeners() {
@@ -168,26 +169,18 @@ export class ListManager {
 
   // ==================================================================( SET ITEM FOCUS )=================================================================== \\
 
-  setItemFocus(listItem: ListItem) {
-    // window.setTimeout(() => { //????????????????????????????????????????????????????????????????????????????????????????????????
-    // Set focus to the html item of the list item
-    if (listItem) listItem.htmlItem!.nativeElement.focus();
+  setItemFocus() {
+    // When NO text is in the editable item
+    this.getHtmlItem().focus();
 
-    if (listItem && listItem == this.editedItem) {
-      let range = document.createRange();
-      range.selectNodeContents(listItem.htmlItem!.nativeElement!);
-      let sel = window.getSelection();
-      sel!.removeAllRanges();
-      sel!.addRange(range);
-    }
+    // When text is in the editable item and we want to select a range
+    let range = document.createRange();
+    range.selectNodeContents(this.getHtmlItem());
+    let sel = window.getSelection();
+    sel!.removeAllRanges();
+    sel!.addRange(range);
 
-
-    // Then set that item as the current focused item
-    // this.currentFocusedItem = document.activeElement!;
-    // Clear
     this.preventUnselectionFromRightMousedown = false;
-    // this.itemDeletionPending = false;
-    // })
   }
 
 
@@ -242,7 +235,6 @@ export class ListManager {
     this.mouseDownItem = listItem
     // As long as this item is NOT currently being edited
     if (this.editedItem != listItem) {
-      // this.setItemFocus(listItem);
       this.closeContextMenu();
 
       // Initialize
@@ -263,25 +255,16 @@ export class ListManager {
         // Check to see if this item is already selected
         if (listItem.selected) {
 
-          // And as long as that selected item is not the current focused item
-          // if (listItem.htmlItem?.nativeElement != document.activeElement) {
-
           // Prevent it from being unselected
           this.preventUnselectionFromRightMousedown = true;
-          // }
         }
       }
 
       if (this.selectable) {
         // As long as we're not right clicking on an item that's already selected
         if (!this.preventUnselectionFromRightMousedown) {
-
-          // window.setTimeout(() => {//???????????????
-          // this.currentFocusedItem = document.activeElement!;
           this.setItemSelection(listItem);
           this.setButtonsState();
-
-          // });
         }
 
         // As long as we're not in edit mode
@@ -398,13 +381,10 @@ export class ListManager {
   setSelectedItemsShiftKey() {
     // Clear the selection for all items
     this.sourceList.forEach(x => x.selected = false);
-
-
     const pivotItemIndex = this.sourceList.indexOf(this.pivotItem);
     const selectedItemIndex = this.sourceList.indexOf(this.selectedItem);
 
     if (pivotItemIndex == -1 || selectedItemIndex == -1) return;
-
 
     // If the selection is after the pivot
     if (selectedItemIndex > pivotItemIndex) {
@@ -520,9 +500,30 @@ export class ListManager {
       this.unselectedItem = null!;
       this.editedItem = listItem;
       this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.htmlItem!.nativeElement.innerText?.trim()!;
-      this.setItemFocus(this.editedItem);
+      this.setItemFocus();
 
     }
+    this.buttonsUpdate();
+  }
+
+
+
+  // ======================================================================( SET EDIT )===================================================================== \\
+
+  setEdit(listItem: ListItem) {
+    this.addDisabled = true;
+    this.editDisabled = true;
+    this.deleteDisabled = true;
+    this.addEventListeners();
+    this.editedItem = listItem;
+    this.getHtmlItem().innerText = this.getHtmlItem().innerText.trim()!;
+    this.selectedItem = null!;
+
+    this.sourceList.forEach(x => {
+      if (x.selected) x.selected = false;
+      if (x.selectType) x.selectType = null!;
+    })
+    this.setItemFocus();
     this.buttonsUpdate();
   }
 
@@ -532,26 +533,7 @@ export class ListManager {
 
   setEditItem(listItem: ListItem) {
     if (listItem && this.editable) {
-      this.addDisabled = true;
-      this.editDisabled = true;
-      this.deleteDisabled = true;
-      this.addEventListeners();
-
-
-
-      this.editedItem = listItem;
-
-      this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.htmlItem!.nativeElement.innerText.trim()!;
-
-      this.selectedItem = null!;
-
-      this.sourceList.forEach(x => {
-        if (x.selected) x.selected = false;
-        if (x.selectType) x.selectType = null!;
-      })
-      this.setItemFocus(this.editedItem);
-      // this.overButton = false; //?????????????????????????????????????????
-      this.buttonsUpdate();
+      this.setEdit(listItem);
     }
   }
 
@@ -563,9 +545,6 @@ export class ListManager {
     if (this.editedItem == null) {
       // If a delete prompt is being used with this list
       if (this.options && this.options.deletePrompt) {
-        // this.overButton = false;//???????????????????????????????????????????????
-        // this.itemDeletionPending = true;
-
         // If the delete prompt has NOT been opened yet
         if (!this.promptOpen) {
           // Gather all the selected items
@@ -598,8 +577,6 @@ export class ListManager {
   delete() {
     // If an item is selected
     if (this.sourceList.filter(x => x.selected).length > 0 && this.deletable) {
-      // Mark as deletion pending
-      // this.itemDeletionPending = true;
       // Gather all the selected items
       let selectedItems: Array<ListItem> = this.sourceList.filter(x => x.selected);
       // Get all the items that are going to be deleted
@@ -621,34 +598,24 @@ export class ListManager {
       if (this.selectedItem != null) {
         // And there is a next available list item that can be selected
         if (nextSelectedItem != null) {
-          // window.setTimeout(() => {?????????????????????????????????????????????????????????????
-
           // Select that list item
           this.onItemDown(nextSelectedItem);
-
-          // }, 20);
 
           // If there is NOT a next available list item that can be selected
         } else {
           // Make no list item marked as selected
           this.selectedItem = null!;
           this.pivotItem = null!;
-          // this.overButton = false;//????????????????????????????????????????????
           this.removeEventListeners();
         }
       }
 
       // If a list item was unselected
       if (this.unselectedItem != null) {
-        // window.setTimeout(() => {????????????????????????????????????????????????????????????????????
         // Unselect that list item again
         this.unselectedItem = nextSelectedItem;
-        // this.deleteIcon.isDisabled = true;
         // Re-establish the pivot index
         this.pivotItem = this.unselectedItem;
-        // Set focus to that unselected list item
-        // this.setItemFocus(this.unselectedItem);
-        // }, 20);
       }
       this.setButtonsState();
     }
@@ -723,7 +690,6 @@ export class ListManager {
           this.removeEventListeners();
         }
       }
-
       this.setButtonsState();
     }
   }
@@ -757,7 +723,7 @@ export class ListManager {
 
 
   // =======================================================================( ENTER )======================================================================= \\
-  
+
   enter(e: KeyboardEvent) {
     if (!this.promptOpen) {
       e.preventDefault();
@@ -773,8 +739,9 @@ export class ListManager {
 
 
   // ===================================================================( RESELECT ITEM )=================================================================== \\
-  
+
   reselectItem() {
+
     this.newItem = false;
     if (this.selectable) {
       this.selectedItem = this.editedItem;
@@ -787,12 +754,12 @@ export class ListManager {
 
 
   // ==================================================================( COMMIT ADD EDIT )================================================================== \\
-  
+
   commitAddEdit() {
     this.addEditVerificationInProgress = false;
 
     // Update the name property
-    this.editedItem.name = this.editedItem.htmlItem!.nativeElement.innerText.trim()!;
+    this.getEditedItem().name = this.getHtmlItem().innerText.trim()!;
 
     // As long as the list is sortable
     if (this.sortable) {
@@ -802,21 +769,36 @@ export class ListManager {
 
       // If the list is NOT sortable
     } else {
-      this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
+      this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
     }
     this.addEditUpdate(this.editedItem);
-
     this.reselectItem();
-
     this.setButtonsState();
   }
 
 
 
+  // ==================================================================( GET EDITED ITEM )================================================================== \\
+
+  getEditedItem() {
+    return this.editedItem;
+  }
+
+
+
+  // ===================================================================( GET HTML ITEM )=================================================================== \\
+
+  getHtmlItem() {
+    return this.editedItem.htmlItem!.nativeElement;
+  }
+
+
+
   // ===================================================================( EVALUATE EDIT )=================================================================== \\
-  
+
   evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
-    const trimmedEditedItem = this.editedItem.htmlItem!.nativeElement.innerText.trim();
+
+    const trimmedEditedItem = this.getHtmlItem().innerText.trim();
 
     // If the edited item has text written in it
     if (trimmedEditedItem.length > 0) {
@@ -837,26 +819,18 @@ export class ListManager {
           // If we were NOT adding a new item
         } else {
 
-          // As long as the edited name is different from what it was before the edit
-          // if (trimmedEditedItem != this.editedItem.name!.trim()) {
-
-
           // Reset the item back to the way it was before the edit
-          this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.name!.trim()!;
-
-          this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
-
-
-
-          // }
+          this.getHtmlItem().innerText = this.getEditedItem().name!.trim()!;
+          this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
           this.reselectItem();
         }
+
         // If we did NOT press the (Escape) key
         // But the (Enter) key was pressed or the list item was (Blurred)
       } else {
 
         // As long as the edited name is different from what it was before the edit
-        if (trimmedEditedItem.toLowerCase() != this.editedItem.name!.trim().toLowerCase()) {
+        if (trimmedEditedItem.toLowerCase() != this.getEditedItem().name!.trim().toLowerCase()) {
 
           // If this list is set to verify add and edit
           if (this.verifyAddEdit) {
@@ -874,7 +848,7 @@ export class ListManager {
           } else {
 
             // Update the name property
-            this.editedItem.name = trimmedEditedItem;
+            this.getEditedItem().name = trimmedEditedItem;
 
             // As long as the list is sortable
             if (this.sortable) {
@@ -884,21 +858,19 @@ export class ListManager {
 
               // If the list is NOT sortable
             } else {
-              this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
+              this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
             }
 
             // Send update
             this.addEditUpdate(this.editedItem);
-
-
           }
 
           // If the edited name has NOT changed
         } else {
 
           //If the case was changed. i.e. lower case to upper case
-          if (trimmedEditedItem != this.editedItem.name!.trim()) {
-            this.editedItem.name = trimmedEditedItem;
+          if (trimmedEditedItem != this.getEditedItem().name!.trim()) {
+            this.getEditedItem().name = trimmedEditedItem;
 
             if (this.sortable) this.sort(this.editedItem);
 
@@ -906,20 +878,11 @@ export class ListManager {
             this.addEditUpdate(this.editedItem);
           }
 
-          this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
+          this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
         }
 
         this.reselectItem();
       }
-      // this.newItem = false;
-      // if (this.selectable) {
-      //   this.selectedItem = this.editedItem;
-      //   this.selectedItem.selected = true;
-      // }
-      // this.editedItem = null!;
-
-
-
 
       // But if the item is empty
     } else {
@@ -940,33 +903,13 @@ export class ListManager {
           // If we were NOT adding a new list item
         } else {
 
-
-
           // Reset the item back to the way it was before the edit
-          this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.name!.trim()!;
-
-
-          this.resetIndent(); // * Used for hierarchy list * (calling this puts back the indent)
-
-          // if (this.selectable) {
-          //   this.selectedItem = this.editedItem;
-          //   this.selectedItem.selected = true;
-          // }
+          this.getHtmlItem().innerText = this.getEditedItem().name!.trim()!;
+          this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
           this.reselectItem();
         }
-
-        // // Reset
-        // this.newItem = false;
-        // this.editedItem = null!;
-
-
-        // this.reselectItem();
       }
-
-
-
     }
-
     // As long as the (Enter) key was NOT pressed
     if (isEscape || isBlur) this.setButtonsState();
   }
@@ -974,17 +917,15 @@ export class ListManager {
 
 
   // =======================================================================( SORT )======================================================================== \\
-  
+
   sort(listItem?: ListItem) {
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
-    // listItem!.htmlItem!.nativeElement.innerText = listItem!.name?.trim()!;
-    // return listItem
   }
 
 
 
   // =================================================================( OPEN CONTEXT MENU )================================================================= \\
-  
+
   async openContextMenu(e: MouseEvent) {
     if (this.options && this.options.menu) {
       this.lazyLoadingService.load(async () => {
@@ -1015,7 +956,7 @@ export class ListManager {
 
 
   // =================================================================( CLOSE CONTEXT MENU )================================================================ \\
-  
+
   closeContextMenu() {
     if (this.contextMenuOpen) {
       this.contextMenu.onHide();
@@ -1030,14 +971,14 @@ export class ListManager {
 
 
 
-  // ====================================================================( RESET INDENT )=================================================================== \\
-  
-  resetIndent() { }
+  // ==================================================================( RESTORE INDENT )=================================================================== \\
+
+  restoreIndent() { }
 
 
 
   // ====================================================================( OPEN PROMPT )==================================================================== \\
-  
+
   async openPrompt(promptOption: Prompt) {
     this.lazyLoadingService.load(async () => {
       const { PromptComponent } = await import('../components/prompt/prompt.component');
@@ -1078,7 +1019,6 @@ export class ListManager {
         window.setTimeout(() => {
           this.promptOpen = false;
         })
-        // this.setItemFocus(this.selectedItem);
         promptCloseListener.unsubscribe();
       })
     })
@@ -1087,18 +1027,18 @@ export class ListManager {
 
 
   // =============================================================( ON DUPLICATE PROMPT CLOSE )============================================================= \\
-  
+
   onDuplicatePromptClose() {
     // If a duplicate item was found while adding an item
     if (this.newItem) {
-      this.editedItem.htmlItem!.nativeElement.innerText = '';
+      this.getHtmlItem().innerText = '';
 
       // If a duplicate item was found while editing an item
     } else {
-      this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.name?.trim()!;
+      this.getHtmlItem().innerText = this.getEditedItem().name?.trim()!;
     }
 
-    this.setItemFocus(this.editedItem);
+    this.setItemFocus();
     this.addDisabled = true;
     this.editDisabled = true;
     this.deleteDisabled = true;
@@ -1108,7 +1048,7 @@ export class ListManager {
 
 
   // ==================================================================( BUTTONS UPDATE )=================================================================== \\
-  
+
   buttonsUpdate() {
     this.onListUpdate.next(
       {
@@ -1122,9 +1062,8 @@ export class ListManager {
 
 
   // ==================================================================( ADD EDIT UPDATE )================================================================== \\
-  
-  addEditUpdate(listItem: ListItem) {
 
+  addEditUpdate(listItem: ListItem) {
     this.onListUpdate.next(
       {
         type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,
@@ -1138,7 +1077,7 @@ export class ListManager {
 
 
   // ==============================================================( VERIFY ADD EDIT UPDATE )=============================================================== \\
-  
+
   verifyAddEditUpdate(listItem: ListItem, name: string) {
     this.onListUpdate.next(
       {
@@ -1152,44 +1091,8 @@ export class ListManager {
 
 
 
-  // ===============================================================( SELECTED ITEMS UPDATE )=============================================================== \\
-  
-  selectedItemsUpdate(rightClick: boolean) {
-    const selectedItems = this.sourceList.filter(x => x.selected == true);
-    selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
-    this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
-  }
-
-
-
-  // ==============================================================( UNSELECTED ITEMS UPDATE )============================================================== \\
-  
-  unSelectedItemsUpdate() {
-    this.onListUpdate.next({
-      type: ListUpdateType.UnselectedItems,
-      addDisabled: this.addDisabled,
-      editDisabled: this.editDisabled,
-      deleteDisabled: this.deleteDisabled
-    })
-  }
-
-
-
-  // ================================================================( DOUBLE CLICK UPDATE )================================================================ \\
-  
-  doubleClickUpdate() {
-    this.onListUpdate.next({
-      type: ListUpdateType.DoubleClick,
-      addDisabled: this.addDisabled,
-      editDisabled: this.editDisabled,
-      deleteDisabled: this.deleteDisabled
-    })
-  }
-
-
-
   // ================================================================( DELETE PROMPT UPDATE )=============================================================== \\
-  
+
   deletePromptUpdate(deletedItems: Array<ListItem>) {
     this.onListUpdate.next(
       {
@@ -1221,5 +1124,41 @@ export class ListManager {
           }
         })
       });
+  }
+
+
+
+  // ===============================================================( SELECTED ITEMS UPDATE )=============================================================== \\
+
+  selectedItemsUpdate(rightClick: boolean) {
+    const selectedItems = this.sourceList.filter(x => x.selected == true);
+    selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
+    this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
+  }
+
+
+
+  // ==============================================================( UNSELECTED ITEMS UPDATE )============================================================== \\
+
+  unSelectedItemsUpdate() {
+    this.onListUpdate.next({
+      type: ListUpdateType.UnselectedItems,
+      addDisabled: this.addDisabled,
+      editDisabled: this.editDisabled,
+      deleteDisabled: this.deleteDisabled
+    })
+  }
+
+
+
+  // ================================================================( DOUBLE CLICK UPDATE )================================================================ \\
+
+  doubleClickUpdate() {
+    this.onListUpdate.next({
+      type: ListUpdateType.DoubleClick,
+      addDisabled: this.addDisabled,
+      editDisabled: this.editDisabled,
+      deleteDisabled: this.deleteDisabled
+    })
   }
 }

@@ -596,7 +596,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                             this.searchMode = false;
                             window.setTimeout(() => {
                                 this.searchInputSubscription.unsubscribe();
-                                this.goToParent(parent.id, child.id, this.goToChild, [child.id, grandchild.id], this.goToGrandchild, [child.id, grandchild.id]);
+                                this.goToParent(parent.id!, child.id!, this.goToChild, [child.id, grandchild.id], this.goToGrandchild, [child.id, grandchild.id]);
                             })
                         });
                 });

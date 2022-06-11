@@ -1,4 +1,5 @@
 import { Subject } from "rxjs";
+import { CheckboxItem } from "./checkbox-item";
 import { ListUpdateType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
@@ -7,6 +8,9 @@ import { ListManager } from "./list-manager";
 export class HierarchyManager extends ListManager {
     onListUpdate = new Subject<HierarchyUpdate>();
     collapseDisabled: boolean = true;
+
+
+    // ========================================================( GET INDEX OF HIERARCHY ITEM PARENT )========================================================= \\
 
     getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem): number {
         let parentHierarchyIndex!: number;
@@ -22,6 +26,9 @@ export class HierarchyManager extends ListManager {
     }
 
 
+
+    // ===================================================================( HAS CHILDREN )==================================================================== \\
+
     hasChildren(hierarchyItem: HierarchyItem): boolean {
         const index = this.sourceList.indexOf(hierarchyItem);
 
@@ -35,9 +42,12 @@ export class HierarchyManager extends ListManager {
     }
 
 
+
+    // ==================================================================( ON ARROW CLICK )=================================================================== \\
+
     onArrowClick(hierarchyItem: HierarchyItem) {
         hierarchyItem.arrowDown = !hierarchyItem.arrowDown;
-        this.showHide(this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID));
+        this.showAndHide(this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID));
         this.collapseDisabled = this.getIsCollapsed();
         this.onListUpdate.next({
             type: ListUpdateType.ArrowClicked,
@@ -54,6 +64,10 @@ export class HierarchyManager extends ListManager {
         });
     }
 
+
+
+    // =================================================================( GET IS COLLAPSED )================================================================== \\
+
     getIsCollapsed(): boolean {
         let isCollapsed: boolean = true;
 
@@ -67,24 +81,10 @@ export class HierarchyManager extends ListManager {
     }
 
 
-    setButtonsState() {
-        // We need to wait a frame because we run into the
-        // problem when adding or editing a hierarchy item,
-        // we have to remove that item and then re-add it
-        // again so we can get the indent, but doing that
-        // makes it lose the focus which updates the button
-        // state and causes the error "Expression has changed
-        // after it was checked". That's because we're updating
-        // the button state at the same time here.
-        // window.setTimeout(() => {
-        this.collapseDisabled = this.getIsCollapsed();
-        super.setButtonsState();
-        // })
 
-    }
+    // ===================================================================( SHOW AND HIDE )=================================================================== \\
 
-
-    showHide(parentIndex: number) {
+    showAndHide(parentIndex: number) {
         // Loop through all the hierarchy items starting with the hierarchy item that follows the current parent
         for (let i = parentIndex + 1; i < this.sourceList.length; i++) {
 
@@ -112,7 +112,7 @@ export class HierarchyManager extends ListManager {
 
                 // If the current hierarchy item has children
                 if (i + 1 < this.sourceList.length && this.sourceList[i + 1].hierarchyGroupID! > this.sourceList[i].hierarchyGroupID!) {
-                    this.showHide(i);
+                    this.showAndHide(i);
                 }
             }
 
@@ -124,6 +124,32 @@ export class HierarchyManager extends ListManager {
     }
 
 
+
+    // ================================================================( COLLAPSE HIERARCHY )================================================================= \\
+
+    collapseHierarchy() {
+        this.sourceList.forEach(x => {
+            const item = (x as HierarchyItem);
+            item.arrowDown = false;
+            if (item.hierarchyGroupID != 0) item.hidden = true;
+        })
+        this.collapseDisabled = true;
+        this.buttonsUpdate();
+    }
+
+
+
+    // =================================================================( SET BUTTON STATE )================================================================== \\
+
+    setButtonsState() {
+        this.collapseDisabled = this.getIsCollapsed();
+        super.setButtonsState();
+    }
+
+
+
+    // ===================================================================( SET ADD ITEM )==================================================================== \\
+
     setAddItem(hierarchyItem: HierarchyItem) {
         if (this.editable) {
             this.collapseDisabled = true;
@@ -132,12 +158,19 @@ export class HierarchyManager extends ListManager {
     }
 
 
+
+    // ===================================================================( SET EDIT ITEM )=================================================================== \\
+
     setEditItem(hierarchyItem: HierarchyItem) {
         if (this.editable) {
             this.collapseDisabled = true;
         }
         super.setEditItem(hierarchyItem);
     }
+
+
+
+    // =================================================================( GET DELETED ITEMS )================================================================= \\
 
     getDeletedItems(selectedItems: Array<HierarchyItem>): Array<HierarchyItem> {
         let deletedItems: Array<HierarchyItem> = new Array<HierarchyItem>();
@@ -157,10 +190,12 @@ export class HierarchyManager extends ListManager {
                 }
             }
         });
-
         return deletedItems;
     }
 
+
+
+    // ========================================================( GET NEXT SELECTED ITEM AFTER DELETE )======================================================== \\
 
     getNextSelectedItemAfterDelete(deletedItems: Array<HierarchyItem>): HierarchyItem {
         let nextSelectedItem!: HierarchyItem;
@@ -184,6 +219,7 @@ export class HierarchyManager extends ListManager {
 
 
 
+    // =======================================================================( SORT )======================================================================== \\
 
     sort(hierarchyItem: HierarchyItem) {
         let parentHierarchyIndex: number = -1;
@@ -231,54 +267,30 @@ export class HierarchyManager extends ListManager {
         this.sourceList.splice(parentHierarchyIndex + 1, newHierarchyGroup.length);
         // Add the new hierarchy group to the source
         this.sourceList.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
+        // Restore the indent
+        this.restoreIndent();
+    }
 
+
+
+    // ==================================================================( RESTORE INDENT )=================================================================== \\
+
+    restoreIndent() {
+        const listItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
         
-
-        // Remove the selected hierarchy item and then put it back so the indent can take effect
-        const hierarchyItemIndex = this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID);
-
-        (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = true;
-
-        window.setTimeout(() => {
-            (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = false;
-        })
+        this.editedItem = (this.sourceList[listItemIndex] as HierarchyItem) = {
+            id: this.editedItem.id,
+            name: this.editedItem.name,
+            hierarchyGroupID: this.editedItem.hierarchyGroupID,
+            arrowDown: (this.editedItem as HierarchyItem).arrowDown
+        }
     }
 
 
 
-
-    resetIndent() {
-        // // Update the text content of the html item
-        // this.editedItem!.htmlItem!.nativeElement.textContent = this.editedItem!.name!;
-        const hierarchyItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
-
-        (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = true;
-
-        window.setTimeout(() => {
-            (this.sourceList[hierarchyItemIndex] as HierarchyItem).hidden = false;
-        })
-
-        // this.sourceList.splice(hierarchyItemIndex, 1);
-        // this.sourceList.splice(hierarchyItemIndex, 0, { id: this.editedItem!.id, name: this.editedItem!.name, hierarchyGroupID: this.editedItem!.hierarchyGroupID, isParent: (this.editedItem as HierarchyItem).isParent, selected: this.editedItem!.selected, htmlItem: this.editedItem?.htmlItem, hidden: (this.editedItem as HierarchyItem).hidden } as HierarchyItem);
-
-        // this.editedItem = this.sourceList[hierarchyItemIndex];
-    }
-
-
-    collapseHierarchy() {
-        this.sourceList.forEach(x => {
-            const item = (x as HierarchyItem);
-            item.arrowDown = false;
-            if (item.hierarchyGroupID != 0) item.hidden = true;
-        })
-        this.collapseDisabled = true;
-        this.buttonsUpdate();
-    }
-
+    // ==================================================================( BUTTONS UPDATE )=================================================================== \\
 
     buttonsUpdate() {
-        // Expression has changed after it was checked
-        // window.setTimeout(() => { //??????????????????????????
         this.onListUpdate.next(
             {
                 addDisabled: this.addDisabled,
@@ -287,45 +299,11 @@ export class HierarchyManager extends ListManager {
                 collapseDisabled: this.collapseDisabled
             }
         );
-        // })
     }
 
 
 
-
-    selectedItemsUpdate(rightClick: boolean) {
-        const selectedItems = this.sourceList.filter(x => x.selected == true);
-        selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
-        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
-    }
-
-
-
-    unSelectedItemsUpdate() {
-        this.onListUpdate.next({
-            type: ListUpdateType.UnselectedItems,
-            addDisabled: this.addDisabled,
-            editDisabled: this.editDisabled,
-            deleteDisabled: this.deleteDisabled,
-            collapseDisabled: this.collapseDisabled
-        })
-    }
-
-
-
-    doubleClickUpdate() {
-        this.onListUpdate.next({
-            type: ListUpdateType.DoubleClick,
-            addDisabled: this.addDisabled,
-            editDisabled: this.editDisabled,
-            deleteDisabled: this.deleteDisabled,
-            collapseDisabled: this.collapseDisabled
-        })
-    }
-
-
-
-
+    // ==================================================================( ADD EDIT UPDATE )================================================================== \\
 
     addEditUpdate(hierarchyItem: HierarchyItem) {
         this.onListUpdate.next(
@@ -340,6 +318,9 @@ export class HierarchyManager extends ListManager {
     }
 
 
+
+    // ==============================================================( VERIFY ADD EDIT UPDATE )=============================================================== \\
+
     verifyAddEditUpdate(hierarchyItem: HierarchyItem, name: string) {
         this.onListUpdate.next(
             {
@@ -352,6 +333,9 @@ export class HierarchyManager extends ListManager {
         );
     }
 
+
+
+    // ================================================================( DELETE PROMPT UPDATE )=============================================================== \\
 
     deletePromptUpdate(deletedItems: Array<HierarchyItem>) {
         this.onListUpdate.next(
@@ -369,6 +353,9 @@ export class HierarchyManager extends ListManager {
     }
 
 
+
+    // ====================================================================( DELETE UPDATE )================================================================== \\
+
     deleteUpdate(deletedItems: Array<HierarchyItem>) {
         this.onListUpdate.next(
             {
@@ -382,5 +369,43 @@ export class HierarchyManager extends ListManager {
                     }
                 })
             });
+    }
+
+
+
+    // ===============================================================( SELECTED ITEMS UPDATE )=============================================================== \\
+
+    selectedItemsUpdate(rightClick: boolean) {
+        const selectedItems = this.sourceList.filter(x => x.selected == true);
+        selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
+        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
+    }
+
+
+
+    // ==============================================================( UNSELECTED ITEMS UPDATE )============================================================== \\
+
+    unSelectedItemsUpdate() {
+        this.onListUpdate.next({
+            type: ListUpdateType.UnselectedItems,
+            addDisabled: this.addDisabled,
+            editDisabled: this.editDisabled,
+            deleteDisabled: this.deleteDisabled,
+            collapseDisabled: this.collapseDisabled
+        })
+    }
+
+
+
+    // ================================================================( DOUBLE CLICK UPDATE )================================================================ \\
+
+    doubleClickUpdate() {
+        this.onListUpdate.next({
+            type: ListUpdateType.DoubleClick,
+            addDisabled: this.addDisabled,
+            editDisabled: this.editDisabled,
+            deleteDisabled: this.deleteDisabled,
+            collapseDisabled: this.collapseDisabled
+        })
     }
 }

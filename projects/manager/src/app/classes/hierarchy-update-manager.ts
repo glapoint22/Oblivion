@@ -701,7 +701,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                 this.searchInputSubscription.unsubscribe();
 
                 // Find and select the parent item
-                this.selectItem(parentSearchItem.id, 0);
+                this.selectItem(parentSearchItem.id!, 0);
             })
         }
 
@@ -718,7 +718,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                     this.searchMode = false;
                     window.setTimeout(() => {
                         this.searchInputSubscription.unsubscribe();
-                        this.goToParent(parent.id, child.id, this.selectItem, [child.id, 1], this.selectItem, [child.id, 1]);
+                        this.goToParent(parent.id!, child.id!, this.selectItem, [child.id, 1], this.selectItem, [child.id, 1]);
                     })
                 })
         }

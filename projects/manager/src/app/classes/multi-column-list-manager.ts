@@ -1,6 +1,5 @@
 import { Subject } from "rxjs";
 import { ListUpdateType } from "./enums";
-import { HierarchyItem } from "./hierarchy-item";
 import { ListManager } from "./list-manager"
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnItemValue } from "./multi-column-item-value";
@@ -12,6 +11,9 @@ export class MultiColumnListManager extends ListManager {
     sourceList!: Array<MultiColumnItem>;
     sortable: boolean = false;
 
+
+    // ===============================================================( ON VALUE DOUBLE CLICK )=============================================================== \\
+    
     onValueDoubleClick(multiColumnItem: MultiColumnItem, value: MultiColumnItemValue) {
         if (!this.shiftKeyDown && !this.ctrlKeyDown) {
             this.setValueEdit(multiColumnItem, value);
@@ -20,147 +22,34 @@ export class MultiColumnListManager extends ListManager {
     }
 
 
+
+    // ==================================================================( SET VALUE EDIT )=================================================================== \\
+    
     setValueEdit(multiColumnItem: MultiColumnItem, value: MultiColumnItemValue) {
-
         if (value.allowEdit) {
-            this.addDisabled = true;
-            this.editDisabled = true;
-            this.deleteDisabled = true;
-            this.addEventListeners();
-            this.overButton = false;
-            this.editedItem = multiColumnItem;
             this.editableValue = value;
-
-
-            this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.htmlValue!.nativeElement.innerText.trim()!;
-
-            this.selectedItem = null!;
-
-            this.sourceList.forEach(x => {
-                if (x.selected) x.selected = false;
-                if (x.selectType) x.selectType = null!;
-            })
-            this.setValueFocus();
-            this.buttonsUpdate();
+            this.setEdit(multiColumnItem);
         }
     }
 
 
-    setValueFocus() {
-        window.setTimeout(() => {
-            let range = document.createRange();
-            range.selectNodeContents(this.editableValue.htmlValue!.nativeElement);
-            let sel = window.getSelection();
-            sel!.removeAllRanges();
-            sel!.addRange(range);
-        });
-    }
 
+    // ==================================================================( GET EDITED ITEM )================================================================== \\
 
-    setItemSelection(multiColumnItem: MultiColumnItem) {
-        // If an item is being edited and another item that is NOT being edited is selected
-        if (this.editedItem != null && multiColumnItem != this.editedItem) {
-            this.evaluateEdit();
-        }
-        super.setItemSelection(multiColumnItem);
+    getEditedItem() {
+        return this.editableValue;
     }
 
 
 
-    commitAddEdit() {
-        // Update the name property
-        this.editableValue.name = this.editableValue.htmlValue?.nativeElement.innerText?.trim()!;
-        super.commitAddEdit();
-    }
+    // ===================================================================( GET HTML ITEM )=================================================================== \\
+
+    getHtmlItem() {
+        return this.editableValue.htmlValue!.nativeElement;
+      }
 
 
-    evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
-
-        const trimmedEditedValue = this.editableValue.htmlValue!.nativeElement.innerText.trim();
-
-        // If the edited value has text written in it
-        if (trimmedEditedValue!.length > 0) {
-
-            // If we pressed the (Escape) key
-            if (isEscape) {
-
-                // As long as the edited name is different from what it was before the edit
-                // if (trimmedEditedValue != this.editableValue.name.trim()) {
-
-
-                // Reset the item back to the way it was before the edit
-                this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
-
-
-                this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
-
-
-                this.reselectItem();
-
-                // }
-
-                // If we did NOT press the (Escape) key
-                // But the (Enter) key was pressed or the list item was (Blurred)
-            } else {
-
-                // As long as the edited name is different from what it was before the edit
-                if (trimmedEditedValue.toLowerCase() != this.editableValue.name.trim().toLowerCase()) {
-
-                    // If this list is set to verify add and edit
-                    if (this.verifyAddEdit) {
-
-                        if (!this.addEditVerificationInProgress) {
-                            this.addEditVerificationInProgress = true;
-                            this.verifyAddEditUpdate(this.editedItem as MultiColumnItem, trimmedEditedValue);
-                            return
-                        }
-
-                        // If this list does NOT verify
-                    } else {
-
-                        // Update the name property
-                        this.editableValue.name = trimmedEditedValue!;
-
-                        this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
-
-                        this.addEditUpdate(this.editedItem as MultiColumnItem);
-                    }
-
-                    // If the edited name has NOT changed
-                } else {
-                    
-                    //If the case was changed. i.e. lower case to upper case
-                    if (trimmedEditedValue != this.editableValue.name.trim()) {
-                        this.editableValue.name = trimmedEditedValue!;
-                        this.addEditUpdate(this.editedItem as MultiColumnItem);
-                    }
-
-                    this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
-                }
-
-                this.reselectItem();
-            }
-
-
-            // But if the item is empty
-        } else {
-
-            // If we pressed the (Escape) key or the item was (Blurred)
-            if (isEscape || isBlur) {
-
-                // Reset the item back to the way it was before the edit
-                this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
-
-                this.resetIndent(); // * Used for checkbox multi column list * (calling this puts back the checkbox)
-
-                this.reselectItem();
-            }
-        }
-
-        // As long as the (Enter) key was NOT pressed
-        if (isEscape || isBlur) this.setButtonsState();
-    }
-
+    // ===================================================================( RESELECT ITEM )=================================================================== \\
 
     reselectItem() {
         super.reselectItem();
@@ -169,9 +58,7 @@ export class MultiColumnListManager extends ListManager {
 
 
 
-
-
-
+    // ==================================================================( ADD EDIT UPDATE )================================================================== \\
 
     addEditUpdate(multiColumnItem: MultiColumnItem) {
         this.onListUpdate.next(
@@ -184,6 +71,9 @@ export class MultiColumnListManager extends ListManager {
         );
     }
 
+
+
+    // ==============================================================( VERIFY ADD EDIT UPDATE )=============================================================== \\
 
     verifyAddEditUpdate(multiColumnItem: MultiColumnItem, name: string) {
         this.onListUpdate.next(
@@ -198,14 +88,7 @@ export class MultiColumnListManager extends ListManager {
 
 
 
-    selectedItemsUpdate(rightClick: boolean) {
-        const selectedItems = this.sourceList.filter(x => x.selected == true);
-        selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
-        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedMultiColumnItems: selectedItems, rightClick: rightClick });
-    }
-
-
-
+    // ================================================================( DELETE PROMPT UPDATE )=============================================================== \\
 
     deletePromptUpdate(deletedItems: Array<MultiColumnItem>) {
         this.onListUpdate.next(
@@ -222,6 +105,9 @@ export class MultiColumnListManager extends ListManager {
     }
 
 
+
+    // ====================================================================( DELETE UPDATE )================================================================== \\
+
     deleteUpdate(deletedItems: Array<MultiColumnItem>) {
         this.onListUpdate.next(
             {
@@ -237,20 +123,12 @@ export class MultiColumnListManager extends ListManager {
     }
 
 
-    onDuplicatePromptClose() {
-        // If a duplicate item was found while adding an item
-        if (this.newItem) {
-            this.editableValue.htmlValue!.nativeElement.innerText = '';
 
-            // If a duplicate item was found while editing an item
-        } else {
-            this.editableValue.htmlValue!.nativeElement.innerText = this.editableValue.name.trim()!;
-        }
+    // ===============================================================( SELECTED ITEMS UPDATE )=============================================================== \\
 
-        this.setValueFocus();
-        this.addDisabled = true;
-        this.editDisabled = true;
-        this.deleteDisabled = true;
-        this.buttonsUpdate();
+    selectedItemsUpdate(rightClick: boolean) {
+        const selectedItems = this.sourceList.filter(x => x.selected == true);
+        selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
+        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedMultiColumnItems: selectedItems, rightClick: rightClick });
     }
 }

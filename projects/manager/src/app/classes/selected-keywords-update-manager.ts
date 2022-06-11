@@ -35,6 +35,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
+        this.itemType = 'Custom Keyword Group';
         this.searchNameWidth = '296px';
         this.dataServicePath = 'SelectedKeywords/Groups';
         this.childDataServicePath = 'SelectedKeywords';
@@ -42,18 +43,12 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         this.keywordsService.selectedKeywordsArray = this.thisArray;
         this.keywordsService.selectedKeywordsSearchList = this.thisSearchList;
         this.searchInputName = 'selectedKeywordsSearchInput';
+        this.parentSearchType = 'Group';
+        this.childSearchType = 'Keyword';
+        this.searchTypeWidth = '68px';
     }
 
     
-
-    // ======================================================================( ON OPEN )====================================================================== \\
-
-    onOpen() {
-        this.itemType = 'Custom Keyword Group';
-        super.onOpen();
-    }
-
-
 
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
 
@@ -218,7 +213,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ==============================================================( ON SELECTED SEARCH ITEM )============================================================== \\
 
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
-
         if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
 
             // If we're NOT selecting a custom keyword group

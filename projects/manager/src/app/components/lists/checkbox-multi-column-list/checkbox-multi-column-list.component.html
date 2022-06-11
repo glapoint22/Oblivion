@@ -1,7 +1,1 @@
-<ng-container *ngFor="let checkboxMultiColumnItem of sourceList">
-    <ng-container *ngIf="!checkboxMultiColumnItem.hidden">
-        <checkbox-multi-column-item  [item]="checkboxMultiColumnItem"
-            [listManager]="listManager" [parentSearchType]="parentSearchType"></checkbox-multi-column-item>
-
-    </ng-container>
-</ng-container>
+<checkbox-multi-column-item *ngFor="let checkboxMultiColumnItem of sourceList"  [item]="checkboxMultiColumnItem" [listManager]="listManager" [parentSearchType]="parentSearchType"></checkbox-multi-column-item>
