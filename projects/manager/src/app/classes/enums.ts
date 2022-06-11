@@ -50,11 +50,6 @@ export enum MenuOptionType {
     Divider
 }
 
-export enum SortType {
-    Form,
-    Product
-}
-
 
 export enum WidgetHandle {
     TopLeft,

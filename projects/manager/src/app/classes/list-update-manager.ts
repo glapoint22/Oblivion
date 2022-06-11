@@ -5,7 +5,7 @@ import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
 import { ListComponent } from "../components/lists/list/list.component";
 import { ListUpdateService } from "../services/list-update/list-update.service";
-import { ListUpdateType, MenuOptionType, SortType } from "./enums";
+import { ListUpdateType, MenuOptionType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
@@ -19,7 +19,6 @@ export class ListUpdateManager {
     private _searchListUpdate!: ListUpdate;
 
     // Public
-    public sortType!: SortType;
     public searchMode!: boolean;
     public dataServicePath!: string;
     public searchInputName!: string;
@@ -27,7 +26,6 @@ export class ListUpdateManager {
     public addIconButtonTitle!: string
     public listComponent!: ListComponent;
     public searchComponent!: ListComponent;
-    public otherListComponent!: ListComponent;
     public listUpdateService!: ListUpdateService;
     public searchInputSubscription!: Subscription;
     public selectLastSelectedItemOnOpen!: boolean;
@@ -39,15 +37,14 @@ export class ListUpdateManager {
     public listOptions: ListOptions = new ListOptions();
     public thisArray: Array<ListItem> = new Array<ListItem>();
     public otherArray: Array<ListItem> = new Array<ListItem>();
-    public thisSortList: Array<ListItem> = new Array<ListItem>();
     public thisSearchList: Array<ListItem> = new Array<ListItem>();
     public otherSearchList: Array<ListItem> = new Array<ListItem>();
     public get listUpdate(): ListUpdate { return this._listUpdate; }
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
     public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
-    public get itemType(): string {return this._itemType;}
-    public set itemType(v: string) {this._itemType = v; this.addIconButtonTitle = 'Add ' + v;}
+    public get itemType(): string { return this._itemType; }
+    public set itemType(v: string) { this._itemType = v; this.addIconButtonTitle = 'Add ' + v; }
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -108,7 +105,6 @@ export class ListUpdateManager {
         this.searchOptions = {
             multiselectable: false,
             verifyAddEdit: true,
-            sortable: false,
 
             // Delete Prompt
             deletePrompt: {
@@ -163,10 +159,10 @@ export class ListUpdateManager {
                     })
                 })
         } else {
-            
+
             // If the list is set to select the last selected item on open
             if (this.selectLastSelectedItemOnOpen) {
-                
+
                 // Check to see if an item was selected before it last closed
                 const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
                 // If an item was selected
@@ -177,7 +173,7 @@ export class ListUpdateManager {
 
                 // If it's not set to select the last selected item
             } else {
-                
+
                 // Clear all selections
                 this.thisArray.forEach(x => {
                     x.selectType = null!;
@@ -185,7 +181,6 @@ export class ListUpdateManager {
                 })
             }
         }
-        this.sortPendingItems();
     }
 
 
@@ -217,7 +212,6 @@ export class ListUpdateManager {
 
             window.setTimeout(() => {
 
-                this.sortPendingItems();
                 this.searchInputSubscription.unsubscribe();
 
 
@@ -371,7 +365,7 @@ export class ListUpdateManager {
         //     name: listUpdate.name
         // }).subscribe((id: number) => {
         this.thisArray[listUpdate.index!].id = this.listAddId//id;
-        this.setSort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]));
+        this.sort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]), this.otherArray);
         // });
     }
 
@@ -397,7 +391,7 @@ export class ListUpdateManager {
         //     id: listUpdate.id,
         //     name: listUpdate.name
         // }).subscribe();
-        this.setSort(this.editItem(this.otherArray, listUpdate, 0));
+        this.sort(this.editItem(this.otherArray, listUpdate, 0), this.otherArray);
         this.editItem(this.otherSearchList, listUpdate, this.parentSearchType);
     }
 
@@ -411,8 +405,8 @@ export class ListUpdateManager {
         //     id: searchUpdate.id,
         //     name: searchUpdate.values![0].name
         // }).subscribe();
-        this.thisSortList.push(this.editItem(this.thisArray, searchUpdate, 0));
-        this.setSort(this.editItem(this.otherArray, searchUpdate, 0));
+        this.sort(this.editItem(this.thisArray, searchUpdate, 0), this.thisArray);
+        this.sort(this.editItem(this.otherArray, searchUpdate, 0), this.otherArray);
         this.editItem(this.otherSearchList, searchUpdate, this.parentSearchType);
     }
 
@@ -428,32 +422,13 @@ export class ListUpdateManager {
 
 
 
-    // ======================================================================( SET SORT )===================================================================== \\
+    // ========================================================================( SORT )======================================================================= \\
 
-    setSort(otherListItem: ListItem) {
-        // As long as the other list item is NOT null
-        if (otherListItem) {
-            // And as long as the other list Is visible
-            if (this.otherListComponent) {
-                // Then sort the other list
-                this.otherListComponent.listManager.sort(otherListItem);
-
-                // But if the other list is NOT visible
-            } else {
-
-                // As long as a list is using the list update service
-                if (this.listUpdateService) {
-
-                    // Make a list of all the items we edited in this list so that when we go back to the other list we can then sort those items accordingly
-                    this.listUpdateService!.otherSortList.push(otherListItem!);
-                    this.listUpdateService!.targetSortType = this.sortType == SortType.Form ? SortType.Product : SortType.Form;
-                }
-
-            }
-        }
+    sort(item: ListItem, array: Array<ListItem>) {
+        array.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
     }
 
-
+    
 
     // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
@@ -597,41 +572,6 @@ export class ListUpdateManager {
                     })
                 }
             });
-    }
-
-
-
-    // ================================================================( SORT PENDING ITEMS )================================================================= \\
-
-    sortPendingItems() {
-        // If an item was edited in search mode
-        if (this.thisSortList.length > 0) {
-            // Then we need to sort those items once we return to list mode
-            this.thisSortList.forEach(x => {
-                // As long as the item that was added to the sort list is NOT null
-                if (x) {
-                    this.listComponent.listManager.sort(x);
-                }
-                const index = this.thisSortList.indexOf(x);
-                this.thisSortList.splice(index, 1);
-            })
-        }
-
-        // As long as a list is using the list update service
-        if (this.listUpdateService) {
-
-            // But if any items were added or edited from the other list whether it was done in search mode or list mode
-            if (this.listUpdateService!.otherSortList.length > 0 &&
-                this.listUpdateService!.targetSortType == this.sortType) {
-
-                // Then we need to sort those items now in this list
-                this.listUpdateService!.otherSortList.forEach(x => {
-                    this.listComponent.listManager.sort(x);
-                    const index = this.listUpdateService!.otherSortList.indexOf(x);
-                    this.listUpdateService!.otherSortList.splice(index, 1);
-                })
-            }
-        }
     }
 
 

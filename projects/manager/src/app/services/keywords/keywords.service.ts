@@ -8,9 +8,7 @@ import { HierarchyUpdateService } from '../hierarchy-update/hierarchy-update.ser
   providedIn: 'root'
 })
 export class KeywordsService extends HierarchyUpdateService {
-  public sortList: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
   public selectedKeywordsArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
   public selectedKeywordsSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
   public availableSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-  public selectedHierarchyComponent!: HierarchyComponent;
 }
