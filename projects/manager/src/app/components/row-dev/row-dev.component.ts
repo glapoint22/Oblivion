@@ -91,6 +91,8 @@ export class RowDevComponent extends RowComponent {
       data.columnSpan.values[0].span = columnSpan;
       this.createColumn(data, index);
     }
+
+    this.widgetService.page.save();
   }
 
 

@@ -1,0 +1,32 @@
+<div class="property-box-bar">
+
+    <div class="icons">
+        <!-- Delete icon -->
+        <icon-button [icon]="'fas fa-trash-alt'"
+            [title]="deleteIconButtonTitle"
+            [isDisabled]="isDisabled('deleteDisabled')"
+            (onOver)="overButton = $event"
+            (onClick)="delete()">
+        </icon-button>
+            
+
+        <!-- Collapse icon -->
+        <icon-button [icon]="'fas fa-minus-square'"
+            [title]="'Collapse'"
+            [isDisabled]="isDisabled('collapseDisabled')"
+            (onOver)="overButton = $event"
+            (onClick)="collapse()">
+        </icon-button>
+        
+    </div>
+</div>
+
+<!-- Hierarchy -->
+<div class="modal-list-container">
+    <checkbox-hierarchy #hierarchyComponent
+        [sourceList]="thisArray"
+        [options]="listOptions"
+        (onListUpdate)="listUpdate = $event">
+    </checkbox-hierarchy>
+</div>
+

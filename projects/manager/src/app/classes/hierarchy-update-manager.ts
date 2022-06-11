@@ -16,7 +16,9 @@ import { ListUpdateManager } from "./list-update-manager";
 import { SearchResultItem } from "./search-result-item";
 import { ListItem } from "./list-item";
 import { KeyValue } from "@angular/common";
+import { Directive } from "@angular/core";
 
+@Directive()
 export class HierarchyUpdateManager extends ListUpdateManager {
     // private
     private _hierarchyUpdate!: HierarchyUpdate;

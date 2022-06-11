@@ -11,6 +11,8 @@ export class ColumnSpan {
     setData(columnSpan: ColumnSpan) {
         if (columnSpan) {
             if (columnSpan.values) this.values = columnSpan.values;
+        } else {
+            this.values.push(new ColumnSpanValue(12));
         }
     }
 

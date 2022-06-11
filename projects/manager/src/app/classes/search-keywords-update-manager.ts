@@ -1,21 +1,22 @@
 import { Directive, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
-import { ListComponent } from "../components/lists/list/list.component";
+import { CheckboxHierarchyComponent } from "../components/hierarchies/checkbox-hierarchy/checkbox-hierarchy.component";
 import { WidgetService } from "../services/widget/widget.service";
 import { MenuOptionType } from "./enums";
-import { ListUpdate } from "./list-update";
-import { ListUpdateManager } from "./list-update-manager";
+import { HierarchyUpdate } from "./hierarchy-update";
+import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 
 @Directive()
-export class BrowseNichesUpdateManager extends ListUpdateManager {
-    @ViewChild('listComponent') listComponent!: ListComponent;
+export class SearchKeywordsUpdateManager extends HierarchyUpdateManager {
+    @ViewChild('hierarchyComponent') listComponent!: CheckboxHierarchyComponent;
 
     constructor(dataService: DataService, sanitizer: DomSanitizer, private widgetService: WidgetService) { super(dataService, sanitizer); }
 
     ngOnInit() {
-        this.dataServicePath = 'Pages/PageReferenceItem';
-        this.itemType = 'Niche';
+        this.dataServicePath = 'Keywords/PageReferenceItem';
+        this.childDataServicePath = ''
+        this.itemType = 'Keyword Group';
         this.listOptions.editable = false;
         this.listOptions.menu!.menuOptions = [
             {
@@ -31,7 +32,7 @@ export class BrowseNichesUpdateManager extends ListUpdateManager {
 
     // =================================================================( ON SELECTED ITEM )================================================================== \\
 
-    onSelectedItem(listUpdate: ListUpdate) {
+    onSelectedItem(hierarchyUpdate: HierarchyUpdate) {
         this.deleteIconButtonTitle = 'Delete ' + this.itemType;
     }
 
@@ -39,12 +40,12 @@ export class BrowseNichesUpdateManager extends ListUpdateManager {
 
     // ====================================================================( ON ITEM ADD )==================================================================== \\
 
-    onItemAdd(listUpdate: ListUpdate) {
+    onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         this.dataService.post<number>('api/' + this.dataServicePath, {
-            itemId: listUpdate.id,
+            itemId: hierarchyUpdate.id,
             pageId: this.widgetService.page.id
         }).subscribe((id: number) => {
-            this.thisArray[listUpdate.index!].id = id;
+            this.thisArray[hierarchyUpdate.index!].id = id;
         });
     }
 }

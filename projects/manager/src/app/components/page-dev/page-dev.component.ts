@@ -3,6 +3,8 @@ import { DataService } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
+import { ListItem } from '../../classes/list-item';
+import { PageData } from '../../classes/page-data';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 
@@ -16,7 +18,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public name!: string;
   public pageType: PageType = PageType.Custom;
   public host!: ContainerHost;
-  public saveData = new Subject<void>();
+  public pageReferenceItems = new Array<ListItem>();
+  private saveData = new Subject<void>();
 
   constructor(private widgetService: WidgetService, private dataService: DataService) { super(); }
 
@@ -43,10 +46,22 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   }
 
   ngAfterViewInit(): void {
-    super.ngAfterViewInit();
     const container = this.container as ContainerDevComponent;
 
     container.host = this;
+  }
+
+
+  setData(pageData: PageData) {
+    this.id = pageData.id;
+    this.name = pageData.name;
+    this.pageType = pageData.pageType;
+    this.pageReferenceItems = pageData.pageReferenceItems;
+
+    this.pageContent = new PageContent();
+    this.pageContent.setData(pageData.content);
+
+    this.load();
   }
 
   new(content?: PageContent) {
@@ -61,6 +76,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
       this.id = pageId;
     });
   }
+
+
 
 
   save() {

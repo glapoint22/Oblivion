@@ -56,6 +56,7 @@ export class ContainerDevComponent extends ContainerComponent {
       row.columns.push(new Column(12, new WidgetData(widgetType)));
       this.createRow(row);
       this.widgetService.clearWidgetCursor();
+      this.widgetService.page.save();
     }
   }
 
@@ -199,6 +200,7 @@ export class ContainerDevComponent extends ContainerComponent {
     this.rows.splice(index, 1);
     this.viewContainerRef.remove(index);
     this.widgetService.deselectWidget();
+    this.widgetService.page.save();
   }
 
 
@@ -225,6 +227,8 @@ export class ContainerDevComponent extends ContainerComponent {
     } else {
       this.shiftRowsUp(row);
     }
+
+    this.widgetService.page.save();
   }
 
 
@@ -250,7 +254,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
     // Shift the rows
     this.shiftRowsDown(row);
-    this.widgetService.onRowChange(this);
+    this.widgetService.page.save();
   }
 
 
@@ -287,6 +291,7 @@ export class ContainerDevComponent extends ContainerComponent {
     window.setTimeout(() => {
       this.shiftRowsUp(row);
       this.widgetService.onRowChange(this);
+      this.widgetService.page.save();
     });
   }
 
@@ -307,7 +312,7 @@ export class ContainerDevComponent extends ContainerComponent {
       const newRow = this.rows[newRowIndex];
 
       this.shiftRowsDown(newRow);
-      this.widgetService.onRowChange(this);
+      this.widgetService.page.save();
     });
   }
 
@@ -397,6 +402,8 @@ export class ContainerDevComponent extends ContainerComponent {
         break;
       }
     }
+
+    this.widgetService.onRowChange(this);
   }
 
 
@@ -419,6 +426,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
     row.columns.push(new Column(12, widgetData));
     this.createRow(row);
+    this.widgetService.page.save();
   }
 
 
@@ -428,6 +436,7 @@ export class ContainerDevComponent extends ContainerComponent {
   private addRow(row: Row, top: number): void {
     row.top = top;
     this.createRow(row);
+    this.widgetService.page.save();
   }
 
 
@@ -438,6 +447,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
     row.columns.push(column);
     this.createRow(row);
+    this.widgetService.page.save();
   }
 
 

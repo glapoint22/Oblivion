@@ -223,12 +223,6 @@ export class ColumnDevComponent extends ColumnComponent {
 
     // Set the horizontal alignment
     this.horizontalAlignment.setClasses(this.widget.widgetElement);
-
-    // Retrun if we don't have an image or video
-    if ((widgetData.widgetType == WidgetType.Image && !widgetData.width) || (widgetData.widgetType == WidgetType.Video && !widgetData.width)) return;
-
-    // Save the page
-    this.widgetService.page.save();
   }
 
 
@@ -241,6 +235,8 @@ export class ColumnDevComponent extends ColumnComponent {
     } else {
       this.rowComponent.deleteColumn(this);
     }
+
+    this.widgetService.page.save();
   }
 
 

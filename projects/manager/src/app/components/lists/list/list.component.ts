@@ -78,7 +78,7 @@ export class ListComponent implements OnInit {
 
 
   add(id?: number, name?: string) {
-    // If the list is NOT Editable and the id and name of the new item has already been established
+    // If the list is NOT Editable (the id and name of the new item will already be defined)
     if (!this.listManager.editable) {
       // Add the new item to the list
       this.sourceList.push({ id: id!, name: name! });
