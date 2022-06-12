@@ -10,4 +10,6 @@ export class ListItem extends Item {
     htmlItem?: ElementRef<HTMLElement>;
     color?: string;
     opacity?: number;
+    selectable?: boolean;
+    editable?: boolean;
 }

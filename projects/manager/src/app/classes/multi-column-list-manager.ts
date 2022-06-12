@@ -12,14 +12,11 @@ export class MultiColumnListManager extends ListManager {
     sortable: boolean = false;
 
 
-    // ===============================================================( ON VALUE DOUBLE CLICK )=============================================================== \\
-    
-    onValueDoubleClick(multiColumnItem: MultiColumnItem, value: MultiColumnItemValue) {
-        if (!this.shiftKeyDown && !this.ctrlKeyDown) {
-            this.setValueEdit(multiColumnItem, value);
-            this.doubleClickUpdate();
-        }
-    }
+    // =================================================================( SET DOUBLE CLICK )================================================================== \\
+
+    setDoubleClick(multiColumnItem: MultiColumnItem, value?: MultiColumnItemValue) {
+        this.setValueEdit(multiColumnItem, value!);
+      }
 
 
 

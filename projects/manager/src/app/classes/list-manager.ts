@@ -260,7 +260,7 @@ export class ListManager {
         }
       }
 
-      if (this.selectable) {
+      if (this.selectable && (listItem.selectable == null || listItem.selectable)) {
         // As long as we're not right clicking on an item that's already selected
         if (!this.preventUnselectionFromRightMousedown) {
           this.setItemSelection(listItem);
@@ -272,6 +272,10 @@ export class ListManager {
           this.selectedItemsUpdate(e != null && e.button == 2);
           this.buttonsUpdate();
         }
+      }else if(!listItem.selectable) {
+        this.removeEventListeners();
+        this.setButtonsState();
+
       }
     }
   }
@@ -660,11 +664,19 @@ export class ListManager {
 
   // ===============================================================( ON ITEM DOUBLE CLICK )================================================================ \\
 
-  onItemDoubleClick(listItem: ListItem) {
-    if (!this.shiftKeyDown && !this.ctrlKeyDown) {
-      this.setEditItem(listItem);
+  onItemDoubleClick(listItem: ListItem, value?: ListItem) {
+    if (!this.shiftKeyDown && !this.ctrlKeyDown && (listItem.selectable == null || listItem.selectable) && (listItem.editable == null || listItem.editable)) {
+      this.setDoubleClick(listItem, value!);
       this.doubleClickUpdate();
     }
+  }
+
+
+
+  // =================================================================( SET DOUBLE CLICK )================================================================== \\
+
+  setDoubleClick(listItem: ListItem, value?: ListItem) {
+    this.setEditItem(listItem);
   }
 
 
@@ -927,7 +939,7 @@ export class ListManager {
   // =================================================================( OPEN CONTEXT MENU )================================================================= \\
 
   async openContextMenu(e: MouseEvent) {
-    if (this.options && this.options.menu) {
+    if (this.options && this.options.menu && this.selectable && this.selectedItem && (this.selectedItem.selectable == null || this.selectedItem.selectable)) {
       this.lazyLoadingService.load(async () => {
         const { ContextMenuComponent } = await import('../components/context-menu/context-menu.component');
         const { ContextMenuModule } = await import('../components/context-menu/context-menu.module');

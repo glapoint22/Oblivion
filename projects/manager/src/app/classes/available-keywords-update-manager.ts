@@ -308,14 +308,14 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: ListItem) {
+    getItem(x: KeywordCheckboxItem) {
         return {
             id: x.id,
             name: x.name,
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
-            opacity: (x as KeywordCheckboxItem).forProduct ? 0.4 : null!
+            opacity: x.forProduct ? 0.4 : null!
         }
     }
 
@@ -323,7 +323,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: ListItem) {
+    getOtherItem(x: KeywordCheckboxItem) {
         return {
             id: x.id,
             name: x.name,

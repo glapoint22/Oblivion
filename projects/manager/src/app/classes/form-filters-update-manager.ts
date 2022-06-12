@@ -68,4 +68,14 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
     getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
         return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
     }
+
+
+    getChildItem(child: CheckboxItem) {
+        return {
+            id: child.id,
+            name: child.name,
+            hierarchyGroupID: 1,
+            hidden: false
+        }
+    }
 }

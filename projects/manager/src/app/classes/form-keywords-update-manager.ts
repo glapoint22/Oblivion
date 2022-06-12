@@ -118,7 +118,7 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: ListItem) {
+    getItem(x: HierarchyItem) {
         return {
             id: x.id,
             name: x.name,
@@ -132,14 +132,14 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: ListItem) {
+    getOtherItem(x: KeywordCheckboxItem) {
         return {
             id: x.id,
             name: x.name,
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
-            opacity: (x as KeywordCheckboxItem).forProduct ? 0.4 : null!
+            opacity: x.forProduct ? 0.4 : null!
         }
     }
 

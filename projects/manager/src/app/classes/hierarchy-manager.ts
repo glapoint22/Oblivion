@@ -277,7 +277,7 @@ export class HierarchyManager extends ListManager {
 
     restoreIndent() {
         const listItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
-        
+
         this.editedItem = (this.sourceList[listItemIndex] as HierarchyItem) = {
             id: this.editedItem.id,
             name: this.editedItem.name,
