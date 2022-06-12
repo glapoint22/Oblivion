@@ -14,7 +14,6 @@
                     'selected-item-all': item.selectType == listManager.SelectType.All && item != listManager.editedItem,
                     'selected-item-middle': item.selectType == listManager.SelectType.Middle,
                     'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
-                    'transparent-item': listManager.editedItem != null && listManager.editedItem != item,
                     'no-hover': listManager.contextMenuOpen || item == listManager.editedItem}">
 
 
@@ -37,7 +36,7 @@
              [style.color]="item.values[0].color"
              [contentEditable]="item.values[0].allowEdit && item == listManager.editedItem ? true : false"
              [style.width]="listManager.editedItem == null ? item.values[0].width : setWidth(item.values[0].width)"
-             (dblclick)="listManager.onValueDoubleClick(item, item.values[0])"
+             (dblclick)="listManager.onItemDoubleClick(item, item.values[0])"
              [ngClass]="{'edited-value': item.values[0].allowEdit && item.values[0] == listManager.editableValue,
                          'transparent-value': listManager.editableValue != null && item.values[0] != listManager.editableValue}">
 
@@ -73,7 +72,7 @@
              [style.color]="item.values[1].color"
              [contentEditable]="item.values[1].allowEdit && item == listManager.editedItem ? true : false"
              [style.width]="item.values[1].width"
-             (dblclick)="listManager.onValueDoubleClick(item, item.values[1])"
+             (dblclick)="listManager.onItemDoubleClick(item, item.values[1])"
              [ngClass]="{'edited-value': item.values[1].allowEdit && item.values[1] == listManager.editableValue,
                          'transparent-value': listManager.editableValue != null && item.values[1] != listManager.editableValue}">
             {{item.values[1].name}}

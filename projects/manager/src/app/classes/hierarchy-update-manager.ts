@@ -808,7 +808,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: ListItem) {
+    getItem(x: HierarchyItem) {
         return {
             id: x.id,
             name: x.name,
@@ -821,12 +821,12 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
-    getChildItem(child: Item) {
+    getChildItem(child: HierarchyItem) {
         return {
             id: child.id,
             name: child.name,
             hierarchyGroupID: 1,
-            hidden: false,
+            hidden: false
         }
     }
 

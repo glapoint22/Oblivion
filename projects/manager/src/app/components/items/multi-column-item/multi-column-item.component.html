@@ -13,7 +13,6 @@
                     'selected-item-all': item.selectType == listManager.SelectType.All && item != listManager.editedItem,
                     'selected-item-middle': item.selectType == listManager.SelectType.Middle,
                     'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
-                    'transparent-item': listManager.editedItem != null && listManager.editedItem != item,
                     'no-hover': listManager.contextMenuOpen || item == listManager.editedItem}">
 
         <div *ngFor="let value of item.values"
@@ -23,7 +22,7 @@
              [style.color]="item.color"
              [contentEditable]="value.allowEdit && item == listManager.editedItem ? true : false"
              [style.width]="value.width"
-             (dblclick)="listManager.onValueDoubleClick(item, value)"
+             (dblclick)="listManager.onItemDoubleClick(item, value)"
              [ngClass]="{'edited-value': value.allowEdit && value == listManager.editableValue,
                          'transparent-value': listManager.editableValue != null && value != listManager.editableValue}">
             {{value.name}}

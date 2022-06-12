@@ -10,7 +10,6 @@ import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { KeyValue } from "@angular/common";
-import { ListItem } from "./list-item";
 import { HierarchyItem } from "./hierarchy-item";
 import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
@@ -48,7 +47,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         this.searchTypeWidth = '68px';
     }
 
-    
+
 
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
 
@@ -61,22 +60,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // =======================================================================( ADD )========================================================================= \\
 
     add() {
-        this.listComponent.listManager.editable = true;
-        // If an item is selected and that item is a custom keyword group
-        if (this.listComponent.listManager.selectedItem != null && this.listComponent.listManager.selectedItem.hierarchyGroupID == 0) {
-            // Check to see if that custom keyword group has had its children loaded yet
-            if (!this.listComponent.listManager.hasChildren(this.listComponent.listManager.selectedItem)) {
-                // If not, wait for its children to load
-                let onChildrenLoadListener = this.onChildrenLoad.subscribe(() => {
-                    onChildrenLoadListener.unsubscribe();
-                    // Once the children have loaded, dim all the custom items
-                    this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
-                });
-            }
-        }
-
         super.add();
-        this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
         if (newKeyword?.hierarchyGroupID == 1) {
@@ -89,32 +73,10 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ====================================================================( ADD PARENT )===================================================================== \\
 
     addParent() {
-        this.listComponent.listManager.editable = true;
         super.addParent();
         this.deleteDisabled = true;
-        this.thisArray.forEach(x => x.forProduct ? x.color = '#6e5000' : null);
         const newKeyword = this.thisArray.find(x => x.id == -1);
         newKeyword!.color = '#ffba00';
-    }
-
-
-
-    // =======================================================================( EDIT )======================================================================== \\
-
-    edit() {
-        super.edit();
-        if (!this.searchMode) {
-            this.thisArray.forEach(x => x.forProduct && x != this.listComponent.listManager.editedItem ? x.color = '#6e5000' : null);
-        } else {
-
-            if (this.thisSearchList.length > 0) {
-                this.thisSearchList.forEach(x => {
-                    x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[0].color = '#6e5000' : null;
-                    x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
-                    x.forProduct && x == this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
-                });
-            }
-        }
     }
 
 
@@ -152,27 +114,38 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 this.addIconButtonTitle = 'Add';
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Remove ' + this.itemType;
-                this.listComponent.listManager.editable = false;
                 this.listOptions.deletePrompt!.title = 'Remove ' + this.itemType;
                 this.listOptions.deletePrompt!.primaryButton!.name = 'Remove';
-                this.buildMenu(hierarchyUpdate);
+                this.listOptions.menu!.menuOptions[0].hidden = false;
+                this.listOptions.menu!.menuOptions[1].hidden = true;
+                this.listOptions.menu!.menuOptions[2].hidden = true;
+                this.listOptions.menu!.menuOptions[3].hidden = true;
+                this.listOptions.menu!.menuOptions[4].hidden = false;
+                this.listOptions.menu!.menuOptions[5].hidden = false;
+                this.listOptions.menu!.menuOptions[0].name = 'Add Custom ' + this.itemType;
+                this.listOptions.menu!.menuOptions[5].name = 'Remove ' + this.itemType;
 
                 // If we ARE selecting a custom keyword group
             } else {
                 this.itemType = 'Custom Keyword Group';
-                this.listComponent.listManager.editable = true;
                 this.addIconButtonTitle = 'Add ' + this.childType;
                 this.editIconButtonTitle = 'Rename ' + this.itemType;
                 this.deleteIconButtonTitle = 'Delete ' + this.itemType;
                 this.listOptions.deletePrompt!.title = 'Delete ' + this.itemType;
                 this.listOptions.deletePrompt!.primaryButton!.name = 'Delete';
-                this.buildMenu(hierarchyUpdate);
-
-                // If the custom keyword was selected after it was in edit mode
-                if (this.listComponent.listManager.editedItem != null) {
-                    this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
-                }
+                this.listOptions.menu!.menuOptions[1].hidden = false;
+                this.listOptions.menu!.menuOptions[2].hidden = false;
+                this.listOptions.menu!.menuOptions[3].hidden = false;
+                this.listOptions.menu!.menuOptions[4].hidden = false;
+                this.listOptions.menu!.menuOptions[5].hidden = false;
+                this.listOptions.menu!.menuOptions[1].optionFunction = this.add;
+                this.listOptions.menu!.menuOptions[0].name = 'Add ' + this.itemType;
+                this.listOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
+                this.listOptions.menu!.menuOptions[3].name = 'Rename ' + this.itemType;
+                this.listOptions.menu!.menuOptions[5].name = 'Delete ' + this.itemType;
             }
+            this.listOptions.menu!.menuOptions[0].hidden = false;
+            this.listOptions.menu!.menuOptions[0].optionFunction = this.addParent;
         }
 
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1) {
@@ -180,31 +153,29 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
             // If we're NOT selecting a custom keyword (a selection can NOT be made so we stay in custom mode)
             if (!this.thisArray[hierarchyUpdate.selectedItems![0].index!].forProduct) {
-                this.listOptions.menu = null!;
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Delete';
                 this.addIconButtonTitle = 'Add ' + this.itemType;
-                this.listComponent.listManager.editable = false;
-                this.listComponent.listManager.selectedItem.selected = false;
-                this.listComponent.listManager.selectedItem.selectType = null!;
-                this.listComponent.listManager.selectedItem = null!;
 
                 // If we ARE selecting a custom keyword
             } else {
 
-                this.listComponent.listManager.editable = true;
                 this.addIconButtonTitle = 'Add ' + this.childType;
                 this.editIconButtonTitle = 'Rename ' + this.childType;
                 this.deleteIconButtonTitle = 'Delete ' + this.childType;
                 this.listOptions.deletePrompt!.title = 'Delete ' + this.childType;
                 this.listOptions.deletePrompt!.primaryButton!.name = 'Delete';
-                this.buildMenu(hierarchyUpdate);
-
-                // If the custom keyword was selected after it was in edit mode
-                if (this.listComponent.listManager.editedItem != null) {
-                    this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
-                }
             }
+            this.listOptions.menu!.menuOptions[0].hidden = false;
+            this.listOptions.menu!.menuOptions[1].hidden = true;
+            this.listOptions.menu!.menuOptions[2].hidden = true;
+            this.listOptions.menu!.menuOptions[3].hidden = false;
+            this.listOptions.menu!.menuOptions[4].hidden = true;
+            this.listOptions.menu!.menuOptions[5].hidden = false;
+            this.listOptions.menu!.menuOptions[0].optionFunction = this.add;
+            this.listOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
+            this.listOptions.menu!.menuOptions[3].name = 'Rename ' + this.childType;
+            this.listOptions.menu!.menuOptions[5].name = 'Delete ' + this.childType;
         }
     }
 
@@ -222,7 +193,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 this.deleteDisabled = false;
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Remove ' + this.itemType;
-                searchUpdate.selectedMultiColumnItems![0].values[0].allowEdit = false;
                 this.searchOptions.deletePrompt!.title = 'Remove ' + this.itemType;
                 this.searchOptions.deletePrompt!.primaryButton!.name = 'Remove';
                 this.searchOptions.menu!.menuOptions[0].hidden = true;
@@ -235,7 +205,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             } else {
 
                 this.itemType = 'Custom Keyword Group';
-                searchUpdate.selectedMultiColumnItems![0].values[0].allowEdit = true;
                 this.editIconButtonTitle = 'Rename ' + this.itemType;
                 this.deleteIconButtonTitle = 'Delete ' + this.itemType;
                 this.searchOptions.deletePrompt!.title = 'Delete ' + this.itemType;
@@ -246,14 +215,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.itemType;
                 this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.itemType;
                 this.searchOptions.menu!.menuOptions[3].name = 'Go to ' + this.itemType + ' in Hierarchy';
-
-                // If the custom keyword was selected after it was in edit mode
-                if (this.searchComponent.listManager.editedItem != null) {
-                    this.thisSearchList.forEach(x => {
-                        x.forProduct ? x.values[0].color = '#ffba00' : null;
-                        x.forProduct ? x.values[1].color = '#ffba00' : null;
-                    });
-                }
             }
         }
 
@@ -267,7 +228,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 this.deleteDisabled = true;
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Delete';
-                searchUpdate.selectedMultiColumnItems![0].values[0].allowEdit = false;
                 this.searchOptions.menu!.menuOptions[0].hidden = true;
                 this.searchOptions.menu!.menuOptions[1].hidden = true;
                 this.searchOptions.menu!.menuOptions[2].hidden = true;
@@ -278,7 +238,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
                 this.childType = 'Custom Keyword';
                 this.itemType = 'Custom Keyword Group';
-                searchUpdate.selectedMultiColumnItems![0].values[0].allowEdit = true;
                 this.editIconButtonTitle = 'Rename ' + this.childType;
                 this.deleteIconButtonTitle = 'Delete ' + this.childType;
                 this.searchOptions.deletePrompt!.title = 'Delete ' + this.childType;
@@ -289,27 +248,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 this.searchOptions.menu!.menuOptions[0].name = 'Rename ' + this.childType;
                 this.searchOptions.menu!.menuOptions[1].name = 'Delete ' + this.childType;
                 this.searchOptions.menu!.menuOptions[3].name = 'Go to ' + this.childType + ' in Hierarchy';
-
-                // If the custom keyword was selected after it was in edit mode
-                if (this.searchComponent.listManager.editedItem != null) {
-                    this.thisSearchList.forEach(x => {
-                        x.forProduct ? x.values[0].color = '#ffba00' : null;
-                        x.forProduct ? x.values[1].color = '#ffba00' : null;
-                    });
-                }
             }
-        }
-    }
-
-
-
-    // ===============================================================( ON ITEM DOUBLE CLICK )================================================================ \\
-
-    onItemDoubleClick() {
-        // As long as we're double clicking on a custom item
-        if (this.listComponent.listManager.editedItem != null) {
-            super.onItemDoubleClick();
-            this.thisArray.forEach(x => x.forProduct && x != this.listComponent.listManager.editedItem ? x.color = '#6e5000' : null);
         }
     }
 
@@ -321,11 +260,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         if (this.itemType == 'Custom Keyword Group') {
             this.editIconButtonTitle = 'Rename';
             this.deleteIconButtonTitle = 'Delete';
-            this.thisSearchList.forEach(x => {
-                x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[0].color = '#6e5000' : null;
-                x.forProduct && x != this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
-                x.forProduct && x == this.searchComponent.listManager.editedItem ? x.values[1].color = '#6e5000' : null;
-            });
         }
     }
 
@@ -369,8 +303,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         this.addIconButtonTitle = 'Add ' + this.itemType;
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
-        // When an item was going to be added but was cancelled
-        this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
     }
 
 
@@ -414,7 +346,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             this.thisArray[hierarchyUpdate.index!].forProduct = true;
             // })
         }
-        this.thisArray.forEach(x => x.forProduct ? x.color = '#ffba00' : null);
     }
 
 
@@ -739,95 +670,18 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
-    // ====================================================================( BUILD MENU )===================================================================== \\
-
-    buildMenu(hierarchyUpdate: CheckboxListUpdate) {
-        this.listOptions.menu = {
-            parentObj: this,
-            menuOptions: [
-                {
-                    type: MenuOptionType.MenuItem
-                },
-                {
-                    type: MenuOptionType.MenuItem
-                },
-                {
-                    type: MenuOptionType.Divider
-                },
-                {
-                    type: MenuOptionType.MenuItem,
-                    shortcut: 'F2',
-                    optionFunction: this.edit
-                },
-                {
-                    type: MenuOptionType.Divider
-                },
-                {
-                    type: MenuOptionType.MenuItem,
-                    shortcut: 'Delete',
-                    optionFunction: this.delete
-                }
-            ]
-        }
-
-        if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 0) {
-
-            // If a custom keyword group was NOT selected
-            if (!this.thisArray[hierarchyUpdate.selectedItems![0].index!].forProduct) {
-                this.listOptions.menu!.menuOptions[0].hidden = false;
-                this.listOptions.menu!.menuOptions[1].hidden = true;
-                this.listOptions.menu!.menuOptions[2].hidden = true;
-                this.listOptions.menu!.menuOptions[3].hidden = true;
-                this.listOptions.menu!.menuOptions[4].hidden = false;
-                this.listOptions.menu!.menuOptions[5].hidden = false;
-                this.listOptions.menu!.menuOptions[0].name = 'Add Custom ' + this.itemType;
-                this.listOptions.menu!.menuOptions[5].name = 'Remove ' + this.itemType;
-
-                // If a custom keyword group WAS selected
-            } else {
-
-                this.listOptions.menu!.menuOptions[1].hidden = false;
-                this.listOptions.menu!.menuOptions[2].hidden = false;
-                this.listOptions.menu!.menuOptions[3].hidden = false;
-                this.listOptions.menu!.menuOptions[4].hidden = false;
-                this.listOptions.menu!.menuOptions[5].hidden = false;
-                this.listOptions.menu!.menuOptions[1].optionFunction = this.add;
-                this.listOptions.menu!.menuOptions[0].name = 'Add ' + this.itemType;
-                this.listOptions.menu!.menuOptions[1].name = 'Add ' + this.childType;
-                this.listOptions.menu!.menuOptions[3].name = 'Rename ' + this.itemType;
-                this.listOptions.menu!.menuOptions[5].name = 'Delete ' + this.itemType;
-            }
-            this.listOptions.menu!.menuOptions[0].hidden = false;
-            this.listOptions.menu!.menuOptions[0].optionFunction = this.addParent;
-        }
-
-        if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 1) {
-            this.listOptions.menu!.menuOptions[0].hidden = false;
-            this.listOptions.menu!.menuOptions[1].hidden = true;
-            this.listOptions.menu!.menuOptions[2].hidden = true;
-            this.listOptions.menu!.menuOptions[3].hidden = false;
-            this.listOptions.menu!.menuOptions[4].hidden = true;
-            this.listOptions.menu!.menuOptions[5].hidden = false;
-            this.listOptions.menu!.menuOptions[0].optionFunction = this.add;
-            this.listOptions.menu!.menuOptions[0].name = 'Add ' + this.childType;
-            this.listOptions.menu!.menuOptions[3].name = 'Rename ' + this.childType;
-            this.listOptions.menu!.menuOptions[5].name = 'Delete ' + this.childType;
-        }
-    }
-
-
-
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: ListItem) {
+    getItem(x: KeywordCheckboxItem) {
         return {
             id: x.id,
             name: x.name,
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
-            forProduct: (x as KeywordCheckboxItem).forProduct,
-            color: (x as KeywordCheckboxItem).forProduct ? '#ffba00' : null!
+            forProduct: x.forProduct,
+            color: x.forProduct ? '#ffba00' : null!,
+            editable: x.forProduct ? true : false
         }
     }
 
@@ -835,7 +689,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: ListItem) {
+    getOtherItem(x: KeywordCheckboxItem) {
         return null!
     }
 
@@ -843,15 +697,16 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
-    getChildItem(child: HierarchyItem) {
+    getChildItem(child: KeywordCheckboxItem) {
         return {
             id: child.id,
             name: child.name,
             hierarchyGroupID: 1,
             hidden: false,
-            checked: (child as KeywordCheckboxItem).checked,
-            forProduct: (child as KeywordCheckboxItem).forProduct,
-            color: (child as KeywordCheckboxItem).forProduct ? '#ffba00' : null!
+            checked: child.checked,
+            forProduct: child.forProduct,
+            color: child.forProduct ? '#ffba00' : null!,
+            selectable: child.forProduct ? true : false
         }
     }
 
@@ -881,7 +736,8 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             name: null!,
             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true, color: x.forProduct ? '#ffba00' : null! }, { name: x.type!, width: this.searchTypeWidth, color: x.forProduct ? '#ffba00' : null! }],
             checked: x.checked,
-            forProduct: x.forProduct
+            forProduct: x.forProduct,
+            editable: x.forProduct ? true : false
         }
     }
 

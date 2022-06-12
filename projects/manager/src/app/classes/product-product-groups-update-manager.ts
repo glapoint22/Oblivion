@@ -83,11 +83,11 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
 
     // ======================================================================( GET ITEM )====================================================================== \\
 
-    getItem(x: ListItem) {
+    getItem(x: CheckboxItem) {
         return {
             id: x.id,
             name: x.name,
-            checked: (x as CheckboxItem).checked
+            checked: x.checked
         }
     }
 
