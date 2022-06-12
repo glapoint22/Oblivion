@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchKeywordsComponent } from './search-keywords.component';
+import { PageNichesComponent } from './page-niches.component';
 
-describe('SearchKeywordsComponent', () => {
-  let component: SearchKeywordsComponent;
-  let fixture: ComponentFixture<SearchKeywordsComponent>;
+describe('PageNichesComponent', () => {
+  let component: PageNichesComponent;
+  let fixture: ComponentFixture<PageNichesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SearchKeywordsComponent ]
+      declarations: [ PageNichesComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SearchKeywordsComponent);
+    fixture = TestBed.createComponent(PageNichesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

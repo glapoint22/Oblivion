@@ -257,7 +257,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
             // }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
+                this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
 
 
             const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);

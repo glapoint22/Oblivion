@@ -18,7 +18,6 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public name!: string;
   public pageType: PageType = PageType.Custom;
   public host!: ContainerHost;
-  public pageReferenceItems = new Array<ListItem>();
   private saveData = new Subject<void>();
 
   constructor(private widgetService: WidgetService, private dataService: DataService) { super(); }
@@ -56,7 +55,6 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
     this.id = pageData.id;
     this.name = pageData.name;
     this.pageType = pageData.pageType;
-    this.pageReferenceItems = pageData.pageReferenceItems;
 
     this.pageContent = new PageContent();
     this.pageContent.setData(pageData.content);

@@ -21,9 +21,9 @@
     <ng-container *ngIf="widgetService.page.pageType == pageType.Browse">
         <div>Niches:</div>
         <search #search [apiUrl]="'Niches/Search'" [placeholderText]="'Add a niche'"
-            (onItemSelect)="browseNiches.add($event.id, $event.name); search.searchInput.nativeElement.value = ''">
+            (onItemSelect)="pageNiches.add($event.id, $event.name); search.searchInput.nativeElement.value = ''">
         </search>
-        <browse-niches #browseNiches [pageReferenceItems]="widgetService.page.pageReferenceItems"></browse-niches>
+        <page-niches #pageNiches></page-niches>
     </ng-container>
 
 
@@ -31,9 +31,9 @@
     <ng-container *ngIf="widgetService.page.pageType == pageType.Search">
         <div>Keywords:</div>
         <search #search [apiUrl]="'Keywords/Search'" [placeholderText]="'Add a keyword group'"
-            (onItemSelect)="searchKeywords.add($event.id, $event.name); search.searchInput.nativeElement.value = ''">
+            (onItemSelect)="pageKeywords.add($event.id, $event.name); search.searchInput.nativeElement.value = ''">
         </search>
-        <search-keywords #searchKeywords [pageReferenceItems]="widgetService.page.pageReferenceItems"></search-keywords>
+        <page-keywords #pageKeywords></page-keywords>
     </ng-container>
 
 
