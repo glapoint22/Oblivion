@@ -257,7 +257,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
             // }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
+                this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
 
 
             const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
@@ -834,7 +834,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: ListItem) {
+    getOtherItem(x: HierarchyItem) {
         return {
             id: x.id,
             name: x.name,
@@ -848,7 +848,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
-    getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
+    getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
         return {
             id: child.id,
             name: child.name,

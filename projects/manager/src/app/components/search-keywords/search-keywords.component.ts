@@ -1,5 +1,4 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
-import { Item } from '../../classes/item';
+import { Component } from '@angular/core';
 import { SearchKeywordsUpdateManager } from '../../classes/search-keywords-update-manager';
 
 @Component({
@@ -8,10 +7,9 @@ import { SearchKeywordsUpdateManager } from '../../classes/search-keywords-updat
   styleUrls: ['./search-keywords.component.scss']
 })
 export class SearchKeywordsComponent extends SearchKeywordsUpdateManager {
-  @Input() pageReferenceItems!: Array<Item>;
+  ngOnInit() {
+    super.ngOnInit();
 
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.thisArray = this.pageReferenceItems;
+    this.onOpen();
   }
 }

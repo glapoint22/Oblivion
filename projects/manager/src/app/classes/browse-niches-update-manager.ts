@@ -1,9 +1,11 @@
+import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { ListComponent } from "../components/lists/list/list.component";
 import { WidgetService } from "../services/widget/widget.service";
 import { MenuOptionType } from "./enums";
+import { ListItem } from "./list-item";
 import { ListUpdate } from "./list-update";
 import { ListUpdateManager } from "./list-update-manager";
 
@@ -29,6 +31,14 @@ export class BrowseNichesUpdateManager extends ListUpdateManager {
 
 
 
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
+
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [{ key: 'pageId', value: this.widgetService.page.id }];
+    }
+
+
+
     // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(listUpdate: ListUpdate) {
@@ -46,5 +56,17 @@ export class BrowseNichesUpdateManager extends ListUpdateManager {
         }).subscribe((id: number) => {
             this.thisArray[listUpdate.index!].id = id;
         });
+    }
+
+
+
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
+
+    onItemDelete(deletedItem: ListItem) {
+        this.dataService.delete('api/' + this.dataServicePath, {
+            nicheId: deletedItem.id,
+            pageId: this.widgetService.page.id
+        }).subscribe();
+
     }
 }

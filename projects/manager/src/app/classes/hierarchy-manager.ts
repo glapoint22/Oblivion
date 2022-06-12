@@ -277,13 +277,15 @@ export class HierarchyManager extends ListManager {
 
     restoreIndent() {
         const listItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
-        
-        this.editedItem = (this.sourceList[listItemIndex] as HierarchyItem) = {
-            id: this.editedItem.id,
-            name: this.editedItem.name,
-            hierarchyGroupID: this.editedItem.hierarchyGroupID,
-            arrowDown: (this.editedItem as HierarchyItem).arrowDown,
-            isParent: (this.editedItem as HierarchyItem).isParent
+
+        if (this.editedItem) {
+            this.editedItem = (this.sourceList[listItemIndex] as HierarchyItem) = {
+                id: this.editedItem.id,
+                name: this.editedItem.name,
+                hierarchyGroupID: this.editedItem.hierarchyGroupID,
+                arrowDown: (this.editedItem as HierarchyItem).arrowDown,
+                isParent: (this.editedItem as HierarchyItem).isParent
+            }
         }
     }
 
