@@ -25,7 +25,7 @@ export class PageContent {
 
     setData(pageContent: PageContent) {
         if (pageContent) {
-            if (pageContent.background) this.background = pageContent.background;
+            if (pageContent.background) this.background.setData(pageContent.background);
             if (pageContent.rows) this.rows = pageContent.rows;
         }
     }

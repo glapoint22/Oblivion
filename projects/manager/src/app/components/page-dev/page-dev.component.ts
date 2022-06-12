@@ -46,8 +46,14 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   ngAfterViewInit(): void {
     const container = this.container as ContainerDevComponent;
-
     container.host = this;
+  }
+
+  getData(pageId: number) {
+    this.dataService.get<PageData>('api/Pages', [{ key: 'id', value: pageId }])
+      .subscribe((pageData: PageData) => {
+        this.setData(pageData);
+      });
   }
 
 
@@ -58,7 +64,6 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
     this.pageContent = new PageContent();
     this.pageContent.setData(pageData.content);
-
     this.load();
   }
 
@@ -76,6 +81,10 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   }
 
 
+  load(): void {
+    this.setBackground(this.widgetService.widgetDocument);
+    super.load()
+  }
 
 
   save() {

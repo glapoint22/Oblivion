@@ -12,6 +12,7 @@ import { DropdownListComponent } from '../dropdown-list/dropdown-list.component'
 export class SearchComponent {
   @Input() apiUrl!: string;
   @Input() placeholderText!: string;
+  @Input() clearOnSelection!: boolean;
   @Output() onItemSelect: EventEmitter<Item> = new EventEmitter();
   @ViewChild('searchContainer') searchContainer!: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
@@ -75,6 +76,7 @@ export class SearchComponent {
           this.dropdownList = null!;
           this.searchInput.nativeElement.focus();
           this.onItemSelect.emit(item);
+          if (this.clearOnSelection) this.clear();
         }
       });
   }

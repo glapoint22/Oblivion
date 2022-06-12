@@ -1,42 +1,42 @@
 <!-- Property Box -->
 <div class="property-box-light">
-    
-    
+
+
 
 
     <!-- Container for icons -->
     <div class="icons-container">
-        
-        
-        
-        
-        
 
 
-        
+
+
+
+
+
+
         <div class="icons" style="margin: 0; padding: 0;">
-            
+
             <div class="icon-container" (click)="onNewPageClick()">
                 <i class="fas fa-plus-circle"></i>
             </div>
 
 
-            
+
             <div class="icon-container">
                 <i class="fas fa-clone"></i>
             </div>
 
 
 
-            
+
             <div class="icon-container">
                 <i class="fas fa-trash-alt"></i>
             </div>
         </div>
     </div>
 
-    <search #search [apiUrl]="'Pages/Search'" [placeholderText]="'Search for a page'"
-    (onItemSelect)="getPage($event, search)"></search>
+    <search [apiUrl]="'Pages/Search'" [placeholderText]="'Search for a page'" [clearOnSelection]="true"
+        (onItemSelect)="widgetService.page.getData($event.id!)"></search>
 
     <!-- Page, Row, Column, and Widget buttons -->
     <div class="grooved-container" *ngIf="widgetService.page && widgetService.page.pageContent">

@@ -20,8 +20,8 @@
 
     <ng-container *ngIf="widgetService.page.pageType == pageType.Browse">
         <div>Niches:</div>
-        <search #search [apiUrl]="'Niches/Search'" [placeholderText]="'Add a niche'"
-            (onItemSelect)="pageNiches.add($event.id, $event.name); search.searchInput.nativeElement.value = ''">
+        <search [apiUrl]="'Niches/Search'" [placeholderText]="'Add a niche'" [clearOnSelection]="true"
+            (onItemSelect)="pageNiches.add($event.id, $event.name)">
         </search>
         <page-niches #pageNiches></page-niches>
     </ng-container>
@@ -30,8 +30,8 @@
 
     <ng-container *ngIf="widgetService.page.pageType == pageType.Search">
         <div>Keywords:</div>
-        <search #search [apiUrl]="'Keywords/Search'" [placeholderText]="'Add a keyword group'"
-            (onItemSelect)="pageKeywords.add($event.id, $event.name); search.searchInput.nativeElement.value = ''">
+        <search [apiUrl]="'Keywords/Search'" [placeholderText]="'Add a keyword group'" [clearOnSelection]="true"
+            (onItemSelect)="pageKeywords.add($event.id, $event.name)">
         </search>
         <page-keywords #pageKeywords></page-keywords>
     </ng-container>
