@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BrowseNichesComponent } from './browse-niches.component';
+import { PageKeywordsComponent } from './page-keywords.component';
 
-describe('BrowseNichesComponent', () => {
-  let component: BrowseNichesComponent;
-  let fixture: ComponentFixture<BrowseNichesComponent>;
+describe('PageKeywordsComponent', () => {
+  let component: PageKeywordsComponent;
+  let fixture: ComponentFixture<PageKeywordsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BrowseNichesComponent ]
+      declarations: [ PageKeywordsComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BrowseNichesComponent);
+    fixture = TestBed.createComponent(PageKeywordsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

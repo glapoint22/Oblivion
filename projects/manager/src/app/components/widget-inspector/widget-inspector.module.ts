@@ -36,10 +36,10 @@ import { CarouselWidgetPropertiesComponent } from '../carousel-widget-properties
 import { CounterModule } from '../counter/counter.module';
 import { LinkPropertyComponent } from '../link-property/link-property.component';
 import { SearchModule } from '../search/search.module';
-import { BrowseNichesComponent } from '../browse-niches/browse-niches.component';
 import { ListModule } from '../lists/list/list.module';
-import { SearchKeywordsComponent } from '../search-keywords/search-keywords.component';
 import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
+import { PageNichesComponent } from '../page-niches/page-niches.component';
+import { PageKeywordsComponent } from '../page-keywords/page-keywords.component';
 
 
 
@@ -73,8 +73,8 @@ import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/check
     VideoPropertiesEditorComponent,
     CarouselWidgetPropertiesComponent,
     LinkPropertyComponent,
-    BrowseNichesComponent,
-    SearchKeywordsComponent
+    PageNichesComponent,
+    PageKeywordsComponent
   ],
   imports: [
     CommonModule,

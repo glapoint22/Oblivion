@@ -12,14 +12,22 @@ import { HierarchyUpdate } from "./hierarchy-update";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 
 @Directive()
-export class SearchKeywordsUpdateManager extends HierarchyUpdateManager {
+export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
     @ViewChild('hierarchyComponent') listComponent!: CheckboxHierarchyComponent;
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, private widgetService: WidgetService) { super(dataService, sanitizer); }
+    constructor
+        (
+            dataService: DataService,
+            sanitizer: DomSanitizer,
+            private widgetService: WidgetService
+        ) { super(dataService, sanitizer); }
 
+
+
+    // ====================================================================( NG ON INIT )==================================================================== \\
     ngOnInit() {
-        this.dataServicePath = 'Keywords/Group';
-        this.childDataServicePath = 'keywords';
+        this.dataServicePath = 'Pages/KeywordGroup';
+        this.childDataServicePath = 'Pages/keywords';
         this.itemType = 'Keyword Group';
         this.listOptions.editable = false;
         this.listOptions.menu!.menuOptions = [
@@ -50,7 +58,7 @@ export class SearchKeywordsUpdateManager extends HierarchyUpdateManager {
         const index = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
         const groupId = this.thisArray[index].id;
 
-        this.dataService.put('api/Keywords', {
+        this.dataService.put('api/' + this.childDataServicePath, {
             pageId: this.widgetService.page.id,
             keywordId: hierarchyUpdate.id,
             groupId: groupId,
