@@ -101,7 +101,8 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
             name: child.name,
             hierarchyGroupID: 1,
             hidden: false,
-            checked: child.checked
+            checked: child.checked,
+            selectable: false
         }
     }
 

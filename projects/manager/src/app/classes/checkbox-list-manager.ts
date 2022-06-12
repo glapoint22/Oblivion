@@ -17,10 +17,12 @@ export class CheckboxListManager extends CheckboxHierarchyManager {
     restoreIndent() {
         const listItemIndex = this.sourceList.findIndex(x => x == this.editedItem);
 
-        this.editedItem = (this.sourceList[listItemIndex] as CheckboxItem) = {
-            id: this.editedItem.id,
-            name: this.editedItem.name,
-            checked: (this.editedItem as CheckboxItem).checked
+        if (this.editedItem) {
+            this.editedItem = (this.sourceList[listItemIndex] as CheckboxItem) = {
+                id: this.editedItem.id,
+                name: this.editedItem.name,
+                checked: (this.editedItem as CheckboxItem).checked
+            }
         }
     }
 }

@@ -35,12 +35,14 @@ export class CheckboxMultiColumnListManager extends MultiColumnListManager {
     restoreIndent() {
         const listItemIndex: number = this.sourceList.findIndex(x => x == this.editedItem);
 
-        this.editedItem = (this.sourceList[listItemIndex] as KeywordCheckboxMultiColumnItem) = {
-            id: this.editedItem.id,
-            name: this.editedItem.name,
-            values: (this.editedItem as KeywordCheckboxMultiColumnItem).values,
-            checked: (this.editedItem as KeywordCheckboxMultiColumnItem).checked,
-            forProduct: (this.editedItem as KeywordCheckboxMultiColumnItem).forProduct
+        if (this.editedItem) {
+            this.editedItem = (this.sourceList[listItemIndex] as KeywordCheckboxMultiColumnItem) = {
+                id: this.editedItem.id,
+                name: this.editedItem.name,
+                values: (this.editedItem as KeywordCheckboxMultiColumnItem).values,
+                checked: (this.editedItem as KeywordCheckboxMultiColumnItem).checked,
+                forProduct: (this.editedItem as KeywordCheckboxMultiColumnItem).forProduct
+            }
         }
     }
 }
