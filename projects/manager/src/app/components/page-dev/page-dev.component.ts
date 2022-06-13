@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
-import { DataService } from 'common';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
+import { WidgetInspectorView } from '../../classes/enums';
 import { PageData } from '../../classes/page-data';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
+import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
   selector: 'page-dev',
@@ -13,21 +16,28 @@ import { ContainerDevComponent } from '../container-dev/container-dev.component'
   styleUrls: ['./page-dev.component.scss']
 })
 export class PageDevComponent extends PageComponent implements ContainerHost {
-  public id!: number;
+  public id: number = 0;
   public name!: string;
   public pageType: PageType = PageType.Custom;
   public host!: ContainerHost;
   private saveData = new Subject<void>();
 
-  constructor(private widgetService: WidgetService, private dataService: DataService) { super(); }
+  constructor
+    (
+      private widgetService: WidgetService,
+      private dataService: DataService,
+      private lazyLoadingService: LazyLoadingService,
+      private sanitizer: DomSanitizer
+    ) { super(); }
 
-  ngOnInit() {
+
+  // --------------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
+  public ngOnInit(): void {
     this.widgetService.page = this;
 
     this.saveData
       .pipe(debounceTime(200))
       .subscribe(() => {
-        console.log('saving')
         const container = this.container as ContainerDevComponent;
 
         // Get the updated rows
@@ -43,12 +53,25 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
       });
   }
 
-  ngAfterViewInit(): void {
+
+
+
+
+
+  // ----------------------------------------------------------------------- Ng After View Init --------------------------------------------------------
+  public ngAfterViewInit(): void {
     const container = this.container as ContainerDevComponent;
     container.host = this;
   }
 
-  getData(pageId: number) {
+
+
+
+
+
+
+  // ----------------------------------------------------------------------------- Get Data --------------------------------------------------------------
+  public getData(pageId: number): void {
     this.clear();
 
     this.dataService.get<PageData>('api/Pages', [{ key: 'id', value: pageId }])
@@ -58,7 +81,12 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   }
 
 
-  setData(pageData: PageData) {
+
+
+
+
+  // ----------------------------------------------------------------------------- Set Data --------------------------------------------------------------
+  public setData(pageData: PageData): void {
     this.id = pageData.id;
     this.name = pageData.name;
     this.pageType = pageData.pageType;
@@ -68,7 +96,15 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
     this.load();
   }
 
-  new() {
+
+
+
+
+
+
+  // -------------------------------------------------------------------------------- New -------------------------------------------------------------------
+  public new(): void {
+    this.clear();
     this.name = 'Untitled';
     this.pageContent = new PageContent();
 
@@ -82,19 +118,62 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
 
-
-  setBackground(): void {
+  // --------------------------------------------------------------------------- Set Background --------------------------------------------------------------
+  public setBackground(): void {
     super.setBackground(document);
     super.setBackground(this.widgetService.widgetDocument);
   }
 
 
-  save() {
+
+
+
+
+  // -------------------------------------------------------------------------------- Save -------------------------------------------------------------------
+  public save(): void {
     this.saveData.next();
   }
 
 
-  delete() {
+
+
+
+  // -------------------------------------------------------------------------------- Delete -------------------------------------------------------------------
+  public delete(): void {
+    if (this.id == 0) return;
+
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../prompt/prompt.component');
+      const { PromptModule } = await import('../prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None)
+      .then((prompt: PromptComponent) => {
+        prompt.title = 'Delete Page';
+        prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+          'The page <span style="color: #ffba00">\"' + this.name + '\"</span>' +
+          ' will be permanently deleted.');
+        prompt.primaryButton.name = 'Delete';
+        prompt.primaryButton.buttonFunction = () => {
+          this.deletePage();
+          this.widgetService.currentWidgetInspectorView = WidgetInspectorView.None;
+        }
+        prompt.secondaryButton.name = 'Cancel';
+      });
+  }
+
+
+
+
+
+
+
+
+  // ----------------------------------------------------------------------------- Delete Page -------------------------------------------------------------------
+  private deletePage(): void {
     this.dataService.delete('api/Pages', { pageId: this.id })
       .subscribe(() => {
         this.clear();
@@ -102,7 +181,15 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   }
 
 
-  clear() {
+
+
+
+
+
+
+  // --------------------------------------------------------------------------------- Clear -----------------------------------------------------------------------
+  public clear(): void {
+    if (this.id == 0) return;
     this.id = 0;
     this.clearBackground(document);
     this.clearBackground(this.widgetService.widgetDocument);
@@ -114,7 +201,16 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   }
 
 
-  duplicate() {
+
+
+
+
+
+
+  // ------------------------------------------------------------------------------- Duplicate -----------------------------------------------------------------------
+  public duplicate(): void {
+    if (this.id == 0) return;
+
     this.dataService.post<number>('api/Pages/Duplicate', {
       id: this.id,
     }).subscribe((pageId: number) => {
@@ -122,12 +218,25 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
     });
   }
 
-  onRowChange(maxBottom: number) {
+
+
+
+
+
+
+  // ------------------------------------------------------------------------------- On Row Change ---------------------------------------------------------------------
+  public onRowChange(maxBottom: number): void {
     this.host.onRowChange(maxBottom);
   }
 
 
-  onMousedown() {
+
+
+
+
+
+  // -------------------------------------------------------------------------------- On Mousedown ----------------------------------------------------------------------
+  public onMousedown(): void {
     if (!this.pageContent) return;
 
     this.widgetService.deselectWidget();

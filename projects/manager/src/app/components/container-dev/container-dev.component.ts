@@ -127,66 +127,112 @@ export class ContainerDevComponent extends ContainerComponent {
     if (this.host instanceof PageDevComponent) {
       const page = this.host as PageDevComponent;
 
-      if (!page.pageContent) return;
+
 
       if (event.button == 2) {
-        this.lazyLoadingService.load(async () => {
-          const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
-          const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
+        if (page.pageContent) {
+          this.lazyLoadingService.load(async () => {
+            const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
+            const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
 
-          return {
-            component: ContextMenuComponent,
-            module: ContextMenuModule
-          }
-        }, SpinnerAction.None)
-          .then((contextMenu: ContextMenuComponent) => {
-            contextMenu.parentObj = this;
-            contextMenu.xPos = event.screenX;
-            contextMenu.yPos = event.clientY + 74;
-            contextMenu.options = [
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Paste',
-                shortcut: 'Ctrl+V',
-                optionFunction: () => {
-                  this.paste(event.clientY)
+            return {
+              component: ContextMenuComponent,
+              module: ContextMenuModule
+            }
+          }, SpinnerAction.None)
+            .then((contextMenu: ContextMenuComponent) => {
+              contextMenu.parentObj = this;
+              contextMenu.xPos = event.screenX;
+              contextMenu.yPos = event.clientY + 74;
+              contextMenu.options = [
+                {
+                  type: MenuOptionType.MenuItem,
+                  name: 'Paste',
+                  shortcut: 'Ctrl+V',
+                  optionFunction: () => {
+                    this.paste(event.clientY)
+                  },
+                  isDisabled: !this.widgetService.clipboard
                 },
-                isDisabled: !this.widgetService.clipboard
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Add widget',
-                optionFunction: () => {
-                  this.addWidget(new WidgetData(WidgetType.Button), this.getRowTop(event.clientY));
+                {
+                  type: MenuOptionType.Divider
+                },
+                {
+                  type: MenuOptionType.MenuItem,
+                  name: 'Add widget',
+                  optionFunction: () => {
+                    this.addWidget(new WidgetData(WidgetType.Button), this.getRowTop(event.clientY));
+                  }
+                },
+                {
+                  type: MenuOptionType.Divider
+                },
+                {
+                  type: MenuOptionType.MenuItem,
+                  name: 'New page',
+                  shortcut: 'Ctrl+N',
+                  optionFunction: () => this.widgetService.page.new()
+                },
+                {
+                  type: MenuOptionType.MenuItem,
+                  name: 'Duplicate page',
+                  optionFunction: () => this.widgetService.page.duplicate()
+                },
+                {
+                  type: MenuOptionType.Divider
+                },
+
+                {
+                  type: MenuOptionType.MenuItem,
+                  name: 'Delete page',
+                  optionFunction: () => this.widgetService.page.delete()
+                },
+                {
+                  type: MenuOptionType.Divider
+                },
+
+                {
+                  type: MenuOptionType.MenuItem,
+                  name: 'Close page',
+                  optionFunction: () => this.widgetService.page.clear()
                 }
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'New page',
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Duplicate page',
-              },
-              {
-                type: MenuOptionType.Divider
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Clear page',
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Delete page'
-              }
-            ];
-          });
+              ];
+            });
+        } else {
+
+
+
+
+          this.lazyLoadingService.load(async () => {
+            const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
+            const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
+
+            return {
+              component: ContextMenuComponent,
+              module: ContextMenuModule
+            }
+          }, SpinnerAction.None)
+            .then((contextMenu: ContextMenuComponent) => {
+              contextMenu.parentObj = this;
+              contextMenu.xPos = event.screenX;
+              contextMenu.yPos = event.clientY + 74;
+              contextMenu.options = [
+
+                {
+                  type: MenuOptionType.MenuItem,
+                  name: 'New page',
+                  shortcut: 'Ctrl+N',
+                  optionFunction: () => this.widgetService.page.new()
+                }
+              ];
+            });
+
+
+
+        }
+
+
+
       }
     }
   }
