@@ -49,4 +49,9 @@ export class PagePropertiesComponent implements OnInit {
     this.widgetService.page.setBackground(this.widgetService.widgetDocument);
     this.widgetService.page.save();
   }
+
+
+  trumpy(){
+    console.log('trumpy')
+  }
 }

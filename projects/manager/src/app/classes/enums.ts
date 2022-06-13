@@ -34,7 +34,9 @@ export enum ListUpdateType {
     CheckboxChange,
     ArrowClicked,
     VerifyAddEdit,
-    DoubleClick
+    DoubleClick,
+    DuplicatePromptOpen,
+    DuplicatePromptClose
 }
 
 

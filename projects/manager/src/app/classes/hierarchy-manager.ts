@@ -411,4 +411,32 @@ export class HierarchyManager extends ListManager {
             collapseDisabled: this.collapseDisabled
         })
     }
+
+
+
+    // ===========================================================( DUPLICATE PROMPT OPEN UPDATE )============================================================ \\
+
+  duplicatePromptOpenUpdate() {
+    this.onListUpdate.next({
+      type: ListUpdateType.DuplicatePromptOpen,
+      addDisabled: this.addDisabled,
+      editDisabled: this.editDisabled,
+      deleteDisabled: this.deleteDisabled,
+      collapseDisabled: this.collapseDisabled
+    })
+  }
+
+
+
+    // ===========================================================( DUPLICATE PROMPT CLOSE UPDATE )=========================================================== \\
+
+    duplicatePromptCloseUpdate() {
+        this.onListUpdate.next({
+            type: ListUpdateType.DuplicatePromptClose,
+            addDisabled: this.addDisabled,
+            editDisabled: this.editDisabled,
+            deleteDisabled: this.deleteDisabled,
+            collapseDisabled: this.collapseDisabled
+        })
+    }
 }

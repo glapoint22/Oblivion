@@ -1,10 +1,10 @@
 import { KeyValue } from "@angular/common";
-import { Directive, ViewChild } from "@angular/core";
+import { Directive, EventEmitter, Output, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { ListComponent } from "../components/lists/list/list.component";
 import { WidgetService } from "../services/widget/widget.service";
-import { MenuOptionType } from "./enums";
+import { ListUpdateType, MenuOptionType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListUpdate } from "./list-update";
 import { ListUpdateManager } from "./list-update-manager";
@@ -12,6 +12,8 @@ import { ListUpdateManager } from "./list-update-manager";
 @Directive()
 export class PageNichesUpdateManager extends ListUpdateManager {
     @ViewChild('listComponent') listComponent!: ListComponent;
+    @Output() onDuplicatePromptOpen: EventEmitter<void> = new EventEmitter();
+    @Output() onDuplicatePromptClose: EventEmitter<void> = new EventEmitter();
 
     constructor
         (
@@ -36,6 +38,16 @@ export class PageNichesUpdateManager extends ListUpdateManager {
                 optionFunction: this.delete
             }
         ]
+    }
+
+
+
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
+
+    onListUpdate(listUpdate: ListUpdate) {
+        super.onListUpdate(listUpdate);
+        if (listUpdate.type == ListUpdateType.DuplicatePromptOpen) this.onDuplicatePromptOpen.emit();
+        if (listUpdate.type == ListUpdateType.DuplicatePromptClose) this.onDuplicatePromptClose.emit();
     }
 
 

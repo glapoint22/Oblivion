@@ -30,25 +30,38 @@ export class HierarchyComponent extends ListComponent {
   }
 
 
+  collapse() {
+    this.listManager.collapseHierarchy();
+  }
+
+
+
+
   add(itemIndex?: number, isParent?: boolean | string) {
 
-    // If the list is NOT Editable (the id and name of the new item will already be defined)
+    // If the list is NOT Editable
     if (!this.listManager.editable) {
-      // Add the new item to the list
-      this.sourceList.push({ id: itemIndex!, name: isParent as string, hierarchyGroupID: 0 });
 
-      const newHierarchyItem = this.sourceList.find(x => x.id == itemIndex && x.name == isParent as string && x.hierarchyGroupID == 0);
+      // If this list is set to verify
+      if (this.listManager.verifyAddEdit) {
 
-      // As long as the list is set to be sortable
-      if (this.listManager.sortable) {
-        // Sort the list
-        this.listManager.sort(newHierarchyItem!);
+        // As long as a verification is NOT in progress
+        if (!this.listManager.addEditVerificationInProgress) {
+
+          // Begin verification
+          this.listManager.addEditVerificationInProgress = true;
+          this.listManager.verifyAddEditUpdate({id: itemIndex, name: isParent as string, hierarchyGroupID: 0}, isParent as string);
+        }
+
+        // If this list does NOT verify
+      } else {
+        
+        this.commitAdd(itemIndex!, isParent as string)
       }
 
-      // Send it to the list manager to be selected
-      this.listManager.setAddItem(newHierarchyItem!);
-
+      // But if the list IS editable
     } else {
+
       // If a hierarchy item is selected
       if (this.listManager.selectedItem) {
         let index: number;
@@ -101,11 +114,20 @@ export class HierarchyComponent extends ListComponent {
   }
 
 
-  collapse() {
-    this.listManager.collapseHierarchy();
+  
+  commitAdd(id: number, name: string){
+    // Add the new item to the list
+    this.sourceList.push({ id: id, name: name, hierarchyGroupID: 0 });
+
+    const newHierarchyItem = this.sourceList.find(x => x.id == id && x.name == name && x.hierarchyGroupID == 0);
+
+    // As long as the list is set to be sortable
+    if (this.listManager.sortable) {
+      // Sort the list
+      this.listManager.sort(newHierarchyItem!);
+    }
+
+    // Send it to the list manager to be selected
+    this.listManager.setAddItem(newHierarchyItem!);
   }
-
-
-
-
 }

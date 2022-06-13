@@ -78,18 +78,30 @@ export class ListComponent implements OnInit {
 
 
   add(id?: number, name?: string) {
-    // If the list is NOT Editable (the id and name of the new item will already be defined)
+    // If the list is NOT Editable
     if (!this.listManager.editable) {
-      // Add the new item to the list
-      this.sourceList.push({ id: id!, name: name! });
 
-      // As long as the list is set to be sortable
-      if (this.listManager.sortable) {
-        // Sort the list
-        this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+      // If this list is set to verify
+      if (this.listManager.verifyAddEdit) {
+
+        // As long as a verification is NOT in progress
+        if (!this.listManager.addEditVerificationInProgress) {
+
+          // Begin verification
+          this.listManager.addEditVerificationInProgress = true;
+          this.listManager.verifyAddEditUpdate({ id: id, name: name }, name!);
+        }
+
+
+        // If this list does NOT verify
+      } else {
+
+        this.commitAdd(id!, name!)
       }
-      // Send it to the list manager to be selected
-      this.listManager.setAddItem(this.sourceList.find(x => x.id == id && x.name == name)!);
+
+
+
+
 
 
 
@@ -120,6 +132,20 @@ export class ListComponent implements OnInit {
 
   commitAddEdit() {
     this.listManager.commitAddEdit();
+  }
+
+
+  commitAdd(id: number, name: string) {
+    // Add the new item to the list
+    this.sourceList.push({ id: id!, name: name! });
+
+    // As long as the list is set to be sortable
+    if (this.listManager.sortable) {
+      // Sort the list
+      this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+    }
+    // Send it to the list manager to be selected
+    this.listManager.setAddItem(this.sourceList.find(x => x.id == id && x.name == name)!);
   }
 
 

@@ -428,14 +428,41 @@ export class ListUpdateManager {
         array.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
     }
 
-    
+
+
+    // =============================================================( DUPLICATE PROMPT MESSAGE )============================================================== \\
+
+    duplicatePromptMessage(listComponent: ListComponent, itemType: string, name: string): SafeHtml {
+
+        // If the list is NOT Editable
+        if (!listComponent.listManager.editable) {
+            return this.sanitizer.bypassSecurityTrustHtml(
+                'The '
+                + itemType +
+                ' <span style="color: #ffba00">\"' + name + '\"</span>' +
+                ' is already being used. Please select a different '+
+                this.itemType + '.')
+
+            // But if the list IS editable
+        } else {
+
+            return this.sanitizer.bypassSecurityTrustHtml(
+                'A ' +
+                itemType +
+                ' with the name ' +
+                '<span style="color: #ffba00">\"' + name + '\"</span>' +
+                ' already exists. Please choose a different name.');
+        }
+    }
+
+
 
     // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(listUpdate: ListUpdate) {
         let matchFound: boolean = false;
 
-        // Loop through each parent item and check for a duplicate
+        // Loop through each item and check for a duplicate
         this.thisArray.forEach(x => {
             if (x.name?.toLowerCase() == listUpdate.name?.toLowerCase()) {
                 matchFound = true;
@@ -444,12 +471,22 @@ export class ListUpdateManager {
 
         // If no match was found
         if (!matchFound) {
-            this.listComponent.commitAddEdit();
+
+            // If the list is NOT Editable
+            if (!this.listComponent.listManager.editable) {
+                this.listComponent.commitAdd(listUpdate.id!, listUpdate.name!);
+
+                // But if the list IS editable
+            } else {
+                this.listComponent.commitAddEdit();
+            }
+
+
 
             // If a match was found
         } else {
             this.listOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
-            this.listOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.itemType + ' with the name <span style="color: #ffba00">\"' + listUpdate.name + '\"</span> already exists. Please choose a different name.');
+            this.listOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.listComponent, this.itemType, listUpdate.name!);
             this.listComponent.openDuplicatePrompt();
         }
     }
@@ -474,7 +511,7 @@ export class ListUpdateManager {
             // If a match was found
         } else {
             this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
-            this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.itemType + ' with the name <span style="color: #ffba00">\"' + searchUpdate.name + '\"</span> already exists. Please choose a different name.');
+            this.searchOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.listComponent, this.itemType, searchUpdate.name!);
             this.searchComponent.openDuplicatePrompt();
         }
     }
@@ -483,11 +520,11 @@ export class ListUpdateManager {
 
     // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
 
-    deletePromptMessage(itemType: string, parentName: string): SafeHtml {
+    deletePromptMessage(itemType: string, name: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(
             'The ' +
             itemType +
-            ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
+            ' <span style="color: #ffba00">\"' + name + '\"</span>' +
             ' will be permanently deleted.');
     }
 

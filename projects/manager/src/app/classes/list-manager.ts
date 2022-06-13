@@ -7,6 +7,7 @@ import { LazyLoadingService, SpinnerAction } from 'common';
 import { ContextMenuComponent } from "../components/context-menu/context-menu.component";
 import { PromptComponent } from "../components/prompt/prompt.component";
 import { Prompt } from "./prompt";
+import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 
 export class ListManager {
   prompt!: PromptComponent;
@@ -272,7 +273,7 @@ export class ListManager {
           this.selectedItemsUpdate(e != null && e.button == 2);
           this.buttonsUpdate();
         }
-      }else if(!listItem.selectable) {
+      } else if (!listItem.selectable) {
         this.removeEventListeners();
         this.setButtonsState();
 
@@ -809,7 +810,6 @@ export class ListManager {
   // ===================================================================( EVALUATE EDIT )=================================================================== \\
 
   evaluateEdit(isEscape?: boolean, isBlur?: boolean) {
-
     const trimmedEditedItem = this.getHtmlItem().innerText.trim();
 
     // If the edited item has text written in it
@@ -858,23 +858,7 @@ export class ListManager {
 
             // If this list does NOT verify
           } else {
-
-            // Update the name property
-            this.getEditedItem().name = trimmedEditedItem;
-
-            // As long as the list is sortable
-            if (this.sortable) {
-
-              // Sort the list
-              this.sort(this.editedItem);
-
-              // If the list is NOT sortable
-            } else {
-              this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
-            }
-
-            // Send update
-            this.addEditUpdate(this.editedItem);
+            this.commitAddEdit();
           }
 
           // If the edited name has NOT changed
@@ -883,17 +867,12 @@ export class ListManager {
           //If the case was changed. i.e. lower case to upper case
           if (trimmedEditedItem != this.getEditedItem().name!.trim()) {
             this.getEditedItem().name = trimmedEditedItem;
-
             if (this.sortable) this.sort(this.editedItem);
-
-
             this.addEditUpdate(this.editedItem);
           }
-
           this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
+          this.reselectItem();
         }
-
-        this.reselectItem();
       }
 
       // But if the item is empty
@@ -1016,15 +995,24 @@ export class ListManager {
 
       // If the duplicate prompt is being opened
       if (this.addEditVerificationInProgress) {
-        // Take the focus away from the duplicate item
-        this.editedItem.htmlItem?.nativeElement.blur();
+
+        // If the list IS editable
+        if (this.editable) {
+          // Take the focus away from the duplicate item
+          this.editedItem.htmlItem?.nativeElement.blur();
+
+          // If the list is NOT editable
+        } else {
+          this.duplicatePromptOpenUpdate();
+        }
       }
 
       // If the duplicate prompt is being closed
       let promptCloseListener: Subscription = prompt.onClose.subscribe(() => {
         if (this.addEditVerificationInProgress) {
           this.addEditVerificationInProgress = false;
-          this.onDuplicatePromptClose();
+          if (this.editable) this.onDuplicatePromptClose();
+          this.duplicatePromptCloseUpdate();
         }
 
         // Wait a frame so the escape and enter key events know the prompt was open
@@ -1168,6 +1156,32 @@ export class ListManager {
   doubleClickUpdate() {
     this.onListUpdate.next({
       type: ListUpdateType.DoubleClick,
+      addDisabled: this.addDisabled,
+      editDisabled: this.editDisabled,
+      deleteDisabled: this.deleteDisabled
+    })
+  }
+
+
+
+  // ===========================================================( DUPLICATE PROMPT OPEN UPDATE )============================================================ \\
+
+  duplicatePromptOpenUpdate() {
+    this.onListUpdate.next({
+      type: ListUpdateType.DuplicatePromptOpen,
+      addDisabled: this.addDisabled,
+      editDisabled: this.editDisabled,
+      deleteDisabled: this.deleteDisabled
+    })
+  }
+
+
+
+  // ===========================================================( DUPLICATE PROMPT CLOSE UPDATE )=========================================================== \\
+
+  duplicatePromptCloseUpdate() {
+    this.onListUpdate.next({
+      type: ListUpdateType.DuplicatePromptClose,
       addDisabled: this.addDisabled,
       editDisabled: this.editDisabled,
       deleteDisabled: this.deleteDisabled

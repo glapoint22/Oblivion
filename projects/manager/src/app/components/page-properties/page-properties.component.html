@@ -20,20 +20,20 @@
 
     <ng-container *ngIf="widgetService.page.pageType == pageType.Browse">
         <div>Niches:</div>
-        <search [apiUrl]="'Niches/Search'" [placeholderText]="'Add a niche'" [clearOnSelection]="true"
+        <search #nichesSearch [apiUrl]="'Niches/Search'" [placeholderText]="'Add a niche'" [clearOnSelection]="true"
             (onItemSelect)="pageNiches.add($event.id, $event.name)">
         </search>
-        <page-niches #pageNiches></page-niches>
+        <page-niches #pageNiches (onDuplicatePromptOpen)="nichesSearch.searchInput.nativeElement.blur()" (onDuplicatePromptClose)="nichesSearch.searchInput.nativeElement.focus()"></page-niches>
     </ng-container>
 
 
 
     <ng-container *ngIf="widgetService.page.pageType == pageType.Search">
         <div>Keywords:</div>
-        <search [apiUrl]="'Keywords/Search'" [placeholderText]="'Add a keyword group'" [clearOnSelection]="true"
+        <search #keywordsSearch [apiUrl]="'Keywords/Search'" [placeholderText]="'Add a keyword group'" [clearOnSelection]="true"
             (onItemSelect)="pageKeywords.add($event.id, $event.name)">
         </search>
-        <page-keywords #pageKeywords></page-keywords>
+        <page-keywords #pageKeywords (onDuplicatePromptOpen)="keywordsSearch.searchInput.nativeElement.blur()" (onDuplicatePromptClose)="keywordsSearch.searchInput.nativeElement.focus()"></page-keywords>
     </ng-container>
 
 

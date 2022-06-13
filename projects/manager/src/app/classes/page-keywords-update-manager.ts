@@ -1,5 +1,5 @@
 import { KeyValue } from "@angular/common";
-import { Directive, ViewChild } from "@angular/core";
+import { Directive, EventEmitter, Output, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { CheckboxHierarchyComponent } from "../components/hierarchies/checkbox-hierarchy/checkbox-hierarchy.component";
@@ -14,6 +14,8 @@ import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 @Directive()
 export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
     @ViewChild('hierarchyComponent') listComponent!: CheckboxHierarchyComponent;
+    @Output() onDuplicatePromptOpen: EventEmitter<void> = new EventEmitter();
+    @Output() onDuplicatePromptClose: EventEmitter<void> = new EventEmitter();
 
     constructor
         (
@@ -47,6 +49,8 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
     onListUpdate(hierarchyUpdate: HierarchyUpdate) {
         super.onListUpdate(hierarchyUpdate);
         if (hierarchyUpdate.type == ListUpdateType.CheckboxChange) this.onItemCheckboxChange(hierarchyUpdate);
+        if (hierarchyUpdate.type == ListUpdateType.DuplicatePromptOpen) this.onDuplicatePromptOpen.emit();
+        if (hierarchyUpdate.type == ListUpdateType.DuplicatePromptClose) this.onDuplicatePromptClose.emit();
     }
 
 
@@ -124,7 +128,6 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
             pageId: this.widgetService.page.id
         }).subscribe();
     }
-
 
 
 

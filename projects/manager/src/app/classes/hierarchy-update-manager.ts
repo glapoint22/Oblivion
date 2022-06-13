@@ -120,7 +120,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                         })
                     })
             }
-        } 
+        }
     }
 
 
@@ -257,7 +257,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
             // }).subscribe((id: number) => {
-                this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
+            this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
 
 
             const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
@@ -424,6 +424,22 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
+    // ==========================================================( DUPLICATE PROMPT CHILD MESSAGE )=========================================================== \\
+
+    duplicatePromptChildMessage(childType: string, childName: string, itemType: string, parentName: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(
+            'The ' +
+            itemType +
+            '<span style="color: #ffba00"> \"' + parentName + '\"</span>' +
+            ' already contains a ' +
+            childType +
+            ' with the name' +
+            ' <span style="color: #ffba00">\"' + childName + '\"</span>.' +
+            ' Please choose a different name.');
+    }
+
+
+
     // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(hierarchyUpdate: HierarchyUpdate) {
@@ -442,12 +458,20 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
             // If no match was found
             if (!matchFound) {
-                this.listComponent.commitAddEdit();
+
+                // If the list is NOT Editable
+                if (!this.listComponent.listManager.editable) {
+                    this.listComponent.commitAdd(hierarchyUpdate.id!, hierarchyUpdate.name!);
+
+                    // But if the list IS editable
+                } else {
+                    this.listComponent.commitAddEdit();
+                }
 
                 // If a match was found
             } else {
                 this.listOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
-                this.listOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.itemType + ' with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span> already exists. Please choose a different name.');
+                this.listOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.listComponent, this.itemType, hierarchyUpdate.name!);
                 this.listComponent.openDuplicatePrompt();
             }
         }
@@ -472,7 +496,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                 // If a match was found
             } else {
                 this.listOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
-                this.listOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.itemType + '<span style="color: #ffba00"> \"' + this.thisArray[indexOfParentItem].name + '\"</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">\"' + hierarchyUpdate.name + '\"</span>. Please choose a different name.');
+                this.listOptions.duplicatePrompt!.message = this.duplicatePromptChildMessage(this.childType, hierarchyUpdate.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
                 this.listComponent.openDuplicatePrompt();
             }
         }
@@ -503,7 +527,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                 // If a match was found
             } else {
                 this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
-                this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('A ' + this.itemType + ' with the name <span style="color: #ffba00">\"' + searchUpdate.values![0].name + '\"</span> already exists. Please choose a different name.');
+                this.searchOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.searchComponent, this.itemType, searchUpdate.values![0].name);
                 this.searchComponent.openDuplicatePrompt();
             }
         }
@@ -523,7 +547,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                     } else {
                         const parentItem = this.thisArray.find(x => x.id == duplicateItem.parentId && x.hierarchyGroupID == 0);
                         this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
-                        this.searchOptions.duplicatePrompt!.message = this.sanitizer.bypassSecurityTrustHtml('The ' + this.itemType + '<span style="color: #ffba00"> \"' + parentItem!.name + '\"</span> already contains a ' + this.childType + ' with the name <span style="color: #ffba00">\"' + searchUpdate.values![0].name + '\"</span>. Please choose a different name.');
+                        this.searchOptions.duplicatePrompt!.message = this.duplicatePromptChildMessage(this.childType, searchUpdate.values![0].name, this.itemType, parentItem!.name!);
                         this.searchComponent.openDuplicatePrompt();
                     }
                 })
