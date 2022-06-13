@@ -18,6 +18,7 @@ export enum WidgetCursorType {
 }
 
 export enum WidgetInspectorView {
+    None,
     Page,
     Row,
     Column,

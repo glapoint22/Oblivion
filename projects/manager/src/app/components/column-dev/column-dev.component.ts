@@ -37,7 +37,7 @@ export class ColumnDevComponent extends ColumnComponent {
     }
 
     // Set this widget as selected
-    this.setSelectedWidget(widgetComponent);
+    // this.setSelectedWidget(widgetComponent);
 
 
     // Mousedown

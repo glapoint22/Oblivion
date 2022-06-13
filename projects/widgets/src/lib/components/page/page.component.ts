@@ -44,29 +44,29 @@ export class PageComponent implements AfterViewInit, OnDestroy {
   }
 
 
-  setBackground(document: Document) {
+  setBackground(document?: Document) {
     if (this.pageContent.background.enabled) {
       // Background color
       if (this.pageContent.background.color) {
-        document.body.style.backgroundColor = this.pageContent.background.rgbColor.toRGBString();
+        document!.body.style.backgroundColor = this.pageContent.background.rgbColor.toRGBString();
       }
 
       // Background image
       if (this.pageContent.background.image && this.pageContent.background.image.src) {
         // Image
-        document.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.src + ')';
+        document!.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.src + ')';
 
         // Position
-        document.body.style.backgroundPosition = this.pageContent.background.image.position;
+        document!.body.style.backgroundPosition = this.pageContent.background.image.position;
 
         // Repeat
-        document.body.style.backgroundRepeat = this.pageContent.background.image.repeat;
+        document!.body.style.backgroundRepeat = this.pageContent.background.image.repeat;
 
         // Attachment
-        document.body.style.backgroundAttachment = this.pageContent.background.image.attachment;
+        document!.body.style.backgroundAttachment = this.pageContent.background.image.attachment;
       }
     } else {
-      this.clearBackground(document);
+      this.clearBackground(document!);
     }
   }
 

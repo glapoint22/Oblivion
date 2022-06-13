@@ -45,8 +45,7 @@ export class PagePropertiesComponent implements OnInit {
 
 
   onBackgroundChange() {
-    this.widgetService.page.setBackground(document);
-    this.widgetService.page.setBackground(this.widgetService.widgetDocument);
+    this.widgetService.page.setBackground();
     this.widgetService.page.save();
   }
 }

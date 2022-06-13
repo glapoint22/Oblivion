@@ -3,7 +3,6 @@ import { DataService } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { ListItem } from '../../classes/list-item';
 import { PageData } from '../../classes/page-data';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -50,6 +49,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   }
 
   getData(pageId: number) {
+    this.clear();
+
     this.dataService.get<PageData>('api/Pages', [{ key: 'id', value: pageId }])
       .subscribe((pageData: PageData) => {
         this.setData(pageData);
@@ -67,23 +68,24 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
     this.load();
   }
 
-  new(content?: PageContent) {
+  new() {
     this.name = 'Untitled';
     this.pageContent = new PageContent();
 
     this.dataService.post<number>('api/Pages', {
       name: this.name,
-      pageType: this.pageType,
-      content: content ? content.toString() : null
+      pageType: this.pageType
     }).subscribe((pageId: number) => {
       this.id = pageId;
     });
   }
 
 
-  load(): void {
-    this.setBackground(this.widgetService.widgetDocument);
-    super.load()
+
+
+  setBackground(): void {
+    super.setBackground(document);
+    super.setBackground(this.widgetService.widgetDocument);
   }
 
 
@@ -92,6 +94,33 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   }
 
 
+  delete() {
+    this.dataService.delete('api/Pages', { pageId: this.id })
+      .subscribe(() => {
+        this.clear();
+      });
+  }
+
+
+  clear() {
+    this.id = 0;
+    this.clearBackground(document);
+    this.clearBackground(this.widgetService.widgetDocument);
+    this.name = null!;
+    this.pageType = PageType.Custom;
+    this.pageContent = null!;
+    this.container.viewContainerRef.clear();
+    (this.container as ContainerDevComponent).rows = [];
+  }
+
+
+  duplicate() {
+    this.dataService.post<number>('api/Pages/Duplicate', {
+      id: this.id,
+    }).subscribe((pageId: number) => {
+      this.getData(pageId);
+    });
+  }
 
   onRowChange(maxBottom: number) {
     this.host.onRowChange(maxBottom);
