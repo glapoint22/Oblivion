@@ -2,3 +2,8 @@ export * from './lib/text-box';
 export * from './lib/element-type';
 export * from './lib/text-box-data';
 export * from './lib/text-box-dev';
+export * from './lib/capitalized-case';
+export * from './lib/lower-case';
+export * from './lib/sentence-case';
+export * from './lib/title-case';
+export * from './lib/upper-case';

@@ -3,7 +3,7 @@ import { Case } from "./case";
 export class UpperCase extends Case {
 
     // ---------------------------------------------------------Set Case------------------------------------------------------------------
-    protected setCase(text: string): string {
+    public getCase(text: string): string {
         return text.toUpperCase();
     }
 }
