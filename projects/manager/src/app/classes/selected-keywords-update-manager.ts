@@ -519,18 +519,14 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
             } else {
                 // ********* commited Data Service *********
-                // this.dataService.delete('api/' + this.dataServicePath, {
-                //     id: deletedItem.id
-                // }).subscribe();
+                // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
             }
         }
 
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
             // ********* commited Data Service *********
-            // this.dataService.delete('api/' + this.childDataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
         }
     }
 
@@ -543,9 +539,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         // If we're deleting a parent item
         if (deletedItem.values[1].name == this.parentSearchType) {
             // ********* commited Data Service *********
-            // this.dataService.delete('api/' + this.dataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
 
 
             // Remove the selected keyword group from the hierarchy list

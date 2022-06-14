@@ -17,6 +17,9 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
     @Output() onDuplicatePromptOpen: EventEmitter<void> = new EventEmitter();
     @Output() onDuplicatePromptClose: EventEmitter<void> = new EventEmitter();
 
+
+    // ====================================================================( CONSTRUCTOR )==================================================================== \\
+
     constructor
         (
             dataService: DataService,
@@ -131,14 +134,12 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // ==================================================================( ON ITEM DELETE )=================================================================== \\
+    // ============================================================( GET DELETED ITEM PARAMETERS )============================================================ \\
 
-    onItemDelete(deletedItem: HierarchyItem) {
-        this.dataService.delete('api/' + this.dataServicePath, {
-            groupId: deletedItem.id,
+    getDeletedItemParameters(deletedItem: HierarchyItem) {
+        return {
+            id: deletedItem.id,
             pageId: this.widgetService.page.id
-        }).subscribe();
-
+        }
     }
-
 }

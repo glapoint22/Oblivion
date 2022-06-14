@@ -15,13 +15,15 @@ export class PageNichesUpdateManager extends ListUpdateManager {
     @Output() onDuplicatePromptOpen: EventEmitter<void> = new EventEmitter();
     @Output() onDuplicatePromptClose: EventEmitter<void> = new EventEmitter();
 
+
+    // ====================================================================( CONSTRUCTOR )==================================================================== \\
+
     constructor
         (
             dataService: DataService,
             sanitizer: DomSanitizer,
             private widgetService: WidgetService
         ) { super(dataService, sanitizer); }
-
 
 
 
@@ -68,24 +70,12 @@ export class PageNichesUpdateManager extends ListUpdateManager {
 
 
 
-    // ====================================================================( ON ITEM ADD )==================================================================== \\
+    // ============================================================( GET DELETED ITEM PARAMETERS )============================================================ \\
 
-    onItemAdd(listUpdate: ListUpdate) {
-        this.dataService.post<number>('api/' + this.dataServicePath, {
-            itemId: listUpdate.id,
+    getDeletedItemParameters(deletedItem: ListItem) {
+        return {
+            id: deletedItem.id,
             pageId: this.widgetService.page.id
-        }).subscribe();
-    }
-
-
-
-    // ==================================================================( ON ITEM DELETE )=================================================================== \\
-
-    onItemDelete(deletedItem: ListItem) {
-        this.dataService.delete('api/' + this.dataServicePath, {
-            nicheId: deletedItem.id,
-            pageId: this.widgetService.page.id
-        }).subscribe();
-
+        }
     }
 }

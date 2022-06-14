@@ -550,9 +550,7 @@ export class ListUpdateManager {
 
     onItemDelete(deletedItem: ListItem) {
         // ********* commited Data Service *********
-        this.dataService.delete('api/' + this.dataServicePath, {
-            id: deletedItem.id
-        }).subscribe();
+        // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
         this.deleteItem(this.otherArray, deletedItem, 0);
         this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
     }
@@ -563,9 +561,7 @@ export class ListUpdateManager {
 
     onSearchItemDelete(deletedItem: ListItem) {
         // ********* commited Data Service *********
-        // this.dataService.delete('api/' + this.dataServicePath, {
-        //     id: deletedItem.id
-        // }).subscribe();
+        // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
         this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
         this.deleteItem(this.thisArray, deletedItem, 0);
         this.deleteItem(this.otherArray, deletedItem, 0);
@@ -742,5 +738,15 @@ export class ListUpdateManager {
 
     getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
         return [{ key: 'searchWords', value: searchWords }];
+    }
+
+
+
+    // ============================================================( GET DELETED ITEM PARAMETERS )============================================================ \\
+
+    getDeletedItemParameters(deletedItem: ListItem) {
+        return {
+            id: deletedItem.id
+        }
     }
 }

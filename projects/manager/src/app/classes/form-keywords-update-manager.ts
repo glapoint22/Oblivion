@@ -8,7 +8,6 @@ import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { ProductService } from "../services/product/product.service";
-import { ListItem } from "./list-item";
 import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
@@ -149,5 +148,22 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
     getItemParameters(): Array<KeyValue<any, any>> {
         return [{ key: 'productId', value: this.productService.product.id }];
+    }
+
+
+
+    // ============================================================( GET DELETED ITEM PARAMETERS )============================================================ \\
+
+    getDeletedItemParameters(deletedItem: HierarchyItem) {
+        let keywordGroupId = null;
+
+        if(deletedItem.hierarchyGroupID == 1) {
+            const parentIndex = this.getIndexOfHierarchyItemParent(this.thisArray[deletedItem.index!], this.thisArray);
+            keywordGroupId = this.thisArray[parentIndex].id;
+        }
+        return {
+            id: deletedItem.id,
+            keywordGroupId: keywordGroupId
+        }
     }
 }
