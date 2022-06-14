@@ -36,17 +36,19 @@ export class ColumnDevComponent extends ColumnComponent {
       containerWidget.hostContainer = this.rowComponent.containerComponent;
     }
 
-    // Set this widget as selected
-    // this.setSelectedWidget(widgetComponent);
-
 
     // Mousedown
     widgetComponentRef.location.nativeElement.firstElementChild.addEventListener('mousedown', (event: MouseEvent) => {
-      this.setSelectedWidget(widgetComponent);
+      event.stopPropagation();
+
+      // Set the selection
+      this.setSelection(widgetComponent);
+      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
+
+
+      this.widgetService.onRowMousedown(event);
 
       if (event.button == 2) {
-        event.stopPropagation();
-
         this.lazyLoadingService.load(async () => {
           const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
           const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
@@ -223,6 +225,10 @@ export class ColumnDevComponent extends ColumnComponent {
 
     // Set the horizontal alignment
     this.horizontalAlignment.setClasses(this.widget.widgetElement);
+
+    if (this.widgetService.currentWidgetInspectorView != WidgetInspectorView.Page) {
+      this.setSelection(this.widget);
+    }
   }
 
 
@@ -258,11 +264,10 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
   // --------------------------------------------------------------------------Set Selected Widget----------------------------------------------------------------
-  public setSelectedWidget(widget: Widget): void {
+  public setSelection(widget: Widget): void {
     this.widgetService.selectedWidget = widget;
     this.widgetService.selectedRow = this.rowComponent;
     this.widgetService.selectedColumn = this;
-    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
   }
 
 
@@ -380,9 +385,12 @@ export class ColumnDevComponent extends ColumnComponent {
 
   // --------------------------------------------------------------------------------On Mousedown--------------------------------------------------------------------
   public onMousedown(event: MouseEvent): void {
-    if (event.button == 2) {
-      event.stopPropagation();
+    event.stopPropagation();
 
+    this.setSelection(this.widget);
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
+
+    if (event.button == 2) {
       this.lazyLoadingService.load(async () => {
         const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
         const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');

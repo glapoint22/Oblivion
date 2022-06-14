@@ -2,7 +2,7 @@ import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } f
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, ContainerComponent, Row, RowComponent, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { MenuOptionType, WidgetCursorType } from '../../classes/enums';
+import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
 import { PageDevComponent } from '../page-dev/page-dev.component';
@@ -57,6 +57,7 @@ export class ContainerDevComponent extends ContainerComponent {
       this.createRow(row);
       this.widgetService.clearWidgetCursor();
       this.widgetService.page.save();
+      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
     }
   }
 
@@ -333,7 +334,8 @@ export class ContainerDevComponent extends ContainerComponent {
 
     rowData.top = row.top;
     this.createRow(rowData);
-
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
+    
     window.setTimeout(() => {
       this.shiftRowsUp(row);
       this.widgetService.onRowChange(this);
@@ -352,6 +354,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
     rowData.top = top;
     this.createRow(rowData);
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
 
     window.setTimeout(() => {
       const newRowIndex = this.rows.findIndex(x => x == row) + 1;
@@ -473,6 +476,7 @@ export class ContainerDevComponent extends ContainerComponent {
     row.columns.push(new Column(12, widgetData));
     this.createRow(row);
     this.widgetService.page.save();
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
   }
 
 
@@ -483,6 +487,7 @@ export class ContainerDevComponent extends ContainerComponent {
     row.top = top;
     this.createRow(row);
     this.widgetService.page.save();
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
   }
 
 
@@ -494,6 +499,7 @@ export class ContainerDevComponent extends ContainerComponent {
     row.columns.push(column);
     this.createRow(row);
     this.widgetService.page.save();
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
   }
 
 

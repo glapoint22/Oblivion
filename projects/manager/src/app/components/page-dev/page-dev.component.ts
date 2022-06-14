@@ -102,11 +102,20 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
 
+  // ------------------------------------------------------------------------------- Load -------------------------------------------------------------------
+  public load(): void {
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Page;
+    super.load();
+  }
+
+
+
   // -------------------------------------------------------------------------------- New -------------------------------------------------------------------
   public new(): void {
     this.clear();
     this.name = 'Untitled';
     this.pageContent = new PageContent();
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Page;
 
     this.dataService.post<number>('api/Pages', {
       name: this.name,
@@ -174,6 +183,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // ----------------------------------------------------------------------------- Delete Page -------------------------------------------------------------------
   private deletePage(): void {
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.None;
+
     this.dataService.delete('api/Pages', { pageId: this.id })
       .subscribe(() => {
         this.clear();
@@ -198,6 +209,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
     this.pageContent = null!;
     this.container.viewContainerRef.clear();
     (this.container as ContainerDevComponent).rows = [];
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.None;
   }
 
 
@@ -210,9 +222,9 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   // ------------------------------------------------------------------------------- Duplicate -----------------------------------------------------------------------
   public duplicate(): void {
     if (this.id == 0) return;
-
+    
     this.dataService.post<number>('api/Pages/Duplicate', {
-      id: this.id,
+      id: this.id
     }).subscribe((pageId: number) => {
       this.getData(pageId);
     });

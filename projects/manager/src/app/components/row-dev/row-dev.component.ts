@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, Row, RowComponent, WidgetData } from 'widgets';
-import { MenuOptionType } from '../../classes/enums';
+import { MenuOptionType, WidgetInspectorView } from '../../classes/enums';
 import { MenuOption } from '../../classes/menu-option';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
@@ -87,9 +87,11 @@ export class RowDevComponent extends RowComponent {
 
     if (data instanceof WidgetData) {
       this.createColumn(new Column(columnSpan, data), index);
+      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
     } else {
       data.columnSpan.values[0].span = columnSpan;
       this.createColumn(data, index);
+      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
     }
 
     this.widgetService.page.save();
@@ -134,8 +136,14 @@ export class RowDevComponent extends RowComponent {
   public onMousedown(event: MouseEvent): void {
     event.stopPropagation();
 
+    this.widgetService.selectedRow = this;
+    this.widgetService.selectedColumn = null!;
+    this.widgetService.selectedWidget = null!;
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
+
     if (event.button == 0) {
       this.widgetService.onRowMousedown(event);
+
     } else if (event.button == 2) {
       this.lazyLoadingService.load(async () => {
         const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
@@ -259,6 +267,7 @@ export class RowDevComponent extends RowComponent {
 
     this.moveColumnIndex(columnIndex, columnIndex + 1 * direction);
     this.viewContainerRef.move(veiwRef, columnIndex + 1 * direction);
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
   }
 
 
