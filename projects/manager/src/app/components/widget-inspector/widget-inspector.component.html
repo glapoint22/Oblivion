@@ -61,14 +61,14 @@
             <button class="button-center"
                 [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Row}"
                 (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Row"
-                [disabled]="!widgetService.selectedWidget">Row</button>
+                [disabled]="!widgetService.selectedWidget && !widgetService.selectedRow">Row</button>
 
 
             <!-- Column -->
             <button class="button-center"
                 [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Column}"
                 (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Column"
-                [disabled]="!widgetService.selectedWidget">Column</button>
+                [disabled]="!widgetService.selectedWidget && !widgetService.selectedColumn">Column</button>
 
 
             <!-- Widget -->

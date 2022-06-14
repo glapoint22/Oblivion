@@ -261,6 +261,8 @@ export class WidgetService {
       const previousHeight = widget.height;
       let delta = mousemoveEvent.movementY;
 
+      handleMoved = true;
+
       // Set the new height
       widget.height -= delta * (verticalAlignmentType == VerticalAlignmentType.Middle ? 2 : 1);
 
@@ -356,6 +358,8 @@ export class WidgetService {
     const onMousemove = (mousemoveEvent: MouseEvent) => {
       const delta = mousemoveEvent.movementX;
 
+      handleMoved = true;
+
       widget.width += delta * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
       if (widget.width > column.columnElement.clientWidth) widget.width = column.columnElement.clientWidth;
 
@@ -396,6 +400,8 @@ export class WidgetService {
 
     const onMousemove = (mousemoveEvent: MouseEvent) => {
       const delta = mousemoveEvent.movementX;
+
+      handleMoved = true;
 
       widget.width -= delta * (horizontalAlignmentType == HorizontalAlignmentType.Center ? 2 : 1);
       if (widget.width > column.columnElement.clientWidth) widget.width = column.columnElement.clientWidth;
@@ -446,6 +452,8 @@ export class WidgetService {
 
     const onMousemove = (mousemoveEvent: MouseEvent) => {
       const previousHeight = widget.height;
+
+      handleMoved = true;
 
       // This is used to scale in the correct direction
       switch (widgetHandle) {

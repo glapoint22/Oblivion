@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Image, LazyLoadingService, MediaType, SpinnerAction } from 'common';
 import { ImageWidgetComponent, ImageWidgetData } from 'widgets';
-import { WidgetHandle } from '../../classes/enums';
+import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
@@ -48,8 +48,11 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
     const image = event.target as HTMLImageElement;
 
     if (!this.width || this.width != image.naturalWidth) this.width = image.naturalWidth;
-    window.setTimeout(() => {
-      this.widgetService.onRowChange(this.widgetService.selectedRow.containerComponent);
-    });
+    if (this.widgetService.currentWidgetInspectorView != WidgetInspectorView.Page) {
+      window.setTimeout(() => {
+        this.widgetService.onRowChange(this.widgetService.selectedRow.containerComponent);
+      });
+    }
+
   }
 }
