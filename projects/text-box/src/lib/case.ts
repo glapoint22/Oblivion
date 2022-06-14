@@ -1,13 +1,16 @@
 import { ElementType } from "./element-type";
+import { Selection } from "./selection";
 import { Style } from "./style";
 import { TextElement } from "./text-element";
 
 export abstract class Case extends Style {
 
+    constructor(selection?: Selection){super(selection!)}
+
 
     // ---------------------------------------------------------Set Style------------------------------------------------------------------
     public setStyle(): void {
-        const text = this.setCase(this.getText()).replace(/\n/g, '');
+        const text = this.getCase(this.getText()).replace(/\n/g, '');
 
         this.setText(text);
     }
@@ -161,5 +164,5 @@ export abstract class Case extends Style {
 
 
     // ---------------------------------------------------------Set Case------------------------------------------------------------------
-    protected abstract setCase(text: string): string;
+    public abstract getCase(text: string): string;
 }
