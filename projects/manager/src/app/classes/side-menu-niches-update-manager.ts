@@ -405,9 +405,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         // If we're deleting a grandchild item
         if (deletedItem.hierarchyGroupID == 2) {
             // ********* commited Data Service *********
-            // this.dataService.delete('api/' + this.grandchildDataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
         }
         super.onItemDelete(deletedItem);
     }
@@ -420,9 +418,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         // If we're deleting a grandchild item
         if (deletedItem.values[1].name == this.grandchildSearchType) {
             // ********* commited Data Service *********
-            // this.dataService.delete('api/' + this.grandchildDataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
             this.deleteItem(this.thisArray, deletedItem, 2);
         }
         super.onSearchItemDelete(deletedItem);

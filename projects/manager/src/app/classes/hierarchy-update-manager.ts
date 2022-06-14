@@ -257,12 +257,12 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
             // }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
+                this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
 
 
-            const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
-            addedOtherChildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
-            this.sort(addedOtherChildItem, this.otherArray);
+                const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
+                addedOtherChildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
+                this.sort(addedOtherChildItem, this.otherArray);
 
 
             // })
@@ -638,9 +638,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
             // ********* commited Data Service *********
-            // this.dataService.delete('api/' + this.childDataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
             this.deleteItem(this.otherArray, deletedItem, 1);
             this.deleteItem(this.otherSearchList, deletedItem as MultiColumnItem, this.childSearchType);
         }
@@ -662,9 +660,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // If we're deleting a child item
         if (deletedItem.values[1].name == this.childSearchType) {
             // ********* commited Data Service *********
-            // this.dataService.delete('api/' + this.childDataServicePath, {
-            //     id: deletedItem.id
-            // }).subscribe();
+            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
             this.deleteItem(this.otherSearchList, deletedItem, this.childSearchType);
             this.deleteItem(this.thisArray, deletedItem, 1);
             this.deleteItem(this.otherArray, deletedItem, 1);

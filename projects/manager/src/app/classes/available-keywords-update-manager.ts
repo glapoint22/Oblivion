@@ -8,7 +8,6 @@ import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
 import { FormKeywordsUpdateManager } from "./form-keywords-update-manager";
-import { ListItem } from "./list-item";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 
@@ -121,26 +120,6 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
     onUnselectedSearchItem() {
         super.onUnselectedSearchItem();
         this.addToSelectedKeywordsButtonDisabled = true;
-    }
-
-
-
-    // ==================================================================( ON ITEM DELETE )=================================================================== \\
-
-    onItemDelete(deletedItem: HierarchyItem) {
-        super.onItemDelete(deletedItem);
-        this.deleteItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.hierarchyGroupID!);
-        this.deleteItem(this.keywordsService.selectedKeywordsSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
-    }
-
-
-
-    // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
-
-    onSearchItemDelete(deletedItem: MultiColumnItem) {
-        super.onSearchItemDelete(deletedItem);
-        this.deleteItem(this.keywordsService.selectedKeywordsSearchList, deletedItem, deletedItem.values[1].name);
-        this.deleteItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
     }
 
 
