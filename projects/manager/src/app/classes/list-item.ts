@@ -1,5 +1,5 @@
 import { ElementRef } from "@angular/core";
-import { ItemSelectType } from "./enums";
+import { CaseType, ItemSelectType } from "./enums";
 import { Item } from "./item";
 
 export class ListItem extends Item {
@@ -12,4 +12,5 @@ export class ListItem extends Item {
     opacity?: number;
     selectable?: boolean;
     editable?: boolean;
+    case?: CaseType;
 }

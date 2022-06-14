@@ -64,3 +64,10 @@ export enum WidgetHandle {
     BottomLeft,
     Left
 }
+
+
+export enum CaseType {
+    LowerCase,
+    CapitalizedCase,
+    TitleCase
+}

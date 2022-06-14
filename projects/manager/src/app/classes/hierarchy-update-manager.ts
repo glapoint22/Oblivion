@@ -142,10 +142,10 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     addParent() {
         this.listComponent.listManager.selectedItem = null!
-        this.listComponent.add();
         this.addIconButtonTitle = 'Add';
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
+        this.listComponent.add();
     }
 
 

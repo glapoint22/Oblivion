@@ -243,16 +243,16 @@ export class ListUpdateManager {
 
     edit() {
         if (!this.searchMode) {
-            this.listComponent.edit();
             this.addIconButtonTitle = 'Add';
             this.editIconButtonTitle = 'Rename';
             this.deleteIconButtonTitle = 'Delete';
+            this.listComponent.edit();
         } else {
 
             if (this.thisSearchList.length > 0) {
-                this.searchComponent.edit();
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Delete';
+                this.searchComponent.edit();
             }
         }
     }
