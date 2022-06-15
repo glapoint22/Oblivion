@@ -12,6 +12,8 @@ import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
+import { CaseType, ListUpdateType } from "./enums";
+import { SearchResultItem } from "./search-result-item";
 
 @Directive()
 export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
@@ -49,6 +51,15 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
 
 
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
+
+    onListUpdate(hierarchyUpdate: HierarchyUpdate) {
+        super.onListUpdate(hierarchyUpdate);
+        if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisArray[hierarchyUpdate.index!].case = hierarchyUpdate.hierarchyGroupID == 0 ? CaseType.CapitalizedCase : CaseType.LowerCase;
+    }
+
+
+
     // ==================================================================( ON ARROW CLICK )=================================================================== \\
 
     onArrowClick(hierarchyUpdate: HierarchyUpdate) {
@@ -81,7 +92,6 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         super.onItemEdit(hierarchyUpdate);
         this.sort(this.editItem(this.keywordsService.selectedKeywordsArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem, this.keywordsService.selectedKeywordsArray);
         this.editItem(this.keywordsService.selectedKeywordsSearchList, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
-
     }
 
 
@@ -123,7 +133,22 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
             name: x.name,
             hierarchyGroupID: 0,
             hidden: false,
-            arrowDown: false
+            arrowDown: false,
+            case: CaseType.CapitalizedCase
+        }
+    }
+
+
+
+    // ===================================================================( GET CHILD ITEM )=================================================================== \\
+
+    getChildItem(child: HierarchyItem) {
+        return {
+            id: child.id,
+            name: child.name,
+            hierarchyGroupID: 1,
+            hidden: false,
+            case: CaseType.LowerCase
         }
     }
 
@@ -164,6 +189,21 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         return {
             id: deletedItem.id,
             keywordGroupId: keywordGroupId
+        }
+    }
+
+
+
+    // ===============================================================( GET SEARCH RESULT ITEM )=============================================================== \\
+
+    getSearchResultItem(x: SearchResultItem) {
+        let caseType: CaseType = x.type == 'Group' ? CaseType.CapitalizedCase : CaseType.LowerCase;
+
+        return {
+            id: x.id,
+            name: null!,
+            values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
+            case: caseType
         }
     }
 }

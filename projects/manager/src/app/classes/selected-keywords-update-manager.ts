@@ -1,7 +1,7 @@
 import { SafeHtml } from "@angular/platform-browser";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
-import { ListUpdateType, MenuOptionType } from "./enums";
+import { CaseType, ListUpdateType, MenuOptionType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
@@ -675,7 +675,8 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             arrowDown: false,
             forProduct: x.forProduct,
             color: x.forProduct ? '#ffba00' : null!,
-            editable: x.forProduct ? true : false
+            editable: x.forProduct ? true : false,
+            case: CaseType.CapitalizedCase
         }
     }
 
@@ -700,7 +701,8 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             checked: child.checked,
             forProduct: child.forProduct,
             color: child.forProduct ? '#ffba00' : null!,
-            selectable: child.forProduct ? true : false
+            selectable: child.forProduct ? true : false,
+            case: CaseType.LowerCase
         }
     }
 
@@ -725,13 +727,16 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
 
     getSearchResultItem(x: KeywordCheckboxSearchResultItem) {
+        let caseType: CaseType = x.type == 'Group' ? CaseType.CapitalizedCase : CaseType.LowerCase;
+
         return {
             id: x.id!,
             name: null!,
             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true, color: x.forProduct ? '#ffba00' : null! }, { name: x.type!, width: this.searchTypeWidth, color: x.forProduct ? '#ffba00' : null! }],
             checked: x.checked,
             forProduct: x.forProduct,
-            editable: x.forProduct ? true : false
+            editable: x.forProduct ? true : false,
+            case: caseType
         }
     }
 

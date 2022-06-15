@@ -2,7 +2,7 @@ import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
-import { MenuOptionType } from "./enums";
+import { CaseType, MenuOptionType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
@@ -120,6 +120,19 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
     onUnselectedSearchItem() {
         super.onUnselectedSearchItem();
         this.addToSelectedKeywordsButtonDisabled = true;
+    }
+
+
+
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
+    
+    onItemAdd(hierarchyUpdate: HierarchyUpdate) {
+        super.onItemAdd(hierarchyUpdate);
+
+        if(hierarchyUpdate.hierarchyGroupID == 1) {
+            const parentIndex = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
+            this.thisArray[hierarchyUpdate.index!].opacity = this.thisArray[parentIndex].opacity;
+        }
     }
 
 
@@ -294,7 +307,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
-            opacity: x.forProduct ? 0.4 : null!
+            opacity: x.forProduct ? 0.4 : null!,
+            case: CaseType.CapitalizedCase
         }
     }
 
@@ -318,11 +332,14 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ===============================================================( GET SEARCH RESULT ITEM )============================================================== \\
 
     getSearchResultItem(x: KeywordSearchResultItem) {
+        let caseType: CaseType = x.type == 'Group' ? CaseType.CapitalizedCase : CaseType.LowerCase;
+
         return {
             id: x.id!,
             name: null!,
             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
-            opacity: x.forProduct ? 0.4 : null!
+            opacity: x.forProduct ? 0.4 : null!,
+            case: caseType
         }
     }
 

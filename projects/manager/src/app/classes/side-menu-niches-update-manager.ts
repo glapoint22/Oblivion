@@ -3,7 +3,7 @@ import { DataService, LazyLoadingService, SpinnerAction } from "common";
 import { Subject } from "rxjs";
 import { MoveFormComponent } from "../components/move-form/move-form.component";
 import { ProductService } from "../services/product/product.service";
-import { MenuOptionType } from "./enums";
+import { CaseType, ListUpdateType, MenuOptionType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { Item } from "./item";
@@ -139,6 +139,15 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     addChild() {
         const index = this.listComponent.listManager.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem);
         this.listComponent.add(index, true);
+    }
+
+
+
+    // ==================================================================( ON LIST UPDATE )=================================================================== \\
+
+    onListUpdate(hierarchyUpdate: HierarchyUpdate) {
+        super.onListUpdate(hierarchyUpdate);
+        if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisArray[hierarchyUpdate.index!].case = CaseType.TitleCase;
     }
 
 
@@ -672,6 +681,21 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
+    // ======================================================================( GET ITEM )====================================================================== \\
+
+    getItem(x: HierarchyItem) {
+        return {
+            id: x.id,
+            name: x.name,
+            hierarchyGroupID: 0,
+            hidden: false,
+            arrowDown: false,
+            case: CaseType.TitleCase
+        }
+    }
+
+
+
     // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
     getChildItem(child: Item) {
@@ -681,7 +705,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             hierarchyGroupID: 1,
             hidden: false,
             arrowDown: false,
-            isParent: true
+            isParent: true,
+            case: CaseType.TitleCase
         }
     }
 
@@ -709,7 +734,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             id: grandchild.id,
             name: grandchild.name,
             hierarchyGroupID: 2,
-            hidden: false
+            hidden: false,
+            case: CaseType.TitleCase
         }
     }
 
