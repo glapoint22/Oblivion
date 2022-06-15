@@ -512,7 +512,7 @@ export class ListUpdateManager {
             // If a match was found
         } else {
             this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
-            this.searchOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.listComponent, this.itemType, searchUpdate.name!);
+            this.searchOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.searchComponent, this.itemType, searchUpdate.name!);
             this.searchComponent.openDuplicatePrompt();
         }
     }

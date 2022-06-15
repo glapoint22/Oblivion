@@ -62,6 +62,7 @@ export class ListManager {
       window.addEventListener('keydown', this.onKeyDown);
       window.addEventListener('blur', this.onInnerWindowBlur);
       window.addEventListener('mousedown', this.onMouseDown);
+      window.addEventListener('paste', this.onPaste);
     }
   }
 
@@ -79,6 +80,7 @@ export class ListManager {
       window.removeEventListener('keydown', this.onKeyDown);
       window.removeEventListener('blur', this.onInnerWindowBlur);
       window.removeEventListener('mousedown', this.onMouseDown);
+      window.removeEventListener('paste', this.onPaste);
       this.unSelectedItemsUpdate();
     }
   }
@@ -225,6 +227,22 @@ export class ListManager {
 
       if (this.editedItem == null) {
         this.setButtonsState();
+      }
+    }
+  }
+
+
+
+  // =====================================================================( ON PASTE )====================================================================== \\
+
+  onPaste = (e: Event) => {
+
+    if (this.editedItem) {
+      e.preventDefault();
+      const clipboardData = (e as ClipboardEvent).clipboardData!.getData('text/plain');
+
+      if (clipboardData) {
+        this.getHtmlItem().innerText = clipboardData;
       }
     }
   }
@@ -478,6 +496,7 @@ export class ListManager {
       x.selectType = null!;
     })
 
+    // If the list item is NOT editable
     if (!this.editable) {
       listItem.selected = true;
       this.selectedItem = listItem;
@@ -486,7 +505,6 @@ export class ListManager {
       this.deleteDisabled = false;
 
       this.selectedItemsUpdate(false);
-
 
       this.onListUpdate.next(
         {
@@ -497,7 +515,9 @@ export class ListManager {
         }
       );
 
+      // If the list item IS editable
     } else {
+
       this.addDisabled = true;
       this.editDisabled = true;
       this.deleteDisabled = true;
@@ -508,8 +528,22 @@ export class ListManager {
       this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.htmlItem!.nativeElement.innerText?.trim()!;
       this.setItemFocus();
 
+
+
+
+
     }
     this.buttonsUpdate();
+  }
+
+
+
+  // ===================================================================( SET EDIT ITEM )=================================================================== \\
+
+  setEditItem(listItem: ListItem) {
+    if (listItem && this.editable) {
+      this.setEdit(listItem);
+    }
   }
 
 
@@ -531,16 +565,6 @@ export class ListManager {
     })
     this.setItemFocus();
     this.buttonsUpdate();
-  }
-
-
-
-  // ===================================================================( SET EDIT ITEM )=================================================================== \\
-
-  setEditItem(listItem: ListItem) {
-    if (listItem && this.editable) {
-      this.setEdit(listItem);
-    }
   }
 
 
