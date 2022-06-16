@@ -21,7 +21,8 @@ export class CheckboxListManager extends CheckboxHierarchyManager {
             this.editedItem = (this.sourceList[listItemIndex] as CheckboxItem) = {
                 id: this.editedItem.id,
                 name: this.editedItem.name,
-                checked: (this.editedItem as CheckboxItem).checked
+                checked: (this.editedItem as CheckboxItem).checked,
+                case: this.editedItem.case
             }
         }
     }

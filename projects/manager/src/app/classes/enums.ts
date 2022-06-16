@@ -37,7 +37,8 @@ export enum ListUpdateType {
     VerifyAddEdit,
     DoubleClick,
     DuplicatePromptOpen,
-    DuplicatePromptClose
+    DuplicatePromptClose,
+    CaseTypeUpdate
 }
 
 
@@ -63,4 +64,11 @@ export enum WidgetHandle {
     Bottom,
     BottomLeft,
     Left
+}
+
+
+export enum CaseType {
+    LowerCase,
+    CapitalizedCase,
+    TitleCase
 }

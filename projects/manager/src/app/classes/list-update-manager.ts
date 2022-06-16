@@ -5,7 +5,7 @@ import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
 import { ListComponent } from "../components/lists/list/list.component";
 import { ListUpdateService } from "../services/list-update/list-update.service";
-import { ListUpdateType, MenuOptionType } from "./enums";
+import { CaseType, ListUpdateType, MenuOptionType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
@@ -243,16 +243,16 @@ export class ListUpdateManager {
 
     edit() {
         if (!this.searchMode) {
-            this.listComponent.edit();
             this.addIconButtonTitle = 'Add';
             this.editIconButtonTitle = 'Rename';
             this.deleteIconButtonTitle = 'Delete';
+            this.listComponent.edit();
         } else {
 
             if (this.thisSearchList.length > 0) {
-                this.searchComponent.edit();
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Delete';
+                this.searchComponent.edit();
             }
         }
     }
@@ -365,6 +365,7 @@ export class ListUpdateManager {
         //     name: listUpdate.name
         // }).subscribe((id: number) => {
         this.thisArray[listUpdate.index!].id = this.listAddId//id;
+
         this.sort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]), this.otherArray);
         // });
     }
@@ -511,7 +512,7 @@ export class ListUpdateManager {
             // If a match was found
         } else {
             this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
-            this.searchOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.listComponent, this.itemType, searchUpdate.name!);
+            this.searchOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.searchComponent, this.itemType, searchUpdate.name!);
             this.searchComponent.openDuplicatePrompt();
         }
     }
@@ -705,7 +706,7 @@ export class ListUpdateManager {
 
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
-
+    
     getOtherItem(x: ListItem) {
         return {
             id: x.id,

@@ -128,4 +128,21 @@ export class MultiColumnListManager extends ListManager {
         selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
         this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedMultiColumnItems: selectedItems, rightClick: rightClick });
     }
+
+
+
+    // ==================================================================( RESTORE INDENT )=================================================================== \\
+
+    restoreIndent() {
+        const listItemIndex: number = this.sourceList.findIndex(x => x == this.editedItem);
+        if (this.editedItem) {
+            this.editedItem = (this.sourceList[listItemIndex] as MultiColumnItem) = {
+                id: this.editedItem.id,
+                name: this.editedItem.name,
+                values: (this.editedItem as MultiColumnItem).values,
+                opacity: this.editedItem.opacity,
+                case: this.editedItem.case
+            }
+        }
+    }
 }

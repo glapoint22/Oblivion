@@ -142,10 +142,10 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     addParent() {
         this.listComponent.listManager.selectedItem = null!
-        this.listComponent.add();
         this.addIconButtonTitle = 'Add';
         this.editIconButtonTitle = 'Rename';
         this.deleteIconButtonTitle = 'Delete';
+        this.listComponent.add();
     }
 
 
@@ -257,12 +257,12 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
             // }).subscribe((id: number) => {
-                this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
+            this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
 
 
-                const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
-                addedOtherChildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
-                this.sort(addedOtherChildItem, this.otherArray);
+            const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
+            addedOtherChildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
+            this.sort(addedOtherChildItem, this.otherArray);
 
 
             // })
@@ -712,7 +712,6 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     // ==================================================================( GO TO HIERARCHY )================================================================== \\
 
     goToHierarchy() {
-
         // Go to parent item
         if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.parentSearchType) {
             const parentSearchItem: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
@@ -839,18 +838,6 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     }
 
 
-    // ===================================================================( GET CHILD ITEM )=================================================================== \\
-
-    getChildItem(child: HierarchyItem) {
-        return {
-            id: child.id,
-            name: child.name,
-            hierarchyGroupID: 1,
-            hidden: false
-        }
-    }
-
-
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
@@ -861,6 +848,19 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
+        }
+    }
+
+
+
+    // ===================================================================( GET CHILD ITEM )=================================================================== \\
+
+    getChildItem(child: HierarchyItem) {
+        return {
+            id: child.id,
+            name: child.name,
+            hierarchyGroupID: 1,
+            hidden: false
         }
     }
 

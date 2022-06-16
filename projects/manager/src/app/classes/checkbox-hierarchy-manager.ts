@@ -42,7 +42,8 @@ export class CheckboxHierarchyManager extends HierarchyManager {
                 isParent: (this.editedItem as KeywordCheckboxItem).isParent,
                 checked: (this.editedItem as KeywordCheckboxItem).checked,
                 forProduct: (this.editedItem as KeywordCheckboxItem).forProduct,
-                color: (this.editedItem as KeywordCheckboxItem).color
+                color: (this.editedItem as KeywordCheckboxItem).color,
+                case: this.editedItem.case
             }
         }
     }

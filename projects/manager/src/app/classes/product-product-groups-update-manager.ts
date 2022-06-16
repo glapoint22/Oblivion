@@ -4,7 +4,7 @@ import { ListComponent } from "../components/lists/list/list.component";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
-import { ListUpdateType } from "./enums";
+import { CaseType, ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
 import { FormProductGroupsUpdateManager } from "./form-product-groups-update-manager";
 
@@ -27,7 +27,6 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
         this.thisSearchList = this.productGroupsService.productSearchList;
         this.otherSearchList = this.productGroupsService.formSearchList;
         this.searchInputName = 'productProductGroupsSearchInput';
-        this.searchOptions.sortable = false;
     }
 
 
@@ -87,7 +86,8 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
         return {
             id: x.id,
             name: x.name,
-            checked: x.checked
+            checked: x.checked,
+            case: CaseType.CapitalizedCase
         }
     }
 
@@ -107,7 +107,8 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
         return {
             id: x.id,
             name: x.name,
-            checked: x.checked
+            checked: x.checked,
+            case: CaseType.CapitalizedCase
         }
     }
 

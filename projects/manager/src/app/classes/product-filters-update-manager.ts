@@ -6,7 +6,7 @@ import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
-import { ListUpdateType } from "./enums";
+import { CaseType, ListUpdateType } from "./enums";
 import { FormFiltersUpdateManager } from "./form-filters-update-manager";
 import { HierarchyUpdate } from "./hierarchy-update";
 
@@ -93,7 +93,8 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
             hidden: false,
             arrowDown: false,
             isParent: false,
-            checked: child.checked
+            checked: child.checked,
+            case: CaseType.CapitalizedCase
         }
     }
 
@@ -106,7 +107,8 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
             id: x.id!,
             name: null!,
             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
-            checked: x.checked
+            checked: x.checked,
+            case: CaseType.CapitalizedCase
         }
     }
 

@@ -1,5 +1,5 @@
 import { Subject, Subscription } from "rxjs";
-import { ItemSelectType, ListUpdateType } from "./enums";
+import { CaseType, ItemSelectType, ListUpdateType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
@@ -8,6 +8,7 @@ import { ContextMenuComponent } from "../components/context-menu/context-menu.co
 import { PromptComponent } from "../components/prompt/prompt.component";
 import { Prompt } from "./prompt";
 import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
+import { CapitalizedCase, TitleCase } from "text-box";
 
 export class ListManager {
   prompt!: PromptComponent;
@@ -61,6 +62,7 @@ export class ListManager {
       window.addEventListener('keydown', this.onKeyDown);
       window.addEventListener('blur', this.onInnerWindowBlur);
       window.addEventListener('mousedown', this.onMouseDown);
+      window.addEventListener('paste', this.onPaste);
     }
   }
 
@@ -78,6 +80,7 @@ export class ListManager {
       window.removeEventListener('keydown', this.onKeyDown);
       window.removeEventListener('blur', this.onInnerWindowBlur);
       window.removeEventListener('mousedown', this.onMouseDown);
+      window.removeEventListener('paste', this.onPaste);
       this.unSelectedItemsUpdate();
     }
   }
@@ -224,6 +227,22 @@ export class ListManager {
 
       if (this.editedItem == null) {
         this.setButtonsState();
+      }
+    }
+  }
+
+
+
+  // =====================================================================( ON PASTE )====================================================================== \\
+
+  onPaste = (e: Event) => {
+
+    if (this.editedItem) {
+      e.preventDefault();
+      const clipboardData = (e as ClipboardEvent).clipboardData!.getData('text/plain');
+
+      if (clipboardData) {
+        this.getHtmlItem().innerText = clipboardData;
       }
     }
   }
@@ -477,6 +496,7 @@ export class ListManager {
       x.selectType = null!;
     })
 
+    // If the list item is NOT editable
     if (!this.editable) {
       listItem.selected = true;
       this.selectedItem = listItem;
@@ -485,7 +505,6 @@ export class ListManager {
       this.deleteDisabled = false;
 
       this.selectedItemsUpdate(false);
-
 
       this.onListUpdate.next(
         {
@@ -496,7 +515,9 @@ export class ListManager {
         }
       );
 
+      // If the list item IS editable
     } else {
+
       this.addDisabled = true;
       this.editDisabled = true;
       this.deleteDisabled = true;
@@ -507,8 +528,22 @@ export class ListManager {
       this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.htmlItem!.nativeElement.innerText?.trim()!;
       this.setItemFocus();
 
+
+
+
+
     }
     this.buttonsUpdate();
+  }
+
+
+
+  // ===================================================================( SET EDIT ITEM )=================================================================== \\
+
+  setEditItem(listItem: ListItem) {
+    if (listItem && this.editable) {
+      this.setEdit(listItem);
+    }
   }
 
 
@@ -530,16 +565,6 @@ export class ListManager {
     })
     this.setItemFocus();
     this.buttonsUpdate();
-  }
-
-
-
-  // ===================================================================( SET EDIT ITEM )=================================================================== \\
-
-  setEditItem(listItem: ListItem) {
-    if (listItem && this.editable) {
-      this.setEdit(listItem);
-    }
   }
 
 
@@ -766,13 +791,47 @@ export class ListManager {
 
 
 
+  // =====================================================================( GET CASE )====================================================================== \\
+
+  getCase(): string {
+    let text: string;
+
+    switch (this.editedItem.case) {
+
+      // Capitalized Case
+      case CaseType.CapitalizedCase:
+        const capCase = new CapitalizedCase();
+        text = capCase.getCase(this.getHtmlItem().innerText.trim());
+        break;
+
+      // Title Case
+      case CaseType.TitleCase:
+        const titleCase = new TitleCase();
+        text = titleCase.getCase(this.getHtmlItem().innerText.trim());
+        break;
+
+      // Lower Case
+      case CaseType.LowerCase:
+        text = this.getHtmlItem().innerText.trim().toLowerCase();
+        break;
+
+      // No Case
+      default:
+        text = this.getHtmlItem().innerText.trim();
+        break;
+    }
+    return text;
+  }
+
+
+
   // ==================================================================( COMMIT ADD EDIT )================================================================== \\
 
   commitAddEdit() {
     this.addEditVerificationInProgress = false;
 
     // Update the name property
-    this.getEditedItem().name = this.getHtmlItem().innerText.trim()!;
+    this.getEditedItem().name = this.getCase();
 
     // As long as the list is sortable
     if (this.sortable) {
@@ -841,6 +900,9 @@ export class ListManager {
         // But the (Enter) key was pressed or the list item was (Blurred)
       } else {
 
+        // If its a new item, asign the case type (if need be)
+        if (this.newItem) this.caseTypeUpdate(this.editedItem);
+
         // As long as the edited name is different from what it was before the edit
         if (trimmedEditedItem.toLowerCase() != this.getEditedItem().name!.trim().toLowerCase()) {
 
@@ -866,7 +928,7 @@ export class ListManager {
 
           //If the case was changed. i.e. lower case to upper case
           if (trimmedEditedItem != this.getEditedItem().name!.trim()) {
-            this.getEditedItem().name = trimmedEditedItem;
+            this.getEditedItem().name = this.getCase();
             if (this.sortable) this.sort(this.editedItem);
             this.addEditUpdate(this.editedItem);
           }
@@ -910,6 +972,7 @@ export class ListManager {
   // =======================================================================( SORT )======================================================================== \\
 
   sort(listItem?: ListItem) {
+    this.getHtmlItem().innerText = this.getEditedItem().name!.trim()!;
     this.sourceList.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
   }
 
@@ -964,7 +1027,9 @@ export class ListManager {
 
   // ==================================================================( RESTORE INDENT )=================================================================== \\
 
-  restoreIndent() { }
+  restoreIndent() {
+    this.getHtmlItem().innerText = this.getEditedItem().name!.trim()!;
+  }
 
 
 
@@ -1186,5 +1251,20 @@ export class ListManager {
       editDisabled: this.editDisabled,
       deleteDisabled: this.deleteDisabled
     })
+  }
+
+
+
+  // =================================================================( CASE TYPE UPDATE )================================================================== \\
+
+  caseTypeUpdate(listItem: ListItem) {
+    this.onListUpdate.next(
+      {
+        type: ListUpdateType.CaseTypeUpdate,
+        id: listItem.id,
+        index: this.sourceList.findIndex(x => x.id == listItem.id && x.name == listItem.name),
+        name: listItem.name
+      }
+    );
   }
 }

@@ -284,7 +284,9 @@ export class HierarchyManager extends ListManager {
                 name: this.editedItem.name,
                 hierarchyGroupID: this.editedItem.hierarchyGroupID,
                 arrowDown: (this.editedItem as HierarchyItem).arrowDown,
-                isParent: (this.editedItem as HierarchyItem).isParent
+                isParent: (this.editedItem as HierarchyItem).isParent,
+                opacity: this.editedItem.opacity,
+                case: this.editedItem.case
             }
         }
     }
@@ -439,4 +441,20 @@ export class HierarchyManager extends ListManager {
             collapseDisabled: this.collapseDisabled
         })
     }
+
+
+
+    // =================================================================( CASE TYPE UPDATE )================================================================== \\
+
+  caseTypeUpdate(hierarchyItem: HierarchyItem) {
+    this.onListUpdate.next(
+      {
+        type: ListUpdateType.CaseTypeUpdate,
+        id: hierarchyItem.id,
+        index: this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID),
+        name: hierarchyItem.name,
+        hierarchyGroupID: hierarchyItem.hierarchyGroupID
+      }
+    );
+  }
 }

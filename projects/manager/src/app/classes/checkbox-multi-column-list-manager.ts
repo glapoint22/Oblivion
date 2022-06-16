@@ -41,7 +41,8 @@ export class CheckboxMultiColumnListManager extends MultiColumnListManager {
                 name: this.editedItem.name,
                 values: (this.editedItem as KeywordCheckboxMultiColumnItem).values,
                 checked: (this.editedItem as KeywordCheckboxMultiColumnItem).checked,
-                forProduct: (this.editedItem as KeywordCheckboxMultiColumnItem).forProduct
+                forProduct: (this.editedItem as KeywordCheckboxMultiColumnItem).forProduct,
+                case: this.editedItem.case
             }
         }
     }
