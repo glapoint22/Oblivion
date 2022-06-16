@@ -1,4 +1,5 @@
-<div style="position: relative;"
+<div class="column-outline" style="position: relative;"
+    [ngClass]="{'selected-column': widgetService.selectedColumn == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Column}"
     [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
     [style.borderRadius]="
     corners && 

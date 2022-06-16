@@ -82,8 +82,7 @@ export class TextBoxDev extends TextBox {
                     this.setSelectedClasses();
                 });
             }
-
-            htmlRootElement.addEventListener('mouseup', onMouseup, { once: true });
+            htmlRootElement.getRootNode().addEventListener('mouseup', onMouseup, { once: true });
         });
 
 

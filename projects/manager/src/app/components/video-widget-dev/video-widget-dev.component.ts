@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
 import { VideoWidgetComponent, VideoWidgetData } from 'widgets';
-import { WidgetHandle } from '../../classes/enums';
+import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
@@ -12,14 +12,10 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
 })
 export class VideoWidgetDevComponent extends VideoWidgetComponent {
   public widgetHandle = WidgetHandle;
+  public widgetInspectorView = WidgetInspectorView;
 
   constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
-
-  ngOnInit(): void {
-    this.width = 500;
-    super.ngOnInit();
-  }
-
+  
 
   setWidget(videoWidgetData: VideoWidgetData): void {
     if (videoWidgetData && videoWidgetData.video && videoWidgetData.video.src) {

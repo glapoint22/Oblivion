@@ -17,20 +17,27 @@ export class ContainerDevComponent extends ContainerComponent {
   public rows: Array<RowDevComponent> = new Array<RowDevComponent>();
   public showRowIndicator!: boolean;
   public host!: ContainerHost;
+  public isHostPageDev!: boolean;
 
   constructor
     (
       resolver: ComponentFactoryResolver,
-      private widgetService: WidgetService,
+      public widgetService: WidgetService,
       private lazyLoadingService: LazyLoadingService
     ) { super(resolver) }
 
 
 
+    ngAfterViewInit() {
+      window.setTimeout(()=> this.isHostPageDev = this.host instanceof PageDevComponent);
+      
+    }
 
 
   // ----------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
   public ngOnInit(): void {
+    
+
     this.widgetService.$onContainerMousemove.subscribe((containerDevComponent: ContainerDevComponent) => {
       if (containerDevComponent == this) {
         this.showRowIndicator = true;

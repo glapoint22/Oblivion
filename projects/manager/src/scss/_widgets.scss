@@ -1,6 +1,10 @@
 @import '../../../../dist/widgets/scss/widgets';
 
 $handle-size: 8px;
+$container-outline-color: #961496;
+$row-outline-color: #149625;
+$column-outline-color: #146296;
+$widget-outline-color: #967e14;
 
 .row {
     display: flex;
@@ -46,7 +50,7 @@ body {
             pointer-events: none;
         }
     }
-    
+
     &#widget-cursor {
         .row:hover .column-indicator {
             visibility: visible;
@@ -70,24 +74,33 @@ body {
     position: absolute;
 
 
-    &.top-left,  &.top-right, &.bottom-left, &.bottom-right {
+    &.top-left,
+    &.top-right,
+    &.bottom-left,
+    &.bottom-right {
         @include handle-circle();
     }
 
-    &.top-left,  &.top-right {
+    &.top-left,
+    &.top-right {
         top: -$handle-size * 0.5;
     }
 
-    &.top-left, &.bottom-left {
+    &.top-left,
+    &.bottom-left {
         left: -$handle-size * 0.5;
     }
-    
 
-    &.top-right, &.right, &.bottom-right {
+
+    &.top-right,
+    &.right,
+    &.bottom-right {
         right: -$handle-size * 0.5;
     }
 
-    &.bottom-left, &.bottom, &.bottom-right {
+    &.bottom-left,
+    &.bottom,
+    &.bottom-right {
         bottom: -$handle-size * 0.5;
     }
 
@@ -108,7 +121,8 @@ body {
         cursor: se-resize;
     }
 
-    &.top, &.bottom {
+    &.top,
+    &.bottom {
         left: $handle-size * 0.5;
         right: $handle-size * 0.5;
         height: $handle-size;
@@ -121,7 +135,7 @@ body {
             transform: translateX(-$handle-size * 0.5);
         }
     }
-    
+
     &.top {
         top: -$handle-size * 0.5;
 
@@ -139,7 +153,8 @@ body {
     }
 
 
-    &.left, &.right {
+    &.left,
+    &.right {
         top: $handle-size * 0.5;
         bottom: $handle-size * 0.5;
         width: $handle-size;
@@ -171,7 +186,171 @@ body {
 }
 
 
-.selected-widget {
-    outline: 1px solid #ffba00;
-    z-index: 10;
+
+
+
+
+.row-outline {
+    outline: 1px dashed;
+
+    &:not(.selected-row) {
+        outline-color: rgba($color: $row-outline-color, $alpha: 0.2);
+    }
 }
+
+
+.column-outline {
+    outline: 1px dashed;
+
+    &:not(.selected-column) {
+        outline-color: rgba($color: $column-outline-color, $alpha: 0.2);
+    }
+}
+
+
+.widget-outline:not(#widget-container) {
+    outline: 1px dashed;
+
+    &:not(.selected-widget) {
+        outline-color: rgba($color: $widget-outline-color, $alpha: 0.2);
+    }
+}
+
+
+
+
+
+
+.container-outline {
+    outline: 1px dashed rgba($color: $container-outline-color, $alpha: 0.6);
+
+
+    &:hover {
+        &:not(#page-container) {
+            outline-color: rgba($color: $widget-outline-color, $alpha: 1);
+        }
+        
+
+        & .row-outline:not(.selected-row) {
+            outline-color: rgba($color: $row-outline-color, $alpha: 0.4);
+
+            & .column-outline:not(.selected-column) {
+                outline-color: rgba($color: $column-outline-color, $alpha: 0.4);
+
+                & .widget-outline:not(.selected-widget):not(#widget-container) {
+                    outline-color: rgba($color: $widget-outline-color, $alpha: 0.4);
+                }
+            }
+
+            &:hover {
+                outline-color: rgba($color: $row-outline-color, $alpha: 1);
+
+                & .column-outline:not(.selected-column) {
+                    outline-color: rgba($color: $column-outline-color, $alpha: 0.6);
+
+
+                    & .widget-outline:not(.selected-widget):not(#widget-container) {
+                        outline-color: rgba($color: $widget-outline-color, $alpha: 0.6);
+                    }
+
+                    &:hover {
+                        outline-color: rgba($color: $column-outline-color, $alpha: 1);
+
+                        & .widget-outline:not(.selected-widget):not(#widget-container) {
+                            outline-color: rgba($color: $widget-outline-color, $alpha: 0.8);
+
+                            &:hover {
+                                outline-color: rgba($color: $widget-outline-color, $alpha: 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+    }
+}
+
+
+
+.selected-row {
+    outline-color: lighten($row-outline-color, 30%);
+
+    // .column-outline {
+    //     outline-color: rgba($color: $column-outline-color, $alpha: 1);
+    // }
+}
+
+.selected-column {
+    outline-color: lighten($column-outline-color, 30%);
+}
+
+.selected-widget:not(#widget-container) {
+    outline: 1px solid lighten($widget-outline-color, 30%);
+}
+
+
+
+
+
+// .selected-container {
+//     outline-color: lighten($container-outline-color, 25%) !important;
+// }
+
+
+// .row-outline {
+//     outline: 1px dashed rgba($color: $row-outline-color, $alpha: 0.2);
+
+//     &:hover:not(.selected-row) {
+//         outline-color: $row-outline-color;
+
+//         & :not(.selected-column):not(.column-outline:hover).column-outline {
+//             outline: 1px dashed rgba($color: $column-outline-color, $alpha: 0.4);
+//         }
+
+//         & :not(.selected-widget):not(.widget-outline:hover).widget-outline {
+//             outline: 1px dashed rgba($color: $widget-outline-color, $alpha: 0.4)
+//         }
+//     }
+// }
+
+
+
+
+// .column-outline {
+//     outline: 1px dashed rgba($color: $column-outline-color, $alpha: 0.2);
+
+//     &:hover:not(.selected-column) {
+//         outline-color: $column-outline-color;
+
+//         & :not(.selected-widget):not(.widget-outline:hover).widget-outline {
+//             outline: 1px dashed rgba($color: $widget-outline-color, $alpha: 0.6);
+//         }
+//     }
+// }
+
+// .selected-column {
+//     outline: 1px dashed lighten($column-outline-color, 30%);
+
+//     & :not(.selected-widget):not(.widget-outline:hover).widget-outline {
+//         outline: 1px dashed rgba($color: $widget-outline-color, $alpha: 0.6)
+//     }
+// }
+
+
+
+// .widget-outline {
+//     outline: 1px dashed rgba($color: $widget-outline-color, $alpha: 0.2);
+
+//     &:hover:not(.selected-widget) {
+//         outline-color: $widget-outline-color;
+//     }
+// }
+
+
+// .selected-widget {
+//     outline: 1px solid lighten($widget-outline-color, 30%);
+//     z-index: 10;
+// }

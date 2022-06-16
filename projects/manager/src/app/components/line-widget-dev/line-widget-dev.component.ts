@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LineWidgetComponent } from 'widgets';
-import { WidgetHandle } from '../../classes/enums';
+import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -10,6 +10,7 @@ import { WidgetService } from '../../services/widget/widget.service';
 })
 export class LineWidgetDevComponent extends LineWidgetComponent {
   public widgetHandle = WidgetHandle;
+  public widgetInspectorView = WidgetInspectorView;
 
   constructor(public widgetService: WidgetService) { super() }
 }

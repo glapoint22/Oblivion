@@ -27,11 +27,11 @@ corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px '
     </div>
 
     <!-- Selection -->
-    <div id="selection" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"
-        [ngClass]="{'selected-widget': widgetService.selectedWidget == this}"></div>
+    <div id="ignore-element-height" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"
+        [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"></div>
 
     <!-- Handles -->
-    <div id="handles" *ngIf="widgetService.selectedWidget == this">
+    <div id="ignore-element-height" *ngIf="widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget">
         <div class="handle top-left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.TopLeft, $event)"></div>
         <div class="handle top" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Top, $event)"></div>
         <div class="handle top-right" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.TopRight, $event)"></div>

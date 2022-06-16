@@ -1,5 +1,6 @@
 import { Compiler, Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, NgModuleFactory, ViewChild, ViewContainerRef } from '@angular/core';
 import { ContainerHost } from '../../classes/container-host';
+import { WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -21,6 +22,7 @@ export class EditorComponent implements ContainerHost {
   public windowWidth = 1600;
   public windowHeight = 900;
   private fixedHeight = this.windowHeight;
+  public widgetInspectorView = WidgetInspectorView;
 
   constructor
     (

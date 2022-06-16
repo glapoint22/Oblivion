@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Color } from 'common';
 import { ButtonWidgetComponent, ButtonWidgetData } from 'widgets';
-import { ButtonState, WidgetHandle } from '../../classes/enums';
+import { ButtonState, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -12,6 +12,7 @@ import { WidgetService } from '../../services/widget/widget.service';
 export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
   public currentState: ButtonState = ButtonState.Normal;
   public widgetHandle = WidgetHandle;
+  public widgetInspectorView = WidgetInspectorView;
 
   // Background Hover Color
   private _backgroundHoverColorDev: Color = Color.hexToRGB(this.backgroundHoverColor);

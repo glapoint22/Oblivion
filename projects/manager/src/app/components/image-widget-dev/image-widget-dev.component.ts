@@ -12,6 +12,7 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
 })
 export class ImageWidgetDevComponent extends ImageWidgetComponent {
   public widgetHandle = WidgetHandle;
+  public widgetInspectorView = WidgetInspectorView;
 
   constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
 

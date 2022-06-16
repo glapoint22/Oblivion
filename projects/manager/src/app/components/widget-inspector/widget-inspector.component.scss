@@ -1,3 +1,5 @@
+@import '../../../scss/widgets';
+
 .icons-container {
     background: #3b3b3b;
     height: 22px;
@@ -126,7 +128,27 @@
 }
 
 .button-selected {
-    border-color: #52adfb;
-    background: #1f4363;
     color: #ffffff;
+}
+
+.page-button-selected {
+    border-color: lighten($color: $container-outline-color, $amount: 25%);
+    background: $container-outline-color;
+}
+
+
+.row-button-selected {
+    border-color: lighten($color: $row-outline-color, $amount: 25%);
+    background: $row-outline-color;
+}
+
+.column-button-selected {
+    border-color: lighten($color: $column-outline-color, $amount: 25%);
+    background: $column-outline-color;
+}
+
+
+.widget-button-selected {
+    border-color: lighten($color: $widget-outline-color, $amount: 25%);
+    background: $widget-outline-color;
 }

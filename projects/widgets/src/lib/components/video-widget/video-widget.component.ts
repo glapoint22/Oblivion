@@ -40,6 +40,7 @@ export class VideoWidgetComponent extends Widget {
 
   // ------------------------------------------------------------ Set Widget -----------------------------------------------------------
   setWidget(videoWidgetData: VideoWidgetData) {
+    this.width = 500;
     this.border.setData(videoWidgetData.border);
     this.corners.setData(videoWidgetData.corners);
     this.shadow.setData(videoWidgetData.shadow);

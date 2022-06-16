@@ -16,9 +16,10 @@ import { RowDevComponent } from '../row-dev/row-dev.component';
 })
 export class ColumnDevComponent extends ColumnComponent {
   public rowComponent!: RowDevComponent;
+  public widgetInspectorView = WidgetInspectorView;
   private widget!: Widget;
 
-  constructor(resolver: ComponentFactoryResolver, private widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver) }
+  constructor(resolver: ComponentFactoryResolver, public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver) }
 
 
   // ---------------------------------------------------------------------Create Widget Component Ref----------------------------------------------------------------
@@ -390,7 +391,9 @@ export class ColumnDevComponent extends ColumnComponent {
     this.setSelection(this.widget);
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
 
-    if (event.button == 2) {
+    if (event.button == 0) {
+      this.widgetService.onRowMousedown(event);
+    } else if (event.button == 2) {
       this.lazyLoadingService.load(async () => {
         const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
         const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
