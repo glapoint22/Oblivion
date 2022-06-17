@@ -12,8 +12,8 @@
          (contextmenu)="$event.preventDefault()"
          (mouseover)="listManager.overItem = true"
          (mouseout)="listManager.overItem = false"
-         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(item, $event) : null) : listManager.onArrowClick(item)"
-         (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(item) : null"
+         (mousedown)="listManager.selectable ? listManager.onItemDown(item, $event) : listManager.onArrowClick(item)"
+         (dblclick)="listManager.onItemDoubleClick(item)"
          [contentEditable]="item == listManager.editedItem"
          [ngClass]="{'selected-item': item == listManager.selectedItem,
                 'unselected-item': item == listManager.unselectedItem,
@@ -31,8 +31,6 @@
 
             
             <div class="arrow-container"
-                (mouseover)="listManager.overButton = true"
-                (mouseout)="listManager.overButton = false"
                 (click)="listManager.selectable ? listManager.onArrowClick(item) : null">
                 <div class="arrow" [ngClass]="{'arrow-down': item.arrowDown}"></div>
             </div>

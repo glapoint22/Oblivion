@@ -18,17 +18,6 @@ export class ListComponent implements OnInit {
   constructor(public lazyLoadingService: LazyLoadingService) { }
 
 
-  private _overButton!: boolean;
-  public get overButton(): boolean {
-    return this._overButton;
-  }
-  public set overButton(v: boolean) {
-    this._overButton = v;
-    this.listManager.overButton = v;
-  }
-
-
-
   instantiate() {
     this.listManager = new ListManager(this.lazyLoadingService);
   }

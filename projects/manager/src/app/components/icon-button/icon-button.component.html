@@ -1,7 +1,6 @@
 <button class="icon-button"
         [title]="title"
-        (mouseover)="onOver.next(true)"
-        (mouseout)="onOver.next(false)"
+        (mousedown)="$event.stopPropagation()"
         (click)="!isDisabled ? onClick.next() : null"
         [ngClass]="{'icon-button-disabled': isDisabled}">
     <i style="pointer-events: none;" [class]="icon"></i>

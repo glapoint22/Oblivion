@@ -6,7 +6,6 @@
                  [icon]="searchIcon"
                  [title]="searchIconButtonTitle"
                  [isDisabled]="false"
-                 (onOver)="overButton = $event"
                  (onClick)="toggleSearch()">
     </icon-button>
 
@@ -15,7 +14,6 @@
         <icon-button [icon]="'fas fa-trash-alt'"
                      [title]="deleteIconButtonTitle"
                      [isDisabled]="isDisabled('deleteDisabled')"
-                     (onOver)="overButton = $event"
                      (onClick)="delete()">
         </icon-button>
 
@@ -23,7 +21,6 @@
         <icon-button [icon]="'fas fa-pencil-alt'"
                      [title]="editIconButtonTitle"
                      [isDisabled]="isDisabled('editDisabled')"
-                     (onOver)="overButton = $event"
                      (onClick)="edit()">
         </icon-button>
 
@@ -32,7 +29,6 @@
             <icon-button [icon]="'fas fa-plus-circle'"
                          [title]="addIconButtonTitle"
                          [isDisabled]="isDisabled('addDisabled')"
-                         (onOver)="overButton = $event"
                          (onClick)="add()">
             </icon-button>
 
@@ -40,7 +36,6 @@
             <icon-button [icon]="'fas fa-minus-square'"
                          [title]="'Collapse'"
                          [isDisabled]="isDisabled('collapseDisabled')"
-                         (onOver)="overButton = $event"
                          (onClick)="collapse()">
             </icon-button>
         </ng-container>

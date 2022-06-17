@@ -218,7 +218,6 @@ export class ListUpdateManager {
                 const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
                 if (selectedItem) {
                     this.listComponent.listManager.onItemDown(selectedItem);
-                    this.listComponent.overButton = true;
                 } else {
                     this.onUnselectedItem();
                 }
@@ -661,27 +660,6 @@ export class ListUpdateManager {
                 !this.searchComponent.listManager.promptOpen))
 
             this.onClose.next();
-    }
-
-
-
-    // ====================================================================( OVER BUTTON )==================================================================== \\
-
-    private _overButton!: boolean;
-    public get overButton(): boolean {
-        return this._overButton;
-    }
-    public set overButton(v: boolean) {
-        this._overButton = v;
-
-        if (!this.searchMode) {
-            this.listComponent.overButton = v;
-        } else {
-
-            if (this.thisSearchList.length > 0) {
-                this.searchComponent.overButton = v;
-            }
-        }
     }
 
 
