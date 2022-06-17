@@ -18,8 +18,8 @@
          (contextmenu)="$event.preventDefault()"
          (mouseover)="listManager.overItem = true"
          (mouseout)="listManager.overItem = false"
-         (mousedown)="listManager.selectable ? (!listManager.overButton ? listManager.onItemDown(item, $event) : null) : listManager.onCheckboxChange(item)"
-         (dblclick)="!listManager.overButton ? listManager.onItemDoubleClick(item) : null"
+         (mousedown)="listManager.selectable ? listManager.onItemDown(item, $event) : listManager.onCheckboxChange(item)"
+         (dblclick)="listManager.onItemDoubleClick(item)"
          [contentEditable]="item == listManager.editedItem"
          [ngClass]="{'selected-item': item == listManager.selectedItem,
                 'unselected-item': item == listManager.unselectedItem,
@@ -34,10 +34,7 @@
 
         <ng-container *ngIf="listManager.editedItem == null">
             <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
-            <label class="checkbox"
-                   (mouseover)="listManager.overButton = true"
-                   (mouseout)="listManager.overButton = false">
-
+            <label class="checkbox">
                 <input type="checkbox"
                         [checked]="item.checked"
                         (change)="listManager.selectable ? listManager.onCheckboxChange(item) : null"

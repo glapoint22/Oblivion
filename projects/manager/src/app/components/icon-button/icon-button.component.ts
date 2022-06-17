@@ -9,6 +9,5 @@ export class IconButtonComponent {
   @Input() icon!: string;
   @Input() title!: string;
   @Input() isDisabled!: boolean | undefined | null;
-  @Output() onOver: EventEmitter<boolean> = new EventEmitter();
   @Output() onClick: EventEmitter<void> = new EventEmitter();
 }

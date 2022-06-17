@@ -22,8 +22,6 @@ export class ListManager {
   preventUnselectionFromRightMousedown!: boolean;
   newItem!: boolean;
   options!: ListOptions;
-  overButton!: boolean;
-  overContextMenu!: boolean;
   overItem!: boolean;
   SelectType = ItemSelectType;
   addDisabled: boolean = false;
@@ -38,10 +36,8 @@ export class ListManager {
   verifyAddEdit: boolean = false;
   addEditVerificationInProgress!: boolean;
   onListUpdate = new Subject<ListUpdate>();
-  contextMenu!: ContextMenuComponent
   contextMenuOpen!: boolean;
   promptOpen!: boolean;
-  overContextMenuListener!: Subscription;
   mouseDownItem!: ListItem;
 
 
@@ -151,7 +147,7 @@ export class ListManager {
 
   onInnerWindowBlur = () => {
     // * When the focus gets set to something that is outside the inner-window * \\
-    
+
     if (!this.promptOpen && !this.contextMenuOpen) {
       // If a list item is being edited or added
       if (this.editedItem != null) {
@@ -191,12 +187,8 @@ export class ListManager {
   onMouseDown = () => {
     if (!this.promptOpen && !this.contextMenuOpen) {
 
-      // if (!this.overContextMenu) {
-      //   this.closeContextMenu();
-      // }
-
       // As long as we're not over an item or over a button
-      if (!this.overItem && !this.overButton) { // && !this.contextMenuOpen
+      if (!this.overItem) {
 
         // If an item is being edited or added
         if (this.editedItem != null) {
@@ -248,7 +240,6 @@ export class ListManager {
     this.mouseDownItem = listItem
     // As long as this item is NOT currently being edited
     if (this.editedItem != listItem) {
-      // this.closeContextMenu();
 
       // Initialize
       this.preventUnselectionFromRightMousedown = false;
@@ -713,8 +704,8 @@ export class ListManager {
         // If an item is NOT being edited
       } else {
 
-          // Then remove all listeners and selections
-          this.removeEventListeners();
+        // Then remove all listeners and selections
+        this.removeEventListeners();
       }
     }
   }
@@ -978,36 +969,22 @@ export class ListManager {
           module: ContextMenuModule
         }
       }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-        this.contextMenu = contextMenu;
         this.contextMenuOpen = true;
         contextMenu.xPos = e.clientX + 5;
         contextMenu.yPos = e.clientY + 5;
         contextMenu.parentObj = this.options.menu?.parentObj!;
         contextMenu.options = this.options.menu?.menuOptions!;
-        
+
         const contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
           contextMenuOpenListener.unsubscribe();
-          this.contextMenuOpen = menuOpen;
+          // Delay so the context menu and a selected item doesn't close at the same time
+          window.setTimeout(() => {
+            this.contextMenuOpen = menuOpen;
+          })
         })
       });
     }
   }
-
-
-
-  // =================================================================( CLOSE CONTEXT MENU )================================================================ \\
-
-  // closeContextMenu() {
-  //   if (this.contextMenuOpen) {
-  //     this.contextMenu.onHide();
-  //     // Delay so the context menu and a selected item doesn't close at the same time
-  //     window.setTimeout(() => {
-  //       this.contextMenuOpen = false;
-  //     }, 10)
-  //     // this.overContextMenuListener.unsubscribe();
-  //     this.contextMenuOpenListener.unsubscribe();
-  //   }
-  // }
 
 
 
@@ -1039,10 +1016,6 @@ export class ListManager {
       prompt.primaryButton = promptOption.primaryButton!;
       prompt.secondaryButton = promptOption.secondaryButton!;
       prompt.tertiaryButton = promptOption.tertiaryButton!;
-
-      // Close the context menu (if open)
-      // this.closeContextMenu();
-
 
       // If the duplicate prompt is being opened
       if (this.addEditVerificationInProgress) {
