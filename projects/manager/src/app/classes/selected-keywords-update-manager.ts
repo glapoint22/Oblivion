@@ -711,7 +711,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
     getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
-        return null!
+        return null!;
     }
 
 

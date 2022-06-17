@@ -15,6 +15,7 @@ import { Product } from "./product";
 import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
+import { NicheHierarchyService } from "../services/niche-hierarchy/niche-hierarchy.service";
 
 @Directive()
 export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
@@ -35,9 +36,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, private lazyLoadingService: LazyLoadingService, private productService: ProductService) {
+    constructor(dataService: DataService, sanitizer: DomSanitizer, private lazyLoadingService: LazyLoadingService, private nicheHierarchyService: NicheHierarchyService, private productService: ProductService) {
         super(dataService, sanitizer);
-        
     }
 
 
@@ -56,6 +56,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         this.collapseHierarchyOnOpen = false;
         this.selectLastSelectedItemOnOpen = true;
         this.searchInputName = 'nicheHierarchySearchInput';
+        this.thisArray = this.nicheHierarchyService.formArray;
 
         // ---------- HIERARCHY OPTIONS ---------- \\
 
@@ -673,14 +674,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // =====================================================================( ON ESCAPE )===================================================================== \\
-
-    onEscape(): void {
-        // Prevent escacpe from happening here and let the menu bar component take care of it
-    }
-
-
-
     // ======================================================================( GET ITEM )====================================================================== \\
 
     getItem(x: HierarchyItem) {
@@ -692,6 +685,14 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             arrowDown: false,
             case: CaseType.TitleCase
         }
+    }
+
+
+
+    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    
+    getOtherItem(x: HierarchyItem) {
+        return null!;
     }
 
 
@@ -715,14 +716,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
     getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
-        return {
-            id: child.id,
-            name: child.name,
-            hierarchyGroupID: 1,
-            arrowDown: false,
-            isParent: true,
-            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown
-        }
+        return null!;
     }
 
 
@@ -744,11 +738,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     // =============================================================( GET OTHER GRANDCHILD ITEM )============================================================== \\
 
     getOtherGrandchildItem(grandchild: Item, hierarchyUpdate: HierarchyUpdate) {
-        return {
-            id: grandchild.id,
-            name: grandchild.name,
-            hierarchyGroupID: 2,
-            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown
-        }
+        return null!;
     }
 }

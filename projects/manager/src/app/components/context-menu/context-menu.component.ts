@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { LazyLoad } from 'common';
 import { Subject } from 'rxjs';
 import { MenuOptionType } from '../../classes/enums';
@@ -15,10 +15,30 @@ export class ContextMenuComponent extends LazyLoad {
   public parentObj!: object;
   public options!: Array<MenuOption>;
   public MenuOptionType = MenuOptionType;
-  public overMenu: Subject<boolean> = new Subject<boolean>();
   public menuOpen: Subject<boolean> = new Subject<boolean>();
   public menuVisible!: boolean;
   public hasCover!: boolean;
+
+
+  @HostListener('window:mousedown')
+  onWindowMouseDown() {
+    this.onHide();
+    this.menuOpen.next(false);
+  }
+
+
+  @HostListener('window:keydown.escape')
+  onWindowEscape() {
+    this.onHide();
+    this.menuOpen.next(false);
+  }
+
+
+  @HostListener('window:blur')
+  onWindowBlur() {
+    this.onHide();
+    this.menuOpen.next(false);
+  }
 
 
   ngAfterViewInit(): void {
@@ -64,7 +84,6 @@ export class ContextMenuComponent extends LazyLoad {
 
   onClick(optionFunction: Function, functionParameters?: Array<any>) {
     this.onHide();
-    this.overMenu.next(false);
     this.menuOpen.next(false);
     optionFunction.apply(this.parentObj, functionParameters);
   }
@@ -72,5 +91,10 @@ export class ContextMenuComponent extends LazyLoad {
   onHide() {
       const index = this.container.indexOf(this.viewRef);
       if(index != -1) this.container.remove(index);
+  }
+
+  close() {
+    this.onHide();
+    this.menuOpen.next(false);
   }
 }

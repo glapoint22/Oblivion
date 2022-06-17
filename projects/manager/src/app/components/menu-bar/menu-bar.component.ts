@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Subscription } from 'rxjs';
 import { MenuOptionType } from '../../classes/enums';
-import { MenuBarOption } from '../../classes/menu-bar-option';
+import { MenuBarButton } from '../../classes/menu-bar-button';
 import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 
@@ -15,19 +14,13 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 export class MenuBarComponent {
   // Private
   private menuOpen!: boolean;
+  private menu!: ContextMenuComponent;
   private nichesSideMenuOpen!: boolean;
-  private eventListenersAdded!: boolean;
-  private overMenuListener!: Subscription;
-  private menuOpenListener!: Subscription;
-  private contextMenu!: ContextMenuComponent;
-  private overNichesSideMenuListener!: Subscription;
 
   // Public
-  public overMenu!: boolean;
-  public overNichesSideMenu!: boolean;
+  public selectedMenuBarButton!: MenuBarButton;
   public nichesSideMenu!: NichesSideMenuComponent;
-  public selectedMenuBarOption!: MenuBarOption;
-  public menuBarOptions: Array<MenuBarOption> = [
+  public menuBarButtons: Array<MenuBarButton> = [
 
     // Builders
     {
@@ -150,110 +143,67 @@ export class MenuBarComponent {
     }
   ]
 
-  constructor(
-    public lazyLoadingService: LazyLoadingService,
-    private router: Router
-  ) { }
+  constructor(public lazyLoadingService: LazyLoadingService, private router: Router) { }
 
 
-  addEventListeners() {
-    if (!this.eventListenersAdded) {
-      this.eventListenersAdded = true;
-      window.addEventListener('mousedown', this.onMouseDown);
-      window.addEventListener('keydown', this.onKeyDown);
-      window.addEventListener('blur', this.onInnerWindowBlur);
+
+
+  onMenuBarButtonOver(htmlMenuBarButton: HTMLElement, menuBarButton: MenuBarButton) {
+    if (this.menuOpen && this.selectedMenuBarButton != menuBarButton) {
+      this.menu.close();
+      this.openMenu(htmlMenuBarButton, menuBarButton);
     }
   }
 
 
-  removeEventListeners() {
-    this.eventListenersAdded = false;
-    window.removeEventListener('mousedown', this.onMouseDown);
-    window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('blur', this.onInnerWindowBlur);
+
+  onMenuBarButtonDown(htmlMenuBarButton: HTMLElement, menuBarButton: MenuBarButton, e: MouseEvent) {
+    if (!this.menuOpen) {
+      e.stopPropagation();
+      this.openMenu(htmlMenuBarButton, menuBarButton);
+
+    } else {
+      this.menu.close();
+    }
   }
 
 
 
-  async openMenu(htmlMenuBarOption: HTMLElement, menuBarOption: MenuBarOption) {
-    // As long as a context menu is not currently open
-    if (!(this.lazyLoadingService.container.length > 0 && !this.menuOpen)) {
+  async openMenu(htmlMenuBarButton: HTMLElement, menuBarButton: MenuBarButton) {
+    this.lazyLoadingService.load(async () => {
+      const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
 
-      // If this menu bar option is NOT already selected
-      if (menuBarOption != this.selectedMenuBarOption) {
-        // Mark this menu bar option as the selected menu bar option
-        this.selectedMenuBarOption = menuBarOption;
-
-        // If a menu is already open, then close it
-        if (this.menuOpen) this.contextMenu.onHide();
-        this.menuOpen = true;
-
-        this.addEventListeners();
-
-        this.lazyLoadingService.load(async () => {
-          const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
-          const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
-
-          return {
-            component: ContextMenuComponent,
-            module: ContextMenuModule
-          }
-        }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-          this.contextMenu = contextMenu;
-          contextMenu.parentObj = this;
-          contextMenu.hasCover = true;
-          contextMenu.xPos = htmlMenuBarOption.getBoundingClientRect().left;
-          contextMenu.yPos = htmlMenuBarOption.getBoundingClientRect().top + htmlMenuBarOption.getBoundingClientRect().height;
-          contextMenu.options = menuBarOption.menuOptions;
-          this.overMenuListener = contextMenu.overMenu.subscribe((overMenu: boolean) => {
-            this.overMenu = overMenu;
-          })
-          this.menuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
-            if (!menuOpen) this.closeMenu();
-          })
-        });
-
-        // When the same menu bar option is clicked again
-      } else {
-        this.closeMenu();
+      return {
+        component: ContextMenuComponent,
+        module: ContextMenuModule
       }
-    }
+    }, SpinnerAction.None).then((menu: ContextMenuComponent) => {
+      this.menu = menu;
+      this.menuOpen = true;
+      menu.parentObj = this;
+      menu.hasCover = true;
+      menu.options = menuBarButton.menuOptions;
+      this.selectedMenuBarButton = menuBarButton;
+      menu.xPos = htmlMenuBarButton.getBoundingClientRect().left;
+      menu.yPos = htmlMenuBarButton.getBoundingClientRect().top + htmlMenuBarButton.getBoundingClientRect().height;
+
+      const menuOpenListener = menu.menuOpen.subscribe((menuOpen: boolean) => {
+        menuOpenListener.unsubscribe();
+        this.menuOpen = menuOpen;
+        this.selectedMenuBarButton = null!;
+      })
+    });
   }
 
 
-  closeMenu() {
-    this.menuOpen = false;
-    this.contextMenu.onHide();
-    this.selectedMenuBarOption = null!;
-    this.overMenuListener.unsubscribe();
-    this.menuOpenListener.unsubscribe();
-    this.removeEventListeners();
-  }
 
 
-  openProductBuilder() {
-    this.selectedMenuBarOption = null!;
-    this.router.navigate(['product-builder']);
-  }
 
-
-  openPageBuilder() {
-    this.selectedMenuBarOption = null!;
-    this.router.navigate(['page-builder']);
-
-  }
-
-
-  openEmailBuilder() {
-    this.selectedMenuBarOption = null!;
-    this.router.navigate(['email-builder']);
-  }
 
 
   async openNichesSideMenu() {
     if (!this.nichesSideMenuOpen) {
-      this.nichesSideMenuOpen = true;
-      this.addEventListeners();
 
       this.lazyLoadingService.load(async () => {
         const { NichesSideMenuComponent } = await import('../niches-side-menu/niches-side-menu.component');
@@ -264,23 +214,42 @@ export class MenuBarComponent {
         }
       }, SpinnerAction.None).then((nichesSideMenu: NichesSideMenuComponent) => {
         this.nichesSideMenu = nichesSideMenu;
-        this.overNichesSideMenuListener = nichesSideMenu.overNichesSideMenu.subscribe((overNichesSideMenu: boolean) => {
-          this.overNichesSideMenu = overNichesSideMenu;
+        this.nichesSideMenuOpen = true;
+
+        const nichesSideMenuOpenListener = nichesSideMenu.nichesSideMenuOpen.subscribe((nichesSideMenuOpen: boolean) => {
+          nichesSideMenuOpenListener.unsubscribe();
+          this.nichesSideMenuOpen = nichesSideMenuOpen;
         })
       })
-
     } else {
-      this.closeNichesSideMenu();
+      this.nichesSideMenu.close();
     }
   }
 
 
-  closeNichesSideMenu() {
-    this.nichesSideMenu.close();
-    this.nichesSideMenuOpen = false;
-    this.overNichesSideMenuListener.unsubscribe();
-    this.removeEventListeners();
+
+
+
+
+
+
+  openProductBuilder() {
+    this.router.navigate(['product-builder']);
   }
+
+
+  openPageBuilder() {
+    this.router.navigate(['page-builder']);
+
+  }
+
+
+  openEmailBuilder() {
+    this.router.navigate(['email-builder']);
+  }
+
+
+
 
 
   openFiltersForm() {
@@ -317,86 +286,5 @@ export class MenuBarComponent {
         module: ProductGroupsFormModule
       }
     }, SpinnerAction.None)
-  }
-
-
-  onMouseDown = () => {
-    if (!this.overMenu && this.menuOpen) this.closeMenu();
-
-    if (this.nichesSideMenuOpen) {
-      // If the niche hierarchy is being displayed
-      if (this.nichesSideMenu.sideMenuNiches.listComponent) {
-        if (!this.overNichesSideMenu &&
-          !this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
-          !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.editedItem &&
-          !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.contextMenuOpen &&
-          !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.promptOpen) {
-          this.closeNichesSideMenu();
-        }
-
-        // If the search text is being displayed
-      } else {
-        if (!this.overNichesSideMenu &&
-          !this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
-          !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.editedItem &&
-          !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.contextMenuOpen &&
-          !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.promptOpen) {
-          this.closeNichesSideMenu();
-        }
-      }
-    }
-  }
-
-
-  onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      if (this.menuOpen) this.closeMenu();
-
-      if (this.nichesSideMenuOpen) {
-        // If the niche hierarchy is being displayed
-        if (this.nichesSideMenu.sideMenuNiches.listComponent) {
-
-          if (!this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
-            !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.editedItem &&
-            !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.contextMenuOpen &&
-            !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.promptOpen) {
-            this.closeNichesSideMenu();
-          }
-
-          // If the search text is being displayed
-        } else {
-          if (!this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
-            !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.editedItem &&
-            !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.contextMenuOpen &&
-            !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.promptOpen) {
-            this.closeNichesSideMenu();
-          }
-        }
-      }
-    }
-  }
-
-
-  onInnerWindowBlur = () => {
-    if (this.menuOpen) this.closeMenu();
-
-    if (this.nichesSideMenuOpen) {
-      // If the niche hierarchy is being displayed
-      if (this.nichesSideMenu.sideMenuNiches.listComponent) {
-        if (!this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
-          !this.nichesSideMenu.sideMenuNiches.listComponent.listManager.promptOpen) {
-          this.closeNichesSideMenu();
-          this.nichesSideMenu.sideMenuNiches.listComponent.listManager.editedItem = null!;
-        }
-
-        // If the search text is being displayed
-      } else {
-        if (!this.nichesSideMenu.sideMenuNiches.moveFormOpen &&
-          !this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.promptOpen) {
-          this.closeNichesSideMenu();
-          this.nichesSideMenu.sideMenuNiches.searchComponent.listManager.editedItem = null!;
-        }
-      }
-    }
   }
 }

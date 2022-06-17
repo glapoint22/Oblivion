@@ -1,6 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
 import { Subject } from 'rxjs';
+import { ListComponent } from '../lists/list/list.component';
 import { SideMenuNichesComponent } from '../side-menu-niches/side-menu-niches.component';
 
 @Component({
@@ -9,9 +10,57 @@ import { SideMenuNichesComponent } from '../side-menu-niches/side-menu-niches.co
   styleUrls: ['./niches-side-menu.component.scss']
 })
 export class NichesSideMenuComponent extends LazyLoad {
-  // Public
-  public overNichesSideMenu: Subject<boolean> = new Subject<boolean>();
+  public nichesSideMenuOpen: Subject<boolean> = new Subject<boolean>();
   @ViewChild('sideMenuNiches') sideMenuNiches!: SideMenuNichesComponent;
+
+
+  @HostListener('window:mousedown')
+  onWindowMouseDown() {
+    this.onClose();
+  }
+
+
+  @HostListener('window:blur')
+  onWindowBlur() {
+    this.evaluateWindowBlur(this.sideMenuNiches.listComponent);
+    this.evaluateWindowBlur(this.sideMenuNiches.searchComponent);
+  }
+
+
+  evaluateWindowBlur(component: ListComponent) {
+    if (component) {
+
+      if (!this.sideMenuNiches.moveFormOpen &&
+        !component.listManager.promptOpen) {
+
+        this.close();
+        if (component.listManager.editedItem) {
+          component.listManager.selectedItem = component.listManager.editedItem;
+          component.listManager.editedItem = null!;
+        }
+      }
+    }
+  }
+
+
+
+  evaluateClose(component: ListComponent) {
+    if (component) {
+      if (!this.sideMenuNiches.moveFormOpen &&
+        !component.listManager.promptOpen &&
+        !component.listManager.editedItem &&
+        !component.listManager.contextMenuOpen) {
+        this.close();
+      }
+    }
+  }
+
+
+
+  onClose() {
+    this.evaluateClose(this.sideMenuNiches.listComponent);
+    this.evaluateClose(this.sideMenuNiches.searchComponent);
+  }
 
 
   onOpen(): void {
@@ -20,6 +69,12 @@ export class NichesSideMenuComponent extends LazyLoad {
 
 
   onEscape(): void {
-    this.sideMenuNiches.onEscape();
+    this.onClose();
+  }
+
+  
+  close(): void {
+    super.close();
+    this.nichesSideMenuOpen.next(false);
   }
 }

@@ -3,22 +3,20 @@
         
         <div class="shack-container"
              (click)="openNichesSideMenu()"
-             (mouseover)="overNichesSideMenu = true"
-             (mouseout)="overNichesSideMenu = false;">
+             (mousedown)="$event.stopPropagation()">
             <img src="assets/shack.png">
         </div>
 
 
-        <div class="menu-options-container">
-            <div #htmlMenuBarOption
-                 *ngFor="let menuBarOption of menuBarOptions"
+        <div class="menu-buttons-container">
+            <div #htmlMenuBarButton
+                 *ngFor="let menuBarButton of menuBarButtons"
                  class="menu-option"
-                 (mouseover)="selectedMenuBarOption != null && menuBarOption != selectedMenuBarOption ? openMenu(htmlMenuBarOption, menuBarOption) : null; overMenu = true"
-                 (mouseout)="overMenu = false"
-                 (mousedown)="openMenu(htmlMenuBarOption, menuBarOption)"
-                 [ngClass]="{'selected': menuBarOption == selectedMenuBarOption}">
+                 (mouseover)="onMenuBarButtonOver(htmlMenuBarButton, menuBarButton)"
+                 (mousedown)="onMenuBarButtonDown(htmlMenuBarButton, menuBarButton, $event)"
+                 [ngClass]="{'selected': menuBarButton == selectedMenuBarButton}">
                  
-                {{menuBarOption.name}}
+                {{menuBarButton.name}}
             </div>
         </div>
     </div>
