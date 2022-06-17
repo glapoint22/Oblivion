@@ -1,4 +1,6 @@
-<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative; user-select: none;">
+<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative; user-select: none;"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+    class="widget-outline">
 
     <div style="position: relative;
     width: 100%;
@@ -19,11 +21,6 @@
                 [style.maxWidth.px]="width ? width: null">
             </iframe>
         </div>
-    </div>
-
-    <!-- Selection -->
-    <div id="ignore-element-height" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"
-        [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}">
     </div>
 
 

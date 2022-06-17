@@ -1,9 +1,11 @@
 <div #widget [style.maxWidth.px]="width ? width : null"
     style="display: flex; align-items: center; min-height: 20px; position: relative; width: 100%; user-select: none;"
-    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}">
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+    class="widget-outline">
 
     <!-- Handles -->
-    <div id="ignore-element-height" *ngIf="widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget">
+    <div id="ignore-element-height"
+        *ngIf="widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget">
         <div class="handle left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Left, $event)"></div>
         <div class="handle right" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.Right, $event)"></div>
     </div>

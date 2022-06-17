@@ -1,7 +1,7 @@
 <!-- Container -->
-<div [id]="isHostPageDev ? 'page-container' : ''" class="container" (mouseup)="onContainerMouseup($event)" (mousemove)="onContainerMousemove($event, rowIndicator)"
+<div class="container" (mouseup)="onContainerMouseup($event)" (mousemove)="onContainerMousemove($event, rowIndicator)"
     (mouseenter)="onContainerMouseenter()" (mouseleave)="onContainerMouseleave()" (mousedown)="onMousedown($event)"
-    (contextmenu)="$event.preventDefault()" [ngClass]="{'container-outline': widgetService.page && widgetService.page.id > 0}">
+    (contextmenu)="$event.preventDefault()">
 
     <!-- Row Indicator -->
     <div [id]="showRowIndicator ? 'show-row-indicator': ''" #rowIndicator class="row-indicator"></div>

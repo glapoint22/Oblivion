@@ -15,11 +15,13 @@
 
     <!-- Selection -->
     <div id="ignore-element-height" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"
-    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"></div>
+        [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+        class="widget-outline"></div>
 
 
     <!-- Handles -->
-    <div id="ignore-element-height" *ngIf="widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget">
+    <div id="ignore-element-height"
+        *ngIf="widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget">
         <div class="handle top-left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.TopLeft, $event)">
         </div>
         <div class="handle top-right"

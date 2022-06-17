@@ -1,4 +1,4 @@
-<div id="widget-container" #widget class="widget-outline" style="position: relative; width: 100%; user-select: none;"
+<div #widget class="container-outline" style="position: relative; width: 100%; user-select: none;"
     [style.backgroundColor]="background && background.enabled && background.rgbColor.toRGBString() ? background.rgbColor.toRGBString(): null"
     [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
     [style.borderRadius]="
@@ -14,14 +14,10 @@
                         'background-position': background && background.enabled && background.image ? background.image.position : null,
                         'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
                         'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"
-    [style.minHeight.px]="height">
+    [style.minHeight.px]="height"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}">
 
     <container-dev #container></container-dev>
-
-    <!-- Selection -->
-    <div id="ignore-element-height" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none;"
-        [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}">
-    </div>
 
 
     <!-- Handles -->

@@ -100,6 +100,7 @@ export class LinkComponent extends LazyLoad {
     if (this.link.linkType == LinkType.WebAddress) {
       this.link.url = this.linkInput.nativeElement.value;
     } else if (this.link.linkType == LinkType.Page || this.link.linkType == LinkType.Product) {
+      if (!this.linkItem) return;
       this.link.url = this.linkItem.link;
       this.link.name = this.linkItem.name!;
     } else if (this.link.linkType == LinkType.None) {

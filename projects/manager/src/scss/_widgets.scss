@@ -195,6 +195,10 @@ body {
 
     &:not(.selected-row) {
         outline-color: rgba($color: $row-outline-color, $alpha: 0.2);
+
+        &:hover {
+            outline-color: rgba($color: $row-outline-color, $alpha: 1);
+        }
     }
 }
 
@@ -204,153 +208,64 @@ body {
 
     &:not(.selected-column) {
         outline-color: rgba($color: $column-outline-color, $alpha: 0.2);
+
+        &:hover {
+            outline-color: lighten($color: $column-outline-color, $amount: 10%)
+        }
     }
 }
 
 
-.widget-outline:not(#widget-container) {
+.widget-outline {
     outline: 1px dashed;
 
     &:not(.selected-widget) {
         outline-color: rgba($color: $widget-outline-color, $alpha: 0.2);
+
+        &:hover {
+            outline-color: rgba($color: $widget-outline-color, $alpha: 1);
+        }
     }
 }
 
 
+.container-outline,
+.horizontal-dashed-line,
+.vertical-dashed-line {
+    &:not(.container-wrapper):not(.selected-widget) {
+        outline: 1px dashed;
+        outline-color: rgba($color: $container-outline-color, $alpha: 0.4);
 
-
-
-
-.container-outline {
-    outline: 1px dashed rgba($color: $container-outline-color, $alpha: 0.6);
-
-
-    &:hover {
-        &:not(#page-container) {
+        &:hover {
             outline-color: rgba($color: $widget-outline-color, $alpha: 1);
         }
-        
-
-        & .row-outline:not(.selected-row) {
-            outline-color: rgba($color: $row-outline-color, $alpha: 0.4);
-
-            & .column-outline:not(.selected-column) {
-                outline-color: rgba($color: $column-outline-color, $alpha: 0.4);
-
-                & .widget-outline:not(.selected-widget):not(#widget-container) {
-                    outline-color: rgba($color: $widget-outline-color, $alpha: 0.4);
-                }
-            }
-
-            &:hover {
-                outline-color: rgba($color: $row-outline-color, $alpha: 1);
-
-                & .column-outline:not(.selected-column) {
-                    outline-color: rgba($color: $column-outline-color, $alpha: 0.6);
-
-
-                    & .widget-outline:not(.selected-widget):not(#widget-container) {
-                        outline-color: rgba($color: $widget-outline-color, $alpha: 0.6);
-                    }
-
-                    &:hover {
-                        outline-color: rgba($color: $column-outline-color, $alpha: 1);
-
-                        & .widget-outline:not(.selected-widget):not(#widget-container) {
-                            outline-color: rgba($color: $widget-outline-color, $alpha: 0.8);
-
-                            &:hover {
-                                outline-color: rgba($color: $widget-outline-color, $alpha: 1);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-
     }
 }
 
 
 
 .selected-row {
+    outline-style: solid;
     outline-color: lighten($row-outline-color, 30%);
-
-    // .column-outline {
-    //     outline-color: rgba($color: $column-outline-color, $alpha: 1);
-    // }
 }
 
 .selected-column {
+    outline-style: solid;
     outline-color: lighten($column-outline-color, 30%);
 }
 
-.selected-widget:not(#widget-container) {
+
+
+.selected-widget {
     outline: 1px solid lighten($widget-outline-color, 30%);
 }
 
 
 
+.selected-page {
 
-
-// .selected-container {
-//     outline-color: lighten($container-outline-color, 25%) !important;
-// }
-
-
-// .row-outline {
-//     outline: 1px dashed rgba($color: $row-outline-color, $alpha: 0.2);
-
-//     &:hover:not(.selected-row) {
-//         outline-color: $row-outline-color;
-
-//         & :not(.selected-column):not(.column-outline:hover).column-outline {
-//             outline: 1px dashed rgba($color: $column-outline-color, $alpha: 0.4);
-//         }
-
-//         & :not(.selected-widget):not(.widget-outline:hover).widget-outline {
-//             outline: 1px dashed rgba($color: $widget-outline-color, $alpha: 0.4)
-//         }
-//     }
-// }
-
-
-
-
-// .column-outline {
-//     outline: 1px dashed rgba($color: $column-outline-color, $alpha: 0.2);
-
-//     &:hover:not(.selected-column) {
-//         outline-color: $column-outline-color;
-
-//         & :not(.selected-widget):not(.widget-outline:hover).widget-outline {
-//             outline: 1px dashed rgba($color: $widget-outline-color, $alpha: 0.6);
-//         }
-//     }
-// }
-
-// .selected-column {
-//     outline: 1px dashed lighten($column-outline-color, 30%);
-
-//     & :not(.selected-widget):not(.widget-outline:hover).widget-outline {
-//         outline: 1px dashed rgba($color: $widget-outline-color, $alpha: 0.6)
-//     }
-// }
-
-
-
-// .widget-outline {
-//     outline: 1px dashed rgba($color: $widget-outline-color, $alpha: 0.2);
-
-//     &:hover:not(.selected-widget) {
-//         outline-color: $widget-outline-color;
-//     }
-// }
-
-
-// .selected-widget {
-//     outline: 1px solid lighten($widget-outline-color, 30%);
-//     z-index: 10;
-// }
+    &>.vertical-dashed-line,
+    .horizontal-dashed-line {
+        outline-color: lighten($container-outline-color, 10%) !important;
+    }
+}

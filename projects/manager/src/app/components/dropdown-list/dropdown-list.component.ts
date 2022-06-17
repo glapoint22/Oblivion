@@ -99,7 +99,7 @@ export class DropdownListComponent extends LazyLoad {
 
   // ----------------------------------------------------------------------------- On Enter --------------------------------------------------------------
   onEnter(e: KeyboardEvent): void {
-    if (!this.list || this.list.length == 0) return;
+    if (!this.list || this.list.length == 0 || this.itemIndex == -1) return;
     this.onItemSelect(e);
   }
 
