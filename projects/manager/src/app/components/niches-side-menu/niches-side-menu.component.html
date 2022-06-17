@@ -4,8 +4,7 @@
      class="base translate-start"
      [ngClass]="{'translate-end': show}"
      (transitionend)="onHide()"
-     (mouseenter)="overNichesSideMenu.next(true)"
-     (mouseleave)="overNichesSideMenu.next(false)">
+     (mousedown)="$event.stopPropagation()">
     
     <side-menu-niches #sideMenuNiches [base]="base"></side-menu-niches>
 </div>

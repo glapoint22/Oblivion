@@ -1,6 +1,6 @@
 import { MenuOption } from "./menu-option";
 
-export class MenuBarOption {
+export class MenuBarButton {
     name!: string;
     menuOptions!: Array<MenuOption>;
 }

@@ -33,7 +33,6 @@
             <div class="arrow-container"
                 (mouseover)="listManager.overButton = true"
                 (mouseout)="listManager.overButton = false"
-                (mousedown)="listManager.closeContextMenu()"
                 (click)="listManager.selectable ? listManager.onArrowClick(item) : null">
                 <div class="arrow" [ngClass]="{'arrow-down': item.arrowDown}"></div>
             </div>
