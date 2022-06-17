@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
+import { Image, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
 import { Subject } from 'rxjs';
-import { Column, HorizontalAlignmentType, Row, VerticalAlignmentType, Widget, WidgetData, WidgetType } from 'widgets';
+import { Column, HorizontalAlignmentType, ImageWidgetData, Row, VerticalAlignmentType, VideoWidgetData, Widget, WidgetData, WidgetType } from 'widgets';
 import { WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
 import { ContainerDevComponent } from '../../components/container-dev/container-dev.component';
 import { ContainerWidgetDevComponent } from '../../components/container-widget-dev/container-widget-dev.component';
+import { MediaBrowserComponent } from '../../components/media-browser/media-browser.component';
 import { PageDevComponent } from '../../components/page-dev/page-dev.component';
 import { RowDevComponent } from '../../components/row-dev/row-dev.component';
 import { BreakpointService } from '../breakpoint/breakpoint.service';
@@ -25,7 +27,7 @@ export class WidgetService {
   public page!: PageDevComponent;
 
 
-  constructor(private breakpointService: BreakpointService) { }
+  constructor(private breakpointService: BreakpointService, private lazyLoadingService: LazyLoadingService) { }
 
 
   // ------------------------------------------------------------------------Set Widget Cursor------------------------------------------------------------
@@ -63,6 +65,36 @@ export class WidgetService {
     this.selectedRow = null!;
     this.currentWidgetInspectorView = WidgetInspectorView.Page;
   }
+
+
+
+  // ------------------------------------------------------------------------Load Media Browser------------------------------------------------------------
+  public loadMediaBrowser(widgetData: WidgetData, callback: Function) {
+    this.lazyLoadingService.load(async () => {
+      const { MediaBrowserComponent } = await import('../../components/media-browser/media-browser.component');
+      const { MediaBrowserModule } = await import('../../components/media-browser/media-browser.module');
+      return {
+        component: MediaBrowserComponent,
+        module: MediaBrowserModule
+      }
+    }, SpinnerAction.None)
+      .then((mediaBrowser: MediaBrowserComponent) => {
+        const mediaType = widgetData.widgetType == WidgetType.Image ? MediaType.Image : MediaType.Video;
+
+        mediaBrowser.currentMediaType = mediaType;
+        mediaBrowser.callback = (media: Image | Video) => {
+          if (mediaType == MediaType.Image) {
+            const imageWidgetData = widgetData as ImageWidgetData;
+            imageWidgetData.image = media as Image;
+          } else {
+            const videoWidgetData = widgetData as VideoWidgetData;
+            videoWidgetData.video = media as Video;
+          }
+          callback();
+        }
+      });
+  }
+
 
 
   // ----------------------------------------------------------------------On Widget Handle Mousedown---------------------------------------------------------
@@ -617,7 +649,7 @@ export class WidgetService {
 
 
   // --------------------------------------------------------------------Manage Row Collision---------------------------------------------
-  private manageRowCollision(row: RowDevComponent): void {
+  public manageRowCollision(row: RowDevComponent): void {
     const rowTop = row.top;
     const rowBottom = rowTop + row.rowElement.getBoundingClientRect().height;
 

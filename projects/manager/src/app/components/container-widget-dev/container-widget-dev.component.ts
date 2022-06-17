@@ -3,6 +3,7 @@ import { ContainerWidgetComponent, ContainerWidgetData } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
+import { ColumnDevComponent } from '../column-dev/column-dev.component';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
 
@@ -15,14 +16,11 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
   public widgetHandle = WidgetHandle;
   public hostContainer!: ContainerDevComponent;
   public widgetInspectorView = WidgetInspectorView;
+  public columnComponent!: ColumnDevComponent;
   private fixedHeight!: number;
 
   constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { super() }
-
-
-  ngOnInit(): void {
-    super.ngOnInit();
-  }
+  
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -43,6 +41,7 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
   onRowChange(maxBottom: number): void {
     this.height = Math.max(this.fixedHeight, maxBottom);
     this.appRef.tick();
+    this.widgetService.manageRowCollision(this.columnComponent.rowComponent);
     this.widgetService.onRowChange(this.hostContainer);
   }
 

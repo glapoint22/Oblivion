@@ -431,8 +431,8 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
   // ---------------------------------------------------------------------------On Escape-------------------------------------------------------------
-  onEscape(): void {
-    this.callback();
-    super.onEscape();
-  }
+  // onEscape(): void {
+  //   this.callback();
+  //   super.onEscape();
+  // }
 }

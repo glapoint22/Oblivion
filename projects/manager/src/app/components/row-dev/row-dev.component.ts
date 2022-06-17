@@ -1,6 +1,6 @@
 import { Component, ComponentFactoryResolver } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Column, ColumnSpan, Row, RowComponent, WidgetData } from 'widgets';
+import { Column, ColumnSpan, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { MenuOptionType, WidgetInspectorView } from '../../classes/enums';
 import { MenuOption } from '../../classes/menu-option';
 import { WidgetService } from '../../services/widget/widget.service';
@@ -75,27 +75,47 @@ export class RowDevComponent extends RowComponent {
   }
 
 
+  // ------------------------------------------------------------------------ Reset Columns -------------------------------------------------------------
+  resetColumns(): number {
+    this.columnCount++;
+    const columnSpan = this.getColumnSpan(this.columnCount);
+    this.setColumnSpans(columnSpan);
+    return columnSpan;
+  }
+
 
   // ------------------------------------------------------------------------ addColumn -------------------------------------------------------------
   public addColumn(addend: number, columnElement: HTMLElement, data: WidgetData | Column): void {
-    this.columnCount++;
-
-
-    const columnSpan = this.getColumnSpan(this.columnCount);
-    const index = this.getColumnIndex(columnElement, addend);
-
-    this.setColumnSpans(columnSpan);
-
+    // Data is for widget
     if (data instanceof WidgetData) {
-      this.createColumn(new Column(columnSpan, data), index);
-      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
-    } else {
-      data.columnSpan.values[0].span = columnSpan;
-      this.createColumn(data, index);
-      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
-    }
 
-    this.widgetService.page.save();
+      // If widget data is image or video and it's not copied data, open the media browser
+      if ((data.widgetType == WidgetType.Image && !(data as ImageWidgetData).image) ||
+        (data.widgetType == WidgetType.Video && !(data as VideoWidgetData).video)) {
+        this.widgetService.loadMediaBrowser(data, () => {
+          const columnSpan = this.resetColumns();
+
+          this.createColumn(new Column(columnSpan, data), this.getColumnIndex(columnElement, addend));
+          this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
+          this.widgetService.page.save();
+        });
+      } else {
+        const columnSpan = this.resetColumns();
+
+        this.createColumn(new Column(columnSpan, data), this.getColumnIndex(columnElement, addend));
+        this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
+        this.widgetService.page.save();
+      }
+
+      // Data is for column
+    } else {
+      const columnSpan = this.resetColumns();
+
+      data.columnSpan.values[0].span = columnSpan;
+      this.createColumn(data, this.getColumnIndex(columnElement, addend));
+      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
+      this.widgetService.page.save();
+    }
   }
 
 

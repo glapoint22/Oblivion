@@ -1,4 +1,4 @@
-<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative; user-select: none;">
+<div #widget [style.maxWidth.px]="width ? width: null" style="width: 100%; position: relative; user-select: none;" [style.visibility]="hidden ? 'hidden': 'visible'">
 
     <img *ngIf="image && image.src" (load)="onImageLoad($event)" style="width: inherit" draggable="false"
         [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"

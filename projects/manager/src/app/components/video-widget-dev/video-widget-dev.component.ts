@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
-import { VideoWidgetComponent, VideoWidgetData } from 'widgets';
+import { VideoWidgetComponent } from 'widgets';
 import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
-import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
   selector: 'video-widget-dev',
@@ -14,37 +12,7 @@ export class VideoWidgetDevComponent extends VideoWidgetComponent {
   public widgetHandle = WidgetHandle;
   public widgetInspectorView = WidgetInspectorView;
 
-  constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
-  
-
-  setWidget(videoWidgetData: VideoWidgetData): void {
-    if (videoWidgetData && videoWidgetData.video && videoWidgetData.video.src) {
-      super.setWidget(videoWidgetData);
-    } else {
-      this.lazyLoadingService.load(async () => {
-        const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
-        const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
-        return {
-          component: MediaBrowserComponent,
-          module: MediaBrowserModule
-        }
-      }, SpinnerAction.None)
-        .then((mediaBrowser: MediaBrowserComponent) => {
-          mediaBrowser.currentMediaType = MediaType.Video;
-
-          mediaBrowser.callback = (video: Video) => {
-            if (video) {
-              videoWidgetData.video = video;
-              super.setWidget(videoWidgetData);
-              this.iframe.nativeElement.src = this.video.src;
-              this.widgetService.page.save();
-            } else {
-              this.widgetService.selectedColumn.deleteColumn();
-            }
-          }
-        });
-    }
-  }
+  constructor(public widgetService: WidgetService) { super() }
 
 
   ngAfterViewChecked() {
