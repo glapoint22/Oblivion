@@ -16,6 +16,7 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 export class RowDevComponent extends RowComponent {
   public columns: Array<ColumnDevComponent> = new Array<ColumnDevComponent>();
   public containerComponent!: ContainerDevComponent;
+  public widgetInspectorView = WidgetInspectorView;
 
   constructor(resolver: ComponentFactoryResolver, public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver); }
 

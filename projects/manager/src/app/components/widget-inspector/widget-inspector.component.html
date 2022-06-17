@@ -54,26 +54,26 @@
         <div class="grooved-container">
             <!-- Page -->
             <button class="button-left"
-                [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"
+                [ngClass]="{'button-selected page-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"
                 (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Page">Page</button>
 
             <!-- Row -->
             <button class="button-center"
-                [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Row}"
+                [ngClass]="{'button-selected row-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Row}"
                 (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Row"
                 [disabled]="!widgetService.selectedWidget && !widgetService.selectedRow">Row</button>
 
 
             <!-- Column -->
             <button class="button-center"
-                [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Column}"
+                [ngClass]="{'button-selected column-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Column}"
                 (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Column"
                 [disabled]="!widgetService.selectedWidget && !widgetService.selectedColumn">Column</button>
 
 
             <!-- Widget -->
             <button class="button-right"
-                [ngClass]="{'button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+                [ngClass]="{'button-selected widget-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
                 (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Widget"
                 [disabled]="!widgetService.selectedWidget">Widget</button>
         </div>

@@ -62,7 +62,7 @@
     <div class="property">
         <div class="label">Color</div>
         <div style="flex: 1;">
-            <color-swatch [color]="border.rgbColor" (onColorPickerClose)="onChange.emit()"></color-swatch>
+            <color-swatch [color]="border.rgbColor" (onChange)="onChange.emit()"></color-swatch>
         </div>
     </div>
 </panel>

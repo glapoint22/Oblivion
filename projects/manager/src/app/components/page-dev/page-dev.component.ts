@@ -20,11 +20,12 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public name!: string;
   public pageType: PageType = PageType.Custom;
   public host!: ContainerHost;
+  public widgetInspectorView = WidgetInspectorView;
   private saveData = new Subject<void>();
 
   constructor
     (
-      private widgetService: WidgetService,
+      public widgetService: WidgetService,
       private dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
       private sanitizer: DomSanitizer

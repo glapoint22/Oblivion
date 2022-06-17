@@ -14,12 +14,12 @@
 
 
     <!-- Selection -->
-    <div id="selection" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"
-        [ngClass]="{'selected-widget': widgetService.selectedWidget == this && image && image.src}"></div>
+    <div id="ignore-element-height" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"></div>
 
 
     <!-- Handles -->
-    <div id="handles" *ngIf="image && image.src && widgetService.selectedWidget == this">
+    <div id="ignore-element-height" *ngIf="widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget">
         <div class="handle top-left" (mousedown)="widgetService.onWidgetHandleMousedown(widgetHandle.TopLeft, $event)">
         </div>
         <div class="handle top-right"

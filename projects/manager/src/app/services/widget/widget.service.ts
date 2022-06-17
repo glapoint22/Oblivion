@@ -20,7 +20,6 @@ export class WidgetService {
   public selectedWidget!: Widget;
   public widgetCursor!: WidgetCursor;
   public widgetDocument!: Document;
-  public widgetHandleMove!: boolean;
   public currentWidgetInspectorView!: WidgetInspectorView;
   public clipboard!: Row | Column | WidgetData;
   public page!: PageDevComponent;
@@ -68,7 +67,6 @@ export class WidgetService {
 
   // ----------------------------------------------------------------------On Widget Handle Mousedown---------------------------------------------------------
   public onWidgetHandleMousedown(widgetHandle: WidgetHandle, mousedownEvent: MouseEvent) {
-    this.widgetHandleMove = true;
 
     switch (widgetHandle) {
       // Top Left
@@ -229,7 +227,6 @@ export class WidgetService {
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
-      this.widgetHandleMove = false;
       if (handleMoved) this.page.save();
     }
 
@@ -328,7 +325,6 @@ export class WidgetService {
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
-      this.widgetHandleMove = false;
       if (handleMoved) this.page.save();
     }
 
@@ -370,7 +366,6 @@ export class WidgetService {
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
-      this.widgetHandleMove = false;
       if (handleMoved) this.page.save();
     }
 
@@ -413,7 +408,6 @@ export class WidgetService {
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
-      this.widgetHandleMove = false;
       if (handleMoved) this.page.save();
     }
 
@@ -614,7 +608,7 @@ export class WidgetService {
       return maxBottom - containerTop;
     }
 
-    const children: Array<Element> = Array.from(this.selectedWidget.widgetElement.children).filter(x => x.id != 'handles' && x.id != 'cover' && x.id != 'selection');
+    const children: Array<Element> = Array.from(this.selectedWidget.widgetElement.children).filter(x => x.id != 'ignore-element-height');
     return Math.max(...children.map((x: any) => x.offsetHeight));
   }
 

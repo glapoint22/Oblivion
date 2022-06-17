@@ -1,5 +1,6 @@
-<div #widget class="grid-widget-container" [ngClass]="{'selected-widget': widgetService.selectedWidget == this}"
-    style="user-select: none;">
+<div #widget class="grid-widget-container"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+    style="user-select: none; position: relative;">
 
     <ng-container *ngIf="gridData && gridData.products.length > 0; else noData">
 

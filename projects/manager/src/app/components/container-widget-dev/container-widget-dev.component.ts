@@ -1,7 +1,7 @@
 import { ApplicationRef, Component } from '@angular/core';
 import { ContainerWidgetComponent, ContainerWidgetData } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { WidgetHandle } from '../../classes/enums';
+import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
@@ -14,6 +14,7 @@ import { RowDevComponent } from '../row-dev/row-dev.component';
 export class ContainerWidgetDevComponent extends ContainerWidgetComponent implements ContainerHost {
   public widgetHandle = WidgetHandle;
   public hostContainer!: ContainerDevComponent;
+  public widgetInspectorView = WidgetInspectorView;
   private fixedHeight!: number;
 
   constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { super() }

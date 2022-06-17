@@ -34,20 +34,22 @@ export class SearchComponent {
               this.dropdownList = null!;
             }
 
-            return of([]);
+            return of(null);
           }
           return this.dataService.get<Array<Item>>('api/' + this.apiUrl, [{ key: 'searchTerm', value: searchTerm }])
         })
-      ).subscribe((results: Array<Item>) => {
+      ).subscribe((results: Array<Item> | null) => {
+        if (results) {
+          // See if dropdown list is already loaded
+          if (!document.getElementById('dropdownList')) {
+            this.loadDropdownList(results);
 
-        // See if dropdown list is already loaded
-        if (!document.getElementById('dropdownList')) {
-          this.loadDropdownList(results);
-
-          // The dropdown list is already loaded
-        } else {
-          if (this.dropdownList) this.dropdownList.list = results;
+            // The dropdown list is already loaded
+          } else {
+            if (this.dropdownList) this.dropdownList.list = results;
+          }
         }
+
       })
   }
 

@@ -1,4 +1,6 @@
-<div class="row" [ngClass]="{'flex-10': columnCount == 5}" [style.top.px]="top"
+<div class="row row-outline"
+    [ngClass]="{'flex-10': columnCount == 5, 'selected-row': widgetService.selectedRow == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Row}"
+    [style.top.px]="top"
     [style.backgroundColor]="background && background.enabled && background.rgbColor ? background.rgbColor.toRGBString(): null"
     [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
     [style.borderRadius]="

@@ -168,8 +168,8 @@ export class Caption extends ColorProperty {
             if (caption.fontWeight) this.fontWeight = caption.fontWeight;
             if (caption.fontStyle) this.fontStyle = caption.fontStyle;
             if (caption.textDecoration) this.textDecoration = caption.textDecoration;
-            if (caption.font) this.font = this.fontOptions.find(x => x.key == caption.font.key)!;
-            if (caption.fontSize) this.fontSize = this.fontSizes.find(x => x.key == caption.fontSize.key)!;
+            if (caption.font.key) this.font = this.fontOptions.find(x => x.key == caption.font.key)!;
+            if (caption.fontSize.key) this.fontSize = this.fontSizes.find(x => x.key == caption.fontSize.key)!;
             if (caption.color) this.color = caption.color;
             if (caption.text) this.text = caption.text;
         }

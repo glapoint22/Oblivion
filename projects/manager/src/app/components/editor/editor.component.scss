@@ -1,3 +1,6 @@
+@import '../../../scss/widgets';
+
+
 .editor-container {
     position: absolute;
     display: flex;
@@ -36,7 +39,7 @@
     position: absolute;
     top: 0;
     bottom: -100vh;
-    outline: 1px dashed #484848;
+    outline: 1px dashed $container-outline-color;
     z-index: -1;
 
     &:first-child {
@@ -52,7 +55,7 @@
     position: absolute;
     left: -100vw;
     right: -1000px;
-    outline: 1px dashed #484848;
+    outline: 1px dashed $container-outline-color;
     z-index: -1;
 
     &:nth-child(3) {

@@ -39,6 +39,8 @@ export class Video {
             this.name = video.name;
             this.src = video.src;
             this.thumbnail = video.thumbnail;
+            this.videoId = video.videoId;
+            this.videoType = video.videoType;
         }
     }
 

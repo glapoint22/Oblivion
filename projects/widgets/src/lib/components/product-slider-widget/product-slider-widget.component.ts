@@ -46,6 +46,7 @@ export class ProductSliderWidgetComponent extends Widget implements AfterViewIni
     // Set the defaults
     this.caption.text = 'Check out these products!';
     this.caption.fontSize = this.caption.fontSizes[8];
+    this.caption.font = this.caption.fontOptions[0];
     this.caption.color = '#ffba00';
 
     this.products = productSliderWidgetData.products && productSliderWidgetData.products.length > 0 ? productSliderWidgetData.products : [];
