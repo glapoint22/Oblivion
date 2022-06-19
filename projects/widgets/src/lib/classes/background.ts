@@ -9,7 +9,7 @@ export class Background extends ColorProperty implements Enableable {
     setData(background: Background) {
         if (background) {
             if (background.color) this.color = background.color;
-            if (background.image) this.image = background.image;
+            if (background.image) this.image.setData(background.image);
             if (background.enabled) this.enabled = background.enabled;
         }
     }

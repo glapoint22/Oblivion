@@ -6,7 +6,7 @@
         <div class="icons">
             <!-- Remove Image -->
             <icon-button *ngIf="showRemoveImage" [icon]="'fas fa-trash-alt'" [title]="'Remove image'"
-                [isDisabled]="!image || !image.src">
+                [isDisabled]="!image || !image.src" (click)="removeImage()">
             </icon-button>
 
 

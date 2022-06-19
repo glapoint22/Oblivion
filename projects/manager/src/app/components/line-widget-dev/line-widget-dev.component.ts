@@ -13,4 +13,10 @@ export class LineWidgetDevComponent extends LineWidgetComponent {
   public widgetInspectorView = WidgetInspectorView;
 
   constructor(public widgetService: WidgetService) { super() }
+
+  // ------------------------------------------------------------------- Ng On Init ---------------------------------------------------------------
+  ngOnInit() {
+    super.ngOnInit();
+    this.border.enabled = true;
+  }
 }

@@ -57,13 +57,15 @@ export class PageComponent implements AfterViewInit, OnDestroy {
         document!.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.src + ')';
 
         // Position
-        document!.body.style.backgroundPosition = this.pageContent.background.image.position;
+        document!.body.style.backgroundPosition = this.pageContent.background.image.position.value;
 
         // Repeat
-        document!.body.style.backgroundRepeat = this.pageContent.background.image.repeat;
+        document!.body.style.backgroundRepeat = this.pageContent.background.image.repeat.value;
 
         // Attachment
-        document!.body.style.backgroundAttachment = this.pageContent.background.image.attachment;
+        document!.body.style.backgroundAttachment = this.pageContent.background.image.attachment.value;
+      } else {
+        this.clearImage(document!);
       }
     } else {
       this.clearBackground(document!);
@@ -72,6 +74,11 @@ export class PageComponent implements AfterViewInit, OnDestroy {
 
   clearBackground(document: Document) {
     document.body.style.backgroundColor = '';
+    this.clearImage(document);
+  }
+
+
+  clearImage(document: Document) {
     document.body.style.backgroundImage = '';
     document.body.style.backgroundPosition = '';
     document.body.style.backgroundRepeat = '';

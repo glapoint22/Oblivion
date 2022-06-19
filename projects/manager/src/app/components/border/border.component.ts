@@ -8,5 +8,6 @@ import { Border } from 'widgets';
 })
 export class BorderComponent {
   @Input() border!: Border;
+  @Input() toggleable: boolean = true;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
 }
