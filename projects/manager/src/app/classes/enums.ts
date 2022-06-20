@@ -51,7 +51,8 @@ export enum ButtonState {
 
 export enum MenuOptionType {
     MenuItem,
-    Divider
+    Divider,
+    Submenu
 }
 
 

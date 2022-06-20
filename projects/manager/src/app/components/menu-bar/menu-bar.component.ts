@@ -159,8 +159,11 @@ export class MenuBarComponent {
 
   onMenuBarButtonDown(htmlMenuBarButton: HTMLElement, menuBarButton: MenuBarButton, e: MouseEvent) {
     if (!this.menuOpen) {
-      e.stopPropagation();
-      this.openMenu(htmlMenuBarButton, menuBarButton);
+      // Delay in case some other component has a menu open (delaying will prevent stopPropagation from executing and close the menu from the other component first)
+      window.setTimeout(() => {
+        e.stopPropagation();
+        this.openMenu(htmlMenuBarButton, menuBarButton);
+      })
 
     } else {
       this.menu.close();

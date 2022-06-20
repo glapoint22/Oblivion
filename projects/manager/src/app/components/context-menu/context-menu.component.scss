@@ -19,7 +19,7 @@
 .menu-item {
     display: flex;
     height: 27px;
-    padding: 1px 0; 
+    padding: 1px 0;
     align-items: center;
     justify-content: space-between;
     font-size: 13px;
@@ -33,6 +33,10 @@
         .menu-item-text {
             color: white;
         }
+
+        .arrow {
+            border-left: 8px solid white;
+        }
     }
 }
 
@@ -43,14 +47,37 @@
 
 .divider {
     padding: 0 11px;
+    height: 18px;
+    display: flex;
+    align-items: center;
 }
 
 .divider-line {
     height: 1px;
-    margin: 9px 0;
+    width: 100%;
+    // margin: 9px 0;
     background: #404040;
 }
 
 .disabled {
     color: #555555;
+}
+
+.arrow {
+    margin: 0 15px;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 8px solid #a0a0a0;
+}
+
+.activated-submenu-option {
+    background: rgba(255, 187, 0, 0.08);
+
+    .menu-item-text {
+        color: white;
+    }
+
+    .arrow {
+        border-left: 8px solid white;
+    }
 }

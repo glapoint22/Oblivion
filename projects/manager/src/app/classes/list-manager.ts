@@ -510,11 +510,6 @@ export class ListManager {
       this.editedItem = listItem;
       this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.htmlItem!.nativeElement.innerText?.trim()!;
       this.setItemFocus();
-
-
-
-
-
     }
     this.buttonsUpdate();
   }
