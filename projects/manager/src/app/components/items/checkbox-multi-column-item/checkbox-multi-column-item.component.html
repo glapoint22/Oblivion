@@ -4,8 +4,6 @@
          class="item" 
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
-         (mouseover)="listManager.overItem = true"
-         (mouseout)="listManager.overItem = false"
          (mousedown)="listManager.onItemDown(item, $event)"
          [ngClass]="{'selected-item': item == listManager.selectedItem,
                     'unselected-item': item == listManager.unselectedItem,

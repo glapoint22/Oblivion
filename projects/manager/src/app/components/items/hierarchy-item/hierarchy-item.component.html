@@ -10,8 +10,6 @@
          tabindex="-1"
          [style.color]="item.color"
          (contextmenu)="$event.preventDefault()"
-         (mouseover)="listManager.overItem = true"
-         (mouseout)="listManager.overItem = false"
          (mousedown)="listManager.selectable ? listManager.onItemDown(item, $event) : listManager.onArrowClick(item)"
          (dblclick)="listManager.onItemDoubleClick(item)"
          [contentEditable]="item == listManager.editedItem"
