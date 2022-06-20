@@ -35,6 +35,7 @@ export class ColumnDevComponent extends ColumnComponent {
       const containerWidget = widgetComponent as ContainerWidgetDevComponent;
 
       containerWidget.hostContainer = this.rowComponent.containerComponent;
+      containerWidget.columnComponent = this;
     }
 
 
@@ -97,7 +98,7 @@ export class ColumnDevComponent extends ColumnComponent {
                     const containerWidget = this.widgetService.selectedWidget as ContainerWidgetDevComponent;
                     const container = containerWidget.container as ContainerDevComponent;
 
-                    container.addWidget(new WidgetData(WidgetType.Button), container.getRowTop(event.clientY));
+                    container.addWidget(new WidgetData(WidgetType.Video), container.getRowTop(event.clientY));
                   }
                 }
               ]);
@@ -142,14 +143,14 @@ export class ColumnDevComponent extends ColumnComponent {
                 type: MenuOptionType.MenuItem,
                 name: 'Add widget left',
                 optionFunction: () => {
-                  this.rowComponent.addColumn(0, this.columnElement, new WidgetData(WidgetType.Button));
+                  this.rowComponent.addColumn(0, this.columnElement, new WidgetData(WidgetType.Video));
                 }
               },
               {
                 type: MenuOptionType.MenuItem,
                 name: 'Add widget right',
                 optionFunction: () => {
-                  this.rowComponent.addColumn(1, this.columnElement, new WidgetData(WidgetType.Button));
+                  this.rowComponent.addColumn(1, this.columnElement, new WidgetData(WidgetType.Video));
                 }
               },
               {

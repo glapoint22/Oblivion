@@ -2,9 +2,9 @@
     [style.backgroundColor]="background && background.enabled && background.rgbColor ? background.rgbColor.toRGBString(): null"
     [style.maxWidth.px]="width ? width: null"
     [ngStyle]="{ 'background-image': background && background.enabled && background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
-    'background-position': background && background.enabled && background.image ? background.image.position : null,
-    'background-repeat': background && background.enabled && background.image ? background.image.repeat : null,
-    'background-attachment': background && background.enabled && background.image ? background.image.attachment : null}"
+    'background-position': background && background.enabled && background.image ? background.image.position.value : null,
+    'background-repeat': background && background.enabled && background.image ? background.image.repeat.value : null,
+    'background-attachment': background && background.enabled && background.image ? background.image.attachment.value : null}"
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
     [style.minHeight.px]="height" class="widget-outline">
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ApplicationRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { LazyLoadingService, LinkType, SpinnerAction } from 'common';
 import { TextBoxDev } from 'text-box';
 import { LinkComponent } from '../link/link.component';
@@ -12,10 +12,11 @@ export class TextComponent {
   @Input() textBox!: TextBoxDev;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
 
-  constructor(private lazyLoadingService: LazyLoadingService) { }
+  constructor(private lazyLoadingService: LazyLoadingService, private appRef: ApplicationRef) { }
 
   ngOnChanges() {
     this.textBox.onChange.subscribe(() => this.onChange.emit());
+    this.textBox.onSelection.subscribe(() => this.appRef.tick());
   }
 
 

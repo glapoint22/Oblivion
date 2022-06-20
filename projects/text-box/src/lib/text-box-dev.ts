@@ -57,6 +57,7 @@ export class TextBoxDev extends TextBox {
     public increaseIndent: IncreaseIndent = new IncreaseIndent(this.selection);
     public decreaseIndent: DecreaseIndent = new DecreaseIndent(this.selection);
     public onChange = new Subject<void>();
+    public onSelection = new Subject<void>();
 
     constructor(htmlRootElement: HTMLElement) {
         super(htmlRootElement);
@@ -80,6 +81,7 @@ export class TextBoxDev extends TextBox {
                 window.setTimeout(() => {
                     this.selection.onSelection(this.rootElement);
                     this.setSelectedClasses();
+                    this.onSelection.next();
                 });
             }
             htmlRootElement.getRootNode().addEventListener('mouseup', onMouseup, { once: true });
@@ -150,6 +152,7 @@ export class TextBoxDev extends TextBox {
                 window.setTimeout(() => {
                     this.selection.onSelection(this.rootElement);
                     this.setSelectedClasses();
+                    this.onSelection.next();
                 });
             }
         });

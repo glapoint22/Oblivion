@@ -221,6 +221,11 @@ export abstract class ListStyle extends Style {
 
             if (level > 0) divElement.indent = level;
 
+            // If the container is the start and end element of the selection
+            if (container == this.selection.startElement) {
+                this.selection.startElement = this.selection.endElement = divElement;
+            }
+
             // Add the container's children to the new div element
             container.children.forEach((child: Element) => {
                 const copiedElement = child.copy(divElement, { preserveSelection: this.selection });
@@ -266,6 +271,11 @@ export abstract class ListStyle extends Style {
 
 
         const listItemElement = new ListItemElement(list);
+
+        // If the container is the start and end element of the selection
+        if (container == this.selection.startElement) {
+            this.selection.startElement = this.selection.endElement = listItemElement;
+        }
 
         // Add the container's children to the new list item element
         container.children.forEach((child: Element) => {

@@ -1,6 +1,6 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
-import { LazyLoadingService, SpinnerAction } from 'common';
-import { Column, ColumnSpan, ContainerComponent, Row, RowComponent, WidgetData, WidgetType } from 'widgets';
+import { Image, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
+import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
@@ -29,7 +29,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
   // ----------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
   public ngOnInit(): void {
-    
+
 
     this.widgetService.$onContainerMousemove.subscribe((containerDevComponent: ContainerDevComponent) => {
       if (containerDevComponent == this) {
@@ -41,9 +41,30 @@ export class ContainerDevComponent extends ContainerComponent {
   }
 
 
+  // ---------------------------------------------------------------------- Create Row For Widget --------------------------------------------------
+  createRowForWidget(row: Row) {
+    this.createRow(row);
+    this.widgetService.page.save();
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
+  }
 
 
+  
 
+
+  // --------------------------------------------------------------------------- Add Widget ---------------------------------------------------------
+  public addWidget(widgetData: WidgetData, top: number): void {
+    const row = new Row(top);
+
+    row.columns.push(new Column(12, widgetData));
+
+    if ((widgetData.widgetType == WidgetType.Image && !(widgetData as ImageWidgetData).image) ||
+      (widgetData.widgetType == WidgetType.Video && !(widgetData as VideoWidgetData).video)) {
+      this.widgetService.loadMediaBrowser(widgetData, () => this.createRowForWidget(row));
+    } else {
+      this.createRowForWidget(row);
+    }
+  }
 
 
   // --------------------------------------------------------------------- On Container Mouseup ----------------------------------------------------
@@ -52,12 +73,17 @@ export class ContainerDevComponent extends ContainerComponent {
       const top = this.getRowTop(event.clientY);
       const row = new Row(top);
       const widgetType = this.widgetService.widgetCursor.widgetType;
+      const widgetData = new WidgetData(widgetType);
 
-      row.columns.push(new Column(12, new WidgetData(widgetType)));
-      this.createRow(row);
+      row.columns.push(new Column(12, widgetData));
+
+      if (widgetType == WidgetType.Image || widgetType == WidgetType.Video) {
+        this.widgetService.loadMediaBrowser(widgetData, () => this.createRowForWidget(row));
+      } else {
+        this.createRowForWidget(row);
+      }
+
       this.widgetService.clearWidgetCursor();
-      this.widgetService.page.save();
-      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
     }
   }
 
@@ -162,7 +188,7 @@ export class ContainerDevComponent extends ContainerComponent {
                   type: MenuOptionType.MenuItem,
                   name: 'Add widget',
                   optionFunction: () => {
-                    this.addWidget(new WidgetData(WidgetType.Button), this.getRowTop(event.clientY));
+                    this.addWidget(new WidgetData(WidgetType.Video), this.getRowTop(event.clientY));
                   }
                 },
                 {
@@ -335,7 +361,7 @@ export class ContainerDevComponent extends ContainerComponent {
     rowData.top = row.top;
     this.createRow(rowData);
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
-    
+
     window.setTimeout(() => {
       this.shiftRowsUp(row);
       this.widgetService.onRowChange(this);
@@ -469,15 +495,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
 
-  // --------------------------------------------------------------------------- Add Widget ---------------------------------------------------------
-  public addWidget(widgetData: WidgetData, top: number): void {
-    const row = new Row(top);
 
-    row.columns.push(new Column(12, widgetData));
-    this.createRow(row);
-    this.widgetService.page.save();
-    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
-  }
 
 
 

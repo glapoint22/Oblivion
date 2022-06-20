@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { Image, LazyLoadingService, MediaType, SpinnerAction } from 'common';
-import { ImageWidgetComponent, ImageWidgetData } from 'widgets';
+import { ImageWidgetComponent } from 'widgets';
 import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
-import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
   selector: 'image-widget-dev',
@@ -13,34 +11,15 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
 export class ImageWidgetDevComponent extends ImageWidgetComponent {
   public widgetHandle = WidgetHandle;
   public widgetInspectorView = WidgetInspectorView;
+  public hidden!: boolean;
 
-  constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super() }
+  constructor(public widgetService: WidgetService) { super() }
 
-  setWidget(imageWidgetData: ImageWidgetData): void {
-    if (imageWidgetData && imageWidgetData.image && imageWidgetData.image.src) {
-      super.setWidget(imageWidgetData);
-    } else {
-      this.lazyLoadingService.load(async () => {
-        const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
-        const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
-        return {
-          component: MediaBrowserComponent,
-          module: MediaBrowserModule
-        }
-      }, SpinnerAction.None)
-        .then((mediaBrowser: MediaBrowserComponent) => {
-          mediaBrowser.currentMediaType = MediaType.Image;
+  ngOnInit(): void {
+    super.ngOnInit();
 
-          mediaBrowser.callback = (image: Image) => {
-            if (image) {
-              imageWidgetData.image = image;
-              super.setWidget(imageWidgetData);
-              this.widgetService.page.save();
-            } else {
-              this.widgetService.selectedColumn.deleteColumn();
-            }
-          }
-        });
+    if (this.widgetService.currentWidgetInspectorView != WidgetInspectorView.Page) {
+      this.hidden = true;
     }
   }
 
@@ -52,8 +31,8 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
     if (this.widgetService.currentWidgetInspectorView != WidgetInspectorView.Page) {
       window.setTimeout(() => {
         this.widgetService.onRowChange(this.widgetService.selectedRow.containerComponent);
+        this.hidden = false;
       });
     }
-
   }
 }

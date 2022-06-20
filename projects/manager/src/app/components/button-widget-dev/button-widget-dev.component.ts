@@ -117,12 +117,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
 
 
   // ------------------------------------------------------------ Add Buton Class To Document -------------------------------------------------------
-  addButonClassToDocument(buttonClass: string) {
-    const document = this.widgetElement.getRootNode() as Document;
-    const style = document.createElement('style');
-    style.appendChild(document.createTextNode(buttonClass));
-    document.head.appendChild(style);
-  }
+  addButonClassToDocument(buttonClass: string) { }
 
 
   // ----------------------------------------------------------------- Get Background Color ----------------------------------------------------------

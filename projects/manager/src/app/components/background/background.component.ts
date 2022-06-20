@@ -9,6 +9,7 @@ import { Background } from 'widgets';
 })
 export class BackgroundComponent implements OnInit {
   @Input() background!: Background;
+  @Input() toggleable: boolean = true;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   public repeatOptions!: Array<KeyValue<string, string>>;
   public positionOptions!: Array<KeyValue<string, string>>;

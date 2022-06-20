@@ -1,4 +1,4 @@
-<panel [title]="'Border'" [enabledProperty]="border" (onChange)="onChange.emit()">
+<panel [title]="'Border'" [enabledProperty]="toggleable ? border: null!" (onChange)="onChange.emit()">
     <!-- Width -->
     <div class="property">
         <div class="label">Width</div>

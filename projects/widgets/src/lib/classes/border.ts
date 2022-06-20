@@ -1,7 +1,7 @@
 import { ColorProperty } from "./color-property";
 
 export class Border extends ColorProperty {
-    public enabled: boolean = false;
+    public enabled!: boolean;
     public width: number = 1;
     public style: string = 'solid';
 

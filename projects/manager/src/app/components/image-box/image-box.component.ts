@@ -43,4 +43,13 @@ export class ImageBoxComponent {
         }
       });
   }
+
+
+  removeImage() {
+    this.image.src = null!;
+    this.image.id = null!;
+    this.image.thumbnail = null!;
+    this.image.name = null!;
+    this.onChange.emit();
+  }
 }

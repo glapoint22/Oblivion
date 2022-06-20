@@ -16,9 +16,9 @@ corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px '
     [style.box-shadow]="shadow && shadow.enabled ? shadow.x + 'px ' + shadow.y + 'px ' + shadow.blur + 'px ' + shadow.size + 'px ' + shadow.rgbColor.toRGBString() : null"
     [style.fontSize.px]="caption.fontSize" [style.maxWidth.px]="width ? width : null" [style.minHeight.px]="height"
     [ngStyle]="{ 'background-image': background.image && background.image.src ? 'url(images/' + background.image.src + ')' : null,
-                        'background-position': background.image ? background.image.position : null,
-                        'background-repeat': background.image ? background.image.repeat : null,
-                        'background-attachment': background.image ? background.image.attachment : null}"
+                        'background-position': background.image ? background.image.position.value : null,
+                        'background-repeat': background.image ? background.image.repeat.value : null,
+                        'background-attachment': background.image ? background.image.attachment.value : null}"
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
     class="widget-outline">
 
