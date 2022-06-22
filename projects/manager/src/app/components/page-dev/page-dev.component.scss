@@ -1,46 +1,3 @@
-.view-port {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: 4px;
-}
-
-
-// .vertical-dashed-line {
-//     position: absolute;
-//     top: -4px;
-//     bottom: -4px;
-//     user-select: none;
-
-//     &:first-child {
-//         left: 0;
-//     }
-
-
-//     &:nth-child(2) {
-//         right: 0;
-//     }
-// }
-
-
-// .horizontal-dashed-line {
-//     position: absolute;
-//     left: -4px;
-//     right: -4px;
-//     user-select: none;
-
-//     &:nth-child(3) {
-//         top: 0;
-//     }
-
-//     &:nth-child(4) {
-//         bottom: 0;
-//     }
-// }
-
-
 .container-wrapper {
     position: absolute;
     top: 0;
@@ -51,6 +8,15 @@
     overflow-x: hidden;
     outline-offset: -4px;
     outline: 4px solid #1b1b1b;
+}
+
+.container-outline {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: -3px;
+    left: 0;
+    outline-offset: -4px;
 }
 
 

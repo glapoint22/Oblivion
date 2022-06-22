@@ -1,4 +1,4 @@
-export class Dimension {
+export class ViewPortDimension {
     public width!: number;
     public height!: number;
 }

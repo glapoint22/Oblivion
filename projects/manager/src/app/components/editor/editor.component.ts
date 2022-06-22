@@ -1,12 +1,13 @@
 import { KeyValue } from '@angular/common';
 import { Compiler, Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, NgModuleFactory, ViewChild, ViewContainerRef } from '@angular/core';
 import { ContainerHost } from '../../classes/container-host';
-import { Dimension } from '../../classes/dimension';
+import { ViewPortDimension } from '../../classes/view-port-dimension';
 import { WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
 import { PageDevComponent } from '../page-dev/page-dev.component';
 import { PageDevModule } from '../page-dev/page-dev.module';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 
 @Component({
   selector: 'editor',
@@ -14,14 +15,14 @@ import { PageDevModule } from '../page-dev/page-dev.module';
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements ContainerHost {
-  @ViewChild('editorWindow') editorWindow!: ElementRef<HTMLElement>;
+  @ViewChild('viewPort') viewPort!: ElementRef<HTMLElement>;
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public page!: PageDevComponent;
   public showResizeCover!: boolean;
   public document = document;
   public widgetCursors = WidgetCursor.getWidgetCursors();
   public widgetInspectorView = WidgetInspectorView;
-  public dimensions: Array<KeyValue<string, Dimension>> = [
+  public viewPortDimensions: Array<KeyValue<string, ViewPortDimension>> = [
     {
       key: 'Responsive',
       value: {
@@ -276,11 +277,12 @@ export class EditorComponent implements ContainerHost {
     }
   ]
 
-  public selectedDimension: KeyValue<string, Dimension> = this.dimensions[0];
+  public selectedViewPortDimension: KeyValue<string, ViewPortDimension> = this.viewPortDimensions[0];
 
   constructor
     (
       public widgetService: WidgetService,
+      public breakpointService: BreakpointService,
       private viewContainerRef: ViewContainerRef,
       private resolver: ComponentFactoryResolver,
       private compiler: Compiler,
@@ -319,9 +321,6 @@ export class EditorComponent implements ContainerHost {
 
 
   onResizeMousedown(direction?: number) {
-
-
-
     // Assign the resize cursor
     if (direction) {
       document.body.style.cursor = 'e-resize'
@@ -338,17 +337,17 @@ export class EditorComponent implements ContainerHost {
       if (direction) {
         const minSize = 240;
         const maxSize = 1600;
-        const width = Math.min(Math.max(minSize, this.selectedDimension.value.width + mousemoveEvent.movementX * 2 * (direction as number)), maxSize);
+        const width = Math.min(Math.max(minSize, this.selectedViewPortDimension.value.width + mousemoveEvent.movementX * 2 * (direction as number)), maxSize);
 
-        this.selectedDimension.value.width = width;
+        this.selectedViewPortDimension.value.width = width;
 
       }
       else {
-        const minSize = 10;
+        const minSize = 240;
         const maxSize = window.innerHeight - 71;
-        const height = Math.min(Math.max(minSize, this.selectedDimension.value.height + mousemoveEvent.movementY), maxSize);
+        const height = Math.min(Math.max(minSize, this.selectedViewPortDimension.value.height + mousemoveEvent.movementY), maxSize);
 
-        this.selectedDimension.value.height = height;
+        this.selectedViewPortDimension.value.height = height;
       }
 
       this.onEditorWidnowSizeChange();
@@ -367,25 +366,22 @@ export class EditorComponent implements ContainerHost {
 
 
   onEditorWidnowSizeChange() {
-    this.editorWindow.nativeElement.style.maxWidth = this.selectedDimension.value.width + 8 + 'px';
-    this.editorWindow.nativeElement.style.maxHeight = this.selectedDimension.value.height + 5 + 'px';
+    this.viewPort.nativeElement.style.maxWidth = this.selectedViewPortDimension.value.width + 8 + 'px';
+    this.viewPort.nativeElement.style.maxHeight = this.selectedViewPortDimension.value.height + 5 + 'px';
+    this.breakpointService.setCurrentBreakpoint(this.selectedViewPortDimension.value.width);
   }
 
 
   onInputEnter(widthValue: string, heightValue: string) {
-    this.selectedDimension.value.width = parseInt(widthValue);
-    this.selectedDimension.value.height = parseInt(heightValue);
+    this.selectedViewPortDimension.value.width = parseInt(widthValue);
+    this.selectedViewPortDimension.value.height = parseInt(heightValue);
     this.onEditorWidnowSizeChange();
   }
 
   onRowChange(maxBottom: number): void {
-    // this.iframe.nativeElement.style.height =  Math.max(this.selectedDimension.value.height, this.page.viewPort.nativeElement.scrollHeight)  + 'px';
-    // const height = Math.max(this.fixedHeight, maxBottom + 148);
-    // const scroll = height > this.editorWindow.nativeElement.clientHeight;
-
-    // this.editorWindow.nativeElement.style.height = height + 'px';
-
-    // if (scroll)
-    //   this.editorWindow.nativeElement.parentElement?.scrollTo(0, this.editorWindow.nativeElement.parentElement.scrollHeight);
+    if (this.selectedViewPortDimension.key == 'Responsive' && maxBottom > this.selectedViewPortDimension.value.height - 4) {
+      this.selectedViewPortDimension.value.height = maxBottom + 4;
+      this.onEditorWidnowSizeChange();
+    }
   }
 }

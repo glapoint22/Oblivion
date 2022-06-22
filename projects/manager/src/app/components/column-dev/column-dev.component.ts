@@ -493,6 +493,7 @@ export class ColumnDevComponent extends ColumnComponent {
     column.shadow = this.shadow.getData();
     column.padding = this.padding.getData();
     column.horizontalAlignment = this.horizontalAlignment.getData();
+    column.columnSpan = this.columnSpan.getData();
     return column;
   }
 }

@@ -398,6 +398,7 @@ export class WidgetService {
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
+      if (widget.width >= column.columnElement.clientWidth) widget.width = null!;
       if (handleMoved) this.page.save();
     }
 
@@ -440,6 +441,7 @@ export class WidgetService {
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);
+      if (widget.width >= column.columnElement.clientWidth) widget.width = null!;
       if (handleMoved) this.page.save();
     }
 

@@ -1,4 +1,4 @@
-<div #container class="editor-container">
+<div class="editor-container">
 
     <!-- Widget Bar -->
     <div class="widget-bar" *ngIf="page && page.pageContent">
@@ -10,122 +10,60 @@
         </ng-container>
     </div>
 
+    <!-- widget cursor cover -->
+    <div *ngIf="document.body.style.cursor != ''" class="widget-cursor-cover"></div>
 
-    <div style="width: 100%; position: relative;">
-        <div *ngIf="page && page.pageContent"
-            style="width: 100%;height: 30px;background: #212121;display: flex;justify-content: center;align-items: center;">
-            <div style="display: flex;justify-content: space-between;width: 310px;align-items: center;">
-                <select [(ngModel)]="selectedDimension" (change)="onEditorWidnowSizeChange()">
-                    <option *ngFor="let dimension of dimensions" [ngValue]="dimension">
+
+    <!-- View Port Container -->
+    <div class="view-port-container">
+        <div *ngIf="page && page.pageContent" class="view-port-dimensions-bar">
+            <div class="inputs-container">
+                <!-- Dropdown -->
+                <select [(ngModel)]="selectedViewPortDimension" (change)="onEditorWidnowSizeChange()">
+                    <option *ngFor="let dimension of viewPortDimensions" [ngValue]="dimension">
                         {{dimension.key}}</option>
                 </select>
 
-                <input #widthInput style="width: 50px;" [value]="selectedDimension.value.width"
+                <!-- Width Input -->
+                <input #widthInput style="width: 50px;" [value]="selectedViewPortDimension.value.width"
                     (keydown.enter)="onInputEnter(widthInput.value, heightInput.value)"
-                    [disabled]="selectedDimension.key != 'Responsive'">
+                    [disabled]="selectedViewPortDimension.key != 'Responsive'">
+
+
                 <div style="font-size: 11px;color: #8d8d8d;font-weight: bold;">X</div>
-                <input #heightInput style="width: 50px;" [value]="selectedDimension.value.height"
+
+                <!-- Height Input -->
+                <input #heightInput style="width: 50px;" [value]="selectedViewPortDimension.value.height"
                     (keydown.enter)="onInputEnter(widthInput.value, heightInput.value)"
-                    [disabled]="selectedDimension.key != 'Responsive'">
+                    [disabled]="selectedViewPortDimension.key != 'Responsive'">
             </div>
         </div>
 
 
-        <!-- widget cursor cover -->
-        <div *ngIf="document.body.style.cursor != ''" class="widget-cursor-cover"></div>
 
-
-        <!-- Editor Window -->
-        <!-- <div class="editor-window-container"> -->
-
-        <div #editorWindow style="
-                
-                
-                position: absolute;
-                top: 33px;
-                right: 0;
-                left: 0;
-                bottom: 0;
-                margin: 0 auto;">
-
-            <!-- Dashed Lines -->
-            <!-- <ng-container *ngIf="page && page.pageContent">
-                <div
-                    [ngClass]="{'selected-page': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}">
-                    <div class="vertical-dashed-line"></div>
-                    <div class="vertical-dashed-line"></div>
-                    <div class="horizontal-dashed-line"></div>
-                    <div class="horizontal-dashed-line"></div>
-                </div>
-
-            </ng-container> -->
-
-
-
-
+        <!-- View Port -->
+        <div #viewPort class="view-port">
             <!-- Iframe -->
             <iframe id="iframe" #iframe style="width: 100%; height: 100%; display: block;" scrolling="no"
                 frameborder="0" (load)="onLoad(iframe)"></iframe>
 
-            <!-- Horizontal Resizer -->
-            <!-- <div *ngIf="page && page.pageContent" class="horizontal-resizer"
-                [style.cursor]="document.body.style.cursor == '' ? 's-resize': ''"
-                (mousedown)="onResizeMousedown(editorWindow)"></div> -->
-
+            <!-- Resizers -->
             <ng-container
-                *ngIf="page && page.pageContent && widgetService.currentWidgetInspectorView == widgetInspectorView.Page && selectedDimension.key == 'Responsive'">
-                <div style="    width: 8px;
-                position: absolute;
-                top: 0;
-                bottom: 0; cursor: ew-resize;" (mousedown)="onResizeMousedown(-1)"></div>
-
-                <div style="width: 8px;
-position: absolute;
-top: 0;
-right: 0;
-bottom: 0; cursor: ew-resize;"></div>
-
-
-                <div style="height: 8px;
-position: absolute;
-bottom: 0;
-cursor: ns-resize;
-left: 0;
-right: 0; user-select: none;" (mousedown)="onResizeMousedown()"></div>
-
+                *ngIf="document.body.style.cursor == '' && page && page.pageContent && selectedViewPortDimension.key == 'Responsive'">
+                <div class="left-resizer" (mousedown)="onResizeMousedown(-1)"></div>
+                <div class="right-resizer" (mousedown)="onResizeMousedown(1)"></div>
+                <div class="bottom-resizer" (mousedown)="onResizeMousedown()"></div>
             </ng-container>
-
-
         </div>
-
-
-        <!-- <ng-container
-            *ngIf="page && page.pageContent && widgetService.currentWidgetInspectorView == widgetInspectorView.Page"> -->
-        <!-- Left Resizer -->
-        <!-- <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft - 4"
-                (mousedown)="onResizeMousedown(editorWindow, -1)"
-                [style.cursor]="document.body.style.cursor == '' ? 'e-resize': ''"></div> -->
-
-        <!-- Right Resizer -->
-        <!-- <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft + editorWindow.clientWidth - 5"
-                (mousedown)="onResizeMousedown(editorWindow, 1)"
-                [style.cursor]="document.body.style.cursor == '' ? 'e-resize': ''">
-            </div> -->
-        <!-- </ng-container> -->
-
-        <!-- </div> -->
     </div>
 
 
 
 
     <!-- Widget Inspector -->
-    <div style="width: 100%; max-width: 250px;
-    background: #222222;
-    border: 1px solid #2a2a2a;">
+    <div class="widget-inspector-container">
         <widget-inspector></widget-inspector>
     </div>
-
 </div>
 
 <!-- Top widget cursor cover -->

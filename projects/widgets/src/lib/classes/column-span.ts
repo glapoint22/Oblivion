@@ -8,6 +8,19 @@ export class ColumnSpan {
     }
 
 
+    getData(): ColumnSpan {
+        if (this.values.length == 0) return null!;
+        const columnSpan = new ColumnSpan();
+
+        columnSpan.values = [];
+        this.values.forEach((columnSpanValue: ColumnSpanValue) => {
+            columnSpan.values.push(new ColumnSpanValue(columnSpanValue.span, columnSpanValue.breakpoint));
+        });
+
+        return columnSpan;
+    }
+
+
     setData(columnSpan: ColumnSpan) {
         if (columnSpan) {
             if (columnSpan.values) this.values = columnSpan.values;
