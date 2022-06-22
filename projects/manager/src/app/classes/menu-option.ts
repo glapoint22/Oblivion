@@ -8,4 +8,5 @@ export class MenuOption {
     optionFunctionParameters?: Array<any>;
     isDisabled?: boolean;
     hidden?: boolean;
+    options?: Array<MenuOption>;
 }

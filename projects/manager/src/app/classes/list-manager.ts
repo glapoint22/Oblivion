@@ -22,7 +22,6 @@ export class ListManager {
   preventUnselectionFromRightMousedown!: boolean;
   newItem!: boolean;
   options!: ListOptions;
-  overItem!: boolean;
   SelectType = ItemSelectType;
   addDisabled: boolean = false;
   editDisabled: boolean = true;
@@ -93,7 +92,7 @@ export class ListManager {
   // ======================================================================( KEY DOWN )===================================================================== \\
 
   keydown(e: KeyboardEvent) {
-    if (e.key === 'Delete') if (this.editedItem == null) this.setDelete();
+    if (e.key === 'Delete') if (!this.editedItem) this.setDelete();
     if (e.key === 'Escape') this.escape();
     if (e.key === 'Enter') this.enter(e);
     if (e.key === 'ArrowUp') this.arrowUp();
@@ -150,7 +149,7 @@ export class ListManager {
 
     if (!this.promptOpen && !this.contextMenuOpen) {
       // If a list item is being edited or added
-      if (this.editedItem != null) {
+      if (this.editedItem) {
         // Evaluate the state of the edit and then act accordingly
         this.evaluateEdit(null!, true);
 
@@ -187,31 +186,20 @@ export class ListManager {
   onMouseDown = () => {
     if (!this.promptOpen && !this.contextMenuOpen) {
 
-      // As long as we're not over an item or over a button
-      if (!this.overItem) {
-
-        // If an item is being edited or added
-        if (this.editedItem != null) {
-
-          // Evaluate the state of the edit and then act accordingly
-          this.evaluateEdit(null!, true);
-
-          // If an item is NOT being edited
-        } else {
-
-          // Remove all listeners and selections
-          this.removeEventListeners();
-        }
-      }
-
-      // If we're over an item and an item is being edited
-      if (this.overItem && this.editedItem != null) {
+      // If an item is being edited or added
+      if (this.editedItem) {
 
         // And as long as the item that's being edited is not being moused down
         if (this.mouseDownItem != this.editedItem) {
           // Evaluate the state of the edit and then act accordingly
           this.evaluateEdit(null!, true);
         }
+
+        // If an item is NOT being edited
+      } else {
+
+        // Remove all listeners and selections
+        this.removeEventListeners();
       }
     }
   }
@@ -237,6 +225,9 @@ export class ListManager {
   // ===================================================================( ON ITEM DOWN )==================================================================== \\
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
+
+    if(!this.editedItem) e!.stopPropagation()
+
     this.mouseDownItem = listItem
     // As long as this item is NOT currently being edited
     if (this.editedItem != listItem) {
@@ -248,7 +239,7 @@ export class ListManager {
       if (e != null && e.button == 2) {
 
         // As long as we're not in edit mode
-        if (this.editedItem == null) {
+        if (!this.editedItem) {
 
           window.setTimeout(() => {
             // Open the context menu
@@ -272,7 +263,7 @@ export class ListManager {
         }
 
         // As long as we're not in edit mode
-        if (this.editedItem == null) {
+        if (!this.editedItem) {
           this.selectedItemsUpdate(e != null && e.button == 2);
           this.buttonsUpdate();
         }
@@ -289,7 +280,7 @@ export class ListManager {
 
   setItemSelection(listItem: ListItem) {
     // If an item is NOT being edited
-    if (this.editedItem == null) {
+    if (!this.editedItem) {
 
       this.addEventListeners();
       this.selectedItem = listItem;
@@ -510,11 +501,6 @@ export class ListManager {
       this.editedItem = listItem;
       this.editedItem.htmlItem!.nativeElement.innerText = this.editedItem.htmlItem!.nativeElement.innerText?.trim()!;
       this.setItemFocus();
-
-
-
-
-
     }
     this.buttonsUpdate();
   }
@@ -555,7 +541,7 @@ export class ListManager {
   // =====================================================================( SET DELETE )==================================================================== \\
 
   setDelete() {
-    if (this.editedItem == null) {
+    if (!this.editedItem) {
       // If a delete prompt is being used with this list
       if (this.options && this.options.deletePrompt) {
         // If the delete prompt has NOT been opened yet
@@ -696,7 +682,7 @@ export class ListManager {
     if (!this.promptOpen && !this.contextMenuOpen) {
 
       // If an item is being edited
-      if (this.editedItem != null) {
+      if (this.editedItem) {
 
         // Evaluate the state of the edit and then act accordingly
         this.evaluateEdit(true);

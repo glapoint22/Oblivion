@@ -4,23 +4,34 @@
     [style.left.px]="menuVisible ? xPos : -1000"
     [style.top.px]="menuVisible ?  yPos :  -1000"
     (contextmenu)="$event.preventDefault()"
+    (mouseenter)="onMainMenuOver()"
     (mousedown)="$event.stopPropagation()"
     [ngStyle]="{'visibility': menuVisible ? 'visible' : 'hidden'}">
 
-    <ng-container *ngFor="let menuOption of options">
+    <ng-container *ngFor="let menuOption of options; let i = index">
         <ng-container *ngIf="!menuOption.hidden">
-            <div *ngIf="menuOption.type == MenuOptionType.MenuItem"
+
+            <div #menuItem *ngIf="menuOption.type == MenuOptionType.MenuItem"
                 class="menu-item"
-                [ngClass]="{'disabled': menuOption.isDisabled}"
-                (mousedown)="$event.stopPropagation()"
+                [ngClass]="{'disabled': menuOption.isDisabled }"
+                (mouseenter)="onMenuOptionOver()"
                 (click)="menuOption.optionFunction && !menuOption.isDisabled ? onClick(menuOption.optionFunction!, menuOption.optionFunctionParameters!) : null;">
                 <div class="menu-item-text">{{menuOption.name}}</div>
                 <div *ngIf="menuOption.shortcut" class="menu-item-text">{{menuOption.shortcut}}</div>
             </div>
 
 
-            <div *ngIf="menuOption.type == MenuOptionType.Divider" class="divider">
+            <div *ngIf="menuOption.type == MenuOptionType.Divider" class="divider" (mouseenter)="onMenuOptionOver()">
                 <div class="divider-line"></div>
+            </div>
+
+            <div #submenuOption *ngIf="menuOption.type == MenuOptionType.Submenu"
+                class="menu-item"
+                [ngClass]="{'disabled': menuOption.isDisabled, 'activated-submenu-option': menuOption == activatedSubmenuOption }"
+                (mouseenter)="onSubmenuOptionOver(submenuOption, i)"
+                (mouseleave)="onSubmenuOptionOut($event, submenuOption)">
+                <div class="menu-item-text">{{menuOption.name}}</div>
+                <div class="arrow"></div>
             </div>
         </ng-container>
     </ng-container>
