@@ -1,7 +1,8 @@
 <!-- Container -->
 <div class="container" (mouseup)="onContainerMouseup($event)" (mousemove)="onContainerMousemove($event, rowIndicator)"
     (mouseenter)="onContainerMouseenter()" (mouseleave)="onContainerMouseleave()" (mousedown)="onMousedown($event)"
-    (contextmenu)="$event.preventDefault()">
+    (contextmenu)="$event.preventDefault()"
+    [ngClass]="{'offset': page && page.pageContent}">
 
     <!-- Row Indicator -->
     <div [id]="showRowIndicator ? 'show-row-indicator': ''" #rowIndicator class="row-indicator"></div>

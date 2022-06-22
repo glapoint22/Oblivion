@@ -10,17 +10,46 @@
         </ng-container>
     </div>
 
-    <!-- widget cursor cover -->
-    <div *ngIf="document.body.style.cursor != ''" class="widget-cursor-cover"></div>
+
+    <div style="width: 100%; position: relative;">
+        <div *ngIf="page && page.pageContent"
+            style="width: 100%;height: 30px;background: #212121;display: flex;justify-content: center;align-items: center;">
+            <div style="display: flex;justify-content: space-between;width: 310px;align-items: center;">
+                <select [(ngModel)]="selectedDimension" (change)="onEditorWidnowSizeChange()">
+                    <option *ngFor="let dimension of dimensions" [ngValue]="dimension">
+                        {{dimension.key}}</option>
+                </select>
+
+                <input #widthInput style="width: 50px;" [value]="selectedDimension.value.width"
+                    (keydown.enter)="onInputEnter(widthInput.value, heightInput.value)"
+                    [disabled]="selectedDimension.key != 'Responsive'">
+                <div style="font-size: 11px;color: #8d8d8d;font-weight: bold;">X</div>
+                <input #heightInput style="width: 50px;" [value]="selectedDimension.value.height"
+                    (keydown.enter)="onInputEnter(widthInput.value, heightInput.value)"
+                    [disabled]="selectedDimension.key != 'Responsive'">
+            </div>
+        </div>
 
 
-    <!-- Editor Window -->
-    <div class="editor-window-container">
+        <!-- widget cursor cover -->
+        <div *ngIf="document.body.style.cursor != ''" class="widget-cursor-cover"></div>
 
-        <div #editorWindow class="editor-window">
+
+        <!-- Editor Window -->
+        <!-- <div class="editor-window-container"> -->
+
+        <div #editorWindow style="
+                
+                
+                position: absolute;
+                top: 33px;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                margin: 0 auto;">
 
             <!-- Dashed Lines -->
-            <ng-container *ngIf="page && page.pageContent">
+            <!-- <ng-container *ngIf="page && page.pageContent">
                 <div
                     [ngClass]="{'selected-page': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}">
                     <div class="vertical-dashed-line"></div>
@@ -29,7 +58,7 @@
                     <div class="horizontal-dashed-line"></div>
                 </div>
 
-            </ng-container>
+            </ng-container> -->
 
 
 
@@ -39,26 +68,56 @@
                 frameborder="0" (load)="onLoad(iframe)"></iframe>
 
             <!-- Horizontal Resizer -->
-            <div *ngIf="page && page.pageContent" class="horizontal-resizer"
+            <!-- <div *ngIf="page && page.pageContent" class="horizontal-resizer"
                 [style.cursor]="document.body.style.cursor == '' ? 's-resize': ''"
-                (mousedown)="onResizeMousedown(editorWindow)"></div>
+                (mousedown)="onResizeMousedown(editorWindow)"></div> -->
+
+            <ng-container
+                *ngIf="page && page.pageContent && widgetService.currentWidgetInspectorView == widgetInspectorView.Page && selectedDimension.key == 'Responsive'">
+                <div style="    width: 8px;
+                position: absolute;
+                top: 0;
+                bottom: 0; cursor: ew-resize;" (mousedown)="onResizeMousedown(-1)"></div>
+
+                <div style="width: 8px;
+position: absolute;
+top: 0;
+right: 0;
+bottom: 0; cursor: ew-resize;"></div>
+
+
+                <div style="height: 8px;
+position: absolute;
+bottom: 0;
+cursor: ns-resize;
+left: 0;
+right: 0; user-select: none;" (mousedown)="onResizeMousedown()"></div>
+
+            </ng-container>
+
+
         </div>
 
 
-        <ng-container *ngIf="page && page.pageContent">
-            <!-- Left Resizer -->
-            <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft - 4"
+        <!-- <ng-container
+            *ngIf="page && page.pageContent && widgetService.currentWidgetInspectorView == widgetInspectorView.Page"> -->
+        <!-- Left Resizer -->
+        <!-- <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft - 4"
                 (mousedown)="onResizeMousedown(editorWindow, -1)"
-                [style.cursor]="document.body.style.cursor == '' ? 'e-resize': ''"></div>
+                [style.cursor]="document.body.style.cursor == '' ? 'e-resize': ''"></div> -->
 
-            <!-- Right Resizer -->
-            <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft + editorWindow.clientWidth - 5"
+        <!-- Right Resizer -->
+        <!-- <div class="vertical-resizer" [style.left.px]="editorWindow.offsetLeft + editorWindow.clientWidth - 5"
                 (mousedown)="onResizeMousedown(editorWindow, 1)"
                 [style.cursor]="document.body.style.cursor == '' ? 'e-resize': ''">
-            </div>
-        </ng-container>
+            </div> -->
+        <!-- </ng-container> -->
 
+        <!-- </div> -->
     </div>
+
+
+
 
     <!-- Widget Inspector -->
     <div style="width: 100%; max-width: 250px;

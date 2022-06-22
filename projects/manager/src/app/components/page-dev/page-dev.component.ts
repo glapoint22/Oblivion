@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { debounceTime, Subject } from 'rxjs';
@@ -130,8 +130,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // --------------------------------------------------------------------------- Set Background --------------------------------------------------------------
   public setBackground(): void {
-    super.setBackground(document);
-    super.setBackground(this.widgetService.widgetDocument);
+    // super.setBackground(document);
+    super.setBackground(this.widgetService.widgetDocument.body);
   }
 
 
@@ -203,8 +203,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public clear(): void {
     if (this.id == 0) return;
     this.id = 0;
-    this.clearBackground(document);
-    this.clearBackground(this.widgetService.widgetDocument);
+    this.clearBackground(this.container.viewContainerRef.element.nativeElement.parentElement);
     this.name = null!;
     this.pageType = PageType.Custom;
     this.pageContent = null!;
@@ -223,7 +222,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   // ------------------------------------------------------------------------------- Duplicate -----------------------------------------------------------------------
   public duplicate(): void {
     if (this.id == 0) return;
-    
+
     this.dataService.post<number>('api/Pages/Duplicate', {
       id: this.id
     }).subscribe((pageId: number) => {

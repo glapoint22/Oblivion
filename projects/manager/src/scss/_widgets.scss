@@ -229,16 +229,12 @@ body {
 }
 
 
-.container-outline,
-.horizontal-dashed-line,
-.vertical-dashed-line {
-    &:not(.container-wrapper):not(.selected-widget) {
-        outline: 1px dashed;
-        outline-color: rgba($color: $container-outline-color, $alpha: 0.4);
+.container-outline {
+    outline: 1px dashed;
+    outline-color: rgba($color: $container-outline-color, $alpha: 0.4);
 
-        &:hover {
-            outline-color: rgba($color: $widget-outline-color, $alpha: 1);
-        }
+    &:not(.selected-widget)#container-widget:hover {
+        outline-color: rgba($color: $widget-outline-color, $alpha: 1);
     }
 }
 
@@ -264,9 +260,5 @@ body {
 
 
 .selected-page {
-
-    &>.vertical-dashed-line,
-    .horizontal-dashed-line {
-        outline-color: lighten($container-outline-color, 10%) !important;
-    }
+    outline-color: lighten($container-outline-color, 10%) !important;
 }

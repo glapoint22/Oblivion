@@ -26,7 +26,7 @@ export class PageComponent implements AfterViewInit, OnDestroy {
   load() {
     if (this.pageContent) {
       if (this.pageContent.background) {
-        this.setBackground(document);
+        this.setBackground(document.body);
       }
 
       // This will create the widgets starting with the rows
@@ -44,49 +44,49 @@ export class PageComponent implements AfterViewInit, OnDestroy {
   }
 
 
-  setBackground(document?: Document) {
+  setBackground(element?: HTMLElement) {
     if (this.pageContent.background.enabled) {
       // Background color
       if (this.pageContent.background.color) {
-        document!.body.style.backgroundColor = this.pageContent.background.rgbColor.toRGBString();
+        element!.style.backgroundColor = this.pageContent.background.rgbColor.toRGBString();
       }
 
       // Background image
       if (this.pageContent.background.image && this.pageContent.background.image.src) {
         // Image
-        document!.body.style.backgroundImage = 'url(images/' + this.pageContent.background.image.src + ')';
+        element!.style.backgroundImage = 'url(images/' + this.pageContent.background.image.src + ')';
 
         // Position
-        document!.body.style.backgroundPosition = this.pageContent.background.image.position.value;
+        element!.style.backgroundPosition = this.pageContent.background.image.position.value;
 
         // Repeat
-        document!.body.style.backgroundRepeat = this.pageContent.background.image.repeat.value;
+        element!.style.backgroundRepeat = this.pageContent.background.image.repeat.value;
 
         // Attachment
-        document!.body.style.backgroundAttachment = this.pageContent.background.image.attachment.value;
+        element!.style.backgroundAttachment = this.pageContent.background.image.attachment.value;
       } else {
-        this.clearImage(document!);
+        this.clearImage(element!);
       }
     } else {
-      this.clearBackground(document!);
+      this.clearBackground(element!);
     }
   }
 
-  clearBackground(document: Document) {
-    document.body.style.backgroundColor = '';
-    this.clearImage(document);
+  clearBackground(element: HTMLElement) {
+    element.style.backgroundColor = '';
+    this.clearImage(element);
   }
 
 
-  clearImage(document: Document) {
-    document.body.style.backgroundImage = '';
-    document.body.style.backgroundPosition = '';
-    document.body.style.backgroundRepeat = '';
-    document.body.style.backgroundAttachment = '';
+  clearImage(element: HTMLElement) {
+    element.style.backgroundImage = '';
+    element.style.backgroundPosition = '';
+    element.style.backgroundRepeat = '';
+    element.style.backgroundAttachment = '';
   }
 
   ngOnDestroy(): void {
     // Clear the background
-    this.clearBackground(document);
+    this.clearBackground(document.body);
   }
 }

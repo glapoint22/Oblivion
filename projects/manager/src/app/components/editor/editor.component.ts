@@ -1,9 +1,10 @@
+import { KeyValue } from '@angular/common';
 import { Compiler, Component, ComponentFactoryResolver, ComponentRef, ElementRef, Injector, NgModuleFactory, ViewChild, ViewContainerRef } from '@angular/core';
 import { ContainerHost } from '../../classes/container-host';
+import { Dimension } from '../../classes/dimension';
 import { WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
-import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { PageDevComponent } from '../page-dev/page-dev.component';
 import { PageDevModule } from '../page-dev/page-dev.module';
 
@@ -19,10 +20,263 @@ export class EditorComponent implements ContainerHost {
   public showResizeCover!: boolean;
   public document = document;
   public widgetCursors = WidgetCursor.getWidgetCursors();
-  public windowWidth = 1600;
-  public windowHeight = 900;
-  private fixedHeight = this.windowHeight;
   public widgetInspectorView = WidgetInspectorView;
+  public dimensions: Array<KeyValue<string, Dimension>> = [
+    {
+      key: 'Responsive',
+      value: {
+        width: 1600,
+        height: 800
+      }
+    },
+    {
+      key: 'BlackBerry Z30',
+      value: {
+        width: 360,
+        height: 640
+      }
+    },
+    {
+      key: 'BlackBerry PlayBook',
+      value: {
+        width: 600,
+        height: 1024
+      }
+    },
+    {
+      key: 'Galaxy S8',
+      value: {
+        width: 360,
+        height: 740
+      }
+    },
+    {
+      key: 'Galaxy S9+',
+      value: {
+        width: 320,
+        height: 658
+      }
+    },
+    {
+      key: 'Galaxy Tab S4',
+      value: {
+        width: 712,
+        height: 1138
+      }
+    },
+    {
+      key: 'Kindle Fire HDX',
+      value: {
+        width: 800,
+        height: 1280
+      }
+    },
+    {
+      key: 'LG Optimus L70',
+      value: {
+        width: 384,
+        height: 640
+      }
+    },
+    {
+      key: 'Microsoft Lumia 550',
+      value: {
+        width: 640,
+        height: 360
+      }
+    },
+    {
+      key: 'Nexus 5X',
+      value: {
+        width: 412,
+        height: 732
+      }
+    },
+    {
+      key: 'Nexus 7',
+      value: {
+        width: 600,
+        height: 960
+      }
+    },
+    {
+      key: 'Nokia Lumia 520',
+      value: {
+        width: 320,
+        height: 533
+      }
+    },
+    {
+      key: 'Nokia N9',
+      value: {
+        width: 480,
+        height: 854
+      }
+    },
+    {
+      key: 'Pixel 3',
+      value: {
+        width: 393,
+        height: 786
+      }
+    },
+    {
+      key: 'Pixel 4',
+      value: {
+        width: 353,
+        height: 745
+      }
+    },
+    {
+      key: 'iPad Mini',
+      value: {
+        width: 768,
+        height: 1024
+      }
+    },
+    {
+      key: 'iPhone 4',
+      value: {
+        width: 320,
+        height: 480
+      }
+    },
+    {
+      key: 'JioPhone 2',
+      value: {
+        width: 240,
+        height: 320
+      }
+    },
+    {
+      key: 'iPhone SE',
+      value: {
+        width: 375,
+        height: 667
+      }
+    },
+    {
+      key: 'iPhone XR',
+      value: {
+        width: 414,
+        height: 896
+      }
+    },
+    {
+      key: 'iPhone 12 Pro',
+      value: {
+        width: 390,
+        height: 844
+      }
+    },
+    {
+      key: 'Pixel 5',
+      value: {
+        width: 393,
+        height: 851
+      }
+    },
+    {
+      key: 'Samsung Galaxy S20 Ultra',
+      value: {
+        width: 412,
+        height: 915
+      }
+    },
+    {
+      key: 'iPad Air',
+      value: {
+        width: 820,
+        height: 1180
+      }
+    },
+    {
+      key: 'Surface Pro 7',
+      value: {
+        width: 912,
+        height: 1368
+      }
+    },
+    {
+      key: 'Surface Duo',
+      value: {
+        width: 540,
+        height: 720
+      }
+    },
+    {
+      key: 'Galaxy Fold',
+      value: {
+        width: 280,
+        height: 653
+      }
+    },
+    {
+      key: 'Galaxy A51/71',
+      value: {
+        width: 412,
+        height: 914
+      }
+    },
+    {
+      key: 'Nest Hub',
+      value: {
+        width: 1024,
+        height: 600
+      }
+    },
+    {
+      key: 'Nest Hub Max',
+      value: {
+        width: 1280,
+        height: 800
+      }
+    },
+    {
+      key: 'Pixel 2',
+      value: {
+        width: 411,
+        height: 731
+      }
+    },
+    {
+      key: 'Pixel 2 XL',
+      value: {
+        width: 411,
+        height: 823
+      }
+    },
+    {
+      key: 'iPhone 5/SE',
+      value: {
+        width: 320,
+        height: 568
+      }
+    },
+    {
+      key: 'iPhone 6/7/8 Plus',
+      value: {
+        width: 414,
+        height: 736
+      }
+    },
+    {
+      key: 'iPhone X',
+      value: {
+        width: 375,
+        height: 812
+      }
+    },
+    {
+      key: 'iPad Pro',
+      value: {
+        width: 1024,
+        height: 1366
+      }
+    }
+  ]
+
+  public selectedDimension: KeyValue<string, Dimension> = this.dimensions[0];
 
   constructor
     (
@@ -33,11 +287,10 @@ export class EditorComponent implements ContainerHost {
       private injector: Injector
     ) { }
 
-    
-    ngAfterViewInit() {
-      this.editorWindow.nativeElement.style.width = this.windowWidth + 'px';
-      this.editorWindow.nativeElement.style.height = this.windowHeight + 'px';
-    }
+
+  ngAfterViewInit() {
+    this.onEditorWidnowSizeChange();
+  }
 
 
   onLoad(iframe: HTMLIFrameElement) {
@@ -65,10 +318,8 @@ export class EditorComponent implements ContainerHost {
 
 
 
-  onResizeMousedown(editorWindow: HTMLElement, direction?: number) {
-    const container = this.page.container as ContainerDevComponent;
-    const minSize = Math.max(240, container.rows && container.rows.length > 0 ? container.rows.map(x => x.rowElement.getBoundingClientRect().bottom).reduce((a, b) => Math.max(a, b)) + 144 : 0);
-    const maxSize = 1600;
+  onResizeMousedown(direction?: number) {
+
 
 
     // Assign the resize cursor
@@ -85,14 +336,22 @@ export class EditorComponent implements ContainerHost {
 
       // Size the editor window
       if (direction) {
-        const width = Math.min(Math.max(minSize, editorWindow.clientWidth + mousemoveEvent.movementX * 2 * (direction as number)), maxSize);
-        editorWindow.style.width = width + 'px';
+        const minSize = 240;
+        const maxSize = 1600;
+        const width = Math.min(Math.max(minSize, this.selectedDimension.value.width + mousemoveEvent.movementX * 2 * (direction as number)), maxSize);
 
-      } else {
-        this.windowHeight = Math.max(minSize, editorWindow.clientHeight + mousemoveEvent.movementY);
-        this.fixedHeight = this.windowHeight;
-        editorWindow.style.height = this.windowHeight + 'px';
+        this.selectedDimension.value.width = width;
+
       }
+      else {
+        const minSize = 10;
+        const maxSize = window.innerHeight - 71;
+        const height = Math.min(Math.max(minSize, this.selectedDimension.value.height + mousemoveEvent.movementY), maxSize);
+
+        this.selectedDimension.value.height = height;
+      }
+
+      this.onEditorWidnowSizeChange();
     }
 
     const onResizeMouseUp = () => {
@@ -107,15 +366,26 @@ export class EditorComponent implements ContainerHost {
   }
 
 
+  onEditorWidnowSizeChange() {
+    this.editorWindow.nativeElement.style.maxWidth = this.selectedDimension.value.width + 8 + 'px';
+    this.editorWindow.nativeElement.style.maxHeight = this.selectedDimension.value.height + 5 + 'px';
+  }
 
+
+  onInputEnter(widthValue: string, heightValue: string) {
+    this.selectedDimension.value.width = parseInt(widthValue);
+    this.selectedDimension.value.height = parseInt(heightValue);
+    this.onEditorWidnowSizeChange();
+  }
 
   onRowChange(maxBottom: number): void {
-    const height = Math.max(this.fixedHeight, maxBottom + 148);
-    const scroll = height > this.editorWindow.nativeElement.clientHeight;
+    // this.iframe.nativeElement.style.height =  Math.max(this.selectedDimension.value.height, this.page.viewPort.nativeElement.scrollHeight)  + 'px';
+    // const height = Math.max(this.fixedHeight, maxBottom + 148);
+    // const scroll = height > this.editorWindow.nativeElement.clientHeight;
 
-    this.editorWindow.nativeElement.style.height = height + 'px';
+    // this.editorWindow.nativeElement.style.height = height + 'px';
 
-    if (scroll)
-      this.editorWindow.nativeElement.parentElement?.scrollTo(0, this.editorWindow.nativeElement.parentElement.scrollHeight);
+    // if (scroll)
+    //   this.editorWindow.nativeElement.parentElement?.scrollTo(0, this.editorWindow.nativeElement.parentElement.scrollHeight);
   }
 }

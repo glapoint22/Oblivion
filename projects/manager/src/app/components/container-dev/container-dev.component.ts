@@ -1,5 +1,5 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
-import { Image, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
@@ -17,6 +17,7 @@ export class ContainerDevComponent extends ContainerComponent {
   public rows: Array<RowDevComponent> = new Array<RowDevComponent>();
   public showRowIndicator!: boolean;
   public host!: ContainerHost;
+  public page!: PageDevComponent;
 
   constructor
     (
@@ -26,6 +27,14 @@ export class ContainerDevComponent extends ContainerComponent {
     ) { super(resolver) }
 
 
+  ngAfterViewInit() {
+    window.setTimeout(() => {
+      if (this.host instanceof PageDevComponent) {
+        this.page = this.host as PageDevComponent;
+      }
+    });
+
+  }
 
   // ----------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
   public ngOnInit(): void {
@@ -49,7 +58,7 @@ export class ContainerDevComponent extends ContainerComponent {
   }
 
 
-  
+
 
 
   // --------------------------------------------------------------------------- Add Widget ---------------------------------------------------------
@@ -151,13 +160,10 @@ export class ContainerDevComponent extends ContainerComponent {
 
   // --------------------------------------------------------------------------- On Mousedown ---------------------------------------------------------
   public onMousedown(event: MouseEvent): void {
-    if (this.host instanceof PageDevComponent) {
-      const page = this.host as PageDevComponent;
-
-
+    if (this.page) {
 
       if (event.button == 2) {
-        if (page.pageContent) {
+        if (this.page.pageContent) {
           this.lazyLoadingService.load(async () => {
             const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
             const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');

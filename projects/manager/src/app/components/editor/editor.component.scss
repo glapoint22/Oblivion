@@ -26,41 +26,6 @@
     overflow-x: hidden;
 }
 
-.editor-window {
-    position: relative;
-    margin: auto;
-    padding: 40px 0 100px;
-}
-
-.vertical-dashed-line {
-    position: absolute;
-    top: 0;
-    bottom: -100vh;
-    z-index: -1;
-
-    &:first-child {
-        left: 4px;
-    }
-
-    &:nth-child(2) {
-        right: 4px;
-    }
-}
-
-.horizontal-dashed-line {
-    position: absolute;
-    left: -100vw;
-    right: -1000px;
-    z-index: -1;
-
-    &:nth-child(3) {
-        top: 44px;
-    }
-
-    &:nth-child(4) {
-        bottom: 104px
-    }
-}
 
 .vertical-resizer {
     position: absolute;
