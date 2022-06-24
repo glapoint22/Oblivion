@@ -1,6 +1,7 @@
 import { ColorProperty } from "./color-property";
+import { Enableable } from "./enableable";
 
-export class Border extends ColorProperty {
+export class Border extends ColorProperty implements Enableable {
     public enabled!: boolean;
     public width: number = 1;
     public style: string = 'solid';

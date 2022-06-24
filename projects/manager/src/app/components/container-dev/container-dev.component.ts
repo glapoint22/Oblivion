@@ -154,6 +154,73 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
 
+  getWidgetSubmenus(yPos: number) {
+    return [
+      {
+        name: 'Text',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Text), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Container',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Container), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Image',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Image), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Button',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Button), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Line',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Line), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Video',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Video), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Product Slider',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.ProductSlider), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Carousel',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Carousel), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Grid',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Grid), this.getRowTop(yPos));
+        }
+      }
+    ]
+  }
 
 
 
@@ -176,7 +243,7 @@ export class ContainerDevComponent extends ContainerComponent {
             .then((contextMenu: ContextMenuComponent) => {
               contextMenu.parentObj = this;
               contextMenu.xPos = event.screenX;
-              contextMenu.yPos = event.clientY + 74;
+              contextMenu.yPos = event.clientY + 66;
               contextMenu.options = [
                 {
                   type: MenuOptionType.MenuItem,
@@ -191,12 +258,11 @@ export class ContainerDevComponent extends ContainerComponent {
                   type: MenuOptionType.Divider
                 },
                 {
-                  type: MenuOptionType.MenuItem,
+                  type: MenuOptionType.Submenu,
                   name: 'Add widget',
-                  optionFunction: () => {
-                    this.addWidget(new WidgetData(WidgetType.Video), this.getRowTop(event.clientY));
-                  }
+                  options: this.getWidgetSubmenus(event.clientY)
                 },
+
                 {
                   type: MenuOptionType.Divider
                 },
@@ -248,7 +314,7 @@ export class ContainerDevComponent extends ContainerComponent {
             .then((contextMenu: ContextMenuComponent) => {
               contextMenu.parentObj = this;
               contextMenu.xPos = event.screenX;
-              contextMenu.yPos = event.clientY + 74;
+              contextMenu.yPos = event.clientY + 66;
               contextMenu.options = [
 
                 {

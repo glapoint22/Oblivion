@@ -203,7 +203,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public clear(): void {
     if (this.id == 0) return;
     this.id = 0;
-    this.clearBackground(this.container.viewContainerRef.element.nativeElement.parentElement);
+    this.clearBackground(this.widgetService.widgetDocument.body);
     this.name = null!;
     this.pageType = PageType.Custom;
     this.pageContent = null!;

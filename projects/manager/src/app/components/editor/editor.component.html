@@ -36,6 +36,10 @@
                 <input #heightInput style="width: 50px;" [value]="selectedViewPortDimension.value.height"
                     (keydown.enter)="onInputEnter(widthInput.value, heightInput.value)"
                     [disabled]="selectedViewPortDimension.key != 'Responsive'">
+
+                    <div class="breakpoint-display" style="background: red;">
+                        {{breakpointService.currentBreakpoint | uppercase}}
+                    </div>
             </div>
         </div>
 

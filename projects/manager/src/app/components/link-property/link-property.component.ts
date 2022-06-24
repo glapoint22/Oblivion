@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { Link, LazyLoadingService, SpinnerAction, LinkType } from 'common';
 import { LinkComponent } from '../link/link.component';
 
@@ -14,7 +14,7 @@ export class LinkPropertyComponent {
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
-  async onClick() {
+  async onClick(propertyBoxBar: HTMLElement) {
     this.lazyLoadingService.load(async () => {
       const { LinkComponent } = await import('../link/link.component');
       const { LinkModule } = await import('../link/link.module');
@@ -26,6 +26,13 @@ export class LinkPropertyComponent {
       .then((linkComponent: LinkComponent) => {
         linkComponent.link = this.link;
         linkComponent.callback = () => this.onChange.emit();
+        linkComponent.setPosition = (base: ElementRef<HTMLElement>) => {
+          const propertyBoxBarRect = propertyBoxBar.getBoundingClientRect();
+
+          linkComponent.posX = propertyBoxBarRect.right - base.nativeElement.getBoundingClientRect().width;
+          linkComponent.posY = propertyBoxBarRect.bottom;
+        }
+
       });
   }
 }

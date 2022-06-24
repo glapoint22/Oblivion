@@ -12,7 +12,7 @@ export class BreakpointService {
   private breakpoints: Array<Breakpoint> =
     [
       {
-        name: 'micro',
+        name: 'mic',
         min: 0,
         max: 319
       },

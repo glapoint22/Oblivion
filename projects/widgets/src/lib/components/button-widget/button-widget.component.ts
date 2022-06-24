@@ -65,15 +65,11 @@ export class ButtonWidgetComponent extends Widget {
 
 
     // Add the button class to the document
-    this.addButonClassToDocument(buttonClass);
-  }
-
-
-  addButonClassToDocument(buttonClass: string) {
     const style = document.createElement('style');
     style.appendChild(document.createTextNode(buttonClass));
     document.head.appendChild(style);
   }
+  
 
 
   setWidget(buttonWidgetData: ButtonWidgetData) {

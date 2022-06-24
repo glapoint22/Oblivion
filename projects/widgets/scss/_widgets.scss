@@ -275,49 +275,49 @@ $num-grid-columns: 12;
             }
         }
     }
-}
 
-img {
-    width: 100%;
-    user-select: none;
-    -webkit-user-drag: none;
-    object-fit: cover;
-}
-
-@media(max-width: 1024px) {
     img {
-        height: 300px;
-    }
-}
-
-@media(max-width: 768px) {
-    img {
-        height: 250px;
-    }
-}
-
-
-@media(max-width: 600px) {
-    .left-arrow-button {
-        left: 10px;
+        width: 100%;
+        user-select: none;
+        -webkit-user-drag: none;
+        object-fit: cover;
     }
     
-    .right-arrow-button {
-        right: 10px;
-    }
-}
-
-
-@media(max-width: 360px) {
-    img {
-        height: 200px;
-    }
-
-    .left-arrow-button {
-        left: 5px;
+    @media(max-width: 1024px) {
+        img {
+            height: 300px;
+        }
     }
     
-    .right-arrow-button {
-        right: 5px;
+    @media(max-width: 768px) {
+        img {
+            height: 250px;
+        }
+    }
+    
+    
+    @media(max-width: 600px) {
+        .left-arrow-button {
+            left: 10px;
+        }
+        
+        .right-arrow-button {
+            right: 10px;
+        }
+    }
+    
+    
+    @media(max-width: 360px) {
+        img {
+            height: 200px;
+        }
+    
+        .left-arrow-button {
+            left: 5px;
+        }
+        
+        .right-arrow-button {
+            right: 5px;
+        }
     }
 }

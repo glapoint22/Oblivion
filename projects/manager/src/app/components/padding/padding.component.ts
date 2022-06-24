@@ -108,10 +108,10 @@ export class PaddingComponent {
       const breakpoint = this.breakpointService.getBreakpoint(paddingValues.map(x => x.breakpoint as string));
       paddingValue = this.padding.values.find(x => x.paddingType == paddingType && x.breakpoint == breakpoint);
 
-      if (paddingValue) {
+      if (paddingValue && this.breakpointService.currentBreakpoint == breakpoint) {
         paddingValue.padding = padding;
       } else {
-        paddingValue = new PaddingValue(paddingType, padding);
+        paddingValue = new PaddingValue(paddingType, padding, breakpoint ? this.breakpointService.currentBreakpoint : undefined);
         this.padding.values.push(paddingValue);
       }
     } else {
