@@ -40,6 +40,7 @@ import { ListModule } from '../lists/list/list.module';
 import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
 import { PageNichesComponent } from '../page-niches/page-niches.component';
 import { PageKeywordsComponent } from '../page-keywords/page-keywords.component';
+import { BreakpointsComponent } from '../breakpoints/breakpoints.component';
 
 
 
@@ -74,7 +75,8 @@ import { PageKeywordsComponent } from '../page-keywords/page-keywords.component'
     CarouselWidgetPropertiesComponent,
     LinkPropertyComponent,
     PageNichesComponent,
-    PageKeywordsComponent
+    PageKeywordsComponent,
+    BreakpointsComponent
   ],
   imports: [
     CommonModule,

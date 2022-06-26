@@ -1,0 +1,82 @@
+.base {
+    width: 100%;
+    height: 100px;
+    position: relative;
+}
+
+
+.breakpoint-lines-container {
+    display: flex;
+    background: #303030;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.breakpoint-line {
+    width: 1px;
+    margin: 0 13px;
+
+    &:nth-child(odd) {
+        background: #262626;
+    }
+
+    &:nth-child(even) {
+        background: #161616;
+    }
+}
+
+.breakpoints-text-container {
+    width: 100%;
+    height: 24px;
+    background: #222222;
+    display: flex;
+}
+
+.breakpoints-text {
+    width: 100%;
+    height: 100%;
+    color: #d1d1d1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}
+
+.playhead {
+    position: absolute;
+    width: 26px;
+    height: 17px;
+    top: 4px;
+    border-radius: 3px;
+    background: #426dae;
+    border: 1px solid #4c77b8;
+    color: white;
+    cursor: pointer;
+}
+
+.playhead-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    height: 100%;
+}
+
+
+
+.playhead-line {
+    position: absolute;
+    width: 2px;
+    top: 20px;
+    bottom: 0;
+    background: #4772b3;
+}
+
+
+.playhead-disabled {
+    background: #4a556a;
+    color: #8d8a8a;
+    border-color: #495b76;
+    cursor: default;
+}
