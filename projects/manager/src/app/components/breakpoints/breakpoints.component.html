@@ -1,22 +1,9 @@
 <panel [title]="'Padding'">
     <div class="property-box-dark">
 
-        <!-- Property Box Bar -->
-        <div class="property-box-bar">
-
-            <!-- Icons -->
-            <div class="icons">
-                <!-- Delete breakpoint -->
-                <icon-button [icon]="'fa-solid fa-trash-can'" [title]="'Delete breakpoint'" (click)="deleteBreakpoint()"></icon-button>
-
-                <!-- Add breakpoint -->
-                <icon-button [icon]="'fa-solid fa-circle-plus'" [title]="'Add breakpoint'" (click)="addBreakpoint()">
-                </icon-button>
-            </div>
-        </div>
 
         <!-- Base -->
-        <div #base class="base">
+        <div #breakpointsBase class="base">
             <!-- Breakpoints text -->
             <div class="breakpoints-text-container">
                 <div *ngFor="let breakpoint of breakpointService.breakpoints; let i = index" class="breakpoints-text"
@@ -32,13 +19,14 @@
                 </div>
 
                 <ng-container *ngFor="let breakpoint of breakpoints; let i = index">
-                    <div class="breakpoints-container" [style.top.px]="i * 40 + 10">
+                    <div class="breakpoints-container" [style.top.px]="i * 40 + 10"
+                        (mousedown)="onMousedown($event, breakpoint.label)" (contextmenu)="$event.preventDefault()">
                         <div class="breakpoint-label">{{breakpoint.label}}:</div>
                         <div class="breakpoints-row">
 
 
                             <ng-container *ngFor="let breakpointValue of breakpoint.values; let i = index">
-                                <div class="breakpoint-container" (click)="selectedBreakpoint = breakpointValue"
+                                <div class="breakpoint-container" (click)="onBreakpointClick(breakpointValue)"
                                     [ngClass]="{'selected-breakpoint': breakpointValue == selectedBreakpoint}"
                                     [style.left.px]="getLeftPosition(breakpointValue.breakpoint)"
                                     [style.right.px]="getRightPosition(i == breakpoint.values.length - 1 ? 8 : breakpoint.values[i + 1].breakpoint)">
@@ -51,7 +39,8 @@
                                     </ng-container>
 
                                     <div style="position: absolute;">
-                                        <breakpoint-value-displayer [breakpointValue]="breakpointValue" [breakpointOptions]="breakpointObject.breakpointOptions"
+                                        <breakpoint-value-displayer [breakpointValue]="breakpointValue"
+                                            [breakpointOptions]="breakpointObject.breakpointOptions"
                                             [isSelected]="breakpointValue == selectedBreakpoint"
                                             (onChange)="onChange.emit()">
                                         </breakpoint-value-displayer>

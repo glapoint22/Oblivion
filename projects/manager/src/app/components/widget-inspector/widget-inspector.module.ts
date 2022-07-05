@@ -15,7 +15,6 @@ import { BorderComponent } from '../border/border.component';
 import { NumberFieldModule } from '../number-field/number-field.module';
 import { CornersComponent } from '../corners/corners.component';
 import { ShadowComponent } from '../shadow/shadow.component';
-import { PaddingComponent } from '../padding/padding.component';
 import { VerticalAlignmentComponent } from '../vertical-alignment/vertical-alignment.component';
 import { HorizontalAlignmentComponent } from '../horizontal-alignment/horizontal-alignment.component';
 import { ButtonWidgetPropertiesComponent } from '../button-widget-properties/button-widget-properties.component';
@@ -57,7 +56,6 @@ import { BreakpointValueDisplayerComponent } from '../breakpoint-value-displayer
     BorderComponent,
     CornersComponent,
     ShadowComponent,
-    PaddingComponent,
     VerticalAlignmentComponent,
     HorizontalAlignmentComponent,
     ButtonWidgetPropertiesComponent,

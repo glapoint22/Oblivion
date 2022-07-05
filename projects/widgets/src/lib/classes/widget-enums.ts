@@ -74,3 +74,16 @@ export enum PageType {
     Search,
     Grid
 }
+
+
+export enum BreakpointType {
+    mic,
+    xxs,
+    xs,
+    sm,
+    md,
+    lg,
+    xl,
+    xxl,
+    hd
+}

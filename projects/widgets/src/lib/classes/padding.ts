@@ -1,7 +1,7 @@
 import { Breakpoint } from "./breakpoint";
 import { BreakpointObject } from "./breakpoint-object";
 import { PaddingValue } from "./padding-value";
-import { PaddingType } from "./widget-enums";
+import { BreakpointType, PaddingType } from "./widget-enums";
 
 export class Padding implements BreakpointObject {
     public values: Array<PaddingValue> = Array<PaddingValue>();
@@ -47,7 +47,7 @@ export class Padding implements BreakpointObject {
         // Add the new classes
         this.values.forEach((value: PaddingValue) => {
             if (value.padding > 0 || value.breakpoint) element.classList.add(this.getPadding(value.paddingType) + '-' + value.padding +
-                (value.breakpoint ? '-' + value.breakpoint : ''));
+                (value.breakpoint ? '-' + BreakpointType[value.breakpoint] : ''));
         });
     }
 
@@ -90,6 +90,31 @@ export class Padding implements BreakpointObject {
     }
 
 
+    private getPaddingType(label: string): number {
+        let paddingType: PaddingType;
+
+        switch (label) {
+            case 'Top':
+                paddingType = PaddingType.Top
+                break;
+
+            case 'Right':
+                paddingType = PaddingType.Right
+                break;
+
+            case 'Bottom':
+                paddingType = PaddingType.Bottom
+                break;
+
+            case 'Left':
+                paddingType = PaddingType.Left
+                break;
+        }
+
+        return paddingType!;
+    }
+
+
     private getLabel(paddingType: PaddingType): string {
         let padding: string;
 
@@ -120,19 +145,6 @@ export class Padding implements BreakpointObject {
         for (let i = 0; i < 4; i++) {
             if (!this.values.some(x => x.paddingType == i)) this.values.push(new PaddingValue(i, 0));
         }
-
-        // this.values = [];
-
-        // this.values.push(new PaddingValue(1, 0, 0));
-        // this.values.push(new PaddingValue(2, 4, 0));
-        // this.values.push(new PaddingValue(0, 8, 5));
-        // this.values.push(new PaddingValue(0, 12, 3));
-        // this.values.push(new PaddingValue(2, 16, 5));
-        // this.values.push(new PaddingValue(0, 4, 7));
-        // this.values.push(new PaddingValue(3, 0, 0));
-        // this.values.push(new PaddingValue(0, 40, 6));
-        // this.values.push(new PaddingValue(3, 28, 1));
-        // this.values.push(new PaddingValue(0, 0, 0));
 
         this.values = this.values.sort((a, b) => {
             if (a.paddingType > b.paddingType) {
@@ -172,30 +184,43 @@ export class Padding implements BreakpointObject {
 
 
 
-    addBreakpoint(breakpoint: number): PaddingValue {
+    addBreakpoint(breakpoint: number, label: string): PaddingValue {
         let padding!: number;
+        const paddingType = this.getPaddingType(label);
 
         for (let i = this.values.length - 1; i > -1; i--) {
             const currentValue = this.values[i];
 
-            if (currentValue.paddingType == PaddingType.Bottom && currentValue.breakpoint! < breakpoint) {
+            if (currentValue.paddingType == paddingType && currentValue.breakpoint! < breakpoint) {
                 padding = currentValue.padding;
                 break;
             }
         }
 
-        const paddingValue = new PaddingValue(PaddingType.Bottom, padding, breakpoint);
+        const paddingValue = new PaddingValue(paddingType, padding, breakpoint);
         this.values.push(paddingValue);
 
         return paddingValue;
     }
 
+
+
     deleteBreakpoint(value: PaddingValue): void {
         const index = this.values.findIndex(x => x == value);
 
         this.values.splice(index, 1);
-        if(value.breakpoint == 0) {
+        if (value.breakpoint == 0) {
             this.values[index].breakpoint = 0;
         }
+    }
+
+
+    canDelete(value: PaddingValue): boolean {
+        return this.values.filter(x => x.paddingType == value.paddingType).length > 1;
+    }
+
+
+    canAdd(breakpoint: number, label: string): boolean {
+        return !this.values.some(x => x.breakpoint == breakpoint && x.paddingType == this.getPaddingType(label));
     }
 }
