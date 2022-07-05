@@ -41,6 +41,7 @@ import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/check
 import { PageNichesComponent } from '../page-niches/page-niches.component';
 import { PageKeywordsComponent } from '../page-keywords/page-keywords.component';
 import { BreakpointsComponent } from '../breakpoints/breakpoints.component';
+import { BreakpointValueDisplayerComponent } from '../breakpoint-value-displayer/breakpoint-value-displayer.component';
 
 
 
@@ -76,7 +77,8 @@ import { BreakpointsComponent } from '../breakpoints/breakpoints.component';
     LinkPropertyComponent,
     PageNichesComponent,
     PageKeywordsComponent,
-    BreakpointsComponent
+    BreakpointsComponent,
+    BreakpointValueDisplayerComponent
   ],
   imports: [
     CommonModule,

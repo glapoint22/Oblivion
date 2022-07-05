@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
+import { Breakpoint, BreakpointObject } from 'widgets';
 import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 
 @Component({
@@ -6,27 +7,74 @@ import { BreakpointService } from '../../services/breakpoint/breakpoint.service'
   templateUrl: './breakpoints.component.html',
   styleUrls: ['./breakpoints.component.scss']
 })
-export class BreakpointsComponent implements AfterViewInit {
+export class BreakpointsComponent implements AfterViewInit, OnChanges {
+  @Input() breakpointObject!: BreakpointObject;
+  @Output() onChange: EventEmitter<void> = new EventEmitter();
   @ViewChild('base') base!: ElementRef<HTMLElement>;
   public playheadPosition!: number;
   public breakpointElementWidth!: number;
+  public breakpoints!: Array<Breakpoint>;
+  public selectedBreakpoint!: any;
 
   constructor(public breakpointService: BreakpointService) { }
 
 
-  ngAfterViewInit() {
-    this.breakpointElementWidth = this.base.nativeElement.getBoundingClientRect().width / this.breakpointService.breakpoints.length;
+  ngOnChanges(): void {
+    this.breakpoints = this.breakpointObject.getBreakpoints();
+  }
 
+
+  ngAfterViewInit() {
     window.setTimeout(() => {
-      this.setPlayheadPosition(this.breakpointService.breakpoints.findIndex(x => x.name == this.breakpointService.currentBreakpoint));
+      this.breakpointElementWidth = this.base.nativeElement.getBoundingClientRect().width / this.breakpointService.breakpoints.length;
+      this.setPlayheadPosition(this.getBreakpointIndex(this.breakpointService.currentBreakpoint));
     });
 
 
     this.breakpointService.$breakpointChange.subscribe(() => {
-      this.setPlayheadPosition(this.breakpointService.breakpoints.findIndex(x => x.name == this.breakpointService.currentBreakpoint));
+      this.setPlayheadPosition(this.getBreakpointIndex(this.breakpointService.currentBreakpoint));
     });
-
   }
+
+
+  addBreakpoint() {
+    this.selectedBreakpoint = this.breakpointObject.addBreakpoint(this.getBreakpointIndex(this.breakpointService.currentBreakpoint));
+    this.breakpoints = this.breakpointObject.getBreakpoints();
+    this.onChange.emit();
+  }
+
+
+  deleteBreakpoint() {
+    this.breakpointObject.deleteBreakpoint(this.selectedBreakpoint);
+    this.breakpoints = this.breakpointObject.getBreakpoints();
+    this.onChange.emit();
+  }
+
+
+  getLeftPosition(breakpoint: number) {
+    if (!this.breakpointElementWidth) return 0;
+    // const index = this.getBreakpointIndex(breakpoint);
+
+    return this.breakpointElementWidth * breakpoint + (this.breakpointElementWidth * 0.5);
+  }
+
+
+  getRightPosition(breakpoint: number) {
+    if (!this.breakpointElementWidth) return 0;
+    // const index = this.getBreakpointIndex(breakpoint);
+
+    return this.base.nativeElement.getBoundingClientRect().width - (this.breakpointElementWidth * breakpoint + (this.breakpointElementWidth * 0.5))
+  }
+
+
+  
+
+
+  getBreakpointIndex(breakpoint: string) {
+    if (!breakpoint) return 0;
+    return this.breakpointService.breakpoints.findIndex(x => x.name == breakpoint);
+  }
+
 
   setPlayheadPosition(index: number) {
     this.playheadPosition = this.breakpointElementWidth * index;
@@ -68,8 +116,11 @@ export class BreakpointsComponent implements AfterViewInit {
   }
 
 
-  onBreakpointClick(index: number) {
+  onBreakpointNameClick(index: number) {
     if (this.breakpointService.selectedViewPortDimension.key != 'Responsive') return;
     this.setBreakpoint(index);
   }
+
+
+  
 }

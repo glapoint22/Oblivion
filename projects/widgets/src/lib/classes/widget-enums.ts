@@ -61,10 +61,10 @@ export enum HorizontalAlignmentType {
 
 
 export enum PaddingType {
-    Top = 'padding-top',
-    Right = 'padding-right',
-    Bottom = 'padding-bottom',
-    Left = 'padding-left'
+    Top,
+    Right,
+    Bottom,
+    Left
 }
 
 export enum PageType {

@@ -1,42 +1,83 @@
-<div class="property-box-dark">
+<panel [title]="'Padding'">
+    <div class="property-box-dark">
 
-    <!-- Property Box Bar -->
-    <div #propertyBoxBar class="property-box-bar">
+        <!-- Property Box Bar -->
+        <div class="property-box-bar">
 
-        <!-- Icons -->
-        <div class="icons">
-            <!-- Delete breakpoint -->
-            <icon-button [icon]="'fa-solid fa-trash-can'" [title]="'Delete breakpoint'"></icon-button>
+            <!-- Icons -->
+            <div class="icons">
+                <!-- Delete breakpoint -->
+                <icon-button [icon]="'fa-solid fa-trash-can'" [title]="'Delete breakpoint'" (click)="deleteBreakpoint()"></icon-button>
 
-            <!-- Add breakpoint -->
-            <icon-button [icon]="'fa-solid fa-circle-plus'" [title]="'Add breakpoint'"></icon-button>
+                <!-- Add breakpoint -->
+                <icon-button [icon]="'fa-solid fa-circle-plus'" [title]="'Add breakpoint'" (click)="addBreakpoint()">
+                </icon-button>
+            </div>
+        </div>
+
+        <!-- Base -->
+        <div #base class="base">
+            <!-- Breakpoints text -->
+            <div class="breakpoints-text-container">
+                <div *ngFor="let breakpoint of breakpointService.breakpoints; let i = index" class="breakpoints-text"
+                    (click)="onBreakpointNameClick(i)"
+                    [style.cursor]="breakpointService.selectedViewPortDimension.key == 'Responsive' ? 'pointer' : 'default'">
+                    {{breakpoint.name | uppercase}}</div>
+            </div>
+
+
+            <div class="breakpoints-background" [style.height.px]="(breakpoints.length * 40) + 10">
+                <div class="breakpoint-lines-container">
+                    <div class="breakpoint-line" *ngFor="let breakpointLine of breakpointService.breakpoints"></div>
+                </div>
+
+                <ng-container *ngFor="let breakpoint of breakpoints; let i = index">
+                    <div class="breakpoints-container" [style.top.px]="i * 40 + 10">
+                        <div class="breakpoint-label">{{breakpoint.label}}:</div>
+                        <div class="breakpoints-row">
+
+
+                            <ng-container *ngFor="let breakpointValue of breakpoint.values; let i = index">
+                                <div class="breakpoint-container" (click)="selectedBreakpoint = breakpointValue"
+                                    [ngClass]="{'selected-breakpoint': breakpointValue == selectedBreakpoint}"
+                                    [style.left.px]="getLeftPosition(breakpointValue.breakpoint)"
+                                    [style.right.px]="getRightPosition(i == breakpoint.values.length - 1 ? 8 : breakpoint.values[i + 1].breakpoint)">
+
+                                    <div class="diamond" style="margin-left: -5px;"></div>
+                                    <div class="breakpoint-horizontal-line"></div>
+
+                                    <ng-container *ngIf="i == breakpoint.values.length - 1">
+                                        <div class="diamond" style="margin-right: -4px;"></div>
+                                    </ng-container>
+
+                                    <div style="position: absolute;">
+                                        <breakpoint-value-displayer [breakpointValue]="breakpointValue" [breakpointOptions]="breakpointObject.breakpointOptions"
+                                            [isSelected]="breakpointValue == selectedBreakpoint"
+                                            (onChange)="onChange.emit()">
+                                        </breakpoint-value-displayer>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+
+
+
+
+
+            <!-- Playhead -->
+            <div class="playhead" [style.left.px]="playheadPosition"
+                [ngClass]="{'playhead-disabled': breakpointService.selectedViewPortDimension.key != 'Responsive'}">
+                <div class="playhead-text" (mousedown)="onPlayheadMousedown($event)">
+                    {{breakpointService.currentBreakpoint | uppercase}}</div>
+            </div>
+
+            <!-- Playhead line -->
+            <div class="playhead-line" [style.left.px]="playheadPosition + 13"
+                [ngClass]="{'playhead-disabled': breakpointService.selectedViewPortDimension.key != 'Responsive'}">
+            </div>
         </div>
     </div>
-
-    <!-- Base -->
-    <div #base class="base">
-        <!-- Breakpoints text -->
-        <div class="breakpoints-text-container">
-            <div *ngFor="let breakpoint of breakpointService.breakpoints; let i = index" class="breakpoints-text"
-                (click)="onBreakpointClick(i)"
-                [style.cursor]="breakpointService.selectedViewPortDimension.key == 'Responsive' ? 'pointer' : 'default'">
-                {{breakpoint.name | uppercase}}</div>
-        </div>
-
-        <!-- Line container -->
-        <div class="breakpoint-lines-container">
-            <div class="breakpoint-line" *ngFor="let breakpointLine of breakpointService.breakpoints"></div>
-        </div>
-
-        <!-- Playhead -->
-        <div class="playhead" [style.left.px]="playheadPosition"
-            [ngClass]="{'playhead-disabled': breakpointService.selectedViewPortDimension.key != 'Responsive'}">
-            <div class="playhead-text" (mousedown)="onPlayheadMousedown($event)">
-                {{breakpointService.currentBreakpoint | uppercase}}</div>
-        </div>
-
-        <!-- Playhead line -->
-        <div class="playhead-line" [style.left.px]="playheadPosition + 12"
-            [ngClass]="{'playhead-disabled': breakpointService.selectedViewPortDimension.key != 'Responsive'}"></div>
-    </div>
-</div>
+</panel>

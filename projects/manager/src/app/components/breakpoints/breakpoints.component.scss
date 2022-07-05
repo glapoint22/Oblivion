@@ -1,21 +1,19 @@
 .base {
-    width: 100%;
-    height: 100px;
+    width: 243px;
     position: relative;
 }
 
 
 .breakpoint-lines-container {
     display: flex;
-    background: #303030;
-    position: relative;
+
     width: 100%;
     height: 100%;
+    justify-content: space-around;
 }
 
 .breakpoint-line {
     width: 1px;
-    margin: 0 13px;
 
     &:nth-child(odd) {
         background: #262626;
@@ -45,7 +43,7 @@
 
 .playhead {
     position: absolute;
-    width: 26px;
+    width: 28px;
     height: 17px;
     top: 4px;
     border-radius: 3px;
@@ -79,4 +77,68 @@
     color: #8d8a8a;
     border-color: #495b76;
     cursor: default;
+}
+
+
+
+.breakpoints-background {
+    background: #303030;
+    position: relative;
+    width: 100%;
+}
+
+.breakpoints-container {
+    position: absolute;
+    width: 100%;
+    height: 30px;
+}
+
+.breakpoint-label {
+    font-size: 9px;
+    color: #a1a1a1;
+    margin-left: 5px;
+}
+
+.breakpoints-row {
+    width: 100%;
+    margin-top: 4px;
+    height: 16px;
+    position: relative;
+}
+
+.breakpoint-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diamond {
+    width: 9px;
+    height: 9px;
+    background: #bfbfbf;
+    border: 1px solid black;
+    transform: rotate(45deg);
+}
+
+.breakpoint-horizontal-line {
+    flex: 1;
+    height: 1px;
+    background: #707070;
+}
+
+.selected-breakpoint {
+    & .diamond {
+        background: #ffba00;
+    }
+
+    &+.breakpoint-container .diamond:first-child {
+        background: #ffba00;
+    }
+
+    .breakpoint-horizontal-line {
+        background: #ffba00;
+    }
 }
