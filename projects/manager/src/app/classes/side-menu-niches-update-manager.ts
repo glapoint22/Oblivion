@@ -12,10 +12,11 @@ import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { Product } from "./product";
-import { Directive, ViewChild } from "@angular/core";
+import { ComponentFactory, ComponentFactoryResolver, Directive, EventEmitter, Output, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { NicheHierarchyService } from "../services/niche-hierarchy/niche-hierarchy.service";
+import { ProductPropertiesComponent } from "../components/product-properties/product-properties.component";
 
 @Directive()
 export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
@@ -30,18 +31,19 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     public grandchildDataServicePath: string = 'Products';
 
     // Decorators
+    @Output() onProductSelect: EventEmitter<void> = new EventEmitter();
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, private lazyLoadingService: LazyLoadingService, private nicheHierarchyService: NicheHierarchyService, private productService: ProductService) {
+    constructor(dataService: DataService, sanitizer: DomSanitizer, private lazyLoadingService: LazyLoadingService, private nicheHierarchyService: NicheHierarchyService, private productService: ProductService, private resolver: ComponentFactoryResolver) {
         super(dataService, sanitizer);
     }
 
 
-    
+
     // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
@@ -201,9 +203,23 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.listOptions.menu!.menuOptions[7].name = 'Move ' + this.grandchildType;
 
             if (!hierarchyUpdate.rightClick) {
+                this.onProductSelect.emit();
                 this.dataService.get<Product>('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: hierarchyUpdate.selectedItems![0].id }])
-                    .subscribe((product: Product) => {
-                        this.productService.product = product;
+                    .subscribe((productProperties: Product) => {
+                        this.productService.product = productProperties;
+
+
+                        const productComponentFactory: ComponentFactory<ProductPropertiesComponent> = this.resolver.resolveComponentFactory(ProductPropertiesComponent);
+                        const productComponentRef = this.productService.productsContainer.createComponent(productComponentFactory);
+                        const productComponent: ProductPropertiesComponent = productComponentRef.instance;
+
+
+                        this.productService.productComponents.push(productComponent);
+
+                        productComponent.properties = productProperties;
+
+                        console.log(productProperties)
+                        
                     });
             }
         }
@@ -690,7 +706,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
     // ===================================================================( GET OTHER ITEM )=================================================================== \\
-    
+
     getOtherItem(x: HierarchyItem) {
         return null!;
     }

@@ -168,7 +168,8 @@ export class ListUpdateManager {
                 // If an item was selected
                 if (selectedItem) {
                     // Then select that item
-                    this.listComponent.listManager.onItemDown(selectedItem);
+                    this.listComponent.listManager.setItemSelection(selectedItem);
+                    this.listComponent.listManager.setButtonsState();
                 }
 
                 // If it's not set to select the last selected item
