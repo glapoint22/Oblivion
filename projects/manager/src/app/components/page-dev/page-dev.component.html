@@ -1,11 +1,4 @@
-<div class="view-port" *ngIf="pageContent"
-    [ngClass]="{'selected-page': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}">
-    <div class="vertical-dashed-line"></div>
-    <div class="vertical-dashed-line"></div>
-    <div class="horizontal-dashed-line"></div>
-    <div class="horizontal-dashed-line"></div>
-</div>
-
-<div class="container-wrapper container-outline" (mousedown)="onMousedown()">
+<div class="container-wrapper" (mousedown)="onMousedown()">
+    <div [ngClass]="{'container-outline': pageContent, 'selected-page':widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"></div>
     <container-dev #container></container-dev>
 </div>

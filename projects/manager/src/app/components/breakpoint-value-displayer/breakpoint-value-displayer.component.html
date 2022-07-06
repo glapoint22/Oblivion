@@ -1,0 +1,8 @@
+<div class="value-displayer" [ngClass]="{'selected': isSelected}">{{breakpointValue.getValue()}}</div>
+
+
+<!-- Arrow buttons -->
+<ng-container *ngIf="isSelected">
+    <i class="fa-solid fa-caret-left" style="left: -11px;" (click)="onClick(-1)"></i>
+    <i class="fa-solid fa-caret-right" style="left: 14px;" (click)="onClick(1)"></i>
+</ng-container>

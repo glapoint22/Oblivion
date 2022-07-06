@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TextBoxDev } from 'text-box';
-import { TextWidgetComponent, TextWidgetData } from 'widgets';
+import { Enableable, TextWidgetComponent, TextWidgetData } from 'widgets';
 import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -9,23 +9,19 @@ import { WidgetService } from '../../services/widget/widget.service';
   templateUrl: './text-widget-dev.component.html',
   styleUrls: ['./text-widget-dev.component.scss']
 })
-export class TextWidgetDevComponent extends TextWidgetComponent implements OnInit {
+export class TextWidgetDevComponent extends TextWidgetComponent implements OnInit, Enableable {
   @ViewChild('htmlRootElement') htmlRootElement!: ElementRef<HTMLElement>;
   public textBoxDev!: TextBoxDev;
   public widgetHandle = WidgetHandle;
-  public inEditMode!: boolean;
+  public enabled!: boolean;
   public widgetInspectorView = WidgetInspectorView;
   public widgetHandleDown!: boolean;
 
   constructor(public widgetService: WidgetService) { super() }
 
 
-  ngOnInit(): void {
-    super.ngOnInit();
-
-    this.widgetService.widgetDocument.addEventListener('mousemove', (event: MouseEvent) => {
-      if (this.inEditMode && !this.widgetHandleDown) event.stopImmediatePropagation();
-    });
+  onMousemove = (event: MouseEvent) => {
+    if (this.enabled && !this.widgetHandleDown) event.stopImmediatePropagation();
   }
 
 
@@ -47,14 +43,20 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
     this.textBoxDev.render();
   }
 
-  
 
+
+  onEnabled() {
+    this.enabled = true;
+    this.textBoxDev.setFocus();
+    this.widgetService.widgetDocument.addEventListener('mousemove', this.onMousemove);
+  }
 
 
 
   ngDoCheck() {
-    if (this.widgetService.selectedWidget != this) {
-      this.inEditMode = false;
+    if (this.widgetService.selectedWidget != this && this.enabled) {
+      this.enabled = false;
+      this.widgetService.widgetDocument.removeEventListener('mousemove', this.onMousemove);
     }
   }
 
@@ -64,5 +66,9 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
 
     textWidgetData.textBoxData = this.textBoxDev.getData();
     return textWidgetData;
+  }
+
+  ngOnDestroy() {
+    this.widgetService.widgetDocument.removeEventListener('mousemove', this.onMousemove);
   }
 }

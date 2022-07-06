@@ -1,6 +1,7 @@
 import { ColorProperty } from "./color-property";
+import { Enableable } from "./enableable";
 
-export class Shadow extends ColorProperty {
+export class Shadow extends ColorProperty implements Enableable {
     public enabled: boolean = false;
     public x: number = 5;
     public y: number = 5;

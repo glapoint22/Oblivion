@@ -14,11 +14,10 @@ export class PanelComponent {
   @ViewChild('content') content!: ElementRef;
   public expanded!: boolean;
   public contentMaxHeight!: number;
-  public contentPadding: number = 14;
 
 
   click(input: HTMLInputElement) {
-    this.contentMaxHeight = this.content.nativeElement.scrollHeight + (this.contentPadding * 2);
+    this.contentMaxHeight = this.content.nativeElement.scrollHeight;
 
     if (input.checked) {
       window.setTimeout(() => {

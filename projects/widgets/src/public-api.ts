@@ -34,6 +34,9 @@ export * from './lib/classes/video-widget-data';
 export * from './lib/classes/widget';
 export * from './lib/classes/widget-data';
 export * from './lib/classes/widget-enums';
+export * from './lib/classes/breakpoint-object';
+export * from './lib/classes/breakpoint';
+export * from './lib/classes/breakpoint-value';
 
 // Components
 export * from './lib/components/button-widget/button-widget.component';

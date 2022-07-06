@@ -11,8 +11,8 @@
 <shadow [shadow]="widgetService.selectedRow.shadow" (onChange)="update()"></shadow>
 
 <!-- Padding -->
-<padding [padding]="widgetService.selectedRow.padding"
-    (onChange)="updatePadding(widgetService.selectedRow.padding, widgetService.selectedRow.rowElement)"></padding>
+<breakpoints [breakpointObject]="widgetService.selectedRow.padding"
+    (onChange)="updatePadding(widgetService.selectedRow.padding, widgetService.selectedRow.rowElement)"></breakpoints>
 
 <!-- Vertical Alignment -->
 <vertical-alignment [verticalAlignment]="widgetService.selectedRow.verticalAlignment"

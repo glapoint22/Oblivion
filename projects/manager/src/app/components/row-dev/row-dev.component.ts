@@ -177,7 +177,7 @@ export class RowDevComponent extends RowComponent {
       }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
         contextMenu.parentObj = this;
         contextMenu.xPos = event.screenX;
-        contextMenu.yPos = event.clientY + 74;
+        contextMenu.yPos = event.clientY + 66;
         contextMenu.options = this.getRowContextMenuOptions();
       });
     }
@@ -206,41 +206,54 @@ export class RowDevComponent extends RowComponent {
         type: MenuOptionType.Divider
       },
       {
-        type: MenuOptionType.MenuItem,
-        name: 'Duplicate row above',
-        optionFunction: () => {
-          const container = this.containerComponent;
-          container.duplicateRowAbove(this);
-        }
-      },
-      {
-        type: MenuOptionType.MenuItem,
-        name: 'Duplicate row below',
-        optionFunction: () => {
-          const container = this.containerComponent;
-          container.duplicateRowBelow(this);
-        }
+        type: MenuOptionType.Submenu,
+        name: 'Duplicate row',
+        options: [
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Above',
+            optionFunction: () => {
+              const container = this.containerComponent;
+              container.duplicateRowAbove(this);
+            }
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Below',
+            optionFunction: () => {
+              const container = this.containerComponent;
+              container.duplicateRowBelow(this);
+            }
+          }
+        ]
       },
       {
         type: MenuOptionType.Divider
       },
       {
-        type: MenuOptionType.MenuItem,
-        name: 'Move row above',
-        isDisabled: !this.containerComponent.isRowAbove(this),
-        optionFunction: () => {
-          const container = this.containerComponent;
-          container.moveRowAbove(this);
-        }
-      },
-      {
-        type: MenuOptionType.MenuItem,
-        name: 'Move row below',
-        isDisabled: !this.containerComponent.isRowBelow(this),
-        optionFunction: () => {
-          const container = this.containerComponent;
-          container.moveRowBelow(this);
-        }
+        type: MenuOptionType.Submenu,
+        name: 'Move row',
+        isDisabled: !this.containerComponent.isRowAbove(this) && !this.containerComponent.isRowBelow(this),
+        options: [
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Above',
+            isDisabled: !this.containerComponent.isRowAbove(this),
+            optionFunction: () => {
+              const container = this.containerComponent;
+              container.moveRowAbove(this);
+            }
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Below',
+            isDisabled: !this.containerComponent.isRowBelow(this),
+            optionFunction: () => {
+              const container = this.containerComponent;
+              container.moveRowBelow(this);
+            }
+          }
+        ]
       },
       {
         type: MenuOptionType.Divider

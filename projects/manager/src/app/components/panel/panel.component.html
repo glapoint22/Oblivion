@@ -15,9 +15,7 @@
 </div>
 
 <!-- Content -->
-<div #content class="content" [ngStyle]="{'maxHeight.px': expanded ? contentMaxHeight : 0, 
-        'paddingTop.px': expanded ? contentPadding : 0, 
-        'paddingBottom.px': expanded ? contentPadding : 0}" (transitionend)="transitionend()">
+<div #content class="content" [ngStyle]="{'maxHeight.px': expanded ? contentMaxHeight : 0}" (transitionend)="transitionend()">
     <ng-content></ng-content>
 
     <!-- Disabled cover -->

@@ -19,6 +19,9 @@ export class LinkComponent extends LazyLoad {
   public currentLinkType!: LinkType;
   public isApplyButtonDisabled!: boolean;
   private linkItem!: LinkItem;
+  public posX!: number;
+  public posY!: number;
+  public setPosition!: Function;
 
 
 
@@ -47,6 +50,11 @@ export class LinkComponent extends LazyLoad {
     } else if (this.currentLinkType == LinkType.Page || this.currentLinkType == LinkType.Product) {
       this.search.searchInput.nativeElement.value = this.link.name;
     }
+  }
+
+
+  onOpen(): void {
+    this.setPosition(this.base);
   }
 
 

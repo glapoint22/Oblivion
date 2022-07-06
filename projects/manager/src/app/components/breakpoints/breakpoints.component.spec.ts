@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PaddingComponent } from './padding.component';
+import { BreakpointsComponent } from './breakpoints.component';
 
-describe('PaddingComponent', () => {
-  let component: PaddingComponent;
-  let fixture: ComponentFixture<PaddingComponent>;
+describe('BreakpointsComponent', () => {
+  let component: BreakpointsComponent;
+  let fixture: ComponentFixture<BreakpointsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PaddingComponent ]
+      declarations: [ BreakpointsComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PaddingComponent);
+    fixture = TestBed.createComponent(BreakpointsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -3,9 +3,9 @@ import { ContainerHost } from '../../classes/container-host';
 import { WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { WidgetService } from '../../services/widget/widget.service';
-import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { PageDevComponent } from '../page-dev/page-dev.component';
 import { PageDevModule } from '../page-dev/page-dev.module';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 
 @Component({
   selector: 'editor',
@@ -13,31 +13,25 @@ import { PageDevModule } from '../page-dev/page-dev.module';
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements ContainerHost {
-  @ViewChild('editorWindow') editorWindow!: ElementRef<HTMLElement>;
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public page!: PageDevComponent;
   public showResizeCover!: boolean;
   public document = document;
   public widgetCursors = WidgetCursor.getWidgetCursors();
-  public windowWidth = 1600;
-  public windowHeight = 900;
-  private fixedHeight = this.windowHeight;
   public widgetInspectorView = WidgetInspectorView;
+
 
   constructor
     (
       public widgetService: WidgetService,
+      public breakpointService: BreakpointService,
       private viewContainerRef: ViewContainerRef,
       private resolver: ComponentFactoryResolver,
       private compiler: Compiler,
       private injector: Injector
     ) { }
 
-    
-    ngAfterViewInit() {
-      this.editorWindow.nativeElement.style.width = this.windowWidth + 'px';
-      this.editorWindow.nativeElement.style.height = this.windowHeight + 'px';
-    }
+
 
 
   onLoad(iframe: HTMLIFrameElement) {
@@ -65,12 +59,7 @@ export class EditorComponent implements ContainerHost {
 
 
 
-  onResizeMousedown(editorWindow: HTMLElement, direction?: number) {
-    const container = this.page.container as ContainerDevComponent;
-    const minSize = Math.max(240, container.rows && container.rows.length > 0 ? container.rows.map(x => x.rowElement.getBoundingClientRect().bottom).reduce((a, b) => Math.max(a, b)) + 144 : 0);
-    const maxSize = 1600;
-
-
+  onResizeMousedown(direction?: number) {
     // Assign the resize cursor
     if (direction) {
       document.body.style.cursor = 'e-resize'
@@ -85,14 +74,22 @@ export class EditorComponent implements ContainerHost {
 
       // Size the editor window
       if (direction) {
-        const width = Math.min(Math.max(minSize, editorWindow.clientWidth + mousemoveEvent.movementX * 2 * (direction as number)), maxSize);
-        editorWindow.style.width = width + 'px';
+        const minSize = 240;
+        const maxSize = 1600;
+        const width = Math.min(Math.max(minSize, this.breakpointService.selectedViewPortDimension.value.width + mousemoveEvent.movementX * 2 * (direction as number)), maxSize);
 
-      } else {
-        this.windowHeight = Math.max(minSize, editorWindow.clientHeight + mousemoveEvent.movementY);
-        this.fixedHeight = this.windowHeight;
-        editorWindow.style.height = this.windowHeight + 'px';
+        this.breakpointService.selectedViewPortDimension.value.width = width;
+
       }
+      else {
+        const minSize = 240;
+        const maxSize = window.innerHeight - 71;
+        const height = Math.min(Math.max(minSize, this.breakpointService.selectedViewPortDimension.value.height + mousemoveEvent.movementY), maxSize);
+
+        this.breakpointService.selectedViewPortDimension.value.height = height;
+      }
+
+      this.breakpointService.setCurrentBreakpoint(this.breakpointService.selectedViewPortDimension.value.width);
     }
 
     const onResizeMouseUp = () => {
@@ -109,13 +106,15 @@ export class EditorComponent implements ContainerHost {
 
 
 
+  onInputEnter(widthValue: string, heightValue: string) {
+    this.breakpointService.selectedViewPortDimension.value.width = parseInt(widthValue);
+    this.breakpointService.selectedViewPortDimension.value.height = parseInt(heightValue);
+    this.breakpointService.setCurrentBreakpoint(this.breakpointService.selectedViewPortDimension.value.width);
+  }
+
   onRowChange(maxBottom: number): void {
-    const height = Math.max(this.fixedHeight, maxBottom + 148);
-    const scroll = height > this.editorWindow.nativeElement.clientHeight;
-
-    this.editorWindow.nativeElement.style.height = height + 'px';
-
-    if (scroll)
-      this.editorWindow.nativeElement.parentElement?.scrollTo(0, this.editorWindow.nativeElement.parentElement.scrollHeight);
+    if (this.breakpointService.selectedViewPortDimension.key == 'Responsive' && maxBottom > this.breakpointService.selectedViewPortDimension.value.height - 4) {
+      this.breakpointService.selectedViewPortDimension.value.height = maxBottom + 4;
+    }
   }
 }

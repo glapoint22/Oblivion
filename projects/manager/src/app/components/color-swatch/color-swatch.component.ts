@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { Color, LazyLoadingService, SpinnerAction } from 'common';
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
 
@@ -15,13 +15,14 @@ export class ColorSwatchComponent {
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
-  onSwatchClick() {
+  onSwatchClick(element: HTMLElement) {
     this.onClick.emit();
-    this.loadColorPicker();
+    window.setTimeout(() => this.loadColorPicker(element));
+
   }
 
 
-  async loadColorPicker() {
+  async loadColorPicker(element: HTMLElement) {
     this.lazyLoadingService.load(async () => {
       const { ColorPickerComponent } = await import('../color-picker/color-picker.component');
       const { ColorPickerModule } = await import('../color-picker/color-picker.module');
@@ -44,6 +45,11 @@ export class ColorSwatchComponent {
         colorPicker.$onClose.subscribe(() => {
           this.onColorPickerClose.emit();
         });
+
+        const elementRect = element.getBoundingClientRect();
+
+        colorPicker.posX = elementRect.left;
+        colorPicker.posY = elementRect.bottom;
       });
   }
 }

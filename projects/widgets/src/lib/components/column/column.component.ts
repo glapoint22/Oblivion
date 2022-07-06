@@ -26,12 +26,14 @@ export class ColumnComponent implements AfterViewInit {
   public columnSpan: ColumnSpan = new ColumnSpan();
   public columnElement!: HTMLElement;
   public horizontalAlignment: HorizontalAlignment = new HorizontalAlignment();
+  public paddingElement!: HTMLElement;
 
   constructor(public resolver: ComponentFactoryResolver) { }
 
   ngAfterViewInit(): void {
+    this.paddingElement = this.columnElement.firstElementChild as HTMLElement;
     this.columnSpan.setClasses(this.columnElement);
-    this.padding.setClasses(this.columnElement);
+    this.padding.setClasses(this.paddingElement);
   }
 
 

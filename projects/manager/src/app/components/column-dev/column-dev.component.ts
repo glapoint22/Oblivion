@@ -63,7 +63,7 @@ export class ColumnDevComponent extends ColumnComponent {
           .then((contextMenu: ContextMenuComponent) => {
             contextMenu.parentObj = this;
             contextMenu.xPos = event.screenX;
-            contextMenu.yPos = event.clientY + 74;
+            contextMenu.yPos = event.clientY + 66;
 
             let menuOptions: Array<MenuOption> = [];
             let pasteOptions: Array<MenuOption> = [];
@@ -92,14 +92,9 @@ export class ColumnDevComponent extends ColumnComponent {
               // Show Add widget in container option
               widgetOptions = widgetOptions.concat([
                 {
-                  type: MenuOptionType.MenuItem,
+                  type: MenuOptionType.Submenu,
                   name: 'Add widget in container',
-                  optionFunction: () => {
-                    const containerWidget = this.widgetService.selectedWidget as ContainerWidgetDevComponent;
-                    const container = containerWidget.container as ContainerDevComponent;
-
-                    container.addWidget(new WidgetData(WidgetType.Video), container.getRowTop(event.clientY));
-                  }
+                  options: ((this.widgetService.selectedWidget as ContainerWidgetDevComponent).container as ContainerDevComponent).getWidgetSubmenus(event.clientY)
                 }
               ]);
             }
@@ -111,23 +106,29 @@ export class ColumnDevComponent extends ColumnComponent {
             // Show the default paste options
             menuOptions = menuOptions.concat([
               {
-                type: MenuOptionType.MenuItem,
-                name: 'Paste left',
+                type: MenuOptionType.Submenu,
+                name: 'Paste',
                 isDisabled: !this.widgetService.clipboard || this.widgetService.clipboard instanceof Row,
-                optionFunction: () => {
-                  if (!(this.widgetService.clipboard instanceof Row))
-                    this.rowComponent.addColumn(0, this.columnElement, this.widgetService.clipboard);
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Paste right',
-                isDisabled: !this.widgetService.clipboard || this.widgetService.clipboard instanceof Row,
-                optionFunction: () => {
-                  if (!(this.widgetService.clipboard instanceof Row))
-                    this.rowComponent.addColumn(1, this.columnElement, this.widgetService.clipboard);
-                }
-              },
+                options: [
+                  {
+                    type: MenuOptionType.MenuItem,
+                    name: 'Left',
+                    optionFunction: () => {
+                      if (!(this.widgetService.clipboard instanceof Row))
+                        this.rowComponent.addColumn(0, this.columnElement, this.widgetService.clipboard);
+                    }
+                  },
+                  {
+                    type: MenuOptionType.MenuItem,
+                    name: 'Right',
+                    optionFunction: () => {
+                      if (!(this.widgetService.clipboard instanceof Row))
+                        this.rowComponent.addColumn(1, this.columnElement, this.widgetService.clipboard);
+                    }
+                  }
+                ]
+              }
+              ,
               {
                 type: MenuOptionType.Divider
               }
@@ -140,18 +141,20 @@ export class ColumnDevComponent extends ColumnComponent {
             // Show the rest of the widget options
             menuOptions = menuOptions.concat([
               {
-                type: MenuOptionType.MenuItem,
-                name: 'Add widget left',
-                optionFunction: () => {
-                  this.rowComponent.addColumn(0, this.columnElement, new WidgetData(WidgetType.Video));
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Add widget right',
-                optionFunction: () => {
-                  this.rowComponent.addColumn(1, this.columnElement, new WidgetData(WidgetType.Video));
-                }
+                type: MenuOptionType.Submenu,
+                name: 'Add widget',
+                options: [
+                  {
+                    type: MenuOptionType.Submenu,
+                    name: 'Left',
+                    options: this.getWidgetSubmenus(0)
+                  },
+                  {
+                    type: MenuOptionType.Submenu,
+                    name: 'Right',
+                    options: this.getWidgetSubmenus(1)
+                  }
+                ]
               },
               {
                 type: MenuOptionType.Divider
@@ -175,20 +178,26 @@ export class ColumnDevComponent extends ColumnComponent {
                 type: MenuOptionType.Divider
               },
               {
-                type: MenuOptionType.MenuItem,
-                name: 'Duplicate widget left',
-                optionFunction: () => {
-                  const widgetData = this.widgetService.selectedWidget.getData();
-                  this.rowComponent.addColumn(0, this.columnElement, widgetData);
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Duplicate widget right',
-                optionFunction: () => {
-                  const widgetData = this.widgetService.selectedWidget.getData();
-                  this.rowComponent.addColumn(1, this.columnElement, widgetData);
-                }
+                type: MenuOptionType.Submenu,
+                name: 'Duplicate widget',
+                options: [
+                  {
+                    type: MenuOptionType.MenuItem,
+                    name: 'Left',
+                    optionFunction: () => {
+                      const widgetData = this.widgetService.selectedWidget.getData();
+                      this.rowComponent.addColumn(0, this.columnElement, widgetData);
+                    }
+                  },
+                  {
+                    type: MenuOptionType.MenuItem,
+                    name: 'Right',
+                    optionFunction: () => {
+                      const widgetData = this.widgetService.selectedWidget.getData();
+                      this.rowComponent.addColumn(1, this.columnElement, widgetData);
+                    }
+                  }
+                ]
               },
               {
                 type: MenuOptionType.Divider
@@ -218,7 +227,73 @@ export class ColumnDevComponent extends ColumnComponent {
   }
 
 
-
+  getWidgetSubmenus(pos: number) {
+    return [
+      {
+        name: 'Text',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Text));
+        }
+      },
+      {
+        name: 'Container',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Container));
+        }
+      },
+      {
+        name: 'Image',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Image));
+        }
+      },
+      {
+        name: 'Button',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Button));
+        }
+      },
+      {
+        name: 'Line',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Line));
+        }
+      },
+      {
+        name: 'Video',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Video));
+        }
+      },
+      {
+        name: 'Product Slider',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.ProductSlider));
+        }
+      },
+      {
+        name: 'Carousel',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Carousel));
+        }
+      },
+      {
+        name: 'Grid',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Grid));
+        }
+      }
+    ]
+  }
 
 
   // ------------------------------------------------------------------------------- Create Widget --------------------------------------------------------------------
@@ -406,7 +481,7 @@ export class ColumnDevComponent extends ColumnComponent {
       }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
         contextMenu.parentObj = this;
         contextMenu.xPos = event.screenX;
-        contextMenu.yPos = event.clientY + 74;
+        contextMenu.yPos = event.clientY + 66;
         contextMenu.options = this.getColumnContextMenuOptions();
       });
     }
@@ -435,39 +510,52 @@ export class ColumnDevComponent extends ColumnComponent {
         type: MenuOptionType.Divider
       },
       {
-        type: MenuOptionType.MenuItem,
-        name: 'Move column left',
-        isDisabled: !this.isColumnLeft(),
-        optionFunction: () => {
-          this.rowComponent.moveColumn(this, -1);
-        }
-      },
-      {
-        type: MenuOptionType.MenuItem,
-        name: 'Move column right',
-        isDisabled: !this.isColumnRight(),
-        optionFunction: () => {
-          this.rowComponent.moveColumn(this, 1);
-        }
+        type: MenuOptionType.Submenu,
+        name: 'Move column',
+        isDisabled: !this.isColumnLeft() && !this.isColumnRight(),
+        options: [
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Left',
+            isDisabled: !this.isColumnLeft(),
+            optionFunction: () => {
+              this.rowComponent.moveColumn(this, -1);
+            }
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Right',
+            isDisabled: !this.isColumnRight(),
+            optionFunction: () => {
+              this.rowComponent.moveColumn(this, 1);
+            }
+          }
+        ]
       },
       {
         type: MenuOptionType.Divider
       },
       {
-        type: MenuOptionType.MenuItem,
-        name: 'Duplicate column left',
-        optionFunction: () => {
-          const columnData = this.widgetService.selectedColumn.getData();
-          this.rowComponent.addColumn(0, this.columnElement, columnData);
-        }
-      },
-      {
-        type: MenuOptionType.MenuItem,
-        name: 'Duplicate column right',
-        optionFunction: () => {
-          const columnData = this.widgetService.selectedColumn.getData();
-          this.rowComponent.addColumn(1, this.columnElement, columnData);
-        }
+        type: MenuOptionType.Submenu,
+        name: 'Duplicate column',
+        options: [
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Left',
+            optionFunction: () => {
+              const columnData = this.widgetService.selectedColumn.getData();
+              this.rowComponent.addColumn(0, this.columnElement, columnData);
+            }
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Right',
+            optionFunction: () => {
+              const columnData = this.widgetService.selectedColumn.getData();
+              this.rowComponent.addColumn(1, this.columnElement, columnData);
+            }
+          }
+        ]
       },
       {
         type: MenuOptionType.Divider
@@ -493,6 +581,7 @@ export class ColumnDevComponent extends ColumnComponent {
     column.shadow = this.shadow.getData();
     column.padding = this.padding.getData();
     column.horizontalAlignment = this.horizontalAlignment.getData();
+    column.columnSpan = this.columnSpan.getData();
     return column;
   }
 }

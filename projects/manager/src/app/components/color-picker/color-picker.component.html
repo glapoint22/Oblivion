@@ -1,90 +1,73 @@
-<div class="color-picker-base hide" style="top: 0" [ngClass]="{'show': show}" (transitionend)="onHide()">
-    <button (click)="close()">Close</button>
-    <!-- Color Container -->
-    <div class="color-container">
+<div class="backdrop">
+    <div class="color-picker-base hide" style="top: 0" [ngClass]="{'show': show}" (transitionend)="onHide()"
+        [style.left.px]="posX" [style.top.px]="posY">
+        <button (click)="close()">Close</button>
+        <!-- Color Container -->
+        <div class="color-container">
 
-        <!-- Color Palette -->
-        <div #colorPalette class="color-palette" (mousedown)="colorDown($event)">
-            
-            <!-- Alpha Background -->
-            <div class="alpha-background"></div>
-            <!-- Color Background -->
-            <div class="color-background" [style.background]="'hsla(' + hue + ', 100%, 50%,' + alpha + ')'"></div>
-            <!-- Saturation -->
-            <div class="saturation" [style.opacity]="alpha"></div>
-            <!-- Lightness -->
-            <div class="lightness" [style.opacity]="alpha"></div>
+            <!-- Color Palette -->
+            <div #colorPalette class="color-palette" (mousedown)="colorDown($event)">
 
-            <!-- Ring -->
-            <div class="ring"
-                 [style.top.%]="ringY"
-                 [style.left.%]="ringX"
-                 [ngClass]="{'ring-dark': ringDark}">
+                <!-- Alpha Background -->
+                <div class="alpha-background"></div>
+                <!-- Color Background -->
+                <div class="color-background" [style.background]="'hsla(' + hue + ', 100%, 50%,' + alpha + ')'"></div>
+                <!-- Saturation -->
+                <div class="saturation" [style.opacity]="alpha"></div>
+                <!-- Lightness -->
+                <div class="lightness" [style.opacity]="alpha"></div>
+
+                <!-- Ring -->
+                <div class="ring" [style.top.%]="ringY" [style.left.%]="ringX" [ngClass]="{'ring-dark': ringDark}">
+                </div>
+            </div>
+
+            <!-- Hue Bar -->
+            <div #hueBar class="hue-bar" (mousedown)="hueDown($event)">
+
+                <!-- Hue Slider -->
+                <div class="hueSlider" [style.top.px]="hueSliderY">
+                </div>
             </div>
         </div>
 
-        <!-- Hue Bar -->
-        <div #hueBar 
-             class="hue-bar"
-             (mousedown)="hueDown($event)">
-
-             <!-- Hue Slider -->
-            <div class="hueSlider"
-                 [style.top.px]="hueSliderY">
+        <!-- Input Section -->
+        <div style="width: 100%;">
+            <!-- R -->
+            <div class="property">
+                <div class="label">R</div>
+                <number-field [value]="red" (onValueChange)="red = $event; updateRGB('red')">
+                </number-field>
             </div>
-        </div>
-    </div>
 
-    <!-- Input Section -->
-    <div style="width: 100%;">
-        <!-- R -->
-        <div class="property">
-            <div class="label">R</div>
-            <number-field 
-                [value]="red"
-                (onValueChange)="red = $event; updateRGB('red')">
-            </number-field>
-        </div>
-        
-        <!-- G -->
-        <div class="property">
-            <div class="label">G</div>
-            <number-field 
-                [value]="green"
-                (onValueChange)="green = $event; updateRGB('green')">
-            </number-field>
-        </div>
+            <!-- G -->
+            <div class="property">
+                <div class="label">G</div>
+                <number-field [value]="green" (onValueChange)="green = $event; updateRGB('green')">
+                </number-field>
+            </div>
 
-        <!-- B -->
-        <div class="property">
-            <div class="label">B</div>
-            <number-field
-                [value]="blue"
-                (onValueChange)="blue = $event; updateRGB('blue')">
-            </number-field>
-        </div>
+            <!-- B -->
+            <div class="property">
+                <div class="label">B</div>
+                <number-field [value]="blue" (onValueChange)="blue = $event; updateRGB('blue')">
+                </number-field>
+            </div>
 
-        <!-- A -->
-        <div class="property">
-            <div class="label">A</div>
-            <number-field
-                [value]="alpha"
-                (onValueChange)="alpha = $event; color.a = $event; updateRGB('alpha')">
-            </number-field>
-        </div>
+            <!-- A -->
+            <div class="property">
+                <div class="label">A</div>
+                <number-field [value]="alpha" (onValueChange)="alpha = $event; color.a = $event; updateRGB('alpha')">
+                </number-field>
+            </div>
 
-        <!-- Hex -->
-        <div class="property">
-            <div class="label">Hex</div>
-            <input class="txt-20"
-                   maxlength="8"
-                   spellcheck="false"
-                   (select)="editMode = true"
-                   (focus)="hexFocus = true;"
-                   [value]="hexFocus ? hex : hex"
-                   (input)="updateHexInput($event.target)"
-                   (click)="onHexInputClick($event.target)"
-                   (blur)="hexFocus = false; editMode = false">
+            <!-- Hex -->
+            <div class="property">
+                <div class="label">Hex</div>
+                <input class="txt-20" maxlength="8" spellcheck="false" (select)="editMode = true"
+                    (focus)="hexFocus = true;" [value]="hexFocus ? hex : hex" (input)="updateHexInput($event.target)"
+                    (click)="onHexInputClick($event.target)" (blur)="hexFocus = false; editMode = false">
+            </div>
         </div>
     </div>
 </div>

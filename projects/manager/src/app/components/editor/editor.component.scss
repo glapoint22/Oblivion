@@ -5,81 +5,92 @@
     left: 0;
     right: 0;
     bottom: 0;
+    user-select: none;
 }
 
 .widget-bar {
-    background: #363636; 
+    background: #363636;
     width: 34px;
-    display:flex;
+    display: flex;
     align-items: center;
     flex-direction: column;
     flex-shrink: 0;
+
     .icon-button {
         margin-top: 14px;
         font-size: 16px;
     }
 }
 
-.editor-window-container {
+.view-port-container {
     width: 100%;
-    overflow-y: overlay;
-    overflow-x: hidden;
-}
-
-.editor-window {
     position: relative;
-    margin: auto;
-    padding: 40px 0 100px;
 }
 
-.vertical-dashed-line {
-    position: absolute;
-    top: 0;
-    bottom: -100vh;
-    z-index: -1;
-
-    &:first-child {
-        left: 4px;
-    }
-
-    &:nth-child(2) {
-        right: 4px;
-    }
+.view-port-dimensions-bar {
+    width: 100%;
+    height: 30px;
+    background: #212121;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.horizontal-dashed-line {
-    position: absolute;
-    left: -100vw;
-    right: -1000px;
-    z-index: -1;
-
-    &:nth-child(3) {
-        top: 44px;
-    }
-
-    &:nth-child(4) {
-        bottom: 104px
-    }
+.inputs-container {
+    display: flex;
+    justify-content: space-between;
+    width: 320px;
+    align-items: center;
 }
 
-.vertical-resizer {
+.breakpoint-display {
+    border: 1px solid #727272;
+    padding: 4px;
+    width: 40px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #a3a3a3;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.left-resizer {
+    width: 8px;
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 10px;
-    user-select: none;
+    cursor: ew-resize;
+    left: -4px;
 }
 
-
-.horizontal-resizer {
+.right-resizer {
+    width: 8px;
     position: absolute;
-    left: -100vw;
-    right: -100vw;
-    bottom: 95px;
-    height: 10px;
-    user-select: none;
+    top: 0;
+    right: -4px;
+    bottom: 0;
+    cursor: ew-resize;
 }
 
+.bottom-resizer {
+    height: 8px;
+    position: absolute;
+    bottom: 0;
+    cursor: ns-resize;
+    left: 0;
+    right: 0;
+}
+
+.view-port {
+    position: absolute;
+    top: 33px;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0 auto;
+}
 
 .resize-cover {
     position: absolute;
@@ -102,9 +113,12 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 78px;
+    height: 63px;
 }
 
-.icon-container {
-    margin-left: 0;
+.widget-inspector-container {
+    width: 100%;
+    max-width: 250px;
+    background: #222222;
+    border: 1px solid #2a2a2a;
 }

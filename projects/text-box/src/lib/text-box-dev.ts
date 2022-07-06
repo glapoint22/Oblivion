@@ -200,6 +200,18 @@ export class TextBoxDev extends TextBox {
     }
 
 
+
+    
+
+    // ---------------------------------------------------------Remove Focus------------------------------------------------------------------
+    removeFocus() {
+        this.selection.document.getSelection()?.removeAllRanges();
+    }
+
+
+
+
+
     // ---------------------------------------------------------Render------------------------------------------------------------------
     public render(): void {
         // Assign the root id

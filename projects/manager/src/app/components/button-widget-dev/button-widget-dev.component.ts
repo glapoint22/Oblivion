@@ -114,11 +114,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
     super.ngOnInit();
     this.background.enabled = true;
   }
-
-
-  // ------------------------------------------------------------ Add Buton Class To Document -------------------------------------------------------
-  addButonClassToDocument(buttonClass: string) { }
-
+ 
 
   // ----------------------------------------------------------------- Get Background Color ----------------------------------------------------------
   getBackgroundColor(): string {

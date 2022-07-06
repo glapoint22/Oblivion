@@ -1,0 +1,144 @@
+.base {
+    width: 243px;
+    position: relative;
+}
+
+
+.breakpoint-lines-container {
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+    justify-content: space-around;
+}
+
+.breakpoint-line {
+    width: 1px;
+
+    &:nth-child(odd) {
+        background: #262626;
+    }
+
+    &:nth-child(even) {
+        background: #161616;
+    }
+}
+
+.breakpoints-text-container {
+    width: 100%;
+    height: 24px;
+    background: #222222;
+    display: flex;
+}
+
+.breakpoints-text {
+    width: 100%;
+    height: 100%;
+    color: #d1d1d1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}
+
+.playhead {
+    position: absolute;
+    width: 28px;
+    height: 17px;
+    top: 4px;
+    border-radius: 3px;
+    background: #426dae;
+    border: 1px solid #4c77b8;
+    color: white;
+    cursor: pointer;
+}
+
+.playhead-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    height: 100%;
+}
+
+
+
+.playhead-line {
+    position: absolute;
+    width: 2px;
+    top: 20px;
+    bottom: 0;
+    background: #4772b3;
+}
+
+
+.playhead-disabled {
+    background: #4a556a;
+    color: #8d8a8a;
+    border-color: #495b76;
+    cursor: default;
+}
+
+
+
+.breakpoints-background {
+    background: #303030;
+    position: relative;
+    width: 100%;
+}
+
+.breakpoints-container {
+    position: absolute;
+    width: 100%;
+    height: 30px;
+}
+
+.breakpoint-label {
+    font-size: 9px;
+    color: #a1a1a1;
+    margin-left: 5px;
+}
+
+.breakpoints-row {
+    width: 100%;
+    margin-top: 4px;
+    height: 16px;
+    position: relative;
+}
+
+.breakpoint-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diamond {
+    width: 9px;
+    height: 9px;
+    background: #bfbfbf;
+    border: 1px solid black;
+    transform: rotate(45deg);
+}
+
+.breakpoint-horizontal-line {
+    flex: 1;
+    height: 1px;
+    background: #707070;
+}
+
+.selected-breakpoint {
+    & .diamond {
+        background: #ffba00;
+    }
+
+    &+.breakpoint-container .diamond:first-child {
+        background: #ffba00;
+    }
+
+    .breakpoint-horizontal-line {
+        background: #ffba00;
+    }
+}

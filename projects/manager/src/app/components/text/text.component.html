@@ -1,4 +1,4 @@
-<panel [title]="'Text'">
+<panel [title]="'Text'" [enabledProperty]="textWidget" (onChange)="textWidget.enabled ? textWidget.onEnabled(): textBox.removeFocus()">
     <!-- Font -->
     <div class="property">
         <div class="label">Font</div>
@@ -201,7 +201,7 @@
     <div class="property">
         <div class="label">Link</div>
         <div style="flex: 1; display: flex; justify-content: space-between;">
-            <div class="icon-container" title="Link" (click)="onLinkClick()">
+            <div #linkElement class="icon-container" title="Link" (click)="onLinkClick(linkElement)">
                 <i class="fas fa-link"></i>
             </div>
 

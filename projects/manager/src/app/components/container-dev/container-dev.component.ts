@@ -1,5 +1,5 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
-import { Image, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
@@ -17,6 +17,7 @@ export class ContainerDevComponent extends ContainerComponent {
   public rows: Array<RowDevComponent> = new Array<RowDevComponent>();
   public showRowIndicator!: boolean;
   public host!: ContainerHost;
+  public page!: PageDevComponent;
 
   constructor
     (
@@ -26,6 +27,14 @@ export class ContainerDevComponent extends ContainerComponent {
     ) { super(resolver) }
 
 
+  ngAfterViewInit() {
+    window.setTimeout(() => {
+      if (this.host instanceof PageDevComponent) {
+        this.page = this.host as PageDevComponent;
+      }
+    });
+
+  }
 
   // ----------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
   public ngOnInit(): void {
@@ -49,7 +58,7 @@ export class ContainerDevComponent extends ContainerComponent {
   }
 
 
-  
+
 
 
   // --------------------------------------------------------------------------- Add Widget ---------------------------------------------------------
@@ -145,19 +154,83 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
 
+  getWidgetSubmenus(yPos: number) {
+    return [
+      {
+        name: 'Text',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Text), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Container',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Container), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Image',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Image), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Button',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Button), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Line',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Line), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Video',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Video), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Product Slider',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.ProductSlider), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Carousel',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Carousel), this.getRowTop(yPos));
+        }
+      },
+      {
+        name: 'Grid',
+        type: MenuOptionType.MenuItem,
+        optionFunction: () => {
+          this.addWidget(new WidgetData(WidgetType.Grid), this.getRowTop(yPos));
+        }
+      }
+    ]
+  }
 
 
 
 
   // --------------------------------------------------------------------------- On Mousedown ---------------------------------------------------------
   public onMousedown(event: MouseEvent): void {
-    if (this.host instanceof PageDevComponent) {
-      const page = this.host as PageDevComponent;
-
-
+    if (this.page) {
 
       if (event.button == 2) {
-        if (page.pageContent) {
+        if (this.page.pageContent) {
           this.lazyLoadingService.load(async () => {
             const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
             const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
@@ -170,7 +243,7 @@ export class ContainerDevComponent extends ContainerComponent {
             .then((contextMenu: ContextMenuComponent) => {
               contextMenu.parentObj = this;
               contextMenu.xPos = event.screenX;
-              contextMenu.yPos = event.clientY + 74;
+              contextMenu.yPos = event.clientY + 66;
               contextMenu.options = [
                 {
                   type: MenuOptionType.MenuItem,
@@ -185,12 +258,11 @@ export class ContainerDevComponent extends ContainerComponent {
                   type: MenuOptionType.Divider
                 },
                 {
-                  type: MenuOptionType.MenuItem,
+                  type: MenuOptionType.Submenu,
                   name: 'Add widget',
-                  optionFunction: () => {
-                    this.addWidget(new WidgetData(WidgetType.Video), this.getRowTop(event.clientY));
-                  }
+                  options: this.getWidgetSubmenus(event.clientY)
                 },
+
                 {
                   type: MenuOptionType.Divider
                 },
@@ -242,7 +314,7 @@ export class ContainerDevComponent extends ContainerComponent {
             .then((contextMenu: ContextMenuComponent) => {
               contextMenu.parentObj = this;
               contextMenu.xPos = event.screenX;
-              contextMenu.yPos = event.clientY + 74;
+              contextMenu.yPos = event.clientY + 66;
               contextMenu.options = [
 
                 {

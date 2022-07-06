@@ -15,7 +15,6 @@ import { BorderComponent } from '../border/border.component';
 import { NumberFieldModule } from '../number-field/number-field.module';
 import { CornersComponent } from '../corners/corners.component';
 import { ShadowComponent } from '../shadow/shadow.component';
-import { PaddingComponent } from '../padding/padding.component';
 import { VerticalAlignmentComponent } from '../vertical-alignment/vertical-alignment.component';
 import { HorizontalAlignmentComponent } from '../horizontal-alignment/horizontal-alignment.component';
 import { ButtonWidgetPropertiesComponent } from '../button-widget-properties/button-widget-properties.component';
@@ -40,6 +39,8 @@ import { ListModule } from '../lists/list/list.module';
 import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
 import { PageNichesComponent } from '../page-niches/page-niches.component';
 import { PageKeywordsComponent } from '../page-keywords/page-keywords.component';
+import { BreakpointsComponent } from '../breakpoints/breakpoints.component';
+import { BreakpointValueDisplayerComponent } from '../breakpoint-value-displayer/breakpoint-value-displayer.component';
 
 
 
@@ -55,7 +56,6 @@ import { PageKeywordsComponent } from '../page-keywords/page-keywords.component'
     BorderComponent,
     CornersComponent,
     ShadowComponent,
-    PaddingComponent,
     VerticalAlignmentComponent,
     HorizontalAlignmentComponent,
     ButtonWidgetPropertiesComponent,
@@ -74,7 +74,9 @@ import { PageKeywordsComponent } from '../page-keywords/page-keywords.component'
     CarouselWidgetPropertiesComponent,
     LinkPropertyComponent,
     PageNichesComponent,
-    PageKeywordsComponent
+    PageKeywordsComponent,
+    BreakpointsComponent,
+    BreakpointValueDisplayerComponent
   ],
   imports: [
     CommonModule,

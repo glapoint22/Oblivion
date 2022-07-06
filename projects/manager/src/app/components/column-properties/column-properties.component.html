@@ -11,9 +11,9 @@
 <shadow [shadow]="widgetService.selectedColumn.shadow" (onChange)="update()"></shadow>
 
 <!-- Padding -->
-<padding [padding]="widgetService.selectedColumn.padding"
-    (onChange)="updatePadding(widgetService.selectedColumn.padding, widgetService.selectedColumn.columnElement)">
-</padding>
+<breakpoints [breakpointObject]="widgetService.selectedColumn.padding"
+    (onChange)="updatePadding(widgetService.selectedColumn.padding, widgetService.selectedColumn.paddingElement)">
+</breakpoints>
 
 <!-- Horizontal Alignment -->
 <horizontal-alignment [horizontalAlignment]="widgetService.selectedColumn.horizontalAlignment"

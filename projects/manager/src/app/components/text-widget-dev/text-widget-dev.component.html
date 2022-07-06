@@ -14,9 +14,9 @@
 
 
 
-    <div *ngIf="!inEditMode" id="ignore-element-height"
-        style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; user-select: none"
-        (dblclick)="inEditMode = true; textBoxDev.setFocus()"></div>
+    <div *ngIf="!enabled" id="ignore-element-height"
+        style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; user-select: none" (dblclick)="onEnabled()">
+    </div>
 
     <!-- Handles -->
     <div id="ignore-element-height"

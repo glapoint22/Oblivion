@@ -26,6 +26,8 @@ export class ColorPickerComponent extends LazyLoad {
   @ViewChild('colorPalette') colorPalette!: ElementRef;
   public $onChange: Subject<void> = new Subject<void>();
   public $onClose: Subject<void> = new Subject<void>();
+  public posX!: number;
+  public posY!: number;
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -41,6 +43,7 @@ export class ColorPickerComponent extends LazyLoad {
       this.alpha = this.color.a;
     });
   }
+
 
 
   // -----------------------------( COLOR DOWN )------------------------------ \\

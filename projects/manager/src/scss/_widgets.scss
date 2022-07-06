@@ -1,10 +1,10 @@
 @import '../../../../dist/widgets/scss/widgets';
 
 $handle-size: 8px;
-$container-outline-color: #961496;
+$container-outline-color: #961455;
 $row-outline-color: #149625;
-$column-outline-color: #146296;
-$widget-outline-color: #967e14;
+$column-outline-color: #147196;
+$widget-outline-color: #966d14;
 
 .row {
     display: flex;
@@ -229,16 +229,12 @@ body {
 }
 
 
-.container-outline,
-.horizontal-dashed-line,
-.vertical-dashed-line {
-    &:not(.container-wrapper):not(.selected-widget) {
-        outline: 1px dashed;
-        outline-color: rgba($color: $container-outline-color, $alpha: 0.4);
+.container-outline {
+    outline: 1px dashed;
+    outline-color: rgba($color: $container-outline-color, $alpha: 0.4);
 
-        &:hover {
-            outline-color: rgba($color: $widget-outline-color, $alpha: 1);
-        }
+    &:not(.selected-widget)#container-widget:hover {
+        outline-color: rgba($color: $widget-outline-color, $alpha: 1);
     }
 }
 
@@ -247,11 +243,13 @@ body {
 .selected-row {
     outline-style: solid;
     outline-color: lighten($row-outline-color, 30%);
+    z-index: 1;
 }
 
 .selected-column {
     outline-style: solid;
     outline-color: lighten($column-outline-color, 30%);
+    z-index: 1;
 }
 
 
@@ -264,9 +262,6 @@ body {
 
 
 .selected-page {
-
-    &>.vertical-dashed-line,
-    .horizontal-dashed-line {
-        outline-color: lighten($container-outline-color, 10%) !important;
-    }
+    outline-style: solid;
+    outline-color: lighten($container-outline-color, 10%) !important;
 }

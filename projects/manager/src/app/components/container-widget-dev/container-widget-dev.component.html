@@ -1,4 +1,4 @@
-<div #widget class="container-outline" style="position: relative; width: 100%; user-select: none;"
+<div id="container-widget" #widget class="container-outline" style="position: relative; width: 100%; user-select: none;"
     [style.backgroundColor]="background && background.enabled && background.rgbColor.toRGBString() ? background.rgbColor.toRGBString(): null"
     [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.rgbColor.toRGBString() : null"
     [style.borderRadius]="
@@ -17,9 +17,9 @@
     [style.minHeight.px]="height"
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}">
 
-    <div style="position: relative;">
+    <!-- <div style="position: relative;"> -->
         <container-dev #container></container-dev>
-    </div>
+    <!-- </div> -->
     
 
 
