@@ -21,7 +21,6 @@ export class ColumnDevComponent extends ColumnComponent {
 
   constructor(resolver: ComponentFactoryResolver, public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver) }
 
-
   // ---------------------------------------------------------------------Create Widget Component Ref----------------------------------------------------------------
   public async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
     const widgetComponentRef = await super.createWidgetComponentRef(widgetData);

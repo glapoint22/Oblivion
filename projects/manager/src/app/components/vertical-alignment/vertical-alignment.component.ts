@@ -7,118 +7,118 @@ import { BreakpointService } from '../../services/breakpoint/breakpoint.service'
   templateUrl: './vertical-alignment.component.html',
   styleUrls: ['./vertical-alignment.component.scss']
 })
-export class VerticalAlignmentComponent implements OnInit, OnChanges {
-  @Input() verticalAlignment!: VerticalAlignment;
-  @Output() onChange: EventEmitter<void> = new EventEmitter();
-  @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
-  public selectedVerticalAlignmentType: VerticalAlignmentType = VerticalAlignmentType.Top;
-  public verticalAlignmentType = VerticalAlignmentType;
-  public isBreakpointCheckboxChecked: boolean = false;
+export class VerticalAlignmentComponent  {
+  // @Input() verticalAlignment!: VerticalAlignment;
+  // @Output() onChange: EventEmitter<void> = new EventEmitter();
+  // @ViewChild('checkbox') checkbox!: ElementRef<HTMLInputElement>;
+  // public selectedVerticalAlignmentType: VerticalAlignmentType = VerticalAlignmentType.Top;
+  // public verticalAlignmentType = VerticalAlignmentType;
+  // public isBreakpointCheckboxChecked: boolean = false;
 
-  constructor(private breakpointService: BreakpointService) { }
+  // constructor(private breakpointService: BreakpointService) { }
 
-  ngOnInit(): void {
-    // Subscribe to breakpoint changes
-    this.breakpointService.$breakpointChange.subscribe(() => {
-      if (this.verticalAlignment.values && this.verticalAlignment.values.length > 0 && this.verticalAlignment.values.some(x => x.breakpoint)) {
-        this.setSelectedVerticalAlignmentType();
-      }
-    });
-  }
+  // ngOnInit(): void {
+  //   // Subscribe to breakpoint changes
+  //   this.breakpointService.$breakpointChange.subscribe(() => {
+  //     if (this.verticalAlignment.values && this.verticalAlignment.values.length > 0 && this.verticalAlignment.values.some(x => x.breakpoint)) {
+  //       this.setSelectedVerticalAlignmentType();
+  //     }
+  //   });
+  // }
 
-  ngOnChanges(): void {
-    this.setSelectedVerticalAlignmentType();
-  }
-
-
-  setSelectedVerticalAlignmentType() {
-    // Get the current breakpoint based on the array of vertical alignment values
-    const breakpoint = this.breakpointService.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string));
+  // ngOnChanges(): void {
+  //   this.setSelectedVerticalAlignmentType();
+  // }
 
 
-    if (breakpoint) {
-      // Find the vertical alignment value that has this breakpoint
-      const verticalAlignmentValue = this.verticalAlignment.values.find(x => x.breakpoint == breakpoint);
-
-      // Assign the selected vertical alignment
-      if (verticalAlignmentValue) {
-        this.selectedVerticalAlignmentType = verticalAlignmentValue.verticalAlignmentType
-        if (this.checkbox) this.checkbox.nativeElement.checked = true;
-        this.isBreakpointCheckboxChecked = true;
-      }
+  // setSelectedVerticalAlignmentType() {
+  //   // Get the current breakpoint based on the array of vertical alignment values
+  //   const breakpoint = this.breakpointService.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string));
 
 
-    } else {
-      // Find any values without a breakpoint
-      const verticalAlignmentValue = this.verticalAlignment.values.find(x => !x.breakpoint);
+  //   if (breakpoint) {
+  //     // Find the vertical alignment value that has this breakpoint
+  //     const verticalAlignmentValue = this.verticalAlignment.values.find(x => x.breakpoint == breakpoint);
 
-      // Assign the selected vertical alignment
-      if (verticalAlignmentValue) {
-        this.selectedVerticalAlignmentType = verticalAlignmentValue.verticalAlignmentType;
-      } else {
-
-        // Nothing found so assign the default
-        this.selectedVerticalAlignmentType = VerticalAlignmentType.Top;
-      }
+  //     // Assign the selected vertical alignment
+  //     if (verticalAlignmentValue) {
+  //       this.selectedVerticalAlignmentType = verticalAlignmentValue.verticalAlignmentType
+  //       if (this.checkbox) this.checkbox.nativeElement.checked = true;
+  //       this.isBreakpointCheckboxChecked = true;
+  //     }
 
 
-      // Uncheck the checkbox
-      if (this.checkbox) this.checkbox.nativeElement.checked = false;
-      this.isBreakpointCheckboxChecked = false;
-    }
-  }
+  //   } else {
+  //     // Find any values without a breakpoint
+  //     const verticalAlignmentValue = this.verticalAlignment.values.find(x => !x.breakpoint);
+
+  //     // Assign the selected vertical alignment
+  //     if (verticalAlignmentValue) {
+  //       this.selectedVerticalAlignmentType = verticalAlignmentValue.verticalAlignmentType;
+  //     } else {
+
+  //       // Nothing found so assign the default
+  //       this.selectedVerticalAlignmentType = VerticalAlignmentType.Top;
+  //     }
 
 
-  createValue(verticalAlignType: VerticalAlignmentType): VerticalAlignmentValue {
-    let verticalAlignmentValue: VerticalAlignmentValue = new VerticalAlignmentValue();
-
-    verticalAlignmentValue.verticalAlignmentType = verticalAlignType;
-    this.selectedVerticalAlignmentType = verticalAlignType;
-    this.verticalAlignment.values.push(verticalAlignmentValue);
-
-    return verticalAlignmentValue;
-  }
+  //     // Uncheck the checkbox
+  //     if (this.checkbox) this.checkbox.nativeElement.checked = false;
+  //     this.isBreakpointCheckboxChecked = false;
+  //   }
+  // }
 
 
-  onClick(verticalAlignType: VerticalAlignmentType) {
-    const verticalAlignmentValue = this.verticalAlignment.values.find(x => x.breakpoint == this.breakpointService.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string)) || x.breakpoint == null);
+  // createValue(verticalAlignType: VerticalAlignmentType): VerticalAlignmentValue {
+  //   let verticalAlignmentValue: VerticalAlignmentValue = new VerticalAlignmentValue();
 
-    if (verticalAlignmentValue) {
-      verticalAlignmentValue.verticalAlignmentType = verticalAlignType;
-      this.selectedVerticalAlignmentType = verticalAlignType;
-    } else {
-      this.createValue(verticalAlignType);
-    }
+  //   verticalAlignmentValue.verticalAlignmentType = verticalAlignType;
+  //   this.selectedVerticalAlignmentType = verticalAlignType;
+  //   this.verticalAlignment.values.push(verticalAlignmentValue);
 
-    this.onChange.emit();
-  }
+  //   return verticalAlignmentValue;
+  // }
 
 
-  onCheckboxChange(breakpointCheckbox: HTMLInputElement) {
-    this.isBreakpointCheckboxChecked = breakpointCheckbox.checked;
+  // onClick(verticalAlignType: VerticalAlignmentType) {
+  //   const verticalAlignmentValue = this.verticalAlignment.values.find(x => x.breakpoint == this.breakpointService.getBreakpoint(this.verticalAlignment.values.map(x => x.breakpoint as string)) || x.breakpoint == null);
 
-    let verticalAlignmentValue = this.verticalAlignment.values.find(x => x.verticalAlignmentType == this.selectedVerticalAlignmentType);
+  //   if (verticalAlignmentValue) {
+  //     verticalAlignmentValue.verticalAlignmentType = verticalAlignType;
+  //     this.selectedVerticalAlignmentType = verticalAlignType;
+  //   } else {
+  //     this.createValue(verticalAlignType);
+  //   }
 
-    if (breakpointCheckbox.checked) {
-      if (!verticalAlignmentValue) {
-        verticalAlignmentValue = this.createValue(this.selectedVerticalAlignmentType);
-      }
+  //   this.onChange.emit();
+  // }
 
-      verticalAlignmentValue.breakpoint = this.breakpointService.currentBreakpoint;
-    } else {
-      if (verticalAlignmentValue) {
-        verticalAlignmentValue.breakpoint = null;
 
-        const index = this.verticalAlignment.values.findIndex(x => !x.breakpoint && x != verticalAlignmentValue);
+  // onCheckboxChange(breakpointCheckbox: HTMLInputElement) {
+  //   this.isBreakpointCheckboxChecked = breakpointCheckbox.checked;
 
-        if (index != -1) {
-          this.verticalAlignment.values.splice(index, 1);
-        }
+  //   let verticalAlignmentValue = this.verticalAlignment.values.find(x => x.verticalAlignmentType == this.selectedVerticalAlignmentType);
 
-        this.setSelectedVerticalAlignmentType();
-      }
-    }
+  //   if (breakpointCheckbox.checked) {
+  //     if (!verticalAlignmentValue) {
+  //       verticalAlignmentValue = this.createValue(this.selectedVerticalAlignmentType);
+  //     }
 
-    this.onChange.emit();
-  }
+  //     verticalAlignmentValue.breakpoint = this.breakpointService.currentBreakpoint;
+  //   } else {
+  //     if (verticalAlignmentValue) {
+  //       verticalAlignmentValue.breakpoint = null;
+
+  //       const index = this.verticalAlignment.values.findIndex(x => !x.breakpoint && x != verticalAlignmentValue);
+
+  //       if (index != -1) {
+  //         this.verticalAlignment.values.splice(index, 1);
+  //       }
+
+  //       this.setSelectedVerticalAlignmentType();
+  //     }
+  //   }
+
+  //   this.onChange.emit();
+  // }
 }

@@ -39,8 +39,7 @@ import { ListModule } from '../lists/list/list.module';
 import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/checkbox-hierarchy.module';
 import { PageNichesComponent } from '../page-niches/page-niches.component';
 import { PageKeywordsComponent } from '../page-keywords/page-keywords.component';
-import { BreakpointsComponent } from '../breakpoints/breakpoints.component';
-import { BreakpointValueDisplayerComponent } from '../breakpoint-value-displayer/breakpoint-value-displayer.component';
+import { PaddingComponent } from '../padding/padding.component';
 
 
 
@@ -75,8 +74,7 @@ import { BreakpointValueDisplayerComponent } from '../breakpoint-value-displayer
     LinkPropertyComponent,
     PageNichesComponent,
     PageKeywordsComponent,
-    BreakpointsComponent,
-    BreakpointValueDisplayerComponent
+    PaddingComponent
   ],
   imports: [
     CommonModule,

@@ -11,14 +11,14 @@
 <shadow [shadow]="widgetService.selectedColumn.shadow" (onChange)="update()"></shadow>
 
 <!-- Padding -->
-<breakpoints [breakpointObject]="widgetService.selectedColumn.padding"
+<padding [padding]="widgetService.selectedColumn.padding"
     (onChange)="updatePadding(widgetService.selectedColumn.padding, widgetService.selectedColumn.paddingElement)">
-</breakpoints>
+</padding>
 
 <!-- Horizontal Alignment -->
-<horizontal-alignment [horizontalAlignment]="widgetService.selectedColumn.horizontalAlignment"
+<!-- <horizontal-alignment [horizontalAlignment]="widgetService.selectedColumn.horizontalAlignment"
     (onChange)="updateHorizontalAlignment()">
-</horizontal-alignment>
+</horizontal-alignment> -->
 
 
 <!-- Column Span -->

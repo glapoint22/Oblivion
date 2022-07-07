@@ -183,7 +183,7 @@ export class WidgetService {
   private onBottomWidgetHandleMousedown(mousedownEvent: MouseEvent) {
     const document = this.widgetDocument;
     const row = this.selectedRow;
-    const breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint as string));
+    const breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint!));
     const verticalAlignmentValue = row.verticalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const verticalAlignmentType = verticalAlignmentValue ? verticalAlignmentValue.verticalAlignmentType : VerticalAlignmentType.Top;
     const rowHeight = this.getRowHeight();
@@ -276,7 +276,7 @@ export class WidgetService {
   private onTopWidgetHandleMousedown(mousedownEvent: MouseEvent) {
     const document = this.widgetDocument;
     const row = this.selectedRow;
-    const breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint as string));
+    const breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint!));
     const verticalAlignmentValue = row.verticalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const verticalAlignmentType = verticalAlignmentValue ? verticalAlignmentValue.verticalAlignmentType : VerticalAlignmentType.Top;
     const rowHeight = this.getRowHeight();
@@ -375,7 +375,7 @@ export class WidgetService {
     const document = this.widgetDocument;
     const column = this.selectedColumn;
     const widget = this.selectedWidget;
-    const breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint as string));
+    const breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint!));
     const horizontalAlignmentValue = column.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
     let handleMoved: boolean;
@@ -418,7 +418,7 @@ export class WidgetService {
     const document = this.widgetDocument;
     const column = this.selectedColumn;
     const widget = this.selectedWidget;
-    const breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint as string));
+    const breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint!));
     const horizontalAlignmentValue = column.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
     let handleMoved: boolean;
@@ -461,11 +461,11 @@ export class WidgetService {
     const document = this.widgetDocument;
     const widget = this.selectedWidget;
     const column = this.selectedColumn;
-    let breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint as string));
+    let breakpoint = this.breakpointService.getBreakpoint(column.horizontalAlignment.values.map(x => x.breakpoint!));
     const horizontalAlignmentValue = column.horizontalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const horizontalAlignmentType = horizontalAlignmentValue ? horizontalAlignmentValue.horizontalAlignmentType : HorizontalAlignmentType.Left;
     const row = this.selectedRow;
-    breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint as string));
+    breakpoint = this.breakpointService.getBreakpoint(row.verticalAlignment.values.map(x => x.breakpoint!));
     const verticalAlignmentValue = row.verticalAlignment.values.find(x => breakpoint ? x.breakpoint == breakpoint : !x.breakpoint)!;
     const verticalAlignmentType = verticalAlignmentValue ? verticalAlignmentValue.verticalAlignmentType : VerticalAlignmentType.Top;
     const rect = widget.widgetElement.getBoundingClientRect();

@@ -3,7 +3,7 @@ import { PaddingType } from "./widget-enums";
 
 export class PaddingValue implements BreakpointValue<number> {
 
-    constructor(public paddingType: PaddingType, public padding: number, public breakpoint?: number) { }
+    constructor(public paddingType: PaddingType, public padding: number, public breakpoint: number) { }
 
     getValue(): number {
         return this.padding;
