@@ -6,5 +6,5 @@
      (transitionend)="onHide()"
      (mousedown)="$event.stopPropagation()">
     
-    <side-menu-niches #sideMenuNiches [base]="base"></side-menu-niches>
+    <side-menu-niches #sideMenuNiches [base]="base" (onProductSelect)="close()"></side-menu-niches>
 </div>

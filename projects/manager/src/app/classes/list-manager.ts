@@ -226,7 +226,7 @@ export class ListManager {
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
 
-    if(!this.editedItem) e!.stopPropagation()
+    if(e && !this.editedItem) e!.stopPropagation()
 
     this.mouseDownItem = listItem
     // As long as this item is NOT currently being edited

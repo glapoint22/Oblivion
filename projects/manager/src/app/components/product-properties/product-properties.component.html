@@ -1,12 +1,300 @@
-<div class="product-properties-container">
-    <product-image-property></product-image-property>
-    <product-media-property></product-media-property>
-    <product-price-property></product-price-property>
-    <product-hoplink-property></product-hoplink-property>
-    <product-description-property></product-description-property>
-    <product-subproducts-property></product-subproducts-property>
-    <product-filters-property></product-filters-property>
-    <product-keywords-property></product-keywords-property>
-    <product-vendor-property></product-vendor-property>
-    <product-groups-property></product-groups-property>
+<div style="position: absolute; top: 40px; width: 100%;"
+    [style.z-index]="zIndex">
+    <div style="height: 42px; border-top-left-radius: 6px; border-top-right-radius: 6px; padding: 1px; background: linear-gradient(#545454, #262626);">
+        <div style="height: 100%; border-top-left-radius: 6px; border-top-right-radius: 6px; background: linear-gradient(#323232, #202020);">
+
+        </div>
+    </div>
+
+
+    <div style="position: relative; height: 58px; background: #1f1f1f; border: 1px solid #252525; border-top: none;">
+        <div  style="position: absolute; top: 0; width: 100%; height: 14px; background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));">
+        </div>
+
+        <div style="height: 100%; display: flex; justify-content: center; align-items: center;">
+            <div style="color: #ffba00; text-decoration: underline;">Health & Fitness</div>
+            <div style="border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; border-left: 6px solid #dadada; margin: 0 10px;">
+            </div>
+            <div style="color: #ffba00; text-decoration: underline;">Strength Training</div>
+            <div style="border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; border-left: 6px solid #dadada; margin: 0 10px;">
+            </div>
+            <div style="color: #b4b4b4;">Isometrics Mass</div>
+        </div>
+    </div>
+
+    <div style="position: fixed; top: 173px; right: 0; bottom: 0; left: 0; background: #1b1b1b; overflow-y: auto; padding: 12px;">
+
+        <div style="margin: auto; width: 1506px;">
+
+            <div style="display: flex;">
+
+                <div style="margin-right: 25px;">
+
+                    <div style="display: flex; margin-bottom: 4px; justify-content: space-between;">
+
+                        <div style="color: #505050; font-size: 12px;">Media:</div>
+                        <i class="fas fa-trash-alt" style="color: #9e9e9e;"></i>
+                        <i class="fas fa-pencil-alt" style="color: #9e9e9e;"></i>
+                    </div>
+
+
+
+                    <div style="width: 84px; height: 522px; border: 1px dashed #505050">
+                    
+                        <div style="display: flex; width: 25px; height: 25px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; margin: auto; margin-top: 29px;">
+                            
+                            <div style="width: 5px; height: 3px; background: #aaaaaa;"></div>
+                            <div style="width: 3px; height: 13px; background: #aaaaaa;"></div>
+                            <div style="width: 5px; height: 3px; background: #aaaaaa;"></div>
+
+                        
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+
+                <div style="margin-right: 25px;">
+
+                    <div style="display: flex; margin: 0 7px 4px; justify-content: space-between;">
+
+                        <div style="color: #505050; font-size: 12px;">Image:</div>
+
+                        <i class="fas fa-pencil-alt" style="color: #9e9e9e;"></i>
+
+                    </div>
+
+
+
+                    <div style="display: flex; width: 522px; height: 522px; border: 1px dashed #505050; justify-content: center; align-items: center;">
+
+                        <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;"></i>
+
+                    </div>
+
+                </div>
+
+
+
+                <div style="display: flex; width: 850px; height: 540px; flex-direction: column; justify-content: space-between;">
+
+                    <div>
+                        
+
+                        <div style="color: #505050; font-size: 12px; margin: 0 7px 4px;">Name:</div>
+
+                        <div contenteditable="true" style="outline: none; height: 44px; border: 1px dashed #505050; line-height: 44px; padding-left: 10px; font-size: 30px; color: white; font-weight: bold;">
+
+                            {{properties.name}}
+
+                        </div>
+                    </div>
+
+
+
+                    <div>
+
+                        <div style="color: #505050; font-size: 12px; margin: 0 7px 4px;">Price:</div>
+                        
+                        <div contenteditable="true" style="outline: none; height: 32px; line-height: 32px; border: 1px dashed #505050; color: #ffba00; padding-left: 10px;">
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div>
+
+                    
+                        <div style="display: flex; margin: 0 7px 4px; justify-content: space-between;">
+
+                            <div style="color: #505050; font-size: 12px;">Shipping:</div>
+
+                            <div>
+                                <i class="fas fa-trash-alt" style="color: #9e9e9e;"></i>
+                                <i class="fas fa-pencil-alt" style="color: #9e9e9e; margin-left: 10px;"></i>
+                            </div>
+                            
+
+                        </div>
+
+
+
+                        <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+
+                            <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                            
+                                <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                                <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                                <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+
+                            
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div>
+
+                    
+                        <div style="display: flex; margin: 0 7px 4px; justify-content: space-between;">
+
+                            <div style="color: #505050; font-size: 12px;">Recurring:</div>
+
+                            <div>
+                                <i class="fas fa-trash-alt" style="color: #9e9e9e;"></i>
+                                <i class="fas fa-pencil-alt" style="color: #9e9e9e; margin-left: 10px;"></i>
+                            </div>
+
+                        </div>
+
+
+
+                        <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+
+                            <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                            
+                                <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                                <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                                <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+
+                            
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+
+
+
+                    <div>
+
+                    
+                        <div style="display: flex; margin: 0 7px 4px; justify-content: space-between;">
+
+                            <div style="color: #505050; font-size: 12px;">Hoplink:</div>
+
+                            <i class="fas fa-pencil-alt" style="color: #9e9e9e;"></i>
+
+                        </div>
+
+
+
+                        <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+
+                            <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                            
+                                <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                                <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                                <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+
+                            
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div>
+
+                        <div style="color: #505050; font-size: 12px; margin: 0 7px 4px;">Description:</div>
+
+
+
+
+                        <div contenteditable="true" style="outline: none; height: 32px; line-height: 32px; border: 1px dashed #505050; color: #dadada; padding-left: 10px;">
+
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </div>
+
+            
+
+                    
+               
+
+            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Price Points:</div>
+
+            
+            
+            <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+
+                <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+
+                
+                </div>
+
+            </div>
+
+
+
+
+            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Components:</div>
+
+            
+            
+            <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+
+                <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+
+                
+                </div>
+
+            </div>
+
+
+            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Bonuses:</div>
+
+            
+            
+            <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+
+                <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+
+                
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
 </div>

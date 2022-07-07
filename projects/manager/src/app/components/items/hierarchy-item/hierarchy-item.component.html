@@ -29,7 +29,8 @@
 
             
             <div class="arrow-container"
-                (click)="listManager.selectable ? listManager.onArrowClick(item) : null">
+                (click)="listManager.selectable ? listManager.onArrowClick(item) : null"
+                (mousedown)="$event.stopPropagation()">
                 <div class="arrow" [ngClass]="{'arrow-down': item.arrowDown}"></div>
             </div>
         </ng-container>
