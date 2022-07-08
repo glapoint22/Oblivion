@@ -352,26 +352,4 @@ export class BreakpointService {
     const minWindowSize = Math.max(...minWindowSizes);
     return this.breakpoints.findIndex(x => x.min == minWindowSize);
   }
-
-
-
-
-  getBreakpoints(breakpointsArray: Array<string>): Array<string> | null {
-    let minWindowSizes: Array<number> = [];
-
-    // Get the min window sizes from the breakpoints array
-    breakpointsArray.forEach(x => {
-      minWindowSizes.push(this.breakpoints.find(z => z.name == x)?.min as number)
-    });
-
-    // Filter out all the window sizes that are less or equal to the current window width
-    minWindowSizes = minWindowSizes.filter(x => x <= this.currentWindowWidth);
-
-    // Return if none are found
-    if (minWindowSizes.length == 0) return null;
-
-    // Return the closest window size to the window width
-    // const minWindowSize = Math.max(...minWindowSizes);
-    return this.breakpoints.filter(x => minWindowSizes.includes(x.min)).map(x => x.name)
-  }
 }

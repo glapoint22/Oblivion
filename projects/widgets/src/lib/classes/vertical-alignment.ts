@@ -1,11 +1,16 @@
 import { VerticalAlignmentValue } from "./vertical-alignment-value";
+import { BreakpointType, VerticalAlignmentType } from "./widget-enums";
 
 export class VerticalAlignment {
     public values: Array<VerticalAlignmentValue> = [];
 
     setData(verticalAlignment: VerticalAlignment) {
         if (verticalAlignment) {
-            if (verticalAlignment.values) this.values = verticalAlignment.values;
+            if (verticalAlignment.values) {
+                verticalAlignment.values.forEach((value: VerticalAlignmentValue) => {
+                    this.values.push(new VerticalAlignmentValue(value.verticalAlignmentType, value.breakpoint));
+                });
+            }
         }
     }
 
@@ -22,11 +27,31 @@ export class VerticalAlignment {
         // Add the new classes
         if (this.values && this.values.length > 0) {
             this.values.forEach((value: VerticalAlignmentValue) => {
-                element.classList.add(value.verticalAlignmentType + (value.breakpoint ? '-' + value.breakpoint : ''));
+                element.classList.add(this.getVerticalAlignment(value.verticalAlignmentType) + (value.breakpoint ? '-' + BreakpointType[value.breakpoint] : ''));
             });
         }
     }
 
+
+    getVerticalAlignment(verticalAlignmentType: VerticalAlignmentType): string {
+        let verticalAlignment!: string;
+
+        switch (verticalAlignmentType) {
+            case VerticalAlignmentType.Top:
+                verticalAlignment = 'vertical-align-top'
+                break;
+
+            case VerticalAlignmentType.Middle:
+                verticalAlignment = 'vertical-align-middle'
+                break;
+
+            case VerticalAlignmentType.Bottom:
+                verticalAlignment = 'vertical-align-bottom'
+                break;
+        }
+
+        return verticalAlignment;
+    }
 
 
     getData(): VerticalAlignment {
@@ -35,10 +60,7 @@ export class VerticalAlignment {
 
         verticalAlignment.values = [];
         this.values.forEach((verticalAlignmentValue: VerticalAlignmentValue) => {
-            const newVerticalAlignmentValue = new VerticalAlignmentValue();
-
-            newVerticalAlignmentValue.verticalAlignmentType = verticalAlignmentValue.verticalAlignmentType;
-            newVerticalAlignmentValue.breakpoint = verticalAlignmentValue.breakpoint;
+            const newVerticalAlignmentValue = new VerticalAlignmentValue(verticalAlignmentValue.verticalAlignmentType, verticalAlignmentValue.breakpoint);
 
             verticalAlignment.values.push(newVerticalAlignmentValue);
         });

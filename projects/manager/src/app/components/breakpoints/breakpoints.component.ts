@@ -15,6 +15,7 @@ export abstract class BreakpointsComponent<T1 extends BreakpointValue<T2>, T2> i
   public selectedBreakpointValue!: T1;
   public title!: string;
   public abstract breakpointOptions: Array<T2>;
+  public isImage!: boolean;
 
   constructor(public breakpointService: BreakpointService, private lazyLoadingService: LazyLoadingService) { }
 
