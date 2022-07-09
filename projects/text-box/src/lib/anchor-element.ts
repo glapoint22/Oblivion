@@ -13,12 +13,8 @@ export class AnchorElement extends Element {
     public generateHtml(parent: HTMLElement, includeId?: boolean): void {
         const anchorElement = document.createElement('a');
 
-        if (this.link.linkType == LinkType.WebAddress) {
-            anchorElement.href = this.link.url;
-            anchorElement.target = '_blank';
-        } else {
-            anchorElement.setAttribute('routerLink', this.link.url);
-        }
+        anchorElement.href = this.link.url;
+        anchorElement.target = '_blank';
 
         this.setHtmlElement(anchorElement, parent, includeId!);
     }

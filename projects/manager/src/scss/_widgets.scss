@@ -5,6 +5,10 @@ $container-outline-color: #961455;
 $row-outline-color: #149625;
 $column-outline-color: #147196;
 $widget-outline-color: #966d14;
+$column-indicator-color1: #21232733;
+$column-indicator-color2: #ffba004d;
+$column-indicator-color3: #7a621e;
+$column-indicator-color4: #ffba00;
 
 .row {
     display: flex;
@@ -21,7 +25,11 @@ $widget-outline-color: #966d14;
     bottom: 0;
     width: 60px;
     visibility: hidden;
-    background: red;
+    background-color: $column-indicator-color1;
+    background-image: linear-gradient(45deg, $column-indicator-color2 25%, transparent 25%, transparent 75%, $column-indicator-color2 75%, $column-indicator-color2),
+        linear-gradient(45deg, $column-indicator-color2 25%, transparent 25%, transparent 75%, $column-indicator-color2 75%, $column-indicator-color2);
+    background-size: 8px 8px;
+    background-position: 0 0, 4px 4px;
     z-index: 20;
 
     &:first-child {
@@ -33,7 +41,9 @@ $widget-outline-color: #966d14;
     }
 
     &:hover {
-        background: blue;
+        background-color: $column-indicator-color3;
+        background-image: linear-gradient(45deg, $column-indicator-color4 25%, transparent 25%, transparent 75%, $column-indicator-color4 75%, $column-indicator-color4),
+            linear-gradient(45deg, $column-indicator-color4 25%, transparent 25%, transparent 75%, $column-indicator-color4 75%, $column-indicator-color4);
     }
 }
 

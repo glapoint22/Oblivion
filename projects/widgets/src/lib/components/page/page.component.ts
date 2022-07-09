@@ -48,7 +48,7 @@ export class PageComponent implements AfterViewInit, OnDestroy {
     if (this.pageContent.background.enabled) {
       // Background color
       if (this.pageContent.background.color) {
-        element!.style.backgroundColor = this.pageContent.background.rgbColor.toRGBString();
+        element!.style.backgroundColor = this.pageContent.background.color;
       }
 
       // Background image

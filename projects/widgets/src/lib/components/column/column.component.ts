@@ -27,6 +27,7 @@ export class ColumnComponent implements AfterViewInit {
   public columnElement!: HTMLElement;
   public horizontalAlignment: HorizontalAlignment = new HorizontalAlignment();
   public paddingElement!: HTMLElement;
+  public widget!: Widget;
 
   constructor(public resolver: ComponentFactoryResolver) { }
 
@@ -57,12 +58,18 @@ export class ColumnComponent implements AfterViewInit {
 
     // Detect changes
     widgetComponentRef.hostView.detectChanges();
+
+    // Set the horizontal alignment
+    this.horizontalAlignment.setClasses(this.widget.widgetElement);
   }
 
 
   async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
     const componentFactory = this.resolver.resolveComponentFactory(await this.getWidget(widgetData.widgetType));
     const widgetComponentRef = this.viewContainerRef.createComponent(componentFactory);
+
+    // Assign the widget
+    this.widget = widgetComponentRef.instance;
 
     return widgetComponentRef;
   }
