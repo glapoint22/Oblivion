@@ -27,29 +27,29 @@
     width: fit-content;
     height: 30px;
     border-radius: 4px;
-    border: 1px solid #3d3d3d;
+    border: 1px solid #4e4e4e;
     cursor: pointer;
-    background: #282828;
+    background: #333333;
     padding: 0 18px;
     margin-left: 10px;
-    color: #b4b4b4;
+    color: #d6d6d6;
 
     &:hover:not(:disabled) {
-        background: lighten(#282828, 6);
-        border-color: lighten(#3d3d3d, 6);
-        color: lighten(#b4b4b4, 6);
+        background: lighten(#333333, 6);
+        border-color: lighten(#4e4e4e, 6);
+        color: lighten(#d6d6d6, 6);
     }
 
     &:active {
-        background: lighten(#282828, 10);
-        border-color: lighten(#3d3d3d, 10);
-        color: lighten(#b4b4b4, 10);
+        background: lighten(#333333, 10);
+        border-color: lighten(#4e4e4e, 10);
+        color: lighten(#d6d6d6, 10);
     }
     
     &:disabled {
-        background: #2828286c;
-        border-color: #3d3d3d5e;
-        color: #b4b4b459;
+        background: #3333336c;
+        border-color: #4e4e4e5e;
+        color: #d6d6d659;
         cursor: default;
     }
 }

@@ -1,0 +1,67 @@
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <!-- Arrow Left -->
+    <div *ngIf="isAdd" class="popup-arrow-container">
+        <div class="popup-arrow-left-Border"></div>
+        <div class="popup-arrow-left-background"></div>
+    </div>
+
+
+    <div class="popup-base">
+
+        <!-- Price -->
+        <div class="popup-label">Price:</div>
+        <input>
+
+
+        <!-- Subscription Duration -->
+        <div class="popup-label">Subscription Duration:</div>
+        <input>
+    
+    
+        <!-- Trial Period -->
+        <div class="popup-label">Trial Period:</div>
+        <div class="popup-date-container">
+            <div class="popup-date-base">
+                <div class="popup-date-value-display">07/01/2022</div>
+                <i class="fa-solid fa-calendar-days"></i>
+                <input type="date">
+            </div>
+            <div class="popup-trial-period-display">7 Days</div>
+        </div>
+
+
+        <!-- Rebill Frequency -->
+        <div class="popup-label">Rebill Frequency:</div>
+        <div class="popup-dropdown-base">
+            <div class="popup-dropdown-value-display">Weeks</div>
+            <div class="popup-dropdown-arrow">
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+        </div>
+        
+
+        <!-- Between Rebill -->
+        <div class="popup-label">Number of Weeks Between Each Rebill:</div>
+        <div class="popup-dropdown-base">
+            <div class="popup-dropdown-value-display">6 Weeks</div>
+            <div class="popup-dropdown-arrow">
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+        </div>
+
+
+        <!-- Buttons -->
+        <div class="popup-button-container">
+            <button class="dark-button" (click)="close()">Close</button>
+            <button class="gold-button">Submit</button>
+        </div>
+    </div>
+
+
+    <!-- Arrow Right -->
+    <div *ngIf="!isAdd" class="popup-arrow-container">
+        <div class="popup-arrow-right-Border"></div>
+        <div class="popup-arrow-right-background"></div>
+    </div>
+</div>

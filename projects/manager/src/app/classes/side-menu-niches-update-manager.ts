@@ -218,7 +218,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
                         productComponent.properties = productProperties;
 
-                        console.log(productProperties)
                         
                     });
             }
