@@ -2,14 +2,15 @@ import { ParamMap, Params } from "@angular/router";
 import { Query } from "./query";
 
 export class QueryParams {
-    search!: string | null;
-    filters!: string | null;
-    categoryId!: string | null;
-    nicheId!: string | null;
-    sort!: string | null;
-    page: number = 1;
-    limit!: number;
-    queries!: Array<Query>;
+    public search!: string | null;
+    public filters!: string | null;
+    public categoryId!: string | null;
+    public nicheId!: string | null;
+    public sort!: string | null;
+    public page: number = 1;
+    public limit!: number;
+    public queries!: Array<Query>;
+    public id!: string | null;
 
     set(params: ParamMap) {
         this.search = params.get('search');
@@ -18,5 +19,6 @@ export class QueryParams {
         this.nicheId = params.get('nicheId');
         this.sort = params.get('sort');
         this.page = params.has('page') ? Math.max(1, Number.parseInt(params.get('page') as string)) : 1;
+        this.id = params.get('id');
     }
 }

@@ -1,4 +1,5 @@
-<div #widget class="carousel-container widget-outline" [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+<div #widget class="carousel-container widget-outline"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
     style="user-select: none;">
 
     <ng-container
@@ -9,6 +10,16 @@
 
     <!-- Placeholder -->
     <ng-template #placeholder>
-        <img src="assets/NicheShackBanner.png">
+        <div style="width: 1496px;
+        height: 451px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 400px;
+        color: #0089ff;
+        background: #ffffff;">
+            <i class="fa-solid fa-image"></i>
+        </div>
+
     </ng-template>
 </div>
