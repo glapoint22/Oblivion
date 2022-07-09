@@ -1,9 +1,9 @@
-<panel [title]="'Padding'">
+<panel [title]="title">
     <div class="property-box-dark">
 
 
         <!-- Base -->
-        <div #breakpointsBase class="base">
+        <div #base class="base">
             <!-- Breakpoints text -->
             <div class="breakpoints-text-container">
                 <div *ngFor="let breakpoint of breakpointService.breakpoints; let i = index" class="breakpoints-text"
@@ -13,11 +13,13 @@
             </div>
 
 
+            <!-- Breakpoints Background -->
             <div class="breakpoints-background" [style.height.px]="(breakpoints.length * 40) + 10">
                 <div class="breakpoint-lines-container">
                     <div class="breakpoint-line" *ngFor="let breakpointLine of breakpointService.breakpoints"></div>
                 </div>
 
+                <!-- Breakpoints -->
                 <ng-container *ngFor="let breakpoint of breakpoints; let i = index">
                     <div class="breakpoints-container" [style.top.px]="i * 40 + 10"
                         (mousedown)="onMousedown($event, breakpoint.label)" (contextmenu)="$event.preventDefault()">
@@ -25,11 +27,12 @@
                         <div class="breakpoints-row">
 
 
+                            <!-- Breakpoint Values -->
                             <ng-container *ngFor="let breakpointValue of breakpoint.values; let i = index">
                                 <div class="breakpoint-container" (click)="onBreakpointClick(breakpointValue)"
-                                    [ngClass]="{'selected-breakpoint': breakpointValue == selectedBreakpoint}"
-                                    [style.left.px]="getLeftPosition(breakpointValue.breakpoint)"
-                                    [style.right.px]="getRightPosition(i == breakpoint.values.length - 1 ? 8 : breakpoint.values[i + 1].breakpoint)">
+                                    [ngClass]="{'selected-breakpoint': breakpointValue == selectedBreakpointValue}"
+                                    [style.left.px]="getBreakpointLeftPosition(breakpointValue.breakpoint)"
+                                    [style.right.px]="getBreakpointRightPosition(i == breakpoint.values.length - 1 ? 8 : breakpoint.values[i + 1].breakpoint)">
 
                                     <div class="diamond" style="margin-left: -5px;"></div>
                                     <div class="breakpoint-horizontal-line"></div>
@@ -39,11 +42,23 @@
                                     </ng-container>
 
                                     <div style="position: absolute;">
-                                        <breakpoint-value-displayer [breakpointValue]="breakpointValue"
-                                            [breakpointOptions]="breakpointObject.breakpointOptions"
-                                            [isSelected]="breakpointValue == selectedBreakpoint"
-                                            (onChange)="onChange.emit()">
-                                        </breakpoint-value-displayer>
+                                        <div class="value-display"
+                                            [ngClass]="{'selected': breakpointValue == selectedBreakpointValue}">
+                                            <ng-container *ngIf="!isImage">
+                                                {{breakpointValue.getValue()}}
+                                            </ng-container>
+
+                                            <img *ngIf="isImage" [src]="'assets/' + breakpointValue.getValue()">
+                                        </div>
+
+
+                                        <!-- Arrow buttons -->
+                                        <ng-container *ngIf="breakpointValue == selectedBreakpointValue">
+                                            <i class="fa-solid fa-caret-left" style="left: -11px;"
+                                                (click)="onArrowClick(-1, breakpointValue)"></i>
+                                            <i class="fa-solid fa-caret-right" style="left: 14px;"
+                                                (click)="onArrowClick(1, breakpointValue)"></i>
+                                        </ng-container>
                                     </div>
                                 </div>
                             </ng-container>

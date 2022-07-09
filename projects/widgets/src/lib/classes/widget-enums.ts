@@ -47,16 +47,16 @@ export enum WidgetType {
 
 
 export enum VerticalAlignmentType {
-    Top = 'vertical-align-top',
-    Middle = 'vertical-align-middle',
-    Bottom = 'vertical-align-bottom'
+    Top,
+    Middle,
+    Bottom
 }
 
 
 export enum HorizontalAlignmentType {
-    Left = 'horizontal-align-left',
-    Center = 'horizontal-align-center',
-    Right = 'horizontal-align-right'
+    Left,
+    Center,
+    Right
 }
 
 

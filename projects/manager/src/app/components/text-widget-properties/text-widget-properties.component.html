@@ -2,7 +2,7 @@
 <background [background]="widget.background" (onChange)="update()"></background>
 
 <!-- Padding -->
-<breakpoints [breakpointObject]="widget.padding" (onChange)="updatePadding(widget.padding, widget.widgetElement)"></breakpoints>
+<padding [padding]="widget.padding" (onChange)="updatePadding(widget.padding, widget.widgetElement)"></padding>
 
 <!-- Text -->
 <text [textWidget]="widget" (onChange)="update()"></text>

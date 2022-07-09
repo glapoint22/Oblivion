@@ -142,3 +142,43 @@
         background: #ffba00;
     }
 }
+
+
+
+.value-display {
+    width: 15px;
+    height: 15px;
+    background: #262626;
+    border: 1px solid #797878;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 10px;
+    border-radius: 4px;
+}
+
+.selected {
+    border-color: #ffba00;
+}
+
+.fa-caret-left, .fa-caret-right {
+    position: absolute;
+    top: -5px;
+    color: #ffba00;
+    font-size: 24px;
+    z-index: 1;
+    
+    &:hover {
+        color: #fdd770;
+    }
+
+    &:active {
+        color: #fff2d0;
+    }
+}
+
+img {
+    width: 15px;
+    height: 15px;
+}

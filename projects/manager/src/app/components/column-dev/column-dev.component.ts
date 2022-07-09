@@ -17,18 +17,15 @@ import { RowDevComponent } from '../row-dev/row-dev.component';
 export class ColumnDevComponent extends ColumnComponent {
   public rowComponent!: RowDevComponent;
   public widgetInspectorView = WidgetInspectorView;
-  private widget!: Widget;
 
   constructor(resolver: ComponentFactoryResolver, public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver) }
-
 
   // ---------------------------------------------------------------------Create Widget Component Ref----------------------------------------------------------------
   public async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
     const widgetComponentRef = await super.createWidgetComponentRef(widgetData);
     const widgetComponent = widgetComponentRef.instance;
 
-    // Assign the widget
-    this.widget = widgetComponent;
+    
 
     // If this widget is a container widget
     if (widgetData.widgetType == WidgetType.Container) {
@@ -299,9 +296,6 @@ export class ColumnDevComponent extends ColumnComponent {
   // ------------------------------------------------------------------------------- Create Widget --------------------------------------------------------------------
   public async createWidget(widgetData: WidgetData): Promise<void> {
     await super.createWidget(widgetData);
-
-    // Set the horizontal alignment
-    this.horizontalAlignment.setClasses(this.widget.widgetElement);
 
     if (this.widgetService.currentWidgetInspectorView != WidgetInspectorView.Page) {
       this.setSelection(this.widget);

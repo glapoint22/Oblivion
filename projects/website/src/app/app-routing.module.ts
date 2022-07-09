@@ -8,6 +8,7 @@ import { CollaborateListResolver } from './resolvers/collaborate-list/collaborat
 import { HomeResolver } from './resolvers/home/home.resolver';
 import { ProductResolver } from './resolvers/product/product.resolver';
 import { SearchResolver } from './resolvers/search/search.resolver';
+import { CustomPageResolver } from './resolvers/custom-page/custom-page.resolver';
 
 const routes: Routes = [
   {
@@ -80,6 +81,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/product/product.module').then(m => m.ProductModule),
     resolve: {
       product: ProductResolver
+    }
+  },
+  {
+    path: 'cp/:urlTitle/:id',
+    loadChildren: () => import('./pages/custom-page/custom-page.module').then(m => m.CustomPageModule),
+    resolve: {
+      pageContent: CustomPageResolver
     }
   },
   {

@@ -1,11 +1,16 @@
 import { HorizontalAlignmentValue } from "./horizontal-alignment-value";
+import { BreakpointType, HorizontalAlignmentType } from "./widget-enums";
 
 export class HorizontalAlignment {
     public values: Array<HorizontalAlignmentValue> = [];
 
     setData(horizontalAlignment: HorizontalAlignment) {
         if (horizontalAlignment) {
-            if (horizontalAlignment.values) this.values = horizontalAlignment.values;
+            if (horizontalAlignment.values) {
+                horizontalAlignment.values.forEach((value: HorizontalAlignmentValue) => {
+                    this.values.push(new HorizontalAlignmentValue(value.horizontalAlignmentType, value.breakpoint));
+                });
+            }
         }
     }
 
@@ -22,9 +27,31 @@ export class HorizontalAlignment {
         // Add the new classes
         if (this.values && this.values.length > 0) {
             this.values.forEach((value: HorizontalAlignmentValue) => {
-                element.classList.add(value.horizontalAlignmentType + (value.breakpoint ? '-' + value.breakpoint : ''));
+                element.classList.add(this.getHorizontalAlignment(value.horizontalAlignmentType) + (value.breakpoint ? '-' + BreakpointType[value.breakpoint] : ''));
             });
         }
+    }
+
+
+
+    getHorizontalAlignment(horizontalAlignmentType: HorizontalAlignmentType): string {
+        let horizontalAlignment!: string;
+
+        switch (horizontalAlignmentType) {
+            case HorizontalAlignmentType.Left:
+                horizontalAlignment = 'horizontal-align-left'
+                break;
+
+            case HorizontalAlignmentType.Center:
+                horizontalAlignment = 'horizontal-align-center'
+                break;
+
+            case HorizontalAlignmentType.Right:
+                horizontalAlignment = 'horizontal-align-right'
+                break;
+        }
+
+        return horizontalAlignment;
     }
 
 
@@ -36,11 +63,7 @@ export class HorizontalAlignment {
 
         horizontalAlignment.values = [];
         this.values.forEach((horizontalAlignmentValue: HorizontalAlignmentValue) => {
-            const newHorizontalAlignmentValue = new HorizontalAlignmentValue();
-
-            newHorizontalAlignmentValue.horizontalAlignmentType = horizontalAlignmentValue.horizontalAlignmentType;
-            newHorizontalAlignmentValue.breakpoint = horizontalAlignmentValue.breakpoint;
-
+            const newHorizontalAlignmentValue = new HorizontalAlignmentValue(horizontalAlignmentValue.horizontalAlignmentType, horizontalAlignmentValue.breakpoint);
             horizontalAlignment.values.push(newHorizontalAlignmentValue);
         });
 

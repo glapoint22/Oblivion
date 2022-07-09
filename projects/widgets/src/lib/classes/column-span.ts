@@ -1,10 +1,11 @@
 import { ColumnSpanValue } from "./column-span-value";
+import { BreakpointType } from "./widget-enums";
 
 export class ColumnSpan {
     public values: Array<ColumnSpanValue> = []
 
     constructor(columnSpan?: number) {
-        if (columnSpan) this.values.push(new ColumnSpanValue(columnSpan));
+        if (columnSpan) this.values.push(new ColumnSpanValue(columnSpan, 0));
     }
 
 
@@ -23,9 +24,13 @@ export class ColumnSpan {
 
     setData(columnSpan: ColumnSpan) {
         if (columnSpan) {
-            if (columnSpan.values) this.values = columnSpan.values;
+            if (columnSpan.values) {
+                columnSpan.values.forEach((value: ColumnSpanValue) => {
+                    this.values.push(new ColumnSpanValue(value.span, value.breakpoint));
+                });
+            }
         } else {
-            this.values.push(new ColumnSpanValue(12));
+            this.values.push(new ColumnSpanValue(12, 0));
         }
     }
 
@@ -43,7 +48,7 @@ export class ColumnSpan {
         // Add the new classes
         this.values.forEach((value: ColumnSpanValue) => {
             element.classList.add('col-' + value.span +
-                (value.breakpoint ? '-' + value.breakpoint : ''));
+                (value.breakpoint ? '-' + BreakpointType[value.breakpoint] : ''));
         });
     }
 }
