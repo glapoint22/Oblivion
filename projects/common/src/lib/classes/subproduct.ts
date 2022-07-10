@@ -1,4 +1,4 @@
-import { Image } from "common";
+import { Image } from "./image";
 
 export class Subproduct {
     public name!: string;

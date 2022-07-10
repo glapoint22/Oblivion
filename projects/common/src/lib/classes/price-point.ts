@@ -1,5 +1,6 @@
-import { Image } from "common";
 import { AdditionalInfo } from "./additional-info";
+import { Image } from "./image";
+
 export class PricePoint {
     header!: string;
     quantity!: string;

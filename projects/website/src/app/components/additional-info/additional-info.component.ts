@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AdditionalInfo } from '../../classes/additional-info';
-import { RebillFrequency, ShippingType } from '../../classes/enums';
-import { RecurringPayment } from '../../classes/recurring-payment';
+import { ShippingType, AdditionalInfo, RecurringPayment, RebillFrequency } from 'common';
 
 @Component({
   selector: 'additional-info',

@@ -1,9 +1,6 @@
-import { Media, SummaryProduct } from "common";
-import { AdditionalInfo } from "./additional-info";
+import { AdditionalInfo, Media, PricePoint, Subproduct, SummaryProduct } from "common";
 import { Niche } from "./niche";
-import { PricePoint } from "./price-point";
 import { RelatedProducts } from "./related-products";
-import { Subproduct } from "./subproduct";
 
 export class DetailProduct extends SummaryProduct {
     public description!: string;

@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { PricePoint } from '../../classes/price-point';
+import { PricePoint } from 'common';
 
 @Component({
   selector: 'price-points',

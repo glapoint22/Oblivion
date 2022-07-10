@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Subproduct } from '../../classes/subproduct';
+import { Subproduct } from 'common';
 
 @Component({
   selector: 'subproducts',
