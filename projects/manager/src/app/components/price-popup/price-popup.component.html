@@ -1,17 +1,11 @@
 <div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <!-- Arrow Left -->
-    <div *ngIf="isAdd" class="popup-arrow-container">
-        <div class="popup-arrow-left-Border"></div>
-        <div class="popup-arrow-left-background"></div>
-    </div>
-
 
     <div class="popup-base">
 
-        <!-- Hoplink -->
-        <div class="popup-label">Hoplink:</div>
-        <input #hoplinkInput [(ngModel)]="hoplink" (keydown.enter)="onSubmitClick()">
+        <!-- Price -->
+        <div class="popup-label">Price:</div>
+        <input #priceInput (keydown.enter)="onSubmitClick()" (input)="onInput()">
 
 
         <!-- Buttons -->
@@ -23,7 +17,7 @@
 
 
     <!-- Arrow Right -->
-    <div *ngIf="!isAdd" class="popup-arrow-container">
+    <div class="popup-arrow-container">
         <div class="popup-arrow-right-Border"></div>
         <div class="popup-arrow-right-background"></div>
     </div>

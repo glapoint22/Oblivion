@@ -11,50 +11,61 @@
 
         <!-- Price -->
         <div class="popup-label">Price:</div>
-        <input>
+        <input [(ngModel)]="recurringPayment.price">
 
 
         <!-- Subscription Duration -->
         <div class="popup-label">Subscription Duration:</div>
-        <input>
-    
-    
+        <input [(ngModel)]="recurringPayment.subscriptionDuration">
+
+
         <!-- Trial Period -->
         <div class="popup-label">Trial Period:</div>
         <div class="popup-date-container">
             <div class="popup-date-base">
-                <div class="popup-date-value-display">07/01/2022</div>
+                <div class="popup-date-value-display">{{getTrialPeriodDate() | date}}</div>
                 <i class="fa-solid fa-calendar-days"></i>
-                <input type="date">
+                <input #dateInput type="date" [value]="getTrialPeriodDate()" (change)="onTrialPeriodChange(dateInput)">
             </div>
-            <div class="popup-trial-period-display">7 Days</div>
+            <div class="popup-trial-period-display">{{recurringPayment.trialPeriod + ' Day' +
+                (recurringPayment.trialPeriod != 1 ? 's' : '')}}</div>
         </div>
 
 
         <!-- Rebill Frequency -->
         <div class="popup-label">Rebill Frequency:</div>
-        <div class="popup-dropdown-base">
-            <div class="popup-dropdown-value-display">Weeks</div>
-            <div class="popup-dropdown-arrow">
-                <i class="fa-solid fa-chevron-down"></i>
-            </div>
-        </div>
-        
+
+
+        <select [(ngModel)]="selectedRebillFrequency" (change)="onRebillFrequencyChange()">
+            <option *ngFor="let rebillFrequency of rebillFrequencyList" [ngValue]="rebillFrequency">
+                {{rebillFrequency.key}}</option>
+        </select>
+
 
         <!-- Between Rebill -->
-        <div class="popup-label">Number of Weeks Between Each Rebill:</div>
-        <div class="popup-dropdown-base">
-            <div class="popup-dropdown-value-display">6 Weeks</div>
-            <div class="popup-dropdown-arrow">
-                <i class="fa-solid fa-chevron-down"></i>
-            </div>
-        </div>
+        <ng-container *ngIf="recurringPayment.rebillFrequency == rebillFrequency.Days || 
+        recurringPayment.rebillFrequency == rebillFrequency.Weeks || 
+        recurringPayment.rebillFrequency == rebillFrequency.Months">
+
+            <div class="popup-label">Number of {{getTimeFrameBetweenRebill()}} Between Each Rebill:</div>
+            <select [(ngModel)]="selectedTimeFrameBetweenRebill"
+                (change)="recurringPayment.timeFrameBetweenRebill = selectedTimeFrameBetweenRebill.value">
+                <option *ngFor="let timeFrameBetweenRebill of timeFrameBetweenRebillList"
+                    [ngValue]="timeFrameBetweenRebill">
+                    {{timeFrameBetweenRebill.key}}</option>
+            </select>
+
+        </ng-container>
+
+
+
+
 
 
         <!-- Buttons -->
         <div class="popup-button-container">
             <button class="dark-button" (click)="close()">Close</button>
-            <button class="gold-button">Submit</button>
+            <button class="gold-button" (click)="onSubmitClick()">Submit</button>
         </div>
     </div>
 

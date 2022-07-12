@@ -4,14 +4,14 @@
         <!-- Shipping -->
         <div *ngIf="!additionalInfo.isRecurring" class="additional-info">
             <span class="shipping-icon" *ngIf="additionalInfo.shippingType != shippingType.None"></span>
-            <span class="header-text">{{getShippingText(additionalInfo.shippingType)}}</span>
+            <span class="header-text">{{shipping.getShippingText(additionalInfo.shippingType)}}</span>
         </div>
 
 
         <!-- Recurring -->
         <div *ngIf="additionalInfo.isRecurring" class="additional-info">
             <span class="clock-icon" *ngIf="additionalInfo.recurringPayment.price > 0"></span>
-            <span class="header-text">{{getPaymentText(additionalInfo.recurringPayment)}}</span>
+            <span class="header-text">{{recurringPayment.getPaymentText(additionalInfo.recurringPayment)}}</span>
 
             <!-- Price -->
             <span class="header-text"
@@ -19,9 +19,9 @@
                 | currency:'USD'}}</span>
 
                 
-            <div style="margin-top: 4px;" class="billing-text">{{getBillingText(additionalInfo.recurringPayment)}}</div>
-            <div class="billing-text" style="color: #c18f07;" *ngIf="hasTimeFrameBetweenRebill(additionalInfo.recurringPayment.rebillFrequency)">
-                {{getTimeFrameBetweenRebill(additionalInfo.recurringPayment)}}</div>
+            <div style="margin-top: 4px;" class="billing-text">{{recurringPayment.getBillingText(additionalInfo.recurringPayment)}}</div>
+            <div class="billing-text" style="color: #c18f07;" *ngIf="recurringPayment.hasTimeFrameBetweenRebill(additionalInfo.recurringPayment.rebillFrequency)">
+                {{recurringPayment.getTimeFrameBetweenRebill(additionalInfo.recurringPayment)}}</div>
         </div>
 
     </ng-container>

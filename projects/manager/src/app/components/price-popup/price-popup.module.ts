@@ -1,18 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HoplinkPopupComponent } from './hoplink-popup.component';
+import { PricePopupComponent } from './price-popup.component';
 import { FormsModule } from '@angular/forms';
 
 
 
 @NgModule({
-  declarations: [HoplinkPopupComponent],
+  declarations: [PricePopupComponent],
   imports: [
     CommonModule,
     FormsModule
   ],
-  exports: [
-    HoplinkPopupComponent
-  ]
+  exports: [PricePopupComponent]
 })
-export class HoplinkPopupModule { }
+export class PricePopupModule { }
