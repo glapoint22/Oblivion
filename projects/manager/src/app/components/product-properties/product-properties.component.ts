@@ -13,6 +13,7 @@ import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.compone
 export class ProductPropertiesComponent {
   public zIndex!: number;
   public properties: Product = new Product();
+  public showPricePoints!: boolean;
 
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
   @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;

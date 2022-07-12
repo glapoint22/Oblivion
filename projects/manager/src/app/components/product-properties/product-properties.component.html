@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div style="position: fixed; top: 173px; right: 0; bottom: 0; left: 0; background: #1b1b1b; overflow-y: auto; padding: 12px;">
+    <div style="position: fixed; top: 173px; right: 0; bottom: 0; left: 0; background: #1b1b1b; overflow-y: auto; padding: 12px 0;">
 
         <div style="margin: auto; width: 1506px;">
 
@@ -41,7 +41,7 @@
 
                     <div style="width: 84px; height: 522px; border: 1px dashed #505050">
                     
-                        <div style="display: flex; width: 25px; height: 25px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; margin: auto; margin-top: 29px;">
+                        <div style="display: flex; width: 25px; height: 25px; border: 2px solid #929292; border-radius: 50%; justify-content: center; align-items: center; margin: auto; margin-top: 29px;">
                             
                             <div style="width: 5px; height: 3px; background: #aaaaaa;"></div>
                             <div style="width: 3px; height: 13px; background: #aaaaaa;"></div>
@@ -239,99 +239,63 @@
 
 
                     <div style="position: relative;">
-
                         <div style="position: absolute; left: 100px; top: -35px; z-index: 100;">
                             <ng-template #textToolbarPopup></ng-template>
                         </div>
 
-
                         <div style="color: #505050; font-size: 12px; margin: 0 7px 4px; cursor: pointer;" (click)="openTextToolbarPopup()">Description:</div>
-
-
-
-
-                        <div contenteditable="true" style="outline: none; height: 32px; line-height: 32px; border: 1px dashed #505050; color: #dadada; padding-left: 10px;">
-
-                        </div>
-
+                        <div contenteditable="true" style="outline: none; height: 32px; line-height: 32px; border: 1px dashed #505050; color: #dadada; padding-left: 10px;"></div>
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
-
-            
-
-                    
-               
-
-            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Price Points:</div>
-
-            
-            
-            <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
-
-                <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
-                
-                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
-                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
-                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
-
-                
-                </div>
-
-            </div>
-
-
-
-
-            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Components:</div>
-
-            
-            
-            <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
-
-                <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
-                
-                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
-                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
-                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
-
-                
-                </div>
-
-            </div>
-
-
-            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Bonuses:</div>
-
-            
-            
-            <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
-
-                <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
-                
-                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
-                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
-                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
-
-                
-                </div>
-
-            </div>
-
-
-
         </div>
 
+
+
+
+        <ng-container *ngIf="!showPricePoints">
+            <div style="margin: auto; width: 1506px;">
+                <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Price Points:</div>
+                <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+                    <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;" (click)="showPricePoints = true">
+                        <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                        <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                        <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+
+        <ng-container *ngIf="showPricePoints">
+            <price-points></price-points>
+        </ng-container>
+
+
+
+
+        <div style="margin: auto; width: 1506px;">
+            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Components:</div>
+            <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+                <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div style="margin: auto; width: 1506px;">
+            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Bonuses:</div>
+            <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
+                <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    
 </div>
-
-
-
