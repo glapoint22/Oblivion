@@ -205,8 +205,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             if (!hierarchyUpdate.rightClick) {
                 this.onProductSelect.emit();
                 this.dataService.get<Product>('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: hierarchyUpdate.selectedItems![0].id }])
-                    .subscribe((productProperties: Product) => {
-                        this.productService.product = productProperties;
+                    .subscribe((product: Product) => {
+                        this.productService.product = product;
 
 
                         const productComponentFactory: ComponentFactory<ProductPropertiesComponent> = this.resolver.resolveComponentFactory(ProductPropertiesComponent);
@@ -216,7 +216,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
                         this.productService.productComponents.push(productComponent);
 
-                        productComponent.properties = productProperties;
+                        productComponent.product = product;
 
                         
                     });

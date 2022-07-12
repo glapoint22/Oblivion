@@ -25,6 +25,7 @@ export * from './lib/classes/price-point';
 export * from './lib/classes/additional-info';
 export * from './lib/classes/recurring-payment';
 export * from './lib/classes/subproduct';
+export * from './lib/classes/shipping';
 
 // Components
 export * from './lib/components/dropdown/dropdown.component';
