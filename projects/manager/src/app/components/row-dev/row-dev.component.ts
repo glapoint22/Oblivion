@@ -162,6 +162,11 @@ export class RowDevComponent extends RowComponent {
     this.widgetService.selectedWidget = null!;
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
 
+    if (this.widgetService.contextMenu) {
+      this.widgetService.contextMenu.close();
+      this.widgetService.contextMenu = null!;
+    }
+
     if (event.button == 0) {
       this.widgetService.onRowMousedown(event);
 
@@ -175,7 +180,7 @@ export class RowDevComponent extends RowComponent {
           module: ContextMenuModule
         }
       }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-        contextMenu.parentObj = this;
+        this.widgetService.contextMenu = contextMenu;
         contextMenu.xPos = event.screenX;
         contextMenu.yPos = event.clientY + 66;
         contextMenu.options = this.getRowContextMenuOptions();

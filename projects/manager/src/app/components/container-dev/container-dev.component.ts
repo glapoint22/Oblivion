@@ -229,6 +229,11 @@ export class ContainerDevComponent extends ContainerComponent {
   public onMousedown(event: MouseEvent): void {
     if (this.page) {
 
+      if (this.widgetService.contextMenu) {
+        this.widgetService.contextMenu.close();
+        this.widgetService.contextMenu = null!;
+      }
+
       if (event.button == 2) {
         if (this.page.pageContent) {
           this.lazyLoadingService.load(async () => {
@@ -241,7 +246,7 @@ export class ContainerDevComponent extends ContainerComponent {
             }
           }, SpinnerAction.None)
             .then((contextMenu: ContextMenuComponent) => {
-              contextMenu.parentObj = this;
+              this.widgetService.contextMenu = contextMenu;
               contextMenu.xPos = event.screenX;
               contextMenu.yPos = event.clientY + 66;
               contextMenu.options = [

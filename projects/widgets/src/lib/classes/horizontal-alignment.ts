@@ -58,7 +58,7 @@ export class HorizontalAlignment {
 
 
     getData(): HorizontalAlignment {
-        if (this.values.length == 0) return null!;
+        if (this.values.length == 0 || this.values.every(x => x.horizontalAlignmentType == 0 && x.breakpoint == 0)) return null!;
         const horizontalAlignment = new HorizontalAlignment();
 
         horizontalAlignment.values = [];

@@ -55,7 +55,7 @@ export class VerticalAlignment {
 
 
     getData(): VerticalAlignment {
-        if (this.values.length == 0) return null!;
+        if (this.values.length == 0 || this.values.every(x => x.verticalAlignmentType == 0 && x.breakpoint == 0)) return null!;
         const verticalAlignment = new VerticalAlignment();
 
         verticalAlignment.values = [];
