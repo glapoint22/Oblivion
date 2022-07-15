@@ -12,10 +12,10 @@ export class UnorderedListElement extends Element {
 
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public generateHtml(parent: HTMLElement, includeId?: boolean): void {
+    public generateHtml(parent: HTMLElement, isDev?: boolean): void {
         const unorderedListElement = document.createElement('ul');
 
-        this.setHtmlElement(unorderedListElement, parent, includeId!);
+        this.setHtmlElement(unorderedListElement, parent, isDev!);
     }
 
 

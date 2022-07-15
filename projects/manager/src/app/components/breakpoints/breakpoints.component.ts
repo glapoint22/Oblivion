@@ -181,6 +181,8 @@ export abstract class BreakpointsComponent<T1 extends BreakpointValue<T2>, T2> i
 
   // --------------------------------------------------------------------------- On Mousedown --------------------------------------------------------------
   onMousedown(event: MouseEvent, label: string) {
+    event.stopPropagation();
+
     if (event.button == 2) {
       this.lazyLoadingService.load(async () => {
         const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');

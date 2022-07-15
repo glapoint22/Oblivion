@@ -18,7 +18,6 @@ export class ProductPropertiesComponent {
   public recurringPayment = RecurringPayment;
   public shipping = Shipping;
   public showPricePoints!: boolean;
-
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
   @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;
@@ -26,7 +25,6 @@ export class ProductPropertiesComponent {
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
-  @ViewChild('textToolbarPopup', { read: ViewContainerRef }) textToolbarPopup!: ViewContainerRef;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
@@ -120,20 +118,4 @@ export class ProductPropertiesComponent {
         }
       })
   }
-
-
-
-
-  openTextToolbarPopup() {
-    this.lazyLoadingService.load(async () => {
-      const { TextToolbarPopupComponent } = await import('../text-toolbar-popup/text-toolbar-popup.component');
-      const { TextToolbarPopupModule } = await import('../text-toolbar-popup/text-toolbar-popup.module');
-      return {
-        component: TextToolbarPopupComponent,
-        module: TextToolbarPopupModule
-      }
-    }, SpinnerAction.None, this.textToolbarPopup)
-  }
-
-
 }

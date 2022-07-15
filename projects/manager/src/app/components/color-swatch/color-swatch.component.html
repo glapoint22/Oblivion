@@ -1,4 +1,4 @@
-<div #element class="base" (click)="onSwatchClick(element)">
-    <div class="alpha-background"></div>
-    <div class="swatch-color" [style.background]="color.toRGBString()"></div>
+<div #element [ngClass]="{'normal-size': !miniSize, 'mini-size': miniSize}" (click)="onSwatchClick(element)"
+    (mousedown)="$event.stopPropagation()">
+    <div [style.background]="color.toRGBString()"></div>
 </div>

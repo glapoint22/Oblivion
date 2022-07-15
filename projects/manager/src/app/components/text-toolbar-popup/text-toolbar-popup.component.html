@@ -1,62 +1,83 @@
-<div class="hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<ng-container *ngIf="textBox">
 
-    <div class="popup-base">
+    <div class="popup-base" (mousedown)="$event.stopPropagation()">
 
         <!-- Font -->
         <div style="width: 103px; margin-right: 6px;" title="Font">
-            <div class="popup-dropdown-base">
+            <!-- <div class="popup-dropdown-base">
                 <div class="popup-dropdown-value-display">Arial</div>
                 <div class="popup-dropdown-arrow">
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
-            </div>
+            </div> -->
+            <select [(ngModel)]="textBox.fontFamily.selectedOption" style="width: 100px;"
+                (change)="textBox.fontFamily.setStyle(); textBox.setText()">
+                <option *ngFor="let option of textBox.fontFamily.options" [ngValue]="option">{{option.key}}</option>
+            </select>
         </div>
-        
+
         <!-- Decrease Font Size Button -->
-        <div class="font-size-button" title="Decrease Font Size">
+        <!-- <div class="font-size-button" title="Decrease Font Size">
             <i class="fa-solid fa-minus"></i>
-        </div>
+        </div> -->
 
         <!-- Font size Input text -->
-        <div style="width: 39px;" title="Font Size">
+        <!-- <div style="width: 39px;" title="Font Size">
             <input>
-        </div>
+        </div> -->
 
         <!-- Increase Font Size Button -->
-        <div class="font-size-button" title="Increase Font Size">
+        <!-- <div class="font-size-button" title="Increase Font Size">
             <i class="fa-solid fa-plus"></i>
-        </div>
+        </div> -->
 
-        <div style="width: 4px;"></div>
+        <!-- <div style="width: 4px;"></div> -->
+
+        <select [(ngModel)]="textBox.fontSize.selectedOption" style="width: 100px;"
+            (change)="textBox.fontSize.setStyle(); textBox.setText()">
+            <option *ngFor="let option of textBox.fontSize.options" [ngValue]="option">{{option.key}}</option>
+        </select>
 
         <!-- Bold -->
-        <div class="text-toolbar-button" title="Bold">
+        <div class="text-toolbar-button" title="Bold" (click)="textBox.bold.setStyle(); textBox.setText()"
+            [ngClass]="{'selected': textBox.bold.isSelected}">
             <i class="fa-solid fa-bold"></i>
         </div>
 
         <!-- Italic -->
-        <div class="text-toolbar-button" title="Italic">
+        <div class="text-toolbar-button" title="Italic" (click)="textBox.italic.setStyle(); textBox.setText()"
+            [ngClass]="{'selected': textBox.italic.isSelected}">
             <i class="fa-solid fa-italic"></i>
         </div>
 
         <!-- Underline -->
-        <div class="text-toolbar-button" title="Underline">
+        <div class="text-toolbar-button" title="Underline" (click)="textBox.underline.setStyle(); textBox.setText()"
+            [ngClass]="{'selected': textBox.underline.isSelected}">
             <i class="fa-solid fa-underline"></i>
         </div>
 
         <!-- Text Color -->
-        <div class="text-toolbar-button" style="width: 28px;" title="Text Color">
+        <div class="text-toolbar-button" style="width: 28px; position: relative;" title="Text Color">
             <div style="display: flex; justify-content: center; flex-direction: column;">
                 <div style="font-weight: bold; margin: auto; font-size: 16px;">A</div>
-                <div style="width: 22px; height: 4px; background: red;"></div>
+
+                <color-swatch [color]="textBox.fontColor.rgbColor" [miniSize]="true"
+                    (onChange)="textBox.fontColor.setStyle(); textBox.render()"
+                    (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
+                </color-swatch>
             </div>
         </div>
 
         <!-- Highlight Color -->
-        <div class="text-toolbar-button" style="width: 28px;" title="Highlight Color">
+        <div class="text-toolbar-button" style="width: 28px; position: relative;" title="Highlight Color">
             <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
                 <i class="fa-solid fa-highlighter" style="margin-bottom: 3px;"></i>
-                <div style="width: 22px; height: 4px; background: red;"></div>
+
+                <color-swatch [color]="textBox.highlightColor.rgbColor" [miniSize]="true"
+                    (onChange)="textBox.highlightColor.setStyle(); textBox.render()"
+                    (onClick)="textBox.highlightColor.color == '#00000000' ? textBox.highlightColor.color = '#ffff00': null"
+                    (onColorPickerClose)="textBox.highlightColor.onColorPickerClose(); textBox.setText()">
+                </color-swatch>
             </div>
         </div>
 
@@ -64,12 +85,13 @@
         <div class="divider"></div>
 
         <!-- Link -->
-        <div class="text-toolbar-button" title="Link">
+        <div #linkElement class="text-toolbar-button" title="Link" (click)="onLinkClick(linkElement)">
             <i class="fa-solid fa-link"></i>
         </div>
 
         <!-- Case -->
-        <div style="width: 39px; margin-left: 4px; margin-right: 2px;" title="Case">
+        <div #case style="width: 39px; margin-left: 4px; margin-right: 2px;" title="Case"
+            (click)="$event.stopPropagation(); onCaseClick(case);">
             <div class="popup-dropdown-base">
                 <div class="popup-dropdown-value-display">Aa</div>
                 <div class="popup-dropdown-arrow">
@@ -77,27 +99,47 @@
                 </div>
             </div>
         </div>
-        
+
 
         <div class="divider"></div>
 
         <!-- Left Align -->
-        <div class="text-toolbar-button" title="Left Align">
+        <div class="text-toolbar-button" title="Left Align" (click)="
+        textBox.alignLeft.setStyle();
+        textBox.alignCenter.isSelected = false;
+        textBox.alignRight.isSelected = false;
+        textBox.alignJustify.isSelected = false; 
+        textBox.setText()" [ngClass]="{'selected': textBox.alignLeft.isSelected}">
             <i class="fa-solid fa-align-left"></i>
         </div>
 
         <!-- Center Align -->
-        <div class="text-toolbar-button" title="Center Align">
+        <div class="text-toolbar-button" title="Center Align" (click)="
+        textBox.alignCenter.setStyle();
+        textBox.alignLeft.isSelected = false;
+        textBox.alignRight.isSelected = false;
+        textBox.alignJustify.isSelected = false;
+        textBox.setText()" [ngClass]="{'selected': textBox.alignCenter.isSelected}">
             <i class="fa-solid fa-align-center"></i>
         </div>
 
         <!-- Right Align -->
-        <div class="text-toolbar-button" title="Right Align">
+        <div class="text-toolbar-button" title="Right Align" (click)="
+        textBox.alignRight.setStyle();
+        textBox.alignCenter.isSelected = false;
+        textBox.alignLeft.isSelected = false;
+        textBox.alignJustify.isSelected = false;
+        textBox.setText()" [ngClass]="{'selected': textBox.alignRight.isSelected}">
             <i class="fa-solid fa-align-right"></i>
         </div>
 
         <!-- Justify -->
-        <div class="text-toolbar-button" title="Justify">
+        <div class="text-toolbar-button" title="Justify" (click)="
+        textBox.alignJustify.setStyle();
+        textBox.alignCenter.isSelected = false;
+        textBox.alignRight.isSelected = false;
+        textBox.alignLeft.isSelected = false;
+        textBox.setText()" [ngClass]="{'selected': textBox.alignJustify.isSelected}">
             <i class="fa-solid fa-align-justify"></i>
         </div>
 
@@ -106,25 +148,36 @@
 
 
         <!-- Numbered List -->
-        <div class="text-toolbar-button" title="Numbered List">
+        <div class="text-toolbar-button" title="Numbered List"
+            (click)="textBox.numberedList.setStyle(); textBox.bulletedList.isSelected = false; textBox.setText()"
+            [ngClass]="{'selected': textBox.numberedList.isSelected}">
             <i class="fa-solid fa-list-ol"></i>
         </div>
 
         <!-- Bulleted List -->
-        <div class="text-toolbar-button" title="Bulleted List">
+        <div class="text-toolbar-button" title="Bulleted List"
+            (click)="textBox.bulletedList.setStyle(); textBox.numberedList.isSelected = false; textBox.setText()"
+            [ngClass]="{'selected': textBox.bulletedList.isSelected}">
             <i class="fa-solid fa-list-ul"></i>
         </div>
 
         <div class="divider"></div>
 
         <!-- Decrease Indent -->
-        <div class="text-toolbar-button" title="Decrease Indent">
+        <div class="text-toolbar-button" title="Decrease Indent"
+            (click)="textBox.decreaseIndent.setStyle(); textBox.setText()">
             <i class="fa-solid fa-outdent"></i>
         </div>
 
         <!-- Increase Indent -->
-        <div class="text-toolbar-button" title="Increase Indent">
+        <div class="text-toolbar-button" title="Increase Indent"
+            (click)="textBox.increaseIndent.setStyle(); textBox.setText()">
             <i class="fa-solid fa-indent"></i>
         </div>
     </div>
-</div>
+
+    <!-- <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: rgba(255, 0, 0, 0.37); pointer-events: none;">
+        <ng-template #popupContainer></ng-template>
+    </div> -->
+
+</ng-container>

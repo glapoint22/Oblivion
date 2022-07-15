@@ -1,6 +1,7 @@
 import { Element } from "./element";
 import { ElementRange } from "./element-range";
 import { ElementType } from "./element-type";
+import { RootElement } from "./root-element";
 import { StyleData } from "./style-data";
 import { TextElement } from "./text-element";
 
@@ -12,9 +13,9 @@ export class Selection {
     public endOffset!: number;
     public endChildIndex: number = -1;
     public collapsed!: boolean;
-    public commonAncestorContainer!: Element;
     public selectedStyles!: StyleData[][];
     public document!: Document;
+    public rootElement!: RootElement;
     private range!: Range;
 
 
@@ -60,10 +61,7 @@ export class Selection {
             this.startElement = this.getTextElement(this.range.startContainer, currentElement);
             this.startChildIndex = this.startElement.index;
 
-            // Assign the common ancestor container if it's the same as the start container
-            if (this.range.commonAncestorContainer == this.range.startContainer) {
-                this.commonAncestorContainer = this.startElement;
-            }
+
 
             if (this.endElement) return true;
 
@@ -73,10 +71,7 @@ export class Selection {
         }
 
 
-        // Assign the common ancestor container
-        if (currentElement.id == (this.range.commonAncestorContainer as HTMLElement).id) {
-            this.commonAncestorContainer = currentElement;
-        }
+
 
 
         // Set the end element
@@ -161,6 +156,8 @@ export class Selection {
                 }
 
                 this.selectedStyles.push(styles);
+            } else if (currentElement.elementType == ElementType.Div && currentElement.id == this.endElement.id) {
+                this.selectedStyles.push(currentElement.firstChild.parent.styles);
             }
         }
 
@@ -182,7 +179,7 @@ export class Selection {
 
 
     // ---------------------------------------------------------Is Element In Range------------------------------------------------------------------
-    public isInRange(elementId: string, range: ElementRange = new ElementRange(), currentElement: Element = this.commonAncestorContainer.root): boolean {
+    public isInRange(elementId: string, range: ElementRange = new ElementRange(), currentElement: Element = this.rootElement): boolean {
         let result!: boolean;
 
         for (let i = 0; i < currentElement.children.length; i++) {

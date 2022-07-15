@@ -216,7 +216,7 @@ export abstract class Style {
         let newElement!: Element;
 
         if (child.parent.elementType == ElementType.Span) {
-            if (!child.parent.styles.some(x => x.name == this.name)) {
+            if (!child.parent.styles.some(x => x.name == this.name && x.value == this.value)) {
                 newElement = this.addStyleToElement(child.parent);
             }
         } else {

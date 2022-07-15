@@ -12,10 +12,10 @@ export class OrderedListElement extends Element {
 
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public generateHtml(parent: HTMLElement, includeId?: boolean): void {
+    public generateHtml(parent: HTMLElement, isDev?: boolean): void {
         const orderedListElement = document.createElement('ol');
 
-        this.setHtmlElement(orderedListElement, parent, includeId!);
+        this.setHtmlElement(orderedListElement, parent, isDev!);
     }
 
 

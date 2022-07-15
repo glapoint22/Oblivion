@@ -13,67 +13,42 @@ label {
 
 .base {
     width: 300px;
-    background: #141414;
     position: absolute;
     font-size: 12px;
     border-radius: 5px;
-    border: 1px solid #4a4a4a;
-}
-
-.list {
-    width: 197px;
-    max-height: 220px;
-    background: #262626;
-    position: absolute;
-    top: 25px;
-    border-radius: 5px;
-    border: 1px solid #444444;
-    overflow: auto;
-}
-
-.list-item {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    padding: 5px;
+    background: #282828;
+    border: 1px solid #414141;
+    box-shadow: 0px 0px 7px 7px rgba(0, 0, 0, 0.25);
 }
 
 
-.header {
-    width: 100%;
-    height: 20px;
-    background: #222222;
+
+
+.buttons-container {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    margin-top: 10px;
 }
 
 
-
-.close {
-    width: 20px;
-    height: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    color: #dadada;
-    font-size: 16px;
-
-    &:hover {
-        color: white;
-    }
+.popup-arrow-container {
+    position: absolute;
+    top: -12px;
+    right: 10px;
 }
 
-.dark-button {
-    height: 24px;
+.popup-arrow-Border {
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 12px solid #414141;
 }
 
-
-.inputs-button-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative
+.popup-arrow-background {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid #282828;
 }

@@ -13,10 +13,10 @@ export class SpanElement extends Element {
 
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public generateHtml(parent: HTMLElement, includeId?: boolean): void {
+    public generateHtml(parent: HTMLElement, isDev?: boolean): void {
         const spanElement = document.createElement('span');
 
-        this.setHtmlElement(spanElement, parent, includeId!);
+        this.setHtmlElement(spanElement, parent, isDev!);
     }
 
 

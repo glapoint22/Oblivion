@@ -9,7 +9,6 @@ import { ColumnPropertiesComponent } from '../column-properties/column-propertie
 import { WidgetPropertiesComponent } from '../widget-properties/widget-properties.component';
 import { PanelModule } from '../panel/panel.module';
 import { BackgroundComponent } from '../background/background.component';
-import { ColorSwatchComponent } from '../color-swatch/color-swatch.component';
 import { ImageBoxModule } from '../image-box/image-box.module';
 import { BorderComponent } from '../border/border.component';
 import { NumberFieldModule } from '../number-field/number-field.module';
@@ -40,6 +39,7 @@ import { CheckboxHierarchyModule } from '../hierarchies/checkbox-hierarchy/check
 import { PageNichesComponent } from '../page-niches/page-niches.component';
 import { PageKeywordsComponent } from '../page-keywords/page-keywords.component';
 import { PaddingComponent } from '../padding/padding.component';
+import { ColorSwatchModule } from '../color-swatch/color-swatch.module';
 
 
 
@@ -51,7 +51,6 @@ import { PaddingComponent } from '../padding/padding.component';
     ColumnPropertiesComponent,
     WidgetPropertiesComponent,
     BackgroundComponent,
-    ColorSwatchComponent,
     BorderComponent,
     CornersComponent,
     ShadowComponent,
@@ -87,7 +86,8 @@ import { PaddingComponent } from '../padding/padding.component';
     CounterModule,
     SearchModule,
     ListModule,
-    CheckboxHierarchyModule
+    CheckboxHierarchyModule,
+    ColorSwatchModule
   ],
   exports: [WidgetInspectorComponent]
 })
