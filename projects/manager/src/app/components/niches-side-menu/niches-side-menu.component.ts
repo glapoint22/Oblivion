@@ -72,9 +72,11 @@ export class NichesSideMenuComponent extends LazyLoad {
     this.onClose();
   }
 
-  
+
   close(): void {
     super.close();
     this.nichesSideMenuOpen.next(false);
+    if (this.sideMenuNiches.listComponent) this.sideMenuNiches.listComponent.listManager.setRemoveEventListeners();
+    if (this.sideMenuNiches.searchComponent) this.sideMenuNiches.searchComponent.listManager.setRemoveEventListeners();
   }
 }

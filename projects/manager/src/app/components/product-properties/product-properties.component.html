@@ -116,7 +116,7 @@
                                 <ng-template #editPricePopup></ng-template>
                             </div>
 
-                            <i *ngIf="product.maxPrice == 0" class="fas fa-pencil-alt"
+                            <i *ngIf="product.pricePoints.length == 0" class="fas fa-pencil-alt"
                                 style="color: #9e9e9e; cursor: pointer;" (click)="openPricePopup()"></i>
                         </div>
 
@@ -124,11 +124,11 @@
 
                         <div
                             style="outline: none; height: 32px; line-height: 32px; border: 1px dashed #505050; color: #ffba00; padding-left: 10px; user-select: none;">
-                            <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}
+                            <ng-container *ngIf="product.pricePoints.length == 0">{{product.minPrice | currency:'USD'}}
                             </ng-container>
-                            <ng-container *ngIf="product.maxPrice > 0">
+                            <ng-container *ngIf="product.pricePoints.length > 0">
                                 {{product.minPrice | currency:'USD'}} -
-                                {{product.maxPrice | currency:'USD'}}
+                                {{product.pricePoints.length > 1 ? (product.maxPrice | currency:'USD') : ''}}
                             </ng-container>
                         </div>
 
@@ -324,11 +324,11 @@
 
 
 
-        <ng-container *ngIf="!showPricePoints">
+        <ng-container *ngIf="product.pricePoints.length == 0">
             <div style="margin: auto; width: 1506px;">
                 <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Price Points:</div>
                 <div style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
-                    <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;" (click)="showPricePoints = true">
+                    <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;" (click)="addPricePoints()">
                         <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                         <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
                         <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
@@ -338,8 +338,13 @@
         </ng-container>
 
 
-        <ng-container *ngIf="showPricePoints">
-            <price-points></price-points>
+        <ng-container *ngIf="product.pricePoints.length > 0">
+            <price-points #pricePoints
+                          [pricePoints]="product.pricePoints"
+                          [productId]="product.id"
+                          (minPrice)="product.minPrice = $event"
+                          (maxPrice)="product.maxPrice = $event">
+            </price-points>
         </ng-container>
 
 

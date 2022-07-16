@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { LazyLoad } from 'common';
+import { DataService, LazyLoad, LazyLoadingService } from 'common';
 
 @Component({
   selector: 'price-popup',
@@ -9,7 +9,12 @@ import { LazyLoad } from 'common';
 export class PricePopupComponent extends LazyLoad {
   @ViewChild('priceInput') priceInput!: ElementRef<HTMLInputElement>;
   public price!: number;
+  public productId!: number;
   public callback!: Function;
+
+  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
+    super(lazyLoadingService);
+  }
 
 
   ngAfterViewInit(): void {
@@ -44,5 +49,11 @@ export class PricePopupComponent extends LazyLoad {
   onSubmitClick() {
     this.callback(this.price);
     this.close();
+
+    this.dataService.put('api/Products/MinMaxPrice', {
+      productId: this.productId,
+      minPrice: this.price,
+      maxPrice: 0
+    }).subscribe();
   }
 }

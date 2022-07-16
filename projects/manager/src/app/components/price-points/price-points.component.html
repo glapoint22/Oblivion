@@ -2,15 +2,13 @@
 <div class="background">
 
     <!-- Overflow -->
-    <div class="price-point-overflow">
-
+    <div #overflow class="price-point-overflow" [ngStyle]="{'justify-content': pricePoints.length < 5 ? 'center' : 'flex-start', 'margin-bottom': pricePoints.length <= 5 ? '0' : '20px'}">
 
         <!-- Price Point Container -->
-        <div *ngFor="let trumpy of [0]" class="price-point-container">
+        <div *ngFor="let pricePoint of pricePoints; let i = index" class="price-point-container" style="position: relative;">
 
 
-            <!-- Delete price point Button -->
-            <div class="delete-price-point-button-container">
+            <div class="delete-price-point-button-container" (click)="deletePricePoint(i)">
                 <i class="fas fa-trash-alt"></i>
             </div>
             
@@ -22,7 +20,13 @@
                 <!-- Header -->
                 <div class="header">
                     <div class="label-only">Header:</div>
-                    <div class="header-field" contenteditable="true"></div>
+                    <div #header
+                        class="header-field"
+                        contenteditable="true"
+                        (blur)="onHeaderBlur(pricePoint, header.innerText)"
+                        (keydown.enter)="window.getSelection()!.removeAllRanges(); header.blur()">
+                            {{pricePoint.header}}
+                    </div>
                 </div>
     
     
@@ -30,7 +34,13 @@
                 <!-- quantity -->
                 <div class="quantity-container">
                     <div class="label-only">Quantity:</div>
-                    <div class="quantity-field" contenteditable="true"></div>
+                    <div #quantity
+                        class="quantity-field"
+                        contenteditable="true" 
+                        (blur)="onQuantityBlur(pricePoint, quantity.innerText)"
+                        (keydown.enter)="window.getSelection()!.removeAllRanges(); quantity.blur()">
+                            {{pricePoint.quantity}}
+                    </div>
                 </div>
     
     
@@ -40,119 +50,150 @@
                     <div class="label-container">
                         <div class="label-with-buttons">Image:</div>
     
-                        <div class="buttons-container">
-                            <i class="fas fa-pencil-alt"></i>
+                        <div *ngIf="pricePoint.image && pricePoint.image.src" class="buttons-container">
+                            <i class="fas fa-pencil-alt" (click)="openMediaBrowser(pricePoint)"></i>
                             <i class="fas fa-trash-alt"></i>
                         </div>
                     </div>
                     
-                    <div class="image-field">
-                        <i class="fa-solid fa-image"></i>
+                    <div class="image-field" (click)="openMediaBrowser(pricePoint)">
+                        <i *ngIf="!pricePoint.image || !pricePoint.image.src" class="fa-solid fa-image"></i>
+                        <img *ngIf="pricePoint.image && pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
                     </div>
                 </div>
                 
     
+                <div class="space-between-container">
     
-                <!-- Unit -->
-                <div class="units-container">
-                    <div>
-                        <div class="label-only">Unit Price:</div>
-                        <div class="unit-price-field" contenteditable="true"></div>
-                    </div>
-    
-                    <div class="unit-container">
-                        <div class="label-only">Unit:</div>
-                        <div class="unit-field" contenteditable="true"></div>
-                    </div>
-                </div>
-    
-    
-    
-    
-                
-                <!-- Price -->
-                <div class="prices-container">
-                    <div>
-                        <div class="label-only">Strikethrough Price:</div>
-                        <div class="strikethrough-price-field">
-                            <div class="strikethrough-price" contenteditable="true"></div>
+                    <!-- Unit -->
+                    <div class="units-container">
+                        <div class="unit-price-container">
+                            <div class="label-only">Unit Price:</div>
+                            <div #unitPrice
+                                class="unit-price-field"
+                                contenteditable="true"
+                                (focus)="onUnitPriceFocus(unitPrice)"
+                                (blur)="onUnitPriceBlur(pricePoint, unitPrice)"
+                                (keydown.enter)="window.getSelection()!.removeAllRanges(); unitPrice.blur()">
+                                    {{pricePoint.unitPrice | currency:'USD':'symbol':'0.0-2'}}
+                            </div>
+                        </div>
+        
+                        <div class="unit-container">
+                            <div class="label-only">Unit:</div>
+                            <div #unit
+                                class="unit-field"
+                                contenteditable="true"
+                                (blur)="onUnitBlur(pricePoint, unit.innerText)"
+                                (keydown.enter)="window.getSelection()!.removeAllRanges(); unit.blur()">
+                                    {{pricePoint.unit}}
+                            </div>
                         </div>
                     </div>
-    
-                    <div class="price-container">
-                        <div class="label-only">Price:</div>
-                        <div class="price-field" contenteditable="true"></div>
-                    </div>
-                </div>
-                
-                
-    
-                <!-- Hoplink -->
-                <div class="hoplink-container">
-                    <div class="label-container">
-                        <div class="label-with-buttons">Hoplink:</div>
-                        <div class="buttons-container">
-                            <i class="fas fa-pencil-alt"></i>
+        
+        
+        
+        
+                    
+                    <!-- Price -->
+                    <div class="prices-container">
+                        <div class="strikethrough-price-container">
+                            <div class="label-only">Strikethrough Price:</div>
+                            <div class="strikethrough-price-field">
+                                <div #strikethroughPrice
+                                    class="strikethrough-price"
+                                    contenteditable="true"
+                                    (focus)="onStrikethroughPriceFocus(strikethroughPrice)"
+                                    (blur)="onStrikethroughPriceBlur(pricePoint, strikethroughPrice)"
+                                    (keydown.enter)="window.getSelection()!.removeAllRanges(); strikethroughPrice.blur()">
+                                        {{pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-2'}}
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="price-container">
+                            <div class="label-only">Price:</div>
+                            <div #price
+                                class="price-field"
+                                contenteditable="true"
+                                (focus)="onPriceFocus(price)"
+                                (blur)="onPriceBlur(pricePoint, price)"
+                                (keydown.enter)="window.getSelection()!.removeAllRanges(); price.blur()">
+                                    {{pricePoint.price | currency:'USD':'symbol':'0.0-2'}}
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="add-button-field">
-                        <div class="add-button">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                    </div>
-                </div>
-    
-    
-    
-                <!-- Shipping -->
-                <div class="shipping-container">
-                    <div class="label-container">
-                        <div class="label-with-buttons">Shipping:</div>
-                        <div class="buttons-container">
-                            <i class="fas fa-pencil-alt"></i>
-                            <i class="fas fa-trash-alt"></i>
-                        </div>
-                    </div>
                     
-                    <div class="add-button-field">
-                        <div class="add-button">
-                            <div></div>
-                            <div></div>
-                            <div></div>
+        
+        
+                    <!-- Shipping -->
+                    <div class="shipping-container">
+                        <div class="label-container">
+                            <div class="label-with-buttons">Shipping:</div>
+                            <div class="buttons-container">
+                                <i class="fas fa-pencil-alt"></i>
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="add-button-field">
+                            <!-- <div class="add-button">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div> -->
+
+                            <ng-container>
+                                <i class="fa-solid fa-truck-fast"></i>
+                                <span class="header-text">{{shipping.getShippingText(1)}}</span>
+                            </ng-container>
                         </div>
                     </div>
-                </div>
-    
-    
-    
-                <!-- Recurring -->
-                <div class="recurring-container">
-                    <div class="label-container">
-                        <div class="label-with-buttons">Recurring:</div>
-                        <div class="buttons-container">
-                            <i class="fas fa-pencil-alt"></i>
-                            <i class="fas fa-trash-alt"></i>
+        
+        
+                    <!-- Recurring -->
+                    <div class="recurring-container">
+                        <div class="label-container">
+                            <div class="label-with-buttons">Recurring:</div>
+                            <div class="buttons-container">
+                                <i class="fas fa-pencil-alt"></i>
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="add-button-field">
-                        <div class="add-button">
-                            <div></div>
-                            <div></div>
-                            <div></div>
+                        
+                        <div class="add-button-field">
+                            <div #recurringAddButton class="add-button" (click)="openRecurringPopup(true, i, addRecurringPopupContainer, recurringAddButton, overflow)">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            <div #addRecurringPopupContainer style="position: absolute; z-index: 100; left: 48px; top: 257px; width: 20px; height: 20px; background: red;">
+                <ng-template #addRecurringPopup></ng-template>
+            </div>
+        </div>
+
+
+        <div *ngIf="pricePoints.length < 5" class="add-button-container">
+            <div class="add-button-lg" (click)="addPricePoint(true)">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
         </div>
     </div>
             
-    <div class="add-button-lg">
+    <div *ngIf="pricePoints.length >= 5" class="add-button-lg" (click)="addPricePoint(true)">
         <div></div>
         <div></div>
         <div></div>
     </div>
+
+    
 </div>

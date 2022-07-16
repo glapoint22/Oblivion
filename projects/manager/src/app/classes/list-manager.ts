@@ -69,14 +69,22 @@ export class ListManager {
       this.eventListenersAdded = false;
       this.shiftKeyDown = false;
       this.ctrlKeyDown = false;
-      window.removeEventListener('keyup', this.onKeyUp);
-      window.removeEventListener('keydown', this.onKeyDown);
-      window.removeEventListener('blur', this.onInnerWindowBlur);
-      window.removeEventListener('mousedown', this.onMouseDown);
-      window.removeEventListener('paste', this.onPaste);
+      this.setRemoveEventListeners();
       this.unSelectedItemsUpdate();
       this.setButtonsState();
     }
+  }
+
+
+
+  // ============================================================( SET REMOVE EVENT LISTENERS )============================================================= \\
+
+  setRemoveEventListeners() {
+    window.removeEventListener('keyup', this.onKeyUp);
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('blur', this.onInnerWindowBlur);
+    window.removeEventListener('mousedown', this.onMouseDown);
+    window.removeEventListener('paste', this.onPaste);
   }
 
 
@@ -226,7 +234,7 @@ export class ListManager {
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
 
-    if(e && !this.editedItem) e!.stopPropagation()
+    if (e && !this.editedItem) e!.stopPropagation()
 
     this.mouseDownItem = listItem
     // As long as this item is NOT currently being edited
@@ -553,7 +561,6 @@ export class ListManager {
           // Send the delete info back so it can be used for the prompt message
           this.deletePromptUpdate(deletedItems);
           this.buttonsUpdate();
-
           // Open the prompt
           this.openPrompt(this.options.deletePrompt);
 

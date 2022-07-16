@@ -5,7 +5,8 @@
 
 .popup-arrow-container {
     position: relative;
-    top: 13px;
+    top: 326px;
+    height: 12px;
 }
 
 .popup-arrow-left-Border {
@@ -63,8 +64,8 @@ input {
     height: 24px;
     background: #1e1e1e;
     border-radius: 4px;
-    margin-top: 7px;
-    margin-bottom: 18px;
+    margin-top: 5px;
+    margin-bottom: 15px;
     border: 1px solid black;
     border-right-color: #3c3c3c;
     border-bottom-color: #3c3c3c;
@@ -87,7 +88,7 @@ input {
     height: 24px;
     background: #333333;
     border-radius: 4px;
-    margin-top: 7px;
+    margin-top: 5px;
     margin-bottom: 18px;
     border: 1px solid #4e4e4e;
 }
@@ -115,7 +116,7 @@ input[type="date"] {
     height: 24px;
     background: #2d2d2d;
     border-radius: 4px;
-    margin-top: 7px;
+    margin-top: 5px;
     margin-bottom: 18px;
     border: 1px solid #404040;
     margin-left: 10px;
@@ -136,7 +137,7 @@ input[type="date"] {
     height: 24px;
     background: #333333;
     border-radius: 4px;
-    margin-top: 7px;
+    margin-top: 5px;
     margin-bottom: 21px;
     border: 1px solid #4e4e4e;
 }

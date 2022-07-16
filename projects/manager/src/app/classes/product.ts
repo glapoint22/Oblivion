@@ -1,4 +1,4 @@
-import { RecurringPayment, ShippingType } from "common";
+import { PricePoint, RecurringPayment, ShippingType } from "common";
 
 export class Product {
     public id!: number;
@@ -8,4 +8,5 @@ export class Product {
     public maxPrice!: number;
     public recurringPayment!: RecurringPayment;
     public hoplink!: string;
+    public pricePoints: Array<PricePoint> = new Array<PricePoint>();
 }

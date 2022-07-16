@@ -1,7 +1,8 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { LazyLoadingService, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
+import { LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
 import { Product } from '../../classes/product';
 import { HoplinkPopupComponent } from '../hoplink-popup/hoplink-popup.component';
+import { PricePointsComponent } from '../price-points/price-points.component';
 import { PricePopupComponent } from '../price-popup/price-popup.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
@@ -17,7 +18,6 @@ export class ProductPropertiesComponent {
   public shippingType = ShippingType;
   public recurringPayment = RecurringPayment;
   public shipping = Shipping;
-  public showPricePoints!: boolean;
 
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
@@ -27,6 +27,7 @@ export class ProductPropertiesComponent {
   @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
   @ViewChild('textToolbarPopup', { read: ViewContainerRef }) textToolbarPopup!: ViewContainerRef;
+  @ViewChild('pricePoints', { read: PricePointsComponent }) pricePoints!: PricePointsComponent;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
@@ -44,6 +45,7 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None, this.editPricePopup)
       .then((pricePopup: PricePopupComponent) => {
         pricePopup.price = this.product.minPrice;
+        pricePopup.productId = this.product.id;
         pricePopup.callback = (price: number) => {
           this.product.minPrice = price;
         }
@@ -136,4 +138,17 @@ export class ProductPropertiesComponent {
   }
 
 
+
+  addPricePoints() {
+    this.product.pricePoints.push(new PricePoint());
+    
+    window.setTimeout(() => {
+
+      if(this.product.minPrice > 0) {
+        this.pricePoints.updateMinMaxPrice();
+      }
+
+      this.pricePoints.addPricePoint();
+    })
+  }
 }

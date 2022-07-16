@@ -2,6 +2,7 @@ import { AdditionalInfo } from "./additional-info";
 import { Image } from "./image";
 
 export class PricePoint {
+    id!: number;
     header!: string;
     quantity!: string;
     image!: Image;

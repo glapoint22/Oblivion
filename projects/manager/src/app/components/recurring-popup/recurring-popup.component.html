@@ -35,19 +35,32 @@
         <!-- Rebill Frequency -->
         <div class="popup-label">Rebill Frequency:</div>
 
+        <div style="height: 24px; border: 1px solid rgb(54, 54, 54); margin-top: 5px; margin-bottom: 15px;"> <!-- Temp div -->
+            <select [(ngModel)]="selectedRebillFrequency" (change)="onRebillFrequencyChange()">
+                <option *ngFor="let rebillFrequency of rebillFrequencyList" [ngValue]="rebillFrequency">
+                    {{rebillFrequency.key}}</option>
+            </select>
+        </div>
 
-        <select [(ngModel)]="selectedRebillFrequency" (change)="onRebillFrequencyChange()">
-            <option *ngFor="let rebillFrequency of rebillFrequencyList" [ngValue]="rebillFrequency">
-                {{rebillFrequency.key}}</option>
-        </select>
 
 
         <!-- Between Rebill -->
-        <ng-container *ngIf="recurringPayment.rebillFrequency == rebillFrequency.Days || 
-        recurringPayment.rebillFrequency == rebillFrequency.Weeks || 
-        recurringPayment.rebillFrequency == rebillFrequency.Months">
 
+        <ng-container *ngIf="recurringPayment.rebillFrequency != rebillFrequency.Days && 
+                             recurringPayment.rebillFrequency != rebillFrequency.Weeks && 
+                             recurringPayment.rebillFrequency != rebillFrequency.Months">
+            <div class="popup-label">Time Between Each Rebill:</div>
+        </ng-container>
+
+        <ng-container *ngIf="recurringPayment.rebillFrequency == rebillFrequency.Days || 
+                             recurringPayment.rebillFrequency == rebillFrequency.Weeks || 
+                             recurringPayment.rebillFrequency == rebillFrequency.Months">
             <div class="popup-label">Number of {{getTimeFrameBetweenRebill()}} Between Each Rebill:</div>
+        </ng-container>
+
+        <div style="height: 24px; border: 1px solid rgb(54, 54, 54); margin-top: 5px; margin-bottom: 15px;"> <!-- Temp div -->
+
+
             <select [(ngModel)]="selectedTimeFrameBetweenRebill"
                 (change)="recurringPayment.timeFrameBetweenRebill = selectedTimeFrameBetweenRebill.value">
                 <option *ngFor="let timeFrameBetweenRebill of timeFrameBetweenRebillList"
@@ -55,8 +68,10 @@
                     {{timeFrameBetweenRebill.key}}</option>
             </select>
 
-        </ng-container>
+        </div>
 
+
+       
 
 
 
