@@ -28,12 +28,12 @@ export class PricePointsComponent {
   addPricePoint(pushNewPricePoint?: boolean) {
     if (pushNewPricePoint) this.product.pricePoints.push(new PricePoint());
 
-    // this.dataService.post<number>('api/Products/PricePoint', {
-    //   ProductId: this.product.id
-    // }).subscribe((pricePointId: number) => {
+    this.dataService.post<number>('api/Products/PricePoint', {
+      ProductId: this.product.id
+    }).subscribe((pricePointId: number) => {
 
-    //   this.product.pricePoints[this.product.pricePoints.length - 1].id = pricePointId;
-    // });
+      this.product.pricePoints[this.product.pricePoints.length - 1].id = pricePointId;
+    });
   }
 
 
@@ -59,10 +59,10 @@ export class PricePointsComponent {
     this.product.pricePoints.splice(pricePointIndex, 1)
     this.updateMinMaxPrice();
 
-    // this.dataService.delete('api/Products/PricePoint', {
-    //   productId: this.product.id,
-    //   pricePointId: pricePointId
-    // }).subscribe();
+    this.dataService.delete('api/Products/PricePoint', {
+      productId: this.product.id,
+      pricePointId: pricePointId
+    }).subscribe();
   }
 
 
@@ -216,13 +216,13 @@ export class PricePointsComponent {
       .then((recurringPopup: RecurringPopupComponent) => {
         recurringPopup.isAdd = add;
 
-        // if (this.product.recurringPayment) {
-        //   recurringPopup.recurringPayment.price = this.product.recurringPayment.price;
-        //   recurringPopup.recurringPayment.rebillFrequency = this.product.recurringPayment.rebillFrequency;
-        //   recurringPopup.recurringPayment.subscriptionDuration = this.product.recurringPayment.subscriptionDuration;
-        //   recurringPopup.recurringPayment.timeFrameBetweenRebill = this.product.recurringPayment.timeFrameBetweenRebill;
-        //   recurringPopup.recurringPayment.trialPeriod = this.product.recurringPayment.trialPeriod;
-        // }
+        if (pricePoint.recurringPayment) {
+          recurringPopup.recurringPayment.recurringPrice = pricePoint.recurringPayment.recurringPrice;
+          recurringPopup.recurringPayment.rebillFrequency = pricePoint.recurringPayment.rebillFrequency;
+          recurringPopup.recurringPayment.subscriptionDuration = pricePoint.recurringPayment.subscriptionDuration;
+          recurringPopup.recurringPayment.timeFrameBetweenRebill = pricePoint.recurringPayment.timeFrameBetweenRebill;
+          recurringPopup.recurringPayment.trialPeriod = pricePoint.recurringPayment.trialPeriod;
+        }
 
         recurringPopup.callback = (recurringPayment: RecurringPayment) => {
           pricePoint.recurringPayment = recurringPayment;

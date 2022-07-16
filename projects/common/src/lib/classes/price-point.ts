@@ -12,5 +12,5 @@ export class PricePoint {
     strikethroughPrice!: string;
     price!: string;
     shippingType!: ShippingType;
-    recurringPayment!: RecurringPayment;
+    recurringPayment: RecurringPayment = new RecurringPayment();
 }

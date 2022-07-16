@@ -163,11 +163,14 @@
                         </div>
                         
                         <div class="add-button-field">
-                            <div #recurringAddButton class="add-button" (click)="openRecurringPopup(true, i, pricePoint, addRecurringPopupContainer, recurringAddButton, overflow)">
+                            <!-- <div #recurringAddButton class="add-button" (click)="openRecurringPopup(true, i, pricePoint, addRecurringPopupContainer, recurringAddButton, overflow)">
                                 <div></div>
                                 <div></div>
                                 <div></div>
-                            </div>
+                            </div> -->
+
+
+                            <recurring-payment [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
                         </div>
                     </div>
                 </div>
