@@ -1,5 +1,5 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
+import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
 import { Product } from '../../classes/product';
 import { HoplinkPopupComponent } from '../hoplink-popup/hoplink-popup.component';
 import { PricePointsComponent } from '../price-points/price-points.component';
@@ -16,7 +16,7 @@ export class ProductPropertiesComponent {
   public zIndex!: number;
   public product: Product = new Product();
   public shippingType = ShippingType;
-  public recurringPayment = RecurringPayment;
+  // public recurringPayment = RecurringPayment;
   public shipping = Shipping;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
@@ -27,7 +27,7 @@ export class ProductPropertiesComponent {
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
   @ViewChild('pricePoints', { read: PricePointsComponent }) pricePoints!: PricePointsComponent;
 
-  constructor(private lazyLoadingService: LazyLoadingService) { }
+  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
 
 
   openPricePopup() {
@@ -67,8 +67,20 @@ export class ProductPropertiesComponent {
         shippingPopup.shipping = add ? ShippingType.FreeShipping : this.product.shippingType;
         shippingPopup.callback = (shippingType: ShippingType) => {
           this.product.shippingType = shippingType;
+
+          // Update the database
+          this.updateShipping();
+
         }
-      })
+      });
+  }
+
+
+  updateShipping() {
+    this.dataService.put('api/Products/Shipping', {
+      id: this.product.id,
+      shippingType: this.product.shippingType
+    }).subscribe();
   }
 
 
@@ -96,8 +108,33 @@ export class ProductPropertiesComponent {
 
         recurringPopup.callback = (recurringPayment: RecurringPayment) => {
           this.product.recurringPayment = recurringPayment;
+
+          if (this.product.recurringPayment.recurringPrice == 0) {
+            this.removeRecurringPayment();
+          } else {
+            this.updateRecurringPayment();
+          }
         }
       });
+  }
+
+
+  updateRecurringPayment() {
+    this.dataService.put('api/Products/RecurringPayment', {
+      id: this.product.id,
+      recurringPayment: this.product.recurringPayment
+    }).subscribe();
+  }
+
+
+  removeRecurringPayment() {
+    this.product.recurringPayment.rebillFrequency = 0;
+    this.product.recurringPayment.recurringPrice = 0;
+    this.product.recurringPayment.subscriptionDuration = 0;
+    this.product.recurringPayment.timeFrameBetweenRebill = 0;
+    this.product.recurringPayment.trialPeriod = 0;
+
+    this.updateRecurringPayment();
   }
 
 
@@ -117,8 +154,13 @@ export class ProductPropertiesComponent {
         hoplinkPopup.hoplink = this.product.hoplink;
         hoplinkPopup.callback = (hoplink: string) => {
           this.product.hoplink = hoplink;
+
+          this.dataService.put('api/Products/Hoplink', {
+            id: this.product.id,
+            hoplink: this.product.hoplink
+          }).subscribe();
         }
-      })
+      });
   }
 
 

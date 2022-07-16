@@ -9,14 +9,16 @@
 
     <div class="popup-base">
 
-        <!-- Price -->
+        <!-- Recurring Price -->
         <div class="popup-label">Recurring Price:</div>
-        <input [(ngModel)]="recurringPayment.recurringPrice">
+        <input #recurringPrice [value]="recurringPayment.recurringPrice"
+            (input)="onRecurringPriceChange(recurringPrice.value)">
 
 
         <!-- Subscription Duration -->
         <div class="popup-label">Subscription Duration:</div>
-        <input [(ngModel)]="recurringPayment.subscriptionDuration">
+        <input #subscriptionDuration [value]="recurringPayment.subscriptionDuration"
+            (input)="onSubscriptionDurationChange(subscriptionDuration.value)">
 
 
         <!-- Trial Period -->
@@ -35,7 +37,8 @@
         <!-- Rebill Frequency -->
         <div class="popup-label">Rebill Frequency:</div>
 
-        <div style="height: 24px; border: 1px solid rgb(54, 54, 54); margin-top: 5px; margin-bottom: 15px;"> <!-- Temp div -->
+        <div style="height: 24px; border: 1px solid rgb(54, 54, 54); margin-top: 5px; margin-bottom: 15px;">
+            <!-- Temp div -->
             <select [(ngModel)]="selectedRebillFrequency" (change)="onRebillFrequencyChange()">
                 <option *ngFor="let rebillFrequency of rebillFrequencyList" [ngValue]="rebillFrequency">
                     {{rebillFrequency.key}}</option>
@@ -58,7 +61,8 @@
             <div class="popup-label">Number of {{getTimeFrameBetweenRebill()}} Between Each Rebill:</div>
         </ng-container>
 
-        <div style="height: 24px; border: 1px solid rgb(54, 54, 54); margin-top: 5px; margin-bottom: 15px;"> <!-- Temp div -->
+        <div style="height: 24px; border: 1px solid rgb(54, 54, 54); margin-top: 5px; margin-bottom: 15px;">
+            <!-- Temp div -->
 
 
             <select [(ngModel)]="selectedTimeFrameBetweenRebill"
@@ -71,7 +75,7 @@
         </div>
 
 
-       
+
 
 
 

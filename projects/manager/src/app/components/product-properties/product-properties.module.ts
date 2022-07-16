@@ -6,6 +6,7 @@ import { ProductDescriptionComponent } from '../product-description/product-desc
 import { TextToolbarPopupComponent } from '../text-toolbar-popup/text-toolbar-popup.component';
 import { FormsModule } from '@angular/forms';
 import { ColorSwatchModule } from '../color-swatch/color-swatch.module';
+import { RecurringPaymentModule } from '../recurring-payment/recurring-payment.module';
 
 
 
@@ -19,7 +20,8 @@ import { ColorSwatchModule } from '../color-swatch/color-swatch.module';
   imports: [
     CommonModule,
     FormsModule,
-    ColorSwatchModule
+    ColorSwatchModule,
+    RecurringPaymentModule
   ],
   exports:[
     ProductPropertiesComponent
