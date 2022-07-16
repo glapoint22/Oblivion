@@ -153,6 +153,25 @@ export class RecurringPopupComponent extends LazyLoad {
 
 
 
+  // -------------------------------------------------------------- On Recurring Price Change -----------------------------------------------
+  onRecurringPriceChange(value: string) {
+    this.recurringPayment.recurringPrice = parseFloat(value);
+  }
+
+
+
+
+
+
+
+  // ------------------------------------------------------------- On Subscription Duration Change -------------------------------------------
+  onSubscriptionDurationChange(value: string) {
+    this.recurringPayment.subscriptionDuration = parseInt(value);
+  }
+
+
+
+
   // ------------------------------------------------------------------- On Submit Click --------------------------------------------------
   public onSubmitClick(): void {
     this.callback(this.recurringPayment);
