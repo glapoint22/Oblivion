@@ -5,11 +5,12 @@ import { TextElement } from "./text-element";
 
 export abstract class Case extends Style {
 
-    constructor(selection?: Selection){super(selection!)}
+    constructor(selection?: Selection) { super(selection!) }
 
 
     // ---------------------------------------------------------Set Style------------------------------------------------------------------
     public setStyle(): void {
+        if (this.selection.collapsed) return;
         const text = this.getCase(this.getText()).replace(/\n/g, '');
 
         this.setText(text);

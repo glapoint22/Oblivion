@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { LazyLoadingService, Media, MediaType, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
+import { TextBox, TextBoxData } from 'text-box';
 import { DetailProduct } from '../../classes/detail-product';
 import { AddToListFormComponent } from '../../components/add-to-list-form/add-to-list-form.component';
 import { MediaPlayerComponent } from '../../components/media-player/media-player.component';
@@ -18,6 +19,7 @@ export class ProductInfoComponent implements OnChanges {
   @Input() clientWidth!: number;
   public selectedMedia!: Media;
   public mediaType = MediaType;
+  private textBox!: TextBox;
 
   constructor
     (
@@ -29,6 +31,23 @@ export class ProductInfoComponent implements OnChanges {
 
   ngOnChanges() {
     this.selectedMedia = this.product.media[0];
+    this.setProductDescription();
+  }
+
+
+
+  setProductDescription() {
+    window.setTimeout(() => {
+      const productDescriptionRootElement = document.getElementById('product-description');
+
+      if (productDescriptionRootElement) {
+        const textBoxData: Array<TextBoxData> = JSON.parse(this.product.description);
+
+        this.textBox = new TextBox(productDescriptionRootElement);
+        this.textBox.load(textBoxData);
+        this.textBox.render();
+      }
+    });
   }
 
 

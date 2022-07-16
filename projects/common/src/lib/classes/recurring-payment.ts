@@ -2,7 +2,7 @@ import { RebillFrequency } from "./enums";
 
 export class RecurringPayment {
     public trialPeriod: number = 0;
-    public price: number = 0;
+    public recurringPrice: number = 0;
     public rebillFrequency: RebillFrequency = RebillFrequency.None;
     public timeFrameBetweenRebill: number = 0;
     public subscriptionDuration: number = 0;
@@ -10,7 +10,7 @@ export class RecurringPayment {
 
     // ------------------------------------------------------------------------ Get Payment Text ------------------------------------------------------------------
     public static getPaymentText(recurringPayment: RecurringPayment): string {
-        if (recurringPayment.price == 0) return '';
+        if (recurringPayment.recurringPrice == 0) return '';
 
         let subscriptionDuration: string = '';
         let rebillFrequency: string = '';

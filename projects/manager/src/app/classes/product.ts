@@ -8,4 +8,5 @@ export class Product {
     public maxPrice!: number;
     public recurringPayment!: RecurringPayment;
     public hoplink!: string;
+    public description!: string;
 }

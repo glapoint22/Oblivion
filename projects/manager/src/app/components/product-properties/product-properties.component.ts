@@ -85,7 +85,7 @@ export class ProductPropertiesComponent {
         recurringPopup.isAdd = add;
 
         if (this.product.recurringPayment) {
-          recurringPopup.recurringPayment.price = this.product.recurringPayment.price;
+          recurringPopup.recurringPayment.recurringPrice = this.product.recurringPayment.recurringPrice;
           recurringPopup.recurringPayment.rebillFrequency = this.product.recurringPayment.rebillFrequency;
           recurringPopup.recurringPayment.subscriptionDuration = this.product.recurringPayment.subscriptionDuration;
           recurringPopup.recurringPayment.timeFrameBetweenRebill = this.product.recurringPayment.timeFrameBetweenRebill;

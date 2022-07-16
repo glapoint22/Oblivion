@@ -541,7 +541,12 @@ export class TextBoxDev extends TextBox {
     }
 
 
-    getTextBoxData(elements: Array<Element>): Array<TextBoxData> {
+
+
+
+
+    // -------------------------------------------------------Get Text Box Data-------------------------------------------------------------
+    private getTextBoxData(elements: Array<Element>): Array<TextBoxData> {
         const textBoxData = new Array<TextBoxData>();
 
         elements.forEach((element: Element) => {
