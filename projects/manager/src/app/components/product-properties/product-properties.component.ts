@@ -18,11 +18,6 @@ export class ProductPropertiesComponent {
   public shippingType = ShippingType;
   public recurringPayment = RecurringPayment;
   public shipping = Shipping;
-<<<<<<< HEAD
-
-=======
-  public showPricePoints!: boolean;
->>>>>>> ffb599e541ec4207350e9dd4c1af1d1641d4eb5e
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
   @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;
@@ -30,11 +25,7 @@ export class ProductPropertiesComponent {
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
-<<<<<<< HEAD
-  @ViewChild('textToolbarPopup', { read: ViewContainerRef }) textToolbarPopup!: ViewContainerRef;
   @ViewChild('pricePoints', { read: PricePointsComponent }) pricePoints!: PricePointsComponent;
-=======
->>>>>>> ffb599e541ec4207350e9dd4c1af1d1641d4eb5e
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
