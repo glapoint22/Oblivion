@@ -9,6 +9,7 @@ import { ColorPickerComponent } from '../color-picker/color-picker.component';
 })
 export class ColorSwatchComponent {
   @Input() color!: Color;
+  @Input() miniSize!: boolean;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   @Output() onClick: EventEmitter<void> = new EventEmitter();
   @Output() onColorPickerClose: EventEmitter<void> = new EventEmitter();

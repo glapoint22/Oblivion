@@ -29,8 +29,8 @@ export class LinkPropertyComponent {
         linkComponent.setPosition = (base: ElementRef<HTMLElement>) => {
           const propertyBoxBarRect = propertyBoxBar.getBoundingClientRect();
 
-          linkComponent.posX = propertyBoxBarRect.right - base.nativeElement.getBoundingClientRect().width;
-          linkComponent.posY = propertyBoxBarRect.bottom;
+          linkComponent.posX = propertyBoxBarRect.right - base.nativeElement.getBoundingClientRect().width + 6;
+          linkComponent.posY = propertyBoxBarRect.bottom + 8;
         }
 
       });

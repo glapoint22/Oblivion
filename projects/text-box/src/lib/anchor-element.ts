@@ -1,4 +1,4 @@
-import { Link, LinkType } from "common";
+import { Link } from "common";
 import { Element } from "./element";
 import { ElementType } from "./element-type";
 
@@ -10,13 +10,13 @@ export class AnchorElement extends Element {
     }
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public generateHtml(parent: HTMLElement, includeId?: boolean): void {
+    public generateHtml(parent: HTMLElement, isDev?: boolean): void {
         const anchorElement = document.createElement('a');
 
         anchorElement.href = this.link.url;
         anchorElement.target = '_blank';
 
-        this.setHtmlElement(anchorElement, parent, includeId!);
+        this.setHtmlElement(anchorElement, parent, isDev!);
     }
 
 

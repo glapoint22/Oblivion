@@ -18,7 +18,10 @@ export class TextComponent {
 
   ngOnChanges() {
     this.textBox = this.textWidget.textBoxDev;
-    this.textBox.onChange.subscribe(() => this.onChange.emit());
+    this.textBox.onChange.subscribe(() => {
+      this.onChange.emit();
+      this.appRef.tick();
+    });
     this.textBox.onSelection.subscribe(() => this.appRef.tick());
   }
 
@@ -34,9 +37,10 @@ export class TextComponent {
     }, SpinnerAction.None)
       .then((linkComponent: LinkComponent) => {
         let link = this.textBox.linkStyle.getLink();
-
-        if (link.url) this.textBox.setText();
+        
         linkComponent.link = link;
+        if (link.url) this.textBox.setText();
+        
         linkComponent.setPosition = (base: ElementRef<HTMLElement>) => {
           const linkElementRect = linkElement.getBoundingClientRect();
 

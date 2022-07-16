@@ -64,6 +64,7 @@ export class TextBoxDev extends TextBox {
 
         this.htmlRootElement = htmlRootElement;
         this.selection.document = htmlRootElement.getRootNode() as Document;
+        this.selection.rootElement = this.rootElement;
 
         // Create the first child
         const divElement = new DivElement(this.rootElement);
@@ -148,13 +149,11 @@ export class TextBoxDev extends TextBox {
 
         // Keyup
         htmlRootElement.addEventListener('keyup', (event: KeyboardEvent) => {
-            if (event.key.includes('Arrow') || (event.ctrlKey && (event.key == 'a' || event.key == 'A'))) {
-                window.setTimeout(() => {
-                    this.selection.onSelection(this.rootElement);
-                    this.setSelectedClasses();
-                    this.onSelection.next();
-                });
-            }
+            window.setTimeout(() => {
+                this.selection.onSelection(this.rootElement);
+                this.setSelectedClasses();
+                this.onSelection.next();
+            });
         });
     }
 
@@ -201,7 +200,7 @@ export class TextBoxDev extends TextBox {
 
 
 
-    
+
 
     // ---------------------------------------------------------Remove Focus------------------------------------------------------------------
     removeFocus() {
@@ -233,7 +232,7 @@ export class TextBoxDev extends TextBox {
 
 
     // ---------------------------------------------------------Delete Range------------------------------------------------------------------
-    private deleteRange(currentElement: Element = this.selection.commonAncestorContainer, range: ElementRange = new ElementRange(), startContainer: Element = this.selection.startElement.container): ElementDeleteStatus {
+    private deleteRange(currentElement: Element = this.rootElement, range: ElementRange = new ElementRange(), startContainer: Element = this.selection.startElement.container): ElementDeleteStatus {
         let status!: ElementDeleteStatus;
 
         // If current element is the start element
@@ -542,7 +541,12 @@ export class TextBoxDev extends TextBox {
     }
 
 
-    getTextBoxData(elements: Array<Element>): Array<TextBoxData> {
+
+
+
+
+    // -------------------------------------------------------Get Text Box Data-------------------------------------------------------------
+    private getTextBoxData(elements: Array<Element>): Array<TextBoxData> {
         const textBoxData = new Array<TextBoxData>();
 
         elements.forEach((element: Element) => {
@@ -564,6 +568,7 @@ export class TextBoxDev extends TextBox {
                 data.link = new Link();
                 data.link.linkType = anchor.link.linkType;
                 data.link.url = anchor.link.url;
+                data.link.name = anchor.link.name;
             }
             textBoxData.push(data);
         });

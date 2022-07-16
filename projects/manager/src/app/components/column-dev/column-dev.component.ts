@@ -25,7 +25,7 @@ export class ColumnDevComponent extends ColumnComponent {
     const widgetComponentRef = await super.createWidgetComponentRef(widgetData);
     const widgetComponent = widgetComponentRef.instance;
 
-    
+
 
     // If this widget is a container widget
     if (widgetData.widgetType == WidgetType.Container) {
@@ -47,6 +47,11 @@ export class ColumnDevComponent extends ColumnComponent {
 
       this.widgetService.onRowMousedown(event);
 
+      if (this.widgetService.contextMenu) {
+        this.widgetService.contextMenu.close();
+        this.widgetService.contextMenu = null!;
+      }
+
       if (event.button == 2) {
         this.lazyLoadingService.load(async () => {
           const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
@@ -58,7 +63,7 @@ export class ColumnDevComponent extends ColumnComponent {
           }
         }, SpinnerAction.None)
           .then((contextMenu: ContextMenuComponent) => {
-            contextMenu.parentObj = this;
+            this.widgetService.contextMenu = contextMenu;
             contextMenu.xPos = event.screenX;
             contextMenu.yPos = event.clientY + 66;
 
@@ -461,9 +466,15 @@ export class ColumnDevComponent extends ColumnComponent {
     this.setSelection(this.widget);
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
 
+    if (this.widgetService.contextMenu) {
+      this.widgetService.contextMenu.close();
+      this.widgetService.contextMenu = null!;
+    }
+
     if (event.button == 0) {
       this.widgetService.onRowMousedown(event);
     } else if (event.button == 2) {
+
       this.lazyLoadingService.load(async () => {
         const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
         const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
@@ -472,12 +483,13 @@ export class ColumnDevComponent extends ColumnComponent {
           component: ContextMenuComponent,
           module: ContextMenuModule
         }
-      }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-        contextMenu.parentObj = this;
-        contextMenu.xPos = event.screenX;
-        contextMenu.yPos = event.clientY + 66;
-        contextMenu.options = this.getColumnContextMenuOptions();
-      });
+      }, SpinnerAction.None)
+        .then((contextMenu: ContextMenuComponent) => {
+          this.widgetService.contextMenu = contextMenu;
+          contextMenu.xPos = event.screenX;
+          contextMenu.yPos = event.clientY + 66;
+          contextMenu.options = this.getColumnContextMenuOptions();
+        });
     }
   }
 

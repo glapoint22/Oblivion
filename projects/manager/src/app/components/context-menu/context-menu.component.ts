@@ -35,11 +35,11 @@ export class ContextMenuComponent extends LazyLoad {
   }
 
 
-  @HostListener('window:blur')
-  onWindowBlur() {
-    this.onHide();
-    this.menuOpen.next(false);
-  }
+  // @HostListener('window:blur')
+  // onWindowBlur() {
+  //   this.onHide();
+  //   this.menuOpen.next(false);
+  // }
 
 
   onEscape(): void {

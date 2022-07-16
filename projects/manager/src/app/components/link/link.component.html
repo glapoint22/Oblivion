@@ -1,9 +1,11 @@
-<div class="backdrop">
-    <div #base class="base hide" [ngClass]="{'show': show}" (transitionend)="onHide()" [style.left.px]="posX" [style.top.px]="posY">
+<div class="backdrop" (mousedown)="$event.stopPropagation()">
+    <div #base class="base hide" [ngClass]="{'show': show}" (transitionend)="onHide()" [style.left.px]="posX"
+        [style.top.px]="posY">
 
-        <!-- Header -->
-        <div class="header">
-            <div class="close" (click)="close()">x</div>
+        <!-- Arrow -->
+        <div class="popup-arrow-container">
+            <div class="popup-arrow-Border"></div>
+            <div class="popup-arrow-background"></div>
         </div>
 
         <!-- Content -->
@@ -45,29 +47,28 @@
                 <span class="checkmark"></span>
             </label>
 
-            <!-- Inputs and button container -->
-            <div class="inputs-button-container">
+            <div style="width: 100%;">
+                <!-- Search -->
+                <search #search *ngIf="currentLinkType == linkType.Product || currentLinkType == linkType.Page"
+                    [apiUrl]="apiUrl"
+                    [placeholderText]="currentLinkType == linkType.Product ? 'Search for a product' : 'Search for a page'"
+                    (input)="isApplyButtonDisabled = true" (onItemSelect)="onSearchItemSelect($event);"
+                    (keydown.enter)="setLink()">
+                </search>
 
-                <div style="width: 196px;">
-                    <!-- Search -->
-                    <search #search *ngIf="currentLinkType == linkType.Product || currentLinkType == linkType.Page"
-                        [apiUrl]="apiUrl"
-                        [placeholderText]="currentLinkType == linkType.Product ? 'Search for a product' : 'Search for a page'"
-                        (input)="isApplyButtonDisabled = true" (onItemSelect)="onSearchItemSelect($event);"
-                        (keydown.enter)="setLink()">
-                    </search>
-
-                    <!-- Link Input -->
-                    <input #linkInput *ngIf="currentLinkType != linkType.Product && currentLinkType != linkType.Page"
-                        [disabled]="currentLinkType == linkType.None" (keydown.enter)="setLink()"
-                        (input)="linkInput.value != '' ? isApplyButtonDisabled = false : isApplyButtonDisabled = true"
-                        [placeholder]="currentLinkType == linkType.WebAddress ? 'Enter a web address' : ''"
-                        spellcheck="false">
-                </div>
+                <!-- Link Input -->
+                <input #linkInput *ngIf="currentLinkType != linkType.Product && currentLinkType != linkType.Page"
+                    [disabled]="currentLinkType == linkType.None" (keydown.enter)="setLink()"
+                    (input)="linkInput.value != '' ? isApplyButtonDisabled = false : isApplyButtonDisabled = true"
+                    [placeholder]="currentLinkType == linkType.WebAddress ? 'Enter a web address' : ''"
+                    spellcheck="false">
+            </div>
 
 
-                <!-- Apply Button -->
-                <button class="dark-button" [disabled]="isApplyButtonDisabled" (click)="setLink()">Apply</button>
+            <!-- Buttons -->
+            <div class="buttons-container">
+                <button class="dark-button" (click)="close()">Close</button>
+                <button class="gold-button" [disabled]="isApplyButtonDisabled" (click)="setLink()">Submit</button>
             </div>
         </div>
     </div>

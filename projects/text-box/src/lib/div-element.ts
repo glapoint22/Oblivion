@@ -10,11 +10,11 @@ export class DivElement extends Container {
     }
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public generateHtml(parent: HTMLElement, includeId?: boolean): void {
+    public generateHtml(parent: HTMLElement, isDev?: boolean): void {
         const divElement = document.createElement('div');
 
         if (this.indent > 0) divElement.style.textIndent = (this.indent * 40) + 20 + 'px';
-        this.setHtmlElement(divElement, parent, includeId!);
+        this.setHtmlElement(divElement, parent, isDev!);
     }
 
 

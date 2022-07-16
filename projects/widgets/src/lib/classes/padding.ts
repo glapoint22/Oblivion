@@ -33,7 +33,7 @@ export class Padding {
 
 
     getData(): Padding {
-        if (this.values.length == 0) return null!;
+        if (this.values.length == 0 || this.values.every(x => x.padding == 0 && x.breakpoint == 0)) return null!;
         const padding = new Padding();
 
         padding.values = [];

@@ -10,7 +10,7 @@ export class RootElement extends Element {
 
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public generateHtml(parent: HTMLElement, includeId?: boolean): void {
+    public generateHtml(parent: HTMLElement, isDev?: boolean): void {
         throw new Error("Method not implemented.");
     }
 

@@ -16,6 +16,7 @@ export abstract class BreakpointsComponent<T1 extends BreakpointValue<T2>, T2> i
   public title!: string;
   public abstract breakpointOptions: Array<T2>;
   public isImage!: boolean;
+  private contextMenu!: ContextMenuComponent;
 
   constructor(public breakpointService: BreakpointService, private lazyLoadingService: LazyLoadingService) { }
 
@@ -181,6 +182,13 @@ export abstract class BreakpointsComponent<T1 extends BreakpointValue<T2>, T2> i
 
   // --------------------------------------------------------------------------- On Mousedown --------------------------------------------------------------
   onMousedown(event: MouseEvent, label: string) {
+    event.stopPropagation();
+
+    if (this.contextMenu) {
+      this.contextMenu.close();
+      this.contextMenu = null!;
+    }
+
     if (event.button == 2) {
       this.lazyLoadingService.load(async () => {
         const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
@@ -192,6 +200,7 @@ export abstract class BreakpointsComponent<T1 extends BreakpointValue<T2>, T2> i
         }
       }, SpinnerAction.None)
         .then((contextMenu: ContextMenuComponent) => {
+          this.contextMenu = contextMenu;
           contextMenu.xPos = event.clientX;
           contextMenu.yPos = event.clientY
           contextMenu.options = [

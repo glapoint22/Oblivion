@@ -13,10 +13,10 @@ export class BreakElement extends Element {
 
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public generateHtml(parent: HTMLElement, includeId?: boolean): void {
+    public generateHtml(parent: HTMLElement, isDev?: boolean): void {
         const breakElement = this.createHtmlBreakElement();
 
-        this.setHtmlElement(breakElement, parent, includeId!);
+        this.setHtmlElement(breakElement, parent, isDev!);
     }
 
 

@@ -111,12 +111,12 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Set Html Element-----------------------------------------------------
-    protected setHtmlElement(htmlElement: HTMLElement, parent: HTMLElement, includeId: boolean) {
+    protected setHtmlElement(htmlElement: HTMLElement, parent: HTMLElement, isDev: boolean) {
         // Set the styles
         this.setStyles(htmlElement);
 
         // Assign the element id
-        if (includeId) htmlElement.id = this.id;
+        if (isDev) htmlElement.id = this.id;
 
         // Append this html element to the parent
         parent.appendChild(htmlElement);
@@ -125,7 +125,7 @@ export abstract class Element {
         // Generate html for each child
         if (this.children.length > 0) {
             this.children.forEach((element: Element) => {
-                element.generateHtml(htmlElement, includeId);
+                element.generateHtml(htmlElement, isDev);
             });
         }
     }
@@ -321,7 +321,7 @@ export abstract class Element {
 
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public abstract generateHtml(parent: HTMLElement, includeId?: boolean): void;
+    public abstract generateHtml(parent: HTMLElement, isDev?: boolean): void;
 
     // ---------------------------------------------------Create-----------------------------------------------------
     public abstract create(parent: Element): Element;

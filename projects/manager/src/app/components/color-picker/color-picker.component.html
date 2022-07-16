@@ -1,4 +1,4 @@
-<div class="backdrop">
+<div class="backdrop" (mousedown)="$event.stopPropagation()">
     <div class="color-picker-base hide" style="top: 0" [ngClass]="{'show': show}" (transitionend)="onHide()"
         [style.left.px]="posX" [style.top.px]="posY">
         <button (click)="close()">Close</button>

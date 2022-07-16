@@ -9,4 +9,5 @@ export class Product {
     public recurringPayment!: RecurringPayment;
     public hoplink!: string;
     public pricePoints: Array<PricePoint> = new Array<PricePoint>();
+    public description!: string;
 }
