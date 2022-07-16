@@ -173,10 +173,7 @@
                                 <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                             </div>
 
-                            <ng-container *ngIf="product.shippingType != shippingType.None">
-                                <i class="fa-solid fa-truck-fast"></i>
-                                <span class="header-text">{{shipping.getShippingText(product.shippingType)}}</span>
-                            </ng-container>
+                            <shipping *ngIf="product.shippingType != shippingType.None" [shippingType]="product.shippingType"></shipping>
 
                             <div style="position: absolute; left: 35px; top: 15px; z-index: 100;">
                                 <ng-template #addShippingPopup></ng-template>
@@ -231,8 +228,10 @@
                                 </div>
 
 
+                                <recurring-payment *ngIf="product.recurringPayment.recurringPrice > 0"
+                                    [recurringPayment]="product.recurringPayment">
+                                </recurring-payment>
 
-                                <recurring-payment [recurringPayment]="product.recurringPayment"></recurring-payment>
 
 
                             </div>
