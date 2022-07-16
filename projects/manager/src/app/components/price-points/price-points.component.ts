@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import { Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, SpinnerAction } from 'common';
-import { max } from 'rxjs';
+import { Product } from '../../classes/product';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 
@@ -13,14 +13,8 @@ export class PricePointsComponent {
   public window = window;
   public shipping = Shipping;
   public recurringPayment = RecurringPayment;
-  @Input() pricePoints!: Array<PricePoint>;
-  @Input() productId!: number;
-  @Output() minPrice: EventEmitter<number> = new EventEmitter();
-  @Output() maxPrice: EventEmitter<number> = new EventEmitter();
-  // @ViewChild('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: ViewContainerRef;
+  @Input() product!: Product;
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
-
-
   @ViewChildren('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: QueryList<ViewContainerRef>;
 
 
@@ -32,37 +26,43 @@ export class PricePointsComponent {
 
 
   addPricePoint(pushNewPricePoint?: boolean) {
-    if (pushNewPricePoint) this.pricePoints.push(new PricePoint());
+    if (pushNewPricePoint) this.product.pricePoints.push(new PricePoint());
 
-    // this.dataService.post<number>('api/Products/Price', {
-    //   ProductId: this.productId
+    // this.dataService.post<number>('api/Products/PricePoint', {
+    //   ProductId: this.product.id
     // }).subscribe((pricePointId: number) => {
 
-    //   this.pricePoints[this.pricePoints.length - 1].id = pricePointId;
+    //   this.product.pricePoints[this.product.pricePoints.length - 1].id = pricePointId;
     // });
   }
 
 
 
   updatePricePoint(pricePoint: PricePoint) {
-    // this.dataService.put('api/Products/Price', {
-    //   productId: this.productId,
-    //   id: pricePoint.id,
-    //   header: pricePoint.header,
-    //   quantity: pricePoint.quantity,
-    //   imageId: pricePoint.image ? pricePoint.image.id > 0 ? pricePoint.image.id : null : null,
-    //   unitPrice: pricePoint.unitPrice,
-    //   unit: pricePoint.unit,
-    //   strikethroughPrice: pricePoint.strikethroughPrice,
-    //   price: parseFloat(pricePoint.price)
-    // }).subscribe();
+    this.dataService.put('api/Products/PricePoint', {
+      productId: this.product.id,
+      id: pricePoint.id,
+      header: pricePoint.header,
+      quantity: pricePoint.quantity,
+      imageId: pricePoint.image ? pricePoint.image.id > 0 ? pricePoint.image.id : null : null,
+      unitPrice: pricePoint.unitPrice,
+      unit: pricePoint.unit,
+      strikethroughPrice: pricePoint.strikethroughPrice,
+      price: pricePoint.price,
+      recurringPayment: pricePoint.recurringPayment
+    }).subscribe();
   }
 
 
 
-  deletePricePoint(index: number) {
-    this.pricePoints.splice(index, 1)
+  deletePricePoint(pricePointIndex: number, pricePointId: number) {
+    this.product.pricePoints.splice(pricePointIndex, 1)
     this.updateMinMaxPrice();
+
+    // this.dataService.delete('api/Products/PricePoint', {
+    //   productId: this.product.id,
+    //   pricePointId: pricePointId
+    // }).subscribe();
   }
 
 
@@ -161,21 +161,21 @@ export class PricePointsComponent {
     let maxPrice: number = 0;
 
 
-    if (this.pricePoints.length > 0) {
-      minPrice = Math.min(...this.pricePoints.map(x => parseFloat(x.price ? x.price : '0')));
-      maxPrice = Math.max(...this.pricePoints.map(x => parseFloat(x.price ? x.price : '0')));
+    if (this.product.pricePoints.length > 0) {
+      minPrice = Math.min(...this.product.pricePoints.map(x => parseFloat(x.price ? x.price : '0')));
+      maxPrice = Math.max(...this.product.pricePoints.map(x => parseFloat(x.price ? x.price : '0')));
 
-      this.minPrice.emit(minPrice);
-      this.maxPrice.emit(maxPrice == minPrice ? null! : maxPrice);
+      this.product.minPrice = minPrice;
+      this.product.maxPrice = maxPrice == minPrice ? null! : maxPrice;
 
     } else {
-      this.minPrice.emit(minPrice);
-      this.maxPrice.emit(maxPrice);
+      this.product.minPrice = minPrice;
+      this.product.maxPrice = maxPrice;
     }
 
 
     // this.dataService.put('api/Products/MinMaxPrice', {
-    //   productId: this.productId,
+    //   productId: this.product.id,
     //   minPrice: minPrice,
     //   maxPrice: maxPrice == minPrice ? 0 : maxPrice
     // }).subscribe();
@@ -196,14 +196,14 @@ export class PricePointsComponent {
 
 
 
-  openRecurringPopup(add: boolean, index: number, container: HTMLElement, button: HTMLElement, overflow: HTMLElement) {
+  openRecurringPopup(add: boolean, pricePointIndex: number, pricePoint: PricePoint, container: HTMLElement, button: HTMLElement, overflow: HTMLElement) {
     // if (this.addRecurringPopup.length > 0 || this.editRecurringPopup.length > 0) return;
 
-    if (this.addRecurringPopup.get(index)!.length > 0) return;
+    if (this.addRecurringPopup.get(pricePointIndex)!.length > 0) return;
 
     container.style.top = button.getBoundingClientRect().top - 329 - overflow.getBoundingClientRect().top + 'px';
 
-    
+
 
     this.lazyLoadingService.load(async () => {
       const { RecurringPopupComponent } = await import('../recurring-popup/recurring-popup.component');
@@ -212,7 +212,7 @@ export class PricePointsComponent {
         component: RecurringPopupComponent,
         module: RecurringPopupModule
       }
-    }, SpinnerAction.None, this.addRecurringPopup.get(index))
+    }, SpinnerAction.None, this.addRecurringPopup.get(pricePointIndex))
       .then((recurringPopup: RecurringPopupComponent) => {
         recurringPopup.isAdd = add;
 
@@ -225,6 +225,8 @@ export class PricePointsComponent {
         // }
 
         recurringPopup.callback = (recurringPayment: RecurringPayment) => {
+          pricePoint.recurringPayment = recurringPayment;
+          this.updatePricePoint(pricePoint);
           // this.product.recurringPayment = recurringPayment;
           // console.log(recurringPayment)
         }

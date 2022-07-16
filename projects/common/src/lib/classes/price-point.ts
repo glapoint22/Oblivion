@@ -1,5 +1,6 @@
-import { AdditionalInfo } from "./additional-info";
+import { ShippingType } from "./enums";
 import { Image } from "./image";
+import { RecurringPayment } from "./recurring-payment";
 
 export class PricePoint {
     id!: number;
@@ -10,5 +11,6 @@ export class PricePoint {
     unit!: string;
     strikethroughPrice!: string;
     price!: string;
-    additionalInfo!: Array<AdditionalInfo>;
+    shippingType!: ShippingType;
+    recurringPayment!: RecurringPayment;
 }
