@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ProductInfoComponent } from './product-info.component';
 import { AdditionalInfoModule } from '../additional-info/additional-info.module';
 import { MediaSliderComponent } from '../media-slider/media-slider.component';
-import { SliderModule, StarsSummaryModule } from 'common';
+import { RecurringPaymentModule, ShippingModule, SliderModule, StarsSummaryModule } from 'common';
 
 
 
@@ -16,7 +16,9 @@ import { SliderModule, StarsSummaryModule } from 'common';
     CommonModule,
     AdditionalInfoModule,
     StarsSummaryModule,
-    SliderModule
+    SliderModule,
+    ShippingModule,
+    RecurringPaymentModule
   ],
   exports: [
     ProductInfoComponent

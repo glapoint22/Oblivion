@@ -1,0 +1,39 @@
+@font-face {
+    font-family: 'clock-icon';
+    src: url('../assets/fonts/clock-icon.ttf');
+}
+
+.clock-icon
+{
+    font-family: 'clock-icon';
+    color: #ffba00;
+    &::before {
+        content: "\e908";
+    }
+}
+
+
+
+
+@font-face {
+    font-family: 'shipping-icon';
+    src: url('../assets/fonts/shipping-icon.ttf');
+}
+
+.shipping-icon
+{
+    font-family: 'shipping-icon';
+    color: #ffba00;
+    &::before {
+        content: "\e909";
+    }
+}
+
+
+.clock-icon, .shipping-icon {
+    font-size: 14px;
+    width: 20px;
+    text-align: right;
+    margin-right: 9px;
+    display: inline-block;
+}

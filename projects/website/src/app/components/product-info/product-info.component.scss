@@ -194,8 +194,13 @@
 
 
 
-.additional-info-container {
+.product-info-container {
     margin-bottom: 10px;
+
+    .product-info:not(.product-info:first-child) {
+        margin-top: 5px;
+        line-height: 15px;
+    }
 }
 
 @media(min-width: 1024px) {

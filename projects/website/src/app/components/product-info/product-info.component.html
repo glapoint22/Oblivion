@@ -81,9 +81,22 @@
                 </ng-container>
             </div>
 
-            <div *ngIf="product.additionalInfo && product.additionalInfo.length > 0" class="additional-info-container">
-                <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
+
+            <div class="product-info-container">
+                <div class="product-info">
+                    <shipping *ngIf="product.shippingType != shippingType.None" [shippingType]="product.shippingType">
+                    </shipping>
+                </div>
+
+                <div class="product-info">
+                    <recurring-payment *ngIf="product.recurringPayment.recurringPrice > 0"
+                        [recurringPayment]="product.recurringPayment">
+                    </recurring-payment>
+                </div>
             </div>
+
+
+
 
             <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to
                 buy</button>
@@ -146,8 +159,18 @@
             </ng-container>
         </div>
 
-        <div *ngIf="product.additionalInfo && product.additionalInfo.length > 0" class="additional-info-container">
-            <additional-info [additionalInfo]="product.additionalInfo"></additional-info>
+
+        <div class="product-info-container">
+            <div class="product-info">
+                <shipping *ngIf="product.shippingType != shippingType.None" [shippingType]="product.shippingType">
+                </shipping>
+            </div>
+
+            <div class="product-info">
+                <recurring-payment *ngIf="product.recurringPayment.recurringPrice > 0"
+                    [recurringPayment]="product.recurringPayment">
+                </recurring-payment>
+            </div>
         </div>
 
         <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to

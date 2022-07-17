@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RecurringPayment } from 'common';
+import { RecurringPayment } from '../../classes/recurring-payment';
 
 @Component({
   selector: 'recurring-payment',

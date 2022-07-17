@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { LazyLoadingService, Media, MediaType, SpinnerAction } from 'common';
+import { LazyLoadingService, Media, MediaType, ShippingType, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
 import { TextBox, TextBoxData } from 'text-box';
 import { DetailProduct } from '../../classes/detail-product';
@@ -20,6 +20,7 @@ export class ProductInfoComponent implements OnChanges {
   public selectedMedia!: Media;
   public mediaType = MediaType;
   private textBox!: TextBox;
+  public shippingType = ShippingType;
 
   constructor
     (
