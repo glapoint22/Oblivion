@@ -11,6 +11,6 @@ export class PricePoint {
     unit!: string;
     strikethroughPrice!: string;
     price!: string;
-    shippingType!: ShippingType;
+    shippingType: ShippingType = ShippingType.None;
     recurringPayment: RecurringPayment = new RecurringPayment();
 }
