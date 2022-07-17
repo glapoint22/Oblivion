@@ -2,7 +2,7 @@
 <div class="background">
 
     <!-- Overflow -->
-    <div #overflow class="price-point-overflow" [ngStyle]="{'justify-content': product.pricePoints.length < 5 ? 'center' : 'flex-start', 'margin-bottom': product.pricePoints.length <= 5 ? '0' : '20px'}">
+    <div class="price-point-overflow" [ngStyle]="{'justify-content': product.pricePoints.length < 5 ? 'center' : 'flex-start', 'margin-bottom': product.pricePoints.length <= 5 ? '0' : '20px'}">
 
         <!-- Price Point Container -->
         <div *ngFor="let pricePoint of product.pricePoints; let i = index" class="price-point-container" style="position: relative;">
@@ -131,23 +131,29 @@
                     <div class="shipping-container">
                         <div class="label-container">
                             <div class="label-with-buttons">Shipping:</div>
-                            <div class="buttons-container">
-                                <i class="fas fa-pencil-alt"></i>
-                                <i class="fas fa-trash-alt"></i>
+                            <div *ngIf="pricePoint.shippingType != shippingType.None" class="buttons-container">
+                                <i class="fas fa-pencil-alt" (click)="openShippingPopup(false, i, pricePoint)"></i>
+                                <i class="fas fa-trash-alt" (click)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)"></i>
                             </div>
                         </div>
                         
-                        <div class="add-button-field">
-                            <!-- <div class="add-button">
+                        <div class="add-button-field" style="min-height: 40px;">
+                            <div *ngIf="pricePoint.shippingType == shippingType.None" class="add-button" (click)="openShippingPopup(true, i, pricePoint)">
                                 <div></div>
                                 <div></div>
                                 <div></div>
-                            </div> -->
+                            </div>
 
-                            <ng-container>
-                                <i class="fa-solid fa-truck-fast"></i>
-                                <span class="header-text">{{shipping.getShippingText(1)}}</span>
-                            </ng-container>
+                            <div style="position: absolute; z-index: 100; left: 33px; top: -127px;">
+                                <ng-template #addShippingPopup></ng-template>
+                            </div>
+
+                            <div style="position: absolute; z-index: 100; left: -65px; top: -164px;">
+                                <ng-template #editShippingPopup></ng-template>
+                            </div>
+
+
+                            <shipping *ngIf="pricePoint.shippingType != shippingType.None" [shippingType]="pricePoint.shippingType"></shipping>
                         </div>
                     </div>
         
@@ -159,19 +165,26 @@
                             <div class="label-with-buttons">Recurring:</div>
                             
                             <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="buttons-container">
-                                <i #recurringEditButton class="fas fa-pencil-alt" (click)="openRecurringPopup(false, i, pricePoint, editRecurringPopupContainer, recurringEditButton, overflow)"></i>
+                                <i class="fas fa-pencil-alt" (click)="openRecurringPopup(false, i, pricePoint)"></i>
                                 <i class="fas fa-trash-alt" (click)="removeRecurringPayment(pricePoint)"></i>
                             </div>
                         </div>
                         
                         <div class="add-button-field">
 
-                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" #recurringAddButton class="add-button" (click)="openRecurringPopup(true, i, pricePoint, addRecurringPopupContainer, recurringAddButton, overflow)">
+                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="add-button" (click)="openRecurringPopup(true, i, pricePoint)">
                                 <div></div>
                                 <div></div>
                                 <div></div>
                             </div>
 
+                            <div style="position: absolute; z-index: 100; left: 33px; top: -319px;">
+                                <ng-template #addRecurringPopup></ng-template>
+                            </div>
+
+                            <div style="position: absolute; z-index: 100; left: -65px; top: -356px;">
+                                <ng-template #editRecurringPopup></ng-template>
+                            </div>
 
                             <recurring-payment *ngIf="pricePoint.recurringPayment.recurringPrice > 0" [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
                         </div>
@@ -179,13 +192,9 @@
                 </div>
             </div>
 
-            <div #editRecurringPopupContainer style="position: absolute; z-index: 100; left: -53px; width: 10px; height: 10px; background: #0000ff;">
-                <ng-template #editRecurringPopup></ng-template>
-            </div>
+            
 
-            <div #addRecurringPopupContainer style="position: absolute; z-index: 100; left: 48px; width: 10px; height: 10px; background: red;">
-                <ng-template #addRecurringPopup></ng-template>
-            </div>
+            
         </div>
 
 

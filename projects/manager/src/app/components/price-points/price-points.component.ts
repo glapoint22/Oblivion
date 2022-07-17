@@ -1,8 +1,9 @@
 import { Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
-import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, SpinnerAction } from 'common';
+import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
 import { Product } from '../../classes/product';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
+import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
 
 @Component({
   selector: 'price-points',
@@ -12,8 +13,11 @@ import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.comp
 export class PricePointsComponent {
   public window = window;
   public shipping = Shipping;
+  public shippingType = ShippingType;
   public recurringPayment = RecurringPayment;
   @Input() product!: Product;
+  @ViewChildren('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: QueryList<ViewContainerRef>;
+  @ViewChildren('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: QueryList<ViewContainerRef>;
 
@@ -44,6 +48,7 @@ export class PricePointsComponent {
       unit: pricePoint.unit,
       strikethroughPrice: pricePoint.strikethroughPrice,
       price: pricePoint.price,
+      shippingType: pricePoint.shippingType,
       recurringPayment: pricePoint.recurringPayment
     }).subscribe();
   }
@@ -169,11 +174,11 @@ export class PricePointsComponent {
     }
 
 
-    // this.dataService.put('api/Products/MinMaxPrice', {
-    //   productId: this.product.id,
-    //   minPrice: minPrice,
-    //   maxPrice: maxPrice == minPrice ? 0 : maxPrice
-    // }).subscribe();
+    this.dataService.put('api/Products/MinMaxPrice', {
+      productId: this.product.id,
+      minPrice: minPrice,
+      maxPrice: maxPrice == minPrice ? 0 : maxPrice
+    }).subscribe();
   }
 
 
@@ -190,11 +195,33 @@ export class PricePointsComponent {
 
 
 
+  openShippingPopup(add: boolean, pricePointIndex: number, pricePoint: PricePoint) {
+    if (this.addShippingPopup.get(pricePointIndex)!.length > 0 || this.editShippingPopup.get(pricePointIndex)!.length > 0) return;
 
-  openRecurringPopup(add: boolean, pricePointIndex: number, pricePoint: PricePoint, container: HTMLElement, button: HTMLElement, overflow: HTMLElement) {
+    this.lazyLoadingService.load(async () => {
+      const { ShippingPopupComponent } = await import('../shipping-popup/shipping-popup.component');
+      const { ShippingPopupModule } = await import('../shipping-popup/shipping-popup.module');
+      return {
+        component: ShippingPopupComponent,
+        module: ShippingPopupModule
+      }
+    }, SpinnerAction.None, add ? this.addShippingPopup.get(pricePointIndex) : this.editShippingPopup.get(pricePointIndex))
+      .then((shippingPopup: ShippingPopupComponent) => {
+        shippingPopup.isAdd = add;
+        shippingPopup.shipping = add ? ShippingType.FreeShipping : pricePoint.shippingType;
+        shippingPopup.callback = (shippingType: ShippingType) => {
+          pricePoint.shippingType = shippingType;
+          this.updatePricePoint(pricePoint);
+        }
+      });
+  }
+
+
+
+
+
+  openRecurringPopup(add: boolean, pricePointIndex: number, pricePoint: PricePoint) {
     if (this.addRecurringPopup.get(pricePointIndex)!.length > 0 || this.editRecurringPopup.get(pricePointIndex)!.length > 0) return;
-
-    container.style.top = button.getBoundingClientRect().top - 329 - overflow.getBoundingClientRect().top + 'px';
 
     this.lazyLoadingService.load(async () => {
       const { RecurringPopupComponent } = await import('../recurring-popup/recurring-popup.component');

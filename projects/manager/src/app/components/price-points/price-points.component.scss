@@ -462,6 +462,7 @@
 
 
 .add-button-field {
+    position: relative;
     display: flex;
     width: 272px;
     border: 1px dashed #525252;
@@ -617,25 +618,4 @@
 
 ::selection {
     background: rgba(255, 187, 0, 0.308);
-}
-
-
-.fa-truck-fast,
-.fa-clock {
-    font-size: 14px;
-    color: #ffba00;
-    margin-right: 9px;
-}
-
-.header-text {
-    font-size: 14px;
-    color: #e4e4e4;
-}
-
-
-.billing-text {
-    font-size: 12px;
-    color: #ffba00;
-    font-style: italic;
-    margin-left: 23px;
 }
