@@ -5,7 +5,6 @@ import { RelatedProducts } from "./related-products";
 export class DetailProduct extends SummaryProduct {
     public description!: string;
     public hoplink!: string;
-    // public additionalInfo!: Array<AdditionalInfo>;
     public shippingType!: ShippingType;
     public recurringPayment!: RecurringPayment;
     public media!: Array<Media>;

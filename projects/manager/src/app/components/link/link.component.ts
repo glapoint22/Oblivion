@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { LazyLoad, Link, LinkType } from 'common';
 import { Item } from '../../classes/item';
 import { LinkItem } from '../../classes/link-item';
@@ -129,5 +129,11 @@ export class LinkComponent extends LazyLoad {
     if (document.getElementById('dropdownList')) return;
 
     super.onEscape();
+  }
+
+  // --------------------------------------------------------------------------- On Window Click -----------------------------------------------------------
+  @HostListener('window:mousedown')
+  onWindowClick() {
+    this.close();
   }
 }

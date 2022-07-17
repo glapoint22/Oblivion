@@ -55,20 +55,11 @@ export class ProductDescriptionComponent {
       // This will get all styling
       this.iframe.nativeElement.contentDocument!.head.innerHTML = document.head.innerHTML;
 
-      // Set up an event listener to show and hide the toolbar
-      htmlRootElement.addEventListener('mousedown', () => {
-        if (!this.showToolbar) {
-          this.showToolbar = true;
-          window.addEventListener('mousedown', () => {
-            this.showToolbar = false;
-            this.appRef.tick();
-          }, { once: true });
-        }
-      });
 
       // Instantiate the text box
       this.textBox = new TextBoxDev(htmlRootElement);
 
+      // Set the height
       this.height = htmlRootElement.getBoundingClientRect().height;
 
       // Load the description
@@ -87,6 +78,14 @@ export class ProductDescriptionComponent {
 
       // On selection
       this.textBox.onSelection.subscribe(() => {
+        if (!this.showToolbar) {
+          this.showToolbar = true;
+          window.addEventListener('mousedown', () => {
+            this.showToolbar = false;
+            this.appRef.tick();
+          }, { once: true });
+        }
+
         this.update(htmlRootElement);
       });
 
@@ -100,7 +99,7 @@ export class ProductDescriptionComponent {
 
 
 
-  
+
 
   // ------------------------------------------------------------------------ Update --------------------------------------------------------
   update(htmlRootElement: HTMLElement) {

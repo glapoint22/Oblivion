@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { LazyLoadingService, LinkType, SpinnerAction } from 'common';
 import { TextBoxDev } from 'text-box';
 import { Item } from '../../classes/item';
@@ -12,13 +12,32 @@ import { LinkComponent } from '../link/link.component';
 })
 export class TextToolbarPopupComponent {
   @Input() textBox!: TextBoxDev;
-  public linkContainer!: ViewContainerRef;
+  @ViewChild('caseDropdownListContainer', { read: ViewContainerRef }) caseDropdownListContainer!: ViewContainerRef;
+  @ViewChild('linkContainer', { read: ViewContainerRef }) linkContainer!: ViewContainerRef;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
+  ngOnChanges() {
+    if (this.textBox) {
+      this.textBox.onMousedown
+        .subscribe(() => {
+          this.clearContainers();
+        });
+    }
+  }
+
+  clearContainers() {
+    this.caseDropdownListContainer.clear();
+    this.linkContainer.clear();
+  }
 
 
   async onLinkClick(linkElement: HTMLElement) {
+    if (this.linkContainer.length > 0) {
+      this.linkContainer.clear();
+      return;
+    }
+
     this.lazyLoadingService.load(async () => {
       const { LinkComponent } = await import('../link/link.component');
       const { LinkModule } = await import('../link/link.module');
@@ -29,15 +48,15 @@ export class TextToolbarPopupComponent {
     }, SpinnerAction.None, this.linkContainer)
       .then((linkComponent: LinkComponent) => {
         let link = this.textBox.linkStyle.getLink();
-        
+
         linkComponent.link = link;
         if (link.url) this.textBox.setText();
 
         linkComponent.setPosition = (base: ElementRef<HTMLElement>) => {
           const linkElementRect = linkElement.getBoundingClientRect();
 
-          linkComponent.posX = linkElementRect.right - base.nativeElement.getBoundingClientRect().width + 8;
-          linkComponent.posY = linkElementRect.bottom + 6;
+          linkComponent.posX = -266;
+          linkComponent.posY = 33;
         }
 
         linkComponent.callback = () => {
@@ -59,8 +78,13 @@ export class TextToolbarPopupComponent {
 
 
 
-  // ------------------------------------------------------------------------ On Case Click ----------------------------------------------------------
-  async onCaseClick(element: HTMLElement) {
+  // ------------------------------------------------------------------------ Show Case Dropdown List ----------------------------------------------------------
+  async showCaseDropdownList(element: HTMLElement) {
+    if (this.caseDropdownListContainer.length > 0) {
+      this.caseDropdownListContainer.clear();
+      return;
+    }
+
     this.lazyLoadingService.load(async () => {
       const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
       const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
@@ -68,7 +92,7 @@ export class TextToolbarPopupComponent {
         component: DropdownListComponent,
         module: DropdownListModule
       }
-    }, SpinnerAction.None)
+    }, SpinnerAction.None, this.caseDropdownListContainer)
       .then((dropdownList: DropdownListComponent) => {
         const rect = element.getBoundingClientRect();
 
@@ -90,8 +114,8 @@ export class TextToolbarPopupComponent {
             name: 'Title Case',
           }
         ]
-        dropdownList.top = rect.top + rect.height;
-        dropdownList.left = rect.left;
+        // dropdownList.top = rect.top + rect.height;
+        // dropdownList.left = rect.left;
         dropdownList.callback = (item: Item) => {
           switch (item.id) {
             case 0:

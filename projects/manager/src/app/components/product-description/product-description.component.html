@@ -1,5 +1,5 @@
-<div style="position: absolute; top: -28px; left: 72px;">
-    <text-toolbar-popup *ngIf="showToolbar" [textBox]="textBox"></text-toolbar-popup>
+<div style="position: absolute; top: -28px; left: 72px;" [style.visibility]="showToolbar ? 'visible' : 'hidden'">
+    <text-toolbar-popup [textBox]="textBox"></text-toolbar-popup>
 </div>
 
 <iframe #iframe style="width: 100%;" scrolling="no" frameborder="0" [style.height.px]="height"></iframe>

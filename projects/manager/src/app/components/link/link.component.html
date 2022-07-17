@@ -1,75 +1,72 @@
-<div class="backdrop" (mousedown)="$event.stopPropagation()">
-    <div #base class="base hide" [ngClass]="{'show': show}" (transitionend)="onHide()" [style.left.px]="posX"
-        [style.top.px]="posY">
+<div #base class="base hide" [ngClass]="{'show': show}" (transitionend)="onHide()" [style.left.px]="posX"
+    [style.top.px]="posY" (mousedown)="$event.stopPropagation()">
 
-        <!-- Arrow -->
-        <div class="popup-arrow-container">
-            <div class="popup-arrow-Border"></div>
-            <div class="popup-arrow-background"></div>
+    <!-- Arrow -->
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-Border"></div>
+        <div class="popup-arrow-background"></div>
+    </div>
+
+    <!-- Content -->
+    <div style="padding: 10px;">
+
+        <!-- None -->
+        <label class="radio">
+            <div>None</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.None"
+                (change)="setLinkType(linkType.None); isApplyButtonDisabled = false" (keydown.enter)="setLink()">
+
+            <span class="checkmark"></span>
+        </label>
+
+
+        <!-- Page -->
+        <label class="radio">
+            <div>Page</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.Page"
+                (change)="setLinkType(linkType.Page); search ? search.clear() : null; isApplyButtonDisabled = true">
+            <span class="checkmark"></span>
+        </label>
+
+
+        <!-- Product -->
+        <label class="radio">
+            <div>Product</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.Product"
+                (change)="setLinkType(linkType.Product); search ? search.clear() : null; isApplyButtonDisabled = true">
+            <span class="checkmark"></span>
+        </label>
+
+
+        <!-- Web Address -->
+        <label class="radio">
+            <div>Web Address</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.WebAddress"
+                (change)="setLinkType(linkType.WebAddress); isApplyButtonDisabled = true">
+            <span class="checkmark"></span>
+        </label>
+
+        <div style="width: 100%;">
+            <!-- Search -->
+            <search #search *ngIf="currentLinkType == linkType.Product || currentLinkType == linkType.Page"
+                [apiUrl]="apiUrl"
+                [placeholderText]="currentLinkType == linkType.Product ? 'Search for a product' : 'Search for a page'"
+                (input)="isApplyButtonDisabled = true" (onItemSelect)="onSearchItemSelect($event);"
+                (keydown.enter)="setLink()">
+            </search>
+
+            <!-- Link Input -->
+            <input #linkInput *ngIf="currentLinkType != linkType.Product && currentLinkType != linkType.Page"
+                [disabled]="currentLinkType == linkType.None" (keydown.enter)="setLink()"
+                (input)="linkInput.value != '' ? isApplyButtonDisabled = false : isApplyButtonDisabled = true"
+                [placeholder]="currentLinkType == linkType.WebAddress ? 'Enter a web address' : ''" spellcheck="false">
         </div>
 
-        <!-- Content -->
-        <div style="padding: 10px;">
 
-            <!-- None -->
-            <label class="radio">
-                <div>None</div>
-                <input type="radio" name="link-option" [checked]="link.linkType == linkType.None"
-                    (change)="setLinkType(linkType.None); isApplyButtonDisabled = false" (keydown.enter)="setLink()">
-
-                <span class="checkmark"></span>
-            </label>
-
-
-            <!-- Page -->
-            <label class="radio">
-                <div>Page</div>
-                <input type="radio" name="link-option" [checked]="link.linkType == linkType.Page"
-                    (change)="setLinkType(linkType.Page); search ? search.clear() : null; isApplyButtonDisabled = true">
-                <span class="checkmark"></span>
-            </label>
-
-
-            <!-- Product -->
-            <label class="radio">
-                <div>Product</div>
-                <input type="radio" name="link-option" [checked]="link.linkType == linkType.Product"
-                    (change)="setLinkType(linkType.Product); search ? search.clear() : null; isApplyButtonDisabled = true">
-                <span class="checkmark"></span>
-            </label>
-
-
-            <!-- Web Address -->
-            <label class="radio">
-                <div>Web Address</div>
-                <input type="radio" name="link-option" [checked]="link.linkType == linkType.WebAddress"
-                    (change)="setLinkType(linkType.WebAddress); isApplyButtonDisabled = true">
-                <span class="checkmark"></span>
-            </label>
-
-            <div style="width: 100%;">
-                <!-- Search -->
-                <search #search *ngIf="currentLinkType == linkType.Product || currentLinkType == linkType.Page"
-                    [apiUrl]="apiUrl"
-                    [placeholderText]="currentLinkType == linkType.Product ? 'Search for a product' : 'Search for a page'"
-                    (input)="isApplyButtonDisabled = true" (onItemSelect)="onSearchItemSelect($event);"
-                    (keydown.enter)="setLink()">
-                </search>
-
-                <!-- Link Input -->
-                <input #linkInput *ngIf="currentLinkType != linkType.Product && currentLinkType != linkType.Page"
-                    [disabled]="currentLinkType == linkType.None" (keydown.enter)="setLink()"
-                    (input)="linkInput.value != '' ? isApplyButtonDisabled = false : isApplyButtonDisabled = true"
-                    [placeholder]="currentLinkType == linkType.WebAddress ? 'Enter a web address' : ''"
-                    spellcheck="false">
-            </div>
-
-
-            <!-- Buttons -->
-            <div class="buttons-container">
-                <button class="dark-button" (click)="close()">Close</button>
-                <button class="gold-button" [disabled]="isApplyButtonDisabled" (click)="setLink()">Submit</button>
-            </div>
+        <!-- Buttons -->
+        <div class="buttons-container">
+            <button class="dark-button" (click)="close()">Close</button>
+            <button class="gold-button" [disabled]="isApplyButtonDisabled" (click)="setLink()">Submit</button>
         </div>
     </div>
 </div>
