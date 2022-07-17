@@ -464,7 +464,6 @@
 .add-button-field {
     display: flex;
     width: 272px;
-    // height: 40px;
     border: 1px dashed #525252;
     align-items: center;
     padding: 5px;
@@ -474,31 +473,32 @@
 .label-only {
     font-size: 12px;
     color: #535353;
-    margin-bottom: 3px;
     margin-left: 4px;
     user-select: none;
+    padding-bottom: 3px;
 }
 
 
 .label-container {
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
 }
 
 
 .label-with-buttons {
     font-size: 12px;
     color: #535353;
-    padding-top: 4px;
     margin-left: 4px;
     user-select: none;
+    padding-bottom: 3px;
 }
 
 
 .buttons-container {
     margin-right: 4px;
-    margin-bottom: 5px;
     color: #525252;
+    padding-bottom: 5px;
 }
 
 
@@ -542,6 +542,7 @@
     border-radius: 50%;
     justify-content: center;
     align-items: center;
+    margin: 5px;
     cursor: pointer;
 
     div:first-child {

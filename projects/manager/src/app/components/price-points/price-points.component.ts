@@ -14,15 +14,10 @@ export class PricePointsComponent {
   public shipping = Shipping;
   public recurringPayment = RecurringPayment;
   @Input() product!: Product;
-  @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   @ViewChildren('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: QueryList<ViewContainerRef>;
-
+  @ViewChildren('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: QueryList<ViewContainerRef>;
 
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
-
-
-
-
 
 
   addPricePoint(pushNewPricePoint?: boolean) {
@@ -197,13 +192,9 @@ export class PricePointsComponent {
 
 
   openRecurringPopup(add: boolean, pricePointIndex: number, pricePoint: PricePoint, container: HTMLElement, button: HTMLElement, overflow: HTMLElement) {
-    // if (this.addRecurringPopup.length > 0 || this.editRecurringPopup.length > 0) return;
-
-    if (this.addRecurringPopup.get(pricePointIndex)!.length > 0) return;
+    if (this.addRecurringPopup.get(pricePointIndex)!.length > 0 || this.editRecurringPopup.get(pricePointIndex)!.length > 0) return;
 
     container.style.top = button.getBoundingClientRect().top - 329 - overflow.getBoundingClientRect().top + 'px';
-
-
 
     this.lazyLoadingService.load(async () => {
       const { RecurringPopupComponent } = await import('../recurring-popup/recurring-popup.component');
@@ -212,7 +203,8 @@ export class PricePointsComponent {
         component: RecurringPopupComponent,
         module: RecurringPopupModule
       }
-    }, SpinnerAction.None, this.addRecurringPopup.get(pricePointIndex))
+
+    }, SpinnerAction.None, add ? this.addRecurringPopup.get(pricePointIndex) : this.editRecurringPopup.get(pricePointIndex))
       .then((recurringPopup: RecurringPopupComponent) => {
         recurringPopup.isAdd = add;
 
@@ -226,10 +218,23 @@ export class PricePointsComponent {
 
         recurringPopup.callback = (recurringPayment: RecurringPayment) => {
           pricePoint.recurringPayment = recurringPayment;
-          this.updatePricePoint(pricePoint);
-          // this.product.recurringPayment = recurringPayment;
-          // console.log(recurringPayment)
+
+          if (pricePoint.recurringPayment.recurringPrice == 0) {
+            this.removeRecurringPayment(pricePoint);
+          } else {
+            this.updatePricePoint(pricePoint);
+          }
         }
       });
+  }
+
+
+  removeRecurringPayment(pricePoint: PricePoint) {
+    pricePoint.recurringPayment.rebillFrequency = 0;
+    pricePoint.recurringPayment.recurringPrice = 0;
+    pricePoint.recurringPayment.subscriptionDuration = 0;
+    pricePoint.recurringPayment.timeFrameBetweenRebill = 0;
+    pricePoint.recurringPayment.trialPeriod = 0;
+    this.updatePricePoint(pricePoint);
   }
 }

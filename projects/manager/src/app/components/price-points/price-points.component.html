@@ -155,29 +155,35 @@
                     <!-- Recurring -->
                     <div class="recurring-container">
                         <div class="label-container">
+                            
                             <div class="label-with-buttons">Recurring:</div>
-                            <div class="buttons-container">
-                                <i class="fas fa-pencil-alt"></i>
-                                <i class="fas fa-trash-alt"></i>
+                            
+                            <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="buttons-container">
+                                <i #recurringEditButton class="fas fa-pencil-alt" (click)="openRecurringPopup(false, i, pricePoint, editRecurringPopupContainer, recurringEditButton, overflow)"></i>
+                                <i class="fas fa-trash-alt" (click)="removeRecurringPayment(pricePoint)"></i>
                             </div>
                         </div>
                         
                         <div class="add-button-field">
-                            <!-- <div #recurringAddButton class="add-button" (click)="openRecurringPopup(true, i, pricePoint, addRecurringPopupContainer, recurringAddButton, overflow)">
+
+                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" #recurringAddButton class="add-button" (click)="openRecurringPopup(true, i, pricePoint, addRecurringPopupContainer, recurringAddButton, overflow)">
                                 <div></div>
                                 <div></div>
                                 <div></div>
-                            </div> -->
+                            </div>
 
 
-                            <recurring-payment [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
+                            <recurring-payment *ngIf="pricePoint.recurringPayment.recurringPrice > 0" [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <div #editRecurringPopupContainer style="position: absolute; z-index: 100; left: -53px; width: 10px; height: 10px; background: #0000ff;">
+                <ng-template #editRecurringPopup></ng-template>
+            </div>
 
-            <div #addRecurringPopupContainer style="position: absolute; z-index: 100; left: 48px; top: 257px; width: 20px; height: 20px; background: red;">
+            <div #addRecurringPopupContainer style="position: absolute; z-index: 100; left: 48px; width: 10px; height: 10px; background: red;">
                 <ng-template #addRecurringPopup></ng-template>
             </div>
         </div>
@@ -197,6 +203,4 @@
         <div></div>
         <div></div>
     </div>
-
-    
 </div>
