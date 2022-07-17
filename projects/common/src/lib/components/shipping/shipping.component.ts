@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Shipping, ShippingType } from 'common';
+import { ShippingType } from '../../classes/enums';
+import { Shipping } from '../../classes/shipping';
 
 @Component({
   selector: 'shipping',

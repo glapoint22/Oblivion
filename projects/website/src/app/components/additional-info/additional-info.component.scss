@@ -1,58 +1,58 @@
-@import '../../../scss/variables';
+// @import '../../../scss/variables';
 
-.additional-info:not(.additional-info:first-child) {
-    margin-top: 5px;
-    line-height: 15px;
-}
-
-
-.header-text {
-    font-size: 14px;
-    color: #e4e4e4;
-}
-
-.billing-text {
-    font-size: 12px;
-    color: #ffba00;
-    font-style: italic;
-    margin-left: 23px;
-}
-
-@font-face {
-    font-family: 'clock-icon';
-    src: url('../../../assets/fonts/clock-icon.ttf');
-}
-
-.clock-icon
-{
-    font-family: 'clock-icon';
-    color: $gold;
-    &::before {
-        content: "\e908";
-    }
-}
+// .additional-info:not(.additional-info:first-child) {
+//     margin-top: 5px;
+//     line-height: 15px;
+// }
 
 
+// .header-text {
+//     font-size: 14px;
+//     color: #e4e4e4;
+// }
+
+// .billing-text {
+//     font-size: 12px;
+//     color: #ffba00;
+//     font-style: italic;
+//     margin-left: 23px;
+// }
+
+// @font-face {
+//     font-family: 'clock-icon';
+//     src: url('../../../assets/fonts/clock-icon.ttf');
+// }
+
+// .clock-icon
+// {
+//     font-family: 'clock-icon';
+//     color: $gold;
+//     &::before {
+//         content: "\e908";
+//     }
+// }
 
 
-@font-face {
-    font-family: 'shipping-icon';
-    src: url('../../../assets/fonts/shipping-icon.ttf');
-}
-
-.shipping-icon
-{
-    font-family: 'shipping-icon';
-    color: $gold;
-    &::before {
-        content: "\e909";
-    }
-}
 
 
-.clock-icon, .shipping-icon {
-    font-size: 14px;
-    width: 20px;
-    text-align: right;
-    margin-right: 9px;
-}
+// @font-face {
+//     font-family: 'shipping-icon';
+//     src: url('../../../assets/fonts/shipping-icon.ttf');
+// }
+
+// .shipping-icon
+// {
+//     font-family: 'shipping-icon';
+//     color: $gold;
+//     &::before {
+//         content: "\e909";
+//     }
+// }
+
+
+// .clock-icon, .shipping-icon {
+//     font-size: 14px;
+//     width: 20px;
+//     text-align: right;
+//     margin-right: 9px;
+// }

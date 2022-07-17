@@ -42,6 +42,10 @@ export * from './lib/components/stars/stars.component';
 export * from './lib/components/stars/stars.module';
 export * from './lib/components/stars-summary/stars-summary.component';
 export * from './lib/components/stars-summary/stars-summary.module';
+export * from './lib/components/recurring-payment/recurring-payment.component';
+export * from './lib/components/recurring-payment/recurring-payment.module';
+export * from './lib/components/shipping/shipping.component';
+export * from './lib/components/shipping/shipping.module';
 
 // Directives
 export * from './lib/directives/slider/slider.directive';
