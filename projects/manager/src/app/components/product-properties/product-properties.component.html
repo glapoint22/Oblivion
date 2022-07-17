@@ -107,32 +107,30 @@
 
 
                     <!-- Price -->
-                    <div style="display: flex; margin-bottom: 4px; justify-content: space-between; margin-top: 35px;">
-                        <div style="color: #505050; font-size: 12px;">Price:</div>
+                    <div style="position: relative; margin-top: 35px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <div style="color: #505050; font-size: 12px;">Price:</div>
 
-                        <div style="position: absolute;
-                            right: 225px;
-                            top: 100px;
-                            z-index: 100;">
-                            <ng-template #editPricePopup></ng-template>
+                            <div style="position: absolute; right: 20px; top: -15px; z-index: 100;">
+                                <ng-template #editPricePopup></ng-template>
+                            </div>
+
+                            <i *ngIf="product.pricePoints.length == 0" class="fas fa-pencil-alt"
+                                style="color: #9e9e9e; cursor: pointer;" (click)="openPricePopup()" title="Edit price"></i>
                         </div>
 
-                        <i *ngIf="product.pricePoints.length == 0" class="fas fa-pencil-alt"
-                            style="color: #9e9e9e; cursor: pointer;" (click)="openPricePopup()" title="Edit price"></i>
+
+
+                        <div
+                            style="display: flex; align-items: center; min-height: 40px; outline: none; border: 1px dashed #505050; color: #ffba00; padding: 5px; user-select: none;">
+                            <ng-container *ngIf="product.pricePoints.length == 0">{{product.minPrice | currency:'USD'}}
+                            </ng-container>
+                            <ng-container *ngIf="product.pricePoints.length > 0">
+                                {{product.minPrice | currency:'USD'}} -
+                                {{product.pricePoints.length > 1 ? (product.maxPrice | currency:'USD') : ''}}
+                            </ng-container>
+                        </div>
                     </div>
-
-
-
-                    <div
-                        style="display: flex; align-items: center; min-height: 40px; outline: none; border: 1px dashed #505050; color: #ffba00; padding: 5px; user-select: none;">
-                        <ng-container *ngIf="product.pricePoints.length == 0">{{product.minPrice | currency:'USD'}}
-                        </ng-container>
-                        <ng-container *ngIf="product.pricePoints.length > 0">
-                            {{product.minPrice | currency:'USD'}} -
-                            {{product.pricePoints.length > 1 ? (product.maxPrice | currency:'USD') : ''}}
-                        </ng-container>
-                    </div>
-
 
 
 
@@ -145,13 +143,13 @@
 
                             <div style="color: #505050; font-size: 12px;">Shipping:</div>
 
-                            <div style="position: absolute; right: 50px; top: -15px; z-index: 100;">
+                            <div style="position: absolute; right: 42px; top: -15px; z-index: 100;">
                                 <ng-template #editShippingPopup></ng-template>
                             </div>
 
                             <div *ngIf="product.shippingType != shippingType.None">
                                 <i class="fas fa-pencil-alt" style="color: #9e9e9e; cursor: pointer;"
-                                    title="Edit shipping" (click)="openShippingPopup(false)"></i>
+                                    title="Edit shipping" (click)="openShippingPopup(PopupArrowPosition.TopRight)"></i>
                                 <i class="fas fa-trash-alt" style="color: #9e9e9e; margin-left: 10px; cursor: pointer;"
                                     title="Remove shipping" (click)="product.shippingType = 0; updateShipping()"></i>
                             </div>
@@ -166,7 +164,7 @@
 
                             <div *ngIf="product.shippingType == shippingType.None"
                                 style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;"
-                                (click)="openShippingPopup(true)">
+                                (click)="openShippingPopup(PopupArrowPosition.TopLeft)">
 
                                 <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                                 <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
@@ -175,7 +173,7 @@
 
                             <shipping *ngIf="product.shippingType != shippingType.None" [shippingType]="product.shippingType"></shipping>
 
-                            <div style="position: absolute; left: 35px; top: 15px; z-index: 100;">
+                            <div style="position: absolute; left: 29px; top: 13px; z-index: 100;">
                                 <ng-template #addShippingPopup></ng-template>
                             </div>
 
@@ -194,13 +192,13 @@
 
                             <div style="color: #505050; font-size: 12px;">Recurring Payment:</div>
 
-                            <div style="position: absolute; right: 50px; top: -15px; z-index: 100;">
+                            <div style="position: absolute; right: 42px; top: -15px; z-index: 100;">
                                 <ng-template #editRecurringPopup></ng-template>
                             </div>
 
                             <div *ngIf="product.recurringPayment.recurringPrice > 0">
                                 <i class="fas fa-pencil-alt" style="color: #9e9e9e; cursor: pointer;"
-                                    title="Edit recurring payment" (click)="openRecurringPopup(false)"></i>
+                                    title="Edit recurring payment" (click)="openRecurringPopup(PopupArrowPosition.TopRight)"></i>
                                 <i class="fas fa-trash-alt" style="color: #9e9e9e; margin-left: 10px; cursor: pointer;"
                                     title="Remove recurring payment" (click)="removeRecurringPayment()"></i>
                             </div>
@@ -215,7 +213,7 @@
                             <div>
                                 <div *ngIf="product.recurringPayment.recurringPrice == 0"
                                     style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;"
-                                    (click)="openRecurringPopup(true)">
+                                    (click)="openRecurringPopup(PopupArrowPosition.TopLeft)">
 
                                     <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                                     <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
@@ -223,7 +221,7 @@
                                 </div>
 
 
-                                <div style="position: absolute; left: 35px; top: 15px; z-index: 100;">
+                                <div style="position: absolute; left: 29px; top: 13px; z-index: 100;">
                                     <ng-template #addRecurringPopup></ng-template>
                                 </div>
 
@@ -253,12 +251,12 @@
 
                             <div style="color: #505050; font-size: 12px;">Hoplink:</div>
 
-                            <div style="position: absolute; right: 27px; top: -15px; z-index: 100;">
+                            <div style="position: absolute; right: 20px; top: -15px; z-index: 100;">
                                 <ng-template #editHoplinkPopup></ng-template>
                             </div>
 
                             <i *ngIf="product.hoplink" class="fas fa-pencil-alt" title="Edit hoplink"
-                                style="color: #9e9e9e; cursor: pointer;" (click)="openHoplinkPopup(false)"></i>
+                                style="color: #9e9e9e; cursor: pointer;" (click)="openHoplinkPopup(PopupArrowPosition.TopRight)"></i>
 
                         </div>
 
@@ -269,7 +267,7 @@
 
                             <div *ngIf="!product.hoplink"
                                 style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;"
-                                (click)="openHoplinkPopup(true)">
+                                (click)="openHoplinkPopup(PopupArrowPosition.TopLeft)">
 
                                 <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                                 <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
@@ -277,7 +275,7 @@
 
                             </div>
 
-                            <div style="position: absolute; left: 35px; top: 15px; z-index: 100;">
+                            <div style="position: absolute; left: 29px; top: 13px; z-index: 100;">
                                 <ng-template #addHoplinkPopup></ng-template>
                             </div>
 

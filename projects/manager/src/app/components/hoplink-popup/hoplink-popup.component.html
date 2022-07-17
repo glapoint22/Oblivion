@@ -1,7 +1,7 @@
 <div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Arrow Left -->
-    <div *ngIf="isAdd" class="popup-arrow-container">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft" class="popup-arrow-container">
         <div class="popup-arrow-left-Border"></div>
         <div class="popup-arrow-left-background"></div>
     </div>
@@ -23,7 +23,7 @@
 
 
     <!-- Arrow Right -->
-    <div *ngIf="!isAdd" class="popup-arrow-container">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopRight" class="popup-arrow-container">
         <div class="popup-arrow-right-Border"></div>
         <div class="popup-arrow-right-background"></div>
     </div>

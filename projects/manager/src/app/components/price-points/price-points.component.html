@@ -132,13 +132,13 @@
                         <div class="label-container">
                             <div class="label-with-buttons">Shipping:</div>
                             <div *ngIf="pricePoint.shippingType != shippingType.None" class="buttons-container">
-                                <i class="fas fa-pencil-alt" (click)="openShippingPopup(false, i, pricePoint)"></i>
+                                <i class="fas fa-pencil-alt" (click)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)"></i>
                                 <i class="fas fa-trash-alt" (click)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)"></i>
                             </div>
                         </div>
                         
                         <div class="add-button-field" style="min-height: 40px;">
-                            <div *ngIf="pricePoint.shippingType == shippingType.None" class="add-button" (click)="openShippingPopup(true, i, pricePoint)">
+                            <div *ngIf="pricePoint.shippingType == shippingType.None" class="add-button" (click)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
                                 <div></div>
                                 <div></div>
                                 <div></div>
@@ -148,7 +148,7 @@
                                 <ng-template #addShippingPopup></ng-template>
                             </div>
 
-                            <div style="position: absolute; z-index: 100; left: -65px; top: -164px;">
+                            <div style="position: absolute; z-index: 100; left: -65px; top: -160px;">
                                 <ng-template #editShippingPopup></ng-template>
                             </div>
 
@@ -165,14 +165,14 @@
                             <div class="label-with-buttons">Recurring:</div>
                             
                             <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="buttons-container">
-                                <i class="fas fa-pencil-alt" (click)="openRecurringPopup(false, i, pricePoint)"></i>
+                                <i class="fas fa-pencil-alt" (click)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)"></i>
                                 <i class="fas fa-trash-alt" (click)="removeRecurringPayment(pricePoint)"></i>
                             </div>
                         </div>
                         
                         <div class="add-button-field">
 
-                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="add-button" (click)="openRecurringPopup(true, i, pricePoint)">
+                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="add-button" (click)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
                                 <div></div>
                                 <div></div>
                                 <div></div>

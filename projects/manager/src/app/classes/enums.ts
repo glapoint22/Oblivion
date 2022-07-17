@@ -73,3 +73,11 @@ export enum CaseType {
     CapitalizedCase,
     TitleCase
 }
+
+
+export enum PopupArrowPosition {
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight
+}

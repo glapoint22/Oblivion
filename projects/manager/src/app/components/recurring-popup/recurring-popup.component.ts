@@ -1,6 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component } from '@angular/core';
 import { LazyLoad, RebillFrequency, RecurringPayment } from 'common';
+import { PopupArrowPosition } from '../../classes/enums';
 
 @Component({
   selector: 'recurring-popup',
@@ -8,7 +9,8 @@ import { LazyLoad, RebillFrequency, RecurringPayment } from 'common';
   styleUrls: ['./recurring-popup.component.scss']
 })
 export class RecurringPopupComponent extends LazyLoad {
-  public isAdd!: boolean;
+  public arrowPosition!: PopupArrowPosition;
+  public PopupArrowPosition = PopupArrowPosition;
   public recurringPayment: RecurringPayment = new RecurringPayment();
   public rebillFrequencyList: Array<KeyValue<string, number>> = [];
   public selectedRebillFrequency!: KeyValue<string, number>;
@@ -19,6 +21,7 @@ export class RecurringPopupComponent extends LazyLoad {
 
   // ---------------------------------------------------------------------- Ng On Init --------------------------------------------------
   public ngOnInit(): void {
+    super.ngOnInit();
     let keys = Object.keys(RebillFrequency);
     let counter: number = 0;
 

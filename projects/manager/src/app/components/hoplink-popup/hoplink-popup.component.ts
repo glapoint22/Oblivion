@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
+import { PopupArrowPosition } from '../../classes/enums';
 
 @Component({
   selector: 'hoplink-popup',
@@ -8,7 +9,8 @@ import { LazyLoad } from 'common';
 })
 export class HoplinkPopupComponent extends LazyLoad {
   @ViewChild('hoplinkInput') hoplinkInput!: ElementRef<HTMLInputElement>;
-  public isAdd!: boolean;
+  public arrowPosition!: PopupArrowPosition;
+  public PopupArrowPosition = PopupArrowPosition;
   public hoplink!: string;
   public callback!: Function;
 

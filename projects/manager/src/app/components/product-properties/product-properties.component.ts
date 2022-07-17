@@ -1,5 +1,6 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
+import { PopupArrowPosition } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { HoplinkPopupComponent } from '../hoplink-popup/hoplink-popup.component';
 import { PricePointsComponent } from '../price-points/price-points.component';
@@ -16,7 +17,7 @@ export class ProductPropertiesComponent {
   public zIndex!: number;
   public product: Product = new Product();
   public shippingType = ShippingType;
-  // public recurringPayment = RecurringPayment;
+  public PopupArrowPosition = PopupArrowPosition;
   public shipping = Shipping;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
@@ -51,7 +52,7 @@ export class ProductPropertiesComponent {
   }
 
 
-  openShippingPopup(add: boolean) {
+  openShippingPopup(arrowPosition: PopupArrowPosition) {
     if (this.addShippingPopup.length > 0 || this.editShippingPopup.length > 0) return;
 
     this.lazyLoadingService.load(async () => {
@@ -61,10 +62,10 @@ export class ProductPropertiesComponent {
         component: ShippingPopupComponent,
         module: ShippingPopupModule
       }
-    }, SpinnerAction.None, add ? this.addShippingPopup : this.editShippingPopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addShippingPopup : this.editShippingPopup)
       .then((shippingPopup: ShippingPopupComponent) => {
-        shippingPopup.isAdd = add;
-        shippingPopup.shipping = add ? ShippingType.FreeShipping : this.product.shippingType;
+        shippingPopup.arrowPosition = arrowPosition;
+        shippingPopup.shipping = arrowPosition == PopupArrowPosition.TopLeft ? ShippingType.FreeShipping : this.product.shippingType;
         shippingPopup.callback = (shippingType: ShippingType) => {
           this.product.shippingType = shippingType;
 
@@ -84,7 +85,7 @@ export class ProductPropertiesComponent {
   }
 
 
-  openRecurringPopup(add: boolean) {
+  openRecurringPopup(arrowPosition: PopupArrowPosition) {
     if (this.addRecurringPopup.length > 0 || this.editRecurringPopup.length > 0) return;
 
     this.lazyLoadingService.load(async () => {
@@ -94,9 +95,9 @@ export class ProductPropertiesComponent {
         component: RecurringPopupComponent,
         module: RecurringPopupModule
       }
-    }, SpinnerAction.None, add ? this.addRecurringPopup : this.editRecurringPopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addRecurringPopup : this.editRecurringPopup)
       .then((recurringPopup: RecurringPopupComponent) => {
-        recurringPopup.isAdd = add;
+        recurringPopup.arrowPosition = arrowPosition;
 
         if (this.product.recurringPayment) {
           recurringPopup.recurringPayment.recurringPrice = this.product.recurringPayment.recurringPrice;
@@ -138,7 +139,7 @@ export class ProductPropertiesComponent {
   }
 
 
-  openHoplinkPopup(add: boolean) {
+  openHoplinkPopup(arrowPosition: PopupArrowPosition) {
     if (this.addHoplinkPopup.length > 0 || this.editHoplinkPopup.length > 0) return;
 
     this.lazyLoadingService.load(async () => {
@@ -148,9 +149,9 @@ export class ProductPropertiesComponent {
         component: HoplinkPopupComponent,
         module: HoplinkPopupModule
       }
-    }, SpinnerAction.None, add ? this.addHoplinkPopup : this.editHoplinkPopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addHoplinkPopup : this.editHoplinkPopup)
       .then((hoplinkPopup: HoplinkPopupComponent) => {
-        hoplinkPopup.isAdd = add;
+        hoplinkPopup.arrowPosition = arrowPosition;
         hoplinkPopup.hoplink = this.product.hoplink;
         hoplinkPopup.callback = (hoplink: string) => {
           this.product.hoplink = hoplink;
