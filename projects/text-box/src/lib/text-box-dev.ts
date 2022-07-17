@@ -58,6 +58,7 @@ export class TextBoxDev extends TextBox {
     public decreaseIndent: DecreaseIndent = new DecreaseIndent(this.selection);
     public onChange = new Subject<void>();
     public onSelection = new Subject<void>();
+    public onMousedown = new Subject<void>();
 
     constructor(htmlRootElement: HTMLElement) {
         super(htmlRootElement);
@@ -78,6 +79,8 @@ export class TextBoxDev extends TextBox {
 
         // Mousedown
         htmlRootElement.addEventListener('mousedown', () => {
+            this.onMousedown.next();
+
             const onMouseup = () => {
                 window.setTimeout(() => {
                     this.selection.onSelection(this.rootElement);

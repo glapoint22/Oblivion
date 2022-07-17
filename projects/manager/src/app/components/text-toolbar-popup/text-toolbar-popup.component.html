@@ -85,19 +85,25 @@
         <div class="divider"></div>
 
         <!-- Link -->
-        <div #linkElement class="text-toolbar-button" title="Link" (click)="onLinkClick(linkElement)">
-            <i class="fa-solid fa-link"></i>
+        <div style="position: relative;">
+            <div #linkElement class="text-toolbar-button" title="Link" (click)="onLinkClick(linkElement)">
+                <i class="fa-solid fa-link"></i>
+
+            </div>
+            <ng-template #linkContainer></ng-template>
         </div>
+
 
         <!-- Case -->
         <div #case style="width: 39px; margin-left: 4px; margin-right: 2px;" title="Case"
-            (click)="$event.stopPropagation(); onCaseClick(case);">
+            (mousedown)="showCaseDropdownList(case);">
             <div class="popup-dropdown-base">
                 <div class="popup-dropdown-value-display">Aa</div>
                 <div class="popup-dropdown-arrow">
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
             </div>
+            <ng-template #caseDropdownListContainer></ng-template>
         </div>
 
 

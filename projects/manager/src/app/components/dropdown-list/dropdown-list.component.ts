@@ -107,7 +107,7 @@ export class DropdownListComponent extends LazyLoad {
 
 
   // --------------------------------------------------------------------------- On Window Click -----------------------------------------------------------
-  @HostListener('window:click')
+  @HostListener('window:mousedown')
   onWindowClick() {
     this.close();
   }
