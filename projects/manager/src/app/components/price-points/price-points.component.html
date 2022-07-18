@@ -73,9 +73,10 @@
                                 class="unit-price-field"
                                 contenteditable="true"
                                 (focus)="onUnitPriceFocus(unitPrice)"
+                                (input)="onUnitPriceInput(unitPrice)"
                                 (blur)="onUnitPriceBlur(pricePoint, unitPrice)"
                                 (keydown.enter)="window.getSelection()!.removeAllRanges(); unitPrice.blur()">
-                                    {{pricePoint.unitPrice | currency:'USD':'symbol':'0.0-2'}}
+                                    {{isWholeNumber(pricePoint.unitPrice) ?  (pricePoint.unitPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.unitPrice | currency:'USD':'symbol':'0.2-2')}}
                             </div>
                         </div>
         
@@ -104,9 +105,10 @@
                                     class="strikethrough-price"
                                     contenteditable="true"
                                     (focus)="onStrikethroughPriceFocus(strikethroughPrice)"
+                                    (input)="onStrikethroughPriceInput(strikethroughPrice)"
                                     (blur)="onStrikethroughPriceBlur(pricePoint, strikethroughPrice)"
                                     (keydown.enter)="window.getSelection()!.removeAllRanges(); strikethroughPrice.blur()">
-                                        {{pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-2'}}
+                                        {{isWholeNumber(pricePoint.strikethroughPrice) ?  (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.2-2')}}
                                 </div>
                             </div>
                         </div>
@@ -117,9 +119,10 @@
                                 class="price-field"
                                 contenteditable="true"
                                 (focus)="onPriceFocus(price)"
+                                (input)="onPriceInput(price)"
                                 (blur)="onPriceBlur(pricePoint, price)"
                                 (keydown.enter)="window.getSelection()!.removeAllRanges(); price.blur()">
-                                    {{pricePoint.price | currency:'USD':'symbol':'0.0-2'}}
+                                    {{isWholeNumber(pricePoint.price) ?  (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}
                             </div>
                         </div>
                     </div>

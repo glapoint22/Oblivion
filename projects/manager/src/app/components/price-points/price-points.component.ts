@@ -50,13 +50,13 @@ export class PricePointsComponent {
   updatePricePoint(pricePoint: PricePoint) {
     this.dataService.put('api/Products/PricePoint', {
       id: pricePoint.id,
-      header: pricePoint.header,
-      quantity: pricePoint.quantity,
+      header: pricePoint.header && pricePoint.header.length > 0 ? pricePoint.header : null,
+      quantity: pricePoint.quantity && pricePoint.quantity.length > 0 ? pricePoint.quantity : null,
       imageId: pricePoint.image.id > 0 ? pricePoint.image.id : null,
-      unitPrice: pricePoint.unitPrice,
-      unit: pricePoint.unit,
-      strikethroughPrice: pricePoint.strikethroughPrice,
-      price: pricePoint.price,
+      unitPrice: pricePoint.unitPrice && pricePoint.unitPrice.length > 0 ? pricePoint.unitPrice : null,
+      unit: pricePoint.unit && pricePoint.unit.length > 0 ? pricePoint.unit : null,
+      strikethroughPrice: pricePoint.strikethroughPrice && pricePoint.strikethroughPrice.length > 0 ? pricePoint.strikethroughPrice : null,
+      price: pricePoint.price && pricePoint.price.length > 0 ? pricePoint.price : null,
       shippingType: pricePoint.shippingType,
       recurringPayment: pricePoint.recurringPayment
     }).subscribe();
@@ -119,6 +119,8 @@ export class PricePointsComponent {
   }
 
 
+
+
   onUnitPriceFocus(htmlElement: HTMLElement) {
     if (htmlElement.innerText.length > 0) {
       htmlElement.innerText = htmlElement.innerText.substring(1);
@@ -126,10 +128,15 @@ export class PricePointsComponent {
   }
 
 
+  onUnitPriceInput(htmlElement: HTMLElement) {
+    !(/^[0-9.]*$/i).test(htmlElement.innerText) ? htmlElement.innerText = htmlElement.innerText.replace(/[^0-9.]/ig, '') : null;
+  }
+
+
   onUnitPriceBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
     pricePoint.unitPrice = htmlElement.innerText;
     this.updatePricePoint(pricePoint);
-    if (htmlElement.innerText.length > 0) this.convertToCurrency(htmlElement);
+    if (htmlElement.innerText.length > 0) this.isWholeNumber(htmlElement.innerText) ? this.convertToCurrency(htmlElement, 0) : this.convertToCurrency(htmlElement, 2);
   }
 
 
@@ -147,10 +154,15 @@ export class PricePointsComponent {
   }
 
 
+  onStrikethroughPriceInput(htmlElement: HTMLElement) {
+    !(/^[0-9.]*$/i).test(htmlElement.innerText) ? htmlElement.innerText = htmlElement.innerText.replace(/[^0-9.]/ig, '') : null;
+  }
+
+
   onStrikethroughPriceBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
     pricePoint.strikethroughPrice = htmlElement.innerText;
     this.updatePricePoint(pricePoint);
-    if (htmlElement.innerText.length > 0) this.convertToCurrency(htmlElement);
+    if (htmlElement.innerText.length > 0) this.isWholeNumber(htmlElement.innerText) ? this.convertToCurrency(htmlElement, 0) : this.convertToCurrency(htmlElement, 2);
   }
 
 
@@ -161,11 +173,16 @@ export class PricePointsComponent {
   }
 
 
+  onPriceInput(htmlElement: HTMLElement) {
+    !(/^[0-9.]*$/i).test(htmlElement.innerText) ? htmlElement.innerText = htmlElement.innerText.replace(/[^0-9.]/ig, '') : null;
+  }
+
+
   onPriceBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
     pricePoint.price = htmlElement.innerText;
     this.updatePricePoint(pricePoint);
     this.updateMinMaxPrice();
-    if (htmlElement.innerText.length > 0) this.convertToCurrency(htmlElement);
+    if (htmlElement.innerText.length > 0) this.isWholeNumber(htmlElement.innerText) ? this.convertToCurrency(htmlElement, 0) : this.convertToCurrency(htmlElement, 2);
   }
 
 
@@ -195,15 +212,22 @@ export class PricePointsComponent {
   }
 
 
-  convertToCurrency(htmlElement: HTMLElement) {
+  convertToCurrency(htmlElement: HTMLElement, minimumFractionDigits: number) {
     const numberFormat = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 0
+      minimumFractionDigits: minimumFractionDigits
     })
+
+
     htmlElement.innerText = numberFormat.format(parseFloat(htmlElement.innerText));
   }
 
+
+
+  isWholeNumber(value: string): boolean {
+    return parseFloat(value) % 1 == 0;
+  }
 
 
 
@@ -241,7 +265,7 @@ export class PricePointsComponent {
       this.recurringPopup.close();
       return;
     }
-    
+
     this.lazyLoadingService.load(async () => {
       const { RecurringPopupComponent } = await import('../recurring-popup/recurring-popup.component');
       const { RecurringPopupModule } = await import('../recurring-popup/recurring-popup.module');
