@@ -12,17 +12,25 @@ import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.compone
   styleUrls: ['./price-points.component.scss']
 })
 export class PricePointsComponent {
+  // Private
+  private shippingPopup!: ShippingPopupComponent;
+  private recurringPopup!: RecurringPopupComponent;
+
+  // Public
   public window = window;
   public shipping = Shipping;
   public shippingType = ShippingType;
   public PopupArrowPosition = PopupArrowPosition;
   public recurringPayment = RecurringPayment;
+
+  // Decorators
   @Input() product!: Product;
   @ViewChildren('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: QueryList<ViewContainerRef>;
 
+  // Constructor
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
 
 
@@ -190,7 +198,6 @@ export class PricePointsComponent {
       currency: 'USD',
       minimumFractionDigits: 0
     })
-
     htmlElement.innerText = numberFormat.format(parseFloat(htmlElement.innerText));
   }
 
@@ -198,7 +205,10 @@ export class PricePointsComponent {
 
 
   openShippingPopup(arrowPosition: PopupArrowPosition, pricePointIndex: number, pricePoint: PricePoint) {
-    if (this.addShippingPopup.get(pricePointIndex)!.length > 0 || this.editShippingPopup.get(pricePointIndex)!.length > 0) return;
+    if (this.addShippingPopup.get(pricePointIndex)!.length > 0 || this.editShippingPopup.get(pricePointIndex)!.length > 0) {
+      this.shippingPopup.close();
+      return;
+    }
 
     this.lazyLoadingService.load(async () => {
       const { ShippingPopupComponent } = await import('../shipping-popup/shipping-popup.component');
@@ -209,6 +219,7 @@ export class PricePointsComponent {
       }
     }, SpinnerAction.None, arrowPosition == PopupArrowPosition.BottomLeft ? this.addShippingPopup.get(pricePointIndex) : this.editShippingPopup.get(pricePointIndex))
       .then((shippingPopup: ShippingPopupComponent) => {
+        this.shippingPopup = shippingPopup;
         shippingPopup.arrowPosition = arrowPosition;
         shippingPopup.shipping = arrowPosition == PopupArrowPosition.BottomLeft ? ShippingType.FreeShipping : pricePoint.shippingType;
         shippingPopup.callback = (shippingType: ShippingType) => {
@@ -223,8 +234,11 @@ export class PricePointsComponent {
 
 
   openRecurringPopup(arrowPosition: PopupArrowPosition, pricePointIndex: number, pricePoint: PricePoint) {
-    if (this.addRecurringPopup.get(pricePointIndex)!.length > 0 || this.editRecurringPopup.get(pricePointIndex)!.length > 0) return;
-
+    if (this.addRecurringPopup.get(pricePointIndex)!.length > 0 || this.editRecurringPopup.get(pricePointIndex)!.length > 0) {
+      this.recurringPopup.close();
+      return;
+    }
+    
     this.lazyLoadingService.load(async () => {
       const { RecurringPopupComponent } = await import('../recurring-popup/recurring-popup.component');
       const { RecurringPopupModule } = await import('../recurring-popup/recurring-popup.module');
@@ -235,6 +249,7 @@ export class PricePointsComponent {
 
     }, SpinnerAction.None, arrowPosition == PopupArrowPosition.BottomLeft ? this.addRecurringPopup.get(pricePointIndex) : this.editRecurringPopup.get(pricePointIndex))
       .then((recurringPopup: RecurringPopupComponent) => {
+        this.recurringPopup = recurringPopup;
         recurringPopup.arrowPosition = arrowPosition;
 
         if (pricePoint.recurringPayment) {

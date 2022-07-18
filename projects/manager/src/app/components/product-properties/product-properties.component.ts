@@ -14,6 +14,11 @@ import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.compone
   styleUrls: ['./product-properties.component.scss']
 })
 export class ProductPropertiesComponent {
+  private pricePopup!: PricePopupComponent;
+  private shippingPopup!: ShippingPopupComponent;
+  private recurringPopup!: RecurringPopupComponent;
+  private hoplinkPopup!: HoplinkPopupComponent;
+
   public zIndex!: number;
   public product: Product = new Product();
   public shippingType = ShippingType;
@@ -32,7 +37,10 @@ export class ProductPropertiesComponent {
 
 
   openPricePopup() {
-    if (this.editPricePopup.length > 0) return;
+    if (this.editPricePopup.length > 0) {
+      this.pricePopup.close();
+      return;
+    }
 
     this.lazyLoadingService.load(async () => {
       const { PricePopupComponent } = await import('../price-popup/price-popup.component');
@@ -43,6 +51,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None, this.editPricePopup)
       .then((pricePopup: PricePopupComponent) => {
+        this.pricePopup = pricePopup;
         pricePopup.price = this.product.minPrice;
         pricePopup.productId = this.product.id;
         pricePopup.callback = (price: number) => {
@@ -53,7 +62,10 @@ export class ProductPropertiesComponent {
 
 
   openShippingPopup(arrowPosition: PopupArrowPosition) {
-    if (this.addShippingPopup.length > 0 || this.editShippingPopup.length > 0) return;
+    if (this.addShippingPopup.length > 0 || this.editShippingPopup.length > 0) {
+      this.shippingPopup.close();
+      return;
+    }
 
     this.lazyLoadingService.load(async () => {
       const { ShippingPopupComponent } = await import('../shipping-popup/shipping-popup.component');
@@ -64,6 +76,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addShippingPopup : this.editShippingPopup)
       .then((shippingPopup: ShippingPopupComponent) => {
+        this.shippingPopup = shippingPopup;
         shippingPopup.arrowPosition = arrowPosition;
         shippingPopup.shipping = arrowPosition == PopupArrowPosition.TopLeft ? ShippingType.FreeShipping : this.product.shippingType;
         shippingPopup.callback = (shippingType: ShippingType) => {
@@ -86,7 +99,10 @@ export class ProductPropertiesComponent {
 
 
   openRecurringPopup(arrowPosition: PopupArrowPosition) {
-    if (this.addRecurringPopup.length > 0 || this.editRecurringPopup.length > 0) return;
+    if (this.addRecurringPopup.length > 0 || this.editRecurringPopup.length > 0) {
+      this.recurringPopup.close();
+      return;
+    }
 
     this.lazyLoadingService.load(async () => {
       const { RecurringPopupComponent } = await import('../recurring-popup/recurring-popup.component');
@@ -97,6 +113,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addRecurringPopup : this.editRecurringPopup)
       .then((recurringPopup: RecurringPopupComponent) => {
+        this.recurringPopup = recurringPopup;
         recurringPopup.arrowPosition = arrowPosition;
 
         if (this.product.recurringPayment) {
@@ -140,7 +157,10 @@ export class ProductPropertiesComponent {
 
 
   openHoplinkPopup(arrowPosition: PopupArrowPosition) {
-    if (this.addHoplinkPopup.length > 0 || this.editHoplinkPopup.length > 0) return;
+    if (this.addHoplinkPopup.length > 0 || this.editHoplinkPopup.length > 0) {
+      this.hoplinkPopup.close();
+      return;
+    }
 
     this.lazyLoadingService.load(async () => {
       const { HoplinkPopupComponent } = await import('../hoplink-popup/hoplink-popup.component');
@@ -151,6 +171,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addHoplinkPopup : this.editHoplinkPopup)
       .then((hoplinkPopup: HoplinkPopupComponent) => {
+        this.hoplinkPopup = hoplinkPopup;
         hoplinkPopup.arrowPosition = arrowPosition;
         hoplinkPopup.hoplink = this.product.hoplink;
         hoplinkPopup.callback = (hoplink: string) => {
