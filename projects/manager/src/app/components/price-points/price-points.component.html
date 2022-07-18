@@ -50,15 +50,15 @@
                     <div class="label-container">
                         <div class="label-with-buttons">Image:</div>
     
-                        <div *ngIf="pricePoint.image && pricePoint.image.src" class="buttons-container">
+                        <div *ngIf="pricePoint.image.src" class="buttons-container">
                             <i class="fas fa-pencil-alt" (click)="openMediaBrowser(pricePoint)"></i>
-                            <i class="fas fa-trash-alt"></i>
+                            <i class="fas fa-trash-alt" (click)="onImageDelete(pricePoint)"></i>
                         </div>
                     </div>
                     
                     <div class="image-field" (click)="openMediaBrowser(pricePoint)">
-                        <i *ngIf="!pricePoint.image || !pricePoint.image.src" class="fa-solid fa-image"></i>
-                        <img *ngIf="pricePoint.image && pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
+                        <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image"></i>
+                        <img *ngIf="pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
                     </div>
                 </div>
                 

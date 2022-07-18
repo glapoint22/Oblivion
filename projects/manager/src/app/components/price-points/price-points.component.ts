@@ -49,11 +49,10 @@ export class PricePointsComponent {
 
   updatePricePoint(pricePoint: PricePoint) {
     this.dataService.put('api/Products/PricePoint', {
-      productId: this.product.id,
       id: pricePoint.id,
       header: pricePoint.header,
       quantity: pricePoint.quantity,
-      imageId: pricePoint.image ? pricePoint.image.id > 0 ? pricePoint.image.id : null : null,
+      imageId: pricePoint.image.id > 0 ? pricePoint.image.id : null,
       unitPrice: pricePoint.unitPrice,
       unit: pricePoint.unit,
       strikethroughPrice: pricePoint.strikethroughPrice,
@@ -70,7 +69,6 @@ export class PricePointsComponent {
     this.updateMinMaxPrice();
 
     this.dataService.delete('api/Products/PricePoint', {
-      productId: this.product.id,
       pricePointId: pricePointId
     }).subscribe();
   }
@@ -100,19 +98,24 @@ export class PricePointsComponent {
       .then((mediaBrowser: MediaBrowserComponent) => {
         mediaBrowser.currentMediaType = MediaType.Image;
 
-
         mediaBrowser.callback = (image: Image) => {
           if (image) {
 
-            if (!pricePoint.image) pricePoint.image = new Image();
             pricePoint.image.id = image.id;
             pricePoint.image.name = image.name;
             pricePoint.image.src = image.src;
             pricePoint.image.thumbnail = image.thumbnail;
+
             this.updatePricePoint(pricePoint);
           }
         }
       });
+  }
+
+
+  onImageDelete(pricePoint: PricePoint) {
+    pricePoint.image = new Image();
+    this.updatePricePoint(pricePoint);
   }
 
 

@@ -6,7 +6,7 @@ export class PricePoint {
     id!: number;
     header!: string;
     quantity!: string;
-    image!: Image;
+    image: Image = new Image();
     unitPrice!: string;
     unit!: string;
     strikethroughPrice!: string;
