@@ -1,0 +1,121 @@
+.color-picker-base {
+    position: absolute;
+    background: #282828;
+    border-radius: 5px;
+    padding: 5px;
+    width: 226px;
+    border: 1px solid #3f3f3f;
+    box-shadow: 0px 0px 7px 7px rgba(0, 0, 0, 0.25);
+}
+
+.color-container {
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.color-palette {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    user-select: none;
+    overflow: hidden;
+}
+
+.alpha-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #282828;
+    background-image: linear-gradient(45deg, #343434 30%, transparent 30%, transparent 70%, #343434 70%, #343434), linear-gradient(45deg, #343434 30%, transparent 30%, transparent 70%, #343434 70%, #343434);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+}
+
+.color-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.saturation {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #fff 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.lightness {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, #000 100%);
+}
+
+.color-bar {
+    position: relative;
+    width: 25px;
+    height: 150px;
+    margin-left: 8px;
+    user-select: none;
+}
+
+.alpha-bar {
+    background-color: #282828;
+    background-image: linear-gradient(45deg, #343434 30%, transparent 30%, transparent 70%, #343434 70%, #343434), linear-gradient(45deg, #343434 30%, transparent 30%, transparent 70%, #343434 70%, #343434);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+}
+
+.hue-bar {
+    background: linear-gradient(to top, red 0%, #f0f 17%, blue 33%, cyan 50%, lime 66%, #ff0 83%, red 100%);
+}
+
+.color-handle {
+    position: absolute;
+    width: 29px;
+    height: 4px;
+    background: transparent;
+    border: 1px solid #e0e0e0c7;
+    left: -2px;
+    margin-top: -2px;
+}
+
+.inputs-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+    input:nth-child(-n+4) {
+        width: 30px;
+        height: 25px;
+        text-align: center;
+        padding: 0;
+        font-size: 12px;
+    }
+
+    input:nth-child(5) {
+        width: 70px;
+        height: 25px;
+        padding: 0;
+        text-align: center;
+        font-size: 12px;
+    }
+}
+
+.ring {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    margin-left: -6px;
+    margin-top: -6px;
+    user-select: none;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 5px;
+}
