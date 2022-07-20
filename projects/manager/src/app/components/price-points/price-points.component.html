@@ -8,8 +8,12 @@
         <div *ngFor="let pricePoint of product.pricePoints; let i = index" class="price-point-container" style="position: relative;">
 
 
-            <div class="delete-price-point-button-container" (click)="deletePricePoint(i, pricePoint.id)">
-                <i class="fas fa-trash-alt"></i>
+            <!-- Delete Price Point Button -->
+            <div class="delete-price-point-button-container"
+                 (click)="deletePricePoint(i, pricePoint.id)">
+                <i class="fas fa-trash-alt"
+                   tabindex="0"
+                   (keydown.enter)="deletePricePoint(i, pricePoint.id)"></i>
             </div>
             
 
@@ -19,12 +23,18 @@
 
                 <!-- Header -->
                 <div class="header">
-                    <div class="label-only">Header:</div>
+                    <div class="label-only"
+                         style="color: #737373;">
+                        Header:
+                    </div>
                     <div #header
-                        class="header-field"
-                        contenteditable="true"
-                        (blur)="onHeaderBlur(pricePoint, header.innerText)"
-                        (keydown.enter)="window.getSelection()!.removeAllRanges(); header.blur()">
+                         tabindex="0"
+                         class="header-field"
+                         contenteditable="true"
+                         (focus)="selectRange(header)"
+                         (blur)="onHeaderBlur(pricePoint, header)"
+                         (keydown.escape)="onHeaderEscape(pricePoint, header)"
+                         (keydown.enter)="header.blur()">
                             {{pricePoint.header}}
                     </div>
                 </div>
@@ -35,10 +45,13 @@
                 <div class="quantity-container">
                     <div class="label-only">Quantity:</div>
                     <div #quantity
-                        class="quantity-field"
-                        contenteditable="true" 
-                        (blur)="onQuantityBlur(pricePoint, quantity.innerText)"
-                        (keydown.enter)="window.getSelection()!.removeAllRanges(); quantity.blur()">
+                         tabindex="0"
+                         class="quantity-field"
+                         contenteditable="true"
+                         (focus)="selectRange(quantity)"
+                         (blur)="onQuantityBlur(pricePoint, quantity)"
+                         (keydown.escape)="onQuantityEscape(pricePoint, quantity)"
+                         (keydown.enter)="quantity.blur()" >
                             {{pricePoint.quantity}}
                     </div>
                 </div>
@@ -46,17 +59,36 @@
     
     
                 <!-- Image -->
-                <div class="image-container">
+                <div class="image-container" [tabindex]="!pricePoint.image.src ? '0' : '-1'" (keydown.enter)="!pricePoint.image.src ? openMediaBrowser(pricePoint) : null">
                     <div class="label-container">
                         <div class="label-with-buttons">Image:</div>
     
                         <div *ngIf="pricePoint.image.src" class="buttons-container">
-                            <i class="fas fa-pencil-alt" (click)="openMediaBrowser(pricePoint)"></i>
-                            <i class="fas fa-trash-alt" (click)="onImageDelete(pricePoint)"></i>
+
+                            <!-- Edit -->
+                            <i #imageEditButton
+                               tabindex="0"
+                               class="fas fa-pencil-alt"
+                               (click)="openMediaBrowser(pricePoint)"
+                               (keydown.escape)="imageEditButton.blur()"
+                               (keydown.enter)="openMediaBrowser(pricePoint)">
+                            </i>
+
+                            <!-- Delete -->
+                            <i #imageDeleteButton
+                               tabindex="0"
+                               class="fas fa-trash-alt"
+                               (click)="onImageDelete(pricePoint)"
+                               (keydown.escape)="imageDeleteButton.blur()"
+                               (keydown.enter)="onImageDelete(pricePoint)">
+                            </i>
                         </div>
                     </div>
                     
-                    <div class="image-field" (click)="openMediaBrowser(pricePoint)">
+                    <div class="image-field"
+                         (click)="!pricePoint.image.src ? openMediaBrowser(pricePoint) : null"
+                         [ngStyle]="{'cursor': !pricePoint.image.src ? 'pointer' : 'default'}">
+
                         <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image"></i>
                         <img *ngIf="pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
                     </div>
@@ -65,28 +97,36 @@
     
                 <div class="space-between-container">
     
-                    <!-- Unit -->
+                    <!-- Units -->
                     <div class="units-container">
+
+                        <!-- Unit Price -->
                         <div class="unit-price-container">
                             <div class="label-only">Unit Price:</div>
                             <div #unitPrice
-                                class="unit-price-field"
-                                contenteditable="true"
-                                (focus)="onUnitPriceFocus(unitPrice)"
-                                (input)="onUnitPriceInput(unitPrice)"
-                                (blur)="onUnitPriceBlur(pricePoint, unitPrice)"
-                                (keydown.enter)="window.getSelection()!.removeAllRanges(); unitPrice.blur()">
+                                 tabindex="0"
+                                 class="unit-price-field"
+                                 contenteditable="true"
+                                 (focus)="onUnitPriceFocus(unitPrice)"
+                                 (input)="onUnitPriceInput(unitPrice)"
+                                 (blur)="onUnitPriceBlur(pricePoint, unitPrice)"
+                                 (keydown.escape)="onUnitPriceEscape(pricePoint, unitPrice)"
+                                 (keydown.enter)="unitPrice.blur()">
                                     {{isWholeNumber(pricePoint.unitPrice) ?  (pricePoint.unitPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.unitPrice | currency:'USD':'symbol':'0.2-2')}}
                             </div>
                         </div>
         
+                        <!-- Unit -->
                         <div class="unit-container">
                             <div class="label-only">Unit:</div>
                             <div #unit
-                                class="unit-field"
-                                contenteditable="true"
-                                (blur)="onUnitBlur(pricePoint, unit.innerText)"
-                                (keydown.enter)="window.getSelection()!.removeAllRanges(); unit.blur()">
+                                 tabindex="0"
+                                 class="unit-field"
+                                 contenteditable="true"
+                                 (focus)="selectRange(unit)"
+                                 (blur)="onUnitBlur(pricePoint, unit)"
+                                 (keydown.escape)="onUnitEscape(pricePoint, unit)"
+                                 (keydown.enter)="unit.blur()">
                                     {{pricePoint.unit}}
                             </div>
                         </div>
@@ -96,33 +136,40 @@
         
         
                     
-                    <!-- Price -->
+                    <!-- Prices -->
                     <div class="prices-container">
+
+                        <!-- Strikethrough Price -->
                         <div class="strikethrough-price-container">
                             <div class="label-only">Strikethrough Price:</div>
                             <div class="strikethrough-price-field">
                                 <div #strikethroughPrice
-                                    class="strikethrough-price"
-                                    contenteditable="true"
-                                    (focus)="onStrikethroughPriceFocus(strikethroughPrice)"
-                                    (input)="onStrikethroughPriceInput(strikethroughPrice)"
-                                    (blur)="onStrikethroughPriceBlur(pricePoint, strikethroughPrice)"
-                                    (keydown.enter)="window.getSelection()!.removeAllRanges(); strikethroughPrice.blur()">
-                                        {{isWholeNumber(pricePoint.strikethroughPrice) ?  (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.2-2')}}
+                                     tabindex="0"
+                                     class="strikethrough-price"
+                                     contenteditable="true"
+                                     (focus)="onStrikethroughPriceFocus(strikethroughPrice)"
+                                     (input)="onStrikethroughPriceInput(strikethroughPrice)"
+                                     (blur)="onStrikethroughPriceBlur(pricePoint, strikethroughPrice)"
+                                     (keydown.escape)="onStrikethroughPriceEscape(pricePoint, strikethroughPrice)"
+                                     (keydown.enter)="strikethroughPrice.blur()">
+                                        {{isWholeNumber(pricePoint.strikethroughPrice) ? (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.2-2')}}
                                 </div>
                             </div>
                         </div>
         
+                        <!-- Price -->
                         <div class="price-container">
                             <div class="label-only">Price:</div>
                             <div #price
-                                class="price-field"
-                                contenteditable="true"
-                                (focus)="onPriceFocus(price)"
-                                (input)="onPriceInput(price)"
-                                (blur)="onPriceBlur(pricePoint, price)"
-                                (keydown.enter)="window.getSelection()!.removeAllRanges(); price.blur()">
-                                    {{isWholeNumber(pricePoint.price) ?  (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}
+                                 tabindex="0"
+                                 class="price-field"
+                                 contenteditable="true"
+                                 (focus)="onPriceFocus(price)"
+                                 (input)="onPriceInput(price)"
+                                 (blur)="onPriceBlur(pricePoint, price)"
+                                 (keydown.escape)="onPriceEscape(pricePoint, price)"
+                                 (keydown.enter)="price.blur()">
+                                    {{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}
                             </div>
                         </div>
                     </div>
@@ -135,13 +182,37 @@
                         <div class="label-container">
                             <div class="label-with-buttons">Shipping:</div>
                             <div *ngIf="pricePoint.shippingType != shippingType.None" class="buttons-container">
-                                <i class="fas fa-pencil-alt" (click)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)"></i>
-                                <i class="fas fa-trash-alt" (click)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)"></i>
+
+                                <!-- Edit -->
+                                <i #shippingEditButton
+                                   tabindex="0"
+                                   class="fas fa-pencil-alt"
+                                   (click)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)"
+                                   (keydown.escape)="shippingEditButton.blur()"
+                                   (keydown.enter)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
+                                </i>
+
+                                <!-- Delete -->
+                                <i #shippingDeleteButton
+                                   tabindex="0"
+                                   class="fas fa-trash-alt"
+                                   (click)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)"
+                                   (keydown.escape)="shippingDeleteButton.blur()"
+                                   (keydown.enter)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)">
+                                </i>
                             </div>
                         </div>
                         
                         <div class="add-button-field" style="min-height: 40px;">
-                            <div *ngIf="pricePoint.shippingType == shippingType.None" class="add-button" (click)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
+
+                            <!-- Add -->
+                            <div *ngIf="pricePoint.shippingType == shippingType.None"
+                                 #shippingAddButton
+                                 tabindex="0"
+                                 class="add-button"
+                                 (click)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)"
+                                 (keydown.escape)="shippingAddButton.blur()"
+                                 (keydown.enter)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
                                 <div></div>
                                 <div></div>
                                 <div></div>
@@ -155,7 +226,6 @@
                                 <ng-template #editShippingPopup></ng-template>
                             </div>
 
-
                             <shipping *ngIf="pricePoint.shippingType != shippingType.None" [shippingType]="pricePoint.shippingType"></shipping>
                         </div>
                     </div>
@@ -164,18 +234,39 @@
                     <!-- Recurring -->
                     <div class="recurring-container">
                         <div class="label-container">
-                            
                             <div class="label-with-buttons">Recurring:</div>
-                            
                             <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="buttons-container">
-                                <i class="fas fa-pencil-alt" (click)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)"></i>
-                                <i class="fas fa-trash-alt" (click)="removeRecurringPayment(pricePoint)"></i>
+
+                                <!-- Edit -->
+                                <i #recurringEditButton
+                                   tabindex="0"
+                                   class="fas fa-pencil-alt"
+                                   (click)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)"
+                                   (keydown.escape)="recurringEditButton.blur()"
+                                   (keydown.enter)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
+                                </i>
+
+                                <!-- Delete -->
+                                <i #recurringDeleteButton
+                                   tabindex="0"
+                                   class="fas fa-trash-alt"
+                                   (click)="removeRecurringPayment(pricePoint)"
+                                   (keydown.escape)="recurringDeleteButton.blur()"
+                                   (keydown.enter)="removeRecurringPayment(pricePoint)">
+                                </i>
                             </div>
                         </div>
                         
                         <div class="add-button-field">
 
-                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="add-button" (click)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
+                            <!-- Add -->
+                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0"
+                                 #recurringAddButton
+                                 tabindex="0"
+                                 class="add-button"
+                                 (click)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)"
+                                 (keydown.escape)="recurringAddButton.blur()"
+                                 (keydown.enter)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
                                 <div></div>
                                 <div></div>
                                 <div></div>
@@ -194,15 +285,16 @@
                     </div>
                 </div>
             </div>
-
-            
-
-            
         </div>
 
 
         <div *ngIf="product.pricePoints.length < 5" class="add-button-container">
-            <div class="add-button-lg" (click)="addPricePoint(true)">
+            <div #pricePointAddButton
+                 tabindex="0"
+                 class="add-button-lg"
+                 (click)="addPricePoint(true)"
+                 (keydown.escape)="pricePointAddButton.blur()"
+                 (keydown.enter)="addPricePoint(true)">
                 <div></div>
                 <div></div>
                 <div></div>
@@ -210,7 +302,13 @@
         </div>
     </div>
             
-    <div *ngIf="product.pricePoints.length >= 5" class="add-button-lg" (click)="addPricePoint(true)">
+    <div *ngIf="product.pricePoints.length >= 5"
+         #pricePointAddButton
+         tabindex="0"
+         class="add-button-lg"
+         (click)="addPricePoint(true)"
+         (keydown.escape)="pricePointAddButton.blur()"
+         (keydown.enter)="addPricePoint(true)">
         <div></div>
         <div></div>
         <div></div>

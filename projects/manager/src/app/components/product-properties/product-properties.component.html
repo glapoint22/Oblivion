@@ -38,8 +38,8 @@
                     <div style="display: flex; margin-bottom: 4px; justify-content: space-between;">
 
                         <div style="color: #505050; font-size: 12px;">Media:</div>
-                        <i class="fas fa-trash-alt" style="color: #9e9e9e;"></i>
-                        <i class="fas fa-pencil-alt" style="color: #9e9e9e;"></i>
+                        <i class="fas fa-trash-alt" style="color: #9e9e9e;" tabindex="0"></i>
+                        <i class="fas fa-pencil-alt" style="color: #9e9e9e;" tabindex="0"></i>
                     </div>
 
 
@@ -47,7 +47,7 @@
                     <div style="width: 84px; height: 522px; border: 1px dashed #505050">
 
                         <div
-                            style="display: flex; width: 25px; height: 25px; border: 2px solid #929292; border-radius: 50%; justify-content: center; align-items: center; margin: auto; margin-top: 29px;">
+                            style="display: flex; width: 25px; height: 25px; border: 2px solid #929292; border-radius: 50%; justify-content: center; align-items: center; margin: auto; margin-top: 29px;" tabindex="0">
 
                             <div style="width: 5px; height: 3px; background: #aaaaaa;"></div>
                             <div style="width: 3px; height: 13px; background: #aaaaaa;"></div>
@@ -71,7 +71,7 @@
 
                         <div style="color: #505050; font-size: 12px;">Image:</div>
 
-                        <i class="fas fa-pencil-alt" style="color: #9e9e9e;"></i>
+                        <i class="fas fa-pencil-alt" style="color: #9e9e9e;" tabindex="0"></i>
 
                     </div>
 
@@ -80,7 +80,7 @@
                     <div
                         style="display: flex; width: 522px; height: 522px; border: 1px dashed #505050; justify-content: center; align-items: center;">
 
-                        <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;"></i>
+                        <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;" tabindex="0"></i>
 
                     </div>
 
@@ -95,7 +95,7 @@
                     <!-- Name -->
                     <div style="color: #505050; font-size: 12px; margin-bottom: 4px;">Name:</div>
 
-                    <div contenteditable="true"
+                    <div contenteditable="true" tabindex="0"
                         style="min-height: 40px; outline: none; border: 1px dashed #505050; padding: 5px; font-size: 30px; color: white; font-weight: bold;">
 
                         {{product.name}}
@@ -115,7 +115,7 @@
                                 <ng-template #editPricePopup></ng-template>
                             </div>
 
-                            <i *ngIf="product.pricePoints.length == 0" class="fas fa-pencil-alt"
+                            <i *ngIf="product.pricePoints.length == 0" class="fas fa-pencil-alt" tabindex="0"
                                 style="color: #9e9e9e; cursor: pointer;" (click)="openPricePopup()" title="Edit price"></i>
                         </div>
 
@@ -148,9 +148,9 @@
                             </div>
 
                             <div *ngIf="product.shippingType != shippingType.None">
-                                <i class="fas fa-pencil-alt" style="color: #9e9e9e; cursor: pointer;"
+                                <i class="fas fa-pencil-alt" style="color: #9e9e9e; cursor: pointer;" tabindex="0"
                                     title="Edit shipping" (click)="openShippingPopup(PopupArrowPosition.TopRight)"></i>
-                                <i class="fas fa-trash-alt" style="color: #9e9e9e; margin-left: 10px; cursor: pointer;"
+                                <i class="fas fa-trash-alt" style="color: #9e9e9e; margin-left: 10px; cursor: pointer;" tabindex="0"
                                     title="Remove shipping" (click)="product.shippingType = 0; updateShipping()"></i>
                             </div>
 
@@ -164,7 +164,7 @@
 
                             <div *ngIf="product.shippingType == shippingType.None"
                                 style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;"
-                                (click)="openShippingPopup(PopupArrowPosition.TopLeft)">
+                                (click)="openShippingPopup(PopupArrowPosition.TopLeft)" tabindex="0">
 
                                 <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                                 <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
@@ -197,9 +197,9 @@
                             </div>
 
                             <div *ngIf="product.recurringPayment.recurringPrice > 0">
-                                <i class="fas fa-pencil-alt" style="color: #9e9e9e; cursor: pointer;"
+                                <i class="fas fa-pencil-alt" style="color: #9e9e9e; cursor: pointer;" tabindex="0"
                                     title="Edit recurring payment" (click)="openRecurringPopup(PopupArrowPosition.TopRight)"></i>
-                                <i class="fas fa-trash-alt" style="color: #9e9e9e; margin-left: 10px; cursor: pointer;"
+                                <i class="fas fa-trash-alt" style="color: #9e9e9e; margin-left: 10px; cursor: pointer;" tabindex="0"
                                     title="Remove recurring payment" (click)="removeRecurringPayment()"></i>
                             </div>
 
@@ -213,7 +213,7 @@
                             <div>
                                 <div *ngIf="product.recurringPayment.recurringPrice == 0"
                                     style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;"
-                                    (click)="openRecurringPopup(PopupArrowPosition.TopLeft)">
+                                    (click)="openRecurringPopup(PopupArrowPosition.TopLeft)" tabindex="0">
 
                                     <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                                     <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
@@ -255,7 +255,7 @@
                                 <ng-template #editHoplinkPopup></ng-template>
                             </div>
 
-                            <i *ngIf="product.hoplink" class="fas fa-pencil-alt" title="Edit hoplink"
+                            <i *ngIf="product.hoplink" class="fas fa-pencil-alt" title="Edit hoplink" tabindex="0"
                                 style="color: #9e9e9e; cursor: pointer;" (click)="openHoplinkPopup(PopupArrowPosition.TopRight)"></i>
 
                         </div>
@@ -267,7 +267,7 @@
 
                             <div *ngIf="!product.hoplink"
                                 style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;"
-                                (click)="openHoplinkPopup(PopupArrowPosition.TopLeft)">
+                                (click)="openHoplinkPopup(PopupArrowPosition.TopLeft)" tabindex="0">
 
                                 <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                                 <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
@@ -312,7 +312,7 @@
                 <div
                     style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
                     <div style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer;"
-                        (click)="addPricePoints()">
+                        (click)="addPricePoints()" tabindex="0">
                         <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                         <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
                         <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
@@ -332,7 +332,7 @@
             <div
                 style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
                 <div
-                    style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                    style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;" tabindex="0">
                     <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                     <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
                     <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
@@ -347,7 +347,7 @@
             <div
                 style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
                 <div
-                    style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;">
+                    style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;" tabindex="0">
                     <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                     <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
                     <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
