@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Color, LazyLoadingService, SpinnerAction } from 'common';
-import { ColorPickerComponent } from '../color-picker/color-picker.component';
+import { ColorPickerPopupComponent } from '../color-picker-popup/color-picker-popup.component';
 
 @Component({
   selector: 'color-swatch',
@@ -25,15 +25,15 @@ export class ColorSwatchComponent {
 
   async loadColorPicker(element: HTMLElement) {
     this.lazyLoadingService.load(async () => {
-      const { ColorPickerComponent } = await import('../color-picker/color-picker.component');
-      const { ColorPickerModule } = await import('../color-picker/color-picker.module');
+      const { ColorPickerPopupComponent } = await import('../color-picker-popup/color-picker-popup.component');
+      const { ColorPickerPopupModule } = await import('../color-picker-popup/color-picker-popup.module');
 
       return {
-        component: ColorPickerComponent,
-        module: ColorPickerModule
+        component: ColorPickerPopupComponent,
+        module: ColorPickerPopupModule
       }
     }, SpinnerAction.None)
-      .then((colorPicker: ColorPickerComponent) => {
+      .then((colorPicker: ColorPickerPopupComponent) => {
         colorPicker.color = this.color;
 
         // Subscribe to every change

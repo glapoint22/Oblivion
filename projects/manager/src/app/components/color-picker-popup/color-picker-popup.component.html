@@ -1,0 +1,64 @@
+<div class="color-picker-base hide" [ngClass]="{'show': show}" (transitionend)="onHide()" [style.left.px]="posX"
+    [style.top.px]="posY">
+
+    <!-- Color Container -->
+    <div class="color-container">
+        <!-- Color Palette -->
+        <div class="color-palette" (mousedown)="onColorMousedown($event)">
+            <!-- Alpha Background -->
+            <div class="alpha-background"></div>
+            <!-- Color Background -->
+            <div class="color-background" [style.background]="'hsla(' + hue + ', 100%, 50%,' + color.a + ')'"></div>
+            <!-- Saturation -->
+            <div class="saturation" [style.opacity]="color.a"></div>
+            <!-- Lightness -->
+            <div class="lightness" [style.opacity]="color.a"></div>
+
+            <!-- Ring -->
+            <div class="ring" [style.left.%]="ringX" [style.top.%]="ringY"></div>
+        </div>
+
+        <!-- Alpha Bar -->
+        <div class="color-bar alpha-bar" (mousedown)="onAlphaBarMousedown($event)">
+            <div style="position: absolute; width: 100%; height: 100%"
+                [style.background]="'linear-gradient(to bottom, ' +  color.toRGBString() + ', rgba(0, 0, 0, 0))'">
+            </div>
+            <div class="color-handle" [style.top.px]="alphaHandlePos"></div>
+        </div>
+
+
+        <!-- Hue Bar -->
+        <div class="color-bar hue-bar" (mousedown)="onHueBarMousedown($event)">
+            <div class="color-handle" [style.top.px]="hueHandlePos"></div>
+        </div>
+    </div>
+
+    <div class="inputs-container">
+        <!-- Red -->
+        <input #redInput #tabElement [value]="color.r" (input)="onColorInput(redInput, 'r')" (click)="redInput.select()"
+            (keydown)="onColorArrowDown($event, 'r')" maxlength="3">
+
+        <!-- Green -->
+        <input #greenInput #tabElement [value]="color.g" (input)="onColorInput(greenInput, 'g')"
+            (click)="greenInput.select()" (keydown)="onColorArrowDown($event, 'g')" maxlength="3">
+
+        <!-- Blue -->
+        <input #blueInput #tabElement [value]="color.b" (input)="onColorInput(blueInput, 'b')"
+            (click)="blueInput.select()" (keydown)="onColorArrowDown($event, 'b')" maxlength="3">
+
+        <!-- Alpha -->
+        <input #alphaInput #tabElement [value]="color.a" (input)="onAlphaInput(alphaInput)"
+            (click)="alphaInput.select()" (keydown)="onAlphaArrowDown($event)" maxlength="3">
+
+        <!-- Hex -->
+        <input #hexInput #tabElement [value]="hex" (input)="onHexInput(hexInput)" (click)="hexInput.select()"
+            maxlength="9">
+    </div>
+
+
+    <!-- Buttons -->
+    <div class="buttons-container">
+        <button #tabElement class="dark-button">Close</button>
+        <button #tabElement class="gold-button">Submit</button>
+    </div>
+</div>
