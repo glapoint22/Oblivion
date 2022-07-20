@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewContainerRef } from '@angular/core';
 import { Color, LazyLoadingService, SpinnerAction } from 'common';
 import { ColorPickerPopupComponent } from '../color-picker-popup/color-picker-popup.component';
 
@@ -13,6 +13,7 @@ export class ColorSwatchComponent {
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   @Output() onClick: EventEmitter<void> = new EventEmitter();
   @Output() onColorPickerClose: EventEmitter<void> = new EventEmitter();
+  public colorPickerContainer!: ViewContainerRef;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
@@ -32,7 +33,7 @@ export class ColorSwatchComponent {
         component: ColorPickerPopupComponent,
         module: ColorPickerPopupModule
       }
-    }, SpinnerAction.None)
+    }, SpinnerAction.None, this.colorPickerContainer ? this.colorPickerContainer : null!)
       .then((colorPicker: ColorPickerPopupComponent) => {
         colorPicker.color = this.color;
 
@@ -47,10 +48,13 @@ export class ColorSwatchComponent {
           this.onColorPickerClose.emit();
         });
 
-        const elementRect = element.getBoundingClientRect();
+        if (!this.colorPickerContainer) {
+          const elementRect = element.getBoundingClientRect();
 
-        colorPicker.posX = elementRect.left;
-        colorPicker.posY = elementRect.bottom;
+          colorPicker.posX = elementRect.left;
+          colorPicker.posY = elementRect.bottom;
+        }
+
       });
   }
 }

@@ -131,9 +131,9 @@ export class LinkComponent extends LazyLoad {
     super.onEscape();
   }
 
-  // --------------------------------------------------------------------------- On Window Click -----------------------------------------------------------
+  // ---------------------------------------------------------------------- On Window Mousedown ----------------------------------------------------
   @HostListener('window:mousedown')
-  onWindowClick() {
+  onWindowMousedown() {
     this.close();
   }
 }

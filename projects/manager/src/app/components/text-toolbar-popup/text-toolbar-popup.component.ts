@@ -2,6 +2,7 @@ import { Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angu
 import { LazyLoadingService, LinkType, SpinnerAction } from 'common';
 import { TextBoxDev } from 'text-box';
 import { Item } from '../../classes/item';
+import { ColorSwatchComponent } from '../color-swatch/color-swatch.component';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
 import { LinkComponent } from '../link/link.component';
 
@@ -14,6 +15,8 @@ export class TextToolbarPopupComponent {
   @Input() textBox!: TextBoxDev;
   @ViewChild('caseDropdownListContainer', { read: ViewContainerRef }) caseDropdownListContainer!: ViewContainerRef;
   @ViewChild('linkContainer', { read: ViewContainerRef }) linkContainer!: ViewContainerRef;
+  @ViewChild('colorPickerViewContainer', { read: ViewContainerRef }) colorPickerContainer!: ViewContainerRef;
+  @ViewChild('colorSwatch') colorSwatch!: ColorSwatchComponent;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
@@ -23,8 +26,13 @@ export class TextToolbarPopupComponent {
         .subscribe(() => {
           this.clearContainers();
         });
+
+        window.setTimeout(() => this.colorSwatch.colorPickerContainer = this.colorPickerContainer);
     }
   }
+
+
+  
 
   clearContainers() {
     this.caseDropdownListContainer.clear();

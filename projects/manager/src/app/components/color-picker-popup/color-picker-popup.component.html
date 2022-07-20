@@ -1,5 +1,5 @@
 <div class="color-picker-base hide" [ngClass]="{'show': show}" (transitionend)="onHide()" [style.left.px]="posX"
-    [style.top.px]="posY">
+    [style.top.px]="posY" (mousedown)="$event.stopPropagation()">
 
     <!-- Color Container -->
     <div class="color-container">
@@ -58,7 +58,7 @@
 
     <!-- Buttons -->
     <div class="buttons-container">
-        <button #tabElement class="dark-button">Close</button>
-        <button #tabElement class="gold-button">Submit</button>
+        <button #tabElement class="dark-button" (click)="close()">Close</button>
+        <button #tabElement class="gold-button" (click)="onSubmit()">Submit</button>
     </div>
 </div>

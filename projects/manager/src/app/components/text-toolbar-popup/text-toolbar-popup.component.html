@@ -61,11 +61,12 @@
             <div style="display: flex; justify-content: center; flex-direction: column;">
                 <div style="font-weight: bold; margin: auto; font-size: 16px;">A</div>
 
-                <color-swatch [color]="textBox.fontColor.rgbColor" [miniSize]="true"
+                <color-swatch #colorSwatch [color]="textBox.fontColor.rgbColor" [miniSize]="true"
                     (onChange)="textBox.fontColor.setStyle(); textBox.render()"
                     (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
                 </color-swatch>
             </div>
+            <ng-template #colorPickerViewContainer></ng-template>
         </div>
 
         <!-- Highlight Color -->

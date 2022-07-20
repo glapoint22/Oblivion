@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Color, HSB, HSL, LazyLoad } from 'common';
 import { Subject } from 'rxjs';
 
@@ -19,10 +19,14 @@ export class ColorPickerPopupComponent extends LazyLoad {
   public hueHandlePos!: number;
   public alphaHandlePos!: number;
   public hex!: string;
+  private initialColor!: Color;
+  private hasSubmitted!: boolean;
 
 
   // ------------------------------------------------------------------- Ng On Init -----------------------------------------------------------
   ngOnInit() {
+    super.ngOnInit();
+
     // Set the ring position
     this.setRingPosition();
 
@@ -37,7 +41,23 @@ export class ColorPickerPopupComponent extends LazyLoad {
 
     // Set the hue
     this.setHue(this.color.toHSL().h);
+
+    this.initialColor = new Color(this.color.r, this.color.g, this.color.b, this.color.a);
   }
+
+
+
+
+
+
+
+  // --------------------------------------------------------------------- On Open -----------------------------------------------------------
+  onOpen(): void {
+    this.onChange();
+  }
+
+
+
 
 
 
@@ -145,6 +165,7 @@ export class ColorPickerPopupComponent extends LazyLoad {
   // ------------------------------------------------------------------ Set Hex ------------------------------------------------------------------
   setHex() {
     this.hex = this.color.toHex();
+    this.onChange();
   }
 
 
@@ -335,11 +356,17 @@ export class ColorPickerPopupComponent extends LazyLoad {
     !(/^#/).test(input.value) ? input.value = '#' + input.value : null;
 
     this.hex = input.value;
-    this.color = Color.hexToRGB(this.hex);
+    const color = Color.hexToRGB(this.hex);
+
+    this.color.r = color.r;
+    this.color.g = color.g;
+    this.color.b = color.b;
+    this.color.a = color.a;
     this.setRingPosition();
     this.setHueHandlePosition();
     this.setAlphaHandlePosition();
     this.setHue(this.color.toHSL().h);
+    this.onChange();
   }
 
 
@@ -406,5 +433,47 @@ export class ColorPickerPopupComponent extends LazyLoad {
 
     this.setAlphaHandlePosition();
     this.setHex();
+  }
+
+
+
+
+
+
+  // ----------------------------------------------------------------------- On Change ---------------------------------------------------------------
+  onChange() {
+    window.setTimeout(() => this.$onChange.next());
+  }
+
+
+
+  // --------------------------------------------------------------------------- On Submit -----------------------------------------------------------------
+  onSubmit() {
+    this.hasSubmitted = true;
+    this.close();
+  }
+
+
+  // --------------------------------------------------------------------------- Close -----------------------------------------------------------------
+  close() {
+    if (!this.hasSubmitted) {
+      this.color.r = this.initialColor.r;
+      this.color.g = this.initialColor.g;
+      this.color.b = this.initialColor.b;
+      this.color.a = this.initialColor.a;
+      this.onChange();
+    }
+
+    window.setTimeout(() => this.$onClose.next());
+    super.close();
+  }
+
+
+
+
+  // ---------------------------------------------------------------------- On Window Mousedown ----------------------------------------------------
+  @HostListener('window:mousedown')
+  onWindowMousedown() {
+    this.close();
   }
 }
