@@ -24,6 +24,8 @@ export class ProductPropertiesComponent {
   public shippingType = ShippingType;
   public PopupArrowPosition = PopupArrowPosition;
   public shipping = Shipping;
+
+  @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
   @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;
@@ -31,7 +33,7 @@ export class ProductPropertiesComponent {
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
-  @ViewChild('pricePoints', { read: PricePointsComponent }) pricePoints!: PricePointsComponent;
+  
 
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
 

@@ -106,8 +106,13 @@
     opacity: 0.2;
 }
 
+// ::selection {
+//     background: rgba(255, 187, 0, 0.308);
+// }
+
 ::selection {
-    background: rgba(255, 187, 0, 0.308);
+    color: white;
+    background: #910078;
 }
 
 

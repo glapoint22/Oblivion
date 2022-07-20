@@ -1,7 +1,8 @@
-import { Component, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
+import { Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
 import { PopupArrowPosition } from '../../classes/enums';
 import { Product } from '../../classes/product';
+import { MultiColumnListComponent } from '../lists/multi-column-list/multi-column-list.component';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
@@ -74,16 +75,37 @@ export class PricePointsComponent {
   }
 
 
-  onHeaderBlur(pricePoint: PricePoint, value: string) {
-    pricePoint.header = value;
-    this.updatePricePoint(pricePoint);
+  onHeaderBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    window.getSelection()!.removeAllRanges();
+
+    if (!(pricePoint.header == null && htmlElement.innerText.length == 0) && pricePoint.header != htmlElement.innerText) {
+      pricePoint.header = htmlElement.innerText;
+      this.updatePricePoint(pricePoint);
+    }
   }
 
 
-  onQuantityBlur(pricePoint: PricePoint, value: string) {
-    pricePoint.quantity = value;
-    this.updatePricePoint(pricePoint);
+  onHeaderEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    htmlElement.innerText = pricePoint.header;
+    htmlElement.blur();
   }
+
+
+  onQuantityBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    window.getSelection()!.removeAllRanges();
+
+    if (!(pricePoint.quantity == null && htmlElement.innerText.length == 0) && pricePoint.quantity != htmlElement.innerText) {
+      pricePoint.quantity = htmlElement.innerText;
+      this.updatePricePoint(pricePoint);
+    }
+  }
+
+
+  onQuantityEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    htmlElement.innerText = pricePoint.quantity;
+    htmlElement.blur();
+  }
+
 
 
   openMediaBrowser(pricePoint: PricePoint): void {
@@ -113,15 +135,23 @@ export class PricePointsComponent {
   }
 
 
+
   onImageDelete(pricePoint: PricePoint) {
-    pricePoint.image = new Image();
-    this.updatePricePoint(pricePoint);
+    // Delay just in case the image is being deleted by the [Enter Key]
+    // if the deleting is NOT delayed then Media Browser will think
+    // no image is present and open
+    window.setTimeout(() => {
+      pricePoint.image = new Image();
+      this.updatePricePoint(pricePoint);
+    })
   }
 
 
 
 
   onUnitPriceFocus(htmlElement: HTMLElement) {
+    this.selectRange(htmlElement);
+
     if (htmlElement.innerText.length > 0) {
       htmlElement.innerText = htmlElement.innerText.substring(1);
     }
@@ -134,20 +164,44 @@ export class PricePointsComponent {
 
 
   onUnitPriceBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    pricePoint.unitPrice = htmlElement.innerText;
-    this.updatePricePoint(pricePoint);
+    window.getSelection()!.removeAllRanges();
+
+    if (!(pricePoint.unitPrice == null && htmlElement.innerText.length == 0) && pricePoint.unitPrice != htmlElement.innerText) {
+      pricePoint.unitPrice = htmlElement.innerText;
+      this.updatePricePoint(pricePoint);
+    }
+
     if (htmlElement.innerText.length > 0) this.isWholeNumber(htmlElement.innerText) ? this.convertToCurrency(htmlElement, 0) : this.convertToCurrency(htmlElement, 2);
   }
 
 
-  onUnitBlur(pricePoint: PricePoint, value: string) {
-    pricePoint.unit = value;
-    this.updatePricePoint(pricePoint);
+  onUnitPriceEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    htmlElement.innerText = pricePoint.unitPrice;
+    htmlElement.blur();
+  }
+
+
+  onUnitBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    window.getSelection()!.removeAllRanges();
+
+    if (!(pricePoint.unit == null && htmlElement.innerText.length == 0) && pricePoint.unit != htmlElement.innerText) {
+      pricePoint.unit = htmlElement.innerText;
+      this.updatePricePoint(pricePoint);
+    }
+  }
+
+
+
+  onUnitEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    htmlElement.innerText = pricePoint.unit;
+    htmlElement.blur();
   }
 
 
 
   onStrikethroughPriceFocus(htmlElement: HTMLElement) {
+    this.selectRange(htmlElement);
+
     if (htmlElement.innerText.length > 0) {
       htmlElement.innerText = htmlElement.innerText.substring(1);
     }
@@ -160,13 +214,28 @@ export class PricePointsComponent {
 
 
   onStrikethroughPriceBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    pricePoint.strikethroughPrice = htmlElement.innerText;
-    this.updatePricePoint(pricePoint);
+    window.getSelection()!.removeAllRanges();
+
+    if (!(pricePoint.strikethroughPrice == null && htmlElement.innerText.length == 0) && pricePoint.strikethroughPrice != htmlElement.innerText) {
+      pricePoint.strikethroughPrice = htmlElement.innerText;
+      this.updatePricePoint(pricePoint);
+    }
+
     if (htmlElement.innerText.length > 0) this.isWholeNumber(htmlElement.innerText) ? this.convertToCurrency(htmlElement, 0) : this.convertToCurrency(htmlElement, 2);
   }
 
 
+
+  onStrikethroughPriceEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    htmlElement.innerText = pricePoint.strikethroughPrice;
+    htmlElement.blur();
+  }
+
+
+
   onPriceFocus(htmlElement: HTMLElement) {
+    this.selectRange(htmlElement);
+
     if (htmlElement.innerText.length > 0) {
       htmlElement.innerText = htmlElement.innerText.substring(1);
     }
@@ -179,10 +248,22 @@ export class PricePointsComponent {
 
 
   onPriceBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    pricePoint.price = htmlElement.innerText;
-    this.updatePricePoint(pricePoint);
-    this.updateMinMaxPrice();
+    window.getSelection()!.removeAllRanges();
+
+    if (!(pricePoint.price == null && htmlElement.innerText.length == 0) && pricePoint.price != htmlElement.innerText) {
+      pricePoint.price = htmlElement.innerText;
+      this.updatePricePoint(pricePoint);
+      this.updateMinMaxPrice();
+    }
+
     if (htmlElement.innerText.length > 0) this.isWholeNumber(htmlElement.innerText) ? this.convertToCurrency(htmlElement, 0) : this.convertToCurrency(htmlElement, 2);
+  }
+
+
+
+  onPriceEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
+    htmlElement.innerText = pricePoint.price;
+    htmlElement.blur();
   }
 
 
@@ -212,13 +293,25 @@ export class PricePointsComponent {
   }
 
 
+  selectRange(htmlElement: HTMLElement) {
+    window.setTimeout(() => {
+      let range = document.createRange();
+      range.selectNodeContents(htmlElement);
+      let sel = window.getSelection();
+      sel!.removeAllRanges();
+      sel!.addRange(range);
+    })
+  }
+
+
+
+
   convertToCurrency(htmlElement: HTMLElement, minimumFractionDigits: number) {
     const numberFormat = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: minimumFractionDigits
     })
-
 
     htmlElement.innerText = numberFormat.format(parseFloat(htmlElement.innerText));
   }
