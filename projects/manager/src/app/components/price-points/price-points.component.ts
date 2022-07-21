@@ -1,4 +1,4 @@
-import { Component, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
 import { PopupArrowPosition } from '../../classes/enums';
 import { Product } from '../../classes/product';
@@ -17,7 +17,6 @@ export class PricePointsComponent {
   private recurringPopup!: RecurringPopupComponent;
 
   // Public
-  public window = window;
   public shipping = Shipping;
   public shippingType = ShippingType;
   public PopupArrowPosition = PopupArrowPosition;
@@ -25,6 +24,7 @@ export class PricePointsComponent {
 
   // Decorators
   @Input() product!: Product;
+  @ViewChildren('header') header!: QueryList<ElementRef<HTMLElement>>;
   @ViewChildren('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: QueryList<ViewContainerRef>;
@@ -37,10 +37,15 @@ export class PricePointsComponent {
   addPricePoint(pushNewPricePoint?: boolean) {
     if (pushNewPricePoint) this.product.pricePoints.push(new PricePoint());
 
+    window.setTimeout(()=> {
+      this.header.get(this.product.pricePoints.length - 1)?.nativeElement.focus();
+    })
+    
+    
     this.dataService.post<number>('api/Products/PricePoint', {
       ProductId: this.product.id
-    }).subscribe((pricePointId: number) => {
 
+    }).subscribe((pricePointId: number) => {
       this.product.pricePoints[this.product.pricePoints.length - 1].id = pricePointId;
     });
   }
@@ -106,7 +111,7 @@ export class PricePointsComponent {
 
 
   onHeaderEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    htmlElement.innerText = pricePoint.header;
+    htmlElement.innerText = pricePoint.header ? pricePoint.header : '';
     htmlElement.blur();
   }
 
@@ -125,7 +130,7 @@ export class PricePointsComponent {
 
 
   onQuantityEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    htmlElement.innerText = pricePoint.quantity;
+    htmlElement.innerText = pricePoint.quantity ? pricePoint.quantity : '';
     htmlElement.blur();
   }
 
@@ -199,7 +204,7 @@ export class PricePointsComponent {
 
 
   onUnitPriceEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    htmlElement.innerText = pricePoint.unitPrice;
+    htmlElement.innerText = pricePoint.unitPrice ? pricePoint.unitPrice : '';
     htmlElement.blur();
   }
 
@@ -216,11 +221,11 @@ export class PricePointsComponent {
 
 
   onUnitEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    htmlElement.innerText = pricePoint.unit;
+    htmlElement.innerText = pricePoint.unit ? pricePoint.unit : '';
     htmlElement.blur();
   }
 
-  
+
 
   onStrikethroughPriceFocus(htmlElement: HTMLElement) {
     this.selectRange(htmlElement);
@@ -250,7 +255,7 @@ export class PricePointsComponent {
 
 
   onStrikethroughPriceEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    htmlElement.innerText = pricePoint.strikethroughPrice;
+    htmlElement.innerText = pricePoint.strikethroughPrice ? pricePoint.strikethroughPrice : '';
     htmlElement.blur();
   }
 
@@ -285,7 +290,7 @@ export class PricePointsComponent {
 
 
   onPriceEscape(pricePoint: PricePoint, htmlElement: HTMLElement) {
-    htmlElement.innerText = pricePoint.price;
+    htmlElement.innerText = pricePoint.price ? pricePoint.price : '';
     htmlElement.blur();
   }
 

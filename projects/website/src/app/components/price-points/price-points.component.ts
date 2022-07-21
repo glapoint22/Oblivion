@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { PricePoint } from 'common';
+import { PricePoint, ShippingType } from 'common';
 
 @Component({
   selector: 'price-points',
@@ -15,6 +15,7 @@ export class PricePointsComponent {
   private classSet!: boolean;
   private pricePointGroupsSet!: boolean;
   public changeCount: number = 0;
+  public shippingType = ShippingType;
 
   ngOnChanges() {
     this.classSet = false;
@@ -99,5 +100,10 @@ export class PricePointsComponent {
   onVisitOfficialWebsiteClick() {
     // Navigate to the product page
     window.open(this.hoplink, '_blank');
+  }
+
+
+  isWholeNumber(value: string): boolean {
+    return parseFloat(value) % 1 == 0;
   }
 }

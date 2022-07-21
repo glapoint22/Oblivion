@@ -21,22 +21,22 @@
             <div class="base">
 
 
+
                 <!-- Header -->
                 <div class="header">
-                    <div class="label-only"
-                         style="color: #737373;">
-                        Header:
-                    </div>
-                    <div #header
-                         tabindex="0"
-                         class="header-field"
-                         contenteditable="true"
-                         (focus)="selectRange(header)"
-                         (blur)="onHeaderBlur(pricePoint, header)"
-                         (keydown.escape)="onHeaderEscape(pricePoint, header)"
-                         (keydown.enter)="header.blur()"
-                         (paste)="onPaste($event, header)">
-                            {{pricePoint.header}}
+                    <div class="header-container">
+                        <div class="header-label">Header:</div>
+                        <div #header
+                            tabindex="0"
+                            class="header-field"
+                            contenteditable="true"
+                            (focus)="selectRange(header)"
+                            (blur)="onHeaderBlur(pricePoint, header)"
+                            (keydown.escape)="onHeaderEscape(pricePoint, header)"
+                            (keydown.enter)="header.blur()"
+                            (paste)="onPaste($event, header)">
+                                {{pricePoint.header}}
+                        </div>
                     </div>
                 </div>
     

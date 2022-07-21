@@ -20,7 +20,7 @@ $price-point-width: 330px;
     min-height: 66px;
     font-size: 21px;
     font-weight: bold;
-    color: #dadada;
+    color: #e9e9e9;
     width: 300px;
     margin-bottom: 10px;
 }
@@ -55,8 +55,8 @@ $price-point-width: 330px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
+    margin-top: 5px;
 }
 
 
@@ -70,7 +70,7 @@ $price-point-width: 330px;
 .unit-price {
     color: white;
     font-weight: bold;
-    font-size: 75px;
+    font-size: 63px;
 }
 
 .unit {
@@ -109,12 +109,6 @@ $price-point-width: 330px;
 
 
 
-// .additional-info-container {
-//     margin-top: 20px;
-//     padding-left: 23px;
-//     padding-right: 23px;
-// }
-
 
 .price-points-slider-container {
     overflow: hidden;
@@ -140,6 +134,12 @@ $price-point-width: 330px;
 }
 
 
+.shipping-recurring-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
 
 .p1 {
     width: $price-point-width;
@@ -159,35 +159,70 @@ $price-point-width: 330px;
 }
 
 
-.p5, .p6, .p7, .p8, .p9, .p10 {
+.p5,
+.p6,
+.p7,
+.p8,
+.p9,
+.p10 {
     width: $price-point-width * 5;
 }
 
 
 
 @media(max-width: 1650px) {
-    .p5, .p6, .p7, .p8, .p9, .p10 {
+
+    .p5,
+    .p6,
+    .p7,
+    .p8,
+    .p9,
+    .p10 {
         width: 1320px;
     }
 }
 
 
 @media(max-width: 1320px) {
-    .p4, .p5, .p6, .p7, .p8, .p9, .p10 {
+
+    .p4,
+    .p5,
+    .p6,
+    .p7,
+    .p8,
+    .p9,
+    .p10 {
         width: 990px;
     }
 }
 
 
 @media(max-width: 990px) {
-    .p3, .p4, .p5, .p6, .p7, .p8, .p9, .p10 {
+
+    .p3,
+    .p4,
+    .p5,
+    .p6,
+    .p7,
+    .p8,
+    .p9,
+    .p10 {
         width: 660px;
     }
 }
 
 
 @media(max-width: 660px) {
-    .p2, .p3, .p4, .p5, .p6, .p7, .p8, .p9, .p10 {
+
+    .p2,
+    .p3,
+    .p4,
+    .p5,
+    .p6,
+    .p7,
+    .p8,
+    .p9,
+    .p10 {
         width: 330px;
     }
 }
@@ -220,7 +255,16 @@ $price-point-width: 330px;
         font-size: 14px;
     }
 
-    .p1, .p2, .p3, .p4, .p5, .p6, .p7, .p8, .p9, .p10 {
+    .p1,
+    .p2,
+    .p3,
+    .p4,
+    .p5,
+    .p6,
+    .p7,
+    .p8,
+    .p9,
+    .p10 {
         width: 240px;
     }
 }

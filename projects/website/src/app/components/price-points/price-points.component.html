@@ -5,7 +5,8 @@
         <!-- Slider -->
         <div class="slider-container">
             <div #slider slider [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton"
-                [scrollbarElement]="scrollbar" [changeCount]="changeCount" [scrollbarContainer]="scrollbarContainer" class="slider">
+                [scrollbarElement]="scrollbar" [changeCount]="changeCount" [scrollbarContainer]="scrollbarContainer"
+                class="slider">
 
                 <!-- Products -->
                 <div *ngFor="let pricePointGroup of pricePointGroups" class="price-point-group"
@@ -28,15 +29,15 @@
 
 
                             <!-- Image -->
-                            <img *ngIf="pricePoint.image" [src]="'images/' + pricePoint.image.url">
+                            <img *ngIf="pricePoint.image.url" [src]="'images/' + pricePoint.image.url">
 
 
                             <!-- Space Between -->
-                            <div class="space-between-container">
+                            <div class="space-between-container" [ngStyle]="{'justify-content': !pricePoint.unitPrice && !pricePoint.unit && !pricePoint.strikethroughPrice && !pricePoint.price ? 'flex-end' : 'space-between'}">
 
                                 <!-- Unit -->
                                 <div *ngIf="pricePoint.unitPrice || pricePoint.unit" class="unit-container">
-                                    <div *ngIf="pricePoint.unitPrice" class="unit-price">${{pricePoint.unitPrice}}</div>
+                                    <div *ngIf="pricePoint.unitPrice" class="unit-price">{{isWholeNumber(pricePoint.unitPrice) ?  (pricePoint.unitPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.unitPrice | currency:'USD':'symbol':'0.2-2')}}</div>
                                     <div *ngIf="pricePoint.unitPrice && pricePoint.unit" class="unit">
                                         {{pricePoint.unitPrice
                                         ? '/ '
@@ -48,20 +49,27 @@
                                 <div *ngIf="pricePoint.strikethroughPrice || pricePoint.price" class="total-container">
                                     <div class="total-label">Total:</div>
                                     <div *ngIf="pricePoint.strikethroughPrice" class="strikethrough">
-                                        <div class="strikethrough-price">${{pricePoint.strikethroughPrice}}</div>
+                                        <div class="strikethrough-price">{{isWholeNumber(pricePoint.strikethroughPrice) ? (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.2-2')}}</div>
                                     </div>
-                                    <div *ngIf="pricePoint.price" class="total-price">${{pricePoint.price}}</div>
+                                    <div *ngIf="pricePoint.price" class="total-price">{{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}</div>
                                 </div>
 
                                 <!-- Gold Button -->
                                 <button class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">Visit
                                     offical website to buy</button>
 
-                                <!-- Additional Info -->
-                                <!-- <div *ngIf="pricePoint.additionalInfo && pricePoint.additionalInfo.length > 0"
-                                    class="additional-info-container">
-                                    <additional-info [additionalInfo]="pricePoint.additionalInfo"></additional-info>
-                                </div> -->
+
+                                <div *ngIf="pricePoint.shippingType != shippingType.None || pricePoint.recurringPayment.recurringPrice > 0" class="shipping-recurring-container">
+
+
+                                    <shipping *ngIf="pricePoint.shippingType != shippingType.None" style="margin-top: 20px;"
+                                        [shippingType]="pricePoint.shippingType"></shipping>
+
+                                    <recurring-payment [ngStyle]="{'margin-top': pricePoint.shippingType == shippingType.None ? '20px' : '5px'}" *ngIf="pricePoint.recurringPayment.recurringPrice > 0"
+                                        [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
+
+                                </div>
+
                             </div>
 
                         </div>
