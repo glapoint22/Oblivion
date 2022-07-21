@@ -61,17 +61,16 @@
 
                                 <div *ngIf="pricePoint.shippingType != shippingType.None || pricePoint.recurringPayment.recurringPrice > 0" class="shipping-recurring-container">
 
-
+                                    <!-- Shipping -->
                                     <shipping *ngIf="pricePoint.shippingType != shippingType.None" style="margin-top: 20px;"
                                         [shippingType]="pricePoint.shippingType"></shipping>
 
+                                    <!-- Recurring Payment -->
                                     <recurring-payment [ngStyle]="{'margin-top': pricePoint.shippingType == shippingType.None ? '20px' : '5px'}" *ngIf="pricePoint.recurringPayment.recurringPrice > 0"
                                         [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
 
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </div>
