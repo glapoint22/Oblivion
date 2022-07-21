@@ -43,7 +43,7 @@ export class ColumnDevComponent extends ColumnComponent {
 
       // Set the selection
       this.setSelection(widgetComponent);
-      window.setTimeout(() => this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget);
+      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
 
 
 
@@ -460,13 +460,8 @@ export class ColumnDevComponent extends ColumnComponent {
     event.stopPropagation();
     window.dispatchEvent(new Event('mousedown'));
 
-
-    this.widgetService.selectedColumn = this;
-    this.widgetService.selectedRow = this.rowComponent;
-    window.setTimeout(() => {
-      this.widgetService.selectedWidget = this.widget;
-      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column
-    });
+    this.setSelection(this.widget);
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
 
     if (event.button == 0) {
       this.widgetService.onRowMousedown(event);

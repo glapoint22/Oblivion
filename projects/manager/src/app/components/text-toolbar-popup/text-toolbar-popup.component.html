@@ -63,7 +63,8 @@
                     <div style="font-weight: bold; margin: auto; font-size: 16px;">A</div>
 
                     <color-swatch #colorSwatch [color]="textBox.fontColor.rgbColor" [miniSize]="true"
-                        (onChange)="textBox.fontColor.setStyle(); textBox.render()"
+                        (onChange)="appRef.tick(); textBox.fontColor.setStyle(); textBox.render()"
+                        (onColorPickerOpen)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
                         (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
                     </color-swatch>
                 </div>
@@ -78,17 +79,26 @@
 
 
         <!-- Highlight Color -->
-        <div class="text-toolbar-button" style="width: 28px; position: relative;" title="Highlight Color">
-            <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                <i class="fa-solid fa-highlighter" style="margin-bottom: 3px;"></i>
+        <div style="position: relative;">
+            <div class="text-toolbar-button" style="width: 28px; position: relative;" title="Highlight Color">
+                <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                    <i class="fa-solid fa-highlighter" style="margin-bottom: 3px;"></i>
 
-                <color-swatch [color]="textBox.highlightColor.rgbColor" [miniSize]="true"
-                    (onChange)="textBox.highlightColor.setStyle(); textBox.render()"
-                    (onClick)="textBox.highlightColor.color == '#00000000' ? textBox.highlightColor.color = '#ffff00': null"
-                    (onColorPickerClose)="textBox.highlightColor.onColorPickerClose(); textBox.setText()">
-                </color-swatch>
+                    <color-swatch #highlightColorSwatch [color]="textBox.highlightColor.rgbColor" [miniSize]="true"
+                        (onChange)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
+                        (onColorPickerOpen)="textBox.highlightColor.color == '#00000000' ? setHighlightColor(highlightColorSwatch.colorPicker.color): null; appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
+                        (onColorPickerClose)="textBox.highlightColor.onColorPickerClose(); textBox.setText()">
+                    </color-swatch>
+                </div>
+            </div>
+
+            <div style="    position: absolute;
+            top: -233px;
+            left: -185px;">
+                <ng-template #highlightColorPickerViewContainer></ng-template>
             </div>
         </div>
+
 
 
         <div class="divider"></div>
@@ -104,8 +114,8 @@
 
 
         <!-- Case -->
-        <div #case style="width: 39px; margin-left: 4px; margin-right: 2px;" title="Case"
-            (mousedown)="showCaseDropdownList(case);">
+        <div style="width: 39px; margin-left: 4px; margin-right: 2px;" title="Case"
+            (mousedown)="showCaseDropdownList();">
             <div class="popup-dropdown-base">
                 <div class="popup-dropdown-value-display">Aa</div>
                 <div class="popup-dropdown-arrow">

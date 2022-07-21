@@ -21,7 +21,7 @@
             <div class="lightness" [style.opacity]="color.a"></div>
 
             <!-- Ring -->
-            <div class="ring" [style.left.%]="ringX" [style.top.%]="ringY"></div>
+            <div class="ring" [style.left.%]="ringX" [style.top.%]="ringY" [ngClass]="{'ring-dark': ringDark}"></div>
         </div>
 
         <!-- Alpha Bar -->

@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { LazyLoadingService, LinkType, SpinnerAction } from 'common';
+import { ApplicationRef, Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Color, LazyLoadingService, LinkType, SpinnerAction } from 'common';
 import { TextBoxDev } from 'text-box';
 import { Item } from '../../classes/item';
 import { ColorSwatchComponent } from '../color-swatch/color-swatch.component';
@@ -16,17 +16,31 @@ export class TextToolbarPopupComponent {
   @ViewChild('caseDropdownListContainer', { read: ViewContainerRef }) caseDropdownListContainer!: ViewContainerRef;
   @ViewChild('linkContainer', { read: ViewContainerRef }) linkContainer!: ViewContainerRef;
   @ViewChild('colorPickerViewContainer', { read: ViewContainerRef }) colorPickerContainer!: ViewContainerRef;
+  @ViewChild('highlightColorPickerViewContainer', { read: ViewContainerRef }) highlightColorPickerViewContainer!: ViewContainerRef;
   @ViewChild('colorSwatch') colorSwatch!: ColorSwatchComponent;
+  @ViewChild('highlightColorSwatch') highlightColorSwatch!: ColorSwatchComponent;
 
-  constructor(private lazyLoadingService: LazyLoadingService) { }
+  constructor(private lazyLoadingService: LazyLoadingService, public appRef: ApplicationRef) { }
 
+
+
+
+  // ----------------------------------------------------- Ng On Changes -----------------------------------------------------
   ngOnChanges() {
     if (this.textBox) {
-      window.setTimeout(() => this.colorSwatch.colorPickerContainer = this.colorPickerContainer);
+      window.setTimeout(() => {
+        this.colorSwatch.colorPickerContainer = this.colorPickerContainer;
+        this.highlightColorSwatch.colorPickerContainer = this.highlightColorPickerViewContainer;
+      });
     }
   }
 
 
+
+
+
+
+  // ----------------------------------------------------- On Link Click -----------------------------------------------------
   async onLinkClick(linkElement: HTMLElement) {
     if (this.linkContainer.length > 0) {
       this.linkContainer.clear();
@@ -73,8 +87,8 @@ export class TextToolbarPopupComponent {
 
 
 
-  // ------------------------------------------------------------------------ Show Case Dropdown List ----------------------------------------------------------
-  async showCaseDropdownList(element: HTMLElement) {
+  // ----------------------------------------------------- Show Case Dropdown List -----------------------------------------------------
+  async showCaseDropdownList() {
     if (this.caseDropdownListContainer.length > 0) {
       this.caseDropdownListContainer.clear();
       return;
@@ -89,7 +103,6 @@ export class TextToolbarPopupComponent {
       }
     }, SpinnerAction.None, this.caseDropdownListContainer)
       .then((dropdownList: DropdownListComponent) => {
-        const rect = element.getBoundingClientRect();
 
         dropdownList.list = [
           {
@@ -109,8 +122,8 @@ export class TextToolbarPopupComponent {
             name: 'Title Case',
           }
         ]
-        // dropdownList.top = rect.top + rect.height;
-        // dropdownList.left = rect.left;
+
+
         dropdownList.callback = (item: Item) => {
           switch (item.id) {
             case 0:
@@ -133,5 +146,19 @@ export class TextToolbarPopupComponent {
           this.textBox.setText();
         }
       });
+  }
+
+
+
+
+
+
+
+  // ----------------------------------------------------- Set Highlight Color -----------------------------------------------------
+  setHighlightColor(color: Color) {
+    color.r = 255;
+    color.g = 255;
+    color.b = 0;
+    color.a = 1;
   }
 }

@@ -11,16 +11,15 @@ export class ColorSwatchComponent {
   @Input() color!: Color;
   @Input() miniSize!: boolean;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
-  @Output() onClick: EventEmitter<void> = new EventEmitter();
   @Output() onColorPickerClose: EventEmitter<void> = new EventEmitter();
+  @Output() onColorPickerOpen: EventEmitter<void> = new EventEmitter();
   public colorPickerContainer!: ViewContainerRef;
-  private colorPicker!: ColorPickerPopupComponent;
+  public colorPicker!: ColorPickerPopupComponent;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
   onSwatchClick(element: HTMLElement) {
-    this.onClick.emit();
-    window.setTimeout(() => this.loadColorPicker(element));
+    this.loadColorPicker(element);
 
   }
 
@@ -54,6 +53,13 @@ export class ColorSwatchComponent {
         colorPicker.$onChange.subscribe(() => {
           this.onChange.emit();
         });
+
+
+        // Subscribe to when the color picker opens
+        colorPicker.$onOpen.subscribe(() => {
+          this.onColorPickerOpen.emit();
+        });
+
 
 
         // Subscribe to when the color picker closes

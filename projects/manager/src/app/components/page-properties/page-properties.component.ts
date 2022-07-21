@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ApplicationRef, Component, OnInit } from '@angular/core';
 import { PageType } from 'widgets';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -27,7 +27,7 @@ export class PagePropertiesComponent implements OnInit {
   }
 
 
-  constructor(public widgetService: WidgetService) { }
+  constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { }
 
 
   ngOnInit(): void {
@@ -43,6 +43,7 @@ export class PagePropertiesComponent implements OnInit {
 
 
   onBackgroundChange() {
+    this.appRef.tick();
     this.widgetService.page.setBackground();
     this.widgetService.page.save();
   }

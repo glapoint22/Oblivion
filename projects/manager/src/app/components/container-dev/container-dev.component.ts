@@ -228,7 +228,10 @@ export class ContainerDevComponent extends ContainerComponent {
   // --------------------------------------------------------------------------- On Mousedown ---------------------------------------------------------
   public onMousedown(event: MouseEvent): void {
     if (this.page) {
-      window.setTimeout(() => this.widgetService.deselectWidget(), 10);
+      
+      window.dispatchEvent(new Event('mousedown'));
+
+      this.widgetService.deselectWidget();
 
       if (event.button == 2) {
         if (this.page.pageContent) {

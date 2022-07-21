@@ -30,7 +30,8 @@
         <div class="label">Color</div>
         <div style="flex: 1;">
             <color-swatch [color]="textBox.fontColor.rgbColor"
-                (onChange)="textBox.fontColor.setStyle(); textBox.render(); onChange.emit()"
+                (onChange)="appRef.tick(); textBox.fontColor.setStyle(); textBox.render()"
+                (onColorPickerOpen)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
                 (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
             </color-swatch>
         </div>
@@ -43,9 +44,9 @@
     <div class="property">
         <div class="label">Highlight</div>
         <div style="flex: 1;">
-            <color-swatch [color]="textBox.highlightColor.rgbColor"
-                (onChange)="textBox.highlightColor.setStyle(); textBox.render(); onChange.emit()"
-                (onClick)="textBox.highlightColor.color == '#00000000' ? textBox.highlightColor.color = '#ffff00': null"
+            <color-swatch #highlightColorSwatch [color]="textBox.highlightColor.rgbColor"
+                (onChange)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
+                (onColorPickerOpen)="textBox.highlightColor.color == '#00000000' ? setHighlightColor(highlightColorSwatch.colorPicker.color): null; appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
                 (onColorPickerClose)="textBox.highlightColor.onColorPickerClose(); textBox.setText()">
             </color-swatch>
         </div>

@@ -47,8 +47,8 @@ export class EditorComponent implements ContainerHost {
     iframeContentDocument.head.innerHTML = document.head.innerHTML;
     iframeContentDocument.body.appendChild(componentRef.location.nativeElement);
 
-    iframeContentDocument.addEventListener('mousedown', () => window.dispatchEvent(new Event('mousedown')));
     iframeContentDocument.addEventListener('keydown', (event: KeyboardEvent) => window.dispatchEvent(new KeyboardEvent('keydown', event)));
+    iframeContentDocument.addEventListener('mousemove', (event: MouseEvent) => window.dispatchEvent(new MouseEvent('mousemove', event)));
   }
 
 

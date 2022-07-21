@@ -12,6 +12,7 @@ export class ColorPickerPopupComponent extends LazyLoad {
   public hue: number = 0;
   public $onChange: Subject<void> = new Subject<void>();
   public $onClose: Subject<void> = new Subject<void>();
+  public $onOpen: Subject<void> = new Subject<void>();
   public posX!: number;
   public posY!: number;
   public ringX!: number;
@@ -20,6 +21,7 @@ export class ColorPickerPopupComponent extends LazyLoad {
   public alphaHandlePos!: number;
   public arrowPos!: string;
   public hex!: string;
+  public ringDark!: boolean;
   private initialColor!: Color;
   private hasSubmitted!: boolean;
 
@@ -27,6 +29,19 @@ export class ColorPickerPopupComponent extends LazyLoad {
   // ------------------------------------------------------------------- Ng On Init -----------------------------------------------------------
   ngOnInit() {
     super.ngOnInit();
+
+    // Set the initial color
+    this.initialColor = new Color(this.color.r, this.color.g, this.color.b, this.color.a);
+  }
+
+
+
+
+
+
+  // -------------------------------------------------------------------- On Open -------------------------------------------------------------
+  onOpen(): void {
+    this.$onOpen.next();
 
     // Set the ring position
     this.setRingPosition();
@@ -38,29 +53,14 @@ export class ColorPickerPopupComponent extends LazyLoad {
     this.setAlphaHandlePosition();
 
     // Set the hex color
-    this.setHex();
+    this.hex = this.color.toHex();
 
     // Set the hue
     this.setHue(this.color.toHSL().h);
 
-    this.initialColor = new Color(this.color.r, this.color.g, this.color.b, this.color.a);
+    // Set the ring color
+    this.setRingColor();
   }
-
-
-
-
-
-
-
-  // --------------------------------------------------------------------- On Open -----------------------------------------------------------
-  onOpen(): void {
-    this.onChange();
-  }
-
-
-
-
-
 
 
 
@@ -136,6 +136,8 @@ export class ColorPickerPopupComponent extends LazyLoad {
   moveRing(colorPaletteRect: DOMRect, x: number, y: number) {
     this.ringX = (Math.min(colorPaletteRect.width, Math.max(0, x - colorPaletteRect.x)) / colorPaletteRect.width) * 100;
     this.ringY = (Math.min(colorPaletteRect.height, Math.max(0, y - colorPaletteRect.y)) / colorPaletteRect.height) * 100;
+
+    this.setRingColor();
   }
 
 
@@ -166,7 +168,7 @@ export class ColorPickerPopupComponent extends LazyLoad {
   // ------------------------------------------------------------------ Set Hex ------------------------------------------------------------------
   setHex() {
     this.hex = this.color.toHex();
-    this.onChange();
+    this.$onChange.next();
   }
 
 
@@ -186,11 +188,13 @@ export class ColorPickerPopupComponent extends LazyLoad {
     this.setHue(this.getHue(rect, mousedownEvent.y));
     this.setColor();
     this.setHex();
+    this.setRingColor();
 
     const mousemove = (mousemoveEvent: MouseEvent) => {
       this.setHue(this.getHue(rect, mousemoveEvent.y));
       this.setColor();
       this.setHex();
+      this.setRingColor();
     }
 
     window.addEventListener('mousemove', mousemove);
@@ -307,6 +311,7 @@ export class ColorPickerPopupComponent extends LazyLoad {
     this.setHueHandlePosition();
     this.setHex();
     this.setHue(this.color.toHSL().h);
+    this.setRingColor();
   }
 
 
@@ -367,7 +372,8 @@ export class ColorPickerPopupComponent extends LazyLoad {
     this.setHueHandlePosition();
     this.setAlphaHandlePosition();
     this.setHue(this.color.toHSL().h);
-    this.onChange();
+    this.setRingColor();
+    this.$onChange.next();
   }
 
 
@@ -408,6 +414,7 @@ export class ColorPickerPopupComponent extends LazyLoad {
     this.setHueHandlePosition();
     this.setHex();
     this.setHue(this.color.toHSL().h);
+    this.setRingColor();
   }
 
 
@@ -441,10 +448,32 @@ export class ColorPickerPopupComponent extends LazyLoad {
 
 
 
-  // ----------------------------------------------------------------------- On Change ---------------------------------------------------------------
-  onChange() {
-    window.setTimeout(() => this.$onChange.next());
+  // ------------------------------------------------------------------------ Set Ring Color -------------------------------------------------------------
+  setRingColor() {
+    if (this.ringY < 50) {
+      if (this.ringX > 50) {
+        if (this.hue > 200 || this.hue < 25) {
+          this.ringDark = false;
+        } else {
+          this.ringDark = true;
+        }
+      } else {
+        this.ringDark = true;
+      }
+    } else {
+      this.ringDark = false;
+    }
   }
+
+
+
+
+  // --------------------------------------------------------------------------- On Enter -----------------------------------------------------------------
+  onEnter() {
+    this.onSubmit();
+  }
+
+
 
 
 
@@ -455,6 +484,10 @@ export class ColorPickerPopupComponent extends LazyLoad {
   }
 
 
+
+  
+
+
   // --------------------------------------------------------------------------- Close -----------------------------------------------------------------
   close() {
     if (!this.hasSubmitted) {
@@ -462,10 +495,10 @@ export class ColorPickerPopupComponent extends LazyLoad {
       this.color.g = this.initialColor.g;
       this.color.b = this.initialColor.b;
       this.color.a = this.initialColor.a;
-      this.onChange();
+      this.$onChange.next();
     }
 
-    window.setTimeout(() => this.$onClose.next());
+    this.$onClose.next();
     super.close();
   }
 

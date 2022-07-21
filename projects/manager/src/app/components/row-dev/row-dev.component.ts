@@ -159,13 +159,12 @@ export class RowDevComponent extends RowComponent {
     window.dispatchEvent(new Event('mousedown'));
 
     this.widgetService.selectedRow = this;
-    
-    window.setTimeout(()=> {
-      this.widgetService.selectedColumn = null!;
+    this.widgetService.selectedColumn = null!;
     this.widgetService.selectedWidget = null!;
-      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row
-    });
-    
+    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
+
+
+
 
     if (event.button == 0) {
       this.widgetService.onRowMousedown(event);

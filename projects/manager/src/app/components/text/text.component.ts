@@ -1,5 +1,5 @@
 import { ApplicationRef, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { LazyLoadingService, LinkType, SpinnerAction } from 'common';
+import { Color, LazyLoadingService, LinkType, SpinnerAction } from 'common';
 import { TextBoxDev } from 'text-box';
 import { LinkComponent } from '../link/link.component';
 import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
@@ -14,7 +14,7 @@ export class TextComponent {
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   public textBox!: TextBoxDev;
 
-  constructor(private lazyLoadingService: LazyLoadingService, private appRef: ApplicationRef) { }
+  constructor(private lazyLoadingService: LazyLoadingService, public appRef: ApplicationRef) { }
 
   ngOnChanges() {
     this.textBox = this.textWidget.textBoxDev;
@@ -62,5 +62,14 @@ export class TextComponent {
           this.textBox.setText();
         }
       });
+  }
+
+
+  // ----------------------------------------------------- Set Highlight Color -----------------------------------------------------
+  setHighlightColor(color: Color) {
+    color.r = 255;
+    color.g = 255;
+    color.b = 0;
+    color.a = 1;
   }
 }
