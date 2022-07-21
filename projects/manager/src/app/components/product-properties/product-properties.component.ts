@@ -7,6 +7,7 @@ import { PricePointsComponent } from '../price-points/price-points.component';
 import { PricePopupComponent } from '../price-popup/price-popup.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
+import { VendorPopupComponent } from '../vendor-popup/vendor-popup.component';
 
 @Component({
   selector: 'product-properties',
@@ -14,6 +15,7 @@ import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.compone
   styleUrls: ['./product-properties.component.scss']
 })
 export class ProductPropertiesComponent {
+  private vendorPopup!: VendorPopupComponent;
   private pricePopup!: PricePopupComponent;
   private shippingPopup!: ShippingPopupComponent;
   private recurringPopup!: RecurringPopupComponent;
@@ -33,9 +35,30 @@ export class ProductPropertiesComponent {
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
+  @ViewChild('vendorPopupContainer', { read: ViewContainerRef }) vendorPopupContainer!: ViewContainerRef;
   
 
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
+
+
+  openVendorPopup() {
+    if (this.vendorPopupContainer.length > 0) {
+      this.pricePopup.close();
+      return;
+    }
+
+    this.lazyLoadingService.load(async () => {
+      const { VendorPopupComponent } = await import('../vendor-popup/vendor-popup.component');
+      const { VendorPopupModule } = await import('../vendor-popup/vendor-popup.module');
+      return {
+        component: VendorPopupComponent,
+        module: VendorPopupModule
+      }
+    }, SpinnerAction.None, this.vendorPopupContainer)
+      .then((vendorPopup: VendorPopupComponent) => {
+        this.vendorPopup = vendorPopup;
+      });
+  }
 
 
   openPricePopup() {
