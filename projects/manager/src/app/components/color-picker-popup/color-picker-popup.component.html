@@ -1,6 +1,12 @@
 <div class="color-picker-base hide" [ngClass]="{'show': show}" (transitionend)="onHide()" [style.left.px]="posX"
     [style.top.px]="posY" (mousedown)="$event.stopPropagation()">
 
+    <!-- Arrow Top -->
+    <div *ngIf="arrowPos == 'top'" class="popup-arrow-top-container">
+        <div class="popup-arrow-top-Border"></div>
+        <div class="popup-arrow-top-background"></div>
+    </div>
+
     <!-- Color Container -->
     <div class="color-container">
         <!-- Color Palette -->
@@ -60,5 +66,12 @@
     <div class="buttons-container">
         <button #tabElement class="dark-button" (click)="close()">Close</button>
         <button #tabElement class="gold-button" (click)="onSubmit()">Submit</button>
+    </div>
+
+
+    <!-- Arrow Bottom -->
+    <div *ngIf="arrowPos == 'bottom'" class="popup-arrow-bottom-container">
+        <div class="popup-arrow-bottom-Border"></div>
+        <div class="popup-arrow-bottom-background"></div>
     </div>
 </div>

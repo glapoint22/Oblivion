@@ -7,7 +7,6 @@ import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
 import { ContainerDevComponent } from '../../components/container-dev/container-dev.component';
 import { ContainerWidgetDevComponent } from '../../components/container-widget-dev/container-widget-dev.component';
-import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { MediaBrowserComponent } from '../../components/media-browser/media-browser.component';
 import { PageDevComponent } from '../../components/page-dev/page-dev.component';
 import { RowDevComponent } from '../../components/row-dev/row-dev.component';
@@ -26,7 +25,6 @@ export class WidgetService {
   public currentWidgetInspectorView!: WidgetInspectorView;
   public clipboard!: Row | Column | WidgetData;
   public page!: PageDevComponent;
-  public contextMenu!: ContextMenuComponent;
 
 
   constructor(private breakpointService: BreakpointService, private lazyLoadingService: LazyLoadingService) { }

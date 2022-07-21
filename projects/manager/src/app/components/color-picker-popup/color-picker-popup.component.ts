@@ -18,6 +18,7 @@ export class ColorPickerPopupComponent extends LazyLoad {
   public ringY!: number;
   public hueHandlePos!: number;
   public alphaHandlePos!: number;
+  public arrowPos!: string;
   public hex!: string;
   private initialColor!: Color;
   private hasSubmitted!: boolean;

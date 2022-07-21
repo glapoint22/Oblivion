@@ -1,20 +1,22 @@
-<!-- Background -->
-<background [background]="widgetService.selectedRow.background" (onChange)="update()"></background>
+<ng-container *ngIf="widgetService.selectedRow">
+    <!-- Background -->
+    <background [background]="widgetService.selectedRow.background" (onChange)="update()"></background>
 
-<!-- Border -->
-<border [border]="widgetService.selectedRow.border" (onChange)="update()"></border>
+    <!-- Border -->
+    <border [border]="widgetService.selectedRow.border" (onChange)="update()"></border>
 
-<!-- Corners -->
-<corners [corners]="widgetService.selectedRow.corners" (onChange)="update()"></corners>
+    <!-- Corners -->
+    <corners [corners]="widgetService.selectedRow.corners" (onChange)="update()"></corners>
 
-<!-- Shadow -->
-<shadow [shadow]="widgetService.selectedRow.shadow" (onChange)="update()"></shadow>
+    <!-- Shadow -->
+    <shadow [shadow]="widgetService.selectedRow.shadow" (onChange)="update()"></shadow>
 
-<!-- Padding -->
-<padding [padding]="widgetService.selectedRow.padding"
-    (onChange)="updatePadding(widgetService.selectedRow.padding, widgetService.selectedRow.rowElement)"></padding>
+    <!-- Padding -->
+    <padding [padding]="widgetService.selectedRow.padding"
+        (onChange)="updatePadding(widgetService.selectedRow.padding, widgetService.selectedRow.rowElement)"></padding>
 
-<!-- Vertical Alignment -->
-<vertical-alignment [verticalAlignment]="widgetService.selectedRow.verticalAlignment"
-    (onChange)="updateVerticalAlignment()">
-</vertical-alignment>
+    <!-- Vertical Alignment -->
+    <vertical-alignment [verticalAlignment]="widgetService.selectedRow.verticalAlignment"
+        (onChange)="updateVerticalAlignment()">
+    </vertical-alignment>
+</ng-container>

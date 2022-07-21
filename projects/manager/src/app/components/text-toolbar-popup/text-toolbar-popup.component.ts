@@ -22,21 +22,8 @@ export class TextToolbarPopupComponent {
 
   ngOnChanges() {
     if (this.textBox) {
-      this.textBox.onMousedown
-        .subscribe(() => {
-          this.clearContainers();
-        });
-
-        window.setTimeout(() => this.colorSwatch.colorPickerContainer = this.colorPickerContainer);
+      window.setTimeout(() => this.colorSwatch.colorPickerContainer = this.colorPickerContainer);
     }
-  }
-
-
-  
-
-  clearContainers() {
-    this.caseDropdownListContainer.clear();
-    this.linkContainer.clear();
   }
 
 

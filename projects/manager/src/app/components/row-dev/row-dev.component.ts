@@ -156,16 +156,16 @@ export class RowDevComponent extends RowComponent {
   // ------------------------------------------------------------------------ On Mousedown -------------------------------------------------------------
   public onMousedown(event: MouseEvent): void {
     event.stopPropagation();
+    window.dispatchEvent(new Event('mousedown'));
 
     this.widgetService.selectedRow = this;
-    this.widgetService.selectedColumn = null!;
+    
+    window.setTimeout(()=> {
+      this.widgetService.selectedColumn = null!;
     this.widgetService.selectedWidget = null!;
-    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
-
-    if (this.widgetService.contextMenu) {
-      this.widgetService.contextMenu.close();
-      this.widgetService.contextMenu = null!;
-    }
+      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row
+    });
+    
 
     if (event.button == 0) {
       this.widgetService.onRowMousedown(event);
@@ -180,7 +180,6 @@ export class RowDevComponent extends RowComponent {
           module: ContextMenuModule
         }
       }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-        this.widgetService.contextMenu = contextMenu;
         contextMenu.xPos = event.screenX;
         contextMenu.yPos = event.clientY + 66;
         contextMenu.options = this.getRowContextMenuOptions();

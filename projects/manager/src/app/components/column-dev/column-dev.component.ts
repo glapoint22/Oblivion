@@ -39,18 +39,15 @@ export class ColumnDevComponent extends ColumnComponent {
     // Mousedown
     widgetComponentRef.location.nativeElement.firstElementChild.addEventListener('mousedown', (event: MouseEvent) => {
       event.stopPropagation();
+      window.dispatchEvent(new Event('mousedown'));
 
       // Set the selection
       this.setSelection(widgetComponent);
-      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
+      window.setTimeout(() => this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget);
+
 
 
       this.widgetService.onRowMousedown(event);
-
-      if (this.widgetService.contextMenu) {
-        this.widgetService.contextMenu.close();
-        this.widgetService.contextMenu = null!;
-      }
 
       if (event.button == 2) {
         this.lazyLoadingService.load(async () => {
@@ -63,7 +60,6 @@ export class ColumnDevComponent extends ColumnComponent {
           }
         }, SpinnerAction.None)
           .then((contextMenu: ContextMenuComponent) => {
-            this.widgetService.contextMenu = contextMenu;
             contextMenu.xPos = event.screenX;
             contextMenu.yPos = event.clientY + 66;
 
@@ -462,14 +458,15 @@ export class ColumnDevComponent extends ColumnComponent {
   // --------------------------------------------------------------------------------On Mousedown--------------------------------------------------------------------
   public onMousedown(event: MouseEvent): void {
     event.stopPropagation();
+    window.dispatchEvent(new Event('mousedown'));
 
-    this.setSelection(this.widget);
-    this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
 
-    if (this.widgetService.contextMenu) {
-      this.widgetService.contextMenu.close();
-      this.widgetService.contextMenu = null!;
-    }
+    this.widgetService.selectedColumn = this;
+    this.widgetService.selectedRow = this.rowComponent;
+    window.setTimeout(() => {
+      this.widgetService.selectedWidget = this.widget;
+      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column
+    });
 
     if (event.button == 0) {
       this.widgetService.onRowMousedown(event);
@@ -485,7 +482,6 @@ export class ColumnDevComponent extends ColumnComponent {
         }
       }, SpinnerAction.None)
         .then((contextMenu: ContextMenuComponent) => {
-          this.widgetService.contextMenu = contextMenu;
           contextMenu.xPos = event.screenX;
           contextMenu.yPos = event.clientY + 66;
           contextMenu.options = this.getColumnContextMenuOptions();

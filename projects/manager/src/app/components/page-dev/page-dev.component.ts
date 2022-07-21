@@ -248,9 +248,9 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
   // -------------------------------------------------------------------------------- On Mousedown ----------------------------------------------------------------------
-  public onMousedown(): void {
-    if (!this.pageContent) return;
+  // public onMousedown(): void {
+  //   if (!this.pageContent) return;
 
-    this.widgetService.deselectWidget();
-  }
+  //   window.setTimeout(()=> this.widgetService.deselectWidget());
+  // }
 }
