@@ -34,7 +34,8 @@
                          (focus)="selectRange(header)"
                          (blur)="onHeaderBlur(pricePoint, header)"
                          (keydown.escape)="onHeaderEscape(pricePoint, header)"
-                         (keydown.enter)="header.blur()">
+                         (keydown.enter)="header.blur()"
+                         (paste)="onPaste($event, header)">
                             {{pricePoint.header}}
                     </div>
                 </div>
@@ -51,7 +52,8 @@
                          (focus)="selectRange(quantity)"
                          (blur)="onQuantityBlur(pricePoint, quantity)"
                          (keydown.escape)="onQuantityEscape(pricePoint, quantity)"
-                         (keydown.enter)="quantity.blur()" >
+                         (keydown.enter)="quantity.blur()"
+                         (paste)="onPaste($event, quantity)">
                             {{pricePoint.quantity}}
                     </div>
                 </div>
@@ -111,7 +113,8 @@
                                  (input)="onUnitPriceInput(unitPrice)"
                                  (blur)="onUnitPriceBlur(pricePoint, unitPrice)"
                                  (keydown.escape)="onUnitPriceEscape(pricePoint, unitPrice)"
-                                 (keydown.enter)="unitPrice.blur()">
+                                 (keydown.enter)="unitPrice.blur()"
+                                 (paste)="onPaste($event, unitPrice, true)">
                                     {{isWholeNumber(pricePoint.unitPrice) ?  (pricePoint.unitPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.unitPrice | currency:'USD':'symbol':'0.2-2')}}
                             </div>
                         </div>
@@ -126,7 +129,8 @@
                                  (focus)="selectRange(unit)"
                                  (blur)="onUnitBlur(pricePoint, unit)"
                                  (keydown.escape)="onUnitEscape(pricePoint, unit)"
-                                 (keydown.enter)="unit.blur()">
+                                 (keydown.enter)="unit.blur()"
+                                 (paste)="onPaste($event, unit)">
                                     {{pricePoint.unit}}
                             </div>
                         </div>
@@ -151,7 +155,8 @@
                                      (input)="onStrikethroughPriceInput(strikethroughPrice)"
                                      (blur)="onStrikethroughPriceBlur(pricePoint, strikethroughPrice)"
                                      (keydown.escape)="onStrikethroughPriceEscape(pricePoint, strikethroughPrice)"
-                                     (keydown.enter)="strikethroughPrice.blur()">
+                                     (keydown.enter)="strikethroughPrice.blur()"
+                                     (paste)="onPaste($event, strikethroughPrice, true)">
                                         {{isWholeNumber(pricePoint.strikethroughPrice) ? (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.2-2')}}
                                 </div>
                             </div>
@@ -168,7 +173,8 @@
                                  (input)="onPriceInput(price)"
                                  (blur)="onPriceBlur(pricePoint, price)"
                                  (keydown.escape)="onPriceEscape(pricePoint, price)"
-                                 (keydown.enter)="price.blur()">
+                                 (keydown.enter)="price.blur()"
+                                 (paste)="onPaste($event, price, true)">
                                     {{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}
                             </div>
                         </div>

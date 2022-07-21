@@ -95,6 +95,8 @@
     color: #dadada;
     outline: none;
     text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 
@@ -136,8 +138,8 @@
     text-align: center;
     border: 1px dashed #525252;
     outline: none;
-
-
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 
@@ -337,6 +339,8 @@
 .strikethrough-price {
     color: #ffba00;
     outline: none;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 
@@ -375,6 +379,8 @@
     text-align: center;
     border: 1px dashed #525252;
     outline: none;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 

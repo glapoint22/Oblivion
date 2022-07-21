@@ -1,8 +1,7 @@
-import { Component, Input, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import { Component, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
 import { PopupArrowPosition } from '../../classes/enums';
 import { Product } from '../../classes/product';
-import { MultiColumnListComponent } from '../lists/multi-column-list/multi-column-list.component';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
@@ -75,6 +74,27 @@ export class PricePointsComponent {
   }
 
 
+  onPaste(e: ClipboardEvent, htmlElement: HTMLElement, isPrice?: boolean) {
+    e.preventDefault();
+    const clipboardData = e.clipboardData!.getData('text/plain');
+    if (clipboardData) {
+      htmlElement.innerText = clipboardData;
+    }
+
+    if (isPrice) !(/^[0-9.]*$/i).test(htmlElement.innerText) ? htmlElement.innerText = htmlElement.innerText.replace(/[^0-9.]/ig, '') : null;
+
+    // Place cursor at the end of the text
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(htmlElement);
+    range.collapse(false);
+    sel!.removeAllRanges();
+    sel!.addRange(range);
+  }
+
+
+
+
   onHeaderBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
     window.getSelection()!.removeAllRanges();
 
@@ -89,6 +109,9 @@ export class PricePointsComponent {
     htmlElement.innerText = pricePoint.header;
     htmlElement.blur();
   }
+
+
+
 
 
   onQuantityBlur(pricePoint: PricePoint, htmlElement: HTMLElement) {
@@ -137,8 +160,8 @@ export class PricePointsComponent {
 
 
   onImageDelete(pricePoint: PricePoint) {
-    // Delay just in case the image is being deleted by the [Enter Key]
-    // if the deleting is NOT delayed then Media Browser will think
+    // Delay just in case the image is being deleted by the [Enter] key.
+    // If the deleting is NOT delayed, then Media Browser will think
     // no image is present and open
     window.setTimeout(() => {
       pricePoint.image = new Image();
@@ -197,7 +220,7 @@ export class PricePointsComponent {
     htmlElement.blur();
   }
 
-
+  
 
   onStrikethroughPriceFocus(htmlElement: HTMLElement) {
     this.selectRange(htmlElement);
