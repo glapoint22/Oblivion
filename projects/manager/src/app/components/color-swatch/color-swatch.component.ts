@@ -14,6 +14,7 @@ export class ColorSwatchComponent {
   @Output() onClick: EventEmitter<void> = new EventEmitter();
   @Output() onColorPickerClose: EventEmitter<void> = new EventEmitter();
   public colorPickerContainer!: ViewContainerRef;
+  private colorPicker!: ColorPickerPopupComponent;
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
@@ -25,6 +26,11 @@ export class ColorSwatchComponent {
 
 
   async loadColorPicker(element: HTMLElement) {
+    if (this.colorPicker) {
+      this.colorPicker.close();
+      this.colorPicker = null!;
+      return;
+    }
     this.lazyLoadingService.load(async () => {
       const { ColorPickerPopupComponent } = await import('../color-picker-popup/color-picker-popup.component');
       const { ColorPickerPopupModule } = await import('../color-picker-popup/color-picker-popup.module');
@@ -35,7 +41,14 @@ export class ColorSwatchComponent {
       }
     }, SpinnerAction.None, this.colorPickerContainer ? this.colorPickerContainer : null!)
       .then((colorPicker: ColorPickerPopupComponent) => {
+        this.colorPicker = colorPicker;
         colorPicker.color = this.color;
+
+        if (this.miniSize) {
+          colorPicker.arrowPos = 'bottom';
+        } else {
+          colorPicker.arrowPos = 'top';
+        }
 
         // Subscribe to every change
         colorPicker.$onChange.subscribe(() => {
@@ -45,16 +58,16 @@ export class ColorSwatchComponent {
 
         // Subscribe to when the color picker closes
         colorPicker.$onClose.subscribe(() => {
+          this.colorPicker = null!;
           this.onColorPickerClose.emit();
         });
 
         if (!this.colorPickerContainer) {
           const elementRect = element.getBoundingClientRect();
 
-          colorPicker.posX = elementRect.left;
-          colorPicker.posY = elementRect.bottom;
+          colorPicker.posX = elementRect.left + 9;
+          colorPicker.posY = elementRect.bottom + 5;
         }
-
       });
   }
 }

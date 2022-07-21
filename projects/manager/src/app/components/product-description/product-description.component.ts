@@ -16,6 +16,7 @@ export class ProductDescriptionComponent {
   public textBox!: TextBoxDev;
   public showToolbar!: boolean;
   private saveData = new Subject<void>();
+  private mousedown!: boolean;
 
   constructor(private appRef: ApplicationRef, private dataService: DataService) { }
 
@@ -49,8 +50,29 @@ export class ProductDescriptionComponent {
 
     // When the iframe loads
     this.iframe.nativeElement.onload = () => {
-      const body = this.iframe.nativeElement.contentDocument?.body!;
+      const contentDocument = this.iframe.nativeElement.contentDocument!;
+      const body = contentDocument.body!;
       const htmlRootElement = body.firstElementChild as HTMLElement;
+
+      contentDocument.addEventListener('mousedown', () => {
+        if (this.showToolbar) this.mousedown = true;
+        window.dispatchEvent(new Event('mousedown'));
+
+        if (!this.showToolbar) {
+          this.showToolbar = true;
+          window.removeEventListener('mousedown', mousedown);
+          window.addEventListener('mousedown', mousedown);
+        }
+      });
+
+      const mousedown = () => {
+        if (!this.mousedown) {
+          this.showToolbar = false;
+          this.appRef.tick();
+        }
+
+        this.mousedown = false;
+      }
 
       // This will get all styling
       this.iframe.nativeElement.contentDocument!.head.innerHTML = document.head.innerHTML;
@@ -78,14 +100,6 @@ export class ProductDescriptionComponent {
 
       // On selection
       this.textBox.onSelection.subscribe(() => {
-        if (!this.showToolbar) {
-          this.showToolbar = true;
-          window.addEventListener('mousedown', () => {
-            this.showToolbar = false;
-            this.appRef.tick();
-          }, { once: true });
-        }
-
         this.update(htmlRootElement);
       });
 

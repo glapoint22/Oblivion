@@ -27,12 +27,28 @@ export class ContextMenuComponent extends LazyLoad {
   public hasCover!: boolean;
   public activatedSubmenuOption!: MenuOption;
 
+  ngOnInit() {
+    super.ngOnInit();
+    window.setTimeout(()=> {
+      window.addEventListener('mousedown', this.mousedown);
+    })
+  }
 
-  @HostListener('window:mousedown')
-  onWindowMouseDown() {
+  mousedown = ()=> {
     this.onHide();
     this.menuOpen.next(false);
   }
+
+
+  ngOnDestroy() {
+    window.removeEventListener('mousedown', this.mousedown);
+  }
+
+  // @HostListener('window:mousedown')
+  // onWindowMouseDown() {
+  //   this.onHide();
+  //   this.menuOpen.next(false);
+  // }
 
 
   // @HostListener('window:blur')

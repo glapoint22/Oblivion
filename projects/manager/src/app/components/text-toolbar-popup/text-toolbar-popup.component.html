@@ -57,17 +57,25 @@
         </div>
 
         <!-- Text Color -->
-        <div class="text-toolbar-button" style="width: 28px; position: relative;" title="Text Color">
-            <div style="display: flex; justify-content: center; flex-direction: column;">
-                <div style="font-weight: bold; margin: auto; font-size: 16px;">A</div>
+        <div style="position: relative;">
+            <div class="text-toolbar-button" style="width: 28px; position: relative;" title="Text Color">
+                <div style="display: flex; justify-content: center; flex-direction: column;">
+                    <div style="font-weight: bold; margin: auto; font-size: 16px;">A</div>
 
-                <color-swatch #colorSwatch [color]="textBox.fontColor.rgbColor" [miniSize]="true"
-                    (onChange)="textBox.fontColor.setStyle(); textBox.render()"
-                    (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
-                </color-swatch>
+                    <color-swatch #colorSwatch [color]="textBox.fontColor.rgbColor" [miniSize]="true"
+                        (onChange)="textBox.fontColor.setStyle(); textBox.render()"
+                        (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
+                    </color-swatch>
+                </div>
             </div>
-            <ng-template #colorPickerViewContainer></ng-template>
+            <div style="    position: absolute;
+            top: -233px;
+            left: -185px;">
+                <ng-template #colorPickerViewContainer></ng-template>
+            </div>
+
         </div>
+
 
         <!-- Highlight Color -->
         <div class="text-toolbar-button" style="width: 28px; position: relative;" title="Highlight Color">

@@ -119,3 +119,52 @@
     align-items: center;
     margin-top: 5px;
 }
+
+
+
+.popup-arrow-top-container {
+    position: absolute;
+    top: -12px;
+    right: 10px;
+
+    .popup-arrow-top-Border {
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-bottom: 12px solid #414141;
+    }
+    
+    .popup-arrow-top-background {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        border-left: 11px solid transparent;
+        border-right: 11px solid transparent;
+        border-bottom: 11px solid #282828;
+    }
+}
+
+
+
+
+
+
+.popup-arrow-bottom-container {
+    position: absolute;
+    bottom: -12px;
+    right: 13px;
+
+    .popup-arrow-bottom-Border {
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 12px solid #414141;
+    }
+    
+    .popup-arrow-bottom-background {
+        position: absolute;
+        top: 0;
+        left: 1px;
+        border-left: 11px solid transparent;
+        border-right: 11px solid transparent;
+        border-top: 11px solid #282828;
+    }
+}

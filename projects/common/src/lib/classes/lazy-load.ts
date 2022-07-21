@@ -95,14 +95,14 @@ export class LazyLoad implements AfterViewInit {
 
 
     addEventListeners() {
-        document.addEventListener("keydown", this.keyDown);
-        document.addEventListener("keyup", this.keyUp);
+        window.addEventListener("keydown", this.keyDown);
+        window.addEventListener("keyup", this.keyUp);
     }
 
     removeEventListeners() {
         this.shiftKeyDown = false;
-        document.removeEventListener("keydown", this.keyDown);
-        document.removeEventListener("keyup", this.keyUp);
+        window.removeEventListener("keydown", this.keyDown);
+        window.removeEventListener("keyup", this.keyUp);
     }
 
     onTab(direction: number): void {
