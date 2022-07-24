@@ -1,8 +1,7 @@
 import { ApplicationRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { DataService } from 'common';
+import { DataService, IProduct } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { TextBoxData, TextBoxDev } from 'text-box';
-import { Product } from '../../classes/product';
 
 @Component({
   selector: 'product-description',
@@ -10,7 +9,8 @@ import { Product } from '../../classes/product';
   styleUrls: ['./product-description.component.scss']
 })
 export class ProductDescriptionComponent {
-  @Input() product!: Product;
+  @Input() product!: IProduct;
+  @Input() apiUrl!: string;
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public height: number = 32;
   public textBox!: TextBoxDev;
@@ -26,7 +26,7 @@ export class ProductDescriptionComponent {
     this.saveData
       .pipe(debounceTime(500))
       .subscribe(() => {
-        this.dataService.put('api/Products/Description', {
+        this.dataService.put('api/Products/' + this.apiUrl, {
           productId: this.product.id,
           description: JSON.stringify(this.textBox.getData())
         }).subscribe();

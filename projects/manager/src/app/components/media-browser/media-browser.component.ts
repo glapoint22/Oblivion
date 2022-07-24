@@ -122,7 +122,7 @@ export class MediaBrowserComponent extends LazyLoad {
 
         newImage.id = media.id;
         newImage.name = media.name;
-        newImage.src = media.image;
+        newImage.src = media.src;
         newImage.thumbnail = media.thumbnail;
         this.callback(newImage);
         this.close();
@@ -249,7 +249,7 @@ export class MediaBrowserComponent extends LazyLoad {
 
       image.id = media.id;
       image.name = media.name;
-      image.src = media.image;
+      image.src = media.src;
       image.thumbnail = media.thumbnail;
 
       this.callback(image);

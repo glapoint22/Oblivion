@@ -311,7 +311,7 @@
                     <div style="position: relative; margin-top: 35px;">
                         <div style="color: #505050; font-size: 12px; margin-bottom: 4px">Description:</div>
                         <div style="min-height: 32px; border: 1px dashed #505050; padding: 5px;">
-                            <product-description [product]="product"></product-description>
+                            <product-description [product]="product" [apiUrl]="'Description'"></product-description>
                         </div>
 
                     </div>
@@ -347,20 +347,32 @@
 
         <div style="margin: auto; width: 1506px;">
             <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Components:</div>
-            <div
-                style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
-                <div
-                    style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center;" tabindex="0">
-                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
-                    <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
-                    <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+            <div style="border: 1px dashed #505050;">
+                <div *ngIf="!product.components || product.components.length == 0"
+                    style="display: flex; height: 40px; align-items: center; font-size: 16px; margin-left: 10px; color: #a3a3a3; cursor: pointer;">
+                    <i class="fa-solid fa-plus"></i>
                 </div>
+
+                <subproducts *ngIf="product.components && product.components.length > 0" [subproducts]="product.components" [subproductType]="subproductType.Component"></subproducts>
             </div>
         </div>
 
+        
 
 
         <div style="margin: auto; width: 1506px;">
+            <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Bonuses:</div>
+            <div style="border: 1px dashed #505050;">
+                <div *ngIf="!product.bonuses || product.bonuses.length == 0"
+                    style="display: flex; height: 40px; align-items: center; font-size: 16px; margin-left: 10px; color: #a3a3a3; cursor: pointer;">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+
+                <subproducts *ngIf="product.bonuses && product.bonuses.length > 0" [subproducts]="product.bonuses" [subproductType]="subproductType.Bonus"></subproducts>
+            </div>
+        </div>
+
+        <!-- <div style="margin: auto; width: 1506px;">
             <div style="margin: 0 7px 4px; color: #505050; font-size: 12px; margin-top: 37px;">Bonuses:</div>
             <div
                 style="display: flex; height: 40px; border: 1px dashed #505050; align-items: center; padding-left: 10px;">
@@ -371,6 +383,11 @@
                     <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
                 </div>
             </div>
-        </div>
+        </div> -->
+
+
+
+
+
     </div>
 </div>

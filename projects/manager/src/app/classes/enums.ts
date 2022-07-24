@@ -81,3 +81,9 @@ export enum PopupArrowPosition {
     BottomLeft,
     BottomRight
 }
+
+
+export enum SubproductType {
+    Component,
+    Bonus
+}

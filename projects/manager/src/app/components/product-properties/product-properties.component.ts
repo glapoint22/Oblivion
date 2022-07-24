@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
-import { PopupArrowPosition } from '../../classes/enums';
+import { PopupArrowPosition, SubproductType } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { HoplinkPopupComponent } from '../hoplink-popup/hoplink-popup.component';
 import { PricePointsComponent } from '../price-points/price-points.component';
@@ -26,6 +26,7 @@ export class ProductPropertiesComponent {
   public shippingType = ShippingType;
   public PopupArrowPosition = PopupArrowPosition;
   public shipping = Shipping;
+  public subproductType = SubproductType;
 
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;

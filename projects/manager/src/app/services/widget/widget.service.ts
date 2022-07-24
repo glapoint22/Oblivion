@@ -25,6 +25,7 @@ export class WidgetService {
   public currentWidgetInspectorView!: WidgetInspectorView;
   public clipboard!: Row | Column | WidgetData;
   public page!: PageDevComponent;
+  public viewPortTop!: number;
 
 
   constructor(private breakpointService: BreakpointService, private lazyLoadingService: LazyLoadingService) { }
