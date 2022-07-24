@@ -1,1 +1,13 @@
-<p>keywords-popup works!</p>
+<div class="hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-up-Border"></div>
+        <div class="popup-arrow-up-background"></div>
+    </div>
+    
+    <div class="popup-base">
+        <available-keywords #availableKeywords></available-keywords>
+        <div style="width: 32px;"></div>
+        <selected-keywords #selectedKeywords></selected-keywords>
+    </div>
+</div>

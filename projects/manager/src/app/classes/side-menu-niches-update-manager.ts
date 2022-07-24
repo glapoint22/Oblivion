@@ -38,8 +38,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, private lazyLoadingService: LazyLoadingService, private nicheHierarchyService: NicheHierarchyService, private productService: ProductService, private resolver: ComponentFactoryResolver) {
-        super(dataService, sanitizer);
+    constructor(dataService: DataService, sanitizer: DomSanitizer, productService: ProductService, private lazyLoadingService: LazyLoadingService, private nicheHierarchyService: NicheHierarchyService, private resolver: ComponentFactoryResolver) {
+        super(dataService, sanitizer, productService);
     }
 
 
@@ -47,6 +47,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
+        super.ngOnInit()
         this.itemType = 'Niche';
         this.childType = 'Sub Niche';
         this.dataServicePath = 'Categories';
@@ -118,7 +119,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                             let num = this.listComponent.listManager.editedItem ? 2 : 1;
                             for (let i = grandchildren.length - 1; i >= 0; i--) {
                                 this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getGrandchildItem(grandchildren[i]));
-                                this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherGrandchildItem(grandchildren[i], hierarchyUpdate));
+                                // this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherGrandchildItem(grandchildren[i], hierarchyUpdate));
                             }
                             this.onGrandchildrenLoad.next();
                         })
@@ -217,7 +218,10 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                         this.productService.productComponents.push(productComponent);
 
                         productComponent.product = product;
+                        
+                        this.productService.zIndex++;
 
+                        productComponent.zIndex = this.productService.zIndex;
                         
                     });
             }
@@ -268,7 +272,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         // Add grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
             const indexOfHierarchyItemParent = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
-            // ********* commited Data Service *********
+
+            // ********* Commented Out Data Service *********
             // this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
@@ -286,7 +291,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
         // Edit grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.put('api/' + this.grandchildDataServicePath, {
             //     id: hierarchyUpdate.id,
             //     name: hierarchyUpdate.name
@@ -304,7 +309,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
         // Edit grandchild search item
         if (searchUpdate.values![1].name == this.grandchildSearchType) {
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.put('api/' + this.grandchildDataServicePath, {
             //     id: searchUpdate.id,
             //     name: searchUpdate.values![0].name
@@ -429,7 +434,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     onItemDelete(deletedItem: HierarchyItem) {
         // If we're deleting a grandchild item
         if (deletedItem.hierarchyGroupID == 2) {
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
         }
         super.onItemDelete(deletedItem);
@@ -442,7 +447,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     onSearchItemDelete(deletedItem: MultiColumnItem) {
         // If we're deleting a grandchild item
         if (deletedItem.values[1].name == this.grandchildSearchType) {
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
             this.deleteItem(this.thisArray, deletedItem, 2);
         }
@@ -704,11 +709,11 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: HierarchyItem) {
-        return null!;
-    }
+    // getOtherItem(x: HierarchyItem) {
+    //     return null!;
+    // }
 
 
 
@@ -728,11 +733,11 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
+    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
-    getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
-        return null!;
-    }
+    // getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
+    //     return null!;
+    // }
 
 
 
@@ -750,9 +755,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // =============================================================( GET OTHER GRANDCHILD ITEM )============================================================== \\
+    // // =============================================================( GET OTHER GRANDCHILD ITEM )============================================================== \\
 
-    getOtherGrandchildItem(grandchild: Item, hierarchyUpdate: HierarchyUpdate) {
-        return null!;
-    }
+    // getOtherGrandchildItem(grandchild: Item, hierarchyUpdate: HierarchyUpdate) {
+    //     return null!;
+    // }
 }

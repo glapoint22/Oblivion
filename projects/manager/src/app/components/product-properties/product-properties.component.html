@@ -3,24 +3,27 @@
     
         <div style="position: relative; height: 100%; display: flex; align-items: center; justify-content: flex-end; border-top-left-radius: 6px; border-top-right-radius: 6px; background: linear-gradient(#323232, #202020);">
 
-            <div class="circle-button" (click)="openVendorPopup()">
+            <div class="circle-button" [ngClass]="{'circle-button-clicked': vendorPopupContainer ? vendorPopupContainer.length > 0 : false}" (click)="openVendorPopup()">
                 <i class="fa-solid fa-store"></i>
             </div>
 
-            <div class="circle-button">
+            <div class="circle-button" [ngClass]="{'circle-button-clicked': filtersPopupContainer ? filtersPopupContainer.length > 0 : false}" (click)="openFiltersPopup()">
                 <i class="fa-solid fa-filter"></i>
             </div>
 
-            <div class="circle-button">
+            <div class="circle-button" [ngClass]="{'circle-button-clicked': keywordsPopupContainer ? keywordsPopupContainer.length > 0 : false}" (click)="openKeywordsPopup()">
                 <i class="fa-solid fa-key"></i>
             </div>
 
-            <div class="circle-button">
+            <div class="circle-button" [ngClass]="{'circle-button-clicked': productGroupsPopupContainer ? productGroupsPopupContainer.length > 0 : false}" (click)="openProductGroupsPopup()">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
 
-            <div style="position: absolute; right: 42px; top: -15px; z-index: 100;">
-                <ng-template #vendorPopupContainer></ng-template>
+            <div style="position: absolute; right: 5px; top: 40px; z-index: 100;">
+                <ng-template #vendorPopup></ng-template>
+                <ng-template #filtersPopup></ng-template>
+                <ng-template #keywordsPopup></ng-template>
+                <ng-template #productGroupsPopup></ng-template>
             </div>
         </div>
     </div>

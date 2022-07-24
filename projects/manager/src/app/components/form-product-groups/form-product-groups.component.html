@@ -53,7 +53,7 @@
            placeholder="Search"
            (input)="onSearchInputChange($event.target)">
 
-    <div class="list-container">
+    <div class="modal-list-container" style="height: 221px;">
         <ng-container *ngIf="thisSearchList.length == 0">
             <div class="no-search-results">
                 No search results available

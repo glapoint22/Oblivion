@@ -22,17 +22,10 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 
 
-    // ====================================================================( CONSTRUCTOR )==================================================================== \\
-
-    constructor(dataService: DataService, sanitizer: DomSanitizer, public keywordsService: KeywordsService, public productService: ProductService) {
-        super(dataService, sanitizer);
-    }
-
-
-
     // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
+        super.ngOnInit()
         this.itemType = 'Keyword Group';
         this.childType = 'Keyword';
         this.dataServicePath = 'AvailableKeywords/Groups';
@@ -41,11 +34,11 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         this.childSearchType = 'Keyword';
         this.searchNameWidth = '233px';
         this.searchTypeWidth = '68px';
-        this.hierarchyUpdateService = this.keywordsService;
-        this.thisArray = this.keywordsService.formArray;
-        this.otherArray = this.keywordsService.productArray;
-        this.thisSearchList = this.keywordsService.formSearchList;
-        this.otherSearchList = this.keywordsService.productSearchList;
+        // this.hierarchyUpdateService = this.keywordsService;
+        // this.thisArray = this.keywordsService.formArray;
+        // this.otherArray = this.keywordsService.productArray;
+        // this.thisSearchList = this.keywordsService.formSearchList;
+        // this.otherSearchList = this.keywordsService.productSearchList;
         this.searchInputName = 'keywordsFormSearchInput';
     }
 
@@ -65,23 +58,23 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
     onArrowClick(hierarchyUpdate: HierarchyUpdate) {
         super.onArrowClick(hierarchyUpdate);
 
-        // If the parent has the disabled look
-        if (this.otherArray[hierarchyUpdate.index!].opacity != null) {
-            // And its children hasn't been loaded yet
-            if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
+        // // If the parent has the disabled look
+        // if (this.otherArray[hierarchyUpdate.index!].opacity != null) {
+        //     // And its children hasn't been loaded yet
+        //     if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
 
-                // Wait for the children to load
-                let onChildrenLoadListener = this.onChildrenLoad.subscribe(() => {
-                    onChildrenLoadListener.unsubscribe();
+        //         // Wait for the children to load
+        //         let onChildrenLoadListener = this.onChildrenLoad.subscribe(() => {
+        //             onChildrenLoadListener.unsubscribe();
 
-                    // Then give its children the disabled look too
-                    for (let i = hierarchyUpdate.index! + 1; i < this.otherArray.length; i++) {
-                        if (this.otherArray[i].hierarchyGroupID! <= hierarchyUpdate.hierarchyGroupID!) break;
-                        this.otherArray[i].opacity = 0.4;
-                    }
-                });
-            }
-        }
+        //             // Then give its children the disabled look too
+        //             for (let i = hierarchyUpdate.index! + 1; i < this.otherArray.length; i++) {
+        //                 if (this.otherArray[i].hierarchyGroupID! <= hierarchyUpdate.hierarchyGroupID!) break;
+        //                 this.otherArray[i].opacity = 0.4;
+        //             }
+        //         });
+        //     }
+        // }
     }
 
 
@@ -90,8 +83,9 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
         super.onItemEdit(hierarchyUpdate);
-        this.sort(this.editItem(this.keywordsService.selectedKeywordsArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem, this.keywordsService.selectedKeywordsArray);
-        this.editItem(this.keywordsService.selectedKeywordsSearchList, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
+
+        // this.sort(this.editItem(this.keywordsService.selectedKeywordsArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem, this.keywordsService.selectedKeywordsArray);
+        // this.editItem(this.keywordsService.selectedKeywordsSearchList, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
     }
 
 
@@ -99,8 +93,10 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
     onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
         super.onSearchItemEdit(searchUpdate);
-        this.sort(this.editItem(this.keywordsService.selectedKeywordsArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1) as KeywordCheckboxItem, this.keywordsService.selectedKeywordsArray);
-        this.editItem(this.keywordsService.selectedKeywordsSearchList, searchUpdate, searchUpdate.values![1].name);
+
+
+        // this.sort(this.editItem(this.keywordsService.selectedKeywordsArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1) as KeywordCheckboxItem, this.keywordsService.selectedKeywordsArray);
+        // this.editItem(this.keywordsService.selectedKeywordsSearchList, searchUpdate, searchUpdate.values![1].name);
     }
 
 
@@ -109,8 +105,9 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
     onItemDelete(deletedItem: HierarchyItem) {
         super.onItemDelete(deletedItem);
-        this.deleteItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.hierarchyGroupID!);
-        this.deleteItem(this.keywordsService.selectedKeywordsSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
+
+        // this.deleteItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.hierarchyGroupID!);
+        // this.deleteItem(this.keywordsService.selectedKeywordsSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
     }
 
 
@@ -119,8 +116,9 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
     onSearchItemDelete(deletedItem: MultiColumnItem) {
         super.onSearchItemDelete(deletedItem);
-        this.deleteItem(this.keywordsService.selectedKeywordsSearchList, deletedItem, deletedItem.values[1].name);
-        this.deleteItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
+
+        // this.deleteItem(this.keywordsService.selectedKeywordsSearchList, deletedItem, deletedItem.values[1].name);
+        // this.deleteItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.values[1].name == this.parentSearchType ? 0 : 1);
     }
 
 
@@ -154,18 +152,18 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: KeywordCheckboxItem) {
-        return {
-            id: x.id,
-            name: x.name,
-            hierarchyGroupID: 0,
-            hidden: false,
-            arrowDown: false,
-            opacity: x.forProduct ? 0.4 : null!
-        }
-    }
+    // getOtherItem(x: KeywordCheckboxItem) {
+    //     return {
+    //         id: x.id,
+    //         name: x.name,
+    //         hierarchyGroupID: 0,
+    //         hidden: false,
+    //         arrowDown: false,
+    //         opacity: x.forProduct ? 0.4 : null!
+    //     }
+    // }
 
 
 

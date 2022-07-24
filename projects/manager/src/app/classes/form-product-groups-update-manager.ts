@@ -19,24 +19,17 @@ export class FormProductGroupsUpdateManager extends ListUpdateManager {
     @ViewChild('searchComponent') searchComponent!: ListComponent;
 
 
-    // ====================================================================( CONSTRUCTOR )==================================================================== \\
-
-    constructor(dataService: DataService, sanitizer: DomSanitizer, public productGroupsService: ProductGroupsService, public productService: ProductService) {
-        super(dataService, sanitizer);
-    }
-
-
-
     // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
+        super.ngOnInit();
         this.itemType = 'Product Group';
         this.dataServicePath = 'Subgroups';
-        this.listUpdateService = this.productGroupsService;
-        this.thisArray = this.productGroupsService.formArray;
-        this.otherArray = this.productGroupsService.productArray;
-        this.thisSearchList = this.productGroupsService.formSearchList;
-        this.otherSearchList = this.productGroupsService.productSearchList;
+        // this.listUpdateService = this.productGroupsService;
+        // this.thisArray = this.productGroupsService.formArray;
+        // this.otherArray = this.productGroupsService.productArray;
+        // this.thisSearchList = this.productGroupsService.formSearchList;
+        // this.otherSearchList = this.productGroupsService.productSearchList;
         this.searchInputName = 'productGroupsFormSearchInput';
         this.searchOptions.sortable = false;
     }
@@ -52,15 +45,15 @@ export class FormProductGroupsUpdateManager extends ListUpdateManager {
 
 
 
-    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: ListItem) {
-        return {
-            id: x.id,
-            name: x.name,
-            checked: (x as CheckboxItem).checked
-        }
-    }
+    // getOtherItem(x: ListItem) {
+    //     return {
+    //         id: x.id,
+    //         name: x.name,
+    //         checked: (x as CheckboxItem).checked
+    //     }
+    // }
 
 
 

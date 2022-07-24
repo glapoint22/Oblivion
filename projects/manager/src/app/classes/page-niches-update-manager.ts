@@ -3,6 +3,7 @@ import { Directive, EventEmitter, Output, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { ListComponent } from "../components/lists/list/list.component";
+import { ProductService } from "../services/product/product.service";
 import { WidgetService } from "../services/widget/widget.service";
 import { ListUpdateType, MenuOptionType } from "./enums";
 import { ListItem } from "./list-item";
@@ -22,13 +23,15 @@ export class PageNichesUpdateManager extends ListUpdateManager {
         (
             dataService: DataService,
             sanitizer: DomSanitizer,
+            productService: ProductService,
             private widgetService: WidgetService
-        ) { super(dataService, sanitizer); }
+        ) { super(dataService, sanitizer, productService); }
 
 
 
     // ====================================================================( NG ON INIT )==================================================================== \\
     ngOnInit() {
+        super.ngOnInit();
         this.dataServicePath = 'Pages/Niche';
         this.itemType = 'Niche';
         this.listOptions.editable = false;

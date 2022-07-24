@@ -1,5 +1,4 @@
-<!-- Property Box Bar -->
-<div class="property-box-bar">
+<div class="icon-buttons-container">
 
     <!-- Search icon -->
     <icon-button class="search-icon-button"
@@ -35,34 +34,38 @@
     </div>
 </div>
 
-<!-- Hierarchy -->
+
+<!-- List -->
 <ng-container *ngIf="!searchMode">
-    <checkbox-list #listComponent
-                   [sourceList]="thisArray"
-                   [options]="listOptions"
-                   (onListUpdate)="listUpdate = $event">
-    </checkbox-list>
+    <div class="popup-list-container">
+        <checkbox-list #listComponent
+              [sourceList]="thisArray"
+              [options]="listOptions"
+              (onListUpdate)="listUpdate = $event">
+        </checkbox-list>
+    </div>
 </ng-container>
+
 
 <!-- Search -->
 <ng-container *ngIf="searchMode">
-    
     <input id="productProductGroupsSearchInput"
-            placeholder="Search"
-            (input)="onSearchInputChange($event.target)">
+           placeholder="Search"
+           (input)="onSearchInputChange($event.target)">
 
-    <ng-container *ngIf="thisSearchList.length == 0">
-        <div class="no-search-results">
-            No search results available
-        </div>
-    </ng-container>
-    
-
-    <ng-container *ngIf="thisSearchList.length > 0">
-        <checkbox-list #searchComponent
-                       [sourceList]="thisSearchList"
-                       [options]="searchOptions"
-                       (onListUpdate)="searchUpdate = $event">
-        </checkbox-list>
-    </ng-container>
+    <div class="popup-list-container" style="height: 221px;">
+        <ng-container *ngIf="thisSearchList.length == 0">
+            <div class="no-search-results">
+                No search results available
+            </div>
+        </ng-container>
+        
+        <ng-container *ngIf="thisSearchList.length > 0">
+            <checkbox-list #searchComponent
+                  [sourceList]="thisSearchList"
+                  [options]="searchOptions"
+                  (onListUpdate)="searchUpdate = $event">
+            </checkbox-list>
+        </ng-container>
+    </div>
 </ng-container>

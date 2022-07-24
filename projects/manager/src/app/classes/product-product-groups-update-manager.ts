@@ -22,10 +22,10 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
 
     ngOnInit() {
         super.ngOnInit();
-        this.thisArray = this.productGroupsService.productArray;
-        this.otherArray = this.productGroupsService.formArray;
-        this.thisSearchList = this.productGroupsService.productSearchList;
-        this.otherSearchList = this.productGroupsService.formSearchList;
+        // this.thisArray = this.productGroupsService.productArray;
+        // this.otherArray = this.productGroupsService.formArray;
+        // this.thisSearchList = this.productGroupsService.productSearchList;
+        // this.otherSearchList = this.productGroupsService.formSearchList;
         this.searchInputName = 'productProductGroupsSearchInput';
     }
 
@@ -52,7 +52,7 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
     // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
 
     onItemCheckboxChange(checkboxListUpdate: CheckboxListUpdate) {
-        // ********* commited Data Service *********
+        // ********* Commented Out Data Service *********
         // this.dataService.put('api/Products/Subgroup', {
         //     productId: this.productService.product.id,
         //     id: checkboxListUpdate.id,
@@ -65,7 +65,7 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
     // ==========================================================( ON SEARCH ITEM CHECKBOX CHANGE )=========================================================== \\
 
     onSearchItemCheckboxChange(checkboxListUpdate: CheckboxListUpdate) {
-        // ********* commited Data Service *********
+        // ********* Commented Out Data Service *********
         // this.dataService.put('api/Products/Subgroup', {
         //     productId: this.productService.product.id,
         //     id: checkboxListUpdate.id,

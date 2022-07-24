@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
-import { FormFiltersComponent } from '../form-filters/form-filters.component';
+import { FormKeywordsComponent } from '../form-keywords/form-keywords.component';
 
 @Component({
   selector: 'keywords-form',
@@ -8,7 +8,7 @@ import { FormFiltersComponent } from '../form-filters/form-filters.component';
   styleUrls: ['./keywords-form.component.scss']
 })
 export class KeywordsFormComponent extends LazyLoad {
-  @ViewChild('formKeywords') formKeywords!: FormFiltersComponent;
+  @ViewChild('formKeywords') formKeywords!: FormKeywordsComponent;
   
 
 

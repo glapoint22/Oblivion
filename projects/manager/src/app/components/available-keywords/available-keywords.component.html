@@ -1,86 +1,83 @@
-<!-- Property Box Bar -->
-<div class="property-box-bar">
+<div class="icon-buttons-container">
 
     <!-- Search icon -->
     <icon-button class="search-icon-button"
-                [icon]="searchIcon"
-                [title]="searchIconButtonTitle"
-                [isDisabled]="false"
-                (onClick)="toggleSearch()">
+                 [icon]="searchIcon"
+                 [title]="searchIconButtonTitle"
+                 [isDisabled]="false"
+                 (onClick)="toggleSearch()">
     </icon-button>
 
     <div class="icons">
         <!-- Delete icon -->
         <icon-button [icon]="'fas fa-trash-alt'"
-                    [title]="deleteIconButtonTitle"
-                    [isDisabled]="isDisabled('deleteDisabled')"
-                    (onClick)="delete()">
+                     [title]="deleteIconButtonTitle"
+                     [isDisabled]="isDisabled('deleteDisabled')"
+                     (onClick)="delete()">
         </icon-button>
 
         <!-- Edit icon -->
         <icon-button [icon]="'fas fa-pencil-alt'"
-                    [title]="editIconButtonTitle"
-                    [isDisabled]="isDisabled('editDisabled')"
-                    (onClick)="edit()">
+                     [title]="editIconButtonTitle"
+                     [isDisabled]="isDisabled('editDisabled')"
+                     (onClick)="edit()">
         </icon-button>
 
         <ng-container *ngIf="!searchMode">
             <!-- Add icon -->
             <icon-button [icon]="'fas fa-plus-circle'"
-                        [title]="addIconButtonTitle"
-                        [isDisabled]="isDisabled('addDisabled')"
-                        (onClick)="add()">
+                         [title]="addIconButtonTitle"
+                         [isDisabled]="isDisabled('addDisabled')"
+                         (onClick)="add()">
             </icon-button>
 
             <!-- Collapse icon -->
             <icon-button [icon]="'fas fa-minus-square'"
-                        [title]="'Collapse'"
-                        [isDisabled]="isDisabled('collapseDisabled')"
-                        (onClick)="collapse()">
+                         [title]="'Collapse'"
+                         [isDisabled]="isDisabled('collapseDisabled')"
+                         (onClick)="collapse()">
             </icon-button>
         </ng-container>
     </div>
 </div>
 
+
 <!-- Hierarchy -->
 <ng-container *ngIf="!searchMode">
-    <hierarchy #availableHierarchyComponent
-               [sourceList]="thisArray"
-               [options]="listOptions"
-               (onListUpdate)="listUpdate = $event">
-    </hierarchy>
+    <div class="popup-list-container">
+        <hierarchy #availableHierarchyComponent
+                   [sourceList]="thisArray"
+                   [options]="listOptions"
+                   (onListUpdate)="listUpdate = $event">
+        </hierarchy>
+    </div>
 </ng-container>
+
 
 <!-- Search -->
 <ng-container *ngIf="searchMode">
-    
     <input id="availableKeywordsSearchInput"
-            placeholder="Search"
-            (input)="onSearchInputChange($event.target)">
+           placeholder="Search"
+           (input)="onSearchInputChange($event.target)">
 
     <div class="column-name-container">
         <div class="column-name">Name</div>
         <div class="column-name">Type</div>
     </div>
 
-    <div class="column-underline-container">
-        <div class="column-underline"></div>
-        <div class="column-underline"></div>
+    <div class="popup-list-container" style="height: 198px;">
+        <ng-container *ngIf="thisSearchList.length == 0">
+            <div class="no-search-results">
+                No search results available
+            </div>
+        </ng-container>
+        
+        <ng-container *ngIf="thisSearchList.length > 0">
+            <multi-column-list #availableSearchComponent
+                               [sourceList]="thisSearchList"
+                               [options]="searchOptions"
+                               (onListUpdate)="searchUpdate = $event">
+            </multi-column-list>
+        </ng-container>
     </div>
-
-
-    <ng-container *ngIf="thisSearchList.length == 0">
-        <div class="no-search-results">
-            No search results available
-        </div>
-    </ng-container>
-    
-
-    <ng-container *ngIf="thisSearchList.length > 0">
-        <multi-column-list #availableSearchComponent
-                           [sourceList]="thisSearchList"
-                           [options]="searchOptions"
-                           (onListUpdate)="searchUpdate = $event">
-        </multi-column-list>
-    </ng-container>
 </ng-container>

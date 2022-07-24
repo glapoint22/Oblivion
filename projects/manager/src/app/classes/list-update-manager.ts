@@ -5,6 +5,7 @@ import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
 import { ListComponent } from "../components/lists/list/list.component";
 import { ListUpdateService } from "../services/list-update/list-update.service";
+import { ProductService } from "../services/product/product.service";
 import { CaseType, ListUpdateType, MenuOptionType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
@@ -36,9 +37,9 @@ export class ListUpdateManager {
     public searchOptions: ListOptions = new ListOptions();
     public listOptions: ListOptions = new ListOptions();
     public thisArray: Array<ListItem> = new Array<ListItem>();
-    public otherArray: Array<ListItem> = new Array<ListItem>();
+    // public otherArray: Array<ListItem> = new Array<ListItem>();
     public thisSearchList: Array<ListItem> = new Array<ListItem>();
-    public otherSearchList: Array<ListItem> = new Array<ListItem>();
+    // public otherSearchList: Array<ListItem> = new Array<ListItem>();
     public get listUpdate(): ListUpdate { return this._listUpdate; }
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
@@ -49,8 +50,13 @@ export class ListUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(public dataService: DataService, public sanitizer: DomSanitizer) {
+    constructor(public dataService: DataService, public sanitizer: DomSanitizer, public productService: ProductService) { }
 
+
+
+    // ====================================================================( NG ON INIT )===================================================================== \\
+
+    ngOnInit() {
         // ---------- LIST OPTIONS ---------- \\
 
         this.listOptions = {
@@ -155,7 +161,7 @@ export class ListUpdateManager {
                 .subscribe((thisArray: Array<ListItem>) => {
                     thisArray.forEach(x => {
                         this.thisArray.push(this.getItem(x));
-                        if (this.getOtherItem(x)) this.otherArray.push(this.getOtherItem(x));
+                        // if (this.getOtherItem(x)) this.otherArray.push(this.getOtherItem(x));
                     })
                 })
         } else {
@@ -360,13 +366,13 @@ export class ListUpdateManager {
     private listAddId: number = 1000;
     onItemAdd(listUpdate: ListUpdate) {
         this.listAddId++;
-        // ********* commited Data Service *********
+        // ********* Commented Out Data Service *********
         // this.dataService.post<number>('api/' + this.dataServicePath, {
         //     name: listUpdate.name
         // }).subscribe((id: number) => {
         this.thisArray[listUpdate.index!].id = this.listAddId//id;
 
-        this.sort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]), this.otherArray);
+        // this.sort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]), this.otherArray);
         // });
     }
 
@@ -387,13 +393,15 @@ export class ListUpdateManager {
     // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(listUpdate: ListUpdate) {
-        // ********* commited Data Service *********
+        // ********* Commented Out Data Service *********
         // this.dataService.put('api/' + this.dataServicePath, {
         //     id: listUpdate.id,
         //     name: listUpdate.name
         // }).subscribe();
-        this.sort(this.editItem(this.otherArray, listUpdate, 0), this.otherArray);
-        this.editItem(this.otherSearchList, listUpdate, this.parentSearchType);
+
+
+        // this.sort(this.editItem(this.otherArray, listUpdate, 0), this.otherArray);
+        // this.editItem(this.otherSearchList, listUpdate, this.parentSearchType);
     }
 
 
@@ -401,14 +409,15 @@ export class ListUpdateManager {
     // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
 
     onSearchItemEdit(searchUpdate: ListUpdate) {
-        // ********* commited Data Service *********
+        // ********* Commented Out Data Service *********
         // this.dataService.put('api/' + this.dataServicePath, {
         //     id: searchUpdate.id,
         //     name: searchUpdate.values![0].name
         // }).subscribe();
+
         this.sort(this.editItem(this.thisArray, searchUpdate, 0), this.thisArray);
-        this.sort(this.editItem(this.otherArray, searchUpdate, 0), this.otherArray);
-        this.editItem(this.otherSearchList, searchUpdate, this.parentSearchType);
+        // this.sort(this.editItem(this.otherArray, searchUpdate, 0), this.otherArray);
+        // this.editItem(this.otherSearchList, searchUpdate, this.parentSearchType);
     }
 
 
@@ -441,7 +450,7 @@ export class ListUpdateManager {
                 'The '
                 + itemType +
                 ' <span style="color: #ffba00">\"' + name + '\"</span>' +
-                ' is already being used. Please select a different '+
+                ' is already being used. Please select a different ' +
                 this.itemType + '.')
 
             // But if the list IS editable
@@ -550,10 +559,12 @@ export class ListUpdateManager {
     // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(deletedItem: ListItem) {
-        // ********* commited Data Service *********
+        // ********* Commented Out Data Service *********
         // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-        this.deleteItem(this.otherArray, deletedItem, 0);
-        this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
+
+
+        // this.deleteItem(this.otherArray, deletedItem, 0);
+        // this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
     }
 
 
@@ -561,11 +572,13 @@ export class ListUpdateManager {
     // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
 
     onSearchItemDelete(deletedItem: ListItem) {
-        // ********* commited Data Service *********
+        // ********* Commented Out Data Service *********
         // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-        this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
+
+
+        // this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
         this.deleteItem(this.thisArray, deletedItem, 0);
-        this.deleteItem(this.otherArray, deletedItem, 0);
+        // this.deleteItem(this.otherArray, deletedItem, 0);
     }
 
 
@@ -684,14 +697,14 @@ export class ListUpdateManager {
 
 
 
-    // ===================================================================( GET OTHER ITEM )=================================================================== \\
-    
-    getOtherItem(x: ListItem) {
-        return {
-            id: x.id,
-            name: x.name
-        }
-    }
+    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
+
+    // getOtherItem(x: ListItem) {
+    //     return {
+    //         id: x.id,
+    //         name: x.name
+    //     }
+    // }
 
 
 

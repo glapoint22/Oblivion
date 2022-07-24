@@ -136,7 +136,7 @@ export class MoveFormComponent extends LazyLoad {
     }
 
     let itemToBeMovedType = this.itemToBeMovedType == 'Sub Niche' ? 'Niches' : 'Products';
-    // ********* commited Data Service *********
+    // ********* Commented Out Data Service *********
     // this.dataService.put('api/' + itemToBeMovedType + '/Move', {
     //   itemToBeMovedId: this.itemToBeMoved.id,
     //   destinationItemId: this.destinationItem.id

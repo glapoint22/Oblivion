@@ -6,5 +6,4 @@ import { LazyLoad } from 'common';
   templateUrl: './vendor-popup.component.html',
   styleUrls: ['./vendor-popup.component.scss']
 })
-export class VendorPopupComponent extends LazyLoad {
-}
+export class VendorPopupComponent extends LazyLoad { }

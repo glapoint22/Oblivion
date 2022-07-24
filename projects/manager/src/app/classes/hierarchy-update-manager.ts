@@ -14,9 +14,9 @@ import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { ListUpdateManager } from "./list-update-manager";
 import { SearchResultItem } from "./search-result-item";
-import { ListItem } from "./list-item";
 import { KeyValue } from "@angular/common";
 import { Directive } from "@angular/core";
+import { ProductService } from "../services/product/product.service";
 
 @Directive()
 export class HierarchyUpdateManager extends ListUpdateManager {
@@ -36,19 +36,19 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     public hierarchyUpdateService!: HierarchyUpdateService;
     public onChildrenLoad: Subject<void> = new Subject<void>();
     public thisArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-    public otherArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+    // public otherArray: Array<HierarchyItem> = new Array<HierarchyItem>();
     public thisSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-    public otherSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+    // public otherSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
     public get listUpdate(): HierarchyUpdate { return this._hierarchyUpdate; }
     public get searchUpdate(): MultiColumnListUpdate { return this._searchUpdate; }
     public set listUpdate(listUpdate: HierarchyUpdate) { this.onListUpdate(listUpdate); }
     public set searchUpdate(searchUpdate: MultiColumnListUpdate) { this.onSearchListUpdate(searchUpdate); }
 
 
-    // ====================================================================( CONSTRUCTOR )==================================================================== \\
+    // ====================================================================( NG ON INIT )===================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer) {
-        super(dataService, sanitizer);
+    ngOnInit() {
+        super.ngOnInit();
 
         // ---------- HIERARCHY OPTIONS ---------- \\
 
@@ -114,7 +114,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                             let num = this.listComponent.listManager.editedItem ? 2 : 1;
                             for (let i = children.length - 1; i >= 0; i--) {
                                 this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getChildItem(children[i]));
-                                if (this.getOtherChildItem(children[i], hierarchyUpdate)) this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherChildItem(children[i], hierarchyUpdate));
+                                // if (this.getOtherChildItem(children[i], hierarchyUpdate)) this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherChildItem(children[i], hierarchyUpdate));
                             }
                             this.onChildrenLoad.next();
                         })
@@ -252,7 +252,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // Add child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
             const indexOfHierarchyItemParent = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.post<number>('api/' + this.childDataServicePath, {
             //     id: this.thisArray[indexOfHierarchyItemParent].id,
             //     name: hierarchyUpdate.name
@@ -260,9 +260,9 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
 
 
-            const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
-            addedOtherChildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
-            this.sort(addedOtherChildItem, this.otherArray);
+            // const addedOtherChildItem: HierarchyItem = this.addItem(this.otherArray, hierarchyUpdate.index!, this.thisArray[hierarchyUpdate.index!]);
+            // addedOtherChildItem.hidden = !this.otherArray[indexOfHierarchyItemParent].arrowDown;
+            // this.sort(addedOtherChildItem, this.otherArray);
 
 
             // })
@@ -294,14 +294,14 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // Edit child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.put('api/' + this.childDataServicePath, {
             //     id: hierarchyUpdate.id,
             //     name: hierarchyUpdate.name
             // }).subscribe();
 
-            this.sort(this.editItem(this.otherArray, hierarchyUpdate, 1), this.otherArray);
-            this.editItem(this.otherSearchList, hierarchyUpdate, this.childSearchType);
+            // this.sort(this.editItem(this.otherArray, hierarchyUpdate, 1), this.otherArray);
+            // this.editItem(this.otherSearchList, hierarchyUpdate, this.childSearchType);
         }
     }
 
@@ -317,15 +317,15 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // Edit child search item
         if (searchUpdate.values![1].name == this.childSearchType) {
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.put('api/' + this.childDataServicePath, {
             //     id: searchUpdate.id,
             //     name: searchUpdate.values![0].name
             // }).subscribe();
 
             this.sort(this.editItem(this.thisArray, searchUpdate, 1), this.thisArray);
-            this.sort(this.editItem(this.otherArray, searchUpdate, 1), this.otherArray);
-            this.editItem(this.otherSearchList, searchUpdate, this.childSearchType);
+            // this.sort(this.editItem(this.otherArray, searchUpdate, 1), this.otherArray);
+            // this.editItem(this.otherSearchList, searchUpdate, this.childSearchType);
         }
     }
 
@@ -637,10 +637,12 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-            this.deleteItem(this.otherArray, deletedItem, 1);
-            this.deleteItem(this.otherSearchList, deletedItem as MultiColumnItem, this.childSearchType);
+
+
+            // this.deleteItem(this.otherArray, deletedItem, 1);
+            // this.deleteItem(this.otherSearchList, deletedItem as MultiColumnItem, this.childSearchType);
         }
 
     }
@@ -659,11 +661,13 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // If we're deleting a child item
         if (deletedItem.values[1].name == this.childSearchType) {
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-            this.deleteItem(this.otherSearchList, deletedItem, this.childSearchType);
+
+
+            // this.deleteItem(this.otherSearchList, deletedItem, this.childSearchType);
             this.deleteItem(this.thisArray, deletedItem, 1);
-            this.deleteItem(this.otherArray, deletedItem, 1);
+            // this.deleteItem(this.otherArray, deletedItem, 1);
             this.deleteChildren(this.thisSearchList, deletedItem, this.thisArray);
         }
     }
@@ -839,17 +843,17 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: HierarchyItem) {
-        return {
-            id: x.id,
-            name: x.name,
-            hierarchyGroupID: 0,
-            hidden: false,
-            arrowDown: false,
-        }
-    }
+    // getOtherItem(x: HierarchyItem) {
+    //     return {
+    //         id: x.id,
+    //         name: x.name,
+    //         hierarchyGroupID: 0,
+    //         hidden: false,
+    //         arrowDown: false,
+    //     }
+    // }
 
 
 
@@ -866,16 +870,16 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
+    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
-    getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
-        return {
-            id: child.id,
-            name: child.name,
-            hierarchyGroupID: 1,
-            hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown
-        }
-    }
+    // getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
+    //     return {
+    //         id: child.id,
+    //         name: child.name,
+    //         hierarchyGroupID: 1,
+    //         hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown
+    //     }
+    // }
 
 
     // =============================================================( GET CHILD ITEM PARAMETERS )============================================================== \\

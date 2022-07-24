@@ -27,11 +27,12 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         super.ngOnInit();
         this.searchNameWidth = '296px';
         this.searchInputName = 'availableKeywordsSearchInput';
-        this.thisArray = this.keywordsService.productArray;
-        this.otherArray = this.keywordsService.formArray;
-        this.thisSearchList = this.keywordsService.productSearchList;
-        this.otherSearchList = this.keywordsService.formSearchList;
-        this.keywordsService.availableSearchList = this.thisSearchList;
+        // this.thisArray = this.keywordsService.productArray;
+        // this.otherArray = this.keywordsService.formArray;
+        // this.thisSearchList = this.keywordsService.productSearchList;
+        // this.otherSearchList = this.keywordsService.formSearchList;
+        // this.keywordsService.availableSearchList = this.thisSearchList;
+
         this.listOptions.menu!.menuOptions[6] = { type: MenuOptionType.Divider };
         this.listOptions.menu!.menuOptions[7] = {
             type: MenuOptionType.MenuItem,
@@ -150,8 +151,10 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         } else {
             this.addSearchItemToSelectedKeywords(keywordGroup);
         }
-        this.keywordsService.selectedKeywordsArray.push(keywordGroup);
-        this.sort(keywordGroup, this.keywordsService.selectedKeywordsArray);
+
+
+        // this.keywordsService.selectedKeywordsArray.push(keywordGroup);
+        // this.sort(keywordGroup, this.keywordsService.selectedKeywordsArray);
     }
 
 
@@ -175,7 +178,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 if (this.thisArray[i].hierarchyGroupID! <= this.listComponent.listManager.selectedItem.hierarchyGroupID!) break;
                 this.thisArray[i].opacity = 0.4;
             }
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/Add', {
             //   productId: this.productService.product.id,
             //   id: keywordGroup.id
@@ -197,7 +200,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 if (this.thisArray[i].hierarchyGroupID! <= parent.hierarchyGroupID!) break;
                 this.thisArray[i].opacity = 0.4;
             }
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
             //   productId: this.productService.product.id,
             //   keywordGroupId: keywordGroup.id,
@@ -239,7 +242,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 if (this.thisArray[i].hierarchyGroupID! <= 0) break;
                 this.thisArray[i].opacity = 0.4;
             }
-            // ********* commited Data Service *********
+            // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/Add', {
             //     productId: this.productService.product.id,
             //     id: keywordGroup.id
@@ -286,7 +289,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                         this.thisArray[i].opacity = 0.4;
                     }
 
-                    // ********* commited Data Service *********
+                    // ********* Commented Out Data Service *********
                     // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
                     //     productId: this.productService.product.id,
                     //     keywordGroupId: keywordGroup.id,
@@ -314,18 +317,18 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
-    // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
 
-    getOtherItem(x: KeywordCheckboxItem) {
-        return {
-            id: x.id,
-            name: x.name,
-            hierarchyGroupID: 0,
-            hidden: false,
-            arrowDown: false,
-            opacity: null!
-        }
-    }
+    // getOtherItem(x: KeywordCheckboxItem) {
+    //     return {
+    //         id: x.id,
+    //         name: x.name,
+    //         hierarchyGroupID: 0,
+    //         hidden: false,
+    //         arrowDown: false,
+    //         opacity: null!
+    //     }
+    // }
 
 
 

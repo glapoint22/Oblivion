@@ -1,10 +1,16 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
 import { PopupArrowPosition } from '../../classes/enums';
+import { HierarchyItem } from '../../classes/hierarchy-item';
+import { MultiColumnItem } from '../../classes/multi-column-item';
 import { Product } from '../../classes/product';
+import { ProductService } from '../../services/product/product.service';
+import { FiltersPopupComponent } from '../filters-popup/filters-popup.component';
 import { HoplinkPopupComponent } from '../hoplink-popup/hoplink-popup.component';
+import { KeywordsPopupComponent } from '../keywords-popup/keywords-popup.component';
 import { PricePointsComponent } from '../price-points/price-points.component';
 import { PricePopupComponent } from '../price-popup/price-popup.component';
+import { ProductGroupsPopupComponent } from '../product-groups-popup/product-groups-popup.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
 import { VendorPopupComponent } from '../vendor-popup/vendor-popup.component';
@@ -16,6 +22,9 @@ import { VendorPopupComponent } from '../vendor-popup/vendor-popup.component';
 })
 export class ProductPropertiesComponent {
   private vendorPopup!: VendorPopupComponent;
+  private filtersPopup!: FiltersPopupComponent;
+  private keywordsPopup!: KeywordsPopupComponent;
+  private productGroupsPopup!: ProductGroupsPopupComponent;
   private pricePopup!: PricePopupComponent;
   private shippingPopup!: ShippingPopupComponent;
   private recurringPopup!: RecurringPopupComponent;
@@ -27,6 +36,9 @@ export class ProductPropertiesComponent {
   public PopupArrowPosition = PopupArrowPosition;
   public shipping = Shipping;
 
+  public productFiltersArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+  public productFiltersSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
@@ -35,15 +47,22 @@ export class ProductPropertiesComponent {
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
-  @ViewChild('vendorPopupContainer', { read: ViewContainerRef }) vendorPopupContainer!: ViewContainerRef;
-  
+  @ViewChild('vendorPopup', { read: ViewContainerRef }) vendorPopupContainer!: ViewContainerRef;
+  @ViewChild('filtersPopup', { read: ViewContainerRef }) filtersPopupContainer!: ViewContainerRef;
+  @ViewChild('keywordsPopup', { read: ViewContainerRef }) keywordsPopupContainer!: ViewContainerRef;
+  @ViewChild('productGroupsPopup', { read: ViewContainerRef }) productGroupsPopupContainer!: ViewContainerRef;
 
-  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
+
+  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private productService: ProductService) { }
 
 
   openVendorPopup() {
+    if (this.filtersPopupContainer.length > 0) this.filtersPopupContainer.remove(0);
+    if (this.keywordsPopupContainer.length > 0) this.keywordsPopupContainer.remove(0);
+    if (this.productGroupsPopupContainer.length > 0) this.productGroupsPopupContainer.remove(0);
+
     if (this.vendorPopupContainer.length > 0) {
-      this.pricePopup.close();
+      this.vendorPopup.close();
       return;
     }
 
@@ -59,6 +78,85 @@ export class ProductPropertiesComponent {
         this.vendorPopup = vendorPopup;
       });
   }
+
+
+
+
+
+  openFiltersPopup() {
+    if (this.vendorPopupContainer.length > 0) this.vendorPopupContainer.remove(0);
+    if (this.keywordsPopupContainer.length > 0) this.keywordsPopupContainer.remove(0);
+    if (this.productGroupsPopupContainer.length > 0) this.productGroupsPopupContainer.remove(0);
+
+    if (this.filtersPopupContainer.length > 0) {
+      this.filtersPopup.close();
+      return;
+    }
+
+    this.lazyLoadingService.load(async () => {
+      const { FiltersPopupComponent } = await import('../filters-popup/filters-popup.component');
+      const { FiltersPopupModule } = await import('../filters-popup/filters-popup.module');
+      return {
+        component: FiltersPopupComponent,
+        module: FiltersPopupModule
+      }
+    }, SpinnerAction.None, this.filtersPopupContainer)
+      .then((filtersPopup: FiltersPopupComponent) => {
+        this.filtersPopup = filtersPopup;
+        this.filtersPopup.productId = this.product.id;
+        this.filtersPopup.productIndex = this.productService.productComponents.indexOf(this);
+      });
+  }
+
+
+
+  openKeywordsPopup() {
+    if (this.vendorPopupContainer.length > 0) this.vendorPopupContainer.remove(0);
+    if (this.filtersPopupContainer.length > 0) this.filtersPopupContainer.remove(0);
+    if (this.productGroupsPopupContainer.length > 0) this.productGroupsPopupContainer.remove(0);
+
+    if (this.keywordsPopupContainer.length > 0) {
+      this.keywordsPopup.close();
+      return;
+    }
+
+    this.lazyLoadingService.load(async () => {
+      const { KeywordsPopupComponent } = await import('../keywords-popup/keywords-popup.component');
+      const { KeywordsPopupModule } = await import('../keywords-popup/keywords-popup.module');
+      return {
+        component: KeywordsPopupComponent,
+        module: KeywordsPopupModule
+      }
+    }, SpinnerAction.None, this.keywordsPopupContainer)
+      .then((keywordsPopup: KeywordsPopupComponent) => {
+        this.keywordsPopup = keywordsPopup;
+      });
+  }
+
+
+  openProductGroupsPopup() {
+    if (this.vendorPopupContainer.length > 0) this.vendorPopupContainer.remove(0);
+    if (this.filtersPopupContainer.length > 0) this.filtersPopupContainer.remove(0);
+    if (this.keywordsPopupContainer.length > 0) this.keywordsPopupContainer.remove(0);
+
+    if (this.productGroupsPopupContainer.length > 0) {
+      this.productGroupsPopup.close();
+      return;
+    }
+
+    this.lazyLoadingService.load(async () => {
+      const { ProductGroupsPopupComponent } = await import('../product-groups-popup/product-groups-popup.component');
+      const { ProductGroupsPopupModule } = await import('../product-groups-popup/product-groups-popup.module');
+      return {
+        component: ProductGroupsPopupComponent,
+        module: ProductGroupsPopupModule
+      }
+    }, SpinnerAction.None, this.productGroupsPopupContainer)
+      .then((productGroupsPopup: ProductGroupsPopupComponent) => {
+        this.productGroupsPopup = productGroupsPopup;
+      });
+  }
+
 
 
   openPricePopup() {

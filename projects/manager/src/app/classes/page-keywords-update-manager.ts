@@ -3,6 +3,7 @@ import { Directive, EventEmitter, Output, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
 import { CheckboxHierarchyComponent } from "../components/hierarchies/checkbox-hierarchy/checkbox-hierarchy.component";
+import { ProductService } from "../services/product/product.service";
 import { WidgetService } from "../services/widget/widget.service";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
@@ -24,13 +25,15 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
         (
             dataService: DataService,
             sanitizer: DomSanitizer,
+            productService: ProductService,
             private widgetService: WidgetService
-        ) { super(dataService, sanitizer); }
+        ) { super(dataService, sanitizer, productService); }
 
 
 
     // ====================================================================( NG ON INIT )==================================================================== \\
     ngOnInit() {
+        super.ngOnInit();
         this.dataServicePath = 'Pages/KeywordGroup';
         this.childDataServicePath = 'Pages/keywords';
         this.itemType = 'Keyword Group';
@@ -115,11 +118,11 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
+    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
 
-    getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
-        return null!
-    }
+    // getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
+    //     return null!
+    // }
 
 
 

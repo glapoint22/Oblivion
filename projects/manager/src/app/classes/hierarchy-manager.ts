@@ -1,5 +1,4 @@
 import { Subject } from "rxjs";
-import { CheckboxItem } from "./checkbox-item";
 import { ListUpdateType } from "./enums";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";

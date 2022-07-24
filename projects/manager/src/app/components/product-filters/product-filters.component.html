@@ -1,5 +1,4 @@
-<!-- Property Box Bar -->
-<div class="property-box-bar">
+<div class="icon-buttons-container">
 
     <!-- Search icon -->
     <icon-button class="search-icon-button"
@@ -42,46 +41,43 @@
     </div>
 </div>
 
+
 <!-- Hierarchy -->
 <ng-container *ngIf="!searchMode">
-    <checkbox-hierarchy #hierarchyComponent
-                        [sourceList]="thisArray"
-                        [options]="listOptions"
-                        (onListUpdate)="listUpdate = $event">
-    </checkbox-hierarchy>
+    <div class="popup-list-container">
+        <checkbox-hierarchy #hierarchyComponent
+                   [sourceList]="thisArray"
+                   [options]="listOptions"
+                   (onListUpdate)="listUpdate = $event">
+        </checkbox-hierarchy>
+    </div>
 </ng-container>
+
 
 <!-- Search -->
 <ng-container *ngIf="searchMode">
-    
     <input id="productFiltersSearchInput"
-            placeholder="Search"
-            (input)="onSearchInputChange($event.target)">
+           placeholder="Search"
+           (input)="onSearchInputChange($event.target)">
 
     <div class="column-name-container">
         <div class="column-name">Name</div>
         <div class="column-name">Type</div>
     </div>
 
-    <div class="column-underline-container">
-        <div class="column-underline"></div>
-        <div class="column-underline"></div>
+    <div class="popup-list-container" style="height: 198px;">
+        <ng-container *ngIf="thisSearchList.length == 0">
+            <div class="no-search-results">
+                No search results available
+            </div>
+        </ng-container>
+        
+        <ng-container *ngIf="thisSearchList.length > 0">
+            <checkbox-multi-column-list #searchComponent
+                               [sourceList]="thisSearchList"
+                               [options]="searchOptions"
+                               (onListUpdate)="searchUpdate = $event">
+            </checkbox-multi-column-list>
+        </ng-container>
     </div>
-
-
-    <ng-container *ngIf="thisSearchList.length == 0">
-        <div class="no-search-results">
-            No search results available
-        </div>
-    </ng-container>
-    
-
-    <ng-container *ngIf="thisSearchList.length > 0">
-        <checkbox-multi-column-list #searchComponent
-                                    [parentSearchType]="parentSearchType"
-                                    [sourceList]="thisSearchList"
-                                    [options]="searchOptions"
-                                    (onListUpdate)="searchUpdate = $event">
-        </checkbox-multi-column-list>
-    </ng-container>
 </ng-container>

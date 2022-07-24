@@ -8,7 +8,6 @@ import { ProductService } from '../../services/product/product.service';
   styleUrls: ['./product-builder.component.scss']
 })
 export class ProductBuilderComponent {
-  private zIndex: number = 0;
 
   constructor(public productService: ProductService){
 
@@ -22,7 +21,7 @@ export class ProductBuilderComponent {
 
 
   onTabMouseDown(productComponent: ProductPropertiesComponent){
-    this.zIndex++;
-    productComponent.zIndex = this.zIndex;
+    this.productService.zIndex++;
+    productComponent.zIndex = this.productService.zIndex++;
   }
 }
