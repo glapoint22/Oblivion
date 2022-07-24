@@ -13,13 +13,19 @@ import { ValuePopupComponent } from '../value-popup/value-popup.component';
 export class SubproductsComponent {
   @Input() subproducts!: Array<Subproduct>;
   @Input() subproductType!: SubproductType;
+  @Input() productId!: number;
   @ViewChildren('editValuePopupContainer', { read: ViewContainerRef }) editValuePopupContainers!: QueryList<ViewContainerRef>;
   @ViewChildren('addValuePopupContainer', { read: ViewContainerRef }) addValuePopupContainers!: QueryList<ViewContainerRef>;
   public SubproductType = SubproductType;
   private titleCase: TitleCase = new TitleCase();
 
+
+
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
 
+
+
+  // --------------------------------------------------- Open Media Browser ---------------------------------------------------
   public async openMediaBrowser(subproduct: Subproduct): Promise<void> {
     this.lazyLoadingService.load(async () => {
       const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
@@ -50,8 +56,8 @@ export class SubproductsComponent {
 
 
 
-
-  public async openValuePopup(value: number, index: number, add?: boolean): Promise<void> {
+  // --------------------------------------------------- Open Value Popup ---------------------------------------------------
+  public async openValuePopup(subproduct: Subproduct, index: number, add?: boolean): Promise<void> {
     this.lazyLoadingService.load(async () => {
       const { ValuePopupComponent } = await import('../value-popup/value-popup.component');
       const { ValuePopupModule } = await import('../value-popup/value-popup.module');
@@ -61,7 +67,12 @@ export class SubproductsComponent {
       }
     }, SpinnerAction.None, add ? this.addValuePopupContainers.toArray()[index] : this.editValuePopupContainers.toArray()[index])
       .then((valuePopup: ValuePopupComponent) => {
-        valuePopup.value = value;
+        valuePopup.value = subproduct.value;
+
+        valuePopup.callback = (newValue: number) => {
+          subproduct.value = newValue;
+          this.updateValue(subproduct.id, newValue);
+        }
       });
   }
 
@@ -69,8 +80,8 @@ export class SubproductsComponent {
 
 
 
-
-  updateImage(subproductId: number, imageId: number) {
+  // ------------------------------------------------------- Update Image ---------------------------------------------------
+  updateImage(subproductId: number, imageId: number): void {
     this.dataService.put('api/Products/Subproduct/Image', {
       itemId: subproductId,
       PropertyId: imageId
@@ -79,7 +90,26 @@ export class SubproductsComponent {
 
 
 
-  onNameChange(input: HTMLInputElement, subproduct: Subproduct) {
+
+
+
+
+  // --------------------------------------------------------- Update Value ----------------------------------------------------
+  updateValue(subproductId: number, value: number): void {
+    this.dataService.put('api/Products/Subproduct/Value', {
+      SubproductId: subproductId,
+      Value: value
+    }).subscribe();
+  }
+
+
+
+
+
+
+
+  // ---------------------------------------------------------- On Name Change --------------------------------------------------
+  onNameChange(input: HTMLInputElement, subproduct: Subproduct): void {
     const selectionStart = input.selectionStart;
 
     subproduct.name = input.value = this.titleCase.getCase(input.value);
@@ -88,6 +118,38 @@ export class SubproductsComponent {
     this.dataService.put('api/Products/Subproduct/Name', {
       id: subproduct.id,
       name: subproduct.name
+    }).subscribe();
+  }
+
+
+
+
+
+
+
+  // ------------------------------------------------------------ Add Subproduct ---------------------------------------------------
+  addSubproduct(): void {
+    this.subproducts.push(new Subproduct());
+
+    this.dataService.post<number>('api/Products/Subproduct', {
+      productId: this.productId,
+      type: this.subproductType
+    }).subscribe((id: number) => {
+      this.subproducts[this.subproducts.length - 1].id = id;
+    });
+  }
+
+
+
+
+
+
+  // ------------------------------------------------------------ Delete Subproduct ---------------------------------------------------
+  deleteSubproduct(index: number, id: number): void {
+    this.subproducts.splice(index, 1);
+
+    this.dataService.delete('api/Products/Subproduct', {
+      id: id
     }).subscribe();
   }
 }

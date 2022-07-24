@@ -9,14 +9,13 @@ import { LazyLoad, LazyLoadingService } from 'common';
 export class ValuePopupComponent extends LazyLoad {
   @ViewChild('valueInput') valueInput!: ElementRef<HTMLInputElement>;
   public value!: number;
-  // public productId!: number;
   public callback!: Function;
 
   constructor(lazyLoadingService: LazyLoadingService) {
     super(lazyLoadingService);
   }
 
-
+  // --------------------------------------------------- Ng After View Init ---------------------------------------------------
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
     this.valueInput.nativeElement.value = this.value.toString();
@@ -27,13 +26,18 @@ export class ValuePopupComponent extends LazyLoad {
     });
   }
 
+
+
+  
+  
+  // ---------------------------------------------------------- On Input --------------------------------------------------------
   onInput() {
     !(/^[0-9]*$/i).test(this.valueInput.nativeElement.value) ? this.valueInput.nativeElement.value = this.valueInput.nativeElement.value.replace(/[^0-9]/ig, '') : null;
 
     if (this.valueInput.nativeElement.value) {
       this.value = parseInt(this.valueInput.nativeElement.value);
 
-      
+
     } else {
       this.value = 0;
       window.setTimeout(() => {
@@ -43,16 +47,12 @@ export class ValuePopupComponent extends LazyLoad {
   }
 
 
-  onSubmitClick() {
+
+
+
+  // ---------------------------------------------------------- On Submit --------------------------------------------------------
+  onSubmit() {
     this.callback(this.value);
     this.close();
-
-    // this.dataService.put('api/Products/MinMaxPrice', {
-    //   productId: this.productId,
-    //   minPrice: this.price,
-    //   maxPrice: 0
-    // }).subscribe();
   }
-  
-
 }

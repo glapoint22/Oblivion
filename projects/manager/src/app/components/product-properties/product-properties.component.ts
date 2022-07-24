@@ -1,5 +1,5 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
+import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct } from 'common';
 import { PopupArrowPosition, SubproductType } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { HoplinkPopupComponent } from '../hoplink-popup/hoplink-popup.component';
@@ -37,7 +37,7 @@ export class ProductPropertiesComponent {
   @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
   @ViewChild('vendorPopupContainer', { read: ViewContainerRef }) vendorPopupContainer!: ViewContainerRef;
-  
+
 
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
 
@@ -223,5 +223,29 @@ export class ProductPropertiesComponent {
 
       this.pricePoints.addPricePoint();
     })
+  }
+
+
+  addSubproduct(type: SubproductType) {
+    let subproduct: Subproduct;
+
+    if (type == SubproductType.Component) {
+      this.product.components = [];
+      this.product.components.push(new Subproduct());
+      subproduct = this.product.components[0];
+    } else {
+      this.product.bonuses = [];
+      this.product.bonuses.push(new Subproduct());
+      subproduct = this.product.bonuses[0];
+    }
+
+
+
+    this.dataService.post<number>('api/Products/Subproduct', {
+      productId: this.product.id,
+      type: type
+    }).subscribe((id: number) => {
+      subproduct.id = id;
+    });
   }
 }

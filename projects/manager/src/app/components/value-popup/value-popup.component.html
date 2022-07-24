@@ -1,17 +1,15 @@
 <div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
-
-
     <div class="popup-base">
 
         <!-- Value -->
         <div class="popup-label">Value:</div>
-        <input #valueInput (keydown.enter)="onSubmitClick()" (input)="onInput()">
+        <input #valueInput (keydown.enter)="onSubmit()" (input)="onInput()">
 
 
         <!-- Buttons -->
         <div class="popup-button-container">
             <button class="dark-button" (click)="close()">Close</button>
-            <button class="gold-button" (click)="onSubmitClick()">Submit</button>
+            <button class="gold-button" (click)="onSubmit()">Submit</button>
         </div>
     </div>
 
