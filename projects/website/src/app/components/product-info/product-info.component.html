@@ -26,7 +26,7 @@
 
         <div class="media-container">
             <div class="media-backdrop" [ngClass]="{'video-backdrop': selectedMedia.type == mediaType.Video}">
-                <img *ngFor="let media of product.media" [src]="'images/' + media.image" class="media"
+                <img *ngFor="let media of product.media" [src]="'images/' + media.src" class="media"
                     [ngClass]="{'selected-media': media == selectedMedia}"
                     [style.cursor]="selectedMedia.type == mediaType.Video ? 'pointer' : 'default'"
                     [style.width]="selectedMedia.type == mediaType.Video ? '100%': 'auto'"
@@ -58,7 +58,7 @@
                     </div>
 
                     <div title="Share on Pinterest"
-                        (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.urlId, product.media[0].image, product.name)">
+                        (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.urlId, product.media[0].src, product.name)">
                         <img src="assets/pinterest-share.png" alt="Share on Pinterest">
                     </div>
                 </div>
@@ -101,7 +101,7 @@
             <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to
                 buy</button>
 
-            <div id="product-description" class="product-description"></div>
+            <div #rootElement class="product-description">{{getDescription(rootElement)}}</div>
 
 
 
@@ -182,7 +182,7 @@
 
 
 
-        <div id="product-description" class="product-description" style="margin-top: 10px;"></div>
+        <div #rootElement class="product-description" style="margin-top: 10px;">{{getDescription(rootElement)}}</div>
 
 
 

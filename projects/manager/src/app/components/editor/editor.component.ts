@@ -20,6 +20,10 @@ export class EditorComponent implements ContainerHost {
   public widgetCursors = WidgetCursor.getWidgetCursors();
   public widgetInspectorView = WidgetInspectorView;
 
+  ngOnInit() {
+    this.widgetService.viewPortTop = document.getElementsByClassName('view-port')[0].getBoundingClientRect().y;
+  }
+
 
   constructor
     (
@@ -48,7 +52,9 @@ export class EditorComponent implements ContainerHost {
     iframeContentDocument.body.appendChild(componentRef.location.nativeElement);
 
     iframeContentDocument.addEventListener('keydown', (event: KeyboardEvent) => window.dispatchEvent(new KeyboardEvent('keydown', event)));
-    iframeContentDocument.addEventListener('mousemove', (event: MouseEvent) => window.dispatchEvent(new MouseEvent('mousemove', event)));
+    iframeContentDocument.addEventListener('mousemove', (event: MouseEvent) => {
+      window.dispatchEvent(new MouseEvent('mousemove', { clientY: event.clientY + this.widgetService.viewPortTop }));
+    });
   }
 
 

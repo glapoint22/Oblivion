@@ -61,7 +61,7 @@ export class ColumnDevComponent extends ColumnComponent {
         }, SpinnerAction.None)
           .then((contextMenu: ContextMenuComponent) => {
             contextMenu.xPos = event.screenX;
-            contextMenu.yPos = event.clientY + 66;
+            contextMenu.yPos = event.clientY + this.widgetService.viewPortTop;
 
             let menuOptions: Array<MenuOption> = [];
             let pasteOptions: Array<MenuOption> = [];
@@ -478,7 +478,7 @@ export class ColumnDevComponent extends ColumnComponent {
       }, SpinnerAction.None)
         .then((contextMenu: ContextMenuComponent) => {
           contextMenu.xPos = event.screenX;
-          contextMenu.yPos = event.clientY + 66;
+          contextMenu.yPos = event.clientY + this.widgetService.viewPortTop;
           contextMenu.options = this.getColumnContextMenuOptions();
         });
     }

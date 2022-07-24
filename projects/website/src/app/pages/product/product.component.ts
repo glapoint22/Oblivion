@@ -27,7 +27,7 @@ export class ProductComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.product = data.product;
-      this.socialMediaService.addMetaTags(this.product.name, this.product.description, this.product.media[0].image);
+      this.socialMediaService.addMetaTags(this.product.name, this.product.description, this.product.media[0].src);
     });
 
     this.onWindowResize();
@@ -54,7 +54,7 @@ export class ProductComponent implements OnInit {
       }, SpinnerAction.StartEnd)
         .then((writeReviewForm: WriteReviewFormComponent) => {
           writeReviewForm.productId = this.product.id;
-          writeReviewForm.productImage = this.product.media[0].image;
+          writeReviewForm.productImage = this.product.media[0].src;
           writeReviewForm.productName = this.product.name;
         });
     } else {

@@ -1,0 +1,111 @@
+<div class="background" *ngFor="let subproduct of subproducts; let i = index">
+    <div class="subproduct-container">
+
+        <!-- Delete -->
+        <div class="delete-icon-container">
+            <i class="fas fa-trash-alt icon"
+                [title]="'Delete ' + (subproductType == SubproductType.Component ? 'component': 'bonus')"
+                (click)="deleteSubproduct(i, subproduct.id)"></i>
+        </div>
+
+        <!-- Content -->
+        <div class="dashed-border content-container">
+
+
+            <!-- Image -->
+            <div class="image-container">
+                <div class="icon-container" style="width: 200px;">
+                    <div class="label">Image:</div>
+
+                    <!-- Edit Image -->
+                    <i *ngIf="subproduct.image && subproduct.image.src" class="fas fa-pencil-alt icon"
+                        title="Edit image" (click)="openMediaBrowser(subproduct)"></i>
+                </div>
+
+
+                <div class="dashed-border image-icon-container" (click)="openMediaBrowser(subproduct)"
+                    [ngStyle]="{'cursor': !subproduct.image || !subproduct.image.src ? 'pointer': 'default'}">
+                    <i *ngIf="!subproduct.image || !subproduct.image.src" class="fa-solid fa-image" tabindex="0"></i>
+                    <img *ngIf="subproduct.image && subproduct.image.src" [src]="'images/' + subproduct.image.src">
+                </div>
+            </div>
+
+
+            <!-- Name & Description -->
+            <div class="name-description-container">
+                <!-- Name -->
+                <div class="label" style="margin-bottom: 4px;">Name:</div>
+                <div class="dashed-border name-container">
+
+                    <input #nameInput [value]="subproduct.name ? subproduct.name : ''" style="font-size: 30px;
+                    color: white;
+                    font-weight: bold; background: none; border: none; min-height: 40px;"
+                        (input)="onNameChange(nameInput, subproduct)">
+                </div>
+
+
+                <!-- Description -->
+                <div style="position: relative; margin-top: 35px;">
+                    <div class="label" style="margin-bottom: 4px;">Description:</div>
+                    <div class="description-container">
+                        <product-description [product]="subproduct" [apiUrl]="'Subproduct/Description'">
+                        </product-description>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <!-- Value -->
+            <div *ngIf="subproductType == SubproductType.Bonus" class="value-container">
+                <div class="icon-container" style="width: 100px;">
+                    <div class="label">Value:</div>
+                    <div style="position: relative;">
+                        <ng-container *ngIf="subproduct.value && subproduct.value > 0">
+                            <i class="fas fa-pencil-alt icon" title="Edit value"
+                                (click)="openValuePopup(subproduct, i)"></i>
+
+                            <i class="fas fa-trash-alt icon" style="margin-left: 10px;" title="Delete value"
+                                (click)="subproduct.value = 0; updateValue(subproduct.id, 0)"></i>
+                        </ng-container>
+
+
+
+                        <div style="position: absolute; left: -300px; top: -12px; z-index: 100;">
+                            <ng-template #editValuePopupContainer></ng-template>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="value" style="position: relative;">
+                    <i *ngIf="!subproduct.value || subproduct.value == 0" class="fa-solid fa-plus"
+                        (click)="openValuePopup(subproduct, i, true)" title="Add value"></i>
+
+                    <div class="value-star-container" *ngIf="subproduct.value && subproduct.value > 0">
+
+
+                        <img src="assets/value-star.png">
+
+                        <div class="value-text-container">
+                            <div class="value-amount-text">${{subproduct.value}}</div>
+                            <div class="value-text">Value</div>
+                        </div>
+                    </div>
+
+                    <div style="position: absolute;left: -254px;top: 34px;z-index: 100;">
+                        <ng-template #addValuePopupContainer></ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Subproduct -->
+<div class="add-subproduct" [title]="'Add ' + (subproductType == SubproductType.Component ? 'component': 'bonus')"
+    (click)="addSubproduct()">
+    <i class="fa-solid fa-plus"></i>
+</div>

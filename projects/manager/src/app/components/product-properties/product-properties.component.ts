@@ -1,8 +1,8 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
-import { PopupArrowPosition } from '../../classes/enums';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
+import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct } from 'common';
+import { PopupArrowPosition, SubproductType } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { ProductService } from '../../services/product/product.service';
 import { FiltersPopupComponent } from '../filters-popup/filters-popup.component';
@@ -35,6 +35,7 @@ export class ProductPropertiesComponent {
   public shippingType = ShippingType;
   public PopupArrowPosition = PopupArrowPosition;
   public shipping = Shipping;
+  public subproductType = SubproductType;
 
   public productFiltersArray: Array<HierarchyItem> = new Array<HierarchyItem>();
   public productFiltersSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
@@ -320,5 +321,29 @@ export class ProductPropertiesComponent {
 
       this.pricePoints.addPricePoint();
     })
+  }
+
+
+  addSubproduct(type: SubproductType) {
+    let subproduct: Subproduct;
+
+    if (type == SubproductType.Component) {
+      this.product.components = [];
+      this.product.components.push(new Subproduct());
+      subproduct = this.product.components[0];
+    } else {
+      this.product.bonuses = [];
+      this.product.bonuses.push(new Subproduct());
+      subproduct = this.product.bonuses[0];
+    }
+
+
+
+    this.dataService.post<number>('api/Products/Subproduct', {
+      productId: this.product.id,
+      type: type
+    }).subscribe((id: number) => {
+      subproduct.id = id;
+    });
   }
 }

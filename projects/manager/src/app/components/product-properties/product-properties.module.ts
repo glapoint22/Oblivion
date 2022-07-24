@@ -7,6 +7,7 @@ import { TextToolbarPopupComponent } from '../text-toolbar-popup/text-toolbar-po
 import { FormsModule } from '@angular/forms';
 import { ColorSwatchModule } from '../color-swatch/color-swatch.module';
 import { RecurringPaymentModule, ShippingModule } from 'common';
+import { SubproductsComponent } from '../subproducts/subproducts.component';
 
 
 
@@ -15,7 +16,8 @@ import { RecurringPaymentModule, ShippingModule } from 'common';
     ProductPropertiesComponent,
     PricePointsComponent,
     ProductDescriptionComponent,
-    TextToolbarPopupComponent
+    TextToolbarPopupComponent,
+    SubproductsComponent
   ],
   imports: [
     CommonModule,

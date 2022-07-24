@@ -180,7 +180,7 @@ export class RowDevComponent extends RowComponent {
         }
       }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
         contextMenu.xPos = event.screenX;
-        contextMenu.yPos = event.clientY + 66;
+        contextMenu.yPos = event.clientY + this.widgetService.viewPortTop;
         contextMenu.options = this.getRowContextMenuOptions();
       });
     }

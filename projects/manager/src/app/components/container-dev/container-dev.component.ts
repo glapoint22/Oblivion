@@ -246,7 +246,7 @@ export class ContainerDevComponent extends ContainerComponent {
           }, SpinnerAction.None)
             .then((contextMenu: ContextMenuComponent) => {
               contextMenu.xPos = event.screenX;
-              contextMenu.yPos = event.clientY + 66;
+              contextMenu.yPos = event.clientY + this.widgetService.viewPortTop;
               contextMenu.options = [
                 {
                   type: MenuOptionType.MenuItem,
@@ -317,7 +317,7 @@ export class ContainerDevComponent extends ContainerComponent {
             .then((contextMenu: ContextMenuComponent) => {
               contextMenu.parentObj = this;
               contextMenu.xPos = event.screenX;
-              contextMenu.yPos = event.clientY + 66;
+              contextMenu.yPos = event.clientY + this.widgetService.viewPortTop;
               contextMenu.options = [
 
                 {
@@ -482,6 +482,7 @@ export class ContainerDevComponent extends ContainerComponent {
     else if (this.widgetService.clipboard instanceof Column) {
       const column = this.widgetService.clipboard;
 
+      column.widgetData.width = null!;
       column.columnSpan = new ColumnSpan(12);
       this.addColumn(column, top);
     }

@@ -25,9 +25,7 @@
                     <div class="subproduct-title">
                         {{component.name}}</div>
 
-                    <div class="subproduct-description" [innerHtml]="component.description">
-
-                    </div>
+                    <div #rootElement class="subproduct-description">{{getDescription(rootElement, component.description)}}</div>
                 </div>
 
 
@@ -75,9 +73,7 @@
                     <div class="subproduct-title">{{bonus.name}}
                     </div>
 
-                    <div class="subproduct-description" [innerHtml]="bonus.description">
-
-                    </div>
+                    <div #rootElement class="subproduct-description">{{getDescription(rootElement, bonus.description)}}</div>
                 </div>
 
 
