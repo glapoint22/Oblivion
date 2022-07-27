@@ -13,7 +13,7 @@ import { HierarchyUpdate } from "./hierarchy-update";
 @Directive()
 export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     // Public
-    public thisHierarchy: Array<CheckboxItem> = new Array<CheckboxItem>();
+    public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
@@ -24,11 +24,11 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
 
     ngOnInit() {
         super.ngOnInit();
+        this.otherArray = this.productService.formFilterArray;
+        this.otherSearchArray = this.productService.formFilterSearchArray;
         this.searchInputName = 'productFiltersSearchInput' + this.productId;
-        this.thisHierarchy = this.productService.productComponents[this.productIndex].productFiltersHierarchy;
-        this.thisSearchList = this.productService.productComponents[this.productIndex].productFiltersSearchList;
-        this.otherHierarchy = this.productService.formFiltersHierarchy;
-        this.otherSearchList = this.productService.formFiltersSearchList;
+        this.thisArray = this.productService.productComponents[this.productIndex].productFiltersHierarchy;
+        this.thisSearchArray = this.productService.productComponents[this.productIndex].productFiltersSearchList;
     }
 
 
@@ -56,7 +56,7 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
         // ********* Commented Out Data Service *********
         // this.dataService.put('api/Products/Filter', {
-        //     productId: this.productService.product.id,
+        //     productId: this.productId,
         //     id: hierarchyUpdate.id,
         //     checked: hierarchyUpdate.checked
         // }).subscribe();
@@ -69,13 +69,13 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
         // ********* Commented Out Data Service *********
         // this.dataService.put('api/Products/Filter', {
-        //     productId: this.productService.product.id,
+        //     productId: this.productId,
         //     id: checkboxMultiColumnListUpdate.id,
         //     checked: checkboxMultiColumnListUpdate.checked
         // }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
-        const hierarchyItem = this.thisHierarchy.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
+        const hierarchyItem = this.thisArray.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
         // If it is, make the change to its checkbox as well
         if (hierarchyItem) hierarchyItem.checked = checkboxMultiColumnListUpdate.checked;
     }
@@ -124,6 +124,6 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
     getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
+        return [{ key: 'productId', value: this.productId }, { key: 'searchWords', value: searchWords }];
     }
 }

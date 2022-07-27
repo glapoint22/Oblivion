@@ -39,7 +39,7 @@
 <ng-container *ngIf="!searchMode">
     <div class="modal-list-container">
         <list #listComponent
-              [sourceList]="thisHierarchy"
+              [sourceList]="thisArray"
               [options]="listOptions"
               (onListUpdate)="listUpdate = $event">
         </list>
@@ -54,15 +54,15 @@
            (input)="onSearchInputChange($event.target)">
 
     <div class="modal-list-container" style="height: 221px;">
-        <ng-container *ngIf="thisSearchList.length == 0">
+        <ng-container *ngIf="thisSearchArray.length == 0">
             <div class="no-search-results">
                 No search results available
             </div>
         </ng-container>
         
-        <ng-container *ngIf="thisSearchList.length > 0">
+        <ng-container *ngIf="thisSearchArray.length > 0">
             <list #searchComponent
-                  [sourceList]="thisSearchList"
+                  [sourceList]="thisSearchArray"
                   [options]="searchOptions"
                   (onListUpdate)="searchUpdate = $event">
             </list>

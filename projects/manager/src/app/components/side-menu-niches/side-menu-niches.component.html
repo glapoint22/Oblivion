@@ -47,7 +47,7 @@
 <ng-container *ngIf="!searchMode">
     <div class="overflow-container" [style.height.px]="base.clientHeight - 40">
         <hierarchy #hierarchyComponent
-                   [sourceList]="thisHierarchy"
+                   [sourceList]="thisArray"
                    [options]="listOptions"
                    (onListUpdate)="listUpdate = $event">
         </hierarchy>
@@ -73,17 +73,17 @@
     </div>
 
 
-    <ng-container *ngIf="thisSearchList.length == 0">
+    <ng-container *ngIf="thisSearchArray.length == 0">
         <div class="no-search-results">
             No search results available
         </div>
     </ng-container>
     
 
-    <ng-container *ngIf="thisSearchList.length > 0">
+    <ng-container *ngIf="thisSearchArray.length > 0">
         <div class="overflow-container" [style.height.px]="base.clientHeight - 130">
             <multi-column-list #searchComponent
-                               [sourceList]="thisSearchList"
+                               [sourceList]="thisSearchArray"
                                [options]="searchOptions"
                                (onListUpdate)="searchUpdate = $event">
             </multi-column-list>

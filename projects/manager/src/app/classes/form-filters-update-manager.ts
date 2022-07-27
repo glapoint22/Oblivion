@@ -20,18 +20,18 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
     ngOnInit() {
         super.ngOnInit()
         this.itemType = 'Filter';
+        this.searchTypeWidth = '55px';
+        this.searchNameWidth = '246px';
+        this.childSearchType = 'Option';
         this.childType = 'Filter Option';
         this.dataServicePath = 'Filters';
-        this.childDataServicePath = 'Filters/Options';
         this.parentSearchType = 'Filter';
-        this.childSearchType = 'Option';
-        this.searchNameWidth = '246px';
-        this.searchTypeWidth = '55px';
-        this.thisHierarchy = this.productService.formFiltersHierarchy;
-        this.thisSearchList = this.productService.formFiltersSearchList;
-        this.productHierarchy = 'productFiltersHierarchy';
-        this.productSearchList = 'productFiltersSearchList';
+        this.childDataServicePath = 'Filters/Options';
         this.searchInputName = 'filtersFormSearchInput';
+        this.otherProductArray = 'productFiltersHierarchy';
+        this.otherProductSearchArray = 'productFiltersSearchList';
+        this.thisArray = this.productService.formFilterArray;
+        this.thisSearchArray = this.productService.formFilterSearchArray;
     }
 
 
@@ -40,7 +40,7 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
 
     onListUpdate(hierarchyUpdate: HierarchyUpdate) {
         super.onListUpdate(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisHierarchy[hierarchyUpdate.index!].case = CaseType.CapitalizedCase;
+        if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisArray[hierarchyUpdate.index!].case = CaseType.CapitalizedCase;
     }
 
 
@@ -57,22 +57,6 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
             case: CaseType.CapitalizedCase
         }
     }
-
-
-
-    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
-
-    // getOtherChildItem(child: CheckboxItem, hierarchyUpdate: HierarchyUpdate) {
-    //     return {
-    //         id: child.id!,
-    //         name: child.name,
-    //         hierarchyGroupID: 1,
-    //         hidden: !this.otherHierarchy[hierarchyUpdate.index!].arrowDown,
-    //         arrowDown: false,
-    //         isParent: false,
-    //         checked: child.checked
-    //     }
-    // }
 
 
 

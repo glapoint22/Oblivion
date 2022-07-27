@@ -1,27 +1,24 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
-import { Product } from '../../classes/product';
 import { ProductPropertiesComponent } from '../../components/product-properties/product-properties.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  public product: Product = new Product();
   public zIndex: number = 0;
+  public productsContainer!: ViewContainerRef;
 
-  constructor() {
-    this.product.id = 1;
-  }
+
+  public sideMenuNicheArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+
+  public formFilterArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+  public formFilterSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+
+  public formProductGroupArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+  public formProductGroupSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+
 
   public productComponents: Array<ProductPropertiesComponent> = new Array<ProductPropertiesComponent>();
-
-  public formFiltersHierarchy: Array<HierarchyItem> = new Array<HierarchyItem>();
-  public formFiltersSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-
-
-
-
-  public productsContainer!: ViewContainerRef;
 }

@@ -14,6 +14,7 @@ import { ProductGroupsPopupComponent } from '../product-groups-popup/product-gro
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
 import { VendorPopupComponent } from '../vendor-popup/vendor-popup.component';
+import { ListItem } from '../../classes/list-item';
 
 @Component({
   selector: 'product-properties',
@@ -39,6 +40,9 @@ export class ProductPropertiesComponent {
 
   public productFiltersHierarchy: Array<HierarchyItem> = new Array<HierarchyItem>();
   public productFiltersSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+
+  public productProductGroupsHierarchy: Array<ListItem> = new Array<ListItem>();
+  public productProductGroupsSearchList: Array<ListItem> = new Array<ListItem>();
 
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
@@ -104,8 +108,8 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None, this.filtersPopupContainer)
       .then((filtersPopup: FiltersPopupComponent) => {
         this.filtersPopup = filtersPopup;
-        this.filtersPopup.productId = this.product.id;
-        this.filtersPopup.productIndex = this.productService.productComponents.indexOf(this);
+        filtersPopup.productId = this.product.id;
+        filtersPopup.productIndex = this.productService.productComponents.indexOf(this);
       });
   }
 
@@ -155,6 +159,8 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None, this.productGroupsPopupContainer)
       .then((productGroupsPopup: ProductGroupsPopupComponent) => {
         this.productGroupsPopup = productGroupsPopup;
+        productGroupsPopup.productId = this.product.id;
+        productGroupsPopup.productIndex = this.productService.productComponents.indexOf(this);
       });
   }
 

@@ -39,7 +39,7 @@
 <ng-container *ngIf="!searchMode">
     <div class="popup-list-container">
         <checkbox-list #listComponent
-              [sourceList]="thisHierarchy"
+              [sourceList]="thisArray"
               [options]="listOptions"
               (onListUpdate)="listUpdate = $event">
         </checkbox-list>
@@ -49,20 +49,20 @@
 
 <!-- Search -->
 <ng-container *ngIf="searchMode">
-    <input id="productProductGroupsSearchInput"
+    <input [id]="'productProductGroupsSearchInput' + productId"
            placeholder="Search"
            (input)="onSearchInputChange($event.target)">
 
     <div class="popup-list-container" style="height: 221px;">
-        <ng-container *ngIf="thisSearchList.length == 0">
+        <ng-container *ngIf="thisSearchArray.length == 0">
             <div class="no-search-results">
                 No search results available
             </div>
         </ng-container>
         
-        <ng-container *ngIf="thisSearchList.length > 0">
+        <ng-container *ngIf="thisSearchArray.length > 0">
             <checkbox-list #searchComponent
-                  [sourceList]="thisSearchList"
+                  [sourceList]="thisSearchArray"
                   [options]="searchOptions"
                   (onListUpdate)="searchUpdate = $event">
             </checkbox-list>

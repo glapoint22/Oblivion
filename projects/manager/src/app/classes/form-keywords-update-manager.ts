@@ -1,6 +1,5 @@
 import { DomSanitizer } from "@angular/platform-browser";
 import { DataService } from "common";
-import { KeywordsService } from "../services/keywords/keywords.service";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
@@ -35,10 +34,10 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         this.searchNameWidth = '233px';
         this.searchTypeWidth = '68px';
         // this.hierarchyUpdateService = this.keywordsService;
-        // this.thisHierarchy = this.keywordsService.formArray;
-        // this.otherHierarchy = this.keywordsService.productArray;
-        // this.thisSearchList = this.keywordsService.otherSearchList;
-        // this.otherSearchList = this.keywordsService.productSearchList;
+        // this.thisArray = this.keywordsService.formArray;
+        // this.otherArray = this.keywordsService.productArray;
+        // this.thisSearchArray = this.keywordsService.otherSearchArray;
+        // this.otherSearchArray = this.keywordsService.otherProductSearchArray;
         this.searchInputName = 'keywordsFormSearchInput';
     }
 
@@ -48,7 +47,7 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
     onListUpdate(hierarchyUpdate: HierarchyUpdate) {
         super.onListUpdate(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisHierarchy[hierarchyUpdate.index!].case = hierarchyUpdate.hierarchyGroupID == 0 ? CaseType.CapitalizedCase : CaseType.LowerCase;
+        if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisArray[hierarchyUpdate.index!].case = hierarchyUpdate.hierarchyGroupID == 0 ? CaseType.CapitalizedCase : CaseType.LowerCase;
     }
 
 
@@ -59,7 +58,7 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         super.onArrowClick(hierarchyUpdate);
 
         // // If the parent has the disabled look
-        // if (this.otherHierarchy[hierarchyUpdate.index!].opacity != null) {
+        // if (this.otherArray[hierarchyUpdate.index!].opacity != null) {
         //     // And its children hasn't been loaded yet
         //     if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
 
@@ -68,9 +67,9 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         //             onChildrenLoadListener.unsubscribe();
 
         //             // Then give its children the disabled look too
-        //             for (let i = hierarchyUpdate.index! + 1; i < this.otherHierarchy.length; i++) {
-        //                 if (this.otherHierarchy[i].hierarchyGroupID! <= hierarchyUpdate.hierarchyGroupID!) break;
-        //                 this.otherHierarchy[i].opacity = 0.4;
+        //             for (let i = hierarchyUpdate.index! + 1; i < this.otherArray.length; i++) {
+        //                 if (this.otherArray[i].hierarchyGroupID! <= hierarchyUpdate.hierarchyGroupID!) break;
+        //                 this.otherArray[i].opacity = 0.4;
         //             }
         //         });
         //     }
@@ -170,7 +169,7 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
     // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 
     getItemParameters(): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productService.product.id }];
+        return [{ key: 'productId', value: this.productId }];
     }
 
 
@@ -181,8 +180,8 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         let keywordGroupId = null;
 
         if(deletedItem.hierarchyGroupID == 1) {
-            const parentIndex = this.getIndexOfHierarchyItemParent(this.thisHierarchy[deletedItem.index!], this.thisHierarchy);
-            keywordGroupId = this.thisHierarchy[parentIndex].id;
+            const parentIndex = this.getIndexOfHierarchyItemParent(this.thisArray[deletedItem.index!], this.thisArray);
+            keywordGroupId = this.thisArray[parentIndex].id;
         }
         return {
             id: deletedItem.id,
