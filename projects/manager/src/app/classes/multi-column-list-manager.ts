@@ -91,7 +91,7 @@ export class MultiColumnListManager extends ListManager {
         this.onListUpdate.next(
             {
                 type: ListUpdateType.DeletePrompt,
-                deletedMultiColumnItems: deletedItems!.map((x) => {
+                deletedItems: deletedItems!.map((x) => {
                     return {
                         id: x.id,
                         index: this.sourceList.findIndex(y => y.id == x.id && y.values[0].name == x.values[0].name && y.values[1].name == x.values[1].name),
@@ -109,7 +109,7 @@ export class MultiColumnListManager extends ListManager {
         this.onListUpdate.next(
             {
                 type: ListUpdateType.Delete,
-                deletedMultiColumnItems: deletedItems!.map((x) => {
+                deletedItems: deletedItems!.map((x) => {
                     return {
                         id: x.id,
                         index: this.sourceList.findIndex(y => y.id == x.id && y.values[0].name == x.values[0].name && y.values[1].name == x.values[1].name),
@@ -126,7 +126,7 @@ export class MultiColumnListManager extends ListManager {
     selectedItemsUpdate(rightClick: boolean) {
         const selectedItems = this.sourceList.filter(x => x.selected == true);
         selectedItems.forEach(x => x.index = this.sourceList.findIndex(y => y.id == x?.id && y.hierarchyGroupID == x.hierarchyGroupID));
-        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedMultiColumnItems: selectedItems, rightClick: rightClick });
+        this.onListUpdate.next({ type: ListUpdateType.SelectedItems, selectedItems: selectedItems, rightClick: rightClick });
     }
 
 

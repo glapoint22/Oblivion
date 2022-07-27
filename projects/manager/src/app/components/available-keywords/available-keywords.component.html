@@ -46,7 +46,7 @@
 <ng-container *ngIf="!searchMode">
     <div class="popup-list-container">
         <hierarchy #availableHierarchyComponent
-                   [sourceList]="thisArray"
+                   [sourceList]="thisHierarchy"
                    [options]="listOptions"
                    (onListUpdate)="listUpdate = $event">
         </hierarchy>

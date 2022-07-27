@@ -46,7 +46,7 @@
 <ng-container *ngIf="!searchMode">
     <div class="popup-list-container">
         <checkbox-hierarchy #hierarchyComponent
-                   [sourceList]="thisArray"
+                   [sourceList]="thisHierarchy"
                    [options]="listOptions"
                    (onListUpdate)="listUpdate = $event">
         </checkbox-hierarchy>
@@ -56,7 +56,7 @@
 
 <!-- Search -->
 <ng-container *ngIf="searchMode">
-    <input id="productFiltersSearchInput"
+    <input [id]="'productFiltersSearchInput' + productId"
            placeholder="Search"
            (input)="onSearchInputChange($event.target)">
 

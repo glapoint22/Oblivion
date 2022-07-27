@@ -1,5 +1,5 @@
 import { KeyValue } from "@angular/common";
-import { Directive, Input, ViewChild } from "@angular/core";
+import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { CheckboxItem } from "./checkbox-item";
@@ -13,11 +13,9 @@ import { HierarchyUpdate } from "./hierarchy-update";
 @Directive()
 export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     // Public
-    public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+    public thisHierarchy: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
-    @Input() productId!: number;
-    @Input() productIndex!: number;
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
 
@@ -26,11 +24,11 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
 
     ngOnInit() {
         super.ngOnInit();
-        this.thisArray = this.productService.productComponents[this.productIndex].productFiltersArray
-        // this.otherArray = this.filtersService.formArray;
-        // this.thisSearchList = this.filtersService.productSearchList;
-        // this.otherSearchList = this.filtersService.formSearchList;
-        this.searchInputName = 'productFiltersSearchInput';
+        this.searchInputName = 'productFiltersSearchInput' + this.productId;
+        this.thisHierarchy = this.productService.productComponents[this.productIndex].productFiltersHierarchy;
+        this.thisSearchList = this.productService.productComponents[this.productIndex].productFiltersSearchList;
+        this.otherHierarchy = this.productService.formFiltersHierarchy;
+        this.otherSearchList = this.productService.formFiltersSearchList;
     }
 
 
@@ -77,7 +75,7 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
         // }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
-        const hierarchyItem = this.thisArray.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
+        const hierarchyItem = this.thisHierarchy.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
         // If it is, make the change to its checkbox as well
         if (hierarchyItem) hierarchyItem.checked = checkboxMultiColumnListUpdate.checked;
     }
@@ -127,21 +125,5 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
 
     getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
         return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
-    }
-
-
-
-
-
-
-    onItemEdit(hierarchyUpdate: HierarchyUpdate) {
-        super.onItemEdit(hierarchyUpdate);
-
-        // this.productService.productComponents.forEach(x => {
-
-        // });
-
-        const trumpy = this.productService.productComponents.filter(x => this.productService.productComponents.indexOf(x) != this.productIndex);
-        console.log(trumpy)
     }
 }

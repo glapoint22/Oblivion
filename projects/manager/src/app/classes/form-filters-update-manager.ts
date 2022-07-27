@@ -27,11 +27,10 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
         this.childSearchType = 'Option';
         this.searchNameWidth = '246px';
         this.searchTypeWidth = '55px';
-        // this.hierarchyUpdateService = this.filtersService;
-        // this.thisArray = this.filtersService.formArray;
-        // this.otherArray = this.filtersService.productArray;
-        // this.thisSearchList = this.filtersService.formSearchList;
-        // this.otherSearchList = this.filtersService.productSearchList;
+        this.thisHierarchy = this.productService.formFiltersHierarchy;
+        this.thisSearchList = this.productService.formFiltersSearchList;
+        this.productHierarchy = 'productFiltersHierarchy';
+        this.productSearchList = 'productFiltersSearchList';
         this.searchInputName = 'filtersFormSearchInput';
     }
 
@@ -41,7 +40,7 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
 
     onListUpdate(hierarchyUpdate: HierarchyUpdate) {
         super.onListUpdate(hierarchyUpdate);
-        if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisArray[hierarchyUpdate.index!].case = CaseType.CapitalizedCase;
+        if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisHierarchy[hierarchyUpdate.index!].case = CaseType.CapitalizedCase;
     }
 
 
@@ -68,7 +67,7 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
     //         id: child.id!,
     //         name: child.name,
     //         hierarchyGroupID: 1,
-    //         hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
+    //         hidden: !this.otherHierarchy[hierarchyUpdate.index!].arrowDown,
     //         arrowDown: false,
     //         isParent: false,
     //         checked: child.checked

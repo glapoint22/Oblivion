@@ -11,7 +11,7 @@ import { FormProductGroupsUpdateManager } from "./form-product-groups-update-man
 @Directive()
 export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateManager {
     // Public
-    public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+    public thisHierarchy: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
     @ViewChild('listComponent') listComponent!: ListComponent;
@@ -22,10 +22,10 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
 
     ngOnInit() {
         super.ngOnInit();
-        // this.thisArray = this.productGroupsService.productArray;
-        // this.otherArray = this.productGroupsService.formArray;
+        // this.thisHierarchy = this.productGroupsService.productArray;
+        // this.otherHierarchy = this.productGroupsService.formArray;
         // this.thisSearchList = this.productGroupsService.productSearchList;
-        // this.otherSearchList = this.productGroupsService.formSearchList;
+        // this.otherSearchList = this.productGroupsService.otherSearchList;
         this.searchInputName = 'productProductGroupsSearchInput';
     }
 
@@ -73,7 +73,7 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
         // }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
-        const listItem = this.thisArray.find(x => x.id == checkboxListUpdate.id && x.name == checkboxListUpdate.name);
+        const listItem = this.thisHierarchy.find(x => x.id == checkboxListUpdate.id && x.name == checkboxListUpdate.name);
         // If it is, make the change to its checkbox as well
         if (listItem) listItem.checked = checkboxListUpdate.checked;
     }

@@ -17,7 +17,7 @@ export class ProductService {
 
   public productComponents: Array<ProductPropertiesComponent> = new Array<ProductPropertiesComponent>();
 
-  public formFiltersArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+  public formFiltersHierarchy: Array<HierarchyItem> = new Array<HierarchyItem>();
   public formFiltersSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
 
 

@@ -26,9 +26,9 @@ export class FormProductGroupsUpdateManager extends ListUpdateManager {
         this.itemType = 'Product Group';
         this.dataServicePath = 'Subgroups';
         // this.listUpdateService = this.productGroupsService;
-        // this.thisArray = this.productGroupsService.formArray;
-        // this.otherArray = this.productGroupsService.productArray;
-        // this.thisSearchList = this.productGroupsService.formSearchList;
+        // this.thisHierarchy = this.productGroupsService.formArray;
+        // this.otherHierarchy = this.productGroupsService.productArray;
+        // this.thisSearchList = this.productGroupsService.otherSearchList;
         // this.otherSearchList = this.productGroupsService.productSearchList;
         this.searchInputName = 'productGroupsFormSearchInput';
         this.searchOptions.sortable = false;
@@ -40,7 +40,7 @@ export class FormProductGroupsUpdateManager extends ListUpdateManager {
 
     onListUpdate(listUpdate: ListUpdate) {
         super.onListUpdate(listUpdate);
-        if (listUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisArray[listUpdate.index!].case = CaseType.CapitalizedCase;
+        if (listUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisHierarchy[listUpdate.index!].case = CaseType.CapitalizedCase;
     }
 
 

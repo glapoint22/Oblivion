@@ -8,7 +8,7 @@ import { HierarchyComponent } from '../../components/hierarchies/hierarchy/hiera
 })
 export class HierarchyUpdateService {
   public formArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-  public formSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+  public otherSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
   public productArray: Array<HierarchyItem> = new Array<HierarchyItem>();
   public productSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
 }

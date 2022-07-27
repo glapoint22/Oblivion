@@ -6,7 +6,7 @@ import { ListItem } from '../../classes/list-item';
 })
 export class ListUpdateService {
   public formArray: Array<ListItem> = new Array<ListItem>();
-  public formSearchList: Array<ListItem> = new Array<ListItem>();
+  public otherSearchList: Array<ListItem> = new Array<ListItem>();
   public productArray: Array<ListItem> = new Array<ListItem>();
   public productSearchList: Array<ListItem> = new Array<ListItem>();
 }

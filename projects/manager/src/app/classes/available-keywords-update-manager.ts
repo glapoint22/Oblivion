@@ -27,10 +27,10 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         super.ngOnInit();
         this.searchNameWidth = '296px';
         this.searchInputName = 'availableKeywordsSearchInput';
-        // this.thisArray = this.keywordsService.productArray;
-        // this.otherArray = this.keywordsService.formArray;
+        // this.thisHierarchy = this.keywordsService.productArray;
+        // this.otherHierarchy = this.keywordsService.formArray;
         // this.thisSearchList = this.keywordsService.productSearchList;
-        // this.otherSearchList = this.keywordsService.formSearchList;
+        // this.otherSearchList = this.keywordsService.otherSearchList;
         // this.keywordsService.availableSearchList = this.thisSearchList;
 
         this.listOptions.menu!.menuOptions[6] = { type: MenuOptionType.Divider };
@@ -66,7 +66,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         super.onArrowClick(hierarchyUpdate);
 
         // If the parent has the disabled look
-        if (this.thisArray[hierarchyUpdate.index!].opacity != null) {
+        if (this.thisHierarchy[hierarchyUpdate.index!].opacity != null) {
             // And its children hasn't been loaded yet
             if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
 
@@ -75,9 +75,9 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                     onChildrenLoadListener.unsubscribe();
 
                     // Then give its children the disabled look too
-                    for (let i = hierarchyUpdate.index! + 1; i < this.thisArray.length; i++) {
-                        if (this.thisArray[i].hierarchyGroupID! <= hierarchyUpdate.hierarchyGroupID!) break;
-                        this.thisArray[i].opacity = 0.4;
+                    for (let i = hierarchyUpdate.index! + 1; i < this.thisHierarchy.length; i++) {
+                        if (this.thisHierarchy[i].hierarchyGroupID! <= hierarchyUpdate.hierarchyGroupID!) break;
+                        this.thisHierarchy[i].opacity = 0.4;
                     }
                 });
             }
@@ -101,8 +101,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
         super.onSelectedSearchItem(searchUpdate);
-        this.addToSelectedKeywordsButtonDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
-        this.searchOptions.menu!.menuOptions[5].isDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
+        this.addToSelectedKeywordsButtonDisabled = this.thisSearchList[searchUpdate.selectedItems![0].index!].opacity != null ? true : false;
+        this.searchOptions.menu!.menuOptions[5].isDisabled = this.thisSearchList[searchUpdate.selectedItems![0].index!].opacity != null ? true : false;
     }
 
 
@@ -131,8 +131,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         super.onItemAdd(hierarchyUpdate);
 
         if(hierarchyUpdate.hierarchyGroupID == 1) {
-            const parentIndex = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
-            this.thisArray[hierarchyUpdate.index!].opacity = this.thisArray[parentIndex].opacity;
+            const parentIndex = this.getIndexOfHierarchyItemParent(this.thisHierarchy[hierarchyUpdate.index!], this.thisHierarchy);
+            this.thisHierarchy[hierarchyUpdate.index!].opacity = this.thisHierarchy[parentIndex].opacity;
         }
     }
 
@@ -173,10 +173,10 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             this.listComponent.listManager.selectedItem.opacity = 0.4;
 
             // Add the disabled look to it's children too (if available)
-            const index = this.thisArray.indexOf(this.listComponent.listManager.selectedItem);
-            for (let i = index + 1; i < this.thisArray.length; i++) {
-                if (this.thisArray[i].hierarchyGroupID! <= this.listComponent.listManager.selectedItem.hierarchyGroupID!) break;
-                this.thisArray[i].opacity = 0.4;
+            const index = this.thisHierarchy.indexOf(this.listComponent.listManager.selectedItem);
+            for (let i = index + 1; i < this.thisHierarchy.length; i++) {
+                if (this.thisHierarchy[i].hierarchyGroupID! <= this.listComponent.listManager.selectedItem.hierarchyGroupID!) break;
+                this.thisHierarchy[i].opacity = 0.4;
             }
             // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/Add', {
@@ -186,8 +186,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
             // If a keyword is selected
         } else {
-            const parentIndex = this.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisArray);
-            const parent = this.thisArray[parentIndex];
+            const parentIndex = this.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisHierarchy);
+            const parent = this.thisHierarchy[parentIndex];
             const childId = this.listComponent.listManager.selectedItem.id;
             keywordGroup.id = parent.id;
             keywordGroup.name = parent.name;
@@ -196,9 +196,9 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
             // Add the disabled look to the keyword group and its children in the available list
             parent.opacity = 0.4;
-            for (let i = parentIndex + 1; i < this.thisArray.length; i++) {
-                if (this.thisArray[i].hierarchyGroupID! <= parent.hierarchyGroupID!) break;
-                this.thisArray[i].opacity = 0.4;
+            for (let i = parentIndex + 1; i < this.thisHierarchy.length; i++) {
+                if (this.thisHierarchy[i].hierarchyGroupID! <= parent.hierarchyGroupID!) break;
+                this.thisHierarchy[i].opacity = 0.4;
             }
             // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
@@ -234,13 +234,13 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 })
 
             // Also, set the disabled look to the same keyword group in the hierarchy list too
-            const keywordGroupIndex = this.thisArray.findIndex(x => x.id == keywordGroup.id && x.hierarchyGroupID == 0);
-            this.thisArray[keywordGroupIndex].opacity = 0.4;
+            const keywordGroupIndex = this.thisHierarchy.findIndex(x => x.id == keywordGroup.id && x.hierarchyGroupID == 0);
+            this.thisHierarchy[keywordGroupIndex].opacity = 0.4;
 
             // And set the disabled look to it's children too (if available)
-            for (let i = keywordGroupIndex + 1; i < this.thisArray.length; i++) {
-                if (this.thisArray[i].hierarchyGroupID! <= 0) break;
-                this.thisArray[i].opacity = 0.4;
+            for (let i = keywordGroupIndex + 1; i < this.thisHierarchy.length; i++) {
+                if (this.thisHierarchy[i].hierarchyGroupID! <= 0) break;
+                this.thisHierarchy[i].opacity = 0.4;
             }
             // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/Add', {
@@ -255,8 +255,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             // Get the parent of the selected keyword
             this.dataService.get<KeywordCheckboxItem>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: this.searchComponent.listManager.selectedItem.id }])
                 .subscribe((keywordParent: KeywordCheckboxItem) => {
-                    const parentIndex = this.thisArray.findIndex(x => x.id == keywordParent.id && x.hierarchyGroupID == 0);
-                    const parent = this.thisArray[parentIndex];
+                    const parentIndex = this.thisHierarchy.findIndex(x => x.id == keywordParent.id && x.hierarchyGroupID == 0);
+                    const parent = this.thisHierarchy[parentIndex];
                     keywordGroup.id = parent.id;
                     keywordGroup.name = parent.name;
                     keywordGroup.hierarchyGroupID = 0;
@@ -280,13 +280,13 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
                     // Now set the disabled look to the same parent of the selected keyword in the hierarchy list
-                    const keywordGroupIndex = this.thisArray.findIndex(x => x.id == keywordGroup.id && x.hierarchyGroupID == 0);
-                    this.thisArray[keywordGroupIndex].opacity = 0.4;
+                    const keywordGroupIndex = this.thisHierarchy.findIndex(x => x.id == keywordGroup.id && x.hierarchyGroupID == 0);
+                    this.thisHierarchy[keywordGroupIndex].opacity = 0.4;
 
                     // And set the disabled look to it's children too (if available)
-                    for (let i = keywordGroupIndex + 1; i < this.thisArray.length; i++) {
-                        if (this.thisArray[i].hierarchyGroupID! <= 0) break;
-                        this.thisArray[i].opacity = 0.4;
+                    for (let i = keywordGroupIndex + 1; i < this.thisHierarchy.length; i++) {
+                        if (this.thisHierarchy[i].hierarchyGroupID! <= 0) break;
+                        this.thisHierarchy[i].opacity = 0.4;
                     }
 
                     // ********* Commented Out Data Service *********

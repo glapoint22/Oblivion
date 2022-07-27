@@ -39,7 +39,7 @@
 <ng-container *ngIf="!searchMode">
     <div class="modal-list-container">
         <list #listComponent
-              [sourceList]="thisArray"
+              [sourceList]="thisHierarchy"
               [options]="listOptions"
               (onListUpdate)="listUpdate = $event">
         </list>

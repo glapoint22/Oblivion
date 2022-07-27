@@ -37,7 +37,7 @@ export class ProductPropertiesComponent {
   public shipping = Shipping;
   public subproductType = SubproductType;
 
-  public productFiltersArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+  public productFiltersHierarchy: Array<HierarchyItem> = new Array<HierarchyItem>();
   public productFiltersSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
 
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;

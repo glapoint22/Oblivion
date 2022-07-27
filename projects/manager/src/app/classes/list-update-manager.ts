@@ -1,9 +1,10 @@
 import { KeyValue } from "@angular/common";
-import { Directive } from "@angular/core";
+import { Directive, Input } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
 import { ListComponent } from "../components/lists/list/list.component";
+import { ProductPropertiesComponent } from "../components/product-properties/product-properties.component";
 import { ListUpdateService } from "../services/list-update/list-update.service";
 import { ProductService } from "../services/product/product.service";
 import { CaseType, ListUpdateType, MenuOptionType } from "./enums";
@@ -36,10 +37,14 @@ export class ListUpdateManager {
     public onClose: Subject<void> = new Subject<void>();
     public searchOptions: ListOptions = new ListOptions();
     public listOptions: ListOptions = new ListOptions();
-    public thisArray: Array<ListItem> = new Array<ListItem>();
-    // public otherArray: Array<ListItem> = new Array<ListItem>();
+    public thisHierarchy: Array<ListItem> = new Array<ListItem>();
+
+    public productHierarchy!: keyof ProductPropertiesComponent;
+    public productSearchList!: keyof ProductPropertiesComponent;
+
+    public otherHierarchy: Array<ListItem> = new Array<ListItem>();
     public thisSearchList: Array<ListItem> = new Array<ListItem>();
-    // public otherSearchList: Array<ListItem> = new Array<ListItem>();
+    public otherSearchList: Array<ListItem> = new Array<ListItem>();
     public get listUpdate(): ListUpdate { return this._listUpdate; }
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
@@ -47,6 +52,9 @@ export class ListUpdateManager {
     public get itemType(): string { return this._itemType; }
     public set itemType(v: string) { this._itemType = v; this.addIconButtonTitle = 'Add ' + v; }
 
+    // Decorators
+    @Input() productId!: number;
+    @Input() productIndex!: number;
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
@@ -156,12 +164,12 @@ export class ListUpdateManager {
     // ======================================================================( ON OPEN )====================================================================== \\
 
     onOpen() {
-        if (this.thisArray.length == 0) {
+        if (this.thisHierarchy.length == 0) {
             this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath, this.getItemParameters())
-                .subscribe((thisArray: Array<ListItem>) => {
-                    thisArray.forEach(x => {
-                        this.thisArray.push(this.getItem(x));
-                        // if (this.getOtherItem(x)) this.otherArray.push(this.getOtherItem(x));
+                .subscribe((thisHierarchy: Array<ListItem>) => {
+                    thisHierarchy.forEach(x => {
+                        this.thisHierarchy.push(this.getItem(x));
+                        // if (this.getOtherItem(x)) this.otherHierarchy.push(this.getOtherItem(x));
                     })
                 })
         } else {
@@ -170,7 +178,7 @@ export class ListUpdateManager {
             if (this.selectLastSelectedItemOnOpen) {
 
                 // Check to see if an item was selected before it last closed
-                const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
+                const selectedItem = this.thisHierarchy.filter(x => x.selectType != null || x.selected == true)[0];
                 // If an item was selected
                 if (selectedItem) {
                     // Then select that item
@@ -182,7 +190,7 @@ export class ListUpdateManager {
             } else {
 
                 // Clear all selections
-                this.thisArray.forEach(x => {
+                this.thisHierarchy.forEach(x => {
                     x.selectType = null!;
                     x.selected = false;
                 })
@@ -222,7 +230,7 @@ export class ListUpdateManager {
                 this.searchInputSubscription.unsubscribe();
 
 
-                const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
+                const selectedItem = this.thisHierarchy.filter(x => x.selectType != null || x.selected == true)[0];
                 if (selectedItem) {
                     this.listComponent.listManager.onItemDown(selectedItem);
                 } else {
@@ -370,9 +378,9 @@ export class ListUpdateManager {
         // this.dataService.post<number>('api/' + this.dataServicePath, {
         //     name: listUpdate.name
         // }).subscribe((id: number) => {
-        this.thisArray[listUpdate.index!].id = this.listAddId//id;
+        this.thisHierarchy[listUpdate.index!].id = this.listAddId//id;
 
-        // this.sort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]), this.otherArray);
+        // this.sort(this.addItem(this.otherHierarchy, listUpdate.index!, this.thisHierarchy[listUpdate.index!]), this.otherHierarchy);
         // });
     }
 
@@ -400,8 +408,8 @@ export class ListUpdateManager {
         // }).subscribe();
 
 
-        // this.sort(this.editItem(this.otherArray, listUpdate, 0), this.otherArray);
-        // this.editItem(this.otherSearchList, listUpdate, this.parentSearchType);
+        // this.sort(this.OldEditItem(this.otherHierarchy, listUpdate, 0), this.otherHierarchy);
+        // this.OldEditItem(this.otherSearchList, listUpdate, this.parentSearchType);
     }
 
 
@@ -415,16 +423,16 @@ export class ListUpdateManager {
         //     name: searchUpdate.values![0].name
         // }).subscribe();
 
-        this.sort(this.editItem(this.thisArray, searchUpdate, 0), this.thisArray);
-        // this.sort(this.editItem(this.otherArray, searchUpdate, 0), this.otherArray);
-        // this.editItem(this.otherSearchList, searchUpdate, this.parentSearchType);
+        this.sort(this.OldEditItem(this.thisHierarchy, searchUpdate, 0), this.thisHierarchy);
+        // this.sort(this.OldEditItem(this.otherHierarchy, searchUpdate, 0), this.otherHierarchy);
+        // this.OldEditItem(this.otherSearchList, searchUpdate, this.parentSearchType);
     }
 
 
 
     // =====================================================================( EDIT ITEM )===================================================================== \\
 
-    editItem(list: Array<ListItem>, update: ListUpdate, type?: number | string): ListItem {
+    OldEditItem(list: Array<ListItem>, update: ListUpdate, type?: number | string): ListItem {
         const editedItem: ListItem = list.find(x => x.id == update.id)!;
         if (editedItem) editedItem.name = update.name;
         return editedItem;
@@ -473,7 +481,7 @@ export class ListUpdateManager {
         let matchFound: boolean = false;
 
         // Loop through each item and check for a duplicate
-        this.thisArray.forEach(x => {
+        this.thisHierarchy.forEach(x => {
             if (x.name?.toLowerCase() == listUpdate.name?.toLowerCase()) {
                 matchFound = true;
             }
@@ -508,7 +516,7 @@ export class ListUpdateManager {
     onSearchItemVerify(searchUpdate: ListUpdate) {
         let matchFound: boolean = false;
 
-        this.thisArray.forEach(x => {
+        this.thisHierarchy.forEach(x => {
             if (x.name?.toLowerCase() == searchUpdate.name?.toLowerCase()) {
                 matchFound = true;
             }
@@ -563,7 +571,7 @@ export class ListUpdateManager {
         // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
 
 
-        // this.deleteItem(this.otherArray, deletedItem, 0);
+        // this.deleteItem(this.otherHierarchy, deletedItem, 0);
         // this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
     }
 
@@ -577,8 +585,8 @@ export class ListUpdateManager {
 
 
         // this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
-        this.deleteItem(this.thisArray, deletedItem, 0);
-        // this.deleteItem(this.otherArray, deletedItem, 0);
+        this.deleteItem(this.thisHierarchy, deletedItem, 0);
+        // this.deleteItem(this.otherHierarchy, deletedItem, 0);
     }
 
 

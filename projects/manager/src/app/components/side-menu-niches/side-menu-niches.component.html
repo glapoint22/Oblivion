@@ -47,7 +47,7 @@
 <ng-container *ngIf="!searchMode">
     <div class="overflow-container" [style.height.px]="base.clientHeight - 40">
         <hierarchy #hierarchyComponent
-                   [sourceList]="thisArray"
+                   [sourceList]="thisHierarchy"
                    [options]="listOptions"
                    (onListUpdate)="listUpdate = $event">
         </hierarchy>
