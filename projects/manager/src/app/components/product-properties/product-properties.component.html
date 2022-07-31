@@ -5,19 +5,27 @@
         <div
             style="position: relative; height: 100%; display: flex; align-items: center; justify-content: flex-end; border-top-left-radius: 6px; border-top-right-radius: 6px; background: linear-gradient(#323232, #202020);">
 
-            <div class="circle-button" [ngClass]="{'circle-button-clicked': vendorPopupContainer ? vendorPopupContainer.length > 0 : false}" (click)="openVendorPopup()">
+            <div class="circle-button"
+                [ngClass]="{'circle-button-clicked': vendorPopupContainer ? vendorPopupContainer.length > 0 : false}"
+                (click)="openVendorPopup()">
                 <i class="fa-solid fa-store"></i>
             </div>
 
-            <div class="circle-button" [ngClass]="{'circle-button-clicked': filtersPopupContainer ? filtersPopupContainer.length > 0 : false}" (click)="openFiltersPopup()">
+            <div class="circle-button"
+                [ngClass]="{'circle-button-clicked': filtersPopupContainer ? filtersPopupContainer.length > 0 : false}"
+                (click)="openFiltersPopup()">
                 <i class="fa-solid fa-filter"></i>
             </div>
 
-            <div class="circle-button" [ngClass]="{'circle-button-clicked': keywordsPopupContainer ? keywordsPopupContainer.length > 0 : false}" (click)="openKeywordsPopup()">
+            <div class="circle-button"
+                [ngClass]="{'circle-button-clicked': keywordsPopupContainer ? keywordsPopupContainer.length > 0 : false}"
+                (click)="openKeywordsPopup()">
                 <i class="fa-solid fa-key"></i>
             </div>
 
-            <div class="circle-button" [ngClass]="{'circle-button-clicked': productGroupsPopupContainer ? productGroupsPopupContainer.length > 0 : false}" (click)="openProductGroupsPopup()">
+            <div class="circle-button"
+                [ngClass]="{'circle-button-clicked': productGroupsPopupContainer ? productGroupsPopupContainer.length > 0 : false}"
+                (click)="openProductGroupsPopup()">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
 
@@ -67,7 +75,7 @@
 
 
 
-                    <div style="width: 84px; height: 522px; border: 1px dashed #505050">
+                    <div style="width: 84px; height: 500px; border: 1px dashed #505050">
 
                         <div style="display: flex; width: 25px; height: 25px; border: 2px solid #929292; border-radius: 50%; justify-content: center; align-items: center; margin: auto; margin-top: 29px;"
                             tabindex="0">
@@ -94,17 +102,24 @@
 
                         <div style="color: #505050; font-size: 12px;">Image:</div>
 
-                        <i class="fas fa-pencil-alt" style="color: #9e9e9e;" tabindex="0"></i>
+                        <i *ngIf="product.image && product.image.src" class="fas fa-pencil-alt" style="color: #9e9e9e;"
+                            tabindex="0" (click)="openMediaBrowser(true)"></i>
 
                     </div>
 
 
 
                     <div
-                        style="display: flex; width: 522px; height: 522px; border: 1px dashed #505050; justify-content: center; align-items: center;">
+                        style="display: flex; width: 500px; height: 500px; border: 1px dashed #505050; justify-content: center; align-items: center;">
 
-                        <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;" tabindex="0"></i>
+                        <div *ngIf="!product.image || !product.image.src"
+                            style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;cursor: pointer;"
+                            (click)="openMediaBrowser()">
+                            <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;" tabindex="0"></i>
+                        </div>
 
+                        
+                        <img *ngIf="product.image && product.image.src" [src]="'images/' + product.image.src">
                     </div>
 
                 </div>
@@ -366,7 +381,8 @@
 
                 <subproducts *ngIf="product.components && product.components.length > 0"
                     [subproducts]="product.components" [subproductType]="subproductType.Component"
-                    [productId]="product.id"></subproducts>
+                    [productId]="product.id"
+                    [productName]="product.name"></subproducts>
             </div>
         </div>
 
@@ -382,7 +398,8 @@
                 </div>
 
                 <subproducts *ngIf="product.bonuses && product.bonuses.length > 0" [subproducts]="product.bonuses"
-                    [subproductType]="subproductType.Bonus" [productId]="product.id"></subproducts>
+                    [subproductType]="subproductType.Bonus" [productId]="product.id"
+                    [productName]="product.name"></subproducts>
             </div>
         </div>
     </div>

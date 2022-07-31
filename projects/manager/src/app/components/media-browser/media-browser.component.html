@@ -113,8 +113,7 @@
 
 
                     <!-- Update -->
-                    <icon-button [icon]="'fa-film fa-solid'" [title]="'Update Video'"
-                        (onClick)="updatingVideo = true;">
+                    <icon-button [icon]="'fa-film fa-solid'" [title]="'Update Video'" (onClick)="updatingVideo = true;">
                     </icon-button>
 
 
@@ -234,7 +233,7 @@
 
                     <!-- Media Container -->
                     <div class="new-media-container">
-                        <iframe id="newVideoIframe" class="video"  allowfullscreen></iframe>
+                        <iframe id="newVideoIframe" class="video" allowfullscreen></iframe>
                     </div>
 
                     <!-- Title -->
@@ -262,8 +261,9 @@
 
 
             <!-- Media Type - Video -->
-            <div *ngIf="currentMediaType == mediaType.Video && !searchMode && !isNewVideo && !editedVideo" class="backdrop"
-                [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}" style="padding: 20px;">
+            <div *ngIf="currentMediaType == mediaType.Video && !searchMode && !isNewVideo && !editedVideo"
+                class="backdrop" [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}"
+                style="padding: 20px;">
 
                 <div class="content-container">
                     <div class="content-heading">Choose a video</div>
@@ -290,8 +290,12 @@
                 <div class="backdrop search-backdrop"
                     [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
                     <div style="display: flex; flex-wrap: wrap; padding-bottom: 13px;">
-                        <img [src]="'images/' + media.thumbnail" class="media" *ngFor="let media of searchedMedia"
-                            [title]="media.name" (click)="setMedia(media)">
+                        <div style="position: relative;" *ngFor="let media of searchedMedia">
+                            <img [src]="'images/' + media.thumbnail"
+                                class="media" [title]="media.name" (click)="setMedia(media)"
+                                [ngClass]="{'invalid': isInvalid(media)}">
+                        </div>
+
                     </div>
                 </div>
             </ng-container>

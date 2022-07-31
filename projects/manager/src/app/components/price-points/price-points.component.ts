@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
-import { PopupArrowPosition } from '../../classes/enums';
+import { ImageSize, PopupArrowPosition } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
@@ -147,6 +147,7 @@ export class PricePointsComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         mediaBrowser.currentMediaType = MediaType.Image;
+        mediaBrowser.imageSize = ImageSize.Small;
 
         mediaBrowser.callback = (image: Image) => {
           if (image) {

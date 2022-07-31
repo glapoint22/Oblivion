@@ -27,7 +27,7 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
   public onImageLoad(event: Event) {
     const image = event.target as HTMLImageElement;
 
-    if (!this.width || this.width != image.naturalWidth) this.width = image.naturalWidth;
+    if (!this.width) this.width = image.naturalWidth;
     if (this.widgetService.currentWidgetInspectorView != WidgetInspectorView.Page) {
       window.setTimeout(() => {
         this.widgetService.onRowChange(this.widgetService.selectedRow.containerComponent);

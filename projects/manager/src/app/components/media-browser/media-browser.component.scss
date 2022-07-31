@@ -21,14 +21,13 @@ input {
     margin-top: 15px;
     margin-left: 15px;
     object-fit: contain;
-    border: 1px solid #404040;
-    padding: 5px;
-    cursor: pointer;
+    outline: 1px solid #404040;
     background: #1e1e1e;
 
-    &:hover:not(.selected-media) {
-        background: #272727;
-        border: 1px solid #404040;
+    &:hover:not(.invalid) {
+        cursor: pointer;
+        outline-color: #6b6b6b;
+        filter: brightness(1.1);
     }
 }
 
@@ -74,7 +73,7 @@ input {
 
 
 .close-button {
-    position:absolute;
+    position: absolute;
     top: 0;
     right: 0;
     width: 20px;
@@ -207,6 +206,10 @@ input[type=file] {
 
 .icons {
     justify-content: flex-end;
+}
+
+.invalid {
+    filter: grayscale(100%) brightness(0.30);
 }
 
 

@@ -13,19 +13,23 @@
 
 
             <!-- Image -->
-            <div class="image-container">
+            <div class="image">
                 <div class="icon-container" style="width: 200px;">
                     <div class="label">Image:</div>
 
                     <!-- Edit Image -->
                     <i *ngIf="subproduct.image && subproduct.image.src" class="fas fa-pencil-alt icon"
-                        title="Edit image" (click)="openMediaBrowser(subproduct)"></i>
+                        title="Edit image" (click)="openMediaBrowser(subproduct, true)"></i>
                 </div>
 
 
-                <div class="dashed-border image-icon-container" (click)="openMediaBrowser(subproduct)"
-                    [ngStyle]="{'cursor': !subproduct.image || !subproduct.image.src ? 'pointer': 'default'}">
-                    <i *ngIf="!subproduct.image || !subproduct.image.src" class="fa-solid fa-image" tabindex="0"></i>
+                <div class="dashed-border image-container">
+
+                    <div *ngIf="!subproduct.image || !subproduct.image.src" class="image-icon-container"
+                        (click)="openMediaBrowser(subproduct)">
+                        <i class="fa-solid fa-image" tabindex="0"></i>
+                    </div>
+
                     <img *ngIf="subproduct.image && subproduct.image.src" [src]="'images/' + subproduct.image.src">
                 </div>
             </div>

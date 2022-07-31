@@ -1,7 +1,7 @@
 import { Component, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, LazyLoadingService, MediaType, SpinnerAction, Subproduct } from 'common';
 import { TitleCase } from 'text-box';
-import { SubproductType } from '../../classes/enums';
+import { BuilderType, ImageLocation, ImageSize, SubproductType } from '../../classes/enums';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { ValuePopupComponent } from '../value-popup/value-popup.component';
 
@@ -14,6 +14,7 @@ export class SubproductsComponent {
   @Input() subproducts!: Array<Subproduct>;
   @Input() subproductType!: SubproductType;
   @Input() productId!: number;
+  @Input() productName!: string;
   @ViewChildren('editValuePopupContainer', { read: ViewContainerRef }) editValuePopupContainers!: QueryList<ViewContainerRef>;
   @ViewChildren('addValuePopupContainer', { read: ViewContainerRef }) addValuePopupContainers!: QueryList<ViewContainerRef>;
   public SubproductType = SubproductType;
@@ -26,7 +27,7 @@ export class SubproductsComponent {
 
 
   // --------------------------------------------------- Open Media Browser ---------------------------------------------------
-  public async openMediaBrowser(subproduct: Subproduct): Promise<void> {
+  public async openMediaBrowser(subproduct: Subproduct, editMode?: boolean): Promise<void> {
     this.lazyLoadingService.load(async () => {
       const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
       const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
@@ -37,7 +38,11 @@ export class SubproductsComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         mediaBrowser.currentMediaType = MediaType.Image;
+        mediaBrowser.imageSize = ImageSize.Small;
 
+        if (editMode) {
+          mediaBrowser.editedImage = subproduct.image;
+        }
 
 
         mediaBrowser.callback = (image: Image) => {
@@ -45,9 +50,17 @@ export class SubproductsComponent {
             subproduct.image.id = image.id;
             subproduct.image.name = image.name;
             subproduct.image.src = image.src;
-            subproduct.image.thumbnail = image.thumbnail;
 
             this.updateImage(subproduct.id, image.id);
+
+            // Add the image reference
+            this.dataService.post('api/Media/ImageReference', {
+              imageId: image.id,
+              imageSize: ImageSize.Small,
+              builder: BuilderType.Product,
+              host: this.productName,
+              location: this.subproductType == SubproductType.Component ? ImageLocation.Component : ImageLocation.Bonus
+            }).subscribe();
           }
         }
       });

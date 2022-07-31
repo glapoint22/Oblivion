@@ -1,8 +1,8 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
-import { DataService, LazyLoadingService, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct } from 'common';
-import { PopupArrowPosition, SubproductType } from '../../classes/enums';
+import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct } from 'common';
+import { BuilderType, ImageLocation, ImageSize, PopupArrowPosition, SubproductType } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { ProductService } from '../../services/product/product.service';
 import { FiltersPopupComponent } from '../filters-popup/filters-popup.component';
@@ -14,6 +14,7 @@ import { ProductGroupsPopupComponent } from '../product-groups-popup/product-gro
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
 import { VendorPopupComponent } from '../vendor-popup/vendor-popup.component';
+import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
   selector: 'product-properties',
@@ -345,5 +346,49 @@ export class ProductPropertiesComponent {
     }).subscribe((id: number) => {
       subproduct.id = id;
     });
+  }
+
+
+  // --------------------------------------------------- Open Media Browser ---------------------------------------------------
+  public async openMediaBrowser(editMode?: boolean): Promise<void> {
+    this.lazyLoadingService.load(async () => {
+      const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
+      const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
+      return {
+        component: MediaBrowserComponent,
+        module: MediaBrowserModule
+      }
+    }, SpinnerAction.None)
+      .then((mediaBrowser: MediaBrowserComponent) => {
+        mediaBrowser.currentMediaType = MediaType.Image;
+        mediaBrowser.imageSize = ImageSize.Medium;
+
+        if (editMode) {
+          mediaBrowser.editedImage = this.product.image;
+        }
+
+        mediaBrowser.callback = (image: Image) => {
+          if (image) {
+            this.product.image.id = image.id;
+            this.product.image.name = image.name;
+            this.product.image.src = image.src;
+
+            // Update the image
+            this.dataService.put('api/Products/Image', {
+              itemId: this.product.id,
+              propertyId: this.product.image.id
+            }).subscribe();
+
+            // Add the image reference
+            this.dataService.post('api/Media/ImageReference', {
+              imageId: image.id,
+              imageSize: ImageSize.Medium,
+              builder: BuilderType.Product,
+              host: this.product.name,
+              location: ImageLocation.Product
+            }).subscribe();
+          }
+        }
+      });
   }
 }

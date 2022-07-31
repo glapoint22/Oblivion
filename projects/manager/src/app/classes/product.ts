@@ -1,4 +1,4 @@
-import { IProduct, PricePoint, RecurringPayment, ShippingType, Subproduct } from "common";
+import { Image, IProduct, PricePoint, RecurringPayment, ShippingType, Subproduct } from "common";
 
 export class Product implements IProduct {
     public id!: number;
@@ -12,4 +12,5 @@ export class Product implements IProduct {
     public description!: string;
     public components!: Array<Subproduct>;
     public bonuses!: Array<Subproduct>;
+    public image: Image = new Image();
 }

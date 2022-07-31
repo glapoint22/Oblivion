@@ -87,3 +87,35 @@ export enum SubproductType {
     Component,
     Bonus
 }
+
+
+export enum ImageSize {
+    AnySize = 0,
+    Thumbnail = 100,
+    Small = 200,
+    Medium = 500,
+    Large = 675
+}
+
+export enum BuilderType {
+    Product,
+    Page,
+    Email
+}
+
+
+export enum ImageLocation {
+    Product,
+    Media,
+    PricePoint,
+    Component,
+    Bonus,
+    PageBackground,
+    RowBackground,
+    ColumnBackground,
+    ImageWidget,
+    CarouselWidgetBanner,
+    TextWidgetBackground,
+    ContainerWidgetBackground,
+    ButtonWidgetBackground
+}

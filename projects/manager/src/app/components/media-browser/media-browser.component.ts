@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, Image, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, Video } from 'common';
+import { ImageSize } from '../../classes/enums';
+import { SearchedMedia } from '../../classes/searched-media';
 import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
@@ -25,9 +27,10 @@ export class MediaBrowserComponent extends LazyLoad {
   public newVideo!: Video;
   public dragover!: boolean;
   public callback!: Function;
-  public searchedMedia: Array<Media> = [];
+  public searchedMedia: Array<SearchedMedia> = [];
   public invalidVideoLink!: boolean;
   public noSearchResults!: boolean;
+  public imageSize!: ImageSize;
   private imageFile!: File;
 
 
@@ -115,6 +118,7 @@ export class MediaBrowserComponent extends LazyLoad {
     const formData = new FormData()
     formData.append('image', this.imageFile);
     formData.append('name', imageName);
+    formData.append('imageSize', this.imageSize.toString());
 
     this.dataService.post<Media>('api/Media/Image', formData)
       .subscribe((media: Media) => {
@@ -195,12 +199,21 @@ export class MediaBrowserComponent extends LazyLoad {
 
     if (searchWords) {
       this.searchMode = true;
+      const params = [
+        {
+          key: 'type',
+          value: this.currentMediaType
+        },
+        {
+          key: 'searchWords',
+          value: searchWords
+        }
+      ]
 
-      this.dataService.get<Array<Media>>('api/Media/Search', [{ key: 'type', value: this.currentMediaType }, { key: 'searchWords', value: searchWords }])
-        .subscribe((media: Array<Media>) => {
-          this.searchedMedia = media;
-          this.noSearchResults = media.length == 0;
-        });
+      this.dataService.get<Array<SearchedMedia>>('api/Media/Search', params).subscribe((searchedMedia: Array<SearchedMedia>) => {
+        this.searchedMedia = searchedMedia;
+        this.noSearchResults = searchedMedia.length == 0;
+      });
     }
   }
 
@@ -231,7 +244,9 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
   // --------------------------------------------------------------------Set Media-------------------------------------------------------
-  public setMedia(media: Media): void {
+  public setMedia(media: SearchedMedia): void {
+    if (this.isInvalid(media)) return;
+
     if (this.currentMediaType == MediaType.Video) {
       const video = new Video({
         video: {
@@ -249,10 +264,56 @@ export class MediaBrowserComponent extends LazyLoad {
 
       image.id = media.id;
       image.name = media.name;
-      image.src = media.src;
       image.thumbnail = media.thumbnail;
 
-      this.callback(image);
+      if (this.imageSize == ImageSize.Small) {
+        if (media.imageSm) {
+          image.src = media.imageSm;
+          this.callback(image);
+        } else {
+          this.dataService.get<Image>('api/Media/Image',
+            [
+              { key: 'imageId', value: media.id },
+              { key: 'imageSize', value: this.imageSize }
+            ]).subscribe((img: Image) => {
+              image.src = img.src;
+              this.callback(image);
+            });
+        }
+
+
+
+      } else if (this.imageSize == ImageSize.Medium) {
+        if (media.imageMd) {
+          image.src = media.imageMd;
+          this.callback(image);
+        } else {
+          this.dataService.get<Image>('api/Media/Image',
+            [
+              { key: 'imageId', value: media.id },
+              { key: 'imageSize', value: this.imageSize }
+            ]).subscribe((img: Image) => {
+              image.src = img.src;
+              this.callback(image);
+            });
+        }
+
+      } else if (this.imageSize == ImageSize.AnySize) {
+        if (media.imageAnySize) {
+          image.src = media.imageAnySize;
+        } else {
+          this.dataService.get<Image>('api/Media/Image',
+            [
+              { key: 'imageId', value: media.id },
+              { key: 'imageSize', value: this.imageSize }
+            ]).subscribe((img: Image) => {
+              image.src = img.src;
+              this.callback(image);
+            });
+        }
+
+        this.callback(image);
+      }
     }
 
 
@@ -329,6 +390,7 @@ export class MediaBrowserComponent extends LazyLoad {
 
     formData.append('image', imageFile);
     formData.append('id', this.editedImage.id.toString());
+    formData.append('imageSize', this.imageSize.toString());
 
     this.dataService.post<any>('api/Media/UpdateImage', formData)
       .subscribe((image: any) => {
@@ -430,9 +492,52 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-  // ---------------------------------------------------------------------------On Escape-------------------------------------------------------------
-  // onEscape(): void {
-  //   this.callback();
-  //   super.onEscape();
-  // }
+  // ---------------------------------------------------------------------------Is Invalid-------------------------------------------------------------
+  isInvalid(searchedMedia: SearchedMedia) {
+    // Small
+    if (this.imageSize == ImageSize.Small) {
+      // If we have a any size that is greater or equal to small, return false
+      if (searchedMedia.imageAnySize &&
+        (searchedMedia.imageAnySizeWidth >= ImageSize.Small ||
+          searchedMedia.imageAnySizeHeight >= ImageSize.Small)) return false;
+
+      // If there is not a small size or the size is less than small return true
+      if (!searchedMedia.imageSm ||
+        (searchedMedia.imageSmWidth < ImageSize.Small &&
+          searchedMedia.imageSmHeight < ImageSize.Small)) return true;
+    }
+
+    // Medium
+    else if (this.imageSize == ImageSize.Medium) {
+      // If we have a any size that is greater or equal to medium, return false
+      if (searchedMedia.imageAnySize &&
+        (searchedMedia.imageAnySizeWidth >= ImageSize.Medium ||
+          searchedMedia.imageAnySizeHeight >= ImageSize.Medium)) return false;
+
+      // If there is not a medium size or the size is less than medium return true
+      if (!searchedMedia.imageMd ||
+        (searchedMedia.imageMdWidth < ImageSize.Medium &&
+          searchedMedia.imageMdHeight < ImageSize.Medium)) return true;
+    }
+
+    // Any Size
+    else if (this.imageSize == ImageSize.AnySize) {
+      let imageSizes = new Array<string>();
+
+      imageSizes.push(searchedMedia.imageSm);
+      imageSizes.push(searchedMedia.imageMd);
+      imageSizes.push(searchedMedia.imageLg);
+      imageSizes.push(searchedMedia.imageAnySize);
+
+      imageSizes = imageSizes.filter(x => x);
+
+      // Get unique values
+      imageSizes = [...new Set(imageSizes)];
+
+      // If there are more than one image size, it's invalid
+      return imageSizes.length > 1;
+    }
+
+    return false;
+  }
 }
