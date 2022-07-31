@@ -15,6 +15,10 @@ import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.comp
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
 import { VendorPopupComponent } from '../vendor-popup/vendor-popup.component';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
+import { CheckboxMultiColumnItem } from '../../classes/checkbox-multi-column-item';
+import { CheckboxItem } from '../../classes/checkbox-item';
+import { KeywordCheckboxItem } from '../../classes/keyword-checkbox-item';
+import { KeywordCheckboxMultiColumnItem } from '../../classes/keyword-checkbox-multi-column-item';
 
 @Component({
   selector: 'product-properties',
@@ -38,8 +42,17 @@ export class ProductPropertiesComponent {
   public shipping = Shipping;
   public subproductType = SubproductType;
 
-  public productFiltersArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-  public productFiltersSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+  public productFilterArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+  public productFilterSearchArray: Array<CheckboxMultiColumnItem> = new Array<CheckboxMultiColumnItem>();
+
+  public availableKeywordArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+  public availableKeywordSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+
+  public selectedKeywordArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
+  public selectedKeywordSearchArray: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
+
+  public productProductGroupArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+  public productProductGroupSearchArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
@@ -105,8 +118,8 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None, this.filtersPopupContainer)
       .then((filtersPopup: FiltersPopupComponent) => {
         this.filtersPopup = filtersPopup;
-        this.filtersPopup.productId = this.product.id;
-        this.filtersPopup.productIndex = this.productService.productComponents.indexOf(this);
+        filtersPopup.productId = this.product.id;
+        filtersPopup.productIndex = this.productService.productComponents.indexOf(this);
       });
   }
 
@@ -132,6 +145,8 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None, this.keywordsPopupContainer)
       .then((keywordsPopup: KeywordsPopupComponent) => {
         this.keywordsPopup = keywordsPopup;
+        keywordsPopup.productId = this.product.id;
+        keywordsPopup.productIndex = this.productService.productComponents.indexOf(this);
       });
   }
 
@@ -156,6 +171,8 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None, this.productGroupsPopupContainer)
       .then((productGroupsPopup: ProductGroupsPopupComponent) => {
         this.productGroupsPopup = productGroupsPopup;
+        productGroupsPopup.productId = this.product.id;
+        productGroupsPopup.productIndex = this.productService.productComponents.indexOf(this);
       });
   }
 

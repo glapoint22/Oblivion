@@ -1,12 +1,12 @@
 import { KeyValue } from "@angular/common";
-import { Directive } from "@angular/core";
+import { Directive, Input } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
 import { ListComponent } from "../components/lists/list/list.component";
-import { ListUpdateService } from "../services/list-update/list-update.service";
+import { ProductPropertiesComponent } from "../components/product-properties/product-properties.component";
 import { ProductService } from "../services/product/product.service";
-import { CaseType, ListUpdateType, MenuOptionType } from "./enums";
+import { ListUpdateType, MenuOptionType } from "./enums";
 import { ListItem } from "./list-item";
 import { ListOptions } from "./list-options";
 import { ListUpdate } from "./list-update";
@@ -24,29 +24,33 @@ export class ListUpdateManager {
     public dataServicePath!: string;
     public searchInputName!: string;
     public parentSearchType!: string;
-    public addIconButtonTitle!: string
+    public thisArray: Array<ListItem> = new Array<ListItem>();
+    public addIconButtonTitle!: string;
+    public otherArray: Array<ListItem> = new Array<ListItem>();
     public listComponent!: ListComponent;
     public searchComponent!: ListComponent;
-    public listUpdateService!: ListUpdateService;
+    public thisSearchArray: Array<ListItem> = new Array<ListItem>();
+    public otherSearchArray: Array<ListItem> = new Array<ListItem>();
     public searchInputSubscription!: Subscription;
     public selectLastSelectedItemOnOpen!: boolean;
     public editIconButtonTitle: string = 'Rename';
     public deleteIconButtonTitle: string = 'Delete';
     public searchIconButtonTitle: string = 'Search';
     public onClose: Subject<void> = new Subject<void>();
-    public searchOptions: ListOptions = new ListOptions();
     public listOptions: ListOptions = new ListOptions();
-    public thisArray: Array<ListItem> = new Array<ListItem>();
-    // public otherArray: Array<ListItem> = new Array<ListItem>();
-    public thisSearchList: Array<ListItem> = new Array<ListItem>();
-    // public otherSearchList: Array<ListItem> = new Array<ListItem>();
+    public searchOptions: ListOptions = new ListOptions();
+    public get itemType(): string { return this._itemType; }
+    public otherProductArray!: keyof ProductPropertiesComponent;
     public get listUpdate(): ListUpdate { return this._listUpdate; }
+    public otherProductSearchArray!: keyof ProductPropertiesComponent;
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
-    public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
-    public get itemType(): string { return this._itemType; }
     public set itemType(v: string) { this._itemType = v; this.addIconButtonTitle = 'Add ' + v; }
+    public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
 
+    // Decorators
+    @Input() productId!: number;
+    @Input() productIndex!: number;
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
@@ -161,7 +165,6 @@ export class ListUpdateManager {
                 .subscribe((thisArray: Array<ListItem>) => {
                     thisArray.forEach(x => {
                         this.thisArray.push(this.getItem(x));
-                        // if (this.getOtherItem(x)) this.otherArray.push(this.getOtherItem(x));
                     })
                 })
         } else {
@@ -200,7 +203,7 @@ export class ListUpdateManager {
         // If we're toggling to search mode
         if (this.searchMode) {
             this.searchIconButtonTitle = 'Back to List';
-            this.thisSearchList.splice(0, this.thisSearchList.length);
+            this.thisSearchArray.splice(0, this.thisSearchArray.length);
             window.setTimeout(() => {
                 const searchInput = document.getElementById(this.searchInputName) as HTMLInputElement;
                 searchInput.focus();
@@ -255,7 +258,7 @@ export class ListUpdateManager {
             this.listComponent.edit();
         } else {
 
-            if (this.thisSearchList.length > 0) {
+            if (this.thisSearchArray.length > 0) {
                 this.editIconButtonTitle = 'Rename';
                 this.deleteIconButtonTitle = 'Delete';
                 this.searchComponent.edit();
@@ -271,7 +274,7 @@ export class ListUpdateManager {
         if (!this.searchMode) {
             this.listComponent.delete();
         } else {
-            if (this.thisSearchList.length > 0) this.searchComponent.delete();
+            if (this.thisSearchArray.length > 0) this.searchComponent.delete();
         }
     }
 
@@ -370,22 +373,20 @@ export class ListUpdateManager {
         // this.dataService.post<number>('api/' + this.dataServicePath, {
         //     name: listUpdate.name
         // }).subscribe((id: number) => {
-        this.thisArray[listUpdate.index!].id = this.listAddId//id;
-
-        // this.sort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]), this.otherArray);
-        // });
+            this.thisArray[listUpdate.index!].id = this.listAddId//id;
+            this.updateOtherItems(listUpdate);
+        // }
     }
 
 
 
-    // ======================================================================( ADD ITEM )===================================================================== \\
+    // ==================================================================( ADD OTHER ITEM )=================================================================== \\
 
-    addItem(list: Array<ListItem>, index: number, item: ListItem): ListItem {
-        list.splice(index, 0, {
-            id: item.id,
-            name: item.name
+    addOtherItem(array: Array<ListItem>, index: number, listItem: ListItem) {
+        array.splice(index, 0, {
+            id: listItem.id,
+            name: listItem.name
         })
-        return list[index];
     }
 
 
@@ -398,10 +399,7 @@ export class ListUpdateManager {
         //     id: listUpdate.id,
         //     name: listUpdate.name
         // }).subscribe();
-
-
-        // this.sort(this.editItem(this.otherArray, listUpdate, 0), this.otherArray);
-        // this.editItem(this.otherSearchList, listUpdate, this.parentSearchType);
+        this.updateOtherItems(listUpdate);
     }
 
 
@@ -414,20 +412,62 @@ export class ListUpdateManager {
         //     id: searchUpdate.id,
         //     name: searchUpdate.values![0].name
         // }).subscribe();
-
-        this.sort(this.editItem(this.thisArray, searchUpdate, 0), this.thisArray);
-        // this.sort(this.editItem(this.otherArray, searchUpdate, 0), this.otherArray);
-        // this.editItem(this.otherSearchList, searchUpdate, this.parentSearchType);
+        this.updateOtherItems(searchUpdate);
     }
 
 
 
-    // =====================================================================( EDIT ITEM )===================================================================== \\
-
-    editItem(list: Array<ListItem>, update: ListUpdate, type?: number | string): ListItem {
+    // ==================================================================( EDIT OTHER ITEM )================================================================== \\
+    
+    editOtherItem(list: Array<ListItem>, update: ListUpdate, type?: number | string) {
         const editedItem: ListItem = list.find(x => x.id == update.id)!;
-        if (editedItem) editedItem.name = update.name;
-        return editedItem;
+        if (editedItem) {
+            editedItem.name = update.name;
+            this.sort(editedItem, list);
+        }
+    }
+
+
+
+    // =================================================================( UPDATE OTHER ITEMS )================================================================ \\
+
+    updateOtherItems(update: ListUpdate) {
+        // Form
+        if (this.otherArray) {
+
+            if (update.type == ListUpdateType.Add) {
+                this.addOtherItem(this.otherArray, update.index!, this.thisArray[update.index!]);
+            }
+
+            if (update.type == ListUpdateType.Edit) {
+                this.editOtherItem(this.otherArray, update);
+                this.editOtherItem(this.otherSearchArray, update);
+                this.editOtherItem(this.otherSearchArray, update);
+                this.editOtherItem(this.thisArray, update);
+                this.editOtherItem(this.otherArray, update);
+            }
+        }
+
+        // Products
+        if (this.otherProductArray) {
+            this.productService.productComponents.forEach(x => {
+                if (this.productService.productComponents.indexOf(x) != this.productIndex) {
+
+                    if (update.type == ListUpdateType.Add) {
+                        if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.addOtherItem(x[this.otherProductArray] as Array<ListItem>, update.index!, this.thisArray[update.index!]);
+                    }
+
+                    if (update.type == ListUpdateType.Edit) {
+                        if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update);
+                        if ((x[this.otherProductSearchArray] as Array<ListItem>).length > 0) {
+                            this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update);
+                            this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update);
+                        }
+                    }
+                }
+                if (update.type == ListUpdateType.Edit && (x[this.otherProductArray] as Array<ListItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update);
+            })
+        }
     }
 
 
@@ -564,7 +604,7 @@ export class ListUpdateManager {
 
 
         // this.deleteItem(this.otherArray, deletedItem, 0);
-        // this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
+        // this.deleteItem(this.otherSearchArray, deletedItem, this.parentSearchType);
     }
 
 
@@ -576,7 +616,7 @@ export class ListUpdateManager {
         // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
 
 
-        // this.deleteItem(this.otherSearchList, deletedItem, this.parentSearchType);
+        // this.deleteItem(this.otherSearchArray, deletedItem, this.parentSearchType);
         this.deleteItem(this.thisArray, deletedItem, 0);
         // this.deleteItem(this.otherArray, deletedItem, 0);
     }
@@ -599,7 +639,7 @@ export class ListUpdateManager {
         if (searchInput.value.length == 1) {
             this.getSearchResults(searchInput.value);
         } else if (searchInput.value.length == 0) {
-            this.thisSearchList.splice(0, this.thisSearchList.length);
+            this.thisSearchArray.splice(0, this.thisSearchArray.length);
         }
     }
 
@@ -608,14 +648,14 @@ export class ListUpdateManager {
     // ================================================================( GET SEARCH RESULTS )================================================================= \\
 
     getSearchResults(searchWords: string) {
-        this.thisSearchList.splice(0, this.thisSearchList.length);
+        this.thisSearchArray.splice(0, this.thisSearchArray.length);
         this.dataService.get<Array<SearchResultItem>>('api/' + this.dataServicePath + '/Search', this.getSearchResultsParameters(searchWords))
             .subscribe((searchResults: Array<SearchResultItem>) => {
 
                 // As long as search results were returned
                 if (searchResults) {
                     searchResults.forEach(x => {
-                        this.thisSearchList.push(this.getSearchResultItem(x));
+                        this.thisSearchArray.push(this.getSearchResultItem(x));
                     })
                 }
             });
@@ -636,7 +676,7 @@ export class ListUpdateManager {
             }
 
             // If we're in search mode
-        } else if (this.searchMode && this.thisSearchList.length > 0) {
+        } else if (this.searchMode && this.thisSearchArray.length > 0) {
 
             // As long as the search update is not null
             if (this.searchUpdate) {
@@ -663,12 +703,12 @@ export class ListUpdateManager {
             ||
 
             // Search No Results
-            (this.searchMode && this.thisSearchList.length == 0)
+            (this.searchMode && this.thisSearchArray.length == 0)
 
             ||
 
             // Search With Results
-            (this.searchMode && this.thisSearchList.length > 0 &&
+            (this.searchMode && this.thisSearchArray.length > 0 &&
                 this.searchComponent.listManager.selectedItem == null &&
                 this.searchComponent.listManager.editedItem == null &&
                 !this.searchComponent.listManager.promptOpen))
@@ -694,17 +734,6 @@ export class ListUpdateManager {
             name: x.name
         }
     }
-
-
-
-    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
-
-    // getOtherItem(x: ListItem) {
-    //     return {
-    //         id: x.id,
-    //         name: x.name
-    //     }
-    // }
 
 
 

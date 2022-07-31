@@ -1,7 +1,7 @@
 import { KeyValue } from "@angular/common";
-import { Directive, Input, ViewChild } from "@angular/core";
-import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
-import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
+import { Directive, ViewChild } from "@angular/core";
+import { CheckboxHierarchyComponent } from "../components/hierarchies/checkbox-hierarchy/checkbox-hierarchy.component";
+import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
@@ -16,21 +16,19 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
-    @Input() productId!: number;
-    @Input() productIndex!: number;
-    @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
-    @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
+    @ViewChild('hierarchyComponent') listComponent!: CheckboxHierarchyComponent;
+    @ViewChild('searchComponent') searchComponent!: CheckboxMultiColumnListComponent;
 
 
     // ====================================================================( NG ON INIT )===================================================================== \\
 
     ngOnInit() {
         super.ngOnInit();
-        this.thisArray = this.productService.productComponents[this.productIndex].productFiltersArray
-        // this.otherArray = this.filtersService.formArray;
-        // this.thisSearchList = this.filtersService.productSearchList;
-        // this.otherSearchList = this.filtersService.formSearchList;
-        this.searchInputName = 'productFiltersSearchInput';
+        this.otherArray = this.productService.formFilterArray;
+        this.otherSearchArray = this.productService.formFilterSearchArray;
+        this.searchInputName = 'productFiltersSearchInput' + this.productId;
+        this.thisArray = this.productService.productComponents[this.productIndex].productFilterArray;
+        this.thisSearchArray = this.productService.productComponents[this.productIndex].productFilterSearchArray;
     }
 
 
@@ -58,7 +56,7 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
         // ********* Commented Out Data Service *********
         // this.dataService.put('api/Products/Filter', {
-        //     productId: this.productService.product.id,
+        //     productId: this.productId,
         //     id: hierarchyUpdate.id,
         //     checked: hierarchyUpdate.checked
         // }).subscribe();
@@ -71,7 +69,7 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
         // ********* Commented Out Data Service *********
         // this.dataService.put('api/Products/Filter', {
-        //     productId: this.productService.product.id,
+        //     productId: this.productId,
         //     id: checkboxMultiColumnListUpdate.id,
         //     checked: checkboxMultiColumnListUpdate.checked
         // }).subscribe();
@@ -126,22 +124,6 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
     getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
-    }
-
-
-
-
-
-
-    onItemEdit(hierarchyUpdate: HierarchyUpdate) {
-        super.onItemEdit(hierarchyUpdate);
-
-        // this.productService.productComponents.forEach(x => {
-
-        // });
-
-        const trumpy = this.productService.productComponents.filter(x => this.productService.productComponents.indexOf(x) != this.productIndex);
-        console.log(trumpy)
+        return [{ key: 'productId', value: this.productId }, { key: 'searchWords', value: searchWords }];
     }
 }

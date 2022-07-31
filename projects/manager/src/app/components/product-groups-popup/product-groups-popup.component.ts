@@ -8,6 +8,8 @@ import { ProductProductGroupsComponent } from '../product-product-groups/product
   styleUrls: ['./product-groups-popup.component.scss']
 })
 export class ProductGroupsPopupComponent extends LazyLoad {
+  public productId!: number;
+  public productIndex!: number;
   @ViewChild('productProductGroups') productProductGroups!: ProductProductGroupsComponent;
 
 

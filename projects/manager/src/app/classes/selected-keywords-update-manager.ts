@@ -1,7 +1,7 @@
 import { SafeHtml } from "@angular/platform-browser";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
-import { CaseType, ListUpdateType, MenuOptionType } from "./enums";
+import { CaseType, ListUpdateType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
@@ -10,10 +10,10 @@ import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { KeyValue } from "@angular/common";
-import { HierarchyItem } from "./hierarchy-item";
 import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
+import { MultiColumnItem } from "./multi-column-item";
 
 @Directive()
 export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
@@ -24,7 +24,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     // Public
     public thisArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
-    public thisSearchList: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
+    public thisSearchArray: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
 
     // Decorators
     @ViewChild('selectedHierarchyComponent') listComponent!: HierarchyComponent;
@@ -35,25 +35,15 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     ngOnInit() {
         super.ngOnInit();
-        this.itemType = 'Custom Keyword Group';
-        this.searchNameWidth = '296px';
-        this.dataServicePath = 'SelectedKeywords/Groups';
-        this.childDataServicePath = 'SelectedKeywords';
-        this.childType = 'Custom Keyword';
-        // this.keywordsService.selectedKeywordsArray = this.thisArray;
-        // this.keywordsService.selectedKeywordsSearchList = this.thisSearchList;
-        this.searchInputName = 'selectedKeywordsSearchInput';
         this.parentSearchType = 'Group';
         this.childSearchType = 'Keyword';
-        this.searchTypeWidth = '68px';
-    }
-
-
-
-    // ==================================================================( ON ARROW CLICK )=================================================================== \\
-
-    onArrowClick(hierarchyUpdate: HierarchyUpdate) {
-        HierarchyUpdateManager.prototype.onArrowClick.call(this, hierarchyUpdate);
+        this.childType = 'Custom Keyword';
+        this.itemType = 'Custom Keyword Group';
+        this.childDataServicePath = 'SelectedKeywords';
+        this.dataServicePath = 'SelectedKeywords/Groups';
+        this.searchInputName = 'selectedKeywordsSearchInput' + this.productId;
+        this.thisArray = this.productService.productComponents[this.productIndex].selectedKeywordArray;
+        this.thisSearchArray = this.productService.productComponents[this.productIndex].selectedKeywordSearchArray;
     }
 
 
@@ -185,10 +175,10 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ==============================================================( ON SELECTED SEARCH ITEM )============================================================== \\
 
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
+        if ((searchUpdate.selectedItems![0] as MultiColumnItem).values[1].name == this.parentSearchType) {
 
             // If we're NOT selecting a custom keyword group
-            if (!this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].forProduct) {
+            if (!this.thisSearchArray[searchUpdate.selectedItems![0].index!].forProduct) {
                 this.itemType = 'Keyword Group';
                 this.editDisabled = true;
                 this.deleteDisabled = false;
@@ -219,10 +209,10 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             }
         }
 
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
+        if ((searchUpdate.selectedItems![0] as MultiColumnItem).values[1].name == this.childSearchType) {
 
             // If we're NOT selecting a custom keyword
-            if (!this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].forProduct) {
+            if (!this.thisSearchArray[searchUpdate.selectedItems![0].index!].forProduct) {
                 this.childType = 'Keyword';
                 this.itemType = 'Keyword Group';
                 this.editDisabled = true;
@@ -271,7 +261,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
         // ********* Commented Out Data Service *********
         // this.dataService.put('api/' + this.childDataServicePath + '/Update', {
-        //     productId: this.productService.product.id,
+        //     productId: this.productId,
         //     id: hierarchyUpdate.id,
         //     checked: hierarchyUpdate.checked
         // }).subscribe();
@@ -284,7 +274,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
         // ********* Commented Out Data Service *********
         // this.dataService.put('api/' + this.childDataServicePath + '/Update', {
-        //     productId: this.productService.product.id,
+        //     productId: this.productId,
         //     id: checkboxMultiColumnListUpdate.id,
         //     checked: checkboxMultiColumnListUpdate.checked
         // }).subscribe();
@@ -327,7 +317,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         if (hierarchyUpdate.hierarchyGroupID == 0) {
             // ********* Commented Out Data Service *********
             // this.dataService.post<number>('api/' + this.dataServicePath, {
-            //     id: this.productService.product.id,
+            //     id: this.productId,
             //     name: hierarchyUpdate.name
             // }).subscribe((id: number) => {
             this.thisArray[hierarchyUpdate.index!].id = this.selectedKeywordsAdd//id;
@@ -486,7 +476,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             if (this.itemType == 'Keyword Group') {
                 // ********* Commented Out Data Service *********
                 // this.dataService.put('api/' + this.dataServicePath + '/Remove', {
-                //     productId: this.productService.product.id,
+                //     productId: this.productId,
                 //     id: deletedItem.id
                 // }).subscribe();
 
@@ -596,8 +586,8 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
                         // Plus, while we have the children of the keyword group that's being removed, remove those children from this selected keywords search list as well
-                        const searchItemIndex = this.thisSearchList.findIndex(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
-                        if (searchItemIndex != -1) this.thisSearchList.splice(searchItemIndex, 1);
+                        const searchItemIndex = this.thisSearchArray.findIndex(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
+                        if (searchItemIndex != -1) this.thisSearchArray.splice(searchItemIndex, 1);
 
                         // And also, check to see if these children are present in this selected keywords hierarchy list and remove them if they are
                         const hierarchyItemIndex = this.thisArray.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 1);
@@ -648,7 +638,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             }
 
             // If we're in search mode
-        } else if (this.searchMode && this.thisSearchList.length > 0) {
+        } else if (this.searchMode && this.thisSearchArray.length > 0) {
 
             // As long as the search update is not null
             if (this.searchUpdate) {
@@ -699,11 +689,11 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
-    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 
-    // getOtherItem(x: KeywordCheckboxItem) {
-    //     return null!
-    // }
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productId }];
+    }
 
 
 
@@ -725,18 +715,10 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
-    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
-
-    // getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
-    //     return null!;
-    // }
-
-
-
     // =============================================================( GET CHILD ITEM PARAMETERS )============================================================== \\
 
     getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productService.product.id }, { key: 'parentId', value: hierarchyUpdate.id }];
+        return [{ key: 'productId', value: this.productId }, { key: 'parentId', value: hierarchyUpdate.id }];
     }
 
 
@@ -762,6 +744,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
     getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
+        return [{ key: 'productId', value: this.productId }, { key: 'searchWords', value: searchWords }];
     }
 }

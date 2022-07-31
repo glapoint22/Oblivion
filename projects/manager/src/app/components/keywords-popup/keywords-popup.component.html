@@ -6,8 +6,8 @@
     </div>
     
     <div class="popup-base">
-        <available-keywords #availableKeywords></available-keywords>
+        <available-keywords #availableKeywords [productId]="productId" [productIndex]="productIndex"></available-keywords>
         <div style="width: 32px;"></div>
-        <selected-keywords #selectedKeywords></selected-keywords>
+        <selected-keywords #selectedKeywords [productId]="productId" [productIndex]="productIndex"></selected-keywords>
     </div>
 </div>

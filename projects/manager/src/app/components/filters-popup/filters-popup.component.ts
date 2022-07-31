@@ -16,7 +16,6 @@ export class FiltersPopupComponent extends LazyLoad {
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-    this.productFilters.productId = this.productId;
     this.productFilters.onClose.subscribe(() => this.close());
   }
 

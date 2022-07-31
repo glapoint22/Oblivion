@@ -15,7 +15,6 @@ import { Product } from "./product";
 import { ComponentFactory, ComponentFactoryResolver, Directive, EventEmitter, Output, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
-import { NicheHierarchyService } from "../services/niche-hierarchy/niche-hierarchy.service";
 import { ProductPropertiesComponent } from "../components/product-properties/product-properties.component";
 
 @Directive()
@@ -38,7 +37,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, productService: ProductService, private lazyLoadingService: LazyLoadingService, private nicheHierarchyService: NicheHierarchyService, private resolver: ComponentFactoryResolver) {
+    constructor(dataService: DataService, sanitizer: DomSanitizer, productService: ProductService, private lazyLoadingService: LazyLoadingService, private resolver: ComponentFactoryResolver) {
         super(dataService, sanitizer, productService);
     }
 
@@ -59,7 +58,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         this.collapseHierarchyOnOpen = false;
         this.selectLastSelectedItemOnOpen = true;
         this.searchInputName = 'nicheHierarchySearchInput';
-        this.thisArray = this.nicheHierarchyService.formArray;
+        this.thisArray = this.productService.sideMenuNicheArray;
 
         // ---------- HIERARCHY OPTIONS ---------- \\
 
@@ -119,7 +118,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                             let num = this.listComponent.listManager.editedItem ? 2 : 1;
                             for (let i = grandchildren.length - 1; i >= 0; i--) {
                                 this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getGrandchildItem(grandchildren[i]));
-                                // this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherGrandchildItem(grandchildren[i], hierarchyUpdate));
                             }
                             this.onGrandchildrenLoad.next();
                         })
@@ -207,9 +205,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                 this.onProductSelect.emit();
                 this.dataService.get<Product>('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: hierarchyUpdate.selectedItems![0].id }])
                     .subscribe((product: Product) => {
-                        this.productService.product = product;
-
-
                         const productComponentFactory: ComponentFactory<ProductPropertiesComponent> = this.resolver.resolveComponentFactory(ProductPropertiesComponent);
                         const productComponentRef = this.productService.productsContainer.createComponent(productComponentFactory);
                         const productComponent: ProductPropertiesComponent = productComponentRef.instance;
@@ -235,19 +230,19 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
         super.onSelectedSearchItem(searchUpdate);
 
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.parentSearchType) {
+        if ((searchUpdate.selectedItems![0] as MultiColumnItem).values[1].name == this.parentSearchType) {
             this.searchOptions.menu!.menuOptions[3].name = 'Go to ' + this.itemType + ' in Hierarchy';
             this.searchOptions.menu!.menuOptions[5].isDisabled = true;
             this.searchOptions.menu!.menuOptions[5].name = 'Move ' + this.itemType;
         }
 
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.childSearchType) {
+        if ((searchUpdate.selectedItems![0] as MultiColumnItem).values[1].name == this.childSearchType) {
             this.searchOptions.menu!.menuOptions[3].name = 'Go to ' + this.childType + ' in Hierarchy';
             this.searchOptions.menu!.menuOptions[5].isDisabled = false;
             this.searchOptions.menu!.menuOptions[5].name = 'Move ' + this.childType;
         }
 
-        if (searchUpdate.selectedMultiColumnItems![0].values[1].name == this.grandchildSearchType) {
+        if ((searchUpdate.selectedItems![0] as MultiColumnItem).values[1].name == this.grandchildSearchType) {
             this.editIconButtonTitle = 'Rename ' + this.grandchildType;
             this.deleteIconButtonTitle = 'Delete ' + this.grandchildType;
             this.searchOptions.deletePrompt!.title = 'Delete ' + this.grandchildType;
@@ -258,7 +253,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.searchOptions.menu!.menuOptions[5].name = 'Move ' + this.grandchildType;
 
             if (!searchUpdate.rightClick) {
-                this.dataService.get('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: searchUpdate.selectedMultiColumnItems![0].id }]).subscribe(x => console.log(x));
+                this.dataService.get('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: searchUpdate.selectedItems![0].id }]).subscribe(x => console.log(x));
             }
         }
     }
@@ -314,7 +309,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             //     id: searchUpdate.id,
             //     name: searchUpdate.values![0].name
             // }).subscribe();
-            this.sort(this.editItem(this.thisArray, searchUpdate, 2), this.thisArray);
+            // this.sort(this.OldEditItem(this.thisArray, searchUpdate, 2), this.thisArray);
         }
     }
 
@@ -709,14 +704,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
-
-    // getOtherItem(x: HierarchyItem) {
-    //     return null!;
-    // }
-
-
-
     // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
     getChildItem(child: Item) {
@@ -733,14 +720,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
-
-    // getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
-    //     return null!;
-    // }
-
-
-
     // ================================================================( GET GRANDCHILD ITEM )================================================================= \\
 
     getGrandchildItem(grandchild: Item) {
@@ -752,12 +731,4 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             case: CaseType.TitleCase
         }
     }
-
-
-
-    // // =============================================================( GET OTHER GRANDCHILD ITEM )============================================================== \\
-
-    // getOtherGrandchildItem(grandchild: Item, hierarchyUpdate: HierarchyUpdate) {
-    //     return null!;
-    // }
 }

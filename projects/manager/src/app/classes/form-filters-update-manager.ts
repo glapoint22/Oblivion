@@ -20,19 +20,18 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
     ngOnInit() {
         super.ngOnInit()
         this.itemType = 'Filter';
+        this.searchTypeWidth = '55px';
+        this.searchNameWidth = '246px';
+        this.childSearchType = 'Option';
         this.childType = 'Filter Option';
         this.dataServicePath = 'Filters';
-        this.childDataServicePath = 'Filters/Options';
         this.parentSearchType = 'Filter';
-        this.childSearchType = 'Option';
-        this.searchNameWidth = '246px';
-        this.searchTypeWidth = '55px';
-        // this.hierarchyUpdateService = this.filtersService;
-        // this.thisArray = this.filtersService.formArray;
-        // this.otherArray = this.filtersService.productArray;
-        // this.thisSearchList = this.filtersService.formSearchList;
-        // this.otherSearchList = this.filtersService.productSearchList;
+        this.childDataServicePath = 'Filters/Options';
         this.searchInputName = 'filtersFormSearchInput';
+        this.otherProductArray = 'productFilterArray';
+        this.otherProductSearchArray = 'productFilterSearchArray';
+        this.thisArray = this.productService.formFilterArray;
+        this.thisSearchArray = this.productService.formFilterSearchArray;
     }
 
 
@@ -58,22 +57,6 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
             case: CaseType.CapitalizedCase
         }
     }
-
-
-
-    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
-
-    // getOtherChildItem(child: CheckboxItem, hierarchyUpdate: HierarchyUpdate) {
-    //     return {
-    //         id: child.id!,
-    //         name: child.name,
-    //         hierarchyGroupID: 1,
-    //         hidden: !this.otherArray[hierarchyUpdate.index!].arrowDown,
-    //         arrowDown: false,
-    //         isParent: false,
-    //         checked: child.checked
-    //     }
-    // }
 
 
 

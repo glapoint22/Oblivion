@@ -3,7 +3,6 @@ import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { CaseType, MenuOptionType } from "./enums";
-import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
@@ -25,13 +24,11 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     ngOnInit() {
         super.ngOnInit();
-        this.searchNameWidth = '296px';
-        this.searchInputName = 'availableKeywordsSearchInput';
-        // this.thisArray = this.keywordsService.productArray;
-        // this.otherArray = this.keywordsService.formArray;
-        // this.thisSearchList = this.keywordsService.productSearchList;
-        // this.otherSearchList = this.keywordsService.formSearchList;
-        // this.keywordsService.availableSearchList = this.thisSearchList;
+        this.otherArray = this.productService.formKeywordArray;
+        this.otherSearchArray = this.productService.formKeywordSearchArray;
+        this.searchInputName = 'availableKeywordsSearchInput' + this.productId;
+        this.thisArray = this.productService.productComponents[this.productIndex].availableKeywordArray;
+        this.thisSearchArray = this.productService.productComponents[this.productIndex].availableKeywordSearchArray;
 
         this.listOptions.menu!.menuOptions[6] = { type: MenuOptionType.Divider };
         this.listOptions.menu!.menuOptions[7] = {
@@ -101,8 +98,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     onSelectedSearchItem(searchUpdate: MultiColumnListUpdate) {
         super.onSelectedSearchItem(searchUpdate);
-        this.addToSelectedKeywordsButtonDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
-        this.searchOptions.menu!.menuOptions[5].isDisabled = this.thisSearchList[searchUpdate.selectedMultiColumnItems![0].index!].opacity != null ? true : false;
+        this.addToSelectedKeywordsButtonDisabled = this.thisSearchArray[searchUpdate.selectedItems![0].index!].opacity != null ? true : false;
+        this.searchOptions.menu!.menuOptions[5].isDisabled = this.thisSearchArray[searchUpdate.selectedItems![0].index!].opacity != null ? true : false;
     }
 
 
@@ -180,7 +177,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             }
             // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/Add', {
-            //   productId: this.productService.product.id,
+            //   productId: this.productId,
             //   id: keywordGroup.id
             // }).subscribe();
 
@@ -202,7 +199,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             }
             // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
-            //   productId: this.productService.product.id,
+            //   productId: this.productId,
             //   keywordGroupId: keywordGroup.id,
             //   KeywordId: childId
             // }).subscribe();
@@ -228,7 +225,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }])
                 .subscribe((children: Array<KeywordCheckboxItem>) => {
                     children.forEach(x => {
-                        const searchItem = this.thisSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                        const searchItem = this.thisSearchArray.find(y => y.id == x.id && y.values[1].name == 'Keyword');
                         if (searchItem) searchItem.opacity = 0.4;
                     })
                 })
@@ -244,7 +241,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             }
             // ********* Commented Out Data Service *********
             // this.dataService.post('api/SelectedKeywords/Groups/Add', {
-            //     productId: this.productService.product.id,
+            //     productId: this.productId,
             //     id: keywordGroup.id
             // }).subscribe();
 
@@ -269,13 +266,13 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                     this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }])
                         .subscribe((children: Array<KeywordCheckboxItem>) => {
                             children.forEach(x => {
-                                const searchItem = this.thisSearchList.find(y => y.id == x.id && y.values[1].name == 'Keyword');
+                                const searchItem = this.thisSearchArray.find(y => y.id == x.id && y.values[1].name == 'Keyword');
                                 if (searchItem) searchItem.opacity = 0.4;
                             })
                         })
 
                     // Also, if the parent of the selected keyword is in the search list, set the disabled look to it
-                    const selectedKeywordParent = this.thisSearchList.find(x => x.id == keywordGroup.id && x.values[1].name == 'Group');
+                    const selectedKeywordParent = this.thisSearchArray.find(x => x.id == keywordGroup.id && x.values[1].name == 'Group');
                     if (selectedKeywordParent) selectedKeywordParent.opacity = 0.4;
 
 
@@ -291,7 +288,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
                     // ********* Commented Out Data Service *********
                     // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
-                    //     productId: this.productService.product.id,
+                    //     productId: this.productId,
                     //     keywordGroupId: keywordGroup.id,
                     //     KeywordId: this.searchComponent.listManager.selectedItem.id
                     // }).subscribe();
@@ -317,18 +314,11 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
-    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 
-    // getOtherItem(x: KeywordCheckboxItem) {
-    //     return {
-    //         id: x.id,
-    //         name: x.name,
-    //         hierarchyGroupID: 0,
-    //         hidden: false,
-    //         arrowDown: false,
-    //         opacity: null!
-    //     }
-    // }
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productId }];
+    }
 
 
 
@@ -351,6 +341,6 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
     getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productService.product.id }, { key: 'searchWords', value: searchWords }];
+        return [{ key: 'productId', value: this.productId }, { key: 'searchWords', value: searchWords }];
     }
 }

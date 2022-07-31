@@ -56,7 +56,7 @@
 
 <!-- Search -->
 <ng-container *ngIf="searchMode">
-    <input id="selectedKeywordsSearchInput"
+    <input [id]="'selectedKeywordsSearchInput' + productId"
            placeholder="Search"
            (input)="onSearchInputChange($event.target)">
 
@@ -66,15 +66,15 @@
     </div>
 
     <div class="popup-list-container" style="height: 198px;">
-        <ng-container *ngIf="thisSearchList.length == 0">
+        <ng-container *ngIf="thisSearchArray.length == 0">
             <div class="no-search-results">
                 No search results available
             </div>
         </ng-container>
         
-        <ng-container *ngIf="thisSearchList.length > 0">
+        <ng-container *ngIf="thisSearchArray.length > 0">
             <checkbox-multi-column-list #selectedSearchComponent
-                               [sourceList]="thisSearchList"
+                               [sourceList]="thisSearchArray"
                                [options]="searchOptions"
                                (onListUpdate)="searchUpdate = $event">
             </checkbox-multi-column-list>

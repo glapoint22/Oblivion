@@ -42,7 +42,9 @@
                          
                          
             <ng-container *ngIf="listManager.editedItem == null && item.values[1].name != parentSearchType">
-                <label class="checkbox">
+                <label class="checkbox"
+                       (mousedown)="$event.stopPropagation()"
+                       (dblclick)="$event.stopPropagation()">
                     <input type="checkbox"
                             [checked]="item.checked"
                             (change)="listManager.onCheckboxChange(item)"
