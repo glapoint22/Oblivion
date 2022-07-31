@@ -28,8 +28,8 @@ export class FormFiltersUpdateManager extends HierarchyUpdateManager {
         this.parentSearchType = 'Filter';
         this.childDataServicePath = 'Filters/Options';
         this.searchInputName = 'filtersFormSearchInput';
-        this.otherProductArray = 'productFiltersHierarchy';
-        this.otherProductSearchArray = 'productFiltersSearchList';
+        this.otherProductArray = 'productFilterArray';
+        this.otherProductSearchArray = 'productFilterSearchArray';
         this.thisArray = this.productService.formFilterArray;
         this.thisSearchArray = this.productService.formFilterSearchArray;
     }

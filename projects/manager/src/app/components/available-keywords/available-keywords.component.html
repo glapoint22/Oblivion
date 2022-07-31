@@ -56,7 +56,7 @@
 
 <!-- Search -->
 <ng-container *ngIf="searchMode">
-    <input id="availableKeywordsSearchInput"
+    <input [id]="'availableKeywordsSearchInput' + productId"
            placeholder="Search"
            (input)="onSearchInputChange($event.target)">
 

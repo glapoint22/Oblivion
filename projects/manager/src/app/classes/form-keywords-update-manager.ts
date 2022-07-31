@@ -1,21 +1,22 @@
-import { DomSanitizer } from "@angular/platform-browser";
-import { DataService } from "common";
 import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
-import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
-import { ProductService } from "../services/product/product.service";
-import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { CaseType, ListUpdateType } from "./enums";
 import { SearchResultItem } from "./search-result-item";
+import { ListUpdate } from "./list-update";
+import { ProductPropertiesComponent } from "../components/product-properties/product-properties.component";
 
 @Directive()
 export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
+    public secondOtherProductArray: keyof ProductPropertiesComponent = 'selectedKeywordArray';
+    public secondOtherProductSearchArray: keyof ProductPropertiesComponent = 'selectedKeywordSearchArray';
+
+
     // Decorators
     @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
@@ -33,12 +34,12 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         this.childSearchType = 'Keyword';
         this.searchNameWidth = '233px';
         this.searchTypeWidth = '68px';
-        // this.hierarchyUpdateService = this.keywordsService;
-        // this.thisArray = this.keywordsService.formArray;
-        // this.otherArray = this.keywordsService.productArray;
-        // this.thisSearchArray = this.keywordsService.otherSearchArray;
-        // this.otherSearchArray = this.keywordsService.otherProductSearchArray;
         this.searchInputName = 'keywordsFormSearchInput';
+
+        this.otherProductArray = 'availableKeywordArray';
+        this.otherProductSearchArray = 'availableKeywordSearchArray';
+        this.thisArray = this.productService.formKeywordArray;
+        this.thisSearchArray = this.productService.formKeywordSearchArray;
     }
 
 
@@ -52,50 +53,28 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // ==================================================================( ON ARROW CLICK )=================================================================== \\
+    // =================================================================( UPDATE OTHER ITEMS )================================================================ \\
 
-    onArrowClick(hierarchyUpdate: HierarchyUpdate) {
-        super.onArrowClick(hierarchyUpdate);
+    updateOtherItems(update: ListUpdate) {
+        super.updateOtherItems(update);
 
-        // // If the parent has the disabled look
-        // if (this.otherArray[hierarchyUpdate.index!].opacity != null) {
-        //     // And its children hasn't been loaded yet
-        //     if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
+        // Products
+        this.productService.productComponents.forEach(x => {
 
-        //         // Wait for the children to load
-        //         let onChildrenLoadListener = this.onChildrenLoad.subscribe(() => {
-        //             onChildrenLoadListener.unsubscribe();
+            if (update.type == ListUpdateType.Add) {
+                if ((x[this.secondOtherProductArray] as Array<HierarchyItem>).length > 0) this.addOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update.index!, this.thisArray[update.index!]);
+            }
 
-        //             // Then give its children the disabled look too
-        //             for (let i = hierarchyUpdate.index! + 1; i < this.otherArray.length; i++) {
-        //                 if (this.otherArray[i].hierarchyGroupID! <= hierarchyUpdate.hierarchyGroupID!) break;
-        //                 this.otherArray[i].opacity = 0.4;
-        //             }
-        //         });
-        //     }
-        // }
-    }
+            if (update.type == ListUpdateType.Edit) {
+                if ((x[this.secondOtherProductArray] as Array<HierarchyItem>).length > 0 && (update as HierarchyUpdate).hierarchyGroupID != null) this.editOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update, (update as HierarchyUpdate).hierarchyGroupID);
+                if ((x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>).length > 0) {
+                    if ((update as HierarchyUpdate).hierarchyGroupID != null) this.editOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update, ((update as HierarchyUpdate).hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
+                    if ((update as MultiColumnListUpdate).values) this.editOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update, (update as MultiColumnListUpdate).values![1].name);
+                }
+                if ((x[this.secondOtherProductArray] as Array<HierarchyItem>).length > 0 && (update as MultiColumnListUpdate).values) this.editOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update, ((update as MultiColumnListUpdate).values![1].name == this.parentSearchType ? 0 : 1));
+            }
 
-
-
-    // ===================================================================( ON ITEM EDIT )==================================================================== \\
-
-    onItemEdit(hierarchyUpdate: HierarchyUpdate) {
-        super.onItemEdit(hierarchyUpdate);
-
-        // this.sort(this.OldEditItem(this.keywordsService.selectedKeywordsArray, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID) as KeywordCheckboxItem, this.keywordsService.selectedKeywordsArray);
-        // this.OldEditItem(this.keywordsService.selectedKeywordsSearchList, hierarchyUpdate, hierarchyUpdate.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
-    }
-
-
-    // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
-
-    onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
-        super.onSearchItemEdit(searchUpdate);
-
-
-        // this.sort(this.OldEditItem(this.keywordsService.selectedKeywordsArray, searchUpdate, searchUpdate.values![1].name == this.parentSearchType ? 0 : 1) as KeywordCheckboxItem, this.keywordsService.selectedKeywordsArray);
-        // this.OldEditItem(this.keywordsService.selectedKeywordsSearchList, searchUpdate, searchUpdate.values![1].name);
+        })
     }
 
 
@@ -151,35 +130,12 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
-
-    // getOtherItem(x: KeywordCheckboxItem) {
-    //     return {
-    //         id: x.id,
-    //         name: x.name,
-    //         hierarchyGroupID: 0,
-    //         hidden: false,
-    //         arrowDown: false,
-    //         opacity: x.forProduct ? 0.4 : null!
-    //     }
-    // }
-
-
-
-    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
-
-    getItemParameters(): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productId }];
-    }
-
-
-
     // ============================================================( GET DELETED ITEM PARAMETERS )============================================================ \\
 
     getDeletedItemParameters(deletedItem: HierarchyItem) {
         let keywordGroupId = null;
 
-        if(deletedItem.hierarchyGroupID == 1) {
+        if (deletedItem.hierarchyGroupID == 1) {
             const parentIndex = this.getIndexOfHierarchyItemParent(this.thisArray[deletedItem.index!], this.thisArray);
             keywordGroupId = this.thisArray[parentIndex].id;
         }
@@ -201,6 +157,21 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
             name: null!,
             values: [{ name: x.name!, width: this.searchNameWidth, allowEdit: true }, { name: x.type!, width: this.searchTypeWidth }],
             case: caseType
+        }
+    }
+
+
+
+    // =============================================================( GET ADDED OTHER CHILD ITEM )============================================================= \\
+
+    getAddedOtherChildItem(array: Array<HierarchyItem>, hierarchyItem: HierarchyItem, indexOfOtherParent: number) {
+        return {
+            id: hierarchyItem.id,
+            name: hierarchyItem.name,
+            hierarchyGroupID: hierarchyItem.hierarchyGroupID,
+            hidden: !array[indexOfOtherParent].arrowDown,
+            opacity: array[indexOfOtherParent].opacity,
+            checked: true
         }
     }
 }

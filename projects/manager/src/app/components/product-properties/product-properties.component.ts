@@ -14,7 +14,10 @@ import { ProductGroupsPopupComponent } from '../product-groups-popup/product-gro
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
 import { ShippingPopupComponent } from '../shipping-popup/shipping-popup.component';
 import { VendorPopupComponent } from '../vendor-popup/vendor-popup.component';
-import { ListItem } from '../../classes/list-item';
+import { CheckboxMultiColumnItem } from '../../classes/checkbox-multi-column-item';
+import { CheckboxItem } from '../../classes/checkbox-item';
+import { KeywordCheckboxItem } from '../../classes/keyword-checkbox-item';
+import { KeywordCheckboxMultiColumnItem } from '../../classes/keyword-checkbox-multi-column-item';
 
 @Component({
   selector: 'product-properties',
@@ -38,11 +41,17 @@ export class ProductPropertiesComponent {
   public shipping = Shipping;
   public subproductType = SubproductType;
 
-  public productFiltersHierarchy: Array<HierarchyItem> = new Array<HierarchyItem>();
-  public productFiltersSearchList: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+  public productFilterArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+  public productFilterSearchArray: Array<CheckboxMultiColumnItem> = new Array<CheckboxMultiColumnItem>();
 
-  public productProductGroupsHierarchy: Array<ListItem> = new Array<ListItem>();
-  public productProductGroupsSearchList: Array<ListItem> = new Array<ListItem>();
+  public availableKeywordArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+  public availableKeywordSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+
+  public selectedKeywordArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
+  public selectedKeywordSearchArray: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
+
+  public productProductGroupArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+  public productProductGroupSearchArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
@@ -135,6 +144,8 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None, this.keywordsPopupContainer)
       .then((keywordsPopup: KeywordsPopupComponent) => {
         this.keywordsPopup = keywordsPopup;
+        keywordsPopup.productId = this.product.id;
+        keywordsPopup.productIndex = this.productService.productComponents.indexOf(this);
       });
   }
 

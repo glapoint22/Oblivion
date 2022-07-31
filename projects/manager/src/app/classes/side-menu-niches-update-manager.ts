@@ -118,7 +118,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                             let num = this.listComponent.listManager.editedItem ? 2 : 1;
                             for (let i = grandchildren.length - 1; i >= 0; i--) {
                                 this.thisArray.splice(hierarchyUpdate.index! + num, 0, this.getGrandchildItem(grandchildren[i]));
-                                // this.otherArray.splice(hierarchyUpdate.index! + 1, 0, this.getOtherGrandchildItem(grandchildren[i], hierarchyUpdate));
                             }
                             this.onGrandchildrenLoad.next();
                         })
@@ -705,14 +704,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
-
-    // getOtherItem(x: HierarchyItem) {
-    //     return null!;
-    // }
-
-
-
     // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
     getChildItem(child: Item) {
@@ -729,14 +720,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
-
-    // getOtherChildItem(child: Item, hierarchyUpdate: HierarchyUpdate) {
-    //     return null!;
-    // }
-
-
-
     // ================================================================( GET GRANDCHILD ITEM )================================================================= \\
 
     getGrandchildItem(grandchild: Item) {
@@ -748,12 +731,4 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             case: CaseType.TitleCase
         }
     }
-
-
-
-    // // =============================================================( GET OTHER GRANDCHILD ITEM )============================================================== \\
-
-    // getOtherGrandchildItem(grandchild: Item, hierarchyUpdate: HierarchyUpdate) {
-    //     return null!;
-    // }
 }

@@ -21,8 +21,8 @@ export class FormProductGroupsUpdateManager extends ListUpdateManager {
         this.dataServicePath = 'Subgroups';
         this.searchOptions.sortable = false;
         this.searchInputName = 'productGroupsFormSearchInput';
-        this.otherProductArray = 'productProductGroupsHierarchy';
-        this.otherProductSearchArray = 'productProductGroupsSearchList';
+        this.otherProductArray = 'productProductGroupArray';
+        this.otherProductSearchArray = 'productProductGroupSearchArray';
         this.thisArray = this.productService.formProductGroupArray;
         this.thisSearchArray = this.productService.formProductGroupSearchArray;
     }

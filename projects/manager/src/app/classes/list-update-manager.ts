@@ -24,13 +24,13 @@ export class ListUpdateManager {
     public dataServicePath!: string;
     public searchInputName!: string;
     public parentSearchType!: string;
-    public thisArray!: Array<ListItem>;
+    public thisArray: Array<ListItem> = new Array<ListItem>();
     public addIconButtonTitle!: string;
-    public otherArray!: Array<ListItem>;
+    public otherArray: Array<ListItem> = new Array<ListItem>();
     public listComponent!: ListComponent;
     public searchComponent!: ListComponent;
-    public thisSearchArray!: Array<ListItem>;
-    public otherSearchArray!: Array<ListItem>;
+    public thisSearchArray: Array<ListItem> = new Array<ListItem>();
+    public otherSearchArray: Array<ListItem> = new Array<ListItem>();
     public searchInputSubscription!: Subscription;
     public selectLastSelectedItemOnOpen!: boolean;
     public editIconButtonTitle: string = 'Rename';
@@ -165,7 +165,6 @@ export class ListUpdateManager {
                 .subscribe((thisArray: Array<ListItem>) => {
                     thisArray.forEach(x => {
                         this.thisArray.push(this.getItem(x));
-                        if (this.otherArray) this.otherArray.push(this.getOtherItem(x));
                     })
                 })
         } else {
@@ -374,22 +373,20 @@ export class ListUpdateManager {
         // this.dataService.post<number>('api/' + this.dataServicePath, {
         //     name: listUpdate.name
         // }).subscribe((id: number) => {
-        this.thisArray[listUpdate.index!].id = this.listAddId//id;
-
-        // this.sort(this.addItem(this.otherArray, listUpdate.index!, this.thisArray[listUpdate.index!]), this.otherArray);
-        // });
+            this.thisArray[listUpdate.index!].id = this.listAddId//id;
+            this.updateOtherItems(listUpdate);
+        // }
     }
 
 
 
-    // ======================================================================( ADD ITEM )===================================================================== \\
+    // ==================================================================( ADD OTHER ITEM )=================================================================== \\
 
-    addItem(list: Array<ListItem>, index: number, item: ListItem): ListItem {
-        list.splice(index, 0, {
-            id: item.id,
-            name: item.name
+    addOtherItem(array: Array<ListItem>, index: number, listItem: ListItem) {
+        array.splice(index, 0, {
+            id: listItem.id,
+            name: listItem.name
         })
-        return list[index];
     }
 
 
@@ -402,7 +399,7 @@ export class ListUpdateManager {
         //     id: listUpdate.id,
         //     name: listUpdate.name
         // }).subscribe();
-        this.editOtherItems(listUpdate);
+        this.updateOtherItems(listUpdate);
     }
 
 
@@ -415,14 +412,14 @@ export class ListUpdateManager {
         //     id: searchUpdate.id,
         //     name: searchUpdate.values![0].name
         // }).subscribe();
-        this.editOtherItems(searchUpdate);
+        this.updateOtherItems(searchUpdate);
     }
 
 
 
-    // =====================================================================( EDIT ITEM )===================================================================== \\
-
-    editItem(list: Array<ListItem>, update: ListUpdate, type?: number | string) {
+    // ==================================================================( EDIT OTHER ITEM )================================================================== \\
+    
+    editOtherItem(list: Array<ListItem>, update: ListUpdate, type?: number | string) {
         const editedItem: ListItem = list.find(x => x.id == update.id)!;
         if (editedItem) {
             editedItem.name = update.name;
@@ -432,29 +429,43 @@ export class ListUpdateManager {
 
 
 
-    // =================================================================( EDIT OTHER ITEMS )================================================================== \\
+    // =================================================================( UPDATE OTHER ITEMS )================================================================ \\
 
-    editOtherItems(update: ListUpdate) {
+    updateOtherItems(update: ListUpdate) {
         // Form
         if (this.otherArray) {
-            this.editItem(this.otherArray, update);
-            this.editItem(this.otherSearchArray, update);
-            this.editItem(this.otherSearchArray, update);
-            this.editItem(this.thisArray, update);
-            this.editItem(this.otherArray, update);
+
+            if (update.type == ListUpdateType.Add) {
+                this.addOtherItem(this.otherArray, update.index!, this.thisArray[update.index!]);
+            }
+
+            if (update.type == ListUpdateType.Edit) {
+                this.editOtherItem(this.otherArray, update);
+                this.editOtherItem(this.otherSearchArray, update);
+                this.editOtherItem(this.otherSearchArray, update);
+                this.editOtherItem(this.thisArray, update);
+                this.editOtherItem(this.otherArray, update);
+            }
         }
 
         // Products
         if (this.otherProductArray) {
             this.productService.productComponents.forEach(x => {
                 if (this.productService.productComponents.indexOf(x) != this.productIndex) {
-                    if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.editItem(x[this.otherProductArray] as Array<ListItem>, update);
-                    if ((x[this.otherProductSearchArray] as Array<ListItem>).length > 0) {
-                        this.editItem(x[this.otherProductSearchArray] as Array<ListItem>, update);
-                        this.editItem(x[this.otherProductSearchArray] as Array<ListItem>, update);
+
+                    if (update.type == ListUpdateType.Add) {
+                        if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.addOtherItem(x[this.otherProductArray] as Array<ListItem>, update.index!, this.thisArray[update.index!]);
+                    }
+
+                    if (update.type == ListUpdateType.Edit) {
+                        if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update);
+                        if ((x[this.otherProductSearchArray] as Array<ListItem>).length > 0) {
+                            this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update);
+                            this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update);
+                        }
                     }
                 }
-                if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.editItem(x[this.otherProductArray] as Array<ListItem>, update);
+                if (update.type == ListUpdateType.Edit && (x[this.otherProductArray] as Array<ListItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update);
             })
         }
     }
@@ -718,17 +729,6 @@ export class ListUpdateManager {
     // ======================================================================( GET ITEM )====================================================================== \\
 
     getItem(x: ListItem) {
-        return {
-            id: x.id,
-            name: x.name
-        }
-    }
-
-
-
-    // ===================================================================( GET OTHER ITEM )=================================================================== \\
-
-    getOtherItem(x: ListItem) {
         return {
             id: x.id,
             name: x.name

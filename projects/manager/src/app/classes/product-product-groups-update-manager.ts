@@ -1,6 +1,6 @@
 import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
-import { ListComponent } from "../components/lists/list/list.component";
+import { CheckboxListComponent } from "../components/lists/checkbox-list/checkbox-list.component";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxSearchResultItem } from "./checkbox-search-result-item";
@@ -13,8 +13,8 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
-    @ViewChild('listComponent') listComponent!: ListComponent;
-    @ViewChild('searchComponent') searchComponent!: ListComponent;
+    @ViewChild('listComponent') listComponent!: CheckboxListComponent;
+    @ViewChild('searchComponent') searchComponent!: CheckboxListComponent;
 
 
     // ====================================================================( NG ON INIT )===================================================================== \\
@@ -24,8 +24,8 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
         this.otherArray = this.productService.formProductGroupArray;
         this.otherSearchArray = this.productService.formProductGroupSearchArray;
         this.searchInputName = 'productProductGroupsSearchInput' + this.productId;
-        this.thisArray = this.productService.productComponents[this.productIndex].productProductGroupsHierarchy;
-        this.thisSearchArray = this.productService.productComponents[this.productIndex].productProductGroupsSearchList;
+        this.thisArray = this.productService.productComponents[this.productIndex].productProductGroupArray;
+        this.thisSearchArray = this.productService.productComponents[this.productIndex].productProductGroupSearchArray;
     }
 
 

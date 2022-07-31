@@ -3,7 +3,6 @@ import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { CaseType, MenuOptionType } from "./enums";
-import { HierarchyItem } from "./hierarchy-item";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordSearchResultItem } from "./keyword-search-result-item";
@@ -25,13 +24,11 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     ngOnInit() {
         super.ngOnInit();
-        this.searchNameWidth = '296px';
-        this.searchInputName = 'availableKeywordsSearchInput';
-        // this.thisArray = this.keywordsService.productArray;
-        // this.otherArray = this.keywordsService.formArray;
-        // this.thisSearchArray = this.keywordsService.otherProductSearchArray;
-        // this.otherSearchArray = this.keywordsService.otherSearchArray;
-        // this.keywordsService.availableSearchList = this.thisSearchArray;
+        this.otherArray = this.productService.formKeywordArray;
+        this.otherSearchArray = this.productService.formKeywordSearchArray;
+        this.searchInputName = 'availableKeywordsSearchInput' + this.productId;
+        this.thisArray = this.productService.productComponents[this.productIndex].availableKeywordArray;
+        this.thisSearchArray = this.productService.productComponents[this.productIndex].availableKeywordSearchArray;
 
         this.listOptions.menu!.menuOptions[6] = { type: MenuOptionType.Divider };
         this.listOptions.menu!.menuOptions[7] = {
@@ -317,18 +314,11 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
-    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 
-    // getOtherItem(x: KeywordCheckboxItem) {
-    //     return {
-    //         id: x.id,
-    //         name: x.name,
-    //         hierarchyGroupID: 0,
-    //         hidden: false,
-    //         arrowDown: false,
-    //         opacity: null!
-    //     }
-    // }
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productId }];
+    }
 
 
 

@@ -1,7 +1,7 @@
 import { KeyValue } from "@angular/common";
 import { Directive, ViewChild } from "@angular/core";
-import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
-import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
+import { CheckboxHierarchyComponent } from "../components/hierarchies/checkbox-hierarchy/checkbox-hierarchy.component";
+import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
@@ -16,8 +16,8 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
-    @ViewChild('hierarchyComponent') listComponent!: HierarchyComponent;
-    @ViewChild('searchComponent') searchComponent!: MultiColumnListComponent;
+    @ViewChild('hierarchyComponent') listComponent!: CheckboxHierarchyComponent;
+    @ViewChild('searchComponent') searchComponent!: CheckboxMultiColumnListComponent;
 
 
     // ====================================================================( NG ON INIT )===================================================================== \\
@@ -27,8 +27,8 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
         this.otherArray = this.productService.formFilterArray;
         this.otherSearchArray = this.productService.formFilterSearchArray;
         this.searchInputName = 'productFiltersSearchInput' + this.productId;
-        this.thisArray = this.productService.productComponents[this.productIndex].productFiltersHierarchy;
-        this.thisSearchArray = this.productService.productComponents[this.productIndex].productFiltersSearchList;
+        this.thisArray = this.productService.productComponents[this.productIndex].productFilterArray;
+        this.thisSearchArray = this.productService.productComponents[this.productIndex].productFilterSearchArray;
     }
 
 

@@ -1,7 +1,7 @@
 import { SafeHtml } from "@angular/platform-browser";
 import { CheckboxListUpdate } from "./checkbox-list-update";
 import { CheckboxMultiColumnListUpdate } from "./checkbox-multi-column-list-update";
-import { CaseType, ListUpdateType, MenuOptionType } from "./enums";
+import { CaseType, ListUpdateType } from "./enums";
 import { HierarchyUpdate } from "./hierarchy-update";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
 import { KeywordCheckboxSearchResultItem } from "./keyword-checkbox-search-result-item";
@@ -10,7 +10,6 @@ import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { KeyValue } from "@angular/common";
-import { HierarchyItem } from "./hierarchy-item";
 import { Directive, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
@@ -36,25 +35,15 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     ngOnInit() {
         super.ngOnInit();
-        this.itemType = 'Custom Keyword Group';
-        this.searchNameWidth = '296px';
-        this.dataServicePath = 'SelectedKeywords/Groups';
-        this.childDataServicePath = 'SelectedKeywords';
-        this.childType = 'Custom Keyword';
-        // this.keywordsService.selectedKeywordsArray = this.thisArray;
-        // this.keywordsService.selectedKeywordsSearchList = this.thisSearchArray;
-        this.searchInputName = 'selectedKeywordsSearchInput';
         this.parentSearchType = 'Group';
         this.childSearchType = 'Keyword';
-        this.searchTypeWidth = '68px';
-    }
-
-
-
-    // ==================================================================( ON ARROW CLICK )=================================================================== \\
-
-    onArrowClick(hierarchyUpdate: HierarchyUpdate) {
-        HierarchyUpdateManager.prototype.onArrowClick.call(this, hierarchyUpdate);
+        this.childType = 'Custom Keyword';
+        this.itemType = 'Custom Keyword Group';
+        this.childDataServicePath = 'SelectedKeywords';
+        this.dataServicePath = 'SelectedKeywords/Groups';
+        this.searchInputName = 'selectedKeywordsSearchInput' + this.productId;
+        this.thisArray = this.productService.productComponents[this.productIndex].selectedKeywordArray;
+        this.thisSearchArray = this.productService.productComponents[this.productIndex].selectedKeywordSearchArray;
     }
 
 
@@ -700,11 +689,11 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
-    // // ===================================================================( GET OTHER ITEM )=================================================================== \\
+    // ================================================================( GET ITEM PARAMETERS )================================================================= \\
 
-    // getOtherItem(x: KeywordCheckboxItem) {
-    //     return null!
-    // }
+    getItemParameters(): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productId }];
+    }
 
 
 
@@ -723,14 +712,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
             case: CaseType.LowerCase
         }
     }
-
-
-
-    // // ================================================================( GET OTHER CHILD ITEM )================================================================ \\
-
-    // getOtherChildItem(child: HierarchyItem, hierarchyUpdate: HierarchyUpdate) {
-    //     return null!;
-    // }
 
 
 
