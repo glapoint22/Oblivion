@@ -271,14 +271,7 @@ export class MediaBrowserComponent extends LazyLoad {
           image.src = media.imageSm;
           this.callback(image);
         } else {
-          this.dataService.get<Image>('api/Media/Image',
-            [
-              { key: 'imageId', value: media.id },
-              { key: 'imageSize', value: this.imageSize }
-            ]).subscribe((img: Image) => {
-              image.src = img.src;
-              this.callback(image);
-            });
+          this.addImageSize(media, image, media.imageAnySize);
         }
 
 
@@ -288,31 +281,26 @@ export class MediaBrowserComponent extends LazyLoad {
           image.src = media.imageMd;
           this.callback(image);
         } else {
-          this.dataService.get<Image>('api/Media/Image',
-            [
-              { key: 'imageId', value: media.id },
-              { key: 'imageSize', value: this.imageSize }
-            ]).subscribe((img: Image) => {
-              image.src = img.src;
-              this.callback(image);
-            });
+          this.addImageSize(media, image, media.imageAnySize);
         }
 
       } else if (this.imageSize == ImageSize.AnySize) {
         if (media.imageAnySize) {
           image.src = media.imageAnySize;
+          this.callback(image);
         } else {
-          this.dataService.get<Image>('api/Media/Image',
-            [
-              { key: 'imageId', value: media.id },
-              { key: 'imageSize', value: this.imageSize }
-            ]).subscribe((img: Image) => {
-              image.src = img.src;
-              this.callback(image);
-            });
-        }
+          let src!: string;
 
-        this.callback(image);
+          if (media.imageSm) {
+            src = media.imageSm;
+          } else if (media.imageMd) {
+            src = media.imageMd;
+          } else if (media.imageLg) {
+            src = media.imageLg;
+          }
+
+          this.addImageSize(media, image, src);
+        }
       }
     }
 
@@ -322,7 +310,17 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-
+  addImageSize(media: SearchedMedia, image: Image, src: string) {
+    this.dataService.get<Image>('api/Media/Image',
+      [
+        { key: 'imageId', value: media.id },
+        { key: 'imageSize', value: this.imageSize },
+        { key: 'src', value: src }
+      ]).subscribe((img: Image) => {
+        image.src = img.src;
+        this.callback(image);
+      });
+  }
 
 
 
