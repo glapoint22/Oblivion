@@ -6,14 +6,13 @@ import { HierarchyManager } from "./hierarchy-manager";
 import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 
 export class CheckboxHierarchyManager extends HierarchyManager {
-    onListUpdate = new Subject<CheckboxListUpdate>();
 
 
     // ================================================================( ON CHECKBOX CHANGE )================================================================= \\
 
     onCheckboxChange(hierarchyItem: CheckboxItem) {
         hierarchyItem.checked = !hierarchyItem.checked;
-        this.onListUpdate.next(
+        (this.onListUpdate as Subject<CheckboxListUpdate>).next(
             {
                 type: ListUpdateType.CheckboxChange,
                 id: hierarchyItem.id,

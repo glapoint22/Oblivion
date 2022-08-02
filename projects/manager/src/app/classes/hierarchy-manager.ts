@@ -316,6 +316,7 @@ export class HierarchyManager extends ListManager {
                 id: hierarchyItem.id,
                 index: this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID),
                 name: hierarchyItem.name,
+                oldName: this.editItemOldName,
                 hierarchyGroupID: hierarchyItem.hierarchyGroupID
             }
         );

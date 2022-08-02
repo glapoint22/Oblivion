@@ -1,5 +1,5 @@
 import { KeyValue } from "@angular/common";
-import { Directive, ViewChild } from "@angular/core";
+import { Directive, Input, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
 import { CaseType, MenuOptionType } from "./enums";
@@ -16,6 +16,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
     public addToSelectedKeywordsButtonDisabled!: boolean;
 
     // Decorators
+    @Input() productId!: number;
+    @Input() productIndex!: number;
     @ViewChild('availableHierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('availableSearchComponent') searchComponent!: MultiColumnListComponent;
 

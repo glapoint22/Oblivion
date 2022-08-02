@@ -4,6 +4,7 @@ import { ListItem } from "./list-item";
 export class ListUpdate {
   id?: number;
   name?: string;
+  oldName?: string;
   index?: number;
   type?: ListUpdateType;
   deletedItems?: Array<ListItem>;

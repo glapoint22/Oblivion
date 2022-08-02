@@ -1,5 +1,5 @@
 import { KeyValue } from "@angular/common";
-import { Directive, ViewChild } from "@angular/core";
+import { Directive, Input, ViewChild } from "@angular/core";
 import { CheckboxHierarchyComponent } from "../components/hierarchies/checkbox-hierarchy/checkbox-hierarchy.component";
 import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
 import { CheckboxItem } from "./checkbox-item";
@@ -16,6 +16,8 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
+    @Input() productId!: number;
+    @Input() productIndex!: number;
     @ViewChild('hierarchyComponent') listComponent!: CheckboxHierarchyComponent;
     @ViewChild('searchComponent') searchComponent!: CheckboxMultiColumnListComponent;
 
