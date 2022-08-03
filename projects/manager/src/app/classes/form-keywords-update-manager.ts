@@ -84,7 +84,7 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
             // Add Other
             if (update.type == ListUpdateType.Add) {
-                if ((x[this.secondOtherProductArray] as Array<HierarchyItem>).length > 0) this.addOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update.index!, this.thisArray[update.index!]);
+                if ((update as HierarchyUpdate).hierarchyGroupID == 1) this.addOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update.index!, this.thisArray[update.index!]);
             }
 
             // Edit Other
@@ -92,14 +92,14 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
                 // From Hierarchy
                 if ((update as HierarchyUpdate).hierarchyGroupID != null) {
-                    if ((x[this.secondOtherProductArray] as Array<HierarchyItem>).length > 0) this.editOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update, (update as HierarchyUpdate).hierarchyGroupID);
-                    if ((x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>).length > 0) this.editOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update, ((update as HierarchyUpdate).hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
+                    this.editOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update, (update as HierarchyUpdate).hierarchyGroupID);
+                    this.editOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update, ((update as HierarchyUpdate).hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
                 }
 
                 // From Search
                 if ((update as MultiColumnListUpdate).values) {
-                    if ((x[this.secondOtherProductArray] as Array<HierarchyItem>).length > 0) this.editOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update, ((update as MultiColumnListUpdate).values![1].name == this.parentSearchType ? 0 : 1));
-                    if ((x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>).length > 0) this.editOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update, (update as MultiColumnListUpdate).values![1].name);
+                    this.editOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update, ((update as MultiColumnListUpdate).values![1].name == this.parentSearchType ? 0 : 1));
+                    this.editOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update, (update as MultiColumnListUpdate).values![1].name);
                 }
             }
 
@@ -109,14 +109,14 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
                 // From Hierarchy
                 if (update.deletedItems![0].hierarchyGroupID != null) {
-                    if ((x[this.secondOtherProductArray] as Array<HierarchyItem>).length > 0) this.deleteOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update.deletedItems![0], update.deletedItems![0].hierarchyGroupID!);
-                    if ((x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>).length > 0) this.deleteOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0].hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
+                    this.deleteOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update.deletedItems![0], update.deletedItems![0].hierarchyGroupID!);
+                    this.deleteOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0].hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
                 }
 
                 // From Search
                 if ((update.deletedItems![0] as MultiColumnListUpdate).values) {
-                    if ((x[this.secondOtherProductArray] as Array<HierarchyItem>).length > 0) this.deleteOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0] as MultiColumnItem).values![1].name == this.parentSearchType ? 0 : 1);
-                    if ((x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>).length > 0) this.deleteOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0] as MultiColumnItem).values![1].name);
+                    this.deleteOtherItem(x[this.secondOtherProductArray] as Array<HierarchyItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0] as MultiColumnItem).values![1].name == this.parentSearchType ? 0 : 1);
+                    this.deleteOtherItem(x[this.secondOtherProductSearchArray] as Array<MultiColumnItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0] as MultiColumnItem).values![1].name);
                 }
             }
         })

@@ -164,23 +164,6 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
-    // // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
-
-    // onSearchListUpdate(searchUpdate: MultiColumnListUpdate) {
-    //     this._searchUpdate = searchUpdate;
-    //     if (searchUpdate.type == ListUpdateType.Delete) {
-    //         this.onSearchItemDelete(searchUpdate.deletedItems![0] as MultiColumnItem);
-    //         return;
-    //     }
-    //     if (searchUpdate.type == ListUpdateType.DeletePrompt) {
-    //         this.onSearchDeletePrompt(searchUpdate.deletedItems![0] as MultiColumnItem);
-    //         return;
-    //     }
-    //     super.onSearchListUpdate(searchUpdate);
-    // }
-
-
-
     // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(hierarchyUpdate: HierarchyUpdate) {
@@ -268,8 +251,8 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     addOtherItem(otherArray: Array<HierarchyItem>, thisIndex: number, thisHierarchyItem: HierarchyItem) {
         const addedItem = otherArray.find(x => x.name == thisHierarchyItem.name && x.hierarchyGroupID == thisHierarchyItem.hierarchyGroupID);
 
-        // As long as the array doesn't already contain the added item
-        if (!addedItem) {
+        // As long as the array exist and it doesn't already contain the added item
+        if (otherArray.length > 0 && !addedItem) {
 
             // Parent Item
             if (thisHierarchyItem.hierarchyGroupID == 0) {
@@ -285,7 +268,8 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                 const indexOfOtherParent = otherArray.findIndex(x => x.id == this.thisArray[indexOfThisParent].id && x.name == this.thisArray[indexOfThisParent].name && x.hierarchyGroupID == 0);
                 const indexDiff = thisIndex - indexOfThisParent; // The difference between this array's new item index and this array's parent index
 
-                if (this.hasChildren(otherArray[indexOfOtherParent], otherArray)) {
+                // As long as the parent exist in the other array (selected keywords may NOT have the other parent) and that the parent has children
+                if (indexOfOtherParent != -1 && this.hasChildren(otherArray[indexOfOtherParent], otherArray)) {
                     otherArray.splice(indexOfOtherParent + indexDiff, 0, this.getAddedOtherChildItem(otherArray, thisHierarchyItem, indexOfOtherParent));
                 }
             }
@@ -465,7 +449,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // If we're deleting a parent item
         if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.parentSearchType) {
             super.onSearchItemDelete(searchUpdate);
-            this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem), this.thisArray);
+            this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem));
         }
 
 
@@ -479,22 +463,66 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
+    // ==============================================================( FIND DELETED ITEM INDEX )============================================================== \\
+
+    findDeletedItemIndex(otherArrayDeletedItem: ListItem, fromArrayDeletedItem: ListItem) {
+        return otherArrayDeletedItem.id == fromArrayDeletedItem.id
+            && otherArrayDeletedItem.name == (fromArrayDeletedItem as MultiColumnItem).values[0].name
+            && otherArrayDeletedItem.hierarchyGroupID == ((fromArrayDeletedItem as MultiColumnItem).values![1].name == this.parentSearchType ? 0 : 1);
+    }
+
+
+    
     // ====================================================================( DELETE ITEM )==================================================================== \\
 
-    deleteOtherItem(list: Array<ListItem>, deletedItem: ListItem, type: number | string) {
-        // Wait a frame because the item being deleted from the original list doesn't show as being
-        // deleted right away, which causes a second item to be deleted from the original list
+    deleteOtherItem(otherArray: Array<ListItem>, deletedItem: ListItem, type: number | string) {
+        // Wait a frame because the item being deleted from the "from array" doesn't show as being
+        // deleted right away, which causes a second item to be deleted from the "from array"
         window.setTimeout(() => {
 
-            // Find the index of the item in the list
-            const index: number = typeof type == 'number' ? list.findIndex(x => x.id == deletedItem.id && x.hierarchyGroupID == type) : list.findIndex(x => x.id == deletedItem.id && (x as MultiColumnItem).values[1].name == type);
+            // If the other array is a hierarchy list
+            if (typeof type == 'number') {
+                const index: number = !(deletedItem as MultiColumnItem).values ?
+                    // If the from array is a hierarchy list 
+                    otherArray.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.name && x.hierarchyGroupID == deletedItem.hierarchyGroupID) :
+                    // If the from array is a search list 
+                    otherArray.findIndex(x => this.findDeletedItemIndex(x, deletedItem));                    
+                    
+                // As long as the item to be deleted in the other array has been found
+                if (index != -1) {
+                    const childItems: Array<ListItem> = new Array<ListItem>();
 
-            // If the index is found, delete the item of that index
-            if (index != -1) list.splice(index, 1);
+                    // Check to see if the item to be deleted from the other array has any children
+                    for (let i = index + 1; i < otherArray.length; i++) {
+                        if (otherArray[i].hierarchyGroupID! > otherArray[index].hierarchyGroupID!) {
+                            childItems.push(otherArray[i]);
+                        } else {
+                            break;
+                        }
+                    }
+                    // Delete the item to be deleted
+                    otherArray.splice(index, 1);
 
-            // If we're deleting a parent item from a search list, then check to see if any of its children is also included in the search list. If so, delete them too
-            if (type == this.parentSearchType && list.length > 0) {
-                this.deleteChildren(list as Array<MultiColumnItem>, deletedItem as MultiColumnItem);
+                    // And delete its children (if any)
+                    childItems.forEach(x => {
+                        const childItemIndex = otherArray.indexOf(x);
+                        if (childItemIndex != -1) otherArray.splice(childItemIndex, 1);
+                    })
+                }
+
+                // If the other array is a search list
+            } else {
+
+                const index: number = (deletedItem as MultiColumnItem).values ?
+                    // If the from array is a search list 
+                    otherArray.findIndex(x => x.id == deletedItem.id && (x as MultiColumnItem).values[0].name == (deletedItem as MultiColumnItem).values[0].name && (x as MultiColumnItem).values[1].name == type) :
+                    // If the from array is a hierarchy list 
+                    otherArray.findIndex(x => x.id == deletedItem.id && (x as MultiColumnItem).values[0].name == deletedItem.name && (x as MultiColumnItem).values[1].name == (deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
+
+                if (index != -1) {
+                    otherArray.splice(index, 1);
+                    if (type == this.parentSearchType) this.deleteChildren(otherArray as Array<MultiColumnItem>, deletedItem as MultiColumnItem);
+                }
             }
         })
     }
@@ -503,20 +531,13 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     // ==================================================================( DELETE CHILDREN )================================================================== \\
 
-    deleteChildren(searchList: Array<MultiColumnItem>, deletedItem: MultiColumnItem, hierarchyList?: Array<HierarchyItem>) {
+    deleteChildren(searchList: Array<MultiColumnItem>, deletedItem: MultiColumnItem) {
         this.dataService.get<Array<MultiColumnItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: deletedItem.id }])
             .subscribe((children: Array<MultiColumnItem>) => {
                 children.forEach(x => {
                     // Check to see if any of the children of the parent item is present in the search list. If so, delete them
                     const searchChildIndex = searchList.findIndex(y => y.id == x.id && (y as MultiColumnItem).values[0].name == x.name && (y as MultiColumnItem).values[1].name == this.childSearchType);
                     if (searchChildIndex != -1) searchList.splice(searchChildIndex, 1);
-
-                    // Check the hierarchy list for any children
-                    if (hierarchyList) {
-                        // Check to see if any of the children of the parent item is present in the hierarchy list. If so, delete those too
-                        const hierarchyChildIndex = hierarchyList!.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 1);
-                        if (hierarchyChildIndex != -1) hierarchyList.splice(hierarchyChildIndex, 1);
-                    }
                 })
             })
     }
@@ -531,7 +552,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
             // Add Other
             if (update.type == ListUpdateType.Add) {
-                if (this.otherArray.length > 0) this.addOtherItem(this.otherArray, update.index!, this.thisArray[update.index!]);
+                this.addOtherItem(this.otherArray, update.index!, this.thisArray[update.index!]);
             }
 
 
@@ -576,10 +597,9 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         if (this.otherProductArray) {
             this.productService.productComponents.forEach(x => {
 
-
                 // Add Other
                 if (update.type == ListUpdateType.Add) {
-                    if ((x[this.otherProductArray] as Array<HierarchyItem>).length > 0) this.addOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update.index!, this.thisArray[update.index!]);
+                    this.addOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update.index!, this.thisArray[update.index!]);
                 }
 
 
@@ -588,14 +608,14 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
                     // From Hierarchy
                     if ((update as HierarchyUpdate).hierarchyGroupID != null) {
-                        if ((x[this.otherProductArray] as Array<HierarchyItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update, (update as HierarchyUpdate).hierarchyGroupID);
-                        if ((x[this.otherProductSearchArray] as Array<MultiColumnItem>).length > 0) this.editOtherItem(x[this.otherProductSearchArray] as Array<MultiColumnItem>, update, ((update as HierarchyUpdate).hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
+                        this.editOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update, (update as HierarchyUpdate).hierarchyGroupID);
+                        this.editOtherItem(x[this.otherProductSearchArray] as Array<MultiColumnItem>, update, ((update as HierarchyUpdate).hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
                     }
 
                     // From Search
                     if ((update as MultiColumnListUpdate).values) {
-                        if ((x[this.otherProductArray] as Array<HierarchyItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update, ((update as MultiColumnListUpdate).values![1].name == this.parentSearchType ? 0 : 1));
-                        if ((x[this.otherProductSearchArray] as Array<MultiColumnItem>).length > 0) this.editOtherItem(x[this.otherProductSearchArray] as Array<MultiColumnItem>, update, (update as MultiColumnListUpdate).values![1].name);
+                        this.editOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update, ((update as MultiColumnListUpdate).values![1].name == this.parentSearchType ? 0 : 1));
+                        this.editOtherItem(x[this.otherProductSearchArray] as Array<MultiColumnItem>, update, (update as MultiColumnListUpdate).values![1].name);
                     }
                 }
 
@@ -605,14 +625,14 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
                     // From Hierarchy
                     if (update.deletedItems![0].hierarchyGroupID != null) {
-                        if ((x[this.otherProductArray] as Array<HierarchyItem>).length > 0) this.deleteOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update.deletedItems![0], update.deletedItems![0].hierarchyGroupID!);
-                        if ((x[this.otherProductSearchArray] as Array<MultiColumnItem>).length > 0) this.deleteOtherItem(x[this.otherProductSearchArray] as Array<MultiColumnItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0].hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
+                        this.deleteOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update.deletedItems![0], update.deletedItems![0].hierarchyGroupID!);
+                        this.deleteOtherItem(x[this.otherProductSearchArray] as Array<MultiColumnItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0].hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType));
                     }
 
                     // From Search
                     if ((update.deletedItems![0] as MultiColumnListUpdate).values) {
-                        if ((x[this.otherProductArray] as Array<HierarchyItem>).length > 0) this.deleteOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0] as MultiColumnItem).values![1].name == this.parentSearchType ? 0 : 1);
-                        if ((x[this.otherProductSearchArray] as Array<MultiColumnItem>).length > 0) this.deleteOtherItem(x[this.otherProductSearchArray] as Array<MultiColumnItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0] as MultiColumnItem).values![1].name);
+                        this.deleteOtherItem(x[this.otherProductArray] as Array<HierarchyItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0] as MultiColumnItem).values![1].name == this.parentSearchType ? 0 : 1);
+                        this.deleteOtherItem(x[this.otherProductSearchArray] as Array<MultiColumnItem>, update.deletedItems![0] as MultiColumnItem, (update.deletedItems![0] as MultiColumnItem).values![1].name);
                     }
                 }
             })

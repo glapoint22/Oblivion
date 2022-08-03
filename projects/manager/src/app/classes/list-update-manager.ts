@@ -47,7 +47,7 @@ export class ListUpdateManager {
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
     public set itemType(v: string) { this._itemType = v; this.addIconButtonTitle = 'Add ' + v; }
     public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
-    
+
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
@@ -382,8 +382,8 @@ export class ListUpdateManager {
     addOtherItem(otherArray: Array<ListItem>, thisIndex: number, thisListItem: ListItem) {
         const addedItem = otherArray.find(x => x.name == thisListItem.name);
 
-        // As long as the array doesn't already contain the added item
-        if (!addedItem) {
+        // As long as the array exist and it doesn't already contain the added item
+        if (otherArray.length > 0 && !addedItem) {
 
             otherArray.splice(thisIndex, 0, {
                 id: thisListItem.id,
@@ -483,8 +483,8 @@ export class ListUpdateManager {
     // ====================================================================( DELETE ITEM )==================================================================== \\
 
     deleteOtherItem(list: Array<ListItem>, deletedItem: ListItem, type?: number | string) {
-        // Wait a frame because the item being deleted from the original list doesn't show as being
-        // deleted right away, which causes a second item to be deleted from the original list
+        // Wait a frame because the item being deleted from the "from array" doesn't show as being
+        // deleted right away, which causes a second item to be deleted from the "from array"
         window.setTimeout(() => {
             const index = list.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.name);
             // If the index is found, delete the item of that index
@@ -516,7 +516,7 @@ export class ListUpdateManager {
 
             // Delete Other
             if (update.type == ListUpdateType.Delete) {
-                // this.deleteOtherItem(this.thisArray, update.deletedItems![0]);
+                this.deleteOtherItem(this.thisArray, update.deletedItems![0]);
                 this.deleteOtherItem(this.otherArray, update.deletedItems![0]);
                 this.deleteOtherItem(this.otherSearchArray, update.deletedItems![0]);
             }
@@ -528,19 +528,19 @@ export class ListUpdateManager {
 
                 // Add Other
                 if (update.type == ListUpdateType.Add) {
-                    if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.addOtherItem(x[this.otherProductArray] as Array<ListItem>, update.index!, this.thisArray[update.index!]);
+                    this.addOtherItem(x[this.otherProductArray] as Array<ListItem>, update.index!, this.thisArray[update.index!]);
                 }
 
                 // Edit Other
                 if (update.type == ListUpdateType.Edit) {
-                    if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update, 1);
-                    if ((x[this.otherProductSearchArray] as Array<ListItem>).length > 0) this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update, '');
+                    this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update, 1);
+                    this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update, '');
                 }
 
                 // Delete Other
                 if (update.type == ListUpdateType.Delete) {
-                    if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.deleteOtherItem(x[this.otherProductArray] as Array<ListItem>, update.deletedItems![0]);
-                    if ((x[this.otherProductSearchArray] as Array<ListItem>).length > 0) this.deleteOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update.deletedItems![0]);
+                    this.deleteOtherItem(x[this.otherProductArray] as Array<ListItem>, update.deletedItems![0]);
+                    this.deleteOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update.deletedItems![0]);
                 }
             })
         }
