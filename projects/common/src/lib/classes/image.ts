@@ -1,8 +1,11 @@
+import { ImageSizeType } from "./enums";
+
 export class Image {
     public id!: number;
     public name!: string;
     public src!: string;
     public thumbnail!: string;
+    public imageSizeType!: ImageSizeType;
 
     setData(image: Image) {
         if (image) {
@@ -10,6 +13,7 @@ export class Image {
             this.src = image.src;
             this.name = image.name;
             this.thumbnail = image.thumbnail;
+            this.imageSizeType = image.imageSizeType;
         }
     }
 
@@ -23,6 +27,7 @@ export class Image {
         image.name = this.name;
         image.src = this.src;
         image.thumbnail = this.thumbnail;
+        image.imageSizeType = this.imageSizeType;
 
         return image;
     }

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Image, LazyLoadingService, MediaType, SpinnerAction } from 'common';
-import { ImageSize } from '../../classes/enums';
+import { Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction } from 'common';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
@@ -27,7 +26,7 @@ export class ImageBoxComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         mediaBrowser.currentMediaType = MediaType.Image;
-        mediaBrowser.imageSize = ImageSize.AnySize;
+        mediaBrowser.imageSizeType = ImageSizeType.AnySize;
 
         if (editMode) {
           mediaBrowser.editedImage = this.image;

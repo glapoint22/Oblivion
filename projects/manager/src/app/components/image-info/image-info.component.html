@@ -1,0 +1,24 @@
+<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div *ngIf="sourceList && sourceList.length > 0" class="modal-base">
+        <div class="modal-bar">
+            <div>Image Info</div>
+            <div class="modal-x-button" (click)="close()">
+                X
+            </div>
+        </div>
+        <div class="modal-bar-drop-shadow"></div>
+
+        <div class="header">
+            <div style="width: 90px;">Type</div>
+            <div style="width: 65px;">Width</div>
+            <div style="width: 65px;">Height</div>
+            <div style="width: 300px;">Src</div>
+            <div style="width: 100px;">References</div>
+        </div>
+
+        <div class="modal-content">
+            <multi-column-list [sourceList]="sourceList" [options]="menuOptions" (onListUpdate)="onSelection($event)">
+            </multi-column-list>
+        </div>
+    </div>

@@ -1,7 +1,7 @@
 import { Component, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
-import { DataService, Image, LazyLoadingService, MediaType, SpinnerAction, Subproduct } from 'common';
+import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Subproduct } from 'common';
 import { TitleCase } from 'text-box';
-import { BuilderType, ImageLocation, ImageSize, SubproductType } from '../../classes/enums';
+import { BuilderType, ImageLocation, SubproductType } from '../../classes/enums';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { ValuePopupComponent } from '../value-popup/value-popup.component';
 
@@ -38,7 +38,7 @@ export class SubproductsComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         mediaBrowser.currentMediaType = MediaType.Image;
-        mediaBrowser.imageSize = ImageSize.Small;
+        mediaBrowser.imageSizeType = ImageSizeType.Small;
 
         if (editMode) {
           mediaBrowser.editedImage = subproduct.image;
@@ -56,7 +56,7 @@ export class SubproductsComponent {
             // Add the image reference
             this.dataService.post('api/Media/ImageReference', {
               imageId: image.id,
-              imageSize: ImageSize.Small,
+              imageSize: ImageSizeType.Small,
               builder: BuilderType.Product,
               host: this.productName,
               location: this.subproductType == SubproductType.Component ? ImageLocation.Component : ImageLocation.Bonus

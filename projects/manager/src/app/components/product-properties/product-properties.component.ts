@@ -1,8 +1,8 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
-import { DataService, Image, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct } from 'common';
-import { BuilderType, ImageLocation, ImageSize, PopupArrowPosition, SubproductType } from '../../classes/enums';
+import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct } from 'common';
+import { BuilderType, ImageLocation, PopupArrowPosition, SubproductType } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { ProductService } from '../../services/product/product.service';
 import { FiltersPopupComponent } from '../filters-popup/filters-popup.component';
@@ -378,7 +378,7 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         mediaBrowser.currentMediaType = MediaType.Image;
-        mediaBrowser.imageSize = ImageSize.Medium;
+        mediaBrowser.imageSizeType = ImageSizeType.Medium;
 
         if (editMode) {
           mediaBrowser.editedImage = this.product.image;
@@ -399,7 +399,7 @@ export class ProductPropertiesComponent {
             // Add the image reference
             this.dataService.post('api/Media/ImageReference', {
               imageId: image.id,
-              imageSize: ImageSize.Medium,
+              imageSize: ImageSizeType.Medium,
               builder: BuilderType.Product,
               host: this.product.name,
               location: ImageLocation.Product

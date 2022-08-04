@@ -89,13 +89,7 @@ export enum SubproductType {
 }
 
 
-export enum ImageSize {
-    AnySize = 0,
-    Thumbnail = 100,
-    Small = 200,
-    Medium = 500,
-    Large = 675
-}
+
 
 export enum BuilderType {
     Product,
@@ -118,4 +112,10 @@ export enum ImageLocation {
     TextWidgetBackground,
     ContainerWidgetBackground,
     ButtonWidgetBackground
+}
+
+export enum InvalidImageType {
+    NotInvalid,
+    UnderSize,
+    MultipleSizes
 }

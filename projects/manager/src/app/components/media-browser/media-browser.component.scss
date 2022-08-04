@@ -15,19 +15,26 @@ input {
     border-radius: 25px;
 }
 
-.media {
+.thumbnail-container {
     width: 100px;
     height: 100px;
     margin-top: 15px;
     margin-left: 15px;
-    object-fit: contain;
     outline: 1px solid #404040;
     background: #1e1e1e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 
     &:hover:not(.invalid) {
         cursor: pointer;
         outline-color: #6b6b6b;
-        filter: brightness(1.1);
+
+        & img {
+            filter: brightness(1.1);
+        }
+
     }
 }
 
@@ -208,8 +215,26 @@ input[type=file] {
     justify-content: flex-end;
 }
 
-.invalid {
-    filter: grayscale(100%) brightness(0.30);
+.invalid img {
+    filter: grayscale(100%) brightness(0.3);
+}
+
+.invalid-tag {
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    background: #621515;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #cdcdcd;
+    font-size: 12px;
+}
+
+.fa-triangle-exclamation {
+    margin-right: 4px;
+    color: #ffb100;
 }
 
 

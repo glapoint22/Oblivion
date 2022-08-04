@@ -26,6 +26,7 @@ export * from './lib/classes/recurring-payment';
 export * from './lib/classes/subproduct';
 export * from './lib/classes/shipping';
 export * from './lib/classes/i-product';
+export * from './lib/classes/image-size';
 
 // Components
 export * from './lib/components/dropdown/dropdown.component';

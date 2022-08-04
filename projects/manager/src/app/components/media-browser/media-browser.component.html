@@ -275,8 +275,7 @@
                         <button class="video-input-button" (click)="setNewVideo(videoInput.value)">Enter</button>
                     </div>
 
-                    <div *ngIf="invalidVideoLink" style="    margin-top: 5px;
-                    color: red;">Invalid video link</div>
+                    <div *ngIf="invalidVideoLink" style="margin-top: 5px; color: red;">Invalid video link</div>
                 </div>
             </div>
 
@@ -290,10 +289,23 @@
                 <div class="backdrop search-backdrop"
                     [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
                     <div style="display: flex; flex-wrap: wrap; padding-bottom: 13px;">
-                        <div style="position: relative;" *ngFor="let media of searchedMedia">
-                            <img [src]="'images/' + media.thumbnail"
-                                class="media" [title]="media.name" (click)="setMedia(media)"
-                                [ngClass]="{'invalid': isInvalid(media)}">
+                        <div *ngFor="let media of media" class="thumbnail-container"
+                            [ngClass]="{'invalid': isInvalid(media) > 0}" (contextmenu)="$event.preventDefault()"
+                            (mousedown)="onMousedown($event, media)">
+                            <img [src]="'images/' + media.thumbnail" [title]="media.name" (click)="setMedia(media)">
+                            <div *ngIf="isInvalid(media) == invalidImageType.UnderSize" class="invalid-tag">
+                                <div>
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span>Under size</span>
+                                </div>
+                            </div>
+
+                            <div *ngIf="isInvalid(media) == invalidImageType.MultipleSizes" class="invalid-tag">
+                                <div>
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span>Multiple sizes</span>
+                                </div>
+                            </div>
                         </div>
 
                     </div>

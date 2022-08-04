@@ -1,8 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, Image, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, Video } from 'common';
-import { ImageSize } from '../../classes/enums';
-import { SearchedMedia } from '../../classes/searched-media';
+import { DataService, Image, ImageSize, ImageSizeType, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, Video } from 'common';
+import { InvalidImageType, MenuOptionType } from '../../classes/enums';
+import { MenuOption } from '../../classes/menu-option';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { ImageInfoComponent } from '../image-info/image-info.component';
+import { ImageReferencesComponent } from '../image-references/image-references.component';
 import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
@@ -27,11 +30,12 @@ export class MediaBrowserComponent extends LazyLoad {
   public newVideo!: Video;
   public dragover!: boolean;
   public callback!: Function;
-  public searchedMedia: Array<SearchedMedia> = [];
+  public media: Array<Media> = [];
   public invalidVideoLink!: boolean;
   public noSearchResults!: boolean;
-  public imageSize!: ImageSize;
+  public imageSizeType!: ImageSizeType;
   private imageFile!: File;
+  public invalidImageType = InvalidImageType;
 
 
   constructor
@@ -118,7 +122,7 @@ export class MediaBrowserComponent extends LazyLoad {
     const formData = new FormData()
     formData.append('image', this.imageFile);
     formData.append('name', imageName);
-    formData.append('imageSize', this.imageSize.toString());
+    formData.append('imageSize', this.imageSizeType.toString());
 
     this.dataService.post<Media>('api/Media/Image', formData)
       .subscribe((media: Media) => {
@@ -210,9 +214,11 @@ export class MediaBrowserComponent extends LazyLoad {
         }
       ]
 
-      this.dataService.get<Array<SearchedMedia>>('api/Media/Search', params).subscribe((searchedMedia: Array<SearchedMedia>) => {
-        this.searchedMedia = searchedMedia;
-        this.noSearchResults = searchedMedia.length == 0;
+      this.dataService.get<Array<Media>>('api/Media/Search', params).subscribe((media: Array<Media>) => {
+        this.media = [];
+
+        media.forEach((media: Media) => this.media.push(new Media(media)));
+        this.noSearchResults = media.length == 0;
       });
     }
   }
@@ -226,7 +232,7 @@ export class MediaBrowserComponent extends LazyLoad {
     this.newImage = null!;
     this.isNewVideo = false;
     this.noSearchResults = null!;
-    this.searchedMedia = null!;
+    this.media = null!;
     this.invalidVideoLink = null!;
     if (!preserveSearchInput) this.searchInput.nativeElement.value = '';
 
@@ -244,8 +250,8 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
   // --------------------------------------------------------------------Set Media-------------------------------------------------------
-  public setMedia(media: SearchedMedia): void {
-    if (this.isInvalid(media)) return;
+  public setMedia(media: Media, forceUse?: boolean): void {
+    if (!forceUse && this.isInvalid(media) > 0) return;
 
     if (this.currentMediaType == MediaType.Video) {
       const video = new Video({
@@ -266,25 +272,29 @@ export class MediaBrowserComponent extends LazyLoad {
       image.name = media.name;
       image.thumbnail = media.thumbnail;
 
-      if (this.imageSize == ImageSize.Small) {
+      if (this.imageSizeType == ImageSizeType.Small) {
         if (media.imageSm) {
           image.src = media.imageSm;
           this.callback(image);
         } else {
-          this.addImageSize(media, image, media.imageAnySize);
+          const src = media.imageAnySize ? media.imageAnySize : media.imageMd;
+
+          this.addImageSize(media, image, src);
         }
 
 
 
-      } else if (this.imageSize == ImageSize.Medium) {
+      } else if (this.imageSizeType == ImageSizeType.Medium) {
         if (media.imageMd) {
           image.src = media.imageMd;
           this.callback(image);
         } else {
-          this.addImageSize(media, image, media.imageAnySize);
+          const src = media.imageAnySize ? media.imageAnySize : media.imageSm;
+
+          this.addImageSize(media, image, src);
         }
 
-      } else if (this.imageSize == ImageSize.AnySize) {
+      } else if (this.imageSizeType == ImageSizeType.AnySize) {
         if (media.imageAnySize) {
           image.src = media.imageAnySize;
           this.callback(image);
@@ -310,11 +320,11 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-  addImageSize(media: SearchedMedia, image: Image, src: string) {
+  addImageSize(media: Media, image: Image, src: string) {
     this.dataService.get<Image>('api/Media/Image',
       [
         { key: 'imageId', value: media.id },
-        { key: 'imageSize', value: this.imageSize },
+        { key: 'imageSize', value: this.imageSizeType },
         { key: 'src', value: src }
       ]).subscribe((img: Image) => {
         image.src = img.src;
@@ -388,7 +398,7 @@ export class MediaBrowserComponent extends LazyLoad {
 
     formData.append('image', imageFile);
     formData.append('id', this.editedImage.id.toString());
-    formData.append('imageSize', this.imageSize.toString());
+    formData.append('imageSize', this.imageSizeType.toString());
 
     this.dataService.post<any>('api/Media/UpdateImage', formData)
       .subscribe((image: any) => {
@@ -491,51 +501,195 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
   // ---------------------------------------------------------------------------Is Invalid-------------------------------------------------------------
-  isInvalid(searchedMedia: SearchedMedia) {
+  isInvalid(media: Media): number {
     // Small
-    if (this.imageSize == ImageSize.Small) {
-      // If we have a any size that is greater or equal to small, return false
-      if (searchedMedia.imageAnySize &&
-        (searchedMedia.imageAnySizeWidth >= ImageSize.Small ||
-          searchedMedia.imageAnySizeHeight >= ImageSize.Small)) return false;
+    if (this.imageSizeType == ImageSizeType.Small) {
+      // If we have an any size that is greater or equal to small, return false
+      if (media.imageAnySize &&
+        (media.imageAnySizeWidth >= ImageSizeType.Small ||
+          media.imageAnySizeHeight >= ImageSizeType.Small)) return InvalidImageType.NotInvalid;
 
       // If there is not a small size or the size is less than small return true
-      if (!searchedMedia.imageSm ||
-        (searchedMedia.imageSmWidth < ImageSize.Small &&
-          searchedMedia.imageSmHeight < ImageSize.Small)) return true;
+      if (!media.imageSm ||
+        (media.imageSmWidth < ImageSizeType.Small &&
+          media.imageSmHeight < ImageSizeType.Small)) return InvalidImageType.UnderSize;
     }
 
     // Medium
-    else if (this.imageSize == ImageSize.Medium) {
-      // If we have a any size that is greater or equal to medium, return false
-      if (searchedMedia.imageAnySize &&
-        (searchedMedia.imageAnySizeWidth >= ImageSize.Medium ||
-          searchedMedia.imageAnySizeHeight >= ImageSize.Medium)) return false;
+    else if (this.imageSizeType == ImageSizeType.Medium) {
+      // If we have an any size that is greater or equal to medium, return false
+      if (media.imageAnySize &&
+        (media.imageAnySizeWidth >= ImageSizeType.Medium ||
+          media.imageAnySizeHeight >= ImageSizeType.Medium)) return InvalidImageType.NotInvalid;
 
       // If there is not a medium size or the size is less than medium return true
-      if (!searchedMedia.imageMd ||
-        (searchedMedia.imageMdWidth < ImageSize.Medium &&
-          searchedMedia.imageMdHeight < ImageSize.Medium)) return true;
+      if (!media.imageMd ||
+        (media.imageMdWidth < ImageSizeType.Medium &&
+          media.imageMdHeight < ImageSizeType.Medium)) return InvalidImageType.UnderSize;
     }
 
     // Any Size
-    else if (this.imageSize == ImageSize.AnySize) {
-      let imageSizes = new Array<string>();
+    else if (this.imageSizeType == ImageSizeType.AnySize) {
+      const imageSizes = media.getImageSizes();
 
-      imageSizes.push(searchedMedia.imageSm);
-      imageSizes.push(searchedMedia.imageMd);
-      imageSizes.push(searchedMedia.imageLg);
-      imageSizes.push(searchedMedia.imageAnySize);
-
-      imageSizes = imageSizes.filter(x => x);
-
-      // Get unique values
-      imageSizes = [...new Set(imageSizes)];
-
-      // If there are more than one image size, it's invalid
-      return imageSizes.length > 1;
+      return imageSizes.length > 1 ? InvalidImageType.MultipleSizes : InvalidImageType.NotInvalid;
     }
 
-    return false;
+    return InvalidImageType.NotInvalid;
+  }
+
+
+
+
+  // --------------------------------------------------------------------------- On Mousedown -------------------------------------------------------------
+  onMousedown(event: MouseEvent, media: Media) {
+    if (event.button == 2) {
+      this.lazyLoadingService.load(async () => {
+        const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
+        const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
+
+        return {
+          component: ContextMenuComponent,
+          module: ContextMenuModule
+        }
+      }, SpinnerAction.None)
+        .then((contextMenu: ContextMenuComponent) => {
+          contextMenu.xPos = event.clientX;
+          contextMenu.yPos = event.clientY;
+
+          const isHidden = this.isInvalid(media) == InvalidImageType.NotInvalid;
+
+          contextMenu.options = [
+            {
+              type: MenuOptionType.MenuItem,
+              name: 'Image info',
+              optionFunction: () => {
+                this.openImageInfo(media);
+              }
+            },
+            {
+              type: MenuOptionType.MenuItem,
+              name: 'Show all references',
+              optionFunction: () => this.openImageReferences(media)
+            },
+            {
+              type: MenuOptionType.Divider
+            },
+            {
+              type: MenuOptionType.MenuItem,
+              name: 'Edit image',
+              optionFunction: () => {
+                const image = new Image();
+
+                // This will get the biggest resolution for the image src
+                const src = media.getImageSizes()
+                  .sort((a: ImageSize, b: ImageSize) => Math.max(a.width, a.height) > Math.max(b.width, b.height) ? 1 : -1)
+                  .reverse()[0].src;
+
+                image.id = media.id;
+                image.name = media.name;
+                image.src = src;
+
+                this.searchMode = false;
+                this.editedImage = image;
+              }
+            },
+            {
+              type: MenuOptionType.Divider,
+              hidden: isHidden || this.imageSizeType == ImageSizeType.AnySize
+            },
+            {
+              type: MenuOptionType.MenuItem,
+              name: 'Use image',
+              hidden: isHidden || this.imageSizeType == ImageSizeType.AnySize,
+              optionFunction: () => this.setMedia(media, true)
+            }
+          ];
+
+          if (this.imageSizeType == ImageSizeType.AnySize && !isHidden) {
+            const image = new Image();
+
+            image.id = media.id;
+            image.name = media.name;
+            image.thumbnail = media.thumbnail;
+
+            const imageSizes = media.getImageSizes();
+            const sizeOptions: Array<MenuOption> = [];
+
+            imageSizes.forEach((imageSize: ImageSize) => {
+              sizeOptions.push({
+                type: MenuOptionType.MenuItem,
+                name: imageSize.width + ' x ' + imageSize.height,
+                optionFunction: () => {
+                  image.src = imageSize.src;
+                  image.imageSizeType = imageSize.imageSizeType;
+
+                  this.callback(image);
+                  this.close();
+                }
+              });
+            });
+
+            contextMenu.options.push(
+              {
+                type: MenuOptionType.Divider
+              },
+              {
+                type: MenuOptionType.Submenu,
+                name: 'Use image size',
+                options: sizeOptions
+              }
+            );
+          }
+        });
+    }
+  }
+
+
+
+  // --------------------------------------------------- Open Image References ---------------------------------------------------
+  private async openImageReferences(media: Media): Promise<void> {
+    this.lazyLoadingService.load(async () => {
+      const { ImageReferencesComponent } = await import('../image-references/image-references.component');
+      const { ImageReferencesModule } = await import('../image-references/image-references.module');
+      return {
+        component: ImageReferencesComponent,
+        module: ImageReferencesModule
+      }
+    }, SpinnerAction.None)
+      .then((imageReferences: ImageReferencesComponent) => {
+        imageReferences.media = media;
+      });
+  }
+
+
+
+
+  // --------------------------------------------------- Open Image Info Popup ---------------------------------------------------
+  public async openImageInfo(media: Media): Promise<void> {
+    this.lazyLoadingService.load(async () => {
+      const { ImageInfoComponent } = await import('../image-info/image-info.component');
+      const { ImageInfoModule } = await import('../image-info/image-info.module');
+      return {
+        component: ImageInfoComponent,
+        module: ImageInfoModule
+      }
+    }, SpinnerAction.None)
+      .then((imageInfo: ImageInfoComponent) => {
+        imageInfo.media = media;
+        imageInfo.imageSizeType = this.imageSizeType;
+        imageInfo.callback = (image: Image) => {
+          this.callback(image);
+          this.close();
+        }
+      });
+  }
+
+
+
+  // ---------------------------------------------------------- On Escape -----------------------------------------------------------
+  onEscape(): void {
+    if (this.lazyLoadingService.container.length > 1) return;
+    super.onEscape();
   }
 }

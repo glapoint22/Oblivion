@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { DataService, Image, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
+import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
 import { Subject } from 'rxjs';
 import { Column, HorizontalAlignmentType, ImageWidgetData, Row, VerticalAlignmentType, VideoWidgetData, Widget, WidgetData, WidgetType } from 'widgets';
-import { BuilderType, ImageLocation, ImageSize, WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { BuilderType, ImageLocation, WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
 import { ContainerDevComponent } from '../../components/container-dev/container-dev.component';
@@ -81,10 +81,10 @@ export class WidgetService {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         const mediaType = widgetData.widgetType == WidgetType.Image ? MediaType.Image : MediaType.Video;
-        const imageSize = widgetData.widgetType == WidgetType.Image ? ImageSize.AnySize : null;
+        const imageSize = widgetData.widgetType == WidgetType.Image ? ImageSizeType.AnySize : null;
 
         mediaBrowser.currentMediaType = mediaType;
-        mediaBrowser.imageSize = imageSize!;
+        mediaBrowser.imageSizeType = imageSize!;
         mediaBrowser.callback = (media: Image | Video) => {
           if (mediaType == MediaType.Image) {
             const imageWidgetData = widgetData as ImageWidgetData;
@@ -93,7 +93,7 @@ export class WidgetService {
             // Add the image reference
             this.dataService.post('api/Media/ImageReference', {
               imageId: media.id,
-              imageSize: ImageSize.AnySize,
+              imageSize: (media as Image).imageSizeType,
               builder: BuilderType.Page,
               host: this.page.name,
               location: ImageLocation.ImageWidget
