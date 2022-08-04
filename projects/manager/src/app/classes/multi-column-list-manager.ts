@@ -63,7 +63,8 @@ export class MultiColumnListManager extends ListManager {
                 type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,
                 id: multiColumnItem.id,
                 index: this.sourceList.findIndex(x => x.id == multiColumnItem.id && x.values[0].name == multiColumnItem.values[0].name && x.values[1].name == multiColumnItem.values[1].name),
-                values: multiColumnItem.values
+                values: multiColumnItem.values,
+                oldName: this.editItemOldName
             }
         );
     }

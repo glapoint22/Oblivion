@@ -1,5 +1,5 @@
 import { KeyValue } from "@angular/common";
-import { Directive, ViewChild } from "@angular/core";
+import { Directive, Input, ViewChild } from "@angular/core";
 import { CheckboxListComponent } from "../components/lists/checkbox-list/checkbox-list.component";
 import { CheckboxItem } from "./checkbox-item";
 import { CheckboxListUpdate } from "./checkbox-list-update";
@@ -13,6 +13,8 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
+    @Input() productId!: number;
+    @Input() productIndex!: number;
     @ViewChild('listComponent') listComponent!: CheckboxListComponent;
     @ViewChild('searchComponent') searchComponent!: CheckboxListComponent;
 

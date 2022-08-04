@@ -10,34 +10,35 @@ import { Prompt } from "./prompt";
 import { CapitalizedCase, TitleCase } from "text-box";
 
 export class ListManager {
-  prompt!: PromptComponent;
-  sourceList!: Array<ListItem>;
-  selectedItem!: ListItem;
-  unselectedItem!: ListItem;
-  editedItem!: ListItem;
-  pivotItem!: ListItem;
-  shiftKeyDown!: boolean;
-  ctrlKeyDown!: boolean;
-  eventListenersAdded!: boolean;
-  preventUnselectionFromRightMousedown!: boolean;
-  newItem!: boolean;
-  options!: ListOptions;
-  SelectType = ItemSelectType;
-  addDisabled: boolean = false;
-  editDisabled: boolean = true;
-  deleteDisabled: boolean = true;
-  editable: boolean = true;
-  selectable: boolean = true;
-  unselectable: boolean = true;
-  deletable: boolean = true;
-  multiselectable: boolean = true;
-  sortable: boolean = true;
-  verifyAddEdit: boolean = false;
-  addEditVerificationInProgress!: boolean;
-  onListUpdate = new Subject<ListUpdate>();
-  contextMenuOpen!: boolean;
-  promptOpen!: boolean;
-  mouseDownItem!: ListItem;
+  public prompt!: PromptComponent;
+  public sourceList!: Array<ListItem>;
+  public selectedItem!: ListItem;
+  public unselectedItem!: ListItem;
+  public editedItem!: ListItem;
+  public pivotItem!: ListItem;
+  public shiftKeyDown!: boolean;
+  public ctrlKeyDown!: boolean;
+  public eventListenersAdded!: boolean;
+  public preventUnselectionFromRightMousedown!: boolean;
+  public newItem!: boolean;
+  public options!: ListOptions;
+  public SelectType = ItemSelectType;
+  public addDisabled: boolean = false;
+  public editDisabled: boolean = true;
+  public deleteDisabled: boolean = true;
+  public editable: boolean = true;
+  public selectable: boolean = true;
+  public unselectable: boolean = true;
+  public deletable: boolean = true;
+  public multiselectable: boolean = true;
+  public sortable: boolean = true;
+  public verifyAddEdit: boolean = false;
+  public addEditVerificationInProgress!: boolean;
+  public onListUpdate = new Subject<ListUpdate>();
+  public contextMenuOpen!: boolean;
+  public promptOpen!: boolean;
+  public mouseDownItem!: ListItem;
+  public editItemOldName!: string;
 
 
   // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -801,8 +802,12 @@ export class ListManager {
   commitAddEdit() {
     this.addEditVerificationInProgress = false;
 
+    // Before we update the edited item with the new value, save the old value first
+    this.editItemOldName = this.getEditedItem().name!;
+
     // Update the name property
     this.getEditedItem().name = this.getCase();
+
 
     // As long as the list is sortable
     if (this.sortable) {
@@ -1086,7 +1091,8 @@ export class ListManager {
         type: this.newItem ? ListUpdateType.Add : ListUpdateType.Edit,
         id: listItem.id,
         index: this.sourceList.findIndex(x => x.id == listItem.id && x.name == listItem.name),
-        name: listItem.name
+        name: listItem.name,
+        oldName: this.editItemOldName
       }
     );
   }

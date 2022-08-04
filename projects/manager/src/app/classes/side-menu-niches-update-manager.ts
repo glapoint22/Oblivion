@@ -297,50 +297,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
-
-    onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
-        super.onSearchItemEdit(searchUpdate);
-
-        // Edit grandchild search item
-        if (searchUpdate.values![1].name == this.grandchildSearchType) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.put('api/' + this.grandchildDataServicePath, {
-            //     id: searchUpdate.id,
-            //     name: searchUpdate.values![0].name
-            // }).subscribe();
-            // this.sort(this.OldEditItem(this.thisArray, searchUpdate, 2), this.thisArray);
-        }
-    }
-
-
-
-    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
-
-    onItemVerify(hierarchyUpdate: HierarchyUpdate) {
-        super.onItemVerify(hierarchyUpdate);
-
-        // If we're verifying a grandchild item
-        if (hierarchyUpdate.hierarchyGroupID == 2) {
-            this.listComponent.commitAddEdit();
-        }
-    }
-
-
-
-    // ===============================================================( ON SEARCH ITEM VERIFY )=============================================================== \\
-
-    onSearchItemVerify(searchUpdate: MultiColumnListUpdate) {
-        super.onSearchItemVerify(searchUpdate);
-
-        // If we're verifying a grandchild item
-        if (searchUpdate.values![1].name == this.grandchildSearchType) {
-            this.searchComponent.commitAddEdit();
-        }
-    }
-
-
-
     // =========================================================( DELETE PROMPT GRANDCHILD MESSAGE )========================================================== \\
 
     deletePromptGrandchildMessage(childType: string, childName: string, itemType: string, parentName: string): SafeHtml {
@@ -426,34 +382,49 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
     // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
-    onItemDelete(deletedItem: HierarchyItem) {
+    onItemDelete(hierarchyUpdate: HierarchyUpdate) {
         // If we're deleting a grandchild item
-        if (deletedItem.hierarchyGroupID == 2) {
+        if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 2) {
             // ********* Commented Out Data Service *********
-            // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
+            // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0])).subscribe();
         }
-        super.onItemDelete(deletedItem);
+        super.onItemDelete(hierarchyUpdate);
     }
 
 
 
     // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
 
-    onSearchItemDelete(deletedItem: MultiColumnItem) {
+    onSearchItemDelete(searchUpdate: MultiColumnListUpdate) {
+        super.onSearchItemDelete(searchUpdate);
+        // If we're deleting a child item
+        if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.childSearchType) {
+            this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem));
+        }
+
         // If we're deleting a grandchild item
-        if (deletedItem.values[1].name == this.grandchildSearchType) {
+        if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.grandchildSearchType) {
             // ********* Commented Out Data Service *********
             // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-            this.deleteItem(this.thisArray, deletedItem, 2);
+            this.updateOtherItems(searchUpdate);
         }
-        super.onSearchItemDelete(deletedItem);
+    }
+
+
+
+    // ==============================================================( FIND DELETED ITEM INDEX )============================================================== \\
+
+    findDeletedItemIndex(otherArrayDeletedItem: ListItem, fromArrayDeletedItem: ListItem) {
+        return otherArrayDeletedItem.id == fromArrayDeletedItem.id
+            && otherArrayDeletedItem.name == (fromArrayDeletedItem as MultiColumnItem).values[0].name
+            && otherArrayDeletedItem.hierarchyGroupID == ((fromArrayDeletedItem as MultiColumnItem).values![1].name == this.parentSearchType ? 0 : (fromArrayDeletedItem as MultiColumnItem).values![1].name == this.grandchildSearchType ? 2 : 1);
     }
 
 
 
     // ==================================================================( DELETE CHILDREN )================================================================== \\
 
-    deleteChildren(searchList: Array<MultiColumnItem>, deletedItem: MultiColumnItem, hierarchyList?: Array<HierarchyItem>) {
+    deleteChildren(searchList: Array<MultiColumnItem>, deletedItem: MultiColumnItem) {
 
         // If the item that is being deleted is a niche
         if (deletedItem.values[1].name == this.parentSearchType) {
@@ -468,18 +439,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                         // Also check to see if any of the grandchildren of the parent item is present in the search list. If so, delete them too
                         const searchGrandchildIndex = searchList.findIndex(y => y.id == x.id && (y as MultiColumnItem).values[0].name == x.name && (y as MultiColumnItem).values[1].name == this.grandchildSearchType);
                         if (searchGrandchildIndex != -1) searchList.splice(searchGrandchildIndex, 1);
-
-                        // Check the hierarchy list for any children
-                        if (hierarchyList) {
-
-                            // Check to see if any of the children of the parent item is present in the hierarchy list. If so, delete them
-                            const hierarchyChildIndex = hierarchyList!.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 1);
-                            if (hierarchyChildIndex != -1) hierarchyList.splice(hierarchyChildIndex, 1);
-
-                            // And check to see if any of the grandchildren of the parent item is present in the hierarchy list. If so, delete them also
-                            const hierarchyGrandchildIndex = hierarchyList!.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 2);
-                            if (hierarchyGrandchildIndex != -1) hierarchyList.splice(hierarchyGrandchildIndex, 1);
-                        }
                     })
                 })
         }
@@ -493,16 +452,52 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                         // Check to see if any of the children of the parent item is present in the search list. If so, delete them
                         const searchChildIndex = searchList.findIndex(y => y.id == x.id && (y as MultiColumnItem).values[0].name == x.name && (y as MultiColumnItem).values[1].name == this.grandchildSearchType);
                         if (searchChildIndex != -1) searchList.splice(searchChildIndex, 1);
-
-                        // Check the hierarchy list for any children
-                        if (hierarchyList) {
-
-                            // Check to see if any of the children of the parent item is present in the hierarchy list. If so, delete them too
-                            const hierarchyChildIndex = hierarchyList!.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 2);
-                            if (hierarchyChildIndex != -1) hierarchyList.splice(hierarchyChildIndex, 1);
-                        }
                     })
                 })
+        }
+    }
+
+
+
+    // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
+
+    onSearchItemEdit(searchUpdate: MultiColumnListUpdate) {
+        super.onSearchItemEdit(searchUpdate);
+
+        // Edit grandchild search item
+        if (searchUpdate.values![1].name == this.grandchildSearchType) {
+            // ********* Commented Out Data Service *********
+            // this.dataService.put('api/' + this.grandchildDataServicePath, {
+            //     id: searchUpdate.id,
+            //     name: searchUpdate.values![0].name
+            // }).subscribe();
+            // this.sort(this.OldEditItem(this.thisArray, searchUpdate, 2), this.thisArray);
+        }
+    }
+
+
+
+    // ==================================================================( ON ITEM VERIFY )=================================================================== \\
+
+    onItemVerify(hierarchyUpdate: HierarchyUpdate) {
+        super.onItemVerify(hierarchyUpdate);
+
+        // If we're verifying a grandchild item
+        if (hierarchyUpdate.hierarchyGroupID == 2) {
+            this.listComponent.commitAddEdit();
+        }
+    }
+
+
+
+    // ===============================================================( ON SEARCH ITEM VERIFY )=============================================================== \\
+
+    onSearchItemVerify(searchUpdate: MultiColumnListUpdate) {
+        super.onSearchItemVerify(searchUpdate);
+
+        // If we're verifying a grandchild item
+        if (searchUpdate.values![1].name == this.grandchildSearchType) {
+            this.searchComponent.commitAddEdit();
         }
     }
 

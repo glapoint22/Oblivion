@@ -1,5 +1,5 @@
 import { KeyValue } from "@angular/common";
-import { Directive, Input } from "@angular/core";
+import { Directive } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
@@ -48,9 +48,6 @@ export class ListUpdateManager {
     public set itemType(v: string) { this._itemType = v; this.addIconButtonTitle = 'Add ' + v; }
     public set searchUpdate(searchUpdate: ListUpdate) { this.onSearchListUpdate(searchUpdate); }
 
-    // Decorators
-    @Input() productId!: number;
-    @Input() productIndex!: number;
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
@@ -289,7 +286,7 @@ export class ListUpdateManager {
         if (listUpdate.type == ListUpdateType.VerifyAddEdit) this.onItemVerify(listUpdate);
         if (listUpdate.type == ListUpdateType.SelectedItems) this.onSelectedItem(listUpdate);
         if (listUpdate.type == ListUpdateType.UnselectedItems) this.onUnselectedItem();
-        if (listUpdate.type == ListUpdateType.Delete) this.onItemDelete(listUpdate.deletedItems![0]);
+        if (listUpdate.type == ListUpdateType.Delete) this.onItemDelete(listUpdate);
         if (listUpdate.type == ListUpdateType.DeletePrompt) this.onDeletePrompt(listUpdate.deletedItems![0]);
         if (listUpdate.type == ListUpdateType.DoubleClick) this.onItemDoubleClick();
     }
@@ -304,7 +301,7 @@ export class ListUpdateManager {
         if (searchUpdate.type == ListUpdateType.VerifyAddEdit) this.onSearchItemVerify(searchUpdate);
         if (searchUpdate.type == ListUpdateType.SelectedItems) this.onSelectedSearchItem(searchUpdate);
         if (searchUpdate.type == ListUpdateType.UnselectedItems) this.onUnselectedSearchItem();
-        if (searchUpdate.type == ListUpdateType.Delete) this.onSearchItemDelete(searchUpdate.deletedItems![0]);
+        if (searchUpdate.type == ListUpdateType.Delete) this.onSearchItemDelete(searchUpdate);
         if (searchUpdate.type == ListUpdateType.DeletePrompt) this.onSearchDeletePrompt(searchUpdate.deletedItems![0]);
     }
 
@@ -373,8 +370,8 @@ export class ListUpdateManager {
         // this.dataService.post<number>('api/' + this.dataServicePath, {
         //     name: listUpdate.name
         // }).subscribe((id: number) => {
-            this.thisArray[listUpdate.index!].id = this.listAddId//id;
-            this.updateOtherItems(listUpdate);
+        this.thisArray[listUpdate.index!].id = this.listAddId//id;
+        this.updateOtherItems(listUpdate);
         // }
     }
 
@@ -382,11 +379,17 @@ export class ListUpdateManager {
 
     // ==================================================================( ADD OTHER ITEM )=================================================================== \\
 
-    addOtherItem(array: Array<ListItem>, index: number, listItem: ListItem) {
-        array.splice(index, 0, {
-            id: listItem.id,
-            name: listItem.name
-        })
+    addOtherItem(otherArray: Array<ListItem>, thisIndex: number, thisListItem: ListItem) {
+        const addedItem = otherArray.find(x => x.name == thisListItem.name);
+
+        // As long as the array exist and it doesn't already contain the added item
+        if (otherArray.length > 0 && !addedItem) {
+
+            otherArray.splice(thisIndex, 0, {
+                id: thisListItem.id,
+                name: thisListItem.name
+            })
+        }
     }
 
 
@@ -418,13 +421,75 @@ export class ListUpdateManager {
 
 
     // ==================================================================( EDIT OTHER ITEM )================================================================== \\
-    
+
     editOtherItem(list: Array<ListItem>, update: ListUpdate, type?: number | string) {
-        const editedItem: ListItem = list.find(x => x.id == update.id)!;
+        const editedItem: ListItem = list.find(x => x.id == update.id && x.name == update.oldName)!;
         if (editedItem) {
             editedItem.name = update.name;
-            this.sort(editedItem, list);
+            if (typeof type == 'number') this.sort(editedItem, list);
         }
+    }
+
+
+
+    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
+
+    deletePromptMessage(itemType: string, name: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(
+            'The ' +
+            itemType +
+            ' <span style="color: #ffba00">\"' + name + '\"</span>' +
+            ' will be permanently deleted.');
+    }
+
+
+
+    // =================================================================( ON DELETE PROMPT )================================================================== \\
+
+    onDeletePrompt(deletedItem: ListItem) {
+        this.listOptions.deletePrompt!.message = this.deletePromptMessage(this.itemType, deletedItem.name!);
+    }
+
+
+
+    // ==============================================================( ON SEARCH DELETE PROMPT )============================================================== \\
+
+    onSearchDeletePrompt(deletedItem: ListItem) {
+        this.searchOptions.deletePrompt!.message = this.deletePromptMessage(this.itemType, deletedItem.name!);
+    }
+
+
+
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
+
+    onItemDelete(listUpdate: ListUpdate) {
+        // ********* Commented Out Data Service *********
+        // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(listUpdate.deletedItems![0])).subscribe();
+        this.updateOtherItems(listUpdate);
+    }
+
+
+
+    // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
+
+    onSearchItemDelete(searchUpdate: ListUpdate) {
+        // ********* Commented Out Data Service *********
+        // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(searchUpdate.deletedItems![0])).subscribe();
+        this.updateOtherItems(searchUpdate);
+    }
+
+
+
+    // ====================================================================( DELETE ITEM )==================================================================== \\
+
+    deleteOtherItem(list: Array<ListItem>, deletedItem: ListItem, type?: number | string) {
+        // Wait a frame because the item being deleted from the "from array" doesn't show as being
+        // deleted right away, which causes a second item to be deleted from the "from array"
+        window.setTimeout(() => {
+            const index = list.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.name);
+            // If the index is found, delete the item of that index
+            if (index != -1) list.splice(index, 1);
+        })
     }
 
 
@@ -432,40 +497,51 @@ export class ListUpdateManager {
     // =================================================================( UPDATE OTHER ITEMS )================================================================ \\
 
     updateOtherItems(update: ListUpdate) {
-        // Form
+        // Other Form
         if (this.otherArray) {
 
+            // Add Other
             if (update.type == ListUpdateType.Add) {
                 this.addOtherItem(this.otherArray, update.index!, this.thisArray[update.index!]);
             }
 
+
+            // Edit Other
             if (update.type == ListUpdateType.Edit) {
-                this.editOtherItem(this.otherArray, update);
-                this.editOtherItem(this.otherSearchArray, update);
-                this.editOtherItem(this.otherSearchArray, update);
-                this.editOtherItem(this.thisArray, update);
-                this.editOtherItem(this.otherArray, update);
+                this.editOtherItem(this.thisArray, update, 1);
+                this.editOtherItem(this.otherArray, update, 1);
+                this.editOtherItem(this.otherSearchArray, update, '');
+            }
+
+
+            // Delete Other
+            if (update.type == ListUpdateType.Delete) {
+                this.deleteOtherItem(this.thisArray, update.deletedItems![0]);
+                this.deleteOtherItem(this.otherArray, update.deletedItems![0]);
+                this.deleteOtherItem(this.otherSearchArray, update.deletedItems![0]);
             }
         }
 
-        // Products
+        // Other Products
         if (this.otherProductArray) {
             this.productService.productComponents.forEach(x => {
-                if (this.productService.productComponents.indexOf(x) != this.productIndex) {
 
-                    if (update.type == ListUpdateType.Add) {
-                        if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.addOtherItem(x[this.otherProductArray] as Array<ListItem>, update.index!, this.thisArray[update.index!]);
-                    }
-
-                    if (update.type == ListUpdateType.Edit) {
-                        if ((x[this.otherProductArray] as Array<ListItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update);
-                        if ((x[this.otherProductSearchArray] as Array<ListItem>).length > 0) {
-                            this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update);
-                            this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update);
-                        }
-                    }
+                // Add Other
+                if (update.type == ListUpdateType.Add) {
+                    this.addOtherItem(x[this.otherProductArray] as Array<ListItem>, update.index!, this.thisArray[update.index!]);
                 }
-                if (update.type == ListUpdateType.Edit && (x[this.otherProductArray] as Array<ListItem>).length > 0) this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update);
+
+                // Edit Other
+                if (update.type == ListUpdateType.Edit) {
+                    this.editOtherItem(x[this.otherProductArray] as Array<ListItem>, update, 1);
+                    this.editOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update, '');
+                }
+
+                // Delete Other
+                if (update.type == ListUpdateType.Delete) {
+                    this.deleteOtherItem(x[this.otherProductArray] as Array<ListItem>, update.deletedItems![0]);
+                    this.deleteOtherItem(x[this.otherProductSearchArray] as Array<ListItem>, update.deletedItems![0]);
+                }
             })
         }
     }
@@ -532,7 +608,6 @@ export class ListUpdateManager {
             }
 
 
-
             // If a match was found
         } else {
             this.listOptions.duplicatePrompt!.title = 'Duplicate ' + this.itemType;
@@ -564,71 +639,6 @@ export class ListUpdateManager {
             this.searchOptions.duplicatePrompt!.message = this.duplicatePromptMessage(this.searchComponent, this.itemType, searchUpdate.name!);
             this.searchComponent.openDuplicatePrompt();
         }
-    }
-
-
-
-    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
-
-    deletePromptMessage(itemType: string, name: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(
-            'The ' +
-            itemType +
-            ' <span style="color: #ffba00">\"' + name + '\"</span>' +
-            ' will be permanently deleted.');
-    }
-
-
-
-    // =================================================================( ON DELETE PROMPT )================================================================== \\
-
-    onDeletePrompt(deletedItem: ListItem) {
-        this.listOptions.deletePrompt!.message = this.deletePromptMessage(this.itemType, deletedItem.name!);
-    }
-
-
-
-    // ==============================================================( ON SEARCH DELETE PROMPT )============================================================== \\
-
-    onSearchDeletePrompt(deletedItem: ListItem) {
-        this.searchOptions.deletePrompt!.message = this.deletePromptMessage(this.itemType, deletedItem.name!);
-    }
-
-
-
-    // ==================================================================( ON ITEM DELETE )=================================================================== \\
-
-    onItemDelete(deletedItem: ListItem) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-
-
-        // this.deleteItem(this.otherArray, deletedItem, 0);
-        // this.deleteItem(this.otherSearchArray, deletedItem, this.parentSearchType);
-    }
-
-
-
-    // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
-
-    onSearchItemDelete(deletedItem: ListItem) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-
-
-        // this.deleteItem(this.otherSearchArray, deletedItem, this.parentSearchType);
-        this.deleteItem(this.thisArray, deletedItem, 0);
-        // this.deleteItem(this.otherArray, deletedItem, 0);
-    }
-
-
-
-    // ====================================================================( DELETE ITEM )==================================================================== \\
-
-    deleteItem(list: Array<ListItem>, deletedItem: ListItem, type?: number | string) {
-        const index = list.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.name);
-        // If the index is found, delete the item of that index
-        if (index != -1) list.splice(index, 1);
     }
 
 

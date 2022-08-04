@@ -10,7 +10,7 @@ import { KeywordCheckboxItem } from "./keyword-checkbox-item";
 import { KeywordCheckboxMultiColumnItem } from "./keyword-checkbox-multi-column-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { KeyValue } from "@angular/common";
-import { Directive, ViewChild } from "@angular/core";
+import { Directive, Input, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { CheckboxMultiColumnListComponent } from "../components/lists/checkbox-multi-column-list/checkbox-multi-column-list.component";
 import { MultiColumnItem } from "./multi-column-item";
@@ -27,6 +27,8 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     public thisSearchArray: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
 
     // Decorators
+    @Input() productId!: number;
+    @Input() productIndex!: number;
     @ViewChild('selectedHierarchyComponent') listComponent!: HierarchyComponent;
     @ViewChild('selectedSearchComponent') searchComponent!: CheckboxMultiColumnListComponent;
 
@@ -341,6 +343,165 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
 
+    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
+
+    deletePromptMessage(itemType: string, parentName: string): SafeHtml {
+
+        if (itemType == 'Keyword Group') {
+            return this.sanitizer.bypassSecurityTrustHtml(
+                'The ' +
+                itemType +
+                ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
+                ' and its contents will be removed.');
+        } else {
+            return this.sanitizer.bypassSecurityTrustHtml(
+                'The ' +
+                itemType +
+                ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
+                ' and its contents will be permanently deleted.');
+        }
+    }
+
+
+
+    // ==================================================================( ON ITEM DELETE )=================================================================== \\
+
+    onItemDelete(hierarchyUpdate: CheckboxListUpdate) {
+        // If we're deleting a parent item
+        if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 0) {
+
+            if (this.itemType == 'Keyword Group') {
+                // ********* Commented Out Data Service *********
+                // this.dataService.put('api/' + this.dataServicePath + '/Remove', {
+                //     productId: this.productId,
+                //     id: hierarchyUpdate.deletedItems![0].id
+                // }).subscribe();
+
+
+                // Get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this hierarchy list
+                // const removedItemIndex = this.otherArray.findIndex(x => x.id == hierarchyUpdate.deletedItems![0].id && x.name == hierarchyUpdate.deletedItems![0].name && x.hierarchyGroupID == 0);
+                // if (removedItemIndex) {
+                //     // Un-dim the parent in the available list that has that index
+                //     this.otherArray[removedItemIndex].opacity = null!;
+                //     // Un-dim it's children too (if available)
+                //     for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
+                //         if (this.otherArray[i].hierarchyGroupID! <= hierarchyUpdate.deletedItems![0].hierarchyGroupID!) break;
+                //         this.otherArray[i].opacity = null!;
+                //     }
+                // }
+
+                
+
+                // // Check to see if the removed keyword group is present in the available search list
+                // const searchItem = this.keywordsService.availableSearchList.find(y => y.id == hierarchyUpdate.deletedItems![0].id && y.values[0].name == hierarchyUpdate.deletedItems![0].name && y.values[1].name == 'Group');
+                // // If it is, then un-dim it
+                // if (searchItem) searchItem!.opacity = null!;
+
+
+
+                // Also, check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if found
+                this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: hierarchyUpdate.deletedItems![0].id }])
+                    .subscribe((children: Array<KeywordCheckboxItem>) => {
+                        children.forEach(x => {
+
+
+                            // const searchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
+                            // if (searchItem) searchItem.opacity = null!;
+
+
+                        })
+                    })
+
+
+            } else {
+                // ********* Commented Out Data Service *********
+                // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0])).subscribe();
+            }
+        }
+
+        // If we're deleting a child item
+        if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 1) {
+            // ********* Commented Out Data Service *********
+            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0])).subscribe();
+        }
+    }
+
+
+
+    // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
+
+    onSearchItemDelete(searchUpdate: CheckboxMultiColumnListUpdate) {
+
+        // If we're deleting a parent item
+        if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.parentSearchType) {
+            // ********* Commented Out Data Service *********
+            this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(searchUpdate.deletedItems![0])).subscribe();
+
+
+            // Remove the selected keyword group from the hierarchy list
+            const deletedItemIndex = this.thisArray.findIndex(x => x.id == searchUpdate.deletedItems![0].id && x.name == (searchUpdate.deletedItems![0] as MultiColumnItem).values[0].name && x.hierarchyGroupID == 0);
+            if (deletedItemIndex) this.thisArray.splice(deletedItemIndex, 1);
+
+            if (this.itemType == 'Keyword Group') {
+
+                // // If the available list is in hierarchy mode, get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this list
+                // const removedItemIndex = this.otherArray.findIndex(x => x.id == update.deletedItems![0].id && x.name == (update.deletedItems![0] as MultiColumnItem).values[0].name && x.hierarchyGroupID == 0);
+
+                // if (removedItemIndex) {
+                //     // Un-dim the parent in the available list that has that index
+                //     this.otherArray[removedItemIndex].opacity = null!;
+
+                //     // Also, un-dim it's children too (if available)
+                //     for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
+                //         if (this.otherArray[i].hierarchyGroupID! <= this.otherArray[removedItemIndex].hierarchyGroupID!) break;
+                //         this.otherArray[i].opacity = null!;
+                //     }
+                // }
+
+
+
+
+                // // But if the available list is in search mode, check to see if the removed keyword group is present in the available search list
+                // const searchItem = this.keywordsService.availableSearchList.find(y => y.id == update.deletedItems![0].id && y.values[0].name == (update.deletedItems![0] as MultiColumnItem).values[0].name && y.values[1].name == 'Group');
+                // // If it is, then un-dim it
+                // if (searchItem) searchItem!.opacity = null!;
+
+
+
+            }
+
+            // Grab all the children belonging to the keyword group that's being removed  
+            this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: searchUpdate.deletedItems![0].id }])
+                .subscribe((children: Array<KeywordCheckboxItem>) => {
+
+                    children.forEach(x => {
+
+                        
+                        // // Check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if any
+                        // const availableSearchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
+                        // if (availableSearchItem) availableSearchItem.opacity = null!;
+
+
+                        // Plus, while we have the children of the keyword group that's being removed, remove those children from this selected keywords search list as well
+                        const searchItemIndex = this.thisSearchArray.findIndex(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
+                        if (searchItemIndex != -1) this.thisSearchArray.splice(searchItemIndex, 1);
+
+                        // And also, check to see if these children are present in this selected keywords hierarchy list and remove them if they are
+                        const hierarchyItemIndex = this.thisArray.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 1);
+                        if (hierarchyItemIndex != -1) this.thisArray.splice(hierarchyItemIndex, 1);
+                    })
+                })
+        }
+
+
+        // If we're deleting a child item
+        if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.childSearchType) {
+            super.onSearchItemDelete(searchUpdate);
+        }
+    }
+
+
+
     // ==================================================================( ON ITEM VERIFY )=================================================================== \\
 
     onItemVerify(hierarchyUpdate: HierarchyUpdate) {
@@ -441,165 +602,6 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         // If we're verifying a child item
         if (searchUpdate.values![1].name == this.childSearchType) {
             super.onSearchItemVerify(searchUpdate);
-        }
-    }
-
-
-
-    // ===============================================================( DELETE PROMPT MESSAGE )=============================================================== \\
-
-    deletePromptMessage(itemType: string, parentName: string): SafeHtml {
-
-        if (itemType == 'Keyword Group') {
-            return this.sanitizer.bypassSecurityTrustHtml(
-                'The ' +
-                itemType +
-                ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
-                ' and its contents will be removed.');
-        } else {
-            return this.sanitizer.bypassSecurityTrustHtml(
-                'The ' +
-                itemType +
-                ' <span style="color: #ffba00">\"' + parentName + '\"</span>' +
-                ' and its contents will be permanently deleted.');
-        }
-    }
-
-
-
-    // ==================================================================( ON ITEM DELETE )=================================================================== \\
-
-    onItemDelete(deletedItem: KeywordCheckboxItem) {
-        // If we're deleting a parent item
-        if (deletedItem.hierarchyGroupID == 0) {
-
-            if (this.itemType == 'Keyword Group') {
-                // ********* Commented Out Data Service *********
-                // this.dataService.put('api/' + this.dataServicePath + '/Remove', {
-                //     productId: this.productId,
-                //     id: deletedItem.id
-                // }).subscribe();
-
-
-                // Get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this hierarchy list
-                // const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.name && x.hierarchyGroupID == 0);
-                // if (removedItemIndex) {
-                //     // Un-dim the parent in the available list that has that index
-                //     this.otherArray[removedItemIndex].opacity = null!;
-                //     // Un-dim it's children too (if available)
-                //     for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
-                //         if (this.otherArray[i].hierarchyGroupID! <= deletedItem.hierarchyGroupID!) break;
-                //         this.otherArray[i].opacity = null!;
-                //     }
-                // }
-
-                
-
-                // // Check to see if the removed keyword group is present in the available search list
-                // const searchItem = this.keywordsService.availableSearchList.find(y => y.id == deletedItem.id && y.values[0].name == deletedItem.name && y.values[1].name == 'Group');
-                // // If it is, then un-dim it
-                // if (searchItem) searchItem!.opacity = null!;
-
-
-
-                // Also, check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if found
-                this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: deletedItem.id }])
-                    .subscribe((children: Array<KeywordCheckboxItem>) => {
-                        children.forEach(x => {
-
-
-                            // const searchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
-                            // if (searchItem) searchItem.opacity = null!;
-
-
-                        })
-                    })
-
-
-            } else {
-                // ********* Commented Out Data Service *********
-                // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-            }
-        }
-
-        // If we're deleting a child item
-        if (deletedItem.hierarchyGroupID == 1) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-        }
-    }
-
-
-
-    // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
-
-    onSearchItemDelete(deletedItem: KeywordCheckboxMultiColumnItem) {
-
-        // If we're deleting a parent item
-        if (deletedItem.values[1].name == this.parentSearchType) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
-
-
-            // Remove the selected keyword group from the hierarchy list
-            const deletedItemIndex = this.thisArray.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.values[0].name && x.hierarchyGroupID == 0);
-            if (deletedItemIndex) this.thisArray.splice(deletedItemIndex, 1);
-
-            if (this.itemType == 'Keyword Group') {
-
-                // // If the available list is in hierarchy mode, get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this list
-                // const removedItemIndex = this.otherArray.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.values[0].name && x.hierarchyGroupID == 0);
-
-                // if (removedItemIndex) {
-                //     // Un-dim the parent in the available list that has that index
-                //     this.otherArray[removedItemIndex].opacity = null!;
-
-                //     // Also, un-dim it's children too (if available)
-                //     for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
-                //         if (this.otherArray[i].hierarchyGroupID! <= this.otherArray[removedItemIndex].hierarchyGroupID!) break;
-                //         this.otherArray[i].opacity = null!;
-                //     }
-                // }
-
-
-
-
-                // // But if the available list is in search mode, check to see if the removed keyword group is present in the available search list
-                // const searchItem = this.keywordsService.availableSearchList.find(y => y.id == deletedItem.id && y.values[0].name == deletedItem.values[0].name && y.values[1].name == 'Group');
-                // // If it is, then un-dim it
-                // if (searchItem) searchItem!.opacity = null!;
-
-
-
-            }
-
-            // Grab all the children belonging to the keyword group that's being removed  
-            this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: deletedItem.id }])
-                .subscribe((children: Array<KeywordCheckboxItem>) => {
-
-                    children.forEach(x => {
-
-                        
-                        // // Check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if any
-                        // const availableSearchItem = this.keywordsService.availableSearchList.find(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
-                        // if (availableSearchItem) availableSearchItem.opacity = null!;
-
-
-                        // Plus, while we have the children of the keyword group that's being removed, remove those children from this selected keywords search list as well
-                        const searchItemIndex = this.thisSearchArray.findIndex(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
-                        if (searchItemIndex != -1) this.thisSearchArray.splice(searchItemIndex, 1);
-
-                        // And also, check to see if these children are present in this selected keywords hierarchy list and remove them if they are
-                        const hierarchyItemIndex = this.thisArray.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == 1);
-                        if (hierarchyItemIndex != -1) this.thisArray.splice(hierarchyItemIndex, 1);
-                    })
-                })
-        }
-
-
-        // If we're deleting a child item
-        if (deletedItem.values[1].name == this.childSearchType) {
-            super.onSearchItemDelete(deletedItem);
         }
     }
 
