@@ -436,7 +436,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // If we're deleting a child item
         if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 1) {
             // ********* Commented Out Data Service *********
-            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
+            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0])).subscribe();
             this.updateOtherItems(hierarchyUpdate);
         }
     }
@@ -448,8 +448,9 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     onSearchItemDelete(searchUpdate: MultiColumnListUpdate) {
         // If we're deleting a parent item
         if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.parentSearchType) {
+            this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem)); // This has to go before the super
             super.onSearchItemDelete(searchUpdate);
-            this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem));
+            
         }
 
 

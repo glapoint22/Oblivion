@@ -74,6 +74,7 @@
         
         <ng-container *ngIf="thisSearchArray.length > 0">
             <checkbox-multi-column-list #searchComponent
+                                [parentSearchType]="parentSearchType"
                                [sourceList]="thisSearchArray"
                                [options]="searchOptions"
                                (onListUpdate)="searchUpdate = $event">
