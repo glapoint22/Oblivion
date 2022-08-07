@@ -36,34 +36,34 @@ export class SubproductsComponent {
         module: MediaBrowserModule
       }
     }, SpinnerAction.None)
-      .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.currentMediaType = MediaType.Image;
-        mediaBrowser.imageSizeType = ImageSizeType.Small;
+      // .then((mediaBrowser: MediaBrowserComponent) => {
+      //   mediaBrowser.currentMediaType = MediaType.Image;
+      //   mediaBrowser.imageSizeType = ImageSizeType.Small;
 
-        if (editMode) {
-          mediaBrowser.editedImage = subproduct.image;
-        }
+      //   if (editMode) {
+      //     mediaBrowser.editedImage = subproduct.image;
+      //   }
 
 
-        mediaBrowser.callback = (image: Image) => {
-          if (image) {
-            subproduct.image.id = image.id;
-            subproduct.image.name = image.name;
-            subproduct.image.src = image.src;
+      //   mediaBrowser.callback = (image: Image) => {
+      //     if (image) {
+      //       subproduct.image.id = image.id;
+      //       subproduct.image.name = image.name;
+      //       subproduct.image.src = image.src;
 
-            this.updateImage(subproduct.id, image.id);
+      //       this.updateImage(subproduct.id, image.id);
 
-            // Add the image reference
-            this.dataService.post('api/Media/ImageReference', {
-              imageId: image.id,
-              imageSize: ImageSizeType.Small,
-              builder: BuilderType.Product,
-              host: this.productName,
-              location: this.subproductType == SubproductType.Component ? ImageLocation.Component : ImageLocation.Bonus
-            }).subscribe();
-          }
-        }
-      });
+      //       // Add the image reference
+      //       this.dataService.post('api/Media/ImageReference', {
+      //         imageId: image.id,
+      //         imageSize: ImageSizeType.Small,
+      //         builder: BuilderType.Product,
+      //         host: this.productName,
+      //         location: this.subproductType == SubproductType.Component ? ImageLocation.Component : ImageLocation.Bonus
+      //       }).subscribe();
+      //     }
+      //   }
+      // });
   }
 
 

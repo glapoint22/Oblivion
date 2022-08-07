@@ -23,24 +23,25 @@ export class VideoPropertiesEditorComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.currentMediaType = MediaType.Video;
+        mediaBrowser.init(MediaType.Video, this.video);
+      //   mediaBrowser.currentMediaType = MediaType.Video;
 
-        if (editMode) {
-          mediaBrowser.editedVideo = this.video;
-          mediaBrowser.displayEditedVideo(this.video);
-        }
+      //   if (editMode) {
+      //     mediaBrowser.editedVideo = this.video;
+      //     mediaBrowser.displayEditedVideo(this.video);
+      //   }
 
-        mediaBrowser.callback = (video: Video) => {
-          if (video) {
-            this.video.id = video.id;
-            this.video.name = video.name;
-            this.video.src = video.src;
-            this.video.thumbnail = video.thumbnail;
-            this.video.videoId = video.videoId;
-            this.video.videoType = video.videoType;
-            this.onChange.emit();
-          }
-        }
+      //   mediaBrowser.callback = (video: Video) => {
+      //     if (video) {
+      //       this.video.id = video.id;
+      //       this.video.name = video.name;
+      //       this.video.src = video.src;
+      //       this.video.thumbnail = video.thumbnail;
+      //       this.video.videoId = video.videoId;
+      //       this.video.videoType = video.videoType;
+      //       this.onChange.emit();
+      //     }
+      //   }
       });
   }
 }

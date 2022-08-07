@@ -119,3 +119,12 @@ export enum InvalidImageType {
     UnderSize,
     MultipleSizes
 }
+
+
+export enum MediaBrowserView {
+    ImageSelect,
+    ImagePreview,
+    VideoSelect,
+    VideoPreview,
+    SearchResults
+}

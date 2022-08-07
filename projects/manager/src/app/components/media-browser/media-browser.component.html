@@ -2,43 +2,191 @@
 
     <div class="modal-base">
         <div class="modal-bar">
-            <div>Media Browser - {{currentMediaType == mediaType.Image ? 'Image' : 'Video'}}</div>
+            <div>Media Browser - {{mediaType == MediaType.Image ? 'Image' : 'Video'}}</div>
             <div class="modal-x-button" (click)="close()">
                 X
             </div>
         </div>
-        <div class="modal-bar-drop-shadow"></div>
 
         <div class="modal-content">
 
+
+            <!-- Search Results -->
+            <ng-container *ngIf="view == mediaBrowserView.SearchResults;else otherViews">
+                <input class="search-input" placeholder="Search for an image">
+                <div class="search-overflow-container">
+                    <div style="display: flex; flex-wrap: wrap;">
+                        <div *ngFor="let media of media" class="thumbnail-container">
+                            <img [src]="'images/' + media.thumbnail">
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+
+            <ng-template #otherViews>
+                <input #fileInput type="file" accept=".jpg, .png, .bmp" (change)="setNewImage(fileInput.files![0])">
+
+                <!-- Image Select -->
+                <ng-container *ngIf="view == mediaBrowserView.ImageSelect">
+                    <input class="search-input" placeholder="Search for an image">
+
+                    <div class="icon-container">
+                        <icon-button [icon]="'fa-solid fa-folder-open'" [title]="'Open file explorer'"
+                            (click)="openFileExplorer(fileInput)">
+                        </icon-button>
+                    </div>
+
+                    <div #selectContainer class="select-container" style="height: 327px;"
+                        (dragover)="selectContainer.style.background = '#333333'; $event.preventDefault()"
+                        (drop)="onDrop($event)" (dragleave)="selectContainer.style.background = 'transparent'">
+                        <div class="select-text-container">
+                            <div class="caption">
+                                Choose an Image
+                            </div>
+                            <div class="message">
+                                Drag & drop an image, type in the search field, or click the folder icon above to open
+                                up the file exporer.
+                            </div>
+                            <!-- <div class="upload-button" title="Upload image" (click)="openFileExplorer(fileInput)">
+                                <i class="fa-solid fa-upload"></i>
+                            </div> -->
+                        </div>
+                    </div>
+                </ng-container>
+
+
+
+
+                <!-- Image Preview -->
+                <ng-container *ngIf="view == mediaBrowserView.ImagePreview && displayImage">
+                    <div class="icon-container">
+                        <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Image'">
+                        </icon-button>
+
+                        <icon-button [icon]="'fa-solid fa-arrows-rotate'" [title]="'Swap Image'">
+                        </icon-button>
+
+                        <icon-button [icon]="'fa-solid fa-folder-open'" [title]="'Update Image'"
+                            (click)="openFileExplorer(fileInput)">
+                        </icon-button>
+                    </div>
+                    <div class="image-container" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
+                        <img [src]="displayImage.src" style="max-width: 347px; max-height: 327px;">
+                    </div>
+                    <input id="title" [value]="displayImage.name ? displayImage.name : ''">
+                </ng-container>
+
+
+
+
+                <!-- Video Select -->
+                <ng-container *ngIf="view == mediaBrowserView.VideoSelect">
+                    <input class="search-input" placeholder="Search for a video">
+
+                    <div class="select-container">
+                        <div class="select-text-container">
+                            <div class="caption">
+                                Choose a video
+                            </div>
+
+                            <div class="message">
+                                Paste a link below or type in the search field above.
+                            </div>
+
+                            <div style="display: flex; margin-top: 10px;">
+                                <input class="video-input">
+                                <button class="video-input-button">Enter</button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </ng-container>
+
+
+
+
+                <!-- Video Preview -->
+                <ng-container *ngIf="view == mediaBrowserView.VideoPreview">
+                    <div style="display: flex; justify-content: flex-end;">
+
+                        <!-- Delete Video -->
+                        <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Video'">
+                        </icon-button>
+
+                        <!-- Update Video -->
+                        <icon-button [icon]="'fa-solid fa-film'" [title]="'Update Video'">
+                        </icon-button>
+                    </div>
+
+                    <div class="iframe-container">
+                        <iframe id="editedVideoIframe" class="video" allowfullscreen></iframe>
+                    </div>
+
+                    <input [value]="displayVideoName">
+
+                </ng-container>
+            </ng-template>
+
+
+
+
+            <!-- Buttons -->
+            <div class="button-container">
+                <button class="dark-button" (click)="close()">Close</button>
+                <button class="gold-button" (click)="onApply()">Apply</button>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <!-- Search Input -->
-            <div *ngIf="!editedImage && !editedVideo" style="position: relative;">
+            <!-- <div *ngIf="!editedImage && !editedVideo" style="position: relative;">
                 <input #searchInput class="search-input" (input)="searchMedia(searchInput.value)"
                     [placeholder]="currentMediaType == mediaType.Image ? 'Search for an image' : 'Search for a video'">
 
                 <div *ngIf="searchInput.value" class="close-button" style="right: 5px;" (click)="clear()">x</div>
-            </div>
+            </div> -->
 
 
 
 
 
             <!-- Tabs -->
-            <div *ngIf="showAllMedia" class="tabs-container">
-                <!-- Images Tab -->
+            <!-- <div *ngIf="showAllMedia" class="tabs-container">
                 <div class="tab" [ngClass]="{'selected-tab': currentMediaType == mediaType.Image}"
                     (click)="currentMediaType = mediaType.Image; clear()">Images</div>
 
-                <!-- Videos Tab -->
                 <div class="tab" [ngClass]="{'selected-tab': currentMediaType == mediaType.Video}"
                     (click)="currentMediaType = mediaType.Video; clear()">Video</div>
-            </div>
+            </div> -->
 
 
 
 
             <!-- Media Type - Image -->
-            <div *ngIf="currentMediaType == mediaType.Image && !searchMode && !newImage && !editedImage"
+            <!-- <div *ngIf="currentMediaType == mediaType.Image && !searchMode && !newImage && !editedImage"
                 class="backdrop" [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}"
                 style="padding: 20px;">
 
@@ -51,7 +199,6 @@
                         exporer.
                     </div>
 
-                    <!-- Button -->
                     <div class="upload-button" [style.pointerEvents]="dragover ? 'none': 'all'" title="Upload image"
                         (click)="openFileExplorer(fileInput)">
                         <i class="fa-solid fa-upload"></i>
@@ -61,43 +208,46 @@
                     <input #fileInput type="file" accept=".jpg, .png, .bmp" (change)="setNewImage(fileInput.files![0])">
 
                 </div>
-            </div>
+            </div> -->
 
 
 
 
             <!-- Edit Image Mode -->
-            <ng-container *ngIf="editedImage && !updatingImage">
+            <!-- <ng-container *ngIf="editedImage">
                 <div class="icons">
-                    <!-- Delete -->
+                    
+
+
                     <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Image'" (onClick)="onDeleteMediaClick()">
                     </icon-button>
 
+                    <icon-button [icon]="'fa-solid fa-arrows-rotate'" [title]="'Swap Image'" (onClick)="editedImage = displayImage = null!">
+                    </icon-button>
 
-                    <!-- Update -->
-                    <icon-button [icon]="'fa-solid fa-folder-open'" [title]="'Update Image'"
-                        (onClick)="updatingImage = true;">
+                    <icon-button [icon]="'fa-solid fa-folder-open'" [title]="'Update Image'" (click)="openFileExplorer(fileInput)">
                     </icon-button>
 
 
-                    <!-- Rename -->
-                    <icon-button [icon]="'fas fa-pencil-alt'" [title]="'Rename Image'"
-                        (onClick)="onRenameImageClick(nameInput)">
-                    </icon-button>
+                    <input #fileInput type="file" accept=".jpg, .png, .bmp" (change)="updateImage(fileInput.files![0])">
+                    
                 </div>
 
-                <div class="backdrop backdrop-border" style="position: relative; height: 450px;">
+                <div class="backdrop backdrop-border" style="position: relative; height: 434px;">
 
-                    <!-- Media Container -->
                     <div class="new-media-container">
-                        <img [src]="'images/' + editedImage.src" class="new-img">
+                        <img [src]="displayImage ? displayImage :'images/' + editedImage.src" class="new-img">
                     </div>
 
-                    <!-- Title -->
                     <input id="title" #nameInput class="new-media-title" [value]="editedImage.name"
-                        (keydown.enter)="renameImage(nameInput.value)" [disabled]="!renamingImage">
+                        (keydown.enter)="renameImage(nameInput.value)">
                 </div>
-            </ng-container>
+                <div class="button-container">
+                    <button class="dark-button">Close</button>
+                    <button class="gold-button">Apply</button>
+                </div>
+                
+            </ng-container> -->
 
 
 
@@ -105,19 +255,16 @@
 
 
             <!-- Edit Video Mode -->
-            <ng-container *ngIf="editedVideo && !updatingVideo">
+            <!-- <ng-container *ngIf="editedVideo && !updatingVideo">
                 <div class="icons">
-                    <!-- Delete -->
                     <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Video'" (onClick)="onDeleteMediaClick()">
                     </icon-button>
 
 
-                    <!-- Update -->
                     <icon-button [icon]="'fa-film fa-solid'" [title]="'Update Video'" (onClick)="updatingVideo = true;">
                     </icon-button>
 
 
-                    <!-- Rename -->
                     <icon-button [icon]="'fas fa-pencil-alt'" [title]="'Rename Video'"
                         (onClick)="onRenameVideoClick(nameInput)">
                     </icon-button>
@@ -125,16 +272,14 @@
 
                 <div class="backdrop backdrop-border" style="position: relative; height: 450px;">
 
-                    <!-- Media Container -->
                     <div class="new-media-container">
                         <iframe id="editedVideoIframe" class="video" allowfullscreen></iframe>
                     </div>
 
-                    <!-- Title -->
                     <input id="title" #nameInput class="new-media-title" [value]="editedVideo.name"
                         (keydown.enter)="renameVideo(nameInput.value)" [disabled]="!renamingVideo">
                 </div>
-            </ng-container>
+            </ng-container> -->
 
 
 
@@ -142,7 +287,7 @@
 
 
             <!-- Update Video -->
-            <div *ngIf="updatingVideo" class="backdrop"
+            <!-- <div *ngIf="updatingVideo" class="backdrop"
                 [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}" style="padding: 20px;">
 
                 <div class="content-container">
@@ -158,14 +303,14 @@
                     <div *ngIf="invalidVideoLink" style="margin-top: 5px;
                     color: red;">Invalid video link</div>
                 </div>
-            </div>
+            </div> -->
 
 
 
 
 
             <!-- Update Image -->
-            <div *ngIf="updatingImage" class="backdrop"
+            <!-- <div *ngIf="updatingImage" class="backdrop"
                 [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}" style="padding: 20px;">
 
                 <div (dragover)="onDragover($event)" (drop)="onDrop($event)"
@@ -176,7 +321,7 @@
                     <div class="message">Drag & drop an image or click to open the file explorer.
                     </div>
 
-                    <!-- Button -->
+                    
                     <div class="upload-button" [style.pointerEvents]="dragover ? 'none': 'all'" title="Upload image"
                         (click)="openFileExplorer(fileInput)">
                         <i class="fa-solid fa-upload"></i>
@@ -186,35 +331,31 @@
                     <input #fileInput type="file" accept=".jpg, .png, .bmp" (change)="updateImage(fileInput.files![0])">
 
                 </div>
-            </div>
+            </div> -->
 
 
 
 
             <!-- New Image -->
-            <ng-container *ngIf="newImage">
+            <!-- <ng-container *ngIf="newImage">
                 <div class="backdrop new-media"
                     [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
-                    <!-- close -->
                     <div (click)="clear()" class="close-button">x</div>
 
-                    <!-- Media Container -->
                     <div class="new-media-container">
                         <img [src]="newImage" class="new-img">
                     </div>
 
-                    <!-- Title -->
                     <input id="title" #nameInput class="new-media-title"
                         (keydown.enter)="saveNewImage(nameInput.value)">
                 </div>
 
-                <!-- Button Container -->
                 <div class="button-container">
                     <button class="dark-button" (click)="saveNewImage(nameInput.value)" [disabled]="!nameInput.value">
                         Submit
                     </button>
                 </div>
-            </ng-container>
+            </ng-container> -->
 
 
 
@@ -223,31 +364,27 @@
 
 
             <!-- New Video -->
-            <ng-container *ngIf="isNewVideo">
+            <!-- <ng-container *ngIf="isNewVideo">
 
                 <div class="backdrop new-media"
                     [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
 
-                    <!-- close -->
                     <div (click)="clear()" class="close-button">x</div>
 
-                    <!-- Media Container -->
                     <div class="new-media-container">
                         <iframe id="newVideoIframe" class="video" allowfullscreen></iframe>
                     </div>
 
-                    <!-- Title -->
                     <input id="title" #nameInput class="new-media-title"
                         (keydown.enter)="saveNewVideo(nameInput.value)">
                 </div>
 
-                <!-- Button Container -->
                 <div class="button-container">
                     <button class="dark-button" (click)="saveNewVideo(nameInput.value)" [disabled]="!nameInput.value">
                         Submit
                     </button>
                 </div>
-            </ng-container>
+            </ng-container> -->
 
 
 
@@ -261,7 +398,7 @@
 
 
             <!-- Media Type - Video -->
-            <div *ngIf="currentMediaType == mediaType.Video && !searchMode && !isNewVideo && !editedVideo"
+            <!-- <div *ngIf="currentMediaType == mediaType.Video && !searchMode && !isNewVideo && !editedVideo"
                 class="backdrop" [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}"
                 style="padding: 20px;">
 
@@ -277,7 +414,7 @@
 
                     <div *ngIf="invalidVideoLink" style="margin-top: 5px; color: red;">Invalid video link</div>
                 </div>
-            </div>
+            </div> -->
 
 
 
@@ -285,14 +422,14 @@
 
 
             <!-- Search Results -->
-            <ng-container *ngIf="searchMode && !noSearchResults">
+            <!-- <ng-container *ngIf="searchMode && !noSearchResults">
                 <div class="backdrop search-backdrop"
                     [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
                     <div style="display: flex; flex-wrap: wrap; padding-bottom: 13px;">
                         <div *ngFor="let media of media" class="thumbnail-container"
                             [ngClass]="{'invalid': isInvalid(media) > 0}" (contextmenu)="$event.preventDefault()"
                             (mousedown)="onMousedown($event, media)">
-                            <img [src]="'images/' + media.thumbnail" [title]="media.name" (click)="setMedia(media)">
+                            <img [src]="'images/' + media.thumbnail" [title]="media.name" (click)="onSearchedMediaClick(media)">
                             <div *ngIf="isInvalid(media) == invalidImageType.UnderSize" class="invalid-tag">
                                 <div>
                                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -310,16 +447,16 @@
 
                     </div>
                 </div>
-            </ng-container>
+            </ng-container> -->
 
 
 
             <!-- No search results -->
-            <div *ngIf="noSearchResults" class="backdrop"
+            <!-- <div *ngIf="noSearchResults" class="backdrop"
                 [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}"
                 style="display: flex; justify-content: center; align-items: center;">
                 <div class="content-heading">No results found</div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

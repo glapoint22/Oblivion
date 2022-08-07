@@ -13,8 +13,8 @@
 
 .modal-base {
     width: 450px;
-    background: rgb(30, 30, 30);
-    border: 1px solid rgb(48, 48, 48);
+    background: #282828;
+    border: 1px solid #414141;
     border-top-color: rgb(40, 40, 40);
     border-radius: 7px;
     user-select: none;
@@ -30,7 +30,7 @@
     align-items: center;
     padding: 0 10px;
     color: #d4d4d4;
-    background: linear-gradient(#1b1b1b, #111111);
+    background: linear-gradient(#424141, #1c1c1c);
 }
 
 .modal-x-button {

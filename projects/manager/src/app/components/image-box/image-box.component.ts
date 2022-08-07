@@ -24,25 +24,25 @@ export class ImageBoxComponent {
         module: MediaBrowserModule
       }
     }, SpinnerAction.None)
-      .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.currentMediaType = MediaType.Image;
-        mediaBrowser.imageSizeType = ImageSizeType.AnySize;
+      // .then((mediaBrowser: MediaBrowserComponent) => {
+      //   mediaBrowser.currentMediaType = MediaType.Image;
+      //   mediaBrowser.imageSizeType = ImageSizeType.AnySize;
 
-        if (editMode) {
-          mediaBrowser.editedImage = this.image;
-        }
+      //   if (editMode) {
+      //     mediaBrowser.editedImage = this.image;
+      //   }
 
 
-        mediaBrowser.callback = (image: Image) => {
-          if (image) {
-            this.image.id = image.id;
-            this.image.name = image.name;
-            this.image.src = image.src;
-            this.image.thumbnail = image.thumbnail;
-            this.onChange.emit();
-          }
-        }
-      });
+      //   mediaBrowser.callback = (image: Image) => {
+      //     if (image) {
+      //       this.image.id = image.id;
+      //       this.image.name = image.name;
+      //       this.image.src = image.src;
+      //       this.image.thumbnail = image.thumbnail;
+      //       this.onChange.emit();
+      //     }
+      //   }
+      // });
   }
 
 

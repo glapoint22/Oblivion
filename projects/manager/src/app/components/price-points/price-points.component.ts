@@ -145,22 +145,22 @@ export class PricePointsComponent {
         module: MediaBrowserModule
       }
     }, SpinnerAction.None)
-      .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.currentMediaType = MediaType.Image;
-        mediaBrowser.imageSizeType = ImageSizeType.Small;
+      // .then((mediaBrowser: MediaBrowserComponent) => {
+      //   mediaBrowser.currentMediaType = MediaType.Image;
+      //   mediaBrowser.imageSizeType = ImageSizeType.Small;
 
-        mediaBrowser.callback = (image: Image) => {
-          if (image) {
+      //   mediaBrowser.callback = (image: Image) => {
+      //     if (image) {
 
-            pricePoint.image.id = image.id;
-            pricePoint.image.name = image.name;
-            pricePoint.image.src = image.src;
-            pricePoint.image.thumbnail = image.thumbnail;
+      //       pricePoint.image.id = image.id;
+      //       pricePoint.image.name = image.name;
+      //       pricePoint.image.src = image.src;
+      //       pricePoint.image.thumbnail = image.thumbnail;
 
-            this.updatePricePoint(pricePoint);
-          }
-        }
-      });
+      //       this.updatePricePoint(pricePoint);
+      //     }
+      //   }
+      // });
   }
 
 

@@ -377,12 +377,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.currentMediaType = MediaType.Image;
-        mediaBrowser.imageSizeType = ImageSizeType.Medium;
-
-        if (editMode) {
-          mediaBrowser.editedImage = this.product.image;
-        }
+        mediaBrowser.init(MediaType.Image, this.product.image, ImageSizeType.Medium);
 
         mediaBrowser.callback = (image: Image) => {
           if (image) {
