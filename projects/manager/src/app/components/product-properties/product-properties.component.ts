@@ -91,6 +91,7 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None, this.vendorPopupContainer)
       .then((vendorPopup: VendorPopupComponent) => {
         this.vendorPopup = vendorPopup;
+        vendorPopup.product = this.product
       });
   }
 

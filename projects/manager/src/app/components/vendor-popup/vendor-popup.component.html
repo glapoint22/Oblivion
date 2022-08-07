@@ -4,15 +4,40 @@
         <div class="popup-arrow-up-Border"></div>
         <div class="popup-arrow-up-background"></div>
     </div>
-    
+
 
 
     <div class="popup-base">
+        <!-- Search -->
+        <search #search
+                [apiUrl]="'Vendors/Search'"
+                [placeholderText]="'Search for a vendor'"
+                (onItemSelect)="onVendorSelect($event)">
+        </search>
 
-        <!-- Buttons -->
-        <div class="popup-button-container">
-            <button class="popup-dark-button" (click)="close()">Close</button>
-            <button class="gold-button">Submit</button>
+
+
+
+
+
+
+        <div class="vendor-container">
+            <!-- Vendor -->
+            <div *ngIf="product.vendor" class="vendor">{{product.vendor.name}}</div>
+
+            <!-- No vendor message -->
+            <div *ngIf="!product.vendor" class="no-vendor-message">
+                Search for a vendor or click
+                <span>here</span>
+                to create one
+            </div>
         </div>
+
+
+
+
+
+
+
     </div>
 </div>
