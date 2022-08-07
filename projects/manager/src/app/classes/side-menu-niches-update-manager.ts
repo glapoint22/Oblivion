@@ -396,7 +396,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
 
     onSearchItemDelete(searchUpdate: MultiColumnListUpdate) {
-        super.onSearchItemDelete(searchUpdate);
         // If we're deleting a child item
         if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.childSearchType) {
             this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem));
@@ -408,6 +407,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
             this.updateOtherItems(searchUpdate);
         }
+        super.onSearchItemDelete(searchUpdate);
     }
 
 

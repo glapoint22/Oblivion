@@ -7,7 +7,14 @@
     
     <div class="popup-base">
         <available-keywords #availableKeywords [productId]="productId" [productIndex]="productIndex"></available-keywords>
-        <div style="width: 32px;"></div>
+        <div class="add-to-selected-keywords-button-container">
+            <icon-button style="margin-left: -10px;"
+                         [icon]="'fa-solid fa-chevron-right'"
+                         [title]="'Add to Selected Keywords'"
+                         [isDisabled]="availableKeywords.addToSelectedKeywordsButtonDisabled"
+                         (onClick)="availableKeywords.addToSelectedKeywords()">
+            </icon-button>
+        </div>
         <selected-keywords #selectedKeywords [productId]="productId" [productIndex]="productIndex"></selected-keywords>
     </div>
 </div>

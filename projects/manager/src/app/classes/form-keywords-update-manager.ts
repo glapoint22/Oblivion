@@ -52,28 +52,6 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
 
 
-    // ==================================================================( ON ITEM DELETE )=================================================================== \\
-
-    onItemDelete(hierarchyUpdate: HierarchyUpdate) {
-        super.onItemDelete(hierarchyUpdate);
-
-        // this.deleteOtherItem(this.keywordsService.selectedKeywordsArray, deletedItem, deletedItem.hierarchyGroupID!);
-        // this.deleteOtherItem(this.keywordsService.selectedKeywordsSearchList, deletedItem as MultiColumnItem, deletedItem.hierarchyGroupID == 0 ? this.parentSearchType : this.childSearchType);
-    }
-
-
-
-    // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
-
-    onSearchItemDelete(searchUpdate: MultiColumnListUpdate) {
-        super.onSearchItemDelete(searchUpdate);
-
-        // this.deleteOtherItem(this.keywordsService.selectedKeywordsSearchList, searchUpdate.deletedItems![0], (searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name);
-        // this.deleteOtherItem(this.keywordsService.selectedKeywordsArray, searchUpdate.deletedItems![0], (searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.parentSearchType ? 0 : 1);
-    }
-
-
-
     // =================================================================( UPDATE OTHER ITEMS )================================================================ \\
 
     updateOtherItems(update: ListUpdate) {
@@ -182,6 +160,10 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
             keywordGroupId: keywordGroupId
         }
     }
+
+
+    //     productId: this.productId,
+                //     id: searchUpdate.deletedItems![0].id
 
 
 

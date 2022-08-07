@@ -152,8 +152,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         }
 
 
-        // this.keywordsService.selectedKeywordsArray.push(keywordGroup);
-        // this.sort(keywordGroup, this.keywordsService.selectedKeywordsArray);
+        this.productService.productComponents[this.productIndex].selectedKeywordArray.push(keywordGroup);
+        this.sort(keywordGroup, this.productService.productComponents[this.productIndex].selectedKeywordArray);
     }
 
 
