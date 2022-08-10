@@ -114,17 +114,19 @@ export enum ImageLocation {
     ButtonWidgetBackground
 }
 
-export enum InvalidImageType {
-    NotInvalid,
-    UnderSize,
-    MultipleSizes
-}
-
 
 export enum MediaBrowserView {
     ImageSelect,
     ImagePreview,
+    ImageUpdate,
     VideoSelect,
     VideoPreview,
     SearchResults
+}
+
+
+export enum MediaBrowserMode {
+    New,
+    Update,
+    Swap
 }

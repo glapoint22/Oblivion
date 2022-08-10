@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MediaBrowserComponent } from './media-browser.component';
 import { IconButtonModule } from '../icon-button/icon-button.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -9,7 +10,8 @@ import { IconButtonModule } from '../icon-button/icon-button.module';
   declarations: [MediaBrowserComponent],
   imports: [
     CommonModule,
-    IconButtonModule
+    IconButtonModule,
+    FormsModule
   ]
 })
 export class MediaBrowserModule { }

@@ -378,7 +378,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.init(MediaType.Image, this.product.image, ImageSizeType.Medium);
+        mediaBrowser.init(MediaType.Image, this.product.image, ImageSizeType.Medium, this.product.name);
 
         mediaBrowser.callback = (image: Image) => {
           if (image) {
