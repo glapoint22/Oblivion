@@ -1,7 +1,6 @@
-<button class="icon-button"
-        [title]="title"
+<button [title]="title"
         (mousedown)="$event.stopPropagation()"
         (click)="!isDisabled ? onClick.next() : null"
-        [ngClass]="{'icon-button-disabled': isDisabled}">
-    <i style="pointer-events: none;" [class]="icon"></i>
+        [disabled]="isDisabled">
+    <i style="pointer-events: none;" [class]="icon" [style.fontSize.px]="!fontSize ? 13 : fontSize"></i>
 </button>

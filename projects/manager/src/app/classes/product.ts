@@ -1,9 +1,9 @@
 import { Image, IProduct, PricePoint, RecurringPayment, ShippingType, Subproduct } from "common";
-import { Item } from "./item";
+import { Vendor } from "./vendor";
 
 export class Product implements IProduct {
     public id!: number;
-    public vendor: Item = new Item();
+    public vendor!: Vendor;
     public name!: string;
     public shippingType!: ShippingType;
     public minPrice!: number;

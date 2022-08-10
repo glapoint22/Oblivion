@@ -22,7 +22,7 @@
 
 .popup-base {
     width: 350px;
-    padding: 10px 10px 0;
+    padding: 10px 10px;
     background: #282828;
     border: 1px solid #414141;
     border-radius: 5px;
@@ -30,31 +30,23 @@
 }
 
 
-.vendor-container {
+.space-between-container {
     display: flex;
-    height: 50px;
-    border-radius: 3px;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    margin-top: 15px;
+    align-items: flex-end;
+    justify-content: space-between;
 }
 
 
-.vendor {
-    color: #ffba00;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-
-.no-vendor-message {
-    color: #787878;
+.label {
     font-size: 13px;
-    font-style: italic;
+    color: #787878;
+    margin-top: 3px;
+    margin-left: 3px;
+    user-select: none;
+    padding-bottom: 6px;
+}
 
-    span {
-        color: #dadada;
-        text-decoration: underline;
-        cursor: pointer;
-    }
+input {
+    margin-top: -1px;
 }

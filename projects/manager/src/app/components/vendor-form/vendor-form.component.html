@@ -1,0 +1,85 @@
+<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="modal-base">
+        <div class="modal-bar">
+            <div>Vendor</div>
+            <div class="modal-x-button" (click)="close()">
+                X
+            </div>
+        </div>
+
+        <div class="modal-content">
+
+            <!-- Search -->
+            <div *ngIf="!product" class="search-container">
+                <search #search
+                        [apiUrl]="'Vendors/Search'"
+                        [placeholderText]="'Search for a vendor'"
+                        (onItemSelect)="onVendorSelect($event)">
+                </search>
+            </div>
+
+
+
+            <div class="icon-buttons-container">
+                <!-- Product List -->
+                <icon-button [icon]="'fa-solid fa-table-list'"
+                             [title]="'Open Product List'"
+                             [isDisabled]="iconButtonsDisabled"
+                             (onClick)="openVendorProductsPopup()">
+                </icon-button>
+
+
+                <!-- Vendor products Popup Container -->
+                <div class="vendor-products-popup-container">
+                    <ng-template #vendorProductsPopupContainer></ng-template>
+                </div>
+
+
+                <div *ngIf="!product">
+                    <!-- Delete Vendor -->
+                    <icon-button [icon]="'fas fa-trash-alt'"
+                                 [title]="'Delete Vendor'"
+                                 [isDisabled]="iconButtonsDisabled"
+                                 (onClick)="null">
+                    </icon-button>
+
+                    <!-- Add Vendor -->
+                    <icon-button [icon]="'fas fa-plus-circle'"
+                                 [title]="'Add Vendor'"
+                                 [isDisabled]="false"
+                                 (onClick)="onAddButtonClick()">
+                    </icon-button>
+                </div>
+            </div>
+
+
+
+            <div class="dashed-container">
+                <!-- Company Name -->
+                <div class="label">Company Name:</div>
+                <input #tabElement #companyName [value]="vendor ? vendor.name : ''" (input)="onInput(companyName.value, vendor.name!)">
+
+                <!-- Contact -->
+                <div class="label">Contact:</div>
+                <input #tabElement #contact [value]="vendor ? vendor.primaryEmail : ''" (input)="onInput(contact.value, vendor.primaryEmail!)">
+
+                <!-- First Name -->
+                <div class="label">First Name:</div>
+                <input #tabElement #firstName [value]="vendor ? vendor.primaryFirstName : ''" (input)="onInput(firstName.value, vendor.primaryFirstName!)">
+
+                <!-- Last Name -->
+                <div class="label">Last Name:</div>
+                <input #tabElement #lastName [value]="vendor ? vendor.primaryLastName : ''" (input)="onInput(lastName.value, vendor.primaryLastName!)">
+
+                <div *ngIf="fieldsDisabled" class="disable-cover"></div>
+            </div>
+        </div>
+
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #tabElement class="gold-button" (click)="onSubmit()" [disabled]="submitButtonDisabled">Submit</button>
+        </div>
+    </div>
+</div>

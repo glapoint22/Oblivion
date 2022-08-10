@@ -7,25 +7,25 @@
 
             <div class="circle-button"
                 [ngClass]="{'circle-button-clicked': vendorPopupContainer ? vendorPopupContainer.length > 0 : false}"
-                (click)="openVendorPopup()">
+                (click)="openVendorPopup()" title="Vendor">
                 <i class="fa-solid fa-store"></i>
             </div>
 
             <div class="circle-button"
                 [ngClass]="{'circle-button-clicked': filtersPopupContainer ? filtersPopupContainer.length > 0 : false}"
-                (click)="openFiltersPopup()">
+                (click)="openFiltersPopup()" title="Filters">
                 <i class="fa-solid fa-filter"></i>
             </div>
 
             <div class="circle-button"
                 [ngClass]="{'circle-button-clicked': keywordsPopupContainer ? keywordsPopupContainer.length > 0 : false}"
-                (click)="openKeywordsPopup()">
+                (click)="openKeywordsPopup()" title="Keywords">
                 <i class="fa-solid fa-key"></i>
             </div>
 
             <div class="circle-button"
                 [ngClass]="{'circle-button-clicked': productGroupsPopupContainer ? productGroupsPopupContainer.length > 0 : false}"
-                (click)="openProductGroupsPopup()">
+                (click)="openProductGroupsPopup()" title="Product Groups">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
 
