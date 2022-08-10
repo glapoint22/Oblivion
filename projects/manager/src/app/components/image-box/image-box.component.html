@@ -9,16 +9,9 @@
                 [isDisabled]="!image || !image.src" (click)="removeImage()">
             </icon-button>
 
-
-
-            <!-- Edit Image -->
-            <icon-button [icon]="'fa-solid fa-file-pen'" [title]="'Edit image'" [isDisabled]="!image || !image.src"
-                (onClick)="openMediaBrowser(true)">
-            </icon-button>
-
-
-            <!-- Change Image -->
-            <icon-button [icon]="'fas fa-image'" [title]="!image || !image.src ? 'Add Image': 'Choose another image'"
+            
+            <!-- Media Browser -->
+            <icon-button [icon]="'fas fa-image'" title="Media browser"
                 (onClick)="openMediaBrowser()">
             </icon-button>
         </div>

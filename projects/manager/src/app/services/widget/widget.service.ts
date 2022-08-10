@@ -79,33 +79,36 @@ export class WidgetService {
         module: MediaBrowserModule
       }
     }, SpinnerAction.None)
-      // .then((mediaBrowser: MediaBrowserComponent) => {
-      //   const mediaType = widgetData.widgetType == WidgetType.Image ? MediaType.Image : MediaType.Video;
-      //   const imageSize = widgetData.widgetType == WidgetType.Image ? ImageSizeType.AnySize : null;
+      .then((mediaBrowser: MediaBrowserComponent) => {
+        const mediaType = widgetData.widgetType == WidgetType.Image ? MediaType.Image : MediaType.Video;
+        const imageSize = widgetData.widgetType == WidgetType.Image ? ImageSizeType.AnySize : null;
 
-      //   mediaBrowser.currentMediaType = mediaType;
-      //   mediaBrowser.imageSizeType = imageSize!;
-      //   mediaBrowser.callback = (media: Image | Video) => {
-      //     if (mediaType == MediaType.Image) {
-      //       const imageWidgetData = widgetData as ImageWidgetData;
-      //       imageWidgetData.image = media as Image;
+        // mediaBrowser.currentMediaType = mediaType;
+        // mediaBrowser.imageSizeType = imageSize!;
+        mediaBrowser.init(mediaType, null!, imageSize!);
 
-      //       // Add the image reference
-      //       this.dataService.post('api/Media/ImageReference', {
-      //         imageId: media.id,
-      //         imageSize: (media as Image).imageSizeType,
-      //         builder: BuilderType.Page,
-      //         host: this.page.name,
-      //         location: ImageLocation.ImageWidget
-      //       }).subscribe();
 
-      //     } else {
-      //       const videoWidgetData = widgetData as VideoWidgetData;
-      //       videoWidgetData.video = media as Video;
-      //     }
-      //     callback();
-      //   }
-      // });
+        mediaBrowser.callback = (media: Image | Video) => {
+          if (mediaType == MediaType.Image) {
+            const imageWidgetData = widgetData as ImageWidgetData;
+            imageWidgetData.image = media as Image;
+
+            // Add the image reference
+            this.dataService.post('api/Media/ImageReference', {
+              imageId: media.id,
+              imageSize: (media as Image).imageSizeType,
+              builder: BuilderType.Page,
+              host: this.page.name,
+              location: ImageLocation.ImageWidget
+            }).subscribe();
+
+          } else {
+            const videoWidgetData = widgetData as VideoWidgetData;
+            videoWidgetData.video = media as Video;
+          }
+          callback();
+        }
+      });
   }
 
 

@@ -15,7 +15,7 @@ export class ImageBoxComponent {
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
 
-  public openMediaBrowser(editMode?: boolean): void {
+  public openMediaBrowser(): void {
     this.lazyLoadingService.load(async () => {
       const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
       const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
@@ -24,25 +24,20 @@ export class ImageBoxComponent {
         module: MediaBrowserModule
       }
     }, SpinnerAction.None)
-      // .then((mediaBrowser: MediaBrowserComponent) => {
-      //   mediaBrowser.currentMediaType = MediaType.Image;
-      //   mediaBrowser.imageSizeType = ImageSizeType.AnySize;
+      .then((mediaBrowser: MediaBrowserComponent) => {
+        mediaBrowser.init(MediaType.Image, this.image, ImageSizeType.AnySize);
 
-      //   if (editMode) {
-      //     mediaBrowser.editedImage = this.image;
-      //   }
-
-
-      //   mediaBrowser.callback = (image: Image) => {
-      //     if (image) {
-      //       this.image.id = image.id;
-      //       this.image.name = image.name;
-      //       this.image.src = image.src;
-      //       this.image.thumbnail = image.thumbnail;
-      //       this.onChange.emit();
-      //     }
-      //   }
-      // });
+        mediaBrowser.callback = (image: Image) => {
+          if (image) {
+            this.image.id = image.id;
+            this.image.name = image.name;
+            this.image.src = image.src;
+            this.image.thumbnail = image.thumbnail;
+            this.image.imageSizeType = image.imageSizeType;
+            this.onChange.emit();
+          }
+        }
+      });
   }
 
 

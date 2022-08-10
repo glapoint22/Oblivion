@@ -9,33 +9,59 @@
         </div>
 
         <div class="modal-content">
+            <div style="position: relative;">
+                <input #searchInput class="search-input" placeholder="Search for an image"
+                    [style.display]="view == mediaBrowserView.ImagePreview || view == mediaBrowserView.VideoPreview || view == mediaBrowserView.ImageUpdate ? 'none' : 'inline-block'">
+
+                <div *ngIf="searchInput.value != ''" class="xmark-container" title="Clear"
+                    (click)="clearSearchResults()">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+            </div>
 
 
             <!-- Search Results -->
             <ng-container *ngIf="view == mediaBrowserView.SearchResults;else otherViews">
-                <input class="search-input" placeholder="Search for an image">
-                <div class="search-overflow-container">
+                <div *ngIf="!noSearchResults; else noResults" class="search-overflow-container">
                     <div style="display: flex; flex-wrap: wrap;">
-                        <div *ngFor="let media of media" class="thumbnail-container">
+                        <div *ngFor="let media of media" class="thumbnail-container" [title]="media.name"
+                            (click)="onMediaClick(media)" [ngClass]="{'undersize': isUnderSize(media)}"
+                            (contextmenu)="$event.preventDefault()"
+                            (mousedown)="$event.button == 2 ? openContextMenu($event, media): null">
                             <img [src]="'images/' + media.thumbnail">
+                            <div *ngIf="isUnderSize(media)" class="undersize-tag">
+                                <div>
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span>Under Size</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <ng-template #noResults>
+                    <div class="no-search-results">No results found</div>
+                </ng-template>
             </ng-container>
 
 
             <ng-template #otherViews>
-                <input #fileInput type="file" accept=".jpg, .png, .bmp" (change)="setNewImage(fileInput.files![0])">
+                <input #fileInput type="file" accept=".jpg, .png, .bmp" (change)="setImageFile(fileInput.files![0])">
 
                 <!-- Image Select -->
                 <ng-container *ngIf="view == mediaBrowserView.ImageSelect">
-                    <input class="search-input" placeholder="Search for an image">
 
                     <div class="icon-container">
+                        <icon-button *ngIf="showCancelButton" [icon]="'fa-solid fa-ban'" [title]="'Cancel'"
+                            (click)="onCancelClick()">
+                        </icon-button>
+
                         <icon-button [icon]="'fa-solid fa-folder-open'" [title]="'Open file explorer'"
                             (click)="openFileExplorer(fileInput)">
                         </icon-button>
                     </div>
+
+
 
                     <div #selectContainer class="select-container" style="height: 327px;"
                         (dragover)="selectContainer.style.background = '#333333'; $event.preventDefault()"
@@ -46,11 +72,8 @@
                             </div>
                             <div class="message">
                                 Drag & drop an image, type in the search field, or click the folder icon above to open
-                                up the file exporer.
+                                up file exporer.
                             </div>
-                            <!-- <div class="upload-button" title="Upload image" (click)="openFileExplorer(fileInput)">
-                                <i class="fa-solid fa-upload"></i>
-                            </div> -->
                         </div>
                     </div>
                 </ng-container>
@@ -61,28 +84,82 @@
                 <!-- Image Preview -->
                 <ng-container *ngIf="view == mediaBrowserView.ImagePreview && displayImage">
                     <div class="icon-container">
-                        <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Image'">
+
+                        <icon-button *ngIf="showCancelButton" [icon]="'fa-solid fa-ban'" [title]="'Cancel'"
+                            (click)="onCancelClick()">
                         </icon-button>
 
-                        <icon-button [icon]="'fa-solid fa-arrows-rotate'" [title]="'Swap Image'">
+                        <icon-button *ngIf="!showCancelButton" [icon]="'fas fa-trash-alt'" [title]="'Delete Image'">
                         </icon-button>
 
-                        <icon-button [icon]="'fa-solid fa-folder-open'" [title]="'Update Image'"
+                        <icon-button *ngIf="!showCancelButton" [icon]="'fa-solid fa-arrows-rotate'"
+                            [title]="'Swap Image'" (click)="onSwapImageClick()">
+                        </icon-button>
+
+                        <icon-button *ngIf="!showCancelButton" [icon]="'fa-solid fa-file-image'" title="Update Image"
+                            (click)="view = mediaBrowserView.ImageUpdate; showCancelButton = true">
+                        </icon-button>
+                    </div>
+
+
+                    <div class="image-container" (contextmenu)="$event.preventDefault()"
+                        (mousedown)="onImagePreviewMousedown($event)">
+                        <img [src]="displayImage.src" style="max-width: 347px; max-height: 327px;">
+
+                        <div *ngIf="isUnderSize(selectedMedia)" class="undersize-tag">
+                            <div>
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>Under Size</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input #nameInput id="name-input" [(ngModel)]="displayImage.name"
+                        (input)="submitButtonDisabled = nameInput.value == ''" [disabled]="nameInputDisabled">
+                </ng-container>
+
+
+
+
+
+
+                <!-- Image Update -->
+                <ng-container *ngIf="view == mediaBrowserView.ImageUpdate">
+
+                    <div class="icon-container">
+                        <icon-button *ngIf="showCancelButton" [icon]="'fa-solid fa-ban'" [title]="'Cancel'"
+                            (click)="onCancelClick()">
+                        </icon-button>
+
+                        <icon-button [icon]="'fa-solid fa-folder-open'" [title]="'Open file explorer'"
                             (click)="openFileExplorer(fileInput)">
                         </icon-button>
                     </div>
-                    <div class="image-container" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
-                        <img [src]="displayImage.src" style="max-width: 347px; max-height: 327px;">
+
+
+
+                    <div #selectContainer class="select-container" style="height: 359px;"
+                        (dragover)="selectContainer.style.background = '#333333'; $event.preventDefault()"
+                        (drop)="onDrop($event)" (dragleave)="selectContainer.style.background = 'transparent'">
+                        <div class="select-text-container">
+                            <div class="caption">
+                                Choose an Image
+                            </div>
+                            <div class="message">
+                                Drag & drop an image or click the folder icon above to open
+                                up file exporer.
+                            </div>
+                        </div>
                     </div>
-                    <input id="title" [value]="displayImage.name ? displayImage.name : ''">
                 </ng-container>
+
+
+
 
 
 
 
                 <!-- Video Select -->
                 <ng-container *ngIf="view == mediaBrowserView.VideoSelect">
-                    <input class="search-input" placeholder="Search for a video">
 
                     <div class="select-container">
                         <div class="select-text-container">
@@ -135,7 +212,11 @@
             <!-- Buttons -->
             <div class="button-container">
                 <button class="dark-button" (click)="close()">Close</button>
-                <button class="gold-button" (click)="onApply()">Apply</button>
+                <button #submitButton class="gold-button" (click)="onSubmit()" [disabled]="submitButtonDisabled"
+                    (mousedown)="$event.stopPropagation()">
+                    Submit
+                    <i *ngIf="hasMultiImages" class="fa-solid fa-caret-down"></i>
+                </button>
             </div>
 
 
@@ -427,17 +508,17 @@
                     [ngClass]="{'backdrop-border': !showAllMedia, 'tabs-border': showAllMedia}">
                     <div style="display: flex; flex-wrap: wrap; padding-bottom: 13px;">
                         <div *ngFor="let media of media" class="thumbnail-container"
-                            [ngClass]="{'invalid': isInvalid(media) > 0}" (contextmenu)="$event.preventDefault()"
+                            [ngClass]="{'invalid': isUnderSize(media) > 0}" (contextmenu)="$event.preventDefault()"
                             (mousedown)="onMousedown($event, media)">
                             <img [src]="'images/' + media.thumbnail" [title]="media.name" (click)="onSearchedMediaClick(media)">
-                            <div *ngIf="isInvalid(media) == invalidImageType.UnderSize" class="invalid-tag">
+                            <div *ngIf="isUnderSize(media) == invalidImageType.UnderSize" class="invalid-tag">
                                 <div>
                                     <i class="fa-solid fa-triangle-exclamation"></i>
                                     <span>Under size</span>
                                 </div>
                             </div>
 
-                            <div *ngIf="isInvalid(media) == invalidImageType.MultipleSizes" class="invalid-tag">
+                            <div *ngIf="isUnderSize(media) == invalidImageType.MultipleSizes" class="invalid-tag">
                                 <div>
                                     <i class="fa-solid fa-triangle-exclamation"></i>
                                     <span>Multiple sizes</span>
