@@ -368,7 +368,7 @@ export class ProductPropertiesComponent {
 
 
   // --------------------------------------------------- Open Media Browser ---------------------------------------------------
-  public async openMediaBrowser(editMode?: boolean): Promise<void> {
+  public async openMediaBrowser(): Promise<void> {
     this.lazyLoadingService.load(async () => {
       const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
       const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
@@ -378,8 +378,16 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.init(MediaType.Image, this.product.image, ImageSizeType.Medium, this.product.name);
+        // Initialize the media browser
+        mediaBrowser.init(MediaType.Image, this.product.image, {
+          imageId: 0,
+          imageSizeType: ImageSizeType.Medium,
+          builder: BuilderType.Product,
+          host: this.product.name,
+          location: ImageLocation.Product
+        }, this.product.name);
 
+        // Callback
         mediaBrowser.callback = (image: Image) => {
           if (image) {
             this.product.image.id = image.id;
@@ -391,17 +399,26 @@ export class ProductPropertiesComponent {
               itemId: this.product.id,
               propertyId: this.product.image.id
             }).subscribe();
-
-            // Add the image reference
-            this.dataService.post('api/Media/ImageReference', {
-              imageId: image.id,
-              imageSize: ImageSizeType.Medium,
-              builder: BuilderType.Product,
-              host: this.product.name,
-              location: ImageLocation.Product
-            }).subscribe();
           }
         }
       });
   }
+
+
+  // --------------------------------------------------- Remove Product Image ---------------------------------------------------
+  public removeProductImage() {
+    // Remove the image
+    this.dataService.delete('api/Products/Image', { productId: this.product.id }).subscribe();
+
+    this.dataService.post('api/Media/ImageReference/Remove', {
+      imageId: this.product.image.id,
+      imageSizeType: ImageSizeType.Medium,
+      builder: BuilderType.Product,
+      host: this.product.name,
+      location: ImageLocation.Product
+    }).subscribe();
+
+    this.product.image.src = null!;
+  }
+
 }

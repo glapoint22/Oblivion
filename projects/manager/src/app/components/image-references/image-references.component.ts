@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { DataService, ImageSizeType, LazyLoad, LazyLoadingService, Media } from 'common';
+import { DataService, ImageSize, ImageSizeType, LazyLoad, LazyLoadingService, Media } from 'common';
 import { BuilderType, ImageLocation } from '../../classes/enums';
 import { ImageReference } from '../../classes/image-reference';
 import { MultiColumnItem } from '../../classes/multi-column-item';
@@ -37,7 +37,7 @@ export class ImageReferencesComponent extends LazyLoad implements OnInit {
             const values = new Array<MultiColumnItemValue>();
 
             // Size
-            const imageSize = this.media.getImageSizes().filter(x => x.imageSizeType == imageReference.imageSizeType)[0];
+            const imageSize = this.getImageSize(imageReference.imageSizeType);
             values.push({
               name: imageSize.width + ' x ' + imageSize.height,
               width: '100px'
@@ -45,7 +45,7 @@ export class ImageReferencesComponent extends LazyLoad implements OnInit {
 
             // Builder
             values.push({
-              name: BuilderType[imageReference.builderType],
+              name: BuilderType[imageReference.builder],
               width: '80px'
             });
 
@@ -59,7 +59,7 @@ export class ImageReferencesComponent extends LazyLoad implements OnInit {
 
             // Location
             values.push({
-              name: ImageLocation[imageReference.imageLocation].replace(/\w(?=[A-Z])/, (x) => x + ' '),
+              name: ImageLocation[imageReference.location].replace(/\w(?=[A-Z])/, (x) => x + ' '),
               width: '200px'
             });
 
@@ -68,5 +68,40 @@ export class ImageReferencesComponent extends LazyLoad implements OnInit {
             });
           });
       });
+  }
+
+
+  getImageSize(imageSizeType: ImageSizeType): ImageSize {
+    const imageSize = new ImageSize();
+
+    switch (imageSizeType) {
+      case ImageSizeType.AnySize:
+        imageSize.width = this.media.imageAnySizeWidth;
+        imageSize.height = this.media.imageAnySizeHeight;
+        break;
+
+      case ImageSizeType.Large:
+        imageSize.width = this.media.imageLgWidth;
+        imageSize.height = this.media.imageLgHeight;
+        break;
+
+      case ImageSizeType.Medium:
+        imageSize.width = this.media.imageMdWidth;
+        imageSize.height = this.media.imageMdHeight;
+        break;
+
+      case ImageSizeType.Small:
+        imageSize.width = this.media.imageSmWidth;
+        imageSize.height = this.media.imageSmHeight;
+        break;
+
+
+      case ImageSizeType.Thumbnail:
+        imageSize.width = this.media.thumbnailWidth;
+        imageSize.height = this.media.thumbnailHeight;
+        break;
+    }
+
+    return imageSize;
   }
 }

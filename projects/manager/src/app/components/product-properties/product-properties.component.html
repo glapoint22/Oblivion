@@ -98,27 +98,35 @@
 
                 <div style="margin-right: 25px;">
 
-                    <div style="display: flex; margin: 0 7px 4px; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between;">
 
                         <div style="color: #505050; font-size: 12px;">Image:</div>
 
-                        <i *ngIf="product.image && product.image.src" class="fas fa-pencil-alt" style="color: #9e9e9e;"
-                            tabindex="0" (click)="openMediaBrowser(true)"></i>
+
+                        <div class="icon-container">
+                            <icon-button *ngIf="product.image && product.image.src" [icon]="'fas fa-trash-alt'"
+                                [title]="'Remove Image'" (click)="removeProductImage()">
+                            </icon-button>
+
+
+                            <icon-button [icon]="'fa-solid fa-image'" [title]="'Media Browser'"
+                                (click)="openMediaBrowser()">
+                            </icon-button>
+                        </div>
 
                     </div>
 
 
 
-                    <div
-                        style="display: flex; width: 500px; height: 500px; border: 1px dashed #505050; justify-content: center; align-items: center;">
+                    <div style="display: flex; width: 500px; height: 500px; border: 1px dashed #505050; justify-content: center; align-items: center; cursor: pointer;"
+                        (click)="openMediaBrowser()">
 
                         <div *ngIf="!product.image || !product.image.src"
-                            style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;cursor: pointer;"
-                            (click)="openMediaBrowser()">
+                            style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
                             <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;" tabindex="0"></i>
                         </div>
 
-                        
+
                         <img *ngIf="product.image && product.image.src" [src]="'images/' + product.image.src">
                     </div>
 
@@ -381,8 +389,7 @@
 
                 <subproducts *ngIf="product.components && product.components.length > 0"
                     [subproducts]="product.components" [subproductType]="subproductType.Component"
-                    [productId]="product.id"
-                    [productName]="product.name"></subproducts>
+                    [productId]="product.id" [productName]="product.name"></subproducts>
             </div>
         </div>
 
@@ -398,8 +405,8 @@
                 </div>
 
                 <subproducts *ngIf="product.bonuses && product.bonuses.length > 0" [subproducts]="product.bonuses"
-                    [subproductType]="subproductType.Bonus" [productId]="product.id"
-                    [productName]="product.name"></subproducts>
+                    [subproductType]="subproductType.Bonus" [productId]="product.id" [productName]="product.name">
+                </subproducts>
             </div>
         </div>
     </div>

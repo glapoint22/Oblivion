@@ -84,12 +84,12 @@
                 <!-- Image Preview -->
                 <ng-container *ngIf="view == mediaBrowserView.ImagePreview && displayImage">
                     <div class="icon-container">
-
                         <icon-button *ngIf="showCancelButton" [icon]="'fa-solid fa-ban'" [title]="'Cancel'"
                             (click)="onCancelClick()">
                         </icon-button>
 
-                        <icon-button *ngIf="!showCancelButton" [icon]="'fas fa-trash-alt'" [title]="'Delete Image'">
+                        <icon-button *ngIf="!showCancelButton || selectedMedia" [icon]="'fas fa-trash-alt'" [title]="'Delete Image'"
+                            (click)="deleteImage()">
                         </icon-button>
 
                         <icon-button *ngIf="!showCancelButton" [icon]="'fa-solid fa-arrows-rotate'"

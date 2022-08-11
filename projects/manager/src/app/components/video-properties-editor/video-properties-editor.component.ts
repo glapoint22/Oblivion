@@ -23,7 +23,7 @@ export class VideoPropertiesEditorComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.init(MediaType.Video, this.video);
+        // mediaBrowser.init(MediaType.Video, this.video);
       //   mediaBrowser.currentMediaType = MediaType.Video;
 
       //   if (editMode) {

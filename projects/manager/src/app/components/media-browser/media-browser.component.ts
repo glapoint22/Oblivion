@@ -1,8 +1,9 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DataService, Image, ImageSize, ImageSizeType, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, Video } from 'common';
 import { debounceTime, fromEvent, map, of, switchMap } from 'rxjs';
 import { MediaBrowserMode, MediaBrowserView, MenuOptionType } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { Item } from '../../classes/item';
 import { MenuOption } from '../../classes/menu-option';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
@@ -63,6 +64,7 @@ export class MediaBrowserComponent extends LazyLoad {
   public hasMultiImages!: boolean;
   private productName!: string;
   private dropdownList!: DropdownListComponent;
+  private imageReference!: ImageReference;
 
 
   constructor
@@ -115,11 +117,12 @@ export class MediaBrowserComponent extends LazyLoad {
   }
 
 
-  init(mediaType: MediaType, currentMedia?: Image | Video, imageSizeType?: ImageSizeType, productName?: string) {
+  init(mediaType: MediaType, currentMedia?: Image | Video, imageReference?: ImageReference, productName?: string) {
     this.mediaType = mediaType;
 
     if (mediaType == MediaType.Image) {
-      this.imageSizeType = imageSizeType!;
+      this.imageReference = imageReference!;
+      this.imageSizeType = imageReference!.imageSizeType;
 
       if (currentMedia && currentMedia.src) {
         this.view = MediaBrowserView.ImagePreview;
@@ -254,6 +257,10 @@ export class MediaBrowserComponent extends LazyLoad {
         newImage.name = media.name;
         newImage.src = media.src;
         newImage.thumbnail = media.thumbnail;
+
+        this.imageReference.imageId = newImage.id;
+        this.addImageReference();
+
         this.callback(newImage);
         this.close();
       });
@@ -296,6 +303,8 @@ export class MediaBrowserComponent extends LazyLoad {
   onSubmit() {
     if (this.view == MediaBrowserView.ImagePreview) {
       if (this.mode == MediaBrowserMode.New || this.mode == MediaBrowserMode.Swap) {
+        if (this.mode == MediaBrowserMode.Swap) this.removeImageReference();
+
         if (this.imageFile) {
           this.saveImage();
         } else {
@@ -304,7 +313,6 @@ export class MediaBrowserComponent extends LazyLoad {
           } else {
             this.setSelectedMedia();
           }
-
         }
       } else if (this.mode == MediaBrowserMode.Update) {
         this.updateImage();
@@ -312,6 +320,112 @@ export class MediaBrowserComponent extends LazyLoad {
     } else if (this.view == MediaBrowserView.VideoPreview) {
 
     }
+  }
+
+
+
+
+
+
+  // ------------------------------------------------------------------- Add Image Reference -------------------------------------------------------
+  addImageReference() {
+    this.dataService.post('api/Media/ImageReference', this.imageReference).subscribe();
+  }
+
+
+
+  // ------------------------------------------------------------------- Add Image Reference -------------------------------------------------------
+  removeImageReference() {
+    this.imageReference.imageId = this.currentImage.id;
+    this.dataService.post('api/Media/ImageReference/Remove', this.imageReference).subscribe();
+  }
+
+
+  deleteImage() {
+    let id!: number;
+
+    if (this.selectedMedia) {
+      id = this.selectedMedia.id;
+    } else if (this.currentImage) {
+      id = this.currentImage.id;
+    }
+
+    this.dataService.get<number>('api/Media/ImageReference', [{ key: 'imageId', value: id }])
+      .subscribe((referenceCount: number) => {
+        let message!: SafeHtml;
+        let primaryButtonName!: string;
+        let primaryButtonFunction!: Function;
+        let secondaryButtonName!: string;
+        let secondaryButtonFunction!: Function;
+
+        if (referenceCount > 0) {
+          message = this.sanitizer.bypassSecurityTrustHtml(
+            'This image has ' + (referenceCount == 1 ? 'a dependency' : referenceCount + ' dependencies') +
+            ' and cannot be deleted. Before continuing, ' +
+            'you must remove all references to this image.');
+
+          primaryButtonName = 'Ok';
+          secondaryButtonName = 'Show References';
+          secondaryButtonFunction = () => {
+            if (this.selectedMedia) {
+              this.openImageReferences(this.selectedMedia);
+            } else if (this.currentImage) {
+              this.dataService.get<Media>('api/Media/MediaInfo', [{ key: 'id', value: this.currentImage.id }])
+                .subscribe((media: Media) => {
+                  this.openImageReferences(media);
+                });
+            }
+          }
+        } else {
+          message = this.sanitizer.bypassSecurityTrustHtml(
+            'Are you sure you want to permanently delete this image?');
+
+          primaryButtonName = 'Delete';
+          primaryButtonFunction = () => {
+            this.dataService.delete('api/Media', { id: id }).subscribe(() => {
+              if (this.currentImage) {
+                this.view = MediaBrowserView.ImagePreview;
+                this.mode = MediaBrowserMode.Update;
+                this.displayImage = new Image();
+                this.displayImage.id = this.currentImage.id;
+                this.displayImage.src = 'images/' + this.currentImage.src;
+                this.displayImage.name = this.currentImage.name;
+                this.nameInputDisabled = false;
+              } else if (this.selectedMedia) {
+                this.view = this.mediaBrowserView.ImageSelect;
+              }
+
+              this.showCancelButton = false;
+              this.selectedMedia = null!;
+              this.submitButtonDisabled = true;
+            });
+          }
+          secondaryButtonName = 'Cancel';
+        }
+
+
+        this.lazyLoadingService.load(async () => {
+          const { PromptComponent } = await import('../prompt/prompt.component');
+          const { PromptModule } = await import('../prompt/prompt.module');
+
+          return {
+            component: PromptComponent,
+            module: PromptModule
+          }
+        }, SpinnerAction.None)
+          .then((prompt: PromptComponent) => {
+            prompt.title = 'Delete Image';
+            prompt.message = message
+            prompt.primaryButton.name = primaryButtonName;
+            prompt.primaryButton.buttonFunction = primaryButtonFunction;
+            prompt.secondaryButton.name = secondaryButtonName;
+            prompt.secondaryButton.buttonFunction = secondaryButtonFunction;
+          });
+
+
+      })
+
+
   }
 
 
@@ -374,6 +488,8 @@ export class MediaBrowserComponent extends LazyLoad {
       image.id = this.selectedMedia.id;
       image.name = this.selectedMedia.name;
       image.thumbnail = this.selectedMedia.thumbnail;
+      this.imageReference.imageId = image.id;
+      this.addImageReference();
 
       if (this.imageSizeType == ImageSizeType.Small) {
         if (this.selectedMedia.imageSm) {
@@ -590,12 +706,21 @@ export class MediaBrowserComponent extends LazyLoad {
           image.src = imageSize.src;
           image.imageSizeType = imageSize.imageSizeType;
 
+          this.imageReference.imageId = image.id;
+          this.imageReference.imageSizeType = image.imageSizeType;
+          this.addImageReference();
+
           this.callback(image);
           this.close();
         }
       });
   }
 
+
+
+  onEnter(e: KeyboardEvent): void {
+    if (!this.submitButtonDisabled) this.onSubmit();
+  }
 
 
   // ---------------------------------------------------------- On Escape -----------------------------------------------------------

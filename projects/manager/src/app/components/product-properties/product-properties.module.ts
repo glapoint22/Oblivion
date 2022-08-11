@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { ColorSwatchModule } from '../color-swatch/color-swatch.module';
 import { RecurringPaymentModule, ShippingModule } from 'common';
 import { SubproductsComponent } from '../subproducts/subproducts.component';
+import { IconButtonModule } from '../icon-button/icon-button.module';
 
 
 
@@ -24,7 +25,8 @@ import { SubproductsComponent } from '../subproducts/subproducts.component';
     FormsModule,
     ColorSwatchModule,
     RecurringPaymentModule,
-    ShippingModule
+    ShippingModule,
+    IconButtonModule
   ],
   exports:[
     ProductPropertiesComponent
