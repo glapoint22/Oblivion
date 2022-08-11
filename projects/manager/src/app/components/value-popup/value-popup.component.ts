@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { LazyLoad, LazyLoadingService } from 'common';
+import { LazyLoad } from 'common';
 
 @Component({
   selector: 'value-popup',
@@ -11,9 +11,6 @@ export class ValuePopupComponent extends LazyLoad {
   public value!: number;
   public callback!: Function;
 
-  constructor(lazyLoadingService: LazyLoadingService) {
-    super(lazyLoadingService);
-  }
 
   // --------------------------------------------------- Ng After View Init ---------------------------------------------------
   ngAfterViewInit(): void {

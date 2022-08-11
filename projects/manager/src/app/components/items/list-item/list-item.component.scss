@@ -14,7 +14,8 @@
     padding: 1px 0;
     white-space: nowrap;
     outline: none;
-    line-height: 22px;
+    align-items: center;
+    line-height: 24px;
     
 
     &:hover:not(.no-hover):not(.unselected-item):not(.transparent-item):not(.edited-item):not(.selected-item-top):not(.selected-item-middle):not(.selected-item-bottom):not(.selected-item-all) {

@@ -6,12 +6,22 @@
 
         <div style="width: 328px;
         height: 262px;
+        padding: 1px 0;
         background: #1e1e1e;
         border: 1px solid #3c3c3c;
         border-left-color: black;
         border-top-color: black;
         border-radius: 4px;
-        overflow-y: auto;"></div>
+        overflow-y: auto;">
+        
+    
+            <image-list #listComponent
+                        [sourceList]="products"
+                        [options]="listOptions"
+                        >
+            </image-list>
+    
+        </div>
 
 
 

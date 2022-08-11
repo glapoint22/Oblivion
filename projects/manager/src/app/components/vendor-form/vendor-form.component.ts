@@ -76,7 +76,7 @@ export class VendorFormComponent extends LazyLoad {
     }, SpinnerAction.None, this.vendorProductsPopupContainer)
       .then((vendorProductsPopup: VendorProductsPopupComponent) => {
         this.vendorProductsPopup = vendorProductsPopup;
-        
+        vendorProductsPopup.vendorId = this.vendor.id!;
       });
   }
 

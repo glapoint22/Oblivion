@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { CheckboxItem } from '../../../classes/checkbox-item';
-import { CheckboxHierarchyManager } from '../../../classes/checkbox-hierarchy-manager';
 import { ListItemComponent } from '../list-item/list-item.component';
 import { CheckboxListManager } from '../../../classes/checkbox-list-manager';
 

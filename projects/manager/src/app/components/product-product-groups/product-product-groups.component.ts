@@ -6,8 +6,4 @@ import { ProductProductGroupsUpdateManager } from '../../classes/product-product
   templateUrl: './product-product-groups.component.html',
   styleUrls: ['./product-product-groups.component.scss']
 })
-export class ProductProductGroupsComponent extends ProductProductGroupsUpdateManager {
-
-  
-
-}
+export class ProductProductGroupsComponent extends ProductProductGroupsUpdateManager { }

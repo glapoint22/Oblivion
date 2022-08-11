@@ -1,0 +1,42 @@
+<div class="item-container">
+
+    <ng-container *ngIf="listManager.editedItem != null">
+        <div [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 10 : 0"></div>
+
+        <div class="image-container">
+            <img [src]="'images/' + item.thumbnail" style="max-width: 30px; max-height: 30px; filter: brightness(0.15);">
+        </div>
+    </ng-container>
+
+
+    <div #htmlItem
+         class="item"
+         tabindex="-1"
+         [style.color]="item.color"
+         (contextmenu)="$event.preventDefault()"
+         (mousedown)="listManager.onItemDown(item, $event)"
+         (dblclick)="listManager.onItemDoubleClick(item)"
+         [contentEditable]="item == listManager.editedItem"
+         [ngClass]="{'selected-item': item == listManager.selectedItem,
+                'unselected-item': item == listManager.unselectedItem,
+                'edited-item': item == listManager.editedItem,
+                'transparent-item': listManager.editedItem != null && listManager.editedItem != item,
+                'selected-item-top': item.selectType == listManager.SelectType.Top,
+                'selected-item-all': item.selectType == listManager.SelectType.All,
+                'selected-item-middle': item.selectType == listManager.SelectType.Middle,
+                'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
+                'no-hover': listManager.contextMenuOpen}">
+
+
+        <ng-container *ngIf="listManager.editedItem == null">
+            <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
+
+            <div class="image-container">
+                <img [src]="'images/' + item.thumbnail" style="max-width: 30px; max-height: 30px;">
+            </div>
+        </ng-container>
+
+        {{item.name}}
+        
+    </div>
+</div>

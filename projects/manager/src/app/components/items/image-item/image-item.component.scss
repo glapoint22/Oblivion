@@ -1,0 +1,25 @@
+.item {
+    height: 40px;
+    line-height: 40px;
+    align-items: center;
+}
+
+.image-container {
+    display: flex;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #444444;
+    margin-right: 4px;
+}
+
+.selected-item {
+    .image-container {
+        border-color: #6a6a6a;
+    }
+
+    img {
+        filter: brightness(1.2);
+    }
+}
