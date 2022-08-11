@@ -5,6 +5,7 @@ import { MenuOptionType } from '../../classes/enums';
 import { MenuBarButton } from '../../classes/menu-bar-button';
 import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { VendorFormComponent } from '../vendor-form/vendor-form.component';
 
 @Component({
   selector: 'menu-bar',
@@ -56,7 +57,8 @@ export class MenuBarComponent {
         {
           type: MenuOptionType.MenuItem,
           name: 'Vendor',
-          shortcut: 'Alt+V'
+          shortcut: 'Alt+V',
+          optionFunction: this.openVendorForm
         },
         {
           type: MenuOptionType.MenuItem,
@@ -249,6 +251,21 @@ export class MenuBarComponent {
 
   openEmailBuilder() {
     this.router.navigate(['email-builder']);
+  }
+
+
+
+
+
+  openVendorForm() {
+    this.lazyLoadingService.load(async () => {
+      const { VendorFormComponent } = await import('../vendor-form/vendor-form.component');
+      const { VendorFormModule } = await import('../vendor-form/vendor-form.module');
+      return {
+        component: VendorFormComponent,
+        module: VendorFormModule
+      }
+    }, SpinnerAction.None)
   }
 
 

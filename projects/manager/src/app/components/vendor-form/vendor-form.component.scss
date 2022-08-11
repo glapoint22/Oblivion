@@ -1,0 +1,55 @@
+.modal-base {
+    width: 350px;
+}
+
+.modal-content {
+    margin-bottom: 10px;
+}
+
+.search-container {
+    margin-bottom: 12px;
+}
+
+.label {
+    font-size: 13px;
+    color: #787878;
+    margin-top: 3px;
+    margin-left: 3px;
+    user-select: none;
+}
+
+input {
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+
+
+.icon-buttons-container {
+    position: relative;
+    display: flex;
+    margin-left: -5px;
+    justify-content: space-between;
+}
+
+.vendor-products-popup-container {
+    position: absolute;
+    top: -13px;
+    left: -359px;
+    z-index: 100;
+}
+
+
+.dashed-container {
+    position: relative;
+    padding: 10px 10px 8px;
+    border: 1px dashed #414141;
+}
+
+.disable-cover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(40, 40, 40, 0.6);
+}

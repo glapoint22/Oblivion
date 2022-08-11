@@ -5,39 +5,25 @@
         <div class="popup-arrow-up-background"></div>
     </div>
 
-
-
     <div class="popup-base">
         <!-- Search -->
-        <search #search
-                [apiUrl]="'Vendors/Search'"
+        <search #search [apiUrl]="'Vendors/Search'"
                 [placeholderText]="'Search for a vendor'"
                 (onItemSelect)="onVendorSelect($event)">
         </search>
 
+        <div class="space-between-container">
+            <!-- Vendor Label -->
+            <div class="label">Vendor:</div>
 
-
-
-
-
-
-        <div class="vendor-container">
-            <!-- Vendor -->
-            <div *ngIf="product.vendor" class="vendor">{{product.vendor.name}}</div>
-
-            <!-- No vendor message -->
-            <div *ngIf="!product.vendor" class="no-vendor-message">
-                Search for a vendor or click
-                <span>here</span>
-                to create one
-            </div>
+            <!-- Vendor Form Icon Button -->
+            <icon-button [icon]="'fab fa-wpforms'"
+                         [title]="'Open Vendor Form'"
+                         (onClick)="openVendorForm()">
+            </icon-button>
         </div>
 
-
-
-
-
-
-
+        <!-- Vendor -->
+        <input [value]="product.vendor ? product.vendor.name : ''" readonly>
     </div>
 </div>
