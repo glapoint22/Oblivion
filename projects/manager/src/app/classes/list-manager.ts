@@ -39,6 +39,7 @@ export class ListManager {
   public promptOpen!: boolean;
   public mouseDownItem!: ListItem;
   public editItemOldName!: string;
+  public contextMenu!: ContextMenuComponent;
 
 
   // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -249,6 +250,9 @@ export class ListManager {
 
         // As long as we're not in edit mode
         if (!this.editedItem) {
+
+          // If the context menu is already open, close it
+          if(this.contextMenuOpen) this.contextMenu.close();
 
           window.setTimeout(() => {
             // Open the context menu
@@ -967,6 +971,7 @@ export class ListManager {
           module: ContextMenuModule
         }
       }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
+        this.contextMenu = contextMenu;
         this.contextMenuOpen = true;
         contextMenu.xPos = e.clientX + 5;
         contextMenu.yPos = e.clientY + 5;
