@@ -14,8 +14,9 @@
             <div *ngIf="!product" class="search-container">
                 <search #search
                         [apiUrl]="'Vendors/Search'"
+                        (onItemSelect)="onVendorSelect($event)"
                         [placeholderText]="'Search for a vendor'"
-                        (onItemSelect)="onVendorSelect($event)">
+                        (onGetTabElement)="searchTabElement = $event">
                 </search>
             </div>
 
@@ -24,7 +25,7 @@
             <div class="icon-buttons-container">
                 <!-- Product List -->
                 <icon-button [icon]="'fa-solid fa-table-list'"
-                             [title]="'Open Product List'"
+                             [title]="'View Vendor\'s Products'"
                              [isDisabled]="iconButtonsDisabled"
                              (onClick)="openVendorProductsPopup()">
                 </icon-button>
@@ -36,17 +37,17 @@
                 </div>
 
 
-                <div *ngIf="!product">
+                <div>
                     <!-- Delete Vendor -->
                     <icon-button [icon]="'fas fa-trash-alt'"
                                  [title]="'Delete Vendor'"
                                  [isDisabled]="iconButtonsDisabled"
-                                 (onClick)="null">
+                                 (onClick)="onDeleteButtonClick()">
                     </icon-button>
 
                     <!-- Add Vendor -->
                     <icon-button [icon]="'fas fa-plus-circle'"
-                                 [title]="'Add Vendor'"
+                                 [title]="'Create New Vendor'"
                                  [isDisabled]="false"
                                  (onClick)="onAddButtonClick()">
                     </icon-button>
@@ -56,29 +57,47 @@
 
 
             <div class="dashed-container">
+
                 <!-- Company Name -->
-                <div class="label">Company Name:</div>
-                <input #tabElement #companyName [value]="vendor ? vendor.name : ''" (input)="onInput(companyName.value, vendor.name!)">
+                <div class="label" [ngStyle]="{'opacity': fieldsDisabled ? '0.3' : '1'}">Company Name:</div>
+                <input #tabElement
+                       #companyName
+                       [value]="vendor ? vendor.name : ''"
+                       [disabled]="fieldsDisabled ? true : false"
+                       (input)="onInput(companyName.value, vendor.name!)">
+
 
                 <!-- Contact -->
-                <div class="label">Contact:</div>
-                <input #tabElement #contact [value]="vendor ? vendor.primaryEmail : ''" (input)="onInput(contact.value, vendor.primaryEmail!)">
+                <div class="label" [ngStyle]="{'opacity': fieldsDisabled ? '0.3' : '1'}">Contact:</div>
+                <input #contact
+                       #tabElement
+                       [value]="vendor ? vendor.primaryEmail : ''"
+                       [disabled]="fieldsDisabled ? true : false"
+                       (input)="onInput(contact.value, vendor.primaryEmail!)">
+
 
                 <!-- First Name -->
-                <div class="label">First Name:</div>
-                <input #tabElement #firstName [value]="vendor ? vendor.primaryFirstName : ''" (input)="onInput(firstName.value, vendor.primaryFirstName!)">
+                <div class="label" [ngStyle]="{'opacity': fieldsDisabled ? '0.3' : '1'}">First Name:</div>
+                <input #firstName
+                       #tabElement
+                       [disabled]="fieldsDisabled ? true : false"
+                       [value]="vendor ? vendor.primaryFirstName : ''"
+                       (input)="onInput(firstName.value, vendor.primaryFirstName!)">
+
 
                 <!-- Last Name -->
-                <div class="label">Last Name:</div>
-                <input #tabElement #lastName [value]="vendor ? vendor.primaryLastName : ''" (input)="onInput(lastName.value, vendor.primaryLastName!)">
-
-                <div *ngIf="fieldsDisabled" class="disable-cover"></div>
+                <div class="label" [ngStyle]="{'opacity': fieldsDisabled ? '0.3' : '1'}">Last Name:</div>
+                <input #lastName
+                       #tabElement
+                       [disabled]="fieldsDisabled ? true : false"
+                       [value]="vendor ? vendor.primaryLastName : ''"
+                       (input)="onInput(lastName.value, vendor.primaryLastName!)">
             </div>
         </div>
 
         <!-- Button Container -->
         <div class="modal-button-container">
-            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #closeButton #tabElement class="dark-button" (click)="close()">Close</button>
             <button #tabElement class="gold-button" (click)="onSubmit()" [disabled]="submitButtonDisabled">Submit</button>
         </div>
     </div>

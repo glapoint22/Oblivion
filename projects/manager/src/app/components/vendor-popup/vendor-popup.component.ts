@@ -33,8 +33,7 @@ export class VendorPopupComponent extends LazyLoad {
     this.dataService.put('api/Products/Vendor', {
       itemId: this.product.id,
       propertyId: vendor.id
-    })
-      .subscribe();
+    }).subscribe();
   }
 
 

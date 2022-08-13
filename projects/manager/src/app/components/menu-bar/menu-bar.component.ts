@@ -210,6 +210,10 @@ export class MenuBarComponent {
   async openNichesSideMenu() {
     if (!this.nichesSideMenuOpen) {
 
+      if (this.menuOpen) {
+        this.menu.close();
+      }
+
       this.lazyLoadingService.load(async () => {
         const { NichesSideMenuComponent } = await import('../niches-side-menu/niches-side-menu.component');
         const { NichesSideMenuModule } = await import('../niches-side-menu/niches-side-menu.module');

@@ -8,8 +8,8 @@ export class ListOptions {
     deletable?: boolean;
     selectable?: boolean;
     deletePrompt?: Prompt;
-    duplicatePrompt?: Prompt;
     unselectable?: boolean;
     verifyAddEdit?: boolean;
+    duplicatePrompt?: Prompt;
     multiselectable?: boolean;
 }

@@ -16,12 +16,15 @@ export class SearchComponent {
   @Output() onItemSelect: EventEmitter<Item> = new EventEmitter();
   @ViewChild('searchContainer') searchContainer!: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('tabElement') tabElement!: ElementRef<HTMLElement>;
+  @Output() onGetTabElement: EventEmitter<ElementRef<HTMLElement>> = new EventEmitter();
   private dropdownList!: DropdownListComponent;
 
   constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
 
   // ------------------------------------------------------------------------ Ng After View Init ----------------------------------------------------------
   ngAfterViewInit() {
+    this.onGetTabElement.emit(this.tabElement);
     fromEvent(this.searchInput.nativeElement, 'input')
       .pipe(
         debounceTime(200),

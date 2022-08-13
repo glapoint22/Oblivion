@@ -3,8 +3,7 @@
 <div #base
      class="base translate-start"
      [ngClass]="{'translate-end': show}"
-     (transitionend)="onHide()"
-     (mousedown)="$event.stopPropagation()">
+     (transitionend)="onHide()">
     
     <side-menu-niches #sideMenuNiches [base]="base" (onProductSelect)="close()"></side-menu-niches>
 </div>

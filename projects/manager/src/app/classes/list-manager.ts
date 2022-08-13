@@ -37,8 +37,8 @@ export class ListManager {
   public onListUpdate = new Subject<ListUpdate>();
   public contextMenuOpen!: boolean;
   public promptOpen!: boolean;
-  public mouseDownItem!: ListItem;
   public editItemOldName!: string;
+  public contextMenu!: ContextMenuComponent;
 
 
   // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -194,15 +194,11 @@ export class ListManager {
 
   onMouseDown = () => {
     if (!this.promptOpen && !this.contextMenuOpen) {
-
       // If an item is being edited or added
       if (this.editedItem) {
 
-        // And as long as the item that's being edited is not being moused down
-        if (this.mouseDownItem != this.editedItem) {
-          // Evaluate the state of the edit and then act accordingly
-          this.evaluateEdit(null!, true);
-        }
+        // Evaluate the state of the edit and then act accordingly
+        this.evaluateEdit(null!, true);
 
         // If an item is NOT being edited
       } else {
@@ -234,15 +230,19 @@ export class ListManager {
   // ===================================================================( ON ITEM DOWN )==================================================================== \\
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
+    e!.stopPropagation()
 
-    if (e && !this.editedItem) e!.stopPropagation()
-
-    this.mouseDownItem = listItem
-    // As long as this item is NOT currently being edited
+    // As long as the item that just received this mouse down is NOT currently being edited
     if (this.editedItem != listItem) {
+      
+      // If another item is being edited, remove it from edit mode
+      if (this.editedItem) this.evaluateEdit(null!, true);
 
       // Initialize
       this.preventUnselectionFromRightMousedown = false;
+
+      // If the context menu is already open, close it
+      if (this.contextMenuOpen) this.contextMenu.close();
 
       // If this item is being selected from a right mouse down
       if (e != null && e.button == 2) {
@@ -967,6 +967,7 @@ export class ListManager {
           module: ContextMenuModule
         }
       }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
+        this.contextMenu = contextMenu;
         this.contextMenuOpen = true;
         contextMenu.xPos = e.clientX + 5;
         contextMenu.yPos = e.clientY + 5;

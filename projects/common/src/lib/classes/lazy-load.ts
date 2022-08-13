@@ -10,7 +10,7 @@ export class LazyLoad implements AfterViewInit {
     public container!: ViewContainerRef;
     public setTimeOut!: number;
     public shiftKeyDown!: boolean;
-    public tabIndex!: number | null;
+    // public tabIndex!: number | null;
     public tabElements!: Array<ElementRef<HTMLElement>>;
     public onTabElementsLoaded = new Subject<void>();
     @ViewChild('base') base!: ElementRef<HTMLElement>;
@@ -105,11 +105,12 @@ export class LazyLoad implements AfterViewInit {
         window.removeEventListener("keyup", this.keyUp);
     }
 
+
     onTab(direction: number): void {
         if (this.tabElements) {
 
             // Initialize tabIndex to null
-            this.tabIndex = null;
+            let tabIndex = null;
 
             // Loop through all the tab elements
             for (let i = 0; i < this.tabElements.length; i++) {
@@ -119,55 +120,45 @@ export class LazyLoad implements AfterViewInit {
 
                     // Get the index value of the focused tab element
                     // then increment or decrement by one (depending on direction)
-                    this.tabIndex = i + (1 * direction);
+                    tabIndex = i + (1 * direction);
 
                     // Set the tab loop
-                    if (this.tabIndex > this.tabElements.length - 1) this.tabIndex = 0;
-                    if (this.tabIndex < 0) this.tabIndex = this.tabElements.length - 1;
+                    if (tabIndex > this.tabElements.length - 1) tabIndex = 0;
+                    if (tabIndex < 0) tabIndex = this.tabElements.length - 1;
 
-                    // If the tab element is a button and that button is disabled
-                    if (this.tabElements[this.tabIndex].nativeElement instanceof HTMLButtonElement && (this.tabElements[this.tabIndex].nativeElement as HTMLButtonElement).disabled) {
-                        // Skip over that button
-                        this.tabIndex = this.tabIndex + (1 * direction);
-                        if (this.tabIndex > this.tabElements.length - 1) this.tabIndex = 0;
-                        if (this.tabIndex < 0) this.tabIndex = this.tabElements.length - 1;
-                    }
-
-                    // If the tab element is an input text
-                    if (this.tabElements[this.tabIndex].nativeElement instanceof HTMLInputElement) {
-                        // Select the input text
-                        (this.tabElements[this.tabIndex].nativeElement as HTMLInputElement).select();
-                    } else {
-                        // Set focus to that tab element
-                        this.tabElements[this.tabIndex].nativeElement.focus();
-                    }
+                    this.checkIfDisabled(tabIndex, direction);
                     break;
                 }
             }
 
             // If tabIndex is not defined that means the first tab element has not been set the focus yet
-            if (!this.tabIndex) {
-
-                // If the first tab element is a button and that button is disabled
-                if (this.tabElements[0].nativeElement instanceof HTMLButtonElement && (this.tabElements[0].nativeElement as HTMLButtonElement).disabled) {
-                    // Set focus to the second tab element
-                    this.tabElements[1].nativeElement.focus();
-
-                    // Otherwise, just set focus to the first tab element
-                } else {
-
-                    // If the tab element is an input text
-                    if (this.tabElements[0].nativeElement instanceof HTMLInputElement) {
-                        // Select the input text
-                        (this.tabElements[0].nativeElement as HTMLInputElement).select();
-                    } else {
-                        // Set focus to that tab element
-                        this.tabElements[0].nativeElement.focus();
-                    }
-                }
-            }
+            if (!tabIndex) this.checkIfDisabled(0, direction);
         }
     }
+
+
+
+    checkIfDisabled(tabIndex: number, direction: number): void {
+        // If the current tab element is either a button or an input and it is disabled 
+        if ((this.tabElements[tabIndex!].nativeElement instanceof HTMLButtonElement && (this.tabElements[tabIndex!].nativeElement as HTMLButtonElement).disabled) ||
+            (this.tabElements[tabIndex!].nativeElement instanceof HTMLInputElement && (this.tabElements[tabIndex!].nativeElement as HTMLInputElement).disabled)) {
+
+            // Increment or decrement by one (depending on direction)
+            tabIndex = tabIndex! + (1 * direction);
+            if (tabIndex > this.tabElements.length - 1) tabIndex = 0;
+            if (tabIndex < 0) tabIndex = this.tabElements.length - 1;
+
+            // And check to see if that tab element is disabled
+            this.checkIfDisabled(tabIndex, direction);
+
+            // If the current tab element is NOT disabled
+        } else {
+
+            // Then set focus to that tab element
+            this.setFocus(tabIndex);
+        }
+    }
+
 
 
     onEscape(): void {

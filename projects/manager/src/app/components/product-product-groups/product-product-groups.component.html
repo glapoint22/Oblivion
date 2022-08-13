@@ -38,9 +38,9 @@
 <ng-container *ngIf="!searchMode">
     <div class="popup-list-container">
         <checkbox-list #listComponent
-              [sourceList]="thisArray"
-              [options]="listOptions"
-              (onListUpdate)="listUpdate = $event">
+                       [sourceList]="thisArray"
+                       [options]="listOptions"
+                       (onListUpdate)="listUpdate = $event">
         </checkbox-list>
     </div>
 </ng-container>
@@ -61,9 +61,9 @@
         
         <ng-container *ngIf="thisSearchArray.length > 0">
             <checkbox-list #searchComponent
-                  [sourceList]="thisSearchArray"
-                  [options]="searchOptions"
-                  (onListUpdate)="searchUpdate = $event">
+                           [sourceList]="thisSearchArray"
+                           [options]="searchOptions"
+                           (onListUpdate)="searchUpdate = $event">
             </checkbox-list>
         </ng-container>
     </div>

@@ -7,7 +7,8 @@
 
     <div class="popup-base">
         <!-- Search -->
-        <search #search [apiUrl]="'Vendors/Search'"
+        <search #search
+                [apiUrl]="'Vendors/Search'"
                 [placeholderText]="'Search for a vendor'"
                 (onItemSelect)="onVendorSelect($event)">
         </search>
@@ -24,6 +25,9 @@
         </div>
 
         <!-- Vendor -->
-        <input [value]="product.vendor ? product.vendor.name : ''" readonly>
+        <input readonly
+               [value]="product.vendor ? product.vendor.name : ''"
+               placeholder="No vendor - search or create one using vendor form" 
+               [ngStyle]="{'cursor': product.vendor && product.vendor.name ? 'text' : 'auto'}">
     </div>
 </div>

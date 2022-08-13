@@ -36,7 +36,7 @@ export class ListComponent implements OnInit {
   ngAfterViewInit() {
     window.setTimeout(() => {
       this.setListOptions();
-    }, 100)
+    })
   }
 
 
