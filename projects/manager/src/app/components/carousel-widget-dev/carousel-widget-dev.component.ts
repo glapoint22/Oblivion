@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { CarouselWidgetComponent } from 'widgets';
-import { WidgetInspectorView } from '../../classes/enums';
+import { CarouselBanner, CarouselWidgetComponent } from 'widgets';
+import { BuilderType, ImageLocation, WidgetInspectorView } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -13,4 +14,28 @@ export class CarouselWidgetDevComponent extends CarouselWidgetComponent {
   public widgetInspectorView = WidgetInspectorView;
 
   constructor(public widgetService: WidgetService) { super() }
+
+  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
+  public getImageReference(banner: CarouselBanner) {
+    return {
+      imageId: banner.image.id,
+      imageSizeType: banner.image.imageSizeType,
+      builder: BuilderType.Page,
+      hostId: this.widgetService.page.id,
+      location: ImageLocation.CarouselWidgetBanner
+    }
+  }
+
+  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
+  public getImageReferences(): Array<ImageReference> {
+    const imageReferences: Array<ImageReference> = new Array<ImageReference>();
+
+    this.banners.forEach((banner: CarouselBanner) => {
+      if (banner.image && banner.image.src) {
+        imageReferences.push(this.getImageReference(banner));
+      }
+    });
+
+    return imageReferences;
+  }
 }

@@ -2,7 +2,8 @@ import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } f
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { BuilderType, ImageLocation, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
 import { PageDevComponent } from '../page-dev/page-dev.component';
@@ -228,7 +229,7 @@ export class ContainerDevComponent extends ContainerComponent {
   // --------------------------------------------------------------------------- On Mousedown ---------------------------------------------------------
   public onMousedown(event: MouseEvent): void {
     if (this.page) {
-      
+
       window.dispatchEvent(new Event('mousedown'));
 
       this.widgetService.deselectWidget();
@@ -338,7 +339,9 @@ export class ContainerDevComponent extends ContainerComponent {
   // ------------------------------------------------------------------------ Delete Row ---------------------------------------------------------
   public deleteRow(row: RowDevComponent): void {
     const index = this.rows.findIndex(x => x == row);
-
+    const imageReferences = row.getImageReferences();
+    
+    this.widgetService.page.removeImageReferences(imageReferences);
     this.rows.splice(index, 1);
     this.viewContainerRef.remove(index);
     this.widgetService.deselectWidget();
@@ -620,5 +623,28 @@ export class ContainerDevComponent extends ContainerComponent {
     });
 
     return rows;
+  }
+
+
+
+  // ----------------------------------------------------------------------- Get Image References --------------------------------------------------
+  public getImageReferences(): Array<ImageReference> {
+    let imageReferences: Array<ImageReference> = new Array<ImageReference>();
+
+    if (this.page.pageContent.background.image && this.page.pageContent.background.image.src) {
+      imageReferences.push({
+        imageId: this.page.pageContent.background.image.id,
+        imageSizeType: this.page.pageContent.background.image.imageSizeType,
+        builder: BuilderType.Page,
+        hostId: this.page.id,
+        location: ImageLocation.PageBackground
+      });
+    }
+
+    this.rows.forEach((row: RowDevComponent) => {
+      imageReferences = row.getImageReferences().concat(imageReferences);
+    });
+
+    return imageReferences;
   }
 }

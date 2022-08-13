@@ -5,6 +5,7 @@ export class ImageReference {
     public imageId!: number;
     public imageSizeType!: ImageSizeType;
     public builder!: BuilderType;
-    public host!: string;
+    public host?: string;
+    public hostId!: number;
     public location!: ImageLocation;
 }

@@ -83,16 +83,12 @@ export class WidgetService {
         const mediaType = widgetData.widgetType == WidgetType.Image ? MediaType.Image : MediaType.Video;
         const imageSizeType = widgetData.widgetType == WidgetType.Image ? ImageSizeType.AnySize : null;
 
-        // mediaBrowser.currentMediaType = mediaType;
-        // mediaBrowser.imageSizeType = imageSize!;
-        // mediaBrowser.init(mediaType, null!, imageSize!);
-
         // Initialize the media browser
-        mediaBrowser.init(mediaType, null!, mediaType == MediaType.Image ? {
+        mediaBrowser.init(mediaType, ImageSizeType.AnySize, null!, mediaType == MediaType.Image ? {
           imageId: 0,
           imageSizeType: imageSizeType!,
           builder: BuilderType.Page,
-          host: this.page.name,
+          hostId: this.page.id,
           location: ImageLocation.ImageWidget
         } : null!);
 
@@ -101,16 +97,6 @@ export class WidgetService {
           if (mediaType == MediaType.Image) {
             const imageWidgetData = widgetData as ImageWidgetData;
             imageWidgetData.image = media as Image;
-
-            // Add the image reference
-            // this.dataService.post('api/Media/ImageReference', {
-            //   imageId: media.id,
-            //   imageSize: (media as Image).imageSizeType,
-            //   builder: BuilderType.Page,
-            //   host: this.page.name,
-            //   location: ImageLocation.ImageWidget
-            // }).subscribe();
-
           } else {
             const videoWidgetData = widgetData as VideoWidgetData;
             videoWidgetData.video = media as Video;

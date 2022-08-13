@@ -117,12 +117,21 @@ export class MediaBrowserComponent extends LazyLoad {
   }
 
 
-  init(mediaType: MediaType, currentMedia?: Image | Video, imageReference?: ImageReference, productName?: string) {
+  init(mediaType: MediaType, imageSizeType: ImageSizeType, currentMedia?: Image | Video, imageReference?: ImageReference, productName?: string) {
     this.mediaType = mediaType;
 
     if (mediaType == MediaType.Image) {
-      this.imageReference = imageReference!;
-      this.imageSizeType = imageReference!.imageSizeType;
+      if (imageReference) {
+        this.imageReference = {
+          imageId: imageReference.imageId,
+          imageSizeType: imageReference.imageSizeType,
+          builder: imageReference.builder,
+          hostId: imageReference.hostId,
+          location: imageReference.location
+        }
+      }
+
+      this.imageSizeType = imageSizeType;
 
       if (currentMedia && currentMedia.src) {
         this.view = MediaBrowserView.ImagePreview;
@@ -259,6 +268,7 @@ export class MediaBrowserComponent extends LazyLoad {
         newImage.thumbnail = media.thumbnail;
 
         this.imageReference.imageId = newImage.id;
+        this.imageReference.imageSizeType = this.imageSizeType;
         this.addImageReference();
 
         this.callback(newImage);
@@ -303,14 +313,16 @@ export class MediaBrowserComponent extends LazyLoad {
   onSubmit() {
     if (this.view == MediaBrowserView.ImagePreview) {
       if (this.mode == MediaBrowserMode.New || this.mode == MediaBrowserMode.Swap) {
-        if (this.mode == MediaBrowserMode.Swap) this.removeImageReference();
+        
 
         if (this.imageFile) {
+          if (this.mode == MediaBrowserMode.Swap) this.removeImageReference();
           this.saveImage();
         } else {
           if (this.hasMultiImages) {
             this.loadDropdownList();
           } else {
+            if (this.mode == MediaBrowserMode.Swap) this.removeImageReference();
             this.setSelectedMedia();
           }
         }
@@ -337,7 +349,8 @@ export class MediaBrowserComponent extends LazyLoad {
   // ------------------------------------------------------------------- Add Image Reference -------------------------------------------------------
   removeImageReference() {
     this.imageReference.imageId = this.currentImage.id;
-    this.dataService.post('api/Media/ImageReference/Remove', this.imageReference).subscribe();
+    this.imageReference.imageSizeType = this.currentImage.imageSizeType;
+    this.dataService.post('api/Media/ImageReferences/Remove', [this.imageReference]).subscribe();
   }
 
 
@@ -697,6 +710,8 @@ export class MediaBrowserComponent extends LazyLoad {
         });
 
         dropdownList.callback = (item: Item) => {
+          if (this.mode == MediaBrowserMode.Swap) this.removeImageReference();
+
           const image = new Image();
           const imageSize = imageSizes.find(x => x.imageSizeType == item.id)!;
 

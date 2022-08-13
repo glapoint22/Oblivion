@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
-import { PopupArrowPosition } from '../../classes/enums';
+import { BuilderType, ImageLocation, PopupArrowPosition } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { Product } from '../../classes/product';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
@@ -37,11 +38,11 @@ export class PricePointsComponent {
   addPricePoint(pushNewPricePoint?: boolean) {
     if (pushNewPricePoint) this.product.pricePoints.push(new PricePoint());
 
-    window.setTimeout(()=> {
+    window.setTimeout(() => {
       this.header.get(this.product.pricePoints.length - 1)?.nativeElement.focus();
     })
-    
-    
+
+
     this.dataService.post<number>('api/Products/PricePoint', {
       ProductId: this.product.id
 
@@ -70,7 +71,8 @@ export class PricePointsComponent {
 
 
   deletePricePoint(pricePointIndex: number, pricePointId: number) {
-    this.product.pricePoints.splice(pricePointIndex, 1)
+    this.removeImageReference(this.product.pricePoints[pricePointIndex]);
+    this.product.pricePoints.splice(pricePointIndex, 1);
     this.updateMinMaxPrice();
 
     this.dataService.delete('api/Products/PricePoint', {
@@ -145,23 +147,40 @@ export class PricePointsComponent {
         module: MediaBrowserModule
       }
     }, SpinnerAction.None)
-      // .then((mediaBrowser: MediaBrowserComponent) => {
-      //   mediaBrowser.currentMediaType = MediaType.Image;
-      //   mediaBrowser.imageSizeType = ImageSizeType.Small;
+      .then((mediaBrowser: MediaBrowserComponent) => {
+        // Initialize the media browser
+        mediaBrowser.init(MediaType.Image, ImageSizeType.Small, pricePoint.image, this.GetImageReference(pricePoint));
 
-      //   mediaBrowser.callback = (image: Image) => {
-      //     if (image) {
+        mediaBrowser.callback = (image: Image) => {
+          if (image) {
 
-      //       pricePoint.image.id = image.id;
-      //       pricePoint.image.name = image.name;
-      //       pricePoint.image.src = image.src;
-      //       pricePoint.image.thumbnail = image.thumbnail;
+            pricePoint.image.id = image.id;
+            pricePoint.image.name = image.name;
+            pricePoint.image.src = image.src;
+            pricePoint.image.thumbnail = image.thumbnail;
 
-      //       this.updatePricePoint(pricePoint);
-      //     }
-      //   }
-      // });
+            this.updatePricePoint(pricePoint);
+          }
+        }
+      });
   }
+
+
+  GetImageReference(pricePoint: PricePoint): ImageReference {
+    return {
+      imageId: pricePoint.image.id,
+      imageSizeType: pricePoint.image.imageSizeType,
+      builder: BuilderType.Product,
+      hostId: this.product.id,
+      location: ImageLocation.PricePoint
+    }
+  }
+
+
+  removeImageReference(pricePoint: PricePoint) {
+    this.dataService.post('api/Media/ImageReferences/Remove', [this.GetImageReference(pricePoint)]).subscribe();
+  }
+
 
 
 
@@ -170,6 +189,7 @@ export class PricePointsComponent {
     // If the deleting is NOT delayed, then Media Browser will think
     // no image is present and open
     window.setTimeout(() => {
+      this.removeImageReference(pricePoint);
       pricePoint.image = new Image();
       this.updatePricePoint(pricePoint);
     })

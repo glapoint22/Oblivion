@@ -1,13 +1,18 @@
 import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnComponent, Row, Widget, WidgetData, WidgetType } from 'widgets';
-import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { BuilderType, ImageLocation, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { MenuOption } from '../../classes/menu-option';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
+import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev.component';
+import { CarouselWidgetDevComponent } from '../carousel-widget-dev/carousel-widget-dev.component';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { ContainerWidgetDevComponent } from '../container-widget-dev/container-widget-dev.component';
+import { ImageWidgetDevComponent } from '../image-widget-dev/image-widget-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
+import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
 
 @Component({
   selector: '[column-dev]',
@@ -313,8 +318,6 @@ export class ColumnDevComponent extends ColumnComponent {
     } else {
       this.rowComponent.deleteColumn(this);
     }
-
-    this.widgetService.page.save();
   }
 
 
@@ -580,5 +583,32 @@ export class ColumnDevComponent extends ColumnComponent {
     column.horizontalAlignment = this.horizontalAlignment.getData();
     column.columnSpan = this.columnSpan.getData();
     return column;
+  }
+
+
+
+  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
+  public getImageReference(): ImageReference {
+    return {
+      imageId: this.background.image.id,
+      imageSizeType: this.background.image.imageSizeType,
+      builder: BuilderType.Page,
+      hostId: this.widgetService.page.id,
+      location: ImageLocation.ColumnBackground
+    }
+  }
+
+
+
+  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
+  public getImageReferences(): Array<ImageReference> {
+    const widget = this.widget as ButtonWidgetDevComponent | ImageWidgetDevComponent | ContainerWidgetDevComponent | CarouselWidgetDevComponent | TextWidgetDevComponent;
+    const imageReferences = widget.getImageReferences();
+
+    if (this.background.image && this.background.image.src) {
+      imageReferences.push(this.getImageReference());
+    }
+
+    return imageReferences;
   }
 }

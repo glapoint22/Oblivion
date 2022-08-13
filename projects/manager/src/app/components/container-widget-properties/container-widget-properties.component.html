@@ -1,5 +1,5 @@
 <!-- Background -->
-<background [background]="widget.background" (onChange)="update()"></background>
+<background [background]="widget.background" [imageReference]="widget.getImageReference()" (onChange)="update()"></background>
 
 <!-- Border -->
 <border [border]="widget.border" (onChange)="update()"></border>

@@ -1,6 +1,7 @@
 <ng-container *ngIf="widgetService.selectedColumn">
     <!-- Background -->
-    <background [background]="widgetService.selectedColumn.background" (onChange)="update()"></background>
+    <background [background]="widgetService.selectedColumn.background"
+        [imageReference]="widgetService.selectedColumn.getImageReference()" (onChange)="update()"></background>
 
     <!-- Border -->
     <border [border]="widgetService.selectedColumn.border" (onChange)="update()"></border>

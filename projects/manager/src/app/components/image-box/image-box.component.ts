@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction } from 'common';
+import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction } from 'common';
+import { ImageReference } from '../../classes/image-reference';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
@@ -10,9 +11,11 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
 export class ImageBoxComponent {
   @Input() image!: Image;
   @Input() showRemoveImage!: boolean;
+  @Input() imageReference!: ImageReference;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
 
-  constructor(private lazyLoadingService: LazyLoadingService) { }
+
+  constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
 
 
   public openMediaBrowser(): void {
@@ -25,7 +28,8 @@ export class ImageBoxComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        // mediaBrowser.init(MediaType.Image, this.image, ImageSizeType.AnySize);
+        // Initialize the media browser
+        mediaBrowser.init(MediaType.Image, ImageSizeType.AnySize, this.image, this.imageReference);
 
         mediaBrowser.callback = (image: Image) => {
           if (image) {
@@ -42,6 +46,9 @@ export class ImageBoxComponent {
 
 
   removeImage() {
+    this.imageReference.imageId = this.image.id;
+    this.imageReference.imageSizeType = this.image.imageSizeType;
+    this.dataService.post('api/Media/ImageReferences/Remove', [this.imageReference]).subscribe();
     this.image.src = null!;
     this.image.id = null!;
     this.image.thumbnail = null!;

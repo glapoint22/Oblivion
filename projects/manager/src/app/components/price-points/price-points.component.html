@@ -65,33 +65,31 @@
                     <div class="label-container">
                         <div class="label-with-buttons">Image:</div>
     
-                        <div *ngIf="pricePoint.image.src" class="buttons-container">
-
-                            <!-- Edit -->
-                            <i #imageEditButton
-                               tabindex="0"
-                               class="fas fa-pencil-alt"
-                               (click)="openMediaBrowser(pricePoint)"
-                               (keydown.escape)="imageEditButton.blur()"
-                               (keydown.enter)="openMediaBrowser(pricePoint)">
-                            </i>
-
+                        <div class="buttons-container">
                             <!-- Delete -->
-                            <i #imageDeleteButton
+                            <i *ngIf="pricePoint.image.src" #imageDeleteButton
                                tabindex="0"
                                class="fas fa-trash-alt"
                                (click)="onImageDelete(pricePoint)"
                                (keydown.escape)="imageDeleteButton.blur()"
-                               (keydown.enter)="onImageDelete(pricePoint)">
+                               (keydown.enter)="onImageDelete(pricePoint)" title="Delete Image">
+                            </i>
+
+                            <!-- Media Browser -->
+                            <i #imageEditButton
+                               tabindex="0"
+                               class="fa-solid fa-image image-icon"
+                               (click)="openMediaBrowser(pricePoint)"
+                               (keydown.escape)="imageEditButton.blur()"
+                               (keydown.enter)="openMediaBrowser(pricePoint)" title="Media Browser">
                             </i>
                         </div>
                     </div>
                     
-                    <div class="image-field"
-                         (click)="!pricePoint.image.src ? openMediaBrowser(pricePoint) : null"
-                         [ngStyle]="{'cursor': !pricePoint.image.src ? 'pointer' : 'default'}">
+                    <div class="image-field" [title]="pricePoint.image.src ? pricePoint.image.name : ''"
+                         (click)="openMediaBrowser(pricePoint)">
 
-                        <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image"></i>
+                        <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image" style="font-size: 60px; color: #3c3c3c;"></i>
                         <img *ngIf="pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
                     </div>
                 </div>

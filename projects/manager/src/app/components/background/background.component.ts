@@ -1,6 +1,8 @@
 import { KeyValue } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DataService } from 'common';
 import { Background } from 'widgets';
+import { ImageReference } from '../../classes/image-reference';
 
 @Component({
   selector: 'background',
@@ -10,10 +12,13 @@ import { Background } from 'widgets';
 export class BackgroundComponent implements OnInit {
   @Input() background!: Background;
   @Input() toggleable: boolean = true;
+  @Input() imageReference!: ImageReference;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   public repeatOptions!: Array<KeyValue<string, string>>;
   public positionOptions!: Array<KeyValue<string, string>>;
   public attachmentOptions!: Array<KeyValue<string, string>>;
+
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
     // Position options
@@ -105,5 +110,19 @@ export class BackgroundComponent implements OnInit {
         value: 'local'
       }
     ]
+  }
+
+
+  onDisable() {
+    if (this.background.image && this.background.image.src) {
+      this.imageReference.imageId = this.background.image.id;
+      this.imageReference.imageSizeType = this.background.image.imageSizeType;
+      this.dataService.post('api/Media/ImageReferences/Remove', [this.imageReference]).subscribe();
+      this.background.image.src = null!;
+      this.background.image.id = null!;
+      this.background.image.thumbnail = null!;
+      this.background.image.name = null!;
+    }
+    this.onChange.emit();
   }
 }

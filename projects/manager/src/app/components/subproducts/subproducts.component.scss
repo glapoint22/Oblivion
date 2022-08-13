@@ -31,12 +31,15 @@
 .icon-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 4px;
+    width: 200px;
+    height: 22px;
 }
 
 .label {
     color: #505050;
     font-size: 12px;
+    line-height: 22px;
+    flex: 1;
 }
 
 .icon {
@@ -56,6 +59,7 @@
     align-items: center;
     font-size: 100px;
     color: #3c3c3c;
+    cursor: pointer;
 }
 
 .image-icon-container {
@@ -81,6 +85,7 @@
     min-height: 32px;
     border: 1px dashed #505050;
     padding: 5px;
+    position: relative;
 }
 
 .value-container {

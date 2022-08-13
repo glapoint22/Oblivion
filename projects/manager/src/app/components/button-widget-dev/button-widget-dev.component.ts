@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Color } from 'common';
 import { ButtonWidgetComponent, ButtonWidgetData } from 'widgets';
-import { ButtonState, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { BuilderType, ButtonState, ImageLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -114,7 +115,7 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
     super.ngOnInit();
     this.background.enabled = true;
   }
- 
+
 
   // ----------------------------------------------------------------- Get Background Color ----------------------------------------------------------
   getBackgroundColor(): string {
@@ -184,5 +185,28 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
     }
 
     return color;
+  }
+
+
+  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
+  public getImageReference() {
+    return {
+      imageId: this.background.image.id,
+      imageSizeType: this.background.image.imageSizeType,
+      builder: BuilderType.Page,
+      hostId: this.widgetService.page.id,
+      location: ImageLocation.ButtonWidgetBackground
+    }
+  }
+
+
+  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
+  public getImageReferences(): Array<ImageReference> {
+    const imageReferences: Array<ImageReference> = new Array<ImageReference>();
+
+    if (this.background.image && this.background.image.src) {
+      imageReferences.push(this.getImageReference());
+    }
+    return imageReferences;
   }
 }
