@@ -1,3 +1,4 @@
+import { Image, Video } from "common";
 import { Background } from "./background";
 import { ColumnSpan } from "./column-span";
 import { Row } from "./row";
@@ -15,6 +16,13 @@ export class PageContent {
                 (value instanceof ColumnSpan && value.values.length == 1 && value.values[0].span == 12)
             ) {
                 return undefined;
+            } else if (value instanceof Image) {
+                return {
+                    id: value.id,
+                    imageSizeType: value.imageSizeType
+                }
+            } else if (value instanceof Video) {
+                return { id: value.id }
             } else {
                 return value;
             }

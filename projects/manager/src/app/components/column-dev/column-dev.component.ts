@@ -602,8 +602,15 @@ export class ColumnDevComponent extends ColumnComponent {
 
   // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
   public getImageReferences(): Array<ImageReference> {
-    const widget = this.widget as ButtonWidgetDevComponent | ImageWidgetDevComponent | ContainerWidgetDevComponent | CarouselWidgetDevComponent | TextWidgetDevComponent;
-    const imageReferences = widget.getImageReferences();
+    let imageReferences = new Array<ImageReference>();
+
+    if (this.widget instanceof ButtonWidgetDevComponent ||
+      this.widget instanceof ImageWidgetDevComponent ||
+      this.widget instanceof ContainerWidgetDevComponent ||
+      this.widget instanceof CarouselWidgetDevComponent ||
+      this.widget instanceof TextWidgetDevComponent) {
+      imageReferences = this.widget.getImageReferences();
+    }
 
     if (this.background.image && this.background.image.src) {
       imageReferences.push(this.getImageReference());

@@ -29,7 +29,7 @@ export class ImageBoxComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, ImageSizeType.AnySize, this.image, this.imageReference);
+        mediaBrowser.init(MediaType.Image, this.image, ImageSizeType.AnySize, this.imageReference);
 
         mediaBrowser.callback = (image: Image) => {
           if (image) {

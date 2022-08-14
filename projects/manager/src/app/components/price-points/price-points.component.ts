@@ -149,7 +149,7 @@ export class PricePointsComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, ImageSizeType.Small, pricePoint.image, this.GetImageReference(pricePoint));
+        mediaBrowser.init(MediaType.Image, pricePoint.image, ImageSizeType.Small, this.GetImageReference(pricePoint));
 
         mediaBrowser.callback = (image: Image) => {
           if (image) {

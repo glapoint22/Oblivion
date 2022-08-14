@@ -1,6 +1,6 @@
 .modal-base {
     width: 369px;
-    height: 471px;
+    height: 474px;
     position: relative;
 }
 
@@ -71,7 +71,7 @@
     }
 
     &:hover:not(.undersize) {
-        
+
         outline-color: #6b6b6b;
 
         & img {
@@ -129,7 +129,7 @@
 
 .iframe-container {
     width: 347px;
-    height: 327px;
+    height: 322px;
     border: 1px dashed #343434;
     display: flex;
     justify-content: center;
@@ -217,7 +217,7 @@
 
 .image-container {
     width: 347px;
-    height: 327px;
+    height: 322px;
     border: 1px dashed #343434;
     display: flex;
     justify-content: center;
@@ -263,6 +263,22 @@ input[type=file] {
 .gold-button {
     padding: 1px 10px 0;
     font-size: 14px;
+}
+
+
+
+.invalid-video-link {
+    color: #ff3e36;
+    position: absolute;
+    top: 30px;
+    left: 91px;
+}
+
+
+.input-container {
+    display: flex;
+    margin-top: 10px;
+    position: relative;
 }
 
 // input {

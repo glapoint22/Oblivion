@@ -81,10 +81,10 @@ export class WidgetService {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         const mediaType = widgetData.widgetType == WidgetType.Image ? MediaType.Image : MediaType.Video;
-        const imageSizeType = widgetData.widgetType == WidgetType.Image ? ImageSizeType.AnySize : null;
+        const imageSizeType = widgetData.widgetType == WidgetType.Image ? ImageSizeType.AnySize : undefined;
 
         // Initialize the media browser
-        mediaBrowser.init(mediaType, ImageSizeType.AnySize, null!, mediaType == MediaType.Image ? {
+        mediaBrowser.init(mediaType, null!, imageSizeType, mediaType == MediaType.Image ? {
           imageId: 0,
           imageSizeType: imageSizeType!,
           builder: BuilderType.Page,

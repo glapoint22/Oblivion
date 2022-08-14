@@ -5,7 +5,6 @@ import { debounceTime, fromEvent, map, of, switchMap } from 'rxjs';
 import { MediaBrowserMode, MediaBrowserView, MenuOptionType } from '../../classes/enums';
 import { ImageReference } from '../../classes/image-reference';
 import { Item } from '../../classes/item';
-import { MenuOption } from '../../classes/menu-option';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
 import { ImageInfoComponent } from '../image-info/image-info.component';
@@ -47,12 +46,13 @@ export class MediaBrowserComponent extends LazyLoad {
   public mediaBrowserView = MediaBrowserView;
   public imageSizeType!: ImageSizeType;
   public displayImage!: Image;
-  public displayVideoName!: string;
+  public displayVideo!: Video;
   public media: Array<any> = [];
   public mediaType!: MediaType;
   public MediaType = MediaType;
   public callback!: Function;
   public currentImage!: Image;
+  public currentVideo!: Video;
   public submitButtonDisabled: boolean = true;
   public noSearchResults!: boolean;
   public imageFile!: File;
@@ -65,6 +65,7 @@ export class MediaBrowserComponent extends LazyLoad {
   private productName!: string;
   private dropdownList!: DropdownListComponent;
   private imageReference!: ImageReference;
+  public invalidVideoLink!: boolean;
 
 
   constructor
@@ -75,6 +76,8 @@ export class MediaBrowserComponent extends LazyLoad {
     ) { super(lazyLoadingService) }
 
 
+
+  // --------------------------------------------------------------- Ng After ViewInit ------------------------------------------------
   ngAfterViewInit() {
     super.ngAfterViewInit();
 
@@ -110,14 +113,10 @@ export class MediaBrowserComponent extends LazyLoad {
   }
 
 
-  clearSearchResults() {
-    this.searchInput.nativeElement.value = '';
-    this.media = [];
-    this.view = MediaBrowserView.ImageSelect;
-  }
 
 
-  init(mediaType: MediaType, imageSizeType: ImageSizeType, currentMedia?: Image | Video, imageReference?: ImageReference, productName?: string) {
+  // --------------------------------------------------------------- Init ------------------------------------------------
+  init(mediaType: MediaType, currentMedia: Image | Video, imageSizeType?: ImageSizeType, imageReference?: ImageReference, productName?: string) {
     this.mediaType = mediaType;
 
     if (mediaType == MediaType.Image) {
@@ -131,7 +130,8 @@ export class MediaBrowserComponent extends LazyLoad {
         }
       }
 
-      this.imageSizeType = imageSizeType;
+      this.imageSizeType = imageSizeType!;
+
 
       if (currentMedia && currentMedia.src) {
         this.view = MediaBrowserView.ImagePreview;
@@ -151,15 +151,23 @@ export class MediaBrowserComponent extends LazyLoad {
         }
       }
     } else {
-      this.view = MediaBrowserView.VideoSelect;
-      if (currentMedia?.src) {
+
+      if (currentMedia && currentMedia.src) {
         this.view = MediaBrowserView.VideoPreview;
-        this.displayVideoName = currentMedia.name;
+        this.mode = MediaBrowserMode.Update;
+        this.displayVideo = new Video();
+        this.displayVideo.id = currentMedia.id;
+        this.displayVideo.name = currentMedia.name;
+        this.displayVideo.src = currentMedia.src;
+        this.currentVideo = currentMedia as Video;
 
         window.setTimeout(() => {
-          const editedVideoIframe = document.getElementById('editedVideoIframe') as HTMLIFrameElement;
-          editedVideoIframe.src = currentMedia.src;
+          const videoPreviewIframe = document.getElementById('videoPreviewIframe') as HTMLIFrameElement;
+          videoPreviewIframe.src = currentMedia.src;
         });
+      } else {
+        this.view = MediaBrowserView.VideoSelect;
+        this.mode = MediaBrowserMode.New;
       }
     }
   }
@@ -170,6 +178,18 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
+  // --------------------------------------------------------------- Clear Search Results ------------------------------------------------
+  clearSearchResults() {
+    this.searchInput.nativeElement.value = '';
+    this.invalidVideoLink = false;
+    this.media = [];
+
+    if (this.mediaType == MediaType.Image) {
+      this.view = MediaBrowserView.ImageSelect;
+    } else {
+      this.view = MediaBrowserView.VideoSelect;
+    }
+  }
 
 
 
@@ -234,19 +254,44 @@ export class MediaBrowserComponent extends LazyLoad {
     this.imageFile = null!;
     this.selectedMedia = null!;
     this.hasMultiImages = false;
+    this.invalidVideoLink = false;
 
-    if (this.currentImage) {
-      this.displayImage.src = 'images/' + this.currentImage.src;
-      this.displayImage.name = this.currentImage.name;
-      this.nameInputDisabled = false;
-      if (this.mode == MediaBrowserMode.Swap || this.view == MediaBrowserView.ImageUpdate) {
-        this.mode = MediaBrowserMode.Update;
-        this.view = MediaBrowserView.ImagePreview;
+    if (this.mediaType == MediaType.Image) {
+      if (this.currentImage) {
+        this.displayImage.src = 'images/' + this.currentImage.src;
+        this.displayImage.name = this.currentImage.name;
+        this.nameInputDisabled = false;
+        if (this.mode == MediaBrowserMode.Swap || this.view == MediaBrowserView.ImageUpdate) {
+          this.mode = MediaBrowserMode.Update;
+          this.view = MediaBrowserView.ImagePreview;
+        }
+      } else {
+        this.view = MediaBrowserView.ImageSelect;
+        this.displayImage.name = this.productName;
       }
     } else {
-      this.view = MediaBrowserView.ImageSelect;
-      this.displayImage.name = this.productName;
+      if (this.currentVideo) {
+        this.displayVideo.src = this.currentVideo.src;
+        this.displayVideo.videoId = this.currentVideo.videoId;
+        this.displayVideo.videoType = this.currentVideo.videoType;
+        this.displayVideo.name = this.currentVideo.name;
+        this.nameInputDisabled = false;
+
+        if (this.mode == MediaBrowserMode.Swap || this.view == MediaBrowserView.VideoUpdate) {
+          this.mode = MediaBrowserMode.Update;
+          this.view = MediaBrowserView.VideoPreview;
+        }
+
+        window.setTimeout(() => {
+          const iframe = document.getElementById('videoPreviewIframe') as HTMLIFrameElement;
+          iframe.src = this.displayVideo.src;
+        });
+      } else {
+        this.view = MediaBrowserView.VideoSelect;
+        this.displayVideo.name = '';
+      }
     }
+
 
   }
 
@@ -313,7 +358,7 @@ export class MediaBrowserComponent extends LazyLoad {
   onSubmit() {
     if (this.view == MediaBrowserView.ImagePreview) {
       if (this.mode == MediaBrowserMode.New || this.mode == MediaBrowserMode.Swap) {
-        
+
 
         if (this.imageFile) {
           if (this.mode == MediaBrowserMode.Swap) this.removeImageReference();
@@ -330,7 +375,15 @@ export class MediaBrowserComponent extends LazyLoad {
         this.updateImage();
       }
     } else if (this.view == MediaBrowserView.VideoPreview) {
-
+      if (this.mode == MediaBrowserMode.New || this.mode == MediaBrowserMode.Swap) {
+        if (this.selectedMedia) {
+          this.setSelectedMedia();
+        } else {
+          this.saveVideo();
+        }
+      } else if (this.mode == MediaBrowserMode.Update) {
+        this.updateVideo();
+      }
     }
   }
 
@@ -346,7 +399,7 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-  // ------------------------------------------------------------------- Add Image Reference -------------------------------------------------------
+  // ------------------------------------------------------------------ Remove Image Reference -----------------------------------------------------
   removeImageReference() {
     this.imageReference.imageId = this.currentImage.id;
     this.imageReference.imageSizeType = this.currentImage.imageSizeType;
@@ -354,6 +407,10 @@ export class MediaBrowserComponent extends LazyLoad {
   }
 
 
+
+
+
+  // ----------------------------------------------------------------------- delete Image -----------------------------------------------------------
   deleteImage() {
     let id!: number;
 
@@ -434,11 +491,7 @@ export class MediaBrowserComponent extends LazyLoad {
             prompt.secondaryButton.name = secondaryButtonName;
             prompt.secondaryButton.buttonFunction = secondaryButtonFunction;
           });
-
-
-      })
-
-
+      });
   }
 
 
@@ -447,6 +500,16 @@ export class MediaBrowserComponent extends LazyLoad {
   // ------------------------------------------------------------------- On Swap Image Click -------------------------------------------------------
   onSwapImageClick() {
     this.view = MediaBrowserView.ImageSelect;
+    this.mode = MediaBrowserMode.Swap;
+    this.showCancelButton = true;
+  }
+
+
+
+
+  // ------------------------------------------------------------------- On Swap Video Click -------------------------------------------------------
+  onSwapVideoClick() {
+    this.view = MediaBrowserView.VideoSelect;
     this.mode = MediaBrowserMode.Swap;
     this.showCancelButton = true;
   }
@@ -468,12 +531,31 @@ export class MediaBrowserComponent extends LazyLoad {
         }).reverse()[0].src;
 
       this.view = MediaBrowserView.ImagePreview;
-      this.searchInput.nativeElement.value = '';
-      this.nameInputDisabled = true;
-      this.submitButtonDisabled = false;
-      this.showCancelButton = true;
+
       if (this.imageSizeType == ImageSizeType.AnySize) this.hasMultiImages = true;
+    } else {
+      this.displayVideo = new Video({
+        video: {
+          id: media.id,
+          name: media.name,
+          thumbnail: media.thumbnail,
+          videoType: media.videoType,
+          videoId: media.videoId
+        }
+      });
+      this.view = MediaBrowserView.VideoPreview;
+
+
+      window.setTimeout(() => {
+        const videoPreviewIframe = document.getElementById('videoPreviewIframe') as HTMLIFrameElement;
+        videoPreviewIframe.src = this.displayVideo.src;
+      });
     }
+
+    this.searchInput.nativeElement.value = '';
+    this.nameInputDisabled = true;
+    this.submitButtonDisabled = false;
+    this.showCancelButton = true;
   }
 
 
@@ -732,7 +814,7 @@ export class MediaBrowserComponent extends LazyLoad {
   }
 
 
-
+  // ---------------------------------------------------------- On Enter -----------------------------------------------------------
   onEnter(e: KeyboardEvent): void {
     if (!this.submitButtonDisabled) this.onSubmit();
   }
@@ -745,51 +827,107 @@ export class MediaBrowserComponent extends LazyLoad {
   }
 
 
-  // // -------------------------------------------------------------------Save New Video-------------------------------------------------------
-  // public saveNewVideo(videoName: string): void {
-  //   this.newVideo.name = videoName;
+  // -------------------------------------------------------------------Save New Video-------------------------------------------------------
+  public saveVideo(): void {
+    this.dataService.post<Video>('api/Media/Video', this.displayVideo)
+      .subscribe((video: Video) => {
+        if (video) {
+          this.displayVideo.id = video.id;
+          this.displayVideo.thumbnail = video.thumbnail;
+          this.callback(this.displayVideo);
+          this.close();
+        } else {
+          this.lazyLoadingService.load(async () => {
+            const { PromptComponent } = await import('../prompt/prompt.component');
+            const { PromptModule } = await import('../prompt/prompt.module');
 
-  //   this.dataService.post<Video>('api/Media/Video', this.newVideo)
-  //     .subscribe((video: Video) => {
-  //       if (video) {
-  //         this.newVideo.id = video.id;
-  //         this.newVideo.thumbnail = video.thumbnail;
-  //         this.callback(this.newVideo);
-  //         this.close();
-  //       } else {
-  //         // There was a problem saving the new video
-  //         this.invalidVideoLink = true;
-  //         this.isNewVideo = false!;
-  //         window.setTimeout(() => {
-  //           document.getElementById('videoInput')?.focus();
-  //         });
-  //       }
-  //     });
-  // }
+            return {
+              component: PromptComponent,
+              module: PromptModule
+            }
+          }, SpinnerAction.None)
+            .then((prompt: PromptComponent) => {
+              prompt.title = 'Error';
+              prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+                '<h2 style="text-align: center">Sorry!</h2> <div>There was a problem when trying to save the video. Check that the url is correct and try again.</div>');
+              prompt.primaryButton.name = 'Ok';
+            });
+        }
+      });
+  }
+
+
+
+
+  // ------------------------------------------------------------------Update Video----------------------------------------------------
+  public updateVideo(): void {
+    if (this.displayVideo.src != this.currentVideo.src) {
+      const video = new Video({ url: this.displayVideo.src });
+
+      if (video.src) {
+        this.currentVideo.videoId = video.videoId;
+
+        this.dataService.put<Video>('api/Media/UpdateVideo', this.currentVideo)
+          .subscribe((updatedVideo: Video) => {
+            this.currentVideo.thumbnail = updatedVideo.thumbnail;
+            this.currentVideo.src = video.src;
+            this.callback(this.currentVideo);
+            if (this.displayVideo.name == this.currentVideo.name) {
+              this.close();
+            }
+
+          });
+      } else {
+        this.invalidVideoLink = true;
+      }
+    }
+
+
+    if (this.displayVideo.name != this.currentVideo.name) {
+      this.dataService.put('api/Media/Name', { id: this.displayVideo.id, name: this.displayVideo.name })
+        .subscribe(() => {
+          this.currentVideo.name = this.displayVideo.name;
+          this.close();
+        });
+    }
+
+  }
 
 
 
 
 
+  // --------------------------------------------------------------------Set New Video-------------------------------------------------------
+  public setVideoPreview(url: string): void {
+    if (url == '') return;
+    const video = new Video({ url: url });
 
+    if (video.src) {
+      if (!this.displayVideo) this.displayVideo = new Video();
 
+      this.displayVideo.src = url;
+      this.displayVideo.videoId = video.videoId;
+      this.displayVideo.videoType = video.videoType;
+      this.invalidVideoLink = false;
+      this.view = MediaBrowserView.VideoPreview;
+      this.searchInput.nativeElement.value = '';
+      this.nameInputDisabled = false;
+      this.showCancelButton = true;
 
-  // // --------------------------------------------------------------------Set New Video-------------------------------------------------------
-  // public setNewVideo(url: string): void {
-  //   this.newVideo = new Video({ url: url });
+      window.setTimeout(() => {
+        const nameInput = document.getElementById('name-input') as HTMLInputElement;
 
-  //   if (this.newVideo.src) {
-  //     this.isNewVideo = true;
-  //     window.setTimeout(() => {
-  //       document.getElementById('title')?.focus();
-  //       const iframe = document.getElementById('newVideoIframe') as HTMLIFrameElement;
+        this.submitButtonDisabled = nameInput.value == '';
+        nameInput.select();
 
-  //       iframe.src = this.newVideo.src;
-  //     });
-  //   } else {
-  //     this.invalidVideoLink = true;
-  //   }
-  // }
+        const iframe = document.getElementById('videoPreviewIframe') as HTMLIFrameElement;
+
+        iframe.src = video.src;
+      });
+    } else {
+      this.invalidVideoLink = true;
+    }
+  }
 
 
 

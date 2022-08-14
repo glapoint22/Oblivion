@@ -380,7 +380,7 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, ImageSizeType.Medium, this.product.image, this.getImageReference(), this.product.name);
+        mediaBrowser.init(MediaType.Image, this.product.image, ImageSizeType.Medium, this.getImageReference(), this.product.name);
 
         // Callback
         mediaBrowser.callback = (image: Image) => {

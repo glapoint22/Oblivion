@@ -38,7 +38,7 @@ export class SubproductsComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, ImageSizeType.Small, subproduct.image, this.GetImageReference(subproduct), subproduct.name);
+        mediaBrowser.init(MediaType.Image, subproduct.image, ImageSizeType.Small, this.GetImageReference(subproduct), subproduct.name);
 
         // Callback
         mediaBrowser.callback = (image: Image) => {
