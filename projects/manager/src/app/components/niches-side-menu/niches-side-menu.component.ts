@@ -10,13 +10,14 @@ import { SideMenuNichesComponent } from '../side-menu-niches/side-menu-niches.co
   styleUrls: ['./niches-side-menu.component.scss']
 })
 export class NichesSideMenuComponent extends LazyLoad {
+  public overSideMenu!: boolean;
   public nichesSideMenuOpen: Subject<boolean> = new Subject<boolean>();
   @ViewChild('sideMenuNiches') sideMenuNiches!: SideMenuNichesComponent;
 
 
   @HostListener('window:mousedown')
   onWindowMouseDown() {
-    this.onClose();
+    if(!this.overSideMenu) this.onClose();
   }
 
 

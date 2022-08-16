@@ -7,6 +7,7 @@
     padding: 1px 18px 0;
     margin-left: 10px;
     background: linear-gradient(#fedb7d, #c28f06);
+    outline: none;
 
     &:hover {
         background: linear-gradient(lighten(#fedb7d, 6), lighten(#c28f06, 6));
@@ -21,6 +22,12 @@
         background: linear-gradient(rgba(255, 221, 127, 0.22), rgba(192, 141, 2, 0.22));
         color: rgba(0, 0, 0, 0.5);
     }
+
+    &:focus-visible {
+        outline: 1px solid #000000;
+        outline-offset: -1px;
+        box-shadow: 0 0 0 1px #ffebbb;
+    }
 }
 
 
@@ -34,6 +41,7 @@
     padding: 0 18px;
     margin-left: 10px;
     color: #c0c0c0;
+    outline: none;
 
     &:hover:not(:disabled):not(:active) {
         background: lighten(#353535, 2);
@@ -52,5 +60,9 @@
         border-color: #4e4e4e5e;
         color: #c0c0c059;
         cursor: default;
+    }
+
+    &:focus-visible {
+        border-color: #816f3b;
     }
 }

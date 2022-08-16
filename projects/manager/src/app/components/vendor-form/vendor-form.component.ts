@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { Product } from '../../classes/product';
 import { Vendor } from '../../classes/vendor';
+import { ProductService } from '../../services/product/product.service';
 import { PromptComponent } from '../prompt/prompt.component';
 import { SearchComponent } from '../search/search.component';
 import { VendorProductsPopupComponent } from '../vendor-products-popup/vendor-products-popup.component';
@@ -32,7 +33,7 @@ export class VendorFormComponent extends LazyLoad {
   @ViewChild('vendorProductsPopupContainer', { read: ViewContainerRef }) vendorProductsPopupContainer!: ViewContainerRef;
 
 
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer) {
+  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private productService: ProductService) {
     super(lazyLoadingService);
   }
 
@@ -95,6 +96,9 @@ export class VendorFormComponent extends LazyLoad {
       .then((vendorProductsPopup: VendorProductsPopupComponent) => {
         this.vendorProductsPopup = vendorProductsPopup;
         vendorProductsPopup.vendorId = this.vendor.id!;
+        vendorProductsPopup.onGoToProductClick.subscribe(() => {
+          this.close();
+        })
       });
   }
 
@@ -187,7 +191,10 @@ export class VendorFormComponent extends LazyLoad {
 
 
   onAddButtonClick() {
-    this.companyName.nativeElement.focus();
+    window.setTimeout(() => {
+      this.companyName.nativeElement.focus();
+    })
+
     this.newVendor = true;
     this.fieldsDisabled = false;
     this.submitButtonDisabled = true;
@@ -255,13 +262,13 @@ export class VendorFormComponent extends LazyLoad {
 
   submitNewVendor() {
     this.close();
-    this.updateVendor();
+    this.updateVendorProperties();
 
-    // Post the new vendor to the data base
+    // Post the new vendor to the database
     this.dataService.post<number>('api/Vendors', this.vendor).subscribe((vendorId: number) => {
       this.vendor.id = vendorId;
 
-      // If this form was opened up from a product
+      // If this form was opened from a product
       if (this.product) {
         // Update the product's vendor with this new vendor
         this.product.vendor = this.vendor;
@@ -315,7 +322,7 @@ export class VendorFormComponent extends LazyLoad {
   }
 
 
-  updateVendor() {
+  updateVendorProperties() {
     this.vendor.name = this.companyName.nativeElement.value;
     this.vendor.primaryEmail = this.contact.nativeElement.value;
     this.vendor.primaryFirstName = this.firstName.nativeElement.value;
@@ -347,20 +354,31 @@ export class VendorFormComponent extends LazyLoad {
       this.checkForDuplicateVendor();
     } else {
       this.close();
-      this.updateVendor();
+      this.updateVendorProperties();
+
+      // If this form was opened from the forms menu and on the rare occasion a product happens to be
+      // open that belongs to the current vendor and that product also happens to have its vendor popup open
+      this.productService.productComponents.forEach(x => {
+        if (x.vendorPopupContainer.length > 0 && x.vendorPopup.product.vendor.id == this.vendor.id) {
+          // Update the vendor that's displayed in the vendor popup of that product
+          x.vendorPopup.product.vendor = this.vendor;
+        }
+      })
+
+      // Update the vendor in the database
       this.dataService.put('api/Vendors', this.vendor).subscribe();
     }
   }
 
   onEnter(e: KeyboardEvent): void {
-    if(document.activeElement != this.closeButton.nativeElement) {
-      if(!this.submitButtonDisabled) this.onSubmit();
+    if (document.activeElement != this.closeButton.nativeElement) {
+      if (!this.submitButtonDisabled) this.onSubmit();
     }
   }
 
 
   close(): void {
     super.close();
-    if(this.vendorProductsPopup) this.vendorProductsPopup.close();
+    if (this.vendorProductsPopup) this.vendorProductsPopup.close();
   }
 }
