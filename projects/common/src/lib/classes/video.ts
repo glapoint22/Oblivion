@@ -8,6 +8,7 @@ export class Video {
     public videoType!: VideoType;
     public videoId!: string;
 
+
     constructor(options?: {
         url?: string,
         video?: {
@@ -37,10 +38,10 @@ export class Video {
         if (video) {
             this.id = video.id;
             this.name = video.name;
-            this.src = video.src;
             this.thumbnail = video.thumbnail;
             this.videoId = video.videoId;
             this.videoType = video.videoType;
+            this.setSrc();
         }
     }
 

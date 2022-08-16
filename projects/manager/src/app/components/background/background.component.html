@@ -1,4 +1,4 @@
-<panel [title]="'Background'" [enabledProperty]="toggleable ? background: null!" (onChange)="onChange.emit()">
+<panel [title]="'Background'" [enabledProperty]="toggleable ? background: null!" (onChange)="onDisable()">
     <!-- color -->
     <div class="property">
         <div class="label">Color:</div>
@@ -16,7 +16,8 @@
                 <div class="label">Position</div>
                 <div style="flex: 1;">
                     <select [(ngModel)]="background.image.position" (change)="onChange.emit()">
-                        <option *ngFor="let positionOption of background.image.positionOptions" [ngValue]="positionOption">
+                        <option *ngFor="let positionOption of background.image.positionOptions"
+                            [ngValue]="positionOption">
                             {{positionOption.key}}</option>
                     </select>
                 </div>
@@ -45,7 +46,8 @@
                 <div class="label">Attachment</div>
                 <div style="flex: 1;">
                     <select [(ngModel)]="background.image.attachment" (change)="onChange.emit()">
-                        <option *ngFor="let attachmentOption of background.image.attachmentOptions" [ngValue]="attachmentOption">
+                        <option *ngFor="let attachmentOption of background.image.attachmentOptions"
+                            [ngValue]="attachmentOption">
                             {{attachmentOption.key}}</option>
                     </select>
                 </div>
@@ -61,5 +63,5 @@
 
 
     <!-- Image -->
-    <image-box [image]="background.image" [showRemoveImage]="true" (onChange)="onChange.emit()"></image-box>
+    <image-box [image]="background.image" [showRemoveImage]="true" [imageReference]="imageReference" (onChange)="onChange.emit()"></image-box>
 </panel>

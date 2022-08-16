@@ -13,7 +13,7 @@ export class VideoPropertiesEditorComponent {
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
-  public openMediaBrowser(editMode?: boolean): void {
+  public openMediaBrowser(): void {
     this.lazyLoadingService.load(async () => {
       const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
       const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
@@ -23,25 +23,19 @@ export class VideoPropertiesEditorComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        // mediaBrowser.init(MediaType.Video, this.video);
-      //   mediaBrowser.currentMediaType = MediaType.Video;
+        mediaBrowser.init(MediaType.Video, this.video);
 
-      //   if (editMode) {
-      //     mediaBrowser.editedVideo = this.video;
-      //     mediaBrowser.displayEditedVideo(this.video);
-      //   }
-
-      //   mediaBrowser.callback = (video: Video) => {
-      //     if (video) {
-      //       this.video.id = video.id;
-      //       this.video.name = video.name;
-      //       this.video.src = video.src;
-      //       this.video.thumbnail = video.thumbnail;
-      //       this.video.videoId = video.videoId;
-      //       this.video.videoType = video.videoType;
-      //       this.onChange.emit();
-      //     }
-      //   }
+        mediaBrowser.callback = (video: Video) => {
+          if (video) {
+            this.video.id = video.id;
+            this.video.name = video.name;
+            this.video.src = video.src;
+            this.video.thumbnail = video.thumbnail;
+            this.video.videoId = video.videoId;
+            this.video.videoType = video.videoType;
+            this.onChange.emit();
+          }
+        }
       });
   }
 }

@@ -205,6 +205,7 @@
     justify-content: center;
     align-items: center;
     padding: 10px 0;
+    cursor: pointer;
 }
 
 
@@ -555,6 +556,21 @@
 }
 
 
+.image-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    outline: none;
+
+    &:hover {
+        color: #dadada !important;
+    }
+
+    &:focus-visible {
+        color: white;
+    }
+}
+
+
 .fa-trash-alt {
     margin-left: 10px;
     cursor: pointer;
@@ -570,10 +586,10 @@
 }
 
 
-.fa-image {
-    font-size: 60px;
-    color: #3c3c3c;
-}
+// .fa-image {
+//     font-size: 60px;
+//     color: #3c3c3c;
+// }
 
 
 .add-button-container {

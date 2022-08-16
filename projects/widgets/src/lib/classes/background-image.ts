@@ -2,10 +2,6 @@ import { KeyValue } from "@angular/common";
 import { Image } from "common";
 
 export class BackgroundImage extends Image {
-    // public position!: string;
-    // public repeat!: string;
-    // public attachment!: string;
-
     public _positionOptions: Array<KeyValue<string, string>> = [
         {
             key: 'Left Top',
@@ -150,12 +146,14 @@ export class BackgroundImage extends Image {
         if (!this.src) return null!;
         const backgroundImage = new BackgroundImage();
 
+        backgroundImage.id = this.id;
         backgroundImage.src = this.src;
         backgroundImage.name = this.name;
         backgroundImage.thumbnail = this.thumbnail;
         backgroundImage.position = this.position.key != this.positionOptions[0].key ? { key: this.position.key, value: this.position.value } : null!;
         backgroundImage.repeat = this.repeat;
         backgroundImage.attachment = this.attachment;
+        backgroundImage.imageSizeType = this.imageSizeType;
 
         return backgroundImage;
     }

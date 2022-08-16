@@ -121,6 +121,7 @@ export enum MediaBrowserView {
     ImageUpdate,
     VideoSelect,
     VideoPreview,
+    VideoUpdate,
     SearchResults
 }
 

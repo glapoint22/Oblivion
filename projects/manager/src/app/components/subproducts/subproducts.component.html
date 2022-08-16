@@ -14,19 +14,24 @@
 
             <!-- Image -->
             <div class="image">
-                <div class="icon-container" style="width: 200px;">
+                <div class="icon-container">
                     <div class="label">Image:</div>
 
-                    <!-- Edit Image -->
-                    <i *ngIf="subproduct.image && subproduct.image.src" class="fas fa-pencil-alt icon"
-                        title="Edit image" (click)="openMediaBrowser(subproduct, true)"></i>
+                    <!-- Remove Image -->
+                    <icon-button *ngIf="subproduct.image && subproduct.image.src" [icon]="'fas fa-trash-alt'"
+                        [title]="'Remove Image'" (click)="removeImage(subproduct)">
+                    </icon-button>
+
+                    <!-- Media Browser -->
+                    <icon-button [icon]="'fa-solid fa-image'" [title]="'Media Browser'"
+                        (click)="openMediaBrowser(subproduct)">
+                    </icon-button>
                 </div>
 
 
-                <div class="dashed-border image-container">
+                <div class="dashed-border image-container" (click)="openMediaBrowser(subproduct)">
 
-                    <div *ngIf="!subproduct.image || !subproduct.image.src" class="image-icon-container"
-                        (click)="openMediaBrowser(subproduct)">
+                    <div *ngIf="!subproduct.image || !subproduct.image.src" class="image-icon-container">
                         <i class="fa-solid fa-image" tabindex="0"></i>
                     </div>
 
@@ -38,7 +43,7 @@
             <!-- Name & Description -->
             <div class="name-description-container">
                 <!-- Name -->
-                <div class="label" style="margin-bottom: 4px;">Name:</div>
+                <div class="label">Name:</div>
                 <div class="dashed-border name-container">
 
                     <input #nameInput [value]="subproduct.name ? subproduct.name : ''" style="font-size: 30px;
@@ -49,8 +54,8 @@
 
 
                 <!-- Description -->
-                <div style="position: relative; margin-top: 35px;">
-                    <div class="label" style="margin-bottom: 4px;">Description:</div>
+                <div style="margin-top: 79px;">
+                    <div class="label">Description:</div>
                     <div class="description-container">
                         <product-description [product]="subproduct" [apiUrl]="'Subproduct/Description'">
                         </product-description>

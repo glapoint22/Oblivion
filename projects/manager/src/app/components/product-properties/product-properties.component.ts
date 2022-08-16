@@ -19,6 +19,7 @@ import { CheckboxMultiColumnItem } from '../../classes/checkbox-multi-column-ite
 import { CheckboxItem } from '../../classes/checkbox-item';
 import { KeywordCheckboxItem } from '../../classes/keyword-checkbox-item';
 import { KeywordCheckboxMultiColumnItem } from '../../classes/keyword-checkbox-multi-column-item';
+import { ImageReference } from '../../classes/image-reference';
 
 @Component({
   selector: 'product-properties',
@@ -375,13 +376,7 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, this.product.image, {
-          imageId: 0,
-          imageSizeType: ImageSizeType.Medium,
-          builder: BuilderType.Product,
-          host: this.product.name,
-          location: ImageLocation.Product
-        }, this.product.name);
+        mediaBrowser.init(MediaType.Image, this.product.image, ImageSizeType.Medium, this.getImageReference(), this.product.name);
 
         // Callback
         mediaBrowser.callback = (image: Image) => {
@@ -405,16 +400,20 @@ export class ProductPropertiesComponent {
   public removeProductImage() {
     // Remove the image
     this.dataService.delete('api/Products/Image', { productId: this.product.id }).subscribe();
-
-    this.dataService.post('api/Media/ImageReference/Remove', {
-      imageId: this.product.image.id,
-      imageSizeType: ImageSizeType.Medium,
-      builder: BuilderType.Product,
-      host: this.product.name,
-      location: ImageLocation.Product
-    }).subscribe();
-
+    this.dataService.post('api/Media/ImageReferences/Remove', [this.getImageReference()]).subscribe();
     this.product.image.src = null!;
   }
 
+
+
+  // ------------------------------------------------------ Get Image Reference ---------------------------------------------------
+  getImageReference(): ImageReference {
+    return {
+      imageId: this.product.image.id,
+      imageSizeType: this.product.image.imageSizeType,
+      builder: BuilderType.Product,
+      hostId: this.product.id,
+      location: ImageLocation.Product
+    }
+  }
 }

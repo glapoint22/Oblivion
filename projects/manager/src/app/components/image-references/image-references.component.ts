@@ -52,14 +52,14 @@ export class ImageReferencesComponent extends LazyLoad implements OnInit {
 
             // Host
             values.push({
-              name: imageReference.host,
+              name: imageReference.host!,
               width: '290px'
             });
 
 
             // Location
             values.push({
-              name: ImageLocation[imageReference.location].replace(/\w(?=[A-Z])/, (x) => x + ' '),
+              name: ImageLocation[imageReference.location].replace(/\w(?=[A-Z])/g, (x) => x + ' '),
               width: '200px'
             });
 

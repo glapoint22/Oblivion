@@ -2,6 +2,7 @@ import { Component, Input, QueryList, ViewChildren, ViewContainerRef } from '@an
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Subproduct } from 'common';
 import { TitleCase } from 'text-box';
 import { BuilderType, ImageLocation, SubproductType } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { ValuePopupComponent } from '../value-popup/value-popup.component';
 
@@ -14,7 +15,6 @@ export class SubproductsComponent {
   @Input() subproducts!: Array<Subproduct>;
   @Input() subproductType!: SubproductType;
   @Input() productId!: number;
-  @Input() productName!: string;
   @ViewChildren('editValuePopupContainer', { read: ViewContainerRef }) editValuePopupContainers!: QueryList<ViewContainerRef>;
   @ViewChildren('addValuePopupContainer', { read: ViewContainerRef }) addValuePopupContainers!: QueryList<ViewContainerRef>;
   public SubproductType = SubproductType;
@@ -27,7 +27,7 @@ export class SubproductsComponent {
 
 
   // --------------------------------------------------- Open Media Browser ---------------------------------------------------
-  public async openMediaBrowser(subproduct: Subproduct, editMode?: boolean): Promise<void> {
+  public async openMediaBrowser(subproduct: Subproduct): Promise<void> {
     this.lazyLoadingService.load(async () => {
       const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
       const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
@@ -36,36 +36,50 @@ export class SubproductsComponent {
         module: MediaBrowserModule
       }
     }, SpinnerAction.None)
-      // .then((mediaBrowser: MediaBrowserComponent) => {
-      //   mediaBrowser.currentMediaType = MediaType.Image;
-      //   mediaBrowser.imageSizeType = ImageSizeType.Small;
+      .then((mediaBrowser: MediaBrowserComponent) => {
+        // Initialize the media browser
+        mediaBrowser.init(MediaType.Image, subproduct.image, ImageSizeType.Small, this.GetImageReference(subproduct), subproduct.name);
 
-      //   if (editMode) {
-      //     mediaBrowser.editedImage = subproduct.image;
-      //   }
+        // Callback
+        mediaBrowser.callback = (image: Image) => {
+          if (image) {
+            subproduct.image.id = image.id;
+            subproduct.image.name = image.name;
+            subproduct.image.src = image.src;
 
-
-      //   mediaBrowser.callback = (image: Image) => {
-      //     if (image) {
-      //       subproduct.image.id = image.id;
-      //       subproduct.image.name = image.name;
-      //       subproduct.image.src = image.src;
-
-      //       this.updateImage(subproduct.id, image.id);
-
-      //       // Add the image reference
-      //       this.dataService.post('api/Media/ImageReference', {
-      //         imageId: image.id,
-      //         imageSize: ImageSizeType.Small,
-      //         builder: BuilderType.Product,
-      //         host: this.productName,
-      //         location: this.subproductType == SubproductType.Component ? ImageLocation.Component : ImageLocation.Bonus
-      //       }).subscribe();
-      //     }
-      //   }
-      // });
+            this.updateImage(subproduct.id, image.id);
+          }
+        }
+      });
   }
 
+
+
+
+  // --------------------------------------------------- Remove Product Image ---------------------------------------------------
+  public removeImage(subproduct: Subproduct) {
+    // Remove the image
+    this.dataService.delete('api/Products/Subproduct/Image', { subproductId: subproduct.id }).subscribe();
+    this.removeImageReference(subproduct);
+    subproduct.image.src = null!;
+  }
+
+
+
+  private removeImageReference(subproduct: Subproduct) {
+    this.dataService.post('api/Media/ImageReferences/Remove', [this.GetImageReference(subproduct)]).subscribe();
+  }
+
+  // ------------------------------------------------------ Get Image Reference ---------------------------------------------------
+  GetImageReference(subproduct: Subproduct): ImageReference {
+    return {
+      imageId: subproduct.image.id,
+      imageSizeType: subproduct.image.imageSizeType,
+      builder: BuilderType.Product,
+      hostId: this.productId,
+      location: this.subproductType == SubproductType.Component ? ImageLocation.Component : ImageLocation.Bonus
+    }
+  }
 
 
 
@@ -159,6 +173,7 @@ export class SubproductsComponent {
 
   // ------------------------------------------------------------ Delete Subproduct ---------------------------------------------------
   deleteSubproduct(index: number, id: number): void {
+    this.removeImageReference(this.subproducts[index]);
     this.subproducts.splice(index, 1);
 
     this.dataService.delete('api/Products/Subproduct', {

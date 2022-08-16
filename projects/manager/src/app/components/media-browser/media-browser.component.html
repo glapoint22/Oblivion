@@ -10,8 +10,9 @@
 
         <div class="modal-content">
             <div style="position: relative;">
-                <input #searchInput class="search-input" placeholder="Search for an image"
-                    [style.display]="view == mediaBrowserView.ImagePreview || view == mediaBrowserView.VideoPreview || view == mediaBrowserView.ImageUpdate ? 'none' : 'inline-block'">
+                <input #searchInput class="search-input"
+                    [placeholder]="mediaType == MediaType.Image ? 'Search for an image' : 'Search for a video'"
+                    [style.display]="view == mediaBrowserView.ImagePreview || view == mediaBrowserView.VideoPreview || view == mediaBrowserView.ImageUpdate || view == mediaBrowserView.VideoUpdate ? 'none' : 'inline-block'">
 
                 <div *ngIf="searchInput.value != ''" class="xmark-container" title="Clear"
                     (click)="clearSearchResults()">
@@ -63,7 +64,7 @@
 
 
 
-                    <div #selectContainer class="select-container" style="height: 327px;"
+                    <div #selectContainer class="select-container" style="height: 322px;"
                         (dragover)="selectContainer.style.background = '#333333'; $event.preventDefault()"
                         (drop)="onDrop($event)" (dragleave)="selectContainer.style.background = 'transparent'">
                         <div class="select-text-container">
@@ -88,8 +89,8 @@
                             (click)="onCancelClick()">
                         </icon-button>
 
-                        <icon-button *ngIf="!showCancelButton || selectedMedia" [icon]="'fas fa-trash-alt'" [title]="'Delete Image'"
-                            (click)="deleteImage()">
+                        <icon-button *ngIf="!showCancelButton || selectedMedia" [icon]="'fas fa-trash-alt'"
+                            [title]="'Delete Image'" (click)="deleteImage()">
                         </icon-button>
 
                         <icon-button *ngIf="!showCancelButton" [icon]="'fa-solid fa-arrows-rotate'"
@@ -104,7 +105,7 @@
 
                     <div class="image-container" (contextmenu)="$event.preventDefault()"
                         (mousedown)="onImagePreviewMousedown($event)">
-                        <img [src]="displayImage.src" style="max-width: 347px; max-height: 327px;">
+                        <img [src]="displayImage.src" style="max-width: 347px; max-height: 322px;">
 
                         <div *ngIf="isUnderSize(selectedMedia)" class="undersize-tag">
                             <div>
@@ -137,7 +138,7 @@
 
 
 
-                    <div #selectContainer class="select-container" style="height: 359px;"
+                    <div #selectContainer class="select-container" style="height: 358px;"
                         (dragover)="selectContainer.style.background = '#333333'; $event.preventDefault()"
                         (drop)="onDrop($event)" (dragleave)="selectContainer.style.background = 'transparent'">
                         <div class="select-text-container">
@@ -160,9 +161,14 @@
 
                 <!-- Video Select -->
                 <ng-container *ngIf="view == mediaBrowserView.VideoSelect">
+                    <div class="icon-container">
+                        <icon-button *ngIf="showCancelButton" [icon]="'fa-solid fa-ban'" [title]="'Cancel'"
+                            (click)="onCancelClick()">
+                        </icon-button>
+                    </div>
 
-                    <div class="select-container">
-                        <div class="select-text-container">
+                    <div class="select-container" style="height: 322px;">
+                        <div class="select-text-container" style="pointer-events: all;">
                             <div class="caption">
                                 Choose a video
                             </div>
@@ -171,10 +177,19 @@
                                 Paste a link below or type in the search field above.
                             </div>
 
-                            <div style="display: flex; margin-top: 10px;">
-                                <input class="video-input">
-                                <button class="video-input-button">Enter</button>
+                            <div class="input-container">
+                                <input #videoInput class="video-input"
+                                    (keydown.enter)="setVideoPreview(videoInput.value)"
+                                    (input)="invalidVideoLink = false">
+                                <button class="video-input-button"
+                                    (click)="setVideoPreview(videoInput.value)">Enter</button>
+
+                                <div *ngIf="invalidVideoLink" class="invalid-video-link">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>Invalid video link!
+                                </div>
                             </div>
+
+
                         </div>
 
 
@@ -187,23 +202,71 @@
                 <!-- Video Preview -->
                 <ng-container *ngIf="view == mediaBrowserView.VideoPreview">
                     <div style="display: flex; justify-content: flex-end;">
+                        <icon-button *ngIf="showCancelButton" [icon]="'fa-solid fa-ban'" [title]="'Cancel'"
+                            (click)="onCancelClick()">
+                        </icon-button>
 
                         <!-- Delete Video -->
-                        <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Video'">
+                        <icon-button *ngIf="!showCancelButton || selectedMedia" [icon]="'fas fa-trash-alt'"
+                            [title]="'Delete Video'">
+                        </icon-button>
+
+                        <icon-button *ngIf="!showCancelButton" [icon]="'fa-solid fa-arrows-rotate'"
+                            [title]="'Swap Video'" (click)="onSwapVideoClick()">
                         </icon-button>
 
                         <!-- Update Video -->
-                        <icon-button [icon]="'fa-solid fa-film'" [title]="'Update Video'">
+                        <icon-button *ngIf="!showCancelButton" [icon]="'fa-solid fa-film'" [title]="'Update Video'"
+                            (click)="view = mediaBrowserView.VideoUpdate; showCancelButton = true">
                         </icon-button>
                     </div>
 
                     <div class="iframe-container">
-                        <iframe id="editedVideoIframe" class="video" allowfullscreen></iframe>
+                        <iframe id="videoPreviewIframe" class="video" allowfullscreen></iframe>
                     </div>
 
-                    <input [value]="displayVideoName">
+                    <input #nameInput id="name-input" [(ngModel)]="displayVideo.name"
+                        (input)="submitButtonDisabled = nameInput.value == ''" [disabled]="nameInputDisabled">
 
                 </ng-container>
+
+
+
+
+                <!-- Video Update -->
+                <ng-container *ngIf="view == mediaBrowserView.VideoUpdate">
+
+                    <div class="icon-container">
+                        <icon-button *ngIf="showCancelButton" [icon]="'fa-solid fa-ban'" [title]="'Cancel'"
+                            (click)="onCancelClick()">
+                        </icon-button>
+                    </div>
+
+
+
+                    <div #selectContainer class="select-container" style="height: 358px;">
+                        <div class="select-text-container" style="pointer-events: all;">
+                            <div class="caption">
+                                Choose a Video
+                            </div>
+                            <div class="message">
+                                Paste a link below.
+                            </div>
+
+                            <div class="input-container">
+                                <input #videoInput class="video-input"
+                                    (keydown.enter)="setVideoPreview(videoInput.value)"
+                                    (input)="invalidVideoLink = false">
+                                <button class="video-input-button"
+                                    (click)="setVideoPreview(videoInput.value)">Enter</button>
+                                <div *ngIf="invalidVideoLink" class="invalid-video-link">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>Invalid video link!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
             </ng-template>
 
 

@@ -1,7 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TextBoxDev } from 'text-box';
 import { Enableable, TextWidgetComponent, TextWidgetData } from 'widgets';
-import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { BuilderType, ImageLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -70,5 +71,29 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
 
   ngOnDestroy() {
     this.widgetService.widgetDocument.removeEventListener('mousemove', this.onMousemove);
+  }
+
+
+  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
+  public getImageReference() {
+    return {
+      imageId: this.background.image.id,
+      imageSizeType: this.background.image.imageSizeType,
+      builder: BuilderType.Page,
+      hostId: this.widgetService.page.id,
+      location: ImageLocation.TextWidgetBackground
+    }
+  }
+
+
+
+  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
+  public getImageReferences(): Array<ImageReference> {
+    const imageReferences: Array<ImageReference> = new Array<ImageReference>();
+
+    if (this.background.image && this.background.image.src) {
+      imageReferences.push(this.getImageReference());
+    }
+    return imageReferences;
   }
 }

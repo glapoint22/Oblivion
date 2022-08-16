@@ -342,9 +342,9 @@
 
 
                     <!-- Description -->
-                    <div style="position: relative; margin-top: 35px;">
+                    <div style="margin-top: 35px;">
                         <div style="color: #505050; font-size: 12px; margin-bottom: 4px">Description:</div>
-                        <div style="min-height: 32px; border: 1px dashed #505050; padding: 5px;">
+                        <div style="min-height: 32px; border: 1px dashed #505050; padding: 5px; position: relative;">
                             <product-description [product]="product" [apiUrl]="'Description'"></product-description>
                         </div>
 
@@ -389,7 +389,7 @@
 
                 <subproducts *ngIf="product.components && product.components.length > 0"
                     [subproducts]="product.components" [subproductType]="subproductType.Component"
-                    [productId]="product.id" [productName]="product.name"></subproducts>
+                    [productId]="product.id"></subproducts>
             </div>
         </div>
 
@@ -405,7 +405,7 @@
                 </div>
 
                 <subproducts *ngIf="product.bonuses && product.bonuses.length > 0" [subproducts]="product.bonuses"
-                    [subproductType]="subproductType.Bonus" [productId]="product.id" [productName]="product.name">
+                    [subproductType]="subproductType.Bonus" [productId]="product.id">
                 </subproducts>
             </div>
         </div>

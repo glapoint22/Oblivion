@@ -5,6 +5,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { WidgetInspectorView } from '../../classes/enums';
+import { ImageReference } from '../../classes/image-reference';
 import { PageData } from '../../classes/page-data';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -21,6 +22,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public pageType: PageType = PageType.Custom;
   public host!: ContainerHost;
   public widgetInspectorView = WidgetInspectorView;
+  public container!: ContainerDevComponent;
   private saveData = new Subject<void>();
 
   constructor
@@ -184,7 +186,10 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // ----------------------------------------------------------------------------- Delete Page -------------------------------------------------------------------
   private deletePage(): void {
+    const imageReferences = this.container.getImageReferences();
+
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.None;
+    this.removeImageReferences(imageReferences);
 
     this.dataService.delete('api/Pages', { pageId: this.id })
       .subscribe(() => {
@@ -194,7 +199,12 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
 
+  
 
+  // -------------------------------------------------------------------------- Remove Image References -------------------------------------------------------------------
+  public removeImageReferences(imageReferences: Array<ImageReference>) {
+    this.dataService.post('api/Media/ImageReferences/Remove', imageReferences).subscribe();
+  }
 
 
 
@@ -240,17 +250,4 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public onRowChange(maxBottom: number): void {
     this.host.onRowChange(maxBottom);
   }
-
-
-
-
-
-
-
-  // -------------------------------------------------------------------------------- On Mousedown ----------------------------------------------------------------------
-  // public onMousedown(): void {
-  //   if (!this.pageContent) return;
-
-  //   window.setTimeout(()=> this.widgetService.deselectWidget());
-  // }
 }

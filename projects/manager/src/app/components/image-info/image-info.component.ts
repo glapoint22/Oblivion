@@ -39,7 +39,7 @@ export class ImageInfoComponent extends LazyLoad implements OnInit {
         this.imageSizes.forEach((imageSize: ImageSize) => {
           const values = new Array<MultiColumnItemValue>();
           values.push({
-            name: ImageSizeType[imageSize.imageSizeType].replace(/\w(?=[A-Z])/, (x) => x + ' '),
+            name: ImageSizeType[imageSize.imageSizeType].replace(/\w(?=[A-Z])/g, (x) => x + ' '),
             width: '90px'
           });
 
