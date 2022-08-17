@@ -15,6 +15,7 @@ export class HierarchyComponent extends ListComponent {
 
   instantiate() {
     this.listManager = new HierarchyManager(this.lazyLoadingService);
+    this.setListOptions();
   }
 
 

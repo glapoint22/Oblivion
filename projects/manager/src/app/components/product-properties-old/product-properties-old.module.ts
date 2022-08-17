@@ -17,7 +17,6 @@ import { ProductGroupsPropertyComponent } from './product-groups-property/produc
 import { PanelModule } from '../panel/panel.module';
 import { ImageBoxModule } from '../image-box/image-box.module';
 import { CheckboxListModule } from '../lists/checkbox-list/checkbox-list.module';
-import { HierarchyListModule } from '../lists/hierarchy-list/hierarchy-list.module';
 import { ListModule } from '../lists/list/list.module';
 import { IconButtonModule } from '../icon-button/icon-button.module';
 import { HierarchyModule } from '../hierarchies/hierarchy/hierarchy.module';
@@ -54,7 +53,6 @@ import { ProductFiltersModule } from '../product-filters/product-filters.module'
     ImageBoxModule,
     ListModule,
     CheckboxListModule,
-    HierarchyListModule,
     IconButtonModule,
     HierarchyModule,
     MultiColumnListModule,

@@ -15,5 +15,6 @@ export class CheckboxMultiColumnListComponent extends MultiColumnListComponent {
 
   instantiate() {
     this.listManager = new CheckboxMultiColumnListManager(this.lazyLoadingService);
+    this.setListOptions();
   }
 }

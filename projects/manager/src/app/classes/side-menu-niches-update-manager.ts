@@ -200,8 +200,12 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.listOptions.menu!.menuOptions[7].name = 'Move ' + this.grandchildType;
 
             if (!hierarchyUpdate.rightClick) {
-                this.onProductSelect.emit();
-                this.productService.openProduct(hierarchyUpdate.selectedItems![0].id!);
+                const selectedProduct = this.productService.productComponents.find(x => x.product.id == hierarchyUpdate.selectedItems![0].id);
+
+                if (!selectedProduct || (selectedProduct && selectedProduct.zIndex != this.productService.zIndex)) {
+                    this.onProductSelect.emit();
+                    this.productService.openProduct(hierarchyUpdate.selectedItems![0].id!);
+                }
             }
         }
     }
@@ -236,7 +240,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.searchOptions.menu!.menuOptions[5].name = 'Move ' + this.grandchildType;
 
             if (!searchUpdate.rightClick) {
-                this.dataService.get('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: searchUpdate.selectedItems![0].id }]).subscribe(x => console.log(x));
+                this.onProductSelect.emit();
+                this.productService.goToProduct(searchUpdate.selectedItems![0].id!);
             }
         }
     }
@@ -583,7 +588,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.grandchildSearchType) {
             const grandchild: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
 
-            let onProductSelectListener = this.productService.onProductSelect.subscribe(() => {
+            const onProductSelectListener = this.productService.onProductSelect.subscribe(() => {
                 onProductSelectListener.unsubscribe();
 
                 const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];

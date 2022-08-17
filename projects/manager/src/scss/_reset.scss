@@ -7,7 +7,7 @@
 }
 
 input:not([type]) {
-    background: #252525;
+    background: rgb(36, 36, 36);
     border: 1px solid #454545;
     border-radius: 4px;
     color: #dadada;
@@ -27,5 +27,6 @@ input:not([type]) {
 
 
 ::placeholder {
-    color: #505050;
+    color: #414141;
+    font-size: 13px;
 }
