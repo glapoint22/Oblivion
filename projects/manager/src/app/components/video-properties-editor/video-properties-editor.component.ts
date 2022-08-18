@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
+import { MediaReference } from '../../classes/media-reference';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
@@ -9,6 +10,7 @@ import { MediaBrowserComponent } from '../media-browser/media-browser.component'
 })
 export class VideoPropertiesEditorComponent {
   @Input() video!: Video;
+  @Input() mediaReference!: MediaReference;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
 
   constructor(private lazyLoadingService: LazyLoadingService) { }
@@ -23,7 +25,7 @@ export class VideoPropertiesEditorComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        mediaBrowser.init(MediaType.Video, this.video);
+        mediaBrowser.init(MediaType.Video, this.video, this.mediaReference);
 
         mediaBrowser.callback = (video: Video) => {
           if (video) {
@@ -33,6 +35,7 @@ export class VideoPropertiesEditorComponent {
             this.video.thumbnail = video.thumbnail;
             this.video.videoId = video.videoId;
             this.video.videoType = video.videoType;
+            this.video.referenceId = video.referenceId;
             this.onChange.emit();
           }
         }

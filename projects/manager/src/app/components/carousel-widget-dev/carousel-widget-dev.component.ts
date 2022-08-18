@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CarouselBanner, CarouselWidgetComponent } from 'widgets';
-import { BuilderType, ImageLocation, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { BuilderType, MediaLocation, WidgetInspectorView } from '../../classes/enums';
+import { MediaReference } from '../../classes/media-reference';
+import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -16,26 +18,35 @@ export class CarouselWidgetDevComponent extends CarouselWidgetComponent {
   constructor(public widgetService: WidgetService) { super() }
 
   // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getImageReference(banner: CarouselBanner) {
+  public getMediaReference(banner: CarouselBanner) {
     return {
-      imageId: banner.image.id,
+      mediaId: banner.image.id,
       imageSizeType: banner.image.imageSizeType,
       builder: BuilderType.Page,
       hostId: this.widgetService.page.id,
-      location: ImageLocation.CarouselWidgetBanner
+      location: MediaLocation.CarouselWidgetBanner
     }
   }
 
-  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
-    const imageReferences: Array<ImageReference> = new Array<ImageReference>();
+  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
+  public getReferenceIds(update?: boolean): Array<number> {
+    const referenceIds: Array<number> = new Array<number>();
 
     this.banners.forEach((banner: CarouselBanner) => {
       if (banner.image && banner.image.src) {
-        imageReferences.push(this.getImageReference(banner));
+        referenceIds.push(banner.image.referenceId);
+
+        if (update) {
+          const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
+            .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
+              const referenceId = updatedMediaReferenceIds.find(x => x.oldId == banner.image.referenceId)?.newId;
+              banner.image.referenceId = referenceId!;
+              subscription.unsubscribe();
+            });
+        }
       }
     });
 
-    return imageReferences;
+    return referenceIds;
   }
 }

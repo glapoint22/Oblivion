@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { Color } from 'common';
+import { Subscription } from 'rxjs';
 import { ButtonWidgetComponent, ButtonWidgetData } from 'widgets';
-import { BuilderType, ButtonState, ImageLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { BuilderType, ButtonState, MediaLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { MediaReference } from '../../classes/media-reference';
+import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -189,24 +191,33 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
 
 
   // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getImageReference() {
+  public getMediaReference() {
     return {
-      imageId: this.background.image.id,
+      mediaId: this.background.image.id,
       imageSizeType: this.background.image.imageSizeType,
       builder: BuilderType.Page,
       hostId: this.widgetService.page.id,
-      location: ImageLocation.ButtonWidgetBackground
+      location: MediaLocation.ButtonWidgetBackground
     }
   }
 
 
-  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
-    const imageReferences: Array<ImageReference> = new Array<ImageReference>();
+  // -------------------------------------------------------------------------- Get Reference Ids ---------------------------------------------------
+  public getReferenceIds(update?: boolean): Array<number> {
+    const referenceIds: Array<number> = new Array<number>();
 
     if (this.background.image && this.background.image.src) {
-      imageReferences.push(this.getImageReference());
+      referenceIds.push(this.background.image.referenceId);
+
+      if (update) {
+        const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
+          .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
+            const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.background.image.referenceId)?.newId;
+            this.background.image.referenceId = referenceId!;
+            subscription.unsubscribe();
+          });
+      }
     }
-    return imageReferences;
+    return referenceIds;
   }
 }

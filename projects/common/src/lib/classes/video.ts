@@ -7,6 +7,7 @@ export class Video {
     public src!: string;
     public videoType!: VideoType;
     public videoId!: string;
+    public referenceId!: number;
 
 
     constructor(options?: {
@@ -41,6 +42,7 @@ export class Video {
             this.thumbnail = video.thumbnail;
             this.videoId = video.videoId;
             this.videoType = video.videoType;
+            this.referenceId = video.referenceId;
             this.setSrc();
         }
     }
@@ -117,6 +119,7 @@ export class Video {
         video.thumbnail = this.thumbnail;
         video.videoType = this.videoType;
         video.videoId = this.videoId;
+        video.referenceId = this.referenceId;
 
         return video;
     }

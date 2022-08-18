@@ -6,6 +6,7 @@ export class Image {
     public src!: string;
     public thumbnail!: string;
     public imageSizeType!: ImageSizeType;
+    public referenceId!: number;
 
     setData(image: Image) {
         if (image) {
@@ -14,6 +15,7 @@ export class Image {
             this.name = image.name;
             this.thumbnail = image.thumbnail;
             this.imageSizeType = image.imageSizeType;
+            this.referenceId = image.referenceId;
         }
     }
 
@@ -28,6 +30,7 @@ export class Image {
         image.src = this.src;
         image.thumbnail = this.thumbnail;
         image.imageSizeType = this.imageSizeType;
+        image.referenceId = this.referenceId;
 
         return image;
     }

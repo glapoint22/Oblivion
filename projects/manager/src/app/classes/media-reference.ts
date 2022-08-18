@@ -1,11 +1,11 @@
 import { ImageSizeType } from "common";
-import { BuilderType, ImageLocation } from "./enums";
+import { BuilderType, MediaLocation } from "./enums";
 
-export class ImageReference {
-    public imageId!: number;
+export class MediaReference {
+    public mediaId!: number;
     public imageSizeType!: ImageSizeType;
     public builder!: BuilderType;
     public host?: string;
     public hostId!: number;
-    public location!: ImageLocation;
+    public location!: MediaLocation;
 }

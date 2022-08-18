@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService, Image, ImageSize, ImageSizeType, LazyLoad, LazyLoadingService, Media, SpinnerAction } from 'common';
-import { ListUpdateType, MenuOptionType } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { ListUpdateType, MediaBrowserView, MenuOptionType } from '../../classes/enums';
+import { MediaReference } from '../../classes/media-reference';
 import { ListOptions } from '../../classes/list-options';
 import { ListUpdate } from '../../classes/list-update';
 import { MultiColumnItem } from '../../classes/multi-column-item';
 import { MultiColumnItemValue } from '../../classes/multi-column-item-value';
 import { MultiColumnListUpdate } from '../../classes/multi-column-list-update';
-import { ImageReferencesComponent } from '../image-references/image-references.component';
+import { MediaReferencesComponent } from '../media-references/media-references.component';
+import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
   selector: 'image-info',
@@ -19,10 +20,10 @@ export class ImageInfoComponent extends LazyLoad implements OnInit {
   public sourceList: Array<MultiColumnItem> = [];
   public menuOptions: ListOptions = new ListOptions();
   public selectedImageSize!: ImageSize;
-  public imageSizeType!: ImageSizeType;
-  public callback!: Function;
+  // public callback!: Function;
+  public mediaBrowser!: MediaBrowserComponent;
   private imageSizes!: Array<ImageSize>;
-  private imageReferences!: Array<ImageReference>;
+  private mediaReferences!: Array<MediaReference>;
 
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) { super(lazyLoadingService) }
 
@@ -32,9 +33,9 @@ export class ImageInfoComponent extends LazyLoad implements OnInit {
     this.imageSizes = this.media.getImageSizes();
 
     // Grab the image references
-    this.dataService.get<Array<ImageReference>>('api/Media/ImageReferences', [{ key: 'imageId', value: this.media.id }])
-      .subscribe((imageReferences: Array<ImageReference>) => {
-        this.imageReferences = imageReferences;
+    this.dataService.get<Array<MediaReference>>('api/Media/MediaReferences', [{ key: 'mediaId', value: this.media.id }])
+      .subscribe((mediaReferences: Array<MediaReference>) => {
+        this.mediaReferences = mediaReferences;
 
         this.imageSizes.forEach((imageSize: ImageSize) => {
           const values = new Array<MultiColumnItemValue>();
@@ -59,7 +60,7 @@ export class ImageInfoComponent extends LazyLoad implements OnInit {
           });
 
           values.push({
-            name: imageReferences.filter(x => x.imageSizeType == imageSize.imageSizeType).length.toString(),
+            name: mediaReferences.filter(x => this.getSrc(x.imageSizeType) == imageSize.src).length.toString(),
             width: '100px'
           });
 
@@ -75,17 +76,10 @@ export class ImageInfoComponent extends LazyLoad implements OnInit {
             menuOptions: [
               {
                 type: MenuOptionType.MenuItem,
-                isDisabled: this.imageSizeType != ImageSizeType.AnySize,
+                isDisabled: this.mediaBrowser.imageSizeType != ImageSizeType.AnySize || this.mediaBrowser.view == MediaBrowserView.ImagePreview,
                 name: 'Use this image size',
                 optionFunction: () => {
-                  const image = new Image();
-
-                  image.id = this.media.id;
-                  image.name = this.media.name;
-                  image.thumbnail = this.media.thumbnail;
-                  image.src = this.selectedImageSize.src;
-                  image.imageSizeType = this.selectedImageSize.imageSizeType;
-                  this.callback(image);
+                  this.mediaBrowser.setSelectedImageSize(this.selectedImageSize);
                   this.close();
                 }
               },
@@ -93,7 +87,7 @@ export class ImageInfoComponent extends LazyLoad implements OnInit {
                 type: MenuOptionType.MenuItem,
                 name: 'Show references',
                 optionFunction: () => {
-                  this.openImageReferences();
+                  this.openMediaReferences();
                 }
               },
               {
@@ -115,18 +109,19 @@ export class ImageInfoComponent extends LazyLoad implements OnInit {
 
 
   // --------------------------------------------------- Open Image References ---------------------------------------------------
-  private async openImageReferences(): Promise<void> {
+  private async openMediaReferences(): Promise<void> {
     this.lazyLoadingService.load(async () => {
-      const { ImageReferencesComponent } = await import('../image-references/image-references.component');
-      const { ImageReferencesModule } = await import('../image-references/image-references.module');
+      const { MediaReferencesComponent } = await import('../media-references/media-references.component');
+      const { MediaReferencesModule } = await import('../media-references/media-references.module');
       return {
-        component: ImageReferencesComponent,
-        module: ImageReferencesModule
+        component: MediaReferencesComponent,
+        module: MediaReferencesModule
       }
     }, SpinnerAction.None)
-      .then((imageReferences: ImageReferencesComponent) => {
-        imageReferences.media = this.media;
-        imageReferences.imageSizeType = this.selectedImageSize.imageSizeType;
+      .then((mediaReferences: MediaReferencesComponent) => {
+        mediaReferences.media = this.media;
+        mediaReferences.imageSrc = this.selectedImageSize.src;
+        mediaReferences.mediaReferences = this.mediaReferences;
       });
   }
 
@@ -135,13 +130,42 @@ export class ImageInfoComponent extends LazyLoad implements OnInit {
   // --------------------------------------------------------- On Selection ---------------------------------------------------------
   onSelection(update: ListUpdate) {
     if (update.type == ListUpdateType.SelectedItems) {
-      const width = parseInt((update.selectedItems![0] as MultiColumnListUpdate).values![1].name);
-      const height = parseInt((update.selectedItems![0] as MultiColumnListUpdate).values![2].name);
+      const src = (update.selectedItems![0] as MultiColumnListUpdate).values![3].name
 
-      this.selectedImageSize = this.imageSizes.find(x => x.width == width && x.height == height)!;
-      this.menuOptions.menu!.menuOptions[1].isDisabled = !this.imageReferences.find(x => x.imageSizeType == this.selectedImageSize.imageSizeType);
+      this.selectedImageSize = this.imageSizes.find(x => x.src == src)!;
+      this.menuOptions.menu!.menuOptions[1].isDisabled = !this.mediaReferences.find(x => this.getSrc(x.imageSizeType) == src);
 
     }
+  }
+
+
+  // ------------------------------------------------------------ Get Src ------------------------------------------------------------
+  getSrc(imageSizeType: ImageSizeType): string {
+    let src!: string;
+
+    switch (imageSizeType) {
+      case ImageSizeType.AnySize:
+        src = this.media.imageAnySize;
+        break;
+
+      case ImageSizeType.Thumbnail:
+        src = this.media.thumbnail;
+        break;
+
+      case ImageSizeType.Small:
+        src = this.media.imageSm;
+        break;
+
+      case ImageSizeType.Medium:
+        src = this.media.imageMd;
+        break;
+
+      case ImageSizeType.Large:
+        src = this.media.imageLg;
+        break;
+    }
+
+    return src;
   }
 
 

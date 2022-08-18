@@ -1,8 +1,10 @@
 import { ApplicationRef, Component } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ContainerWidgetComponent, ContainerWidgetData } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { BuilderType, ImageLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { BuilderType, MediaLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { MediaReference } from '../../classes/media-reference';
+import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -64,13 +66,13 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
 
 
   // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getImageReference(): ImageReference {
+  public getMediaReference(): MediaReference {
     return {
-      imageId: this.background.image.id,
+      mediaId: this.background.image.id,
       imageSizeType: this.background.image.imageSizeType,
       builder: BuilderType.Page,
       hostId: this.widgetService.page.id,
-      location: ImageLocation.ContainerWidgetBackground
+      location: MediaLocation.ContainerWidgetBackground
     }
   }
 
@@ -78,19 +80,28 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
 
 
 
-  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
+  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
+  public getReferenceIds(update?: boolean): Array<number> {
     const container = this.container as ContainerDevComponent;
-    let imageReferences: Array<ImageReference> = new Array<ImageReference>();
+    let referenceIds: Array<number> = new Array<number>();
 
     if (this.background.image && this.background.image.src) {
-      imageReferences.push(this.getImageReference());
+      referenceIds.push(this.background.image.referenceId);
+
+      if (update) {
+        const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
+          .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
+            const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.background.image.referenceId)?.newId;
+            this.background.image.referenceId = referenceId!;
+            subscription.unsubscribe();
+          });
+      }
     }
 
     container.rows.forEach((row: RowDevComponent) => {
-      imageReferences = row.getImageReferences().concat(imageReferences);
+      referenceIds = row.getReferenceIds(update).concat(referenceIds);
     });
 
-    return imageReferences;
+    return referenceIds;
   }
 }

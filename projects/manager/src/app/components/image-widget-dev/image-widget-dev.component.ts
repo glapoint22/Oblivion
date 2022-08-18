@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ImageWidgetComponent } from 'widgets';
-import { BuilderType, ImageLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { BuilderType, MediaLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { MediaReference } from '../../classes/media-reference';
+import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -40,24 +42,32 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
 
 
   // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getImageReference() {
+  public getMediaReference() {
     return {
-      imageId: this.image.id,
+      mediaId: this.image.id,
       imageSizeType: this.image.imageSizeType,
       builder: BuilderType.Page,
       hostId: this.widgetService.page.id,
-      location: ImageLocation.ImageWidget
+      location: MediaLocation.ImageWidget
     }
   }
 
 
-  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
-    const imageReferences: Array<ImageReference> = new Array<ImageReference>();
+  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
+  public getReferenceIds(update?: boolean): Array<number> {
+    const referenceIds: Array<number> = new Array<number>();
 
-    if (this.image && this.image.src) {
-      imageReferences.push(this.getImageReference());
+    referenceIds.push(this.image.referenceId);
+
+    if (update) {
+      const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
+        .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
+          const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.image.referenceId)?.newId;
+          this.image.referenceId = referenceId!;
+          subscription.unsubscribe();
+        });
     }
-    return imageReferences;
+
+    return referenceIds;
   }
 }

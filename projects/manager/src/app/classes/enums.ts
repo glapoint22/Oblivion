@@ -98,7 +98,7 @@ export enum BuilderType {
 }
 
 
-export enum ImageLocation {
+export enum MediaLocation {
     Product,
     Media,
     PricePoint,
@@ -111,7 +111,8 @@ export enum ImageLocation {
     CarouselWidgetBanner,
     TextWidgetBackground,
     ContainerWidgetBackground,
-    ButtonWidgetBackground
+    ButtonWidgetBackground,
+    VideoWidget
 }
 
 

@@ -2,7 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DataService } from 'common';
 import { Background } from 'widgets';
-import { ImageReference } from '../../classes/image-reference';
+import { MediaReference } from '../../classes/media-reference';
 
 @Component({
   selector: 'background',
@@ -12,7 +12,7 @@ import { ImageReference } from '../../classes/image-reference';
 export class BackgroundComponent implements OnInit {
   @Input() background!: Background;
   @Input() toggleable: boolean = true;
-  @Input() imageReference!: ImageReference;
+  @Input() mediaReference!: MediaReference;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   public repeatOptions!: Array<KeyValue<string, string>>;
   public positionOptions!: Array<KeyValue<string, string>>;
@@ -115,9 +115,7 @@ export class BackgroundComponent implements OnInit {
 
   onDisable() {
     if (this.background.image && this.background.image.src) {
-      this.imageReference.imageId = this.background.image.id;
-      this.imageReference.imageSizeType = this.background.image.imageSizeType;
-      this.dataService.post('api/Media/ImageReferences/Remove', [this.imageReference]).subscribe();
+      this.dataService.post('api/Media/MediaReferences/Remove', [this.background.image.referenceId]).subscribe();
       this.background.image.src = null!;
       this.background.image.id = null!;
       this.background.image.thumbnail = null!;

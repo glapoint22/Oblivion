@@ -1,11 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Observable, Subject } from 'rxjs';
 import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { MediaReference } from '../../classes/media-reference';
 import { PageData } from '../../classes/page-data';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -132,7 +132,6 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // --------------------------------------------------------------------------- Set Background --------------------------------------------------------------
   public setBackground(): void {
-    // super.setBackground(document);
     super.setBackground(this.widgetService.widgetDocument.body);
   }
 
@@ -186,10 +185,10 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // ----------------------------------------------------------------------------- Delete Page -------------------------------------------------------------------
   private deletePage(): void {
-    const imageReferences = this.container.getImageReferences();
+    const mediaReferences = this.container.getReferenceIds();
 
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.None;
-    this.removeImageReferences(imageReferences);
+    this.removeMediaReferences(mediaReferences);
 
     this.dataService.delete('api/Pages', { pageId: this.id })
       .subscribe(() => {
@@ -199,11 +198,9 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
 
-  
-
   // -------------------------------------------------------------------------- Remove Image References -------------------------------------------------------------------
-  public removeImageReferences(imageReferences: Array<ImageReference>) {
-    this.dataService.post('api/Media/ImageReferences/Remove', imageReferences).subscribe();
+  public removeMediaReferences(referenceIds: Array<number>) {
+    this.dataService.post('api/Media/MediaReferences/Remove', referenceIds).subscribe();
   }
 
 

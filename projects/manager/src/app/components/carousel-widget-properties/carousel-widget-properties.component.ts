@@ -28,7 +28,7 @@ export class CarouselWidgetPropertiesComponent extends WidgetProperties<Carousel
   // --------------------------------------------------------------------- Delete Banner --------------------------------------------------------
   deleteBanner(counter: CounterComponent) {
     if (this.widget.banners[this.widget.currentBannerIndex].image && this.widget.banners[this.widget.currentBannerIndex].image.src) {
-      this.dataService.post('api/Media/ImageReferences/Remove', [this.widget.getImageReference(this.widget.banners[this.widget.currentBannerIndex])]).subscribe();
+      this.dataService.post('api/Media/MediaReferences/Remove', [this.widget.banners[this.widget.currentBannerIndex].image.referenceId]).subscribe();
     }
 
 

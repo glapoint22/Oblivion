@@ -1,9 +1,11 @@
 import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
+import { Subscription } from 'rxjs';
 import { Column, ColumnComponent, Row, Widget, WidgetData, WidgetType } from 'widgets';
-import { BuilderType, ImageLocation, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { BuilderType, MediaLocation, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { MediaReference } from '../../classes/media-reference';
 import { MenuOption } from '../../classes/menu-option';
+import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev.component';
@@ -13,6 +15,7 @@ import { ContainerWidgetDevComponent } from '../container-widget-dev/container-w
 import { ImageWidgetDevComponent } from '../image-widget-dev/image-widget-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
 import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
+import { VideoWidgetDevComponent } from '../video-widget-dev/video-widget-dev.component';
 
 @Component({
   selector: '[column-dev]',
@@ -306,6 +309,8 @@ export class ColumnDevComponent extends ColumnComponent {
     if (this.widgetService.currentWidgetInspectorView != WidgetInspectorView.Page) {
       this.setSelection(this.widget);
     }
+
+    this.widgetService.$onWidgetCreated.next();
   }
 
 
@@ -588,34 +593,44 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
   // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getImageReference(): ImageReference {
+  public getMediaReference(): MediaReference {
     return {
-      imageId: this.background.image.id,
+      mediaId: this.background.image.id,
       imageSizeType: this.background.image.imageSizeType,
       builder: BuilderType.Page,
       hostId: this.widgetService.page.id,
-      location: ImageLocation.ColumnBackground
+      location: MediaLocation.ColumnBackground
     }
   }
 
 
 
-  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
-    let imageReferences = new Array<ImageReference>();
+  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
+  public getReferenceIds(update?: boolean): Array<number> {
+    let referenceIds = new Array<number>();
 
     if (this.widget instanceof ButtonWidgetDevComponent ||
       this.widget instanceof ImageWidgetDevComponent ||
       this.widget instanceof ContainerWidgetDevComponent ||
       this.widget instanceof CarouselWidgetDevComponent ||
-      this.widget instanceof TextWidgetDevComponent) {
-      imageReferences = this.widget.getImageReferences();
+      this.widget instanceof TextWidgetDevComponent ||
+      this.widget instanceof VideoWidgetDevComponent) {
+      referenceIds = this.widget.getReferenceIds(update);
     }
 
     if (this.background.image && this.background.image.src) {
-      imageReferences.push(this.getImageReference());
+      referenceIds.push(this.background.image.referenceId);
+
+      if (update) {
+        const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
+          .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
+            const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.background.image.referenceId)?.newId;
+            this.background.image.referenceId = referenceId!;
+            subscription.unsubscribe();
+          });
+      }
     }
 
-    return imageReferences;
+    return referenceIds;
   }
 }

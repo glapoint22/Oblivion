@@ -1,7 +1,7 @@
 <ng-container *ngIf="widgetService.selectedRow">
     <!-- Background -->
     <background [background]="widgetService.selectedRow.background"
-        [imageReference]="widgetService.selectedRow.getImageReference()" (onChange)="update()"></background>
+        [mediaReference]="widgetService.selectedRow.getMediaReference()" (onChange)="update()"></background>
 
     <!-- Border -->
     <border [border]="widgetService.selectedRow.border" (onChange)="update()"></border>

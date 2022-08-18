@@ -90,7 +90,7 @@
                         </icon-button>
 
                         <icon-button *ngIf="!showCancelButton || selectedMedia" [icon]="'fas fa-trash-alt'"
-                            [title]="'Delete Image'" (click)="deleteImage()">
+                            [title]="'Delete Image'" (click)="deleteMedia()">
                         </icon-button>
 
                         <icon-button *ngIf="!showCancelButton" [icon]="'fa-solid fa-arrows-rotate'"
@@ -208,7 +208,7 @@
 
                         <!-- Delete Video -->
                         <icon-button *ngIf="!showCancelButton || selectedMedia" [icon]="'fas fa-trash-alt'"
-                            [title]="'Delete Video'">
+                            [title]="'Delete Video'" (click)="deleteMedia()">
                         </icon-button>
 
                         <icon-button *ngIf="!showCancelButton" [icon]="'fa-solid fa-arrows-rotate'"

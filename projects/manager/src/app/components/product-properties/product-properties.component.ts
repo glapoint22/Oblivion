@@ -2,7 +2,7 @@ import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct } from 'common';
-import { BuilderType, ImageLocation, PopupArrowPosition, SubproductType } from '../../classes/enums';
+import { BuilderType, MediaLocation, PopupArrowPosition, SubproductType } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { ProductService } from '../../services/product/product.service';
 import { FiltersPopupComponent } from '../filters-popup/filters-popup.component';
@@ -19,7 +19,7 @@ import { CheckboxMultiColumnItem } from '../../classes/checkbox-multi-column-ite
 import { CheckboxItem } from '../../classes/checkbox-item';
 import { KeywordCheckboxItem } from '../../classes/keyword-checkbox-item';
 import { KeywordCheckboxMultiColumnItem } from '../../classes/keyword-checkbox-multi-column-item';
-import { ImageReference } from '../../classes/image-reference';
+import { MediaReference } from '../../classes/media-reference';
 
 @Component({
   selector: 'product-properties',
@@ -380,7 +380,7 @@ export class ProductPropertiesComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, this.product.image, ImageSizeType.Medium, this.getImageReference(), this.product.name);
+        mediaBrowser.init(MediaType.Image, this.product.image, this.getMediaReference(), ImageSizeType.Medium, this.product.name);
 
         // Callback
         mediaBrowser.callback = (image: Image) => {
@@ -404,20 +404,20 @@ export class ProductPropertiesComponent {
   public removeProductImage() {
     // Remove the image
     this.dataService.delete('api/Products/Image', { productId: this.product.id }).subscribe();
-    this.dataService.post('api/Media/ImageReferences/Remove', [this.getImageReference()]).subscribe();
+    this.dataService.post('api/Media/MediaReferences/Remove', [this.getMediaReference()]).subscribe();
     this.product.image.src = null!;
   }
 
 
 
   // ------------------------------------------------------ Get Image Reference ---------------------------------------------------
-  getImageReference(): ImageReference {
+  getMediaReference(): MediaReference {
     return {
-      imageId: this.product.image.id,
-      imageSizeType: this.product.image.imageSizeType,
+      mediaId: this.product.image.id,
+      imageSizeType: ImageSizeType.Medium,
       builder: BuilderType.Product,
       hostId: this.product.id,
-      location: ImageLocation.Product
+      location: MediaLocation.Product
     }
   }
 }
