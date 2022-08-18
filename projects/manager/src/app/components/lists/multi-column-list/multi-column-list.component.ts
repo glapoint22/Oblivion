@@ -14,6 +14,7 @@ export class MultiColumnListComponent extends ListComponent {
 
   instantiate() {
     this.listManager = new MultiColumnListManager(this.lazyLoadingService);
+    this.setListOptions();
   }
 
   edit() {

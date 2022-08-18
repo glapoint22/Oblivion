@@ -3,7 +3,9 @@
 <div #base
      class="base translate-start"
      [ngClass]="{'translate-end': show}"
-     (transitionend)="onHide()">
+     (transitionend)="onHide()"
+     (mouseenter)="overSideMenu = true"
+     (mouseleave)="overSideMenu = false">
     
     <side-menu-niches #sideMenuNiches [base]="base" (onProductSelect)="close()"></side-menu-niches>
 </div>

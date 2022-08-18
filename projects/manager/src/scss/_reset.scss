@@ -2,12 +2,12 @@
 @import '../../../../dist/common/scss/checkbox-radio';
 
 ::selection {
-    color: white;
-    background: #910078;
+    color: #ffffff;
+    background: #998200;
 }
 
 input:not([type]) {
-    background: #252525;
+    background: rgb(36, 36, 36);
     border: 1px solid #454545;
     border-radius: 4px;
     color: #dadada;
@@ -19,9 +19,14 @@ input:not([type]) {
     &:disabled {
         opacity: 30%;
     }
+
+    &:focus {
+        border: 1px solid #705f30;
+    }
 }
 
 
 ::placeholder {
-    color: #505050;
+    color: #414141;
+    font-size: 13px;
 }

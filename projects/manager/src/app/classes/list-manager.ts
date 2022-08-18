@@ -230,11 +230,11 @@ export class ListManager {
   // ===================================================================( ON ITEM DOWN )==================================================================== \\
 
   onItemDown(listItem: ListItem, e?: MouseEvent) {
-    e!.stopPropagation()
+    if (e) e!.stopPropagation()
 
     // As long as the item that just received this mouse down is NOT currently being edited
     if (this.editedItem != listItem) {
-      
+
       // If another item is being edited, remove it from edit mode
       if (this.editedItem) this.evaluateEdit(null!, true);
 

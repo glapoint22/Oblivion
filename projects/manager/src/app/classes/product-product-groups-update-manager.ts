@@ -11,6 +11,7 @@ import { FormProductGroupsUpdateManager } from "./form-product-groups-update-man
 export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateManager {
     // Public
     public thisArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+    public thisSearchArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 
     // Decorators
     @Input() productId!: number;

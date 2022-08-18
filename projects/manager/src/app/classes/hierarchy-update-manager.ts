@@ -450,7 +450,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.parentSearchType) {
             this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem)); // This has to go before the super
             super.onSearchItemDelete(searchUpdate);
-            
+
         }
 
 
@@ -473,7 +473,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     }
 
 
-    
+
     // ====================================================================( DELETE ITEM )==================================================================== \\
 
     deleteOtherItem(otherArray: Array<ListItem>, deletedItem: ListItem, type: number | string) {
@@ -487,8 +487,8 @@ export class HierarchyUpdateManager extends ListUpdateManager {
                     // If the from array is a hierarchy list 
                     otherArray.findIndex(x => x.id == deletedItem.id && x.name == deletedItem.name && x.hierarchyGroupID == deletedItem.hierarchyGroupID) :
                     // If the from array is a search list 
-                    otherArray.findIndex(x => this.findDeletedItemIndex(x, deletedItem));                    
-                    
+                    otherArray.findIndex(x => this.findDeletedItemIndex(x, deletedItem));
+
                 // As long as the item to be deleted in the other array has been found
                 if (index != -1) {
                     const childItems: Array<ListItem> = new Array<ListItem>();
@@ -881,16 +881,11 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.childSearchType) {
             const child: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
 
-            // Get the parent item of the selected child item
+            this.searchMode = false;
             this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: child.id }])
                 .subscribe((parent: Item) => {
-
-                    // Now go to the hierarchy
-                    this.searchMode = false;
-                    window.setTimeout(() => {
-                        this.searchInputSubscription.unsubscribe();
-                        this.goToParent(parent.id!, child.id!, this.selectItem, [child.id, 1], this.selectItem, [child.id, 1]);
-                    })
+                    this.searchInputSubscription.unsubscribe();
+                    this.goToParent(parent.id!, child.id!, this.selectItem, [child.id, 1], this.selectItem, [child.id, 1]);
                 })
         }
     }

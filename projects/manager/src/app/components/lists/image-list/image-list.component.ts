@@ -9,11 +9,12 @@ import { ListComponent } from '../list/list.component';
   styleUrls: ['./image-list.component.scss']
 })
 export class ImageListComponent extends ListComponent { 
+  public listManager!: ImageListManager;
   @Input() sourceList!: Array<ImageItem>;
 
-  public listManager!: ImageListManager;
-
+  
   instantiate() {
     this.listManager = new ImageListManager(this.lazyLoadingService);
+    this.setListOptions();
   }
 }

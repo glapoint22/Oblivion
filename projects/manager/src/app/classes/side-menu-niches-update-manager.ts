@@ -11,11 +11,9 @@ import { ListItem } from "./list-item";
 import { HierarchyUpdateManager } from "./hierarchy-update-manager";
 import { MultiColumnItem } from "./multi-column-item";
 import { MultiColumnListUpdate } from "./multi-column-list-update";
-import { Product } from "./product";
-import { ComponentFactory, ComponentFactoryResolver, Directive, EventEmitter, Output, ViewChild } from "@angular/core";
+import { Directive, EventEmitter, Output, ViewChild } from "@angular/core";
 import { HierarchyComponent } from "../components/hierarchies/hierarchy/hierarchy.component";
 import { MultiColumnListComponent } from "../components/lists/multi-column-list/multi-column-list.component";
-import { ProductPropertiesComponent } from "../components/product-properties/product-properties.component";
 
 @Directive()
 export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
@@ -37,7 +35,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
     // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
-    constructor(dataService: DataService, sanitizer: DomSanitizer, productService: ProductService, private lazyLoadingService: LazyLoadingService, private resolver: ComponentFactoryResolver) {
+    constructor(dataService: DataService, sanitizer: DomSanitizer, productService: ProductService, private lazyLoadingService: LazyLoadingService) {
         super(dataService, sanitizer, productService);
     }
 
@@ -202,23 +200,12 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.listOptions.menu!.menuOptions[7].name = 'Move ' + this.grandchildType;
 
             if (!hierarchyUpdate.rightClick) {
-                this.onProductSelect.emit();
-                this.dataService.get<Product>('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: hierarchyUpdate.selectedItems![0].id }])
-                    .subscribe((product: Product) => {
-                        const productComponentFactory: ComponentFactory<ProductPropertiesComponent> = this.resolver.resolveComponentFactory(ProductPropertiesComponent);
-                        const productComponentRef = this.productService.productsContainer.createComponent(productComponentFactory);
-                        const productComponent: ProductPropertiesComponent = productComponentRef.instance;
+                const selectedProduct = this.productService.productComponents.find(x => x.product.id == hierarchyUpdate.selectedItems![0].id);
 
-
-                        this.productService.productComponents.push(productComponent);
-
-                        productComponent.product = product;
-                        
-                        this.productService.zIndex++;
-
-                        productComponent.zIndex = this.productService.zIndex;
-                        
-                    });
+                if (!selectedProduct || (selectedProduct && selectedProduct.zIndex != this.productService.zIndex)) {
+                    this.onProductSelect.emit();
+                    this.productService.openProduct(hierarchyUpdate.selectedItems![0].id!);
+                }
             }
         }
     }
@@ -253,7 +240,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.searchOptions.menu!.menuOptions[5].name = 'Move ' + this.grandchildType;
 
             if (!searchUpdate.rightClick) {
-                this.dataService.get('api/' + this.grandchildDataServicePath + '/Product', [{ key: 'productId', value: searchUpdate.selectedItems![0].id }]).subscribe(x => console.log(x));
+                this.onProductSelect.emit();
+                this.productService.goToProduct(searchUpdate.selectedItems![0].id!);
             }
         }
     }
@@ -600,86 +588,23 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         if ((this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.grandchildSearchType) {
             const grandchild: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
 
-            // Get the parent of the selected grandchild
-            this.dataService.get<Item>('api/' + this.grandchildDataServicePath + '/Parent', [{ key: 'productId', value: grandchild.id }])
-                .subscribe((child: Item) => {
+            const onProductSelectListener = this.productService.onProductSelect.subscribe(() => {
+                onProductSelectListener.unsubscribe();
 
-                    // Then get the parent of the child
-                    this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: child.id }])
-                        .subscribe((parent: Item) => {
+                const selectedItem = this.thisArray.filter(x => x.selectType != null || x.selected == true)[0];
+                // If an item was selected
+                if (selectedItem) {
+                    this.searchMode = false;
 
-                            // Now go to the hierarchy
-                            this.searchMode = false;
-                            window.setTimeout(() => {
-                                this.searchInputSubscription.unsubscribe();
-                                this.goToParent(parent.id!, child.id!, this.goToChild, [child.id, grandchild.id], this.goToGrandchild, [child.id, grandchild.id]);
-                            })
-                        });
-                });
+                    window.setTimeout(() => {
+                        // Then select that item
+                        this.listComponent.listManager.setItemSelection(selectedItem);
+                        this.listComponent.listManager.setButtonsState();
+                    })
+                }
+            });
+            this.productService.goToProduct(grandchild.id!);
         }
-    }
-
-
-
-    // ====================================================================( GO TO CHILD )==================================================================== \\
-
-    goToChild(childId: number, grandchildId: number) {
-        // Find the child we're looking for in the hierarchy
-        const child: HierarchyItem = this.thisArray.find(x => x.hierarchyGroupID == 1 && x.id == childId)!;
-
-        // If the arrow of that child is NOT down
-        if (!child.arrowDown) {
-
-            // Check to see if the arrow of that child was ever down and its children have already been loaded
-            const grandchild: HierarchyItem = this.thisArray.find(x => x.hierarchyGroupID == 2 && x.id == grandchildId)!;
-
-            // Then set the arrow of that child to be down
-            this.listComponent.listManager.onArrowClick(child);
-
-            // If its children were never loaded
-            if (grandchild == null) {
-
-                // Now that the child's arrow is down, wait for its children to load
-                let onGrandchildrenLoadListener = this.onGrandchildrenLoad.subscribe(() => {
-                    onGrandchildrenLoadListener.unsubscribe();
-
-                    // Find and select the grandchild item
-                    this.selectItem(grandchildId, 2);
-                })
-
-                // But if the children of the child have already been loaded
-            } else {
-
-                // Then select the grandchild we're looking for
-                this.listComponent.listManager.onItemDown(grandchild);
-            }
-
-            // If the arrow of that chlld is already down
-        } else {
-
-            // Find and select the grandchild item
-            this.selectItem(grandchildId, 2);
-        }
-    }
-
-
-
-    // =================================================================( GO TO GRANDCHILD )================================================================== \\
-
-    goToGrandchild(childId: number, grandchildId: number) {
-        // Find the child we were looking for
-        const child: HierarchyItem = this.thisArray.find(x => x.hierarchyGroupID == 1 && x.id == childId)!;
-
-        // Now that we found the child we were looking for, set the arrow of that child to be down
-        if (!child.arrowDown) this.listComponent.listManager.onArrowClick(child);
-
-        // Now that the child's arrow is down, wait for its children to load
-        let onGrandchildrenLoadListener = this.onGrandchildrenLoad.subscribe(() => {
-            onGrandchildrenLoadListener.unsubscribe();
-
-            // Find and select the grandchild item
-            this.selectItem(grandchildId, 2);
-        })
     }
 
 

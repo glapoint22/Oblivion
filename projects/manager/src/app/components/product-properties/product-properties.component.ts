@@ -27,7 +27,6 @@ import { MediaReference } from '../../classes/media-reference';
   styleUrls: ['./product-properties.component.scss']
 })
 export class ProductPropertiesComponent {
-  private vendorPopup!: VendorPopupComponent;
   private filtersPopup!: FiltersPopupComponent;
   private keywordsPopup!: KeywordsPopupComponent;
   private productGroupsPopup!: ProductGroupsPopupComponent;
@@ -36,22 +35,19 @@ export class ProductPropertiesComponent {
   private recurringPopup!: RecurringPopupComponent;
   private hoplinkPopup!: HoplinkPopupComponent;
 
+  public vendorPopup!: VendorPopupComponent;
   public zIndex!: number;
   public product: Product = new Product();
   public shippingType = ShippingType;
   public PopupArrowPosition = PopupArrowPosition;
   public shipping = Shipping;
   public subproductType = SubproductType;
-
   public productFilterArray: Array<CheckboxItem> = new Array<CheckboxItem>();
   public productFilterSearchArray: Array<CheckboxMultiColumnItem> = new Array<CheckboxMultiColumnItem>();
-
   public availableKeywordArray: Array<HierarchyItem> = new Array<HierarchyItem>();
   public availableKeywordSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-
   public selectedKeywordArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
   public selectedKeywordSearchArray: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
-
   public productProductGroupArray: Array<CheckboxItem> = new Array<CheckboxItem>();
   public productProductGroupSearchArray: Array<CheckboxItem> = new Array<CheckboxItem>();
 

@@ -4,10 +4,6 @@
     margin-left: -5px;
 }
 
-// .search-icon-button {
-//     margin-top: 4px;
-//     margin-left: -5px;
-// }
 
 .icons {
     padding: 0;
@@ -16,22 +12,9 @@
 
 
 input {
-    border: none;
-    outline: 1px solid #3f3f3f;
-    background: #2b2b2b;
-    color: #b4b4b4;
-    height: 26px;
-    border-radius: 0;
     margin-bottom: 15px;
-
-    &:focus {
-        outline: 1px solid #a97b00;
-    }
 }
 
-::placeholder {
-    color: #7a7a7a;
-}
 
 .column-name-container {
     height: 26px;

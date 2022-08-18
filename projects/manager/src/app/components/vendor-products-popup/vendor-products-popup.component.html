@@ -18,7 +18,7 @@
             <image-list #listComponent
                         [sourceList]="products"
                         [options]="listOptions"
-                        >
+                        (onListUpdate)="onListUpdate($event)">
             </image-list>
     
         </div>

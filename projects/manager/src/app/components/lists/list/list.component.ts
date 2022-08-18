@@ -20,6 +20,7 @@ export class ListComponent implements OnInit {
 
   instantiate() {
     this.listManager = new ListManager(this.lazyLoadingService);
+    this.setListOptions();
   }
 
 
@@ -35,7 +36,7 @@ export class ListComponent implements OnInit {
 
   ngAfterViewInit() {
     window.setTimeout(() => {
-      this.setListOptions();
+      this.initializeListUpdate();
     })
   }
 
@@ -51,7 +52,6 @@ export class ListComponent implements OnInit {
       if (this.options.sortable != null) this.listManager.sortable = this.options.sortable;
       if (this.options.verifyAddEdit != null) this.listManager.verifyAddEdit = this.options.verifyAddEdit;
     }
-    this.initializeListUpdate();
   }
 
 
