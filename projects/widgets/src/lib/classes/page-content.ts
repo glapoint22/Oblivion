@@ -19,10 +19,12 @@ export class PageContent {
             } else if (value instanceof Image) {
                 return {
                     id: value.id,
-                    imageSizeType: value.imageSizeType
+                    imageSizeType: value.imageSizeType,
                 }
             } else if (value instanceof Video) {
-                return { id: value.id }
+                return {
+                    id: value.id,
+                }
             } else {
                 return value;
             }

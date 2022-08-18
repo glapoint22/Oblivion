@@ -1,8 +1,7 @@
 import { ApplicationRef, Component } from '@angular/core';
 import { ContainerWidgetComponent, ContainerWidgetData } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { BuilderType, ImageLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -59,38 +58,5 @@ export class ContainerWidgetDevComponent extends ContainerWidgetComponent implem
     });
 
     return containerWidgetData;
-  }
-
-
-
-  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getImageReference(): ImageReference {
-    return {
-      imageId: this.background.image.id,
-      imageSizeType: this.background.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: ImageLocation.ContainerWidgetBackground
-    }
-  }
-
-
-
-
-
-  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
-    const container = this.container as ContainerDevComponent;
-    let imageReferences: Array<ImageReference> = new Array<ImageReference>();
-
-    if (this.background.image && this.background.image.src) {
-      imageReferences.push(this.getImageReference());
-    }
-
-    container.rows.forEach((row: RowDevComponent) => {
-      imageReferences = row.getImageReferences().concat(imageReferences);
-    });
-
-    return imageReferences;
   }
 }

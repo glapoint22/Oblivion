@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
 import { Subject } from 'rxjs';
 import { Column, HorizontalAlignmentType, ImageWidgetData, Row, VerticalAlignmentType, VideoWidgetData, Widget, WidgetData, WidgetType } from 'widgets';
-import { BuilderType, ImageLocation, WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
 import { ContainerDevComponent } from '../../components/container-dev/container-dev.component';
@@ -81,16 +81,9 @@ export class WidgetService {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         const mediaType = widgetData.widgetType == WidgetType.Image ? MediaType.Image : MediaType.Video;
-        const imageSizeType = widgetData.widgetType == WidgetType.Image ? ImageSizeType.AnySize : undefined;
 
         // Initialize the media browser
-        mediaBrowser.init(mediaType, null!, imageSizeType, mediaType == MediaType.Image ? {
-          imageId: 0,
-          imageSizeType: imageSizeType!,
-          builder: BuilderType.Page,
-          hostId: this.page.id,
-          location: ImageLocation.ImageWidget
-        } : null!);
+        mediaBrowser.init(mediaType, null!, ImageSizeType.AnySize);
 
 
         mediaBrowser.callback = (media: Image | Video) => {
@@ -106,6 +99,10 @@ export class WidgetService {
       });
   }
 
+
+
+
+  
 
 
   // ----------------------------------------------------------------------On Widget Handle Mousedown---------------------------------------------------------

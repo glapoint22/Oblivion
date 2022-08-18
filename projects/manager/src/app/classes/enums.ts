@@ -91,30 +91,6 @@ export enum SubproductType {
 
 
 
-export enum BuilderType {
-    Product,
-    Page,
-    Email
-}
-
-
-export enum ImageLocation {
-    Product,
-    Media,
-    PricePoint,
-    Component,
-    Bonus,
-    PageBackground,
-    RowBackground,
-    ColumnBackground,
-    ImageWidget,
-    CarouselWidgetBanner,
-    TextWidgetBackground,
-    ContainerWidgetBackground,
-    ButtonWidgetBackground
-}
-
-
 export enum MediaBrowserView {
     ImageSelect,
     ImagePreview,

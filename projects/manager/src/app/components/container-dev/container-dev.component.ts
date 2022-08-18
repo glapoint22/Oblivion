@@ -1,13 +1,19 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
+import { forkJoin, Observable, Subscriber, Subscription, tap } from 'rxjs';
 import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { BuilderType, ImageLocation, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
+import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev.component';
+import { CarouselWidgetDevComponent } from '../carousel-widget-dev/carousel-widget-dev.component';
+import { ContainerWidgetDevComponent } from '../container-widget-dev/container-widget-dev.component';
+import { ImageWidgetDevComponent } from '../image-widget-dev/image-widget-dev.component';
 import { PageDevComponent } from '../page-dev/page-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
+import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
+import { VideoWidgetDevComponent } from '../video-widget-dev/video-widget-dev.component';
 
 @Component({
   selector: 'container-dev',
@@ -339,9 +345,7 @@ export class ContainerDevComponent extends ContainerComponent {
   // ------------------------------------------------------------------------ Delete Row ---------------------------------------------------------
   public deleteRow(row: RowDevComponent): void {
     const index = this.rows.findIndex(x => x == row);
-    const imageReferences = row.getImageReferences();
-    
-    this.widgetService.page.removeImageReferences(imageReferences);
+
     this.rows.splice(index, 1);
     this.viewContainerRef.remove(index);
     this.widgetService.deselectWidget();
@@ -465,8 +469,6 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
 
-
-
   // ------------------------------------------------------------------------------ Paste -------------------------------------------------------------
   public paste(y: number): void {
     const top = this.getRowTop(y);
@@ -485,15 +487,13 @@ export class ContainerDevComponent extends ContainerComponent {
     else if (this.widgetService.clipboard instanceof Column) {
       const column = this.widgetService.clipboard;
 
-      column.widgetData.width = null!;
       column.columnSpan = new ColumnSpan(12);
       this.addColumn(column, top);
     }
   }
 
 
-
-
+  
 
   // ----------------------------------------------------------------------- Move Row Index ---------------------------------------------------------
   private moveRowIndex(from: number, to: number): void {
@@ -577,7 +577,6 @@ export class ContainerDevComponent extends ContainerComponent {
   private addRow(row: Row, top: number): void {
     row.top = top;
     this.createRow(row);
-    this.widgetService.page.save();
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
   }
 
@@ -589,7 +588,6 @@ export class ContainerDevComponent extends ContainerComponent {
 
     row.columns.push(column);
     this.createRow(row);
-    this.widgetService.page.save();
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
   }
 
@@ -623,28 +621,5 @@ export class ContainerDevComponent extends ContainerComponent {
     });
 
     return rows;
-  }
-
-
-
-  // ----------------------------------------------------------------------- Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
-    let imageReferences: Array<ImageReference> = new Array<ImageReference>();
-
-    if (this.page.pageContent.background.image && this.page.pageContent.background.image.src) {
-      imageReferences.push({
-        imageId: this.page.pageContent.background.image.id,
-        imageSizeType: this.page.pageContent.background.image.imageSizeType,
-        builder: BuilderType.Page,
-        hostId: this.page.id,
-        location: ImageLocation.PageBackground
-      });
-    }
-
-    this.rows.forEach((row: RowDevComponent) => {
-      imageReferences = row.getImageReferences().concat(imageReferences);
-    });
-
-    return imageReferences;
   }
 }

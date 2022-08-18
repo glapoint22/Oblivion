@@ -1,8 +1,7 @@
 import { Component, ComponentFactoryResolver } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
-import { BuilderType, ImageLocation, MenuOptionType, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { MenuOptionType, WidgetInspectorView } from '../../classes/enums';
 import { MenuOption } from '../../classes/menu-option';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
@@ -63,9 +62,7 @@ export class RowDevComponent extends RowComponent {
   // ------------------------------------------------------------------------ Delete Column ---------------------------------------------------------
   public deleteColumn(column: ColumnDevComponent): void {
     const index = this.columns.findIndex(x => x == column);
-    const imageReferences = column.getImageReferences();
 
-    this.widgetService.page.removeImageReferences(imageReferences);
     this.columns.splice(index, 1);
     this.viewContainerRef.remove(index);
     this.columnCount--;
@@ -316,36 +313,5 @@ export class RowDevComponent extends RowComponent {
   private moveColumnIndex(from: number, to: number): void {
     const cutOut = this.columns.splice(from, 1)[0];
     this.columns.splice(to, 0, cutOut);
-  }
-
-
-  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getImageReference(): ImageReference {
-    return {
-      imageId: this.background.image.id,
-      imageSizeType: this.background.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: ImageLocation.RowBackground
-    }
-  }
-
-
-
-
-
-  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
-    let imageReferences: Array<ImageReference> = new Array<ImageReference>();
-
-    if (this.background.image && this.background.image.src) {
-      imageReferences.push(this.getImageReference());
-    }
-
-    this.columns.forEach((column: ColumnDevComponent) => {
-      imageReferences = column.getImageReferences().concat(imageReferences);
-    });
-
-    return imageReferences;
   }
 }

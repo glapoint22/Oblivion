@@ -162,9 +162,9 @@ export class BackgroundImage extends Image {
     setData(backgroundImage: BackgroundImage) {
         if (backgroundImage) {
             super.setData(backgroundImage);
-            if (backgroundImage.position.key) this.position = this.positionOptions.find(x => x.key == backgroundImage.position.key)!;
-            if (backgroundImage.repeat.key) this.repeat = this.repeatOptions.find(x => x.key == backgroundImage.repeat.key)!;
-            if (backgroundImage.attachment.key) this.attachment = this.attachmentOptions.find(x => x.key == backgroundImage.attachment.key)!;
+            if (backgroundImage.position && backgroundImage.position.key) this.position = this.positionOptions.find(x => x.key == backgroundImage.position.key)!;
+            if (backgroundImage.repeat && backgroundImage.repeat.key) this.repeat = this.repeatOptions.find(x => x.key == backgroundImage.repeat.key)!;
+            if (backgroundImage.attachment && backgroundImage.attachment.key) this.attachment = this.attachmentOptions.find(x => x.key == backgroundImage.attachment.key)!;
         }
     }
 }

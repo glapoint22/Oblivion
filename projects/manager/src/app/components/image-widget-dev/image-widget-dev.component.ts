@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ImageWidgetComponent } from 'widgets';
-import { BuilderType, ImageLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -35,29 +34,5 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
         this.hidden = false;
       });
     }
-  }
-
-
-
-  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getImageReference() {
-    return {
-      imageId: this.image.id,
-      imageSizeType: this.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: ImageLocation.ImageWidget
-    }
-  }
-
-
-  // ------------------------------------------------------------------------ Get Image References --------------------------------------------------
-  public getImageReferences(): Array<ImageReference> {
-    const imageReferences: Array<ImageReference> = new Array<ImageReference>();
-
-    if (this.image && this.image.src) {
-      imageReferences.push(this.getImageReference());
-    }
-    return imageReferences;
   }
 }

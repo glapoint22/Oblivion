@@ -1,7 +1,6 @@
 import { Component, ElementRef, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
-import { BuilderType, ImageLocation, PopupArrowPosition } from '../../classes/enums';
-import { ImageReference } from '../../classes/image-reference';
+import { PopupArrowPosition } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { RecurringPopupComponent } from '../recurring-popup/recurring-popup.component';
@@ -71,7 +70,6 @@ export class PricePointsComponent {
 
 
   deletePricePoint(pricePointIndex: number, pricePointId: number) {
-    this.removeImageReference(this.product.pricePoints[pricePointIndex]);
     this.product.pricePoints.splice(pricePointIndex, 1);
     this.updateMinMaxPrice();
 
@@ -149,7 +147,7 @@ export class PricePointsComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, pricePoint.image, ImageSizeType.Small, this.GetImageReference(pricePoint));
+        mediaBrowser.init(MediaType.Image, pricePoint.image, ImageSizeType.Small);
 
         mediaBrowser.callback = (image: Image) => {
           if (image) {
@@ -166,20 +164,7 @@ export class PricePointsComponent {
   }
 
 
-  GetImageReference(pricePoint: PricePoint): ImageReference {
-    return {
-      imageId: pricePoint.image.id,
-      imageSizeType: pricePoint.image.imageSizeType,
-      builder: BuilderType.Product,
-      hostId: this.product.id,
-      location: ImageLocation.PricePoint
-    }
-  }
-
-
-  removeImageReference(pricePoint: PricePoint) {
-    this.dataService.post('api/Media/ImageReferences/Remove', [this.GetImageReference(pricePoint)]).subscribe();
-  }
+  
 
 
 
@@ -189,7 +174,6 @@ export class PricePointsComponent {
     // If the deleting is NOT delayed, then Media Browser will think
     // no image is present and open
     window.setTimeout(() => {
-      this.removeImageReference(pricePoint);
       pricePoint.image = new Image();
       this.updatePricePoint(pricePoint);
     })
