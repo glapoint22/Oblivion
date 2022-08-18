@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
-import { Observable, Subject, Subscriber } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Column, HorizontalAlignmentType, ImageWidgetData, Row, VerticalAlignmentType, VideoWidgetData, Widget, WidgetData, WidgetType } from 'widgets';
-import { BuilderType, MediaLocation, WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
+import { WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { ColumnDevComponent } from '../../components/column-dev/column-dev.component';
 import { ContainerDevComponent } from '../../components/container-dev/container-dev.component';
@@ -18,9 +17,6 @@ import { BreakpointService } from '../breakpoint/breakpoint.service';
 })
 export class WidgetService {
   public $onContainerMousemove: Subject<ContainerDevComponent> = new Subject<ContainerDevComponent>();
-  public $onRowCreated: Subject<void> = new Subject<void>();
-  public $onWidgetCreated: Subject<void> = new Subject<void>();
-  public $mediaReferenceUpdate: Subject<Array<UpdatedMediaReferenceId>> = new Subject<Array<UpdatedMediaReferenceId>>();
   public selectedRow!: RowDevComponent;
   public selectedColumn!: ColumnDevComponent;
   public selectedWidget!: Widget;
@@ -87,13 +83,7 @@ export class WidgetService {
         const mediaType = widgetData.widgetType == WidgetType.Image ? MediaType.Image : MediaType.Video;
 
         // Initialize the media browser
-        mediaBrowser.init(mediaType, null!, {
-          mediaId: 0,
-          imageSizeType: ImageSizeType.AnySize,
-          builder: BuilderType.Page,
-          hostId: this.page.id,
-          location: widgetData.widgetType == WidgetType.Image ? MediaLocation.ImageWidget : MediaLocation.VideoWidget
-        }, ImageSizeType.AnySize);
+        mediaBrowser.init(mediaType, null!, ImageSizeType.AnySize);
 
 
         mediaBrowser.callback = (media: Image | Video) => {
@@ -112,16 +102,7 @@ export class WidgetService {
 
 
 
-  // ------------------------------------------------------------------------Load Media Browser------------------------------------------------------------
-  updateMediaReferenceIds(referenceIds: Array<number>): Observable<void> {
-    return new Observable<void>((subscriber: Subscriber<void>) => {
-      this.dataService.post<Array<UpdatedMediaReferenceId>>('api/Media/MediaReferences/Duplicate', referenceIds)
-        .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
-          this.$mediaReferenceUpdate.next(updatedMediaReferenceIds);
-          subscriber.next();
-        });
-    });
-  }
+  
 
 
   // ----------------------------------------------------------------------On Widget Handle Mousedown---------------------------------------------------------

@@ -1,11 +1,8 @@
 import { Component, ComponentFactoryResolver } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Subscription } from 'rxjs';
 import { Column, ColumnSpan, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
-import { BuilderType, MediaLocation, MenuOptionType, WidgetInspectorView } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
+import { MenuOptionType, WidgetInspectorView } from '../../classes/enums';
 import { MenuOption } from '../../classes/menu-option';
-import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -25,12 +22,9 @@ export class RowDevComponent extends RowComponent {
 
 
   // ------------------------------------------------------------------------ Create Columns ---------------------------------------------------------
-  public async createColumns(columns: Array<Column>): Promise<void> {
-    columns.forEach(async (column: Column, index) => {
-      await this.createColumn(column, index);
-      if (index == columns.length - 1) {
-        this.widgetService.$onRowCreated.next();
-      }
+  public createColumns(columns: Array<Column>): void {
+    columns.forEach((column: Column, index) => {
+      this.createColumn(column, index);
     });
   }
 
@@ -38,7 +32,7 @@ export class RowDevComponent extends RowComponent {
 
 
   // ------------------------------------------------------------------------ Create Column ---------------------------------------------------------
-  public async createColumn(column: Column, index: number): Promise<void> {
+  public createColumn(column: Column, index: number): void {
     const componentFactory = this.resolver.resolveComponentFactory(ColumnDevComponent);
     const columnComponentRef = this.viewContainerRef.createComponent(componentFactory, index);
 
@@ -58,7 +52,7 @@ export class RowDevComponent extends RowComponent {
     columnComponentRef.hostView.detectChanges();
 
     // Create the widget
-    await columnComponent.createWidget(column.widgetData);
+    columnComponent.createWidget(column.widgetData);
   }
 
 
@@ -68,9 +62,7 @@ export class RowDevComponent extends RowComponent {
   // ------------------------------------------------------------------------ Delete Column ---------------------------------------------------------
   public deleteColumn(column: ColumnDevComponent): void {
     const index = this.columns.findIndex(x => x == column);
-    const referenceIds = column.getReferenceIds();
 
-    this.widgetService.page.removeMediaReferences(referenceIds);
     this.columns.splice(index, 1);
     this.viewContainerRef.remove(index);
     this.columnCount--;
@@ -321,45 +313,5 @@ export class RowDevComponent extends RowComponent {
   private moveColumnIndex(from: number, to: number): void {
     const cutOut = this.columns.splice(from, 1)[0];
     this.columns.splice(to, 0, cutOut);
-  }
-
-
-  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getMediaReference(): MediaReference {
-    return {
-      mediaId: this.background.image.id,
-      imageSizeType: this.background.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: MediaLocation.RowBackground
-    }
-  }
-
-
-
-
-
-  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
-  public getReferenceIds(update?: boolean): Array<number> {
-    let referenceIds: Array<number> = new Array<number>();
-
-    if (this.background.image && this.background.image.src) {
-      referenceIds.push(this.background.image.referenceId);
-      
-      if (update) {
-        const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
-          .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
-            const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.background.image.referenceId)?.newId;
-            this.background.image.referenceId = referenceId!;
-            subscription.unsubscribe();
-          });
-      }
-    }
-
-    this.columns.forEach((column: ColumnDevComponent) => {
-      referenceIds = column.getReferenceIds(update).concat(referenceIds);
-    });
-
-    return referenceIds;
   }
 }

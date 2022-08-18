@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 import { Color } from 'common';
-import { Subscription } from 'rxjs';
 import { ButtonWidgetComponent, ButtonWidgetData } from 'widgets';
-import { BuilderType, ButtonState, MediaLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
-import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
+import { ButtonState, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -187,37 +184,5 @@ export class ButtonWidgetDevComponent extends ButtonWidgetComponent {
     }
 
     return color;
-  }
-
-
-  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getMediaReference() {
-    return {
-      mediaId: this.background.image.id,
-      imageSizeType: this.background.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: MediaLocation.ButtonWidgetBackground
-    }
-  }
-
-
-  // -------------------------------------------------------------------------- Get Reference Ids ---------------------------------------------------
-  public getReferenceIds(update?: boolean): Array<number> {
-    const referenceIds: Array<number> = new Array<number>();
-
-    if (this.background.image && this.background.image.src) {
-      referenceIds.push(this.background.image.referenceId);
-
-      if (update) {
-        const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
-          .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
-            const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.background.image.referenceId)?.newId;
-            this.background.image.referenceId = referenceId!;
-            subscription.unsubscribe();
-          });
-      }
-    }
-    return referenceIds;
   }
 }

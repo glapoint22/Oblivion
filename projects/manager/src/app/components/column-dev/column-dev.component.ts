@@ -1,21 +1,13 @@
 import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Subscription } from 'rxjs';
 import { Column, ColumnComponent, Row, Widget, WidgetData, WidgetType } from 'widgets';
-import { BuilderType, MediaLocation, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
+import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { MenuOption } from '../../classes/menu-option';
-import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
-import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev.component';
-import { CarouselWidgetDevComponent } from '../carousel-widget-dev/carousel-widget-dev.component';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { ContainerWidgetDevComponent } from '../container-widget-dev/container-widget-dev.component';
-import { ImageWidgetDevComponent } from '../image-widget-dev/image-widget-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
-import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
-import { VideoWidgetDevComponent } from '../video-widget-dev/video-widget-dev.component';
 
 @Component({
   selector: '[column-dev]',
@@ -26,7 +18,12 @@ export class ColumnDevComponent extends ColumnComponent {
   public rowComponent!: RowDevComponent;
   public widgetInspectorView = WidgetInspectorView;
 
-  constructor(resolver: ComponentFactoryResolver, public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver) }
+  constructor(
+    resolver: ComponentFactoryResolver,
+    public widgetService: WidgetService,
+    private lazyLoadingService: LazyLoadingService
+  ) { super(resolver) }
+
 
   // ---------------------------------------------------------------------Create Widget Component Ref----------------------------------------------------------------
   public async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
@@ -309,8 +306,6 @@ export class ColumnDevComponent extends ColumnComponent {
     if (this.widgetService.currentWidgetInspectorView != WidgetInspectorView.Page) {
       this.setSelection(this.widget);
     }
-
-    this.widgetService.$onWidgetCreated.next();
   }
 
 
@@ -588,49 +583,5 @@ export class ColumnDevComponent extends ColumnComponent {
     column.horizontalAlignment = this.horizontalAlignment.getData();
     column.columnSpan = this.columnSpan.getData();
     return column;
-  }
-
-
-
-  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getMediaReference(): MediaReference {
-    return {
-      mediaId: this.background.image.id,
-      imageSizeType: this.background.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: MediaLocation.ColumnBackground
-    }
-  }
-
-
-
-  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
-  public getReferenceIds(update?: boolean): Array<number> {
-    let referenceIds = new Array<number>();
-
-    if (this.widget instanceof ButtonWidgetDevComponent ||
-      this.widget instanceof ImageWidgetDevComponent ||
-      this.widget instanceof ContainerWidgetDevComponent ||
-      this.widget instanceof CarouselWidgetDevComponent ||
-      this.widget instanceof TextWidgetDevComponent ||
-      this.widget instanceof VideoWidgetDevComponent) {
-      referenceIds = this.widget.getReferenceIds(update);
-    }
-
-    if (this.background.image && this.background.image.src) {
-      referenceIds.push(this.background.image.referenceId);
-
-      if (update) {
-        const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
-          .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
-            const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.background.image.referenceId)?.newId;
-            this.background.image.referenceId = referenceId!;
-            subscription.unsubscribe();
-          });
-      }
-    }
-
-    return referenceIds;
   }
 }

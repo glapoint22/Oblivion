@@ -1,8 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DataService } from 'common';
 import { Background } from 'widgets';
-import { MediaReference } from '../../classes/media-reference';
 
 @Component({
   selector: 'background',
@@ -12,13 +10,10 @@ import { MediaReference } from '../../classes/media-reference';
 export class BackgroundComponent implements OnInit {
   @Input() background!: Background;
   @Input() toggleable: boolean = true;
-  @Input() mediaReference!: MediaReference;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   public repeatOptions!: Array<KeyValue<string, string>>;
   public positionOptions!: Array<KeyValue<string, string>>;
   public attachmentOptions!: Array<KeyValue<string, string>>;
-
-  constructor(private dataService: DataService) { }
 
   ngOnInit() {
     // Position options
@@ -115,7 +110,6 @@ export class BackgroundComponent implements OnInit {
 
   onDisable() {
     if (this.background.image && this.background.image.src) {
-      this.dataService.post('api/Media/MediaReferences/Remove', [this.background.image.referenceId]).subscribe();
       this.background.image.src = null!;
       this.background.image.id = null!;
       this.background.image.thumbnail = null!;

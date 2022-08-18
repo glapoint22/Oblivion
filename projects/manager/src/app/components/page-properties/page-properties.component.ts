@@ -1,11 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { ApplicationRef, Component, OnInit } from '@angular/core';
-import { ImageSizeType } from 'common';
 import { PageType } from 'widgets';
-import { BuilderType, MediaLocation } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
 import { WidgetService } from '../../services/widget/widget.service';
-import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 
 @Component({
   selector: 'page-properties',
@@ -50,15 +46,5 @@ export class PagePropertiesComponent implements OnInit {
     this.appRef.tick();
     this.widgetService.page.setBackground();
     this.widgetService.page.save();
-  }
-
-  getMediaReference() {
-    return {
-      mediaId: this.widgetService.page.pageContent.background.image.id,
-      imageSizeType: this.widgetService.page.pageContent.background.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: MediaLocation.PageBackground
-    }
   }
 }

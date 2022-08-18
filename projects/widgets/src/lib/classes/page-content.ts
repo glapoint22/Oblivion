@@ -20,12 +20,10 @@ export class PageContent {
                 return {
                     id: value.id,
                     imageSizeType: value.imageSizeType,
-                    referenceId: value.referenceId
                 }
             } else if (value instanceof Video) {
                 return {
                     id: value.id,
-                    referenceId: value.referenceId
                 }
             } else {
                 return value;

@@ -1,14 +1,10 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, Image, ImageSize, ImageSizeType, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, Video } from 'common';
-import { debounceTime, fromEvent, map, Observable, of, switchMap } from 'rxjs';
-import { MediaBrowserMode, MediaBrowserView, MenuOptionType } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
+import { debounceTime, fromEvent, map, of, switchMap } from 'rxjs';
+import { MediaBrowserMode, MediaBrowserView } from '../../classes/enums';
 import { Item } from '../../classes/item';
-import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
-import { ImageInfoComponent } from '../image-info/image-info.component';
-import { MediaReferencesComponent } from '../media-references/media-references.component';
 import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
@@ -17,29 +13,6 @@ import { PromptComponent } from '../prompt/prompt.component';
   styleUrls: ['./media-browser.component.scss']
 })
 export class MediaBrowserComponent extends LazyLoad {
-  // @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
-  // public showAllMedia!: boolean;
-  // public currentMediaType!: MediaType;
-
-  // public mediaType = MediaType;
-  // public searchMode!: boolean;
-  // public editedImage!: Image;
-  // public editedVideo!: Video;
-  // public renamingVideo!: boolean;
-  // public updatingVideo!: boolean;
-  // public newImage!: string;
-  // public isNewVideo!: boolean;
-  // public newVideo!: Video;
-  // public dragover!: boolean;
-  // public callback!: Function;
-  // public media: Array<Media> = [];
-  // public invalidVideoLink!: boolean;
-  // public noSearchResults!: boolean;
-  // public imageSizeType!: ImageSizeType;
-  // private imageFile!: File;
-  // public invalidImageType = InvalidImageType;
-  // public displayImage!: string;
-
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('submitButton') submitButton!: ElementRef<HTMLButtonElement>;
   public view!: MediaBrowserView;
@@ -64,7 +37,6 @@ export class MediaBrowserComponent extends LazyLoad {
   public hasMultiImages!: boolean;
   private productName!: string;
   private dropdownList!: DropdownListComponent;
-  private mediaReference!: MediaReference;
   public invalidVideoLink!: boolean;
 
 
@@ -116,15 +88,9 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
   // --------------------------------------------------------------- Init ------------------------------------------------
-  init(mediaType: MediaType, currentMedia: Image | Video, mediaReference: MediaReference, imageSizeType?: ImageSizeType, productName?: string) {
+  init(mediaType: MediaType, currentMedia: Image | Video, imageSizeType?: ImageSizeType, productName?: string) {
     this.mediaType = mediaType;
-    this.mediaReference = {
-      mediaId: mediaReference.mediaId,
-      imageSizeType: mediaReference.imageSizeType,
-      builder: mediaReference.builder,
-      hostId: mediaReference.hostId,
-      location: mediaReference.location
-    }
+
 
     if (mediaType == MediaType.Image) {
       this.imageSizeType = imageSizeType!;
@@ -310,14 +276,8 @@ export class MediaBrowserComponent extends LazyLoad {
         newImage.src = media.src;
         newImage.thumbnail = media.thumbnail;
 
-        this.mediaReference.mediaId = newImage.id;
-        this.mediaReference.imageSizeType = this.imageSizeType;
-        this.addMediaReference()
-          .subscribe((referenceId: number) => {
-            newImage.referenceId = referenceId;
-            this.callback(newImage);
-            this.close();
-          });
+        this.callback(newImage);
+        this.close();
       });
   }
 
@@ -361,13 +321,11 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
         if (this.imageFile) {
-          if (this.mode == MediaBrowserMode.Swap) this.removeMediaReference();
           this.saveImage();
         } else {
           if (this.hasMultiImages) {
             this.loadDropdownList();
           } else {
-            if (this.mode == MediaBrowserMode.Swap) this.removeMediaReference();
             this.setSelectedMedia();
           }
         }
@@ -376,7 +334,6 @@ export class MediaBrowserComponent extends LazyLoad {
       }
     } else if (this.view == MediaBrowserView.VideoPreview) {
       if (this.mode == MediaBrowserMode.New || this.mode == MediaBrowserMode.Swap) {
-        if (this.mode == MediaBrowserMode.Swap) this.removeMediaReference();
 
         if (this.selectedMedia) {
           this.setSelectedMedia();
@@ -394,132 +351,8 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-  // ------------------------------------------------------------------- Add Media Reference -------------------------------------------------------
-  addMediaReference(): Observable<number> {
-    return this.dataService.post('api/Media/MediaReference', this.mediaReference);
-  }
 
 
-
-  // ------------------------------------------------------------------ Remove Media Reference -----------------------------------------------------
-  removeMediaReference() {
-    if (this.mediaType == MediaType.Image) {
-      this.mediaReference.mediaId = this.currentImage.id;
-      this.mediaReference.imageSizeType = this.currentImage.imageSizeType;
-    } else {
-      this.mediaReference.mediaId = this.currentVideo.id;
-    }
-
-    this.dataService.post('api/Media/MediaReferences/Remove', [this.mediaReference]).subscribe();
-  }
-
-
-
-
-
-  // ----------------------------------------------------------------------- delete Media -----------------------------------------------------------
-  deleteMedia() {
-    const mediaType = this.mediaType == MediaType.Image ? 'image' : 'video';
-    let id!: number;
-
-    if (this.selectedMedia) {
-      id = this.selectedMedia.id;
-    } else if (this.currentImage) {
-      id = this.currentImage.id;
-    } else if (this.currentVideo) {
-      id = this.currentVideo.id;
-    }
-
-
-    this.dataService.get<number>('api/Media/MediaReference/Count', [{ key: 'mediaId', value: id }])
-      .subscribe((referenceCount: number) => {
-        let message!: SafeHtml;
-        let primaryButtonName!: string;
-        let primaryButtonFunction!: Function;
-        let secondaryButtonName!: string;
-        let secondaryButtonFunction!: Function;
-
-        if (referenceCount > 0) {
-          message = this.sanitizer.bypassSecurityTrustHtml(
-            'This ' + mediaType + ' has ' + (referenceCount == 1 ? 'a dependency' : referenceCount + ' dependencies') +
-            ' and cannot be deleted. Before continuing, ' +
-            'you must remove all references to this ' + mediaType + '.');
-
-          primaryButtonName = 'Ok';
-          secondaryButtonName = 'Show References';
-          secondaryButtonFunction = () => {
-            if (this.selectedMedia) {
-              this.openMediaReferences(this.selectedMedia);
-            } else if (this.currentImage) {
-              this.dataService.get<Media>('api/Media/MediaInfo', [{ key: 'id', value: this.currentImage.id }])
-                .subscribe((media: Media) => {
-                  this.openMediaReferences(media);
-                });
-            }
-          }
-        } else {
-          message = this.sanitizer.bypassSecurityTrustHtml(
-            'Are you sure you want to permanently delete this ' + mediaType + '?');
-
-          primaryButtonName = 'Delete';
-          primaryButtonFunction = () => {
-            this.dataService.delete('api/Media', { id: id }).subscribe(() => {
-              if (this.mediaType == MediaType.Image) {
-                if (this.currentImage) {
-                  this.view = MediaBrowserView.ImagePreview;
-                  this.mode = MediaBrowserMode.Update;
-                  this.displayImage = new Image();
-                  this.displayImage.id = this.currentImage.id;
-                  this.displayImage.src = 'images/' + this.currentImage.src;
-                  this.displayImage.name = this.currentImage.name;
-                  this.nameInputDisabled = false;
-                } else if (this.selectedMedia) {
-                  this.view = this.mediaBrowserView.ImageSelect;
-                  this.hasMultiImages = false;
-                }
-              } else {
-                if (this.currentVideo) {
-                  this.view = MediaBrowserView.VideoPreview;
-                  this.mode = MediaBrowserMode.Update;
-                  this.displayVideo = new Video();
-                  this.displayVideo.id = this.currentVideo.id;
-                  this.displayVideo.src = this.currentVideo.src;
-                  this.displayVideo.name = this.currentVideo.name;
-                  this.nameInputDisabled = false;
-                } else if (this.selectedMedia) {
-                  this.view = this.mediaBrowserView.VideoSelect;
-                }
-              }
-
-
-              this.showCancelButton = false;
-              this.selectedMedia = null!;
-              this.submitButtonDisabled = true;
-            });
-          }
-          secondaryButtonName = 'Cancel';
-        }
-
-
-        this.lazyLoadingService.load(async () => {
-          const { PromptComponent } = await import('../prompt/prompt.component');
-          const { PromptModule } = await import('../prompt/prompt.module');
-
-          return {
-            component: PromptComponent,
-            module: PromptModule
-          }
-        }, SpinnerAction.None)
-          .then((prompt: PromptComponent) => {
-            prompt.title = this.mediaType == MediaType.Image ? 'Delete Image' : 'Delete Video';
-            prompt.message = message
-            prompt.primaryButton.name = primaryButtonName;
-            prompt.primaryButton.buttonFunction = primaryButtonFunction;
-            prompt.secondaryButton.name = secondaryButtonName;
-            prompt.secondaryButton.buttonFunction = secondaryButtonFunction;
-          });
-      });
-  }
 
 
 
@@ -593,30 +426,21 @@ export class MediaBrowserComponent extends LazyLoad {
 
   // -------------------------------------------------------------------- Set Selected Media -------------------------------------------------------
   public setSelectedMedia(): void {
-    // Add the media reference
-    this.mediaReference.mediaId = this.selectedMedia.id;
-
-
     // Video
     if (this.mediaType == MediaType.Video) {
-      this.addMediaReference()
-        .subscribe((referenceId: number) => {
-          const video = new Video({
-            video: {
-              id: this.selectedMedia.id,
-              name: this.selectedMedia.name,
-              thumbnail: this.selectedMedia.thumbnail,
-              videoType: this.selectedMedia.videoType,
-              videoId: this.selectedMedia.videoId
-            }
-          });
 
-          video.referenceId = referenceId;
-          this.callback(video);
-          this.close();
-        });
+      const video = new Video({
+        video: {
+          id: this.selectedMedia.id,
+          name: this.selectedMedia.name,
+          thumbnail: this.selectedMedia.thumbnail,
+          videoType: this.selectedMedia.videoType,
+          videoId: this.selectedMedia.videoId
+        }
+      });
 
-
+      this.callback(video);
+      this.close();
     }
 
     // Image
@@ -630,52 +454,36 @@ export class MediaBrowserComponent extends LazyLoad {
 
       // Small
       if (this.imageSizeType == ImageSizeType.Small) {
-        this.addMediaReference()
-          .subscribe((referenceId: number) => {
-            image.referenceId = referenceId;
-
-            if (this.selectedMedia.imageSm) {
-              image.src = this.selectedMedia.imageSm;
-              this.callback(image);
-              this.close();
-            } else {
-              const src = this.selectedMedia.imageAnySize ? this.selectedMedia.imageAnySize : this.selectedMedia.imageMd;
-              this.addImageSize(image, src);
-            }
-          });
-
+        if (this.selectedMedia.imageSm) {
+          image.src = this.selectedMedia.imageSm;
+          this.callback(image);
+          this.close();
+        } else {
+          const src = this.selectedMedia.imageAnySize ? this.selectedMedia.imageAnySize : this.selectedMedia.imageMd;
+          this.addImageSize(image, src);
+        }
 
         // Medium
       } else if (this.imageSizeType == ImageSizeType.Medium) {
-        this.addMediaReference()
-          .subscribe((referenceId: number) => {
-            image.referenceId = referenceId;
-
-            if (this.selectedMedia.imageMd) {
-              image.src = this.selectedMedia.imageMd;
-              this.callback(image);
-              this.close();
-            } else {
-              const src = this.selectedMedia.imageAnySize ? this.selectedMedia.imageAnySize : this.selectedMedia.imageSm;
-              this.addImageSize(image, src);
-            }
-          });
+        if (this.selectedMedia.imageMd) {
+          image.src = this.selectedMedia.imageMd;
+          this.callback(image);
+          this.close();
+        } else {
+          const src = this.selectedMedia.imageAnySize ? this.selectedMedia.imageAnySize : this.selectedMedia.imageSm;
+          this.addImageSize(image, src);
+        }
 
 
 
         // Any Size
       } else if (this.imageSizeType == ImageSizeType.AnySize) {
-        this.addMediaReference()
-          .subscribe((referenceId: number) => {
-            const imageSize = this.selectedMedia.getImageSizes()[0];
+        const imageSize = this.selectedMedia.getImageSizes()[0];
 
-            image.referenceId = referenceId;
-            image.imageSizeType = imageSize.imageSizeType;
-            image.src = this.selectedMedia.getImageSizes()[0].src;
-            this.mediaReference.imageSizeType = image.imageSizeType;
-            this.callback(image);
-            this.close();
-          });
+        image.imageSizeType = imageSize.imageSizeType;
+        image.src = this.selectedMedia.getImageSizes()[0].src;
+        this.callback(image);
+        this.close();
       }
     }
   }
@@ -739,107 +547,6 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-
-
-  // --------------------------------------------------------------------------- On ImagePreview Mousedown -------------------------------------------------------------
-  onImagePreviewMousedown(event: MouseEvent) {
-    if (event.button == 2) {
-      if (this.selectedMedia) {
-        this.openContextMenu(event, this.selectedMedia);
-      } else if (this.currentImage && !this.imageFile) {
-        this.dataService.get<Media>('api/Media/ImageInfo', [{ key: 'id', value: this.currentImage.id }])
-          .subscribe((media: Media) => {
-            this.openContextMenu(event, new Media(media));
-          });
-      } else {
-        this.openContextMenu(event, null!);
-      }
-    }
-  }
-
-
-
-
-
-
-  // --------------------------------------------------------------------------- Open Context Menu -------------------------------------------------------------
-  openContextMenu(event: MouseEvent, media: Media) {
-    this.selectedMedia = new Media(media);
-
-    this.lazyLoadingService.load(async () => {
-      const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
-      const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
-
-      return {
-        component: ContextMenuComponent,
-        module: ContextMenuModule
-      }
-    }, SpinnerAction.None)
-      .then((contextMenu: ContextMenuComponent) => {
-        this.dataService.get<number>('api/Media/MediaReference/Count', [{ key: 'mediaId', value: media.id }])
-          .subscribe((referenceCount: number) => {
-            contextMenu.xPos = event.clientX;
-            contextMenu.yPos = event.clientY;
-            contextMenu.options = [
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Image info',
-                isDisabled: !media,
-                optionFunction: () => {
-                  this.openImageInfo(media);
-                }
-              },
-              {
-                type: MenuOptionType.MenuItem,
-                name: 'Show all references',
-                isDisabled: !media || referenceCount == 0,
-                optionFunction: () => this.openMediaReferences(media)
-              },
-            ];
-          });
-      });
-  }
-
-
-
-
-  // --------------------------------------------------- Open Media References ---------------------------------------------------
-  private async openMediaReferences(media: Media): Promise<void> {
-    this.lazyLoadingService.load(async () => {
-      const { MediaReferencesComponent } = await import('../media-references/media-references.component');
-      const { MediaReferencesModule } = await import('../media-references/media-references.module');
-      return {
-        component: MediaReferencesComponent,
-        module: MediaReferencesModule
-      }
-    }, SpinnerAction.None)
-      .then((mediaReferences: MediaReferencesComponent) => {
-        mediaReferences.media = media;
-      });
-  }
-
-
-
-
-  // --------------------------------------------------- Open Image Info Popup ---------------------------------------------------
-  public async openImageInfo(media: Media): Promise<void> {
-    this.lazyLoadingService.load(async () => {
-      const { ImageInfoComponent } = await import('../image-info/image-info.component');
-      const { ImageInfoModule } = await import('../image-info/image-info.module');
-      return {
-        component: ImageInfoComponent,
-        module: ImageInfoModule
-      }
-    }, SpinnerAction.None)
-      .then((imageInfo: ImageInfoComponent) => {
-        imageInfo.media = media;
-        imageInfo.mediaBrowser = this;
-      });
-  }
-
-
-
-
   // ------------------------------------------------------------------------ Load Dropdown List ----------------------------------------------------------
   async loadDropdownList() {
     const dropdownListElement = document.getElementById('dropdownList');
@@ -888,22 +595,14 @@ export class MediaBrowserComponent extends LazyLoad {
   setSelectedImageSize(imageSize: ImageSize) {
     const image = new Image();
 
-    if (this.mode == MediaBrowserMode.Swap) this.removeMediaReference();
-
     image.id = this.selectedMedia.id;
     image.name = this.selectedMedia.name;
     image.thumbnail = this.selectedMedia.thumbnail;
     image.src = imageSize.src;
     image.imageSizeType = imageSize.imageSizeType;
 
-    this.mediaReference.mediaId = image.id;
-    this.mediaReference.imageSizeType = image.imageSizeType;
-    this.addMediaReference()
-      .subscribe((referenceId: number) => {
-        image.referenceId = referenceId;
-        this.callback(image);
-        this.close();
-      });
+    this.callback(image);
+    this.close();
   }
 
 
@@ -929,14 +628,8 @@ export class MediaBrowserComponent extends LazyLoad {
           this.displayVideo.id = video.id;
           this.displayVideo.thumbnail = video.thumbnail;
 
-          // Add the media reference
-          this.mediaReference.mediaId = video.id;
-          this.addMediaReference()
-            .subscribe((referenceId: number) => {
-              this.displayVideo.referenceId = referenceId;
-              this.callback(this.displayVideo);
-              this.close();
-            });
+          this.callback(this.displayVideo);
+          this.close();
 
         } else {
           this.lazyLoadingService.load(async () => {
@@ -1035,250 +728,84 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-
-
-
-
-
-  // // --------------------------------------------------------------------Search Media-------------------------------------------------------
-  // public searchMedia(searchWords: string): void {
-  //   // this.clear(true);
-
-  //   if (searchWords) {
-
-  //     const params = [
-  //       {
-  //         key: 'type',
-  //         value: this.mediaType
-  //       },
-  //       {
-  //         key: 'searchWords',
-  //         value: searchWords
-  //       }
-  //     ]
-
-  //     this.media = [];
-
-  //     this.dataService.get<Array<Media>>('api/Media/Search', [
-  //       {
-  //         key: 'type',
-  //         value: this.mediaType
-  //       },
-  //       {
-  //         key: 'searchWords',
-  //         value: searchWords
-  //       }
-  //     ])
-  //       .subscribe((media: Array<Media>) => {
-  //         this.view = MediaBrowserView.SearchResults;
-
-  //         media.forEach((media: Media) => this.media.push(new Media(media)));
-  //         // this.noSearchResults = media.length == 0;
-  //       });
-  //   } else {
-  //     this.view = MediaBrowserView.ImageSelect;
-  //   }
-  // }
-
-
-
-
-  // // --------------------------------------------------------------------Clear-------------------------------------------------------
-  // public clear(preserveSearchInput?: boolean): void {
-  //   this.searchMode = false;
-  //   this.newImage = null!;
-  //   this.isNewVideo = false;
-  //   this.noSearchResults = null!;
-  //   this.media = null!;
-  //   this.invalidVideoLink = null!;
-  //   if (!preserveSearchInput) this.searchInput.nativeElement.value = '';
-
-  // }
-
-
-
-
-
-
-  // // ------------------------------------------------------------On Searched Media Click------------------------------------------------
-  // public onSearchedMediaClick(media: Media) {
-  //   if (this.currentMediaType == MediaType.Video) {
-
-  //   } else {
-  //     const image = new Image();
-
-  //     image.id = media.id;
-  //     image.name = media.name;
-  //     image.thumbnail = media.thumbnail;
-  //     image.src = media.imageAnySize ? media.imageAnySize : media.imageMd ? media.imageMd : media.imageSm;
-  //     this.editedImage = image;
-  //     this.searchMode = false;
-  //   }
-  // }
-
-
-
-
-
-
-
-
-
-  // // ---------------------------------------------------------------On Rename Image Click--------------------------------------------------
-  // // onRenameImageClick(input: HTMLInputElement) {
-  // //   this.renamingImage = true;
-
-  // //   window.setTimeout(() => {
-  // //     input.select();
-  // //   });
-  // // }
-
-
-
-
-
-
-  // // ---------------------------------------------------------------------Rename Image--------------------------------------------------------
-  // renameImage(newName: string) {
-  //   this.dataService.put('api/Media/Name', { id: this.editedImage.id, name: newName })
-  //     .subscribe(() => {
-  //       this.editedImage.name = newName;
-  //       this.close();
-  //     });
-  // }
-
-
-
-
-
-
-
-  // // ------------------------------------------------------------------On Rename Image Click----------------------------------------------------
-  // onRenameVideoClick(input: HTMLInputElement) {
-  //   this.renamingVideo = true;
-
-  //   window.setTimeout(() => {
-  //     input.select();
-  //   });
-  // }
-
-
-
-
-
-
-  // // ---------------------------------------------------------------------Rename Video--------------------------------------------------------
-  // renameVideo(newName: string) {
-  //   this.dataService.put('api/Media/Name', { id: this.editedVideo.id, name: newName })
-  //     .subscribe(() => {
-  //       this.editedVideo.name = newName;
-  //       this.close();
-  //     });
-  // }
-
-
-
-
-
-
-
-
-
-
-
-
-  // // ------------------------------------------------------------------Update Video----------------------------------------------------
-  // public updateVideo(url: string): void {
-  //   const video = new Video({ url: url });
-
-  //   if (video.src) {
-  //     this.editedVideo.videoId = video.videoId;
-
-  //     this.dataService.put<Video>('api/Media/UpdateVideo', this.editedVideo)
-  //       .subscribe((updatedVideo: Video) => {
-  //         this.editedVideo.thumbnail = updatedVideo.thumbnail;
-  //         this.editedVideo.src = video.src;
-  //         this.close();
-  //       });
-  //   } else {
-  //     this.invalidVideoLink = true;
-  //   }
-  // }
-
-
-
-
-
-  // // ----------------------------------------------------------------On Delete Media Click-------------------------------------------------
-  // async onDeleteMediaClick() {
-  //   this.lazyLoadingService.load(async () => {
-  //     const { PromptComponent } = await import('../prompt/prompt.component');
-  //     const { PromptModule } = await import('../prompt/prompt.module');
-
-  //     return {
-  //       component: PromptComponent,
-  //       module: PromptModule
-  //     }
-  //   }, SpinnerAction.None).then((prompt: PromptComponent) => {
-  //     const media = this.currentMediaType == MediaType.Image ? 'image' : 'video';
-
-  //     const message = '<span style="color: #ff0000; font-weight: bold">Warning: </span><span>This operation cannot be undone. ' +
-  //       'Before proceeding, make sure there are no dependencies on this ' + media + '. </span><span style="font-weight: bold; ' +
-  //       'text-decoration: underline">Continue at your own risk!</span>';
-
-  //     prompt.parentObj = this;
-  //     prompt.title = 'Delete ' + media;
-  //     prompt.message = this.sanitizer.bypassSecurityTrustHtml(message);
-  //     prompt.primaryButton = {
-  //       name: 'Delete',
-  //       buttonFunction: this.deleteMedia
-  //     }
-  //     prompt.secondaryButton = {
-  //       name: 'Cancel'
-  //     }
-  //   });
-  // }
-
-
-
-
-
-  // // --------------------------------------------------------------------Delete Image------------------------------------------------------
-  // deleteMedia() {
-  //   this.dataService.delete('api/Media', {
-  //     id: this.currentMediaType == MediaType.Image ? this.editedImage.id : this.editedVideo.id
-  //   }).subscribe(() => {
-  //     this.close();
-  //   });
-  // }
-
-
-
-
-
-
-
-
-
-
-  // // --------------------------------------------------------------------Display Edited Video------------------------------------------------------
-  // displayEditedVideo(video: Video) {
-  //   this.editedVideo = video;
-
-  //   window.setTimeout(() => {
-  //     const editedVideoIframe = document.getElementById('editedVideoIframe') as HTMLIFrameElement;
-
-  //     editedVideoIframe.src = this.editedVideo.src;
-  //   });
-  // }
-
-
-
-
-
-
-
-
-
-
+  // ----------------------------------------------------------------On Delete Media Click-------------------------------------------------
+  async onDeleteMediaClick() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../prompt/prompt.component');
+      const { PromptModule } = await import('../prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      const media = this.mediaType == MediaType.Image ? 'image' : 'video';
+
+      const message = '<span style="color: #ff0000; font-weight: bold">Warning: </span><span>This operation cannot be undone. ' +
+        'Before proceeding, make sure there are no dependencies on this ' + media + '. </span><span style="font-weight: bold; ' +
+        'text-decoration: underline">Continue at your own risk!</span>';
+
+      prompt.parentObj = this;
+      prompt.title = 'Delete ' + media;
+      prompt.message = this.sanitizer.bypassSecurityTrustHtml(message);
+      prompt.primaryButton = {
+        name: 'Delete',
+        buttonFunction: this.deleteMedia
+      }
+      prompt.secondaryButton = {
+        name: 'Cancel'
+      }
+    });
+  }
+
+
+
+
+
+  // ------------------------------------------------------------------- Delete Media ------------------------------------------------------
+  deleteMedia() {
+    let id!: number;
+
+    if (this.selectedMedia) {
+      id = this.selectedMedia.id;
+    } else if (this.currentImage) {
+      id = this.currentImage.id;
+    } else if (this.currentVideo) {
+      id = this.currentVideo.id;
+    }
+
+    this.dataService.delete('api/Media', { id: id }).subscribe(() => {
+      if (this.mediaType == MediaType.Image) {
+        if (this.currentImage) {
+          this.view = MediaBrowserView.ImagePreview;
+          this.mode = MediaBrowserMode.Update;
+          this.displayImage = new Image();
+          this.displayImage.id = this.currentImage.id;
+          this.displayImage.src = 'images/' + this.currentImage.src;
+          this.displayImage.name = this.currentImage.name;
+          this.nameInputDisabled = false;
+        } else if (this.selectedMedia) {
+          this.view = this.mediaBrowserView.ImageSelect;
+          this.hasMultiImages = false;
+        }
+      } else {
+        if (this.currentVideo) {
+          this.view = MediaBrowserView.VideoPreview;
+          this.mode = MediaBrowserMode.Update;
+          this.displayVideo = new Video();
+          this.displayVideo.id = this.currentVideo.id;
+          this.displayVideo.src = this.currentVideo.src;
+          this.displayVideo.name = this.currentVideo.name;
+          this.nameInputDisabled = false;
+        } else if (this.selectedMedia) {
+          this.view = this.mediaBrowserView.VideoSelect;
+        }
+      }
+
+
+      this.showCancelButton = false;
+      this.selectedMedia = null!;
+      this.submitButtonDisabled = true;
+    });
+  }
 }

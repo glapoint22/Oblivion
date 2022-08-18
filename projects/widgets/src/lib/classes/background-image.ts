@@ -154,7 +154,6 @@ export class BackgroundImage extends Image {
         backgroundImage.repeat = this.repeat;
         backgroundImage.attachment = this.attachment;
         backgroundImage.imageSizeType = this.imageSizeType;
-        backgroundImage.referenceId = this.referenceId;
 
         return backgroundImage;
     }

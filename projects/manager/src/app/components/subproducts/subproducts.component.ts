@@ -1,8 +1,7 @@
 import { Component, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Subproduct } from 'common';
 import { TitleCase } from 'text-box';
-import { BuilderType, MediaLocation, SubproductType } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
+import { SubproductType } from '../../classes/enums';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
 import { ValuePopupComponent } from '../value-popup/value-popup.component';
 
@@ -38,7 +37,7 @@ export class SubproductsComponent {
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, subproduct.image, this.GetMediaReference(subproduct), ImageSizeType.Small, subproduct.name);
+        mediaBrowser.init(MediaType.Image, subproduct.image, ImageSizeType.Small, subproduct.name);
 
         // Callback
         mediaBrowser.callback = (image: Image) => {
@@ -60,26 +59,12 @@ export class SubproductsComponent {
   public removeImage(subproduct: Subproduct) {
     // Remove the image
     this.dataService.delete('api/Products/Subproduct/Image', { subproductId: subproduct.id }).subscribe();
-    this.removeMediaReference(subproduct);
     subproduct.image.src = null!;
   }
 
 
 
-  private removeMediaReference(subproduct: Subproduct) {
-    this.dataService.post('api/Media/MediaReferences/Remove', [this.GetMediaReference(subproduct)]).subscribe();
-  }
-
-  // ------------------------------------------------------ Get Image Reference ---------------------------------------------------
-  GetMediaReference(subproduct: Subproduct): MediaReference {
-    return {
-      mediaId: subproduct.image.id,
-      imageSizeType: ImageSizeType.Small,
-      builder: BuilderType.Product,
-      hostId: this.productId,
-      location: this.subproductType == SubproductType.Component ? MediaLocation.Component : MediaLocation.Bonus
-    }
-  }
+  
 
 
 
@@ -173,7 +158,6 @@ export class SubproductsComponent {
 
   // ------------------------------------------------------------ Delete Subproduct ---------------------------------------------------
   deleteSubproduct(index: number, id: number): void {
-    this.removeMediaReference(this.subproducts[index]);
     this.subproducts.splice(index, 1);
 
     this.dataService.delete('api/Products/Subproduct', {

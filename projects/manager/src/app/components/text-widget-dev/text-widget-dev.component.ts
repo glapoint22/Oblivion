@@ -1,10 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { TextBoxDev } from 'text-box';
 import { Enableable, TextWidgetComponent, TextWidgetData } from 'widgets';
-import { BuilderType, MediaLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
-import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
+import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -73,38 +70,5 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
 
   ngOnDestroy() {
     this.widgetService.widgetDocument.removeEventListener('mousemove', this.onMousemove);
-  }
-
-
-  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getMediaReference() {
-    return {
-      mediaId: this.background.image.id,
-      imageSizeType: this.background.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: MediaLocation.TextWidgetBackground
-    }
-  }
-
-
-
-  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
-  public getReferenceIds(update?: boolean): Array<number> {
-    let referenceIds: Array<number> = new Array<number>();
-
-    if (this.background.image && this.background.image.src) {
-      referenceIds.push(this.background.image.referenceId);
-
-      if (update) {
-        const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
-          .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
-            const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.background.image.referenceId)?.newId;
-            this.background.image.referenceId = referenceId!;
-            subscription.unsubscribe();
-          });
-      }
-    }
-    return referenceIds;
   }
 }

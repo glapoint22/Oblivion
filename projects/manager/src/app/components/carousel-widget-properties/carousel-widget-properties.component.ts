@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DataService } from 'common';
 import { CarouselBanner } from 'widgets';
 import { WidgetProperties } from '../../classes/widget-properties';
 import { WidgetService } from '../../services/widget/widget.service';
@@ -13,7 +12,7 @@ import { CounterComponent } from '../counter/counter.component';
 })
 export class CarouselWidgetPropertiesComponent extends WidgetProperties<CarouselWidgetDevComponent> {
 
-  constructor(widgetService: WidgetService, private dataService: DataService) { super(widgetService) }
+  constructor(widgetService: WidgetService) { super(widgetService) }
 
 
   // --------------------------------------------------------------------- Add Banner --------------------------------------------------------
@@ -28,7 +27,6 @@ export class CarouselWidgetPropertiesComponent extends WidgetProperties<Carousel
   // --------------------------------------------------------------------- Delete Banner --------------------------------------------------------
   deleteBanner(counter: CounterComponent) {
     if (this.widget.banners[this.widget.currentBannerIndex].image && this.widget.banners[this.widget.currentBannerIndex].image.src) {
-      this.dataService.post('api/Media/MediaReferences/Remove', [this.widget.banners[this.widget.currentBannerIndex].image.referenceId]).subscribe();
     }
 
 

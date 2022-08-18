@@ -27,9 +27,7 @@
     <div *ngIf="widget.banners.length > 0; else placeholder">
         <!-- Banner -->
         <div class="property-label">Banner:</div>
-        <image-box [image]="widget.banners[widget.currentBannerIndex].image"
-            [mediaReference]="widget.getMediaReference(widget.banners[widget.currentBannerIndex])"
-            (onChange)="update()"></image-box>
+        <image-box [image]="widget.banners[widget.currentBannerIndex].image" (onChange)="update()"></image-box>
 
 
         <!-- Link -->

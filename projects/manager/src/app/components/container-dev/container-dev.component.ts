@@ -345,9 +345,7 @@ export class ContainerDevComponent extends ContainerComponent {
   // ------------------------------------------------------------------------ Delete Row ---------------------------------------------------------
   public deleteRow(row: RowDevComponent): void {
     const index = this.rows.findIndex(x => x == row);
-    const referenceIds = row.getReferenceIds();
 
-    this.widgetService.page.removeMediaReferences(referenceIds);
     this.rows.splice(index, 1);
     this.viewContainerRef.remove(index);
     this.widgetService.deselectWidget();
@@ -471,84 +469,31 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
 
-
-
   // ------------------------------------------------------------------------------ Paste -------------------------------------------------------------
   public paste(y: number): void {
     const top = this.getRowTop(y);
 
     // Widget
     if (this.widgetService.clipboard instanceof WidgetData) {
-      const row = new Row(top);
-
-      row.columns.push(new Column(12, this.widgetService.clipboard));
-      this.createRow(row);
-      this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
-      this.updateWidgetReferenceId();
+      this.addWidget(this.widgetService.clipboard, top);
     }
 
     // Row
     else if (this.widgetService.clipboard instanceof Row) {
       this.addRow(this.widgetService.clipboard, top);
-
-      const subscription: Subscription = this.widgetService.$onRowCreated
-        .subscribe(() => {
-          const referenceIds: Array<number> = this.widgetService.selectedRow.getReferenceIds(true);
-
-          subscription.unsubscribe();
-          if (referenceIds.length > 0) {
-            this.widgetService.updateMediaReferenceIds(referenceIds)
-              .subscribe(() => {
-                this.widgetService.page.save();
-              });
-            return;
-          }
-
-          this.widgetService.page.save();
-        });
     }
 
     // Column
     else if (this.widgetService.clipboard instanceof Column) {
       const column = this.widgetService.clipboard;
 
-      column.widgetData.width = null!;
       column.columnSpan = new ColumnSpan(12);
       this.addColumn(column, top);
-      this.updateWidgetReferenceId();
     }
   }
 
 
-
-  // ------------------------------------------------------------------------ Update Widget Reference Id -----------------------------------------------------------
-  updateWidgetReferenceId() {
-    const subscription: Subscription = this.widgetService.$onWidgetCreated
-      .subscribe(() => {
-        const widget = this.widgetService.selectedWidget;
-
-        subscription.unsubscribe();
-
-        if (widget instanceof ButtonWidgetDevComponent ||
-          widget instanceof ImageWidgetDevComponent ||
-          widget instanceof ContainerWidgetDevComponent ||
-          widget instanceof CarouselWidgetDevComponent ||
-          widget instanceof TextWidgetDevComponent ||
-          widget instanceof VideoWidgetDevComponent) {
-
-          const referenceIds: Array<number> = widget.getReferenceIds(true);
-
-          if (referenceIds.length > 0) {
-            this.widgetService.updateMediaReferenceIds(referenceIds)
-              .subscribe(() => {
-                this.widgetService.page.save();
-              });
-            return;
-          }
-        }
-        this.widgetService.page.save();
-      });
-  }
+  
 
   // ----------------------------------------------------------------------- Move Row Index ---------------------------------------------------------
   private moveRowIndex(from: number, to: number): void {
@@ -676,21 +621,5 @@ export class ContainerDevComponent extends ContainerComponent {
     });
 
     return rows;
-  }
-
-
-  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
-  public getReferenceIds(update?: boolean): Array<number> {
-    let referenceIds: Array<number> = new Array<number>();
-
-    if (this.page.pageContent.background.image && this.page.pageContent.background.image.src) {
-      referenceIds.push(this.page.pageContent.background.image.referenceId);
-    }
-
-    this.rows.forEach((row: RowDevComponent) => {
-      referenceIds = row.getReferenceIds(update).concat(referenceIds);
-    });
-
-    return referenceIds;
   }
 }

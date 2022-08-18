@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { ImageWidgetComponent } from 'widgets';
-import { BuilderType, MediaLocation, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
-import { UpdatedMediaReferenceId } from '../../classes/updated-media-reference-id';
+import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -37,37 +34,5 @@ export class ImageWidgetDevComponent extends ImageWidgetComponent {
         this.hidden = false;
       });
     }
-  }
-
-
-
-  // ------------------------------------------------------------------------ Get Image Reference --------------------------------------------------
-  public getMediaReference() {
-    return {
-      mediaId: this.image.id,
-      imageSizeType: this.image.imageSizeType,
-      builder: BuilderType.Page,
-      hostId: this.widgetService.page.id,
-      location: MediaLocation.ImageWidget
-    }
-  }
-
-
-  // -------------------------------------------------------------------------- Get Reference Ids --------------------------------------------------
-  public getReferenceIds(update?: boolean): Array<number> {
-    const referenceIds: Array<number> = new Array<number>();
-
-    referenceIds.push(this.image.referenceId);
-
-    if (update) {
-      const subscription: Subscription = this.widgetService.$mediaReferenceUpdate
-        .subscribe((updatedMediaReferenceIds: Array<UpdatedMediaReferenceId>) => {
-          const referenceId = updatedMediaReferenceIds.find(x => x.oldId == this.image.referenceId)?.newId;
-          this.image.referenceId = referenceId!;
-          subscription.unsubscribe();
-        });
-    }
-
-    return referenceIds;
   }
 }

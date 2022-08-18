@@ -1,11 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
-import { debounceTime, Observable, Subject } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { WidgetInspectorView } from '../../classes/enums';
-import { MediaReference } from '../../classes/media-reference';
 import { PageData } from '../../classes/page-data';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -185,24 +184,13 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // ----------------------------------------------------------------------------- Delete Page -------------------------------------------------------------------
   private deletePage(): void {
-    const mediaReferences = this.container.getReferenceIds();
-
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.None;
-    this.removeMediaReferences(mediaReferences);
 
     this.dataService.delete('api/Pages', { pageId: this.id })
       .subscribe(() => {
         this.clear();
       });
   }
-
-
-
-  // -------------------------------------------------------------------------- Remove Image References -------------------------------------------------------------------
-  public removeMediaReferences(referenceIds: Array<number>) {
-    this.dataService.post('api/Media/MediaReferences/Remove', referenceIds).subscribe();
-  }
-
 
 
 
