@@ -12,16 +12,12 @@ import { LazyLoadingService } from 'common';
 })
 export class ListComponent implements OnInit {
   public listManager!: ListManager;
+
   @Input() sourceList!: Array<ListItem>;
   @Input() options: ListOptions = new ListOptions();
   @Output() onListUpdate: EventEmitter<ListUpdate> = new EventEmitter();
+
   constructor(public lazyLoadingService: LazyLoadingService) { }
-
-
-  instantiate() {
-    this.listManager = new ListManager(this.lazyLoadingService);
-    this.setListOptions();
-  }
 
 
   ngOnInit(): void {
@@ -30,14 +26,17 @@ export class ListComponent implements OnInit {
     this.listManager.onListUpdate.subscribe((listUpdate) => {
       this.onListUpdate.emit(listUpdate);
     });
-  }
-
-
-
-  ngAfterViewInit() {
+    
+    // Delay to prevent ExpressionChangedAfterItHasBeenCheckedError
     window.setTimeout(() => {
       this.initializeListUpdate();
     })
+  }
+
+
+  instantiate() {
+    this.listManager = new ListManager(this.lazyLoadingService);
+    this.setListOptions();
   }
 
 
