@@ -5,7 +5,6 @@ import { MenuOptionType } from '../../classes/enums';
 import { MenuBarButton } from '../../classes/menu-bar-button';
 import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
-import { VendorFormComponent } from '../vendor-form/vendor-form.component';
 
 @Component({
   selector: 'menu-bar',
@@ -308,6 +307,19 @@ export class MenuBarComponent {
       return {
         component: ProductGroupsFormComponent,
         module: ProductGroupsFormModule
+      }
+    }, SpinnerAction.None)
+  }
+
+
+
+  openNotificationsPopup() {
+    this.lazyLoadingService.load(async () => {
+      const { NotificationsPopupComponent } = await import('../notifications-popup/notifications-popup.component');
+      const { NotificationsPopupModule } = await import('../notifications-popup/notifications-popup.module');
+      return {
+        component: NotificationsPopupComponent,
+        module: NotificationsPopupModule
       }
     }, SpinnerAction.None)
   }

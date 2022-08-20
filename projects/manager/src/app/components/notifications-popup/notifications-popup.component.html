@@ -1,0 +1,53 @@
+<div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-up-Border"></div>
+        <div class="popup-arrow-up-background"></div>
+    </div>
+
+
+    <div class="popup-base">
+        <search #search [apiUrl]="'Vendors/Search'" (onItemSelect)="onNotificationSelect($event)"
+            [placeholderText]="'Search for a notification'">
+        </search>
+
+
+
+
+        <div class="trumpy">
+            <div class="tabs-container">
+                <div class="tab" [ngClass]="{'selected-tab': newTabSelected}" (click)="newTabSelected = true">New (36)</div>
+                <div class="tab" [ngClass]="{'selected-tab': !newTabSelected}" (click)="newTabSelected = false">Archive</div>
+            </div>
+            
+            <icon-button [icon]="'fa-solid fa-arrows-rotate'"
+                         [title]="'Refresh'"
+                         [isDisabled]="false"
+                         (onClick)="null">
+            </icon-button>
+        </div>
+
+        <div class="columns-container">
+        
+            <div class="column" (click)="onTypeColumnClick()">
+                Type
+                <div class="order-by-arrow" [ngStyle]="{'opacity': orderByDateSelected ? 0 : 1, 'transform': orderByArrowUp ? 'rotate(0)' : 'rotate(180deg)'}"></div>
+            </div>
+
+
+
+            <div class="column" (click)="onDateColumnClick()">
+                Date
+                <div class="order-by-arrow" [ngStyle]="{'opacity': orderByDateSelected ? 1 : 0, 'transform': orderByArrowUp ? 'rotate(0)' : 'rotate(180deg)'}"></div>
+            </div>
+        </div>
+
+        <div class="modal-list-container"></div>
+    </div>
+
+
+
+
+
+
+</div>
