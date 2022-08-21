@@ -1,4 +1,5 @@
 import { Image, IProduct, PricePoint, RecurringPayment, ShippingType, Subproduct } from "common";
+import { ProductMedia } from "./product-media";
 import { Vendor } from "./vendor";
 
 export class Product implements IProduct {
@@ -15,4 +16,5 @@ export class Product implements IProduct {
     public components!: Array<Subproduct>;
     public bonuses!: Array<Subproduct>;
     public image: Image = new Image();
+    public media!: Array<ProductMedia>;
 }

@@ -1,7 +1,7 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
-import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct } from 'common';
+import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct, Video } from 'common';
 import { PopupArrowPosition, SubproductType } from '../../classes/enums';
 import { Product } from '../../classes/product';
 import { ProductService } from '../../services/product/product.service';
@@ -19,6 +19,7 @@ import { CheckboxMultiColumnItem } from '../../classes/checkbox-multi-column-ite
 import { CheckboxItem } from '../../classes/checkbox-item';
 import { KeywordCheckboxItem } from '../../classes/keyword-checkbox-item';
 import { KeywordCheckboxMultiColumnItem } from '../../classes/keyword-checkbox-multi-column-item';
+import { ProductMedia } from '../../classes/product-media';
 
 @Component({
   selector: 'product-properties',
@@ -49,6 +50,9 @@ export class ProductPropertiesComponent {
   public selectedKeywordSearchArray: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
   public productProductGroupArray: Array<CheckboxItem> = new Array<CheckboxItem>();
   public productProductGroupSearchArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+  public selectedMedia!: ProductMedia;
+  public MediaType = MediaType;
+  public productMediaSpacing: number = 57;
 
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
@@ -65,6 +69,31 @@ export class ProductPropertiesComponent {
 
 
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private productService: ProductService) { }
+
+
+  ngOnInit() {
+    if (this.product && this.product.media && this.product.media.length > 0) {
+      this.selectedMedia = this.product.media[0];
+    }
+
+
+    // ***************** TEMP!!! **********************
+    for (let i = 0; i < this.product.media.length; i++) {
+      const productMedia = this.product.media[i];
+
+      productMedia.index = i;
+    }
+
+
+
+    for (let i = 0; i < this.product.media.length; i++) {
+      const productMedia = this.product.media[i];
+
+      productMedia.top = this.productMediaSpacing * productMedia.index;
+    }
+
+
+  }
 
 
   openVendorPopup() {
@@ -374,31 +403,203 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
+        let mediaType!: MediaType;
+        let media!: Image | Video;
+        let productName!: string;
+
+        if (this.product.media && this.product.media.length > 0) {
+          productName = null!;
+
+          if (this.selectedMedia.type == MediaType.Image) {
+            mediaType = MediaType.Image;
+            media = new Image();
+            media.id = this.selectedMedia.id;
+            media.name = this.selectedMedia.name;
+            media.src = this.selectedMedia.imageMd;
+            media.thumbnail = this.selectedMedia.thumbnail;
+            media.imageSizeType = ImageSizeType.Medium;
+          } else {
+            mediaType = MediaType.Video;
+            media = new Video({
+              video: {
+                id: this.selectedMedia.id,
+                name: this.selectedMedia.name,
+                thumbnail: this.selectedMedia.thumbnail,
+                videoType: this.selectedMedia.videoType,
+                videoId: this.selectedMedia.videoId
+              }
+            });
+          }
+        } else {
+          mediaType = MediaType.Image;
+          media = new Image();
+          media.imageSizeType = ImageSizeType.Medium;
+          productName = this.product.name;
+        }
+
+
+
+
         // Initialize the media browser
-        mediaBrowser.init(MediaType.Image, this.product.image, ImageSizeType.Medium, this.product.name);
+        mediaBrowser.init(mediaType, media, ImageSizeType.Medium, productName);
 
         // Callback
-        mediaBrowser.callback = (image: Image) => {
-          if (image) {
-            this.product.image.id = image.id;
-            this.product.image.name = image.name;
-            this.product.image.src = image.src;
+        mediaBrowser.callback = (newMedia: Image | Video) => {
+          let oldMediaId!: number;
 
-            // Update the image
-            this.dataService.put('api/Products/Image', {
-              itemId: this.product.id,
-              propertyId: this.product.image.id
-            }).subscribe();
+          if (!this.selectedMedia) {
+            this.selectedMedia = new ProductMedia();
+            this.selectedMedia.type = MediaType.Image;
+          } else {
+            oldMediaId = this.selectedMedia.id;
           }
+
+
+
+          this.selectedMedia.name = newMedia.name;
+          this.selectedMedia.id = newMedia.id;
+          this.selectedMedia.thumbnail = newMedia.thumbnail;
+
+          if (this.selectedMedia.type == MediaType.Image) {
+            this.selectedMedia.imageMd = newMedia.src;
+          } else {
+            const video = newMedia as Video;
+
+            this.selectedMedia.videoType = video.videoType;
+            this.selectedMedia.videoId = video.videoId;
+
+            const iframe = document.getElementById('video-iframe') as HTMLIFrameElement;
+            iframe.src = new Video({
+              video: {
+                id: video.id,
+                name: video.name,
+                thumbnail: video.thumbnail,
+                videoType: video.videoType,
+                videoId: video.videoId
+              }
+            }).src;
+          }
+
+
+          this.dataService.put('api/Products/Media', {
+            productId: this.product.id,
+            oldMediaId: oldMediaId,
+            newMediaId: this.selectedMedia.id
+          }).subscribe();
+
         }
       });
   }
 
 
-  // --------------------------------------------------- Remove Product Image ---------------------------------------------------
-  public removeProductImage() {
+  // --------------------------------------------------- Remove Product Media ---------------------------------------------------
+  public removeProductMedia() {
     // Remove the image
-    this.dataService.delete('api/Products/Image', { productId: this.product.id }).subscribe();
-    this.product.image.src = null!;
+    this.dataService.delete('api/Products/Media', { productId: this.product.id, mediaId: this.selectedMedia.id })
+      .subscribe(() => {
+        let arrayIndex = this.product.media.findIndex(x => this.selectedMedia == x);
+        let index = this.selectedMedia.index + 1;
+        let selectedMedia!: ProductMedia;
+
+        this.product.media.splice(arrayIndex, 1);
+
+        do {
+          selectedMedia = this.product.media.find(x => x.index == index)!;
+
+          if (selectedMedia) {
+            selectedMedia.index--;
+            selectedMedia.top = this.productMediaSpacing * selectedMedia.index;
+            selectedMedia.transition = 'all 0ms ease 0s';
+            index++;
+          }
+
+        } while (selectedMedia);
+
+        if (this.selectedMedia.index == this.product.media.length) {
+          selectedMedia = this.product.media.find(x => x.index == this.selectedMedia.index - 1)!;
+        } else {
+          selectedMedia = this.product.media.find(x => x.index == this.selectedMedia.index)!;
+        }
+
+        if (selectedMedia) {
+          this.onMediaSelect(selectedMedia);
+        } else {
+          this.selectedMedia = null!;
+        }
+
+      });
+  }
+
+
+
+
+
+
+  // --------------------------------------------------- On Media Select ---------------------------------------------------
+  onMediaSelect(productMedia: ProductMedia, mousedownEvent?: MouseEvent) {
+    productMedia.transition = 'all 0ms ease 0s';
+
+    if (productMedia.type == MediaType.Video) {
+      window.setTimeout(() => {
+        const iframe = document.getElementById('video-iframe') as HTMLIFrameElement;
+        const src = new Video({
+          video: {
+            id: productMedia.id,
+            name: productMedia.name,
+            thumbnail: productMedia.thumbnail,
+            videoType: productMedia.videoType,
+            videoId: productMedia.videoId
+          }
+        }).src;
+
+        if (iframe.src != src) iframe.src = src;
+      });
+    }
+
+    this.selectedMedia = productMedia;
+
+    if (mousedownEvent) {
+      const mediaContainerElement = (mousedownEvent.target as HTMLElement).parentElement?.parentElement!;
+      const mediaContainerElementScrollHeight = mediaContainerElement.scrollHeight;
+      const mediaContainerElementHeight = mediaContainerElement.clientHeight;
+      let currentTop: number;
+      let yPos = mousedownEvent.clientY;
+
+
+      const onMousemove = (mousemoveEvent: MouseEvent) => {
+        const direction = Math.sign(yPos - mousemoveEvent.clientY);
+
+        yPos = mousemoveEvent.clientY;
+        this.selectedMedia.top = Math.min(mediaContainerElementScrollHeight - 50, Math.max(0, this.selectedMedia.top + mousemoveEvent.movementY));
+        currentTop = Math.round(this.selectedMedia.top / this.productMediaSpacing) * this.productMediaSpacing;
+
+        const currentMedia = this.product.media.find(x => x.top == currentTop);
+
+        if (currentMedia && currentMedia != this.selectedMedia) {
+          currentMedia.transition = 'all 200ms cubic-bezier(0.22, 0.5, 0.5, 1) 0s';
+          currentMedia.index = currentMedia.index + 1 * direction;
+          currentMedia.top = currentMedia.index * this.productMediaSpacing;
+        }
+
+
+        if (this.selectedMedia.top > mediaContainerElementHeight - 50) {
+          mediaContainerElement?.scrollTo(0, mediaContainerElement.scrollTop + mousemoveEvent.movementY)
+        }
+      }
+
+      const onMouseup = () => {
+        document.removeEventListener('mousemove', onMousemove);
+        document.removeEventListener('mouseup', onMouseup);
+
+        if (currentTop != undefined) {
+          this.selectedMedia.top = Math.min((this.product.media.length - 1) * this.productMediaSpacing, currentTop);
+          this.selectedMedia.index = Math.round(this.selectedMedia.top / this.productMediaSpacing);
+          this.selectedMedia.transition = 'all 200ms cubic-bezier(0.22, 0.5, 0.5, 1) 0s';
+        }
+      }
+
+      document.addEventListener('mousemove', onMousemove);
+      document.addEventListener('mouseup', onMouseup);
+    }
   }
 }

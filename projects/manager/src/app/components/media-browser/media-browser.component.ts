@@ -799,6 +799,7 @@ export class MediaBrowserComponent extends LazyLoad {
           this.nameInputDisabled = false;
         } else if (this.selectedMedia) {
           this.view = this.mediaBrowserView.VideoSelect;
+          this.displayVideo = null!;
         }
       }
 
