@@ -5,7 +5,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 9px;
+    padding: 0 18px 0 9px;
 }
 
 .left-container {
@@ -48,9 +48,7 @@ a {
     margin: 0 20px;
 }
 
-.fa-bell {
-    font-size: 20px;
-}
+
 
 .selected {
     background: rgb(255, 186, 0, 0.1);
