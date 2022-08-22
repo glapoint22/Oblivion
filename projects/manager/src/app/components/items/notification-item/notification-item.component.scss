@@ -5,6 +5,7 @@
 }
 
 .image-container {
+    position: relative;
     display: flex;
     width: 36px;
     height: 36px;
@@ -12,6 +13,7 @@
     align-items: center;
     border: 1px solid #444444;
     margin-right: 4px;
+    flex-shrink: 0;
 }
 
 .selected-item {
@@ -24,7 +26,25 @@
     }
 }
 
+
 img {
     max-width: 30px;
     max-height: 30px;
+}
+
+
+.count-circle {
+    position: absolute;
+    padding-right: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    background: #fa3e3e;
+    right: -7px;
+    top: -2px;
+    color: white;
+    font-size: 0.75rem;
 }

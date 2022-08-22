@@ -9,7 +9,7 @@
 .popup-arrow-container {
     position: relative;
     width: 24px;
-    left: 367px;
+    left: 420px;
 }
 
 .popup-arrow-up-Border {
@@ -29,7 +29,7 @@
 
 
 .popup-base {
-    padding: 10px 10px 9px;
+    padding: 6px 10px 9px;
     background: #282828;
     border: 1px solid #414141;
     border-radius: 5px;
@@ -41,8 +41,7 @@
     display: flex;
     top: 1px;
     width: 100%;
-    margin-top: 15px;
-    padding: 0 5px 0 107px;
+    padding: 0 5px 0 135px;
     justify-content: space-between;
     @include tabs(80px,
         22px,
@@ -57,52 +56,21 @@
 }
 
 .modal-list-container {
-    width: 378px;
+    width: 430px;
+    height: 402px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-}
-
-
-.order-by-arrow {
-    margin: 0 0 3px 7px;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: 7px solid #878787;
 }
 
 
 .columns-container {
     display: flex;
     align-items: center;
-    height: 23px;
+    height: 20px;
     background: #2d2d2d;
     border: 1px solid #363636;
     border-top-color: #424242;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     padding: 0 2px;
-}
-
-.column {
-    display: flex;
-    width: 100%;
-    padding: 2px 0 1px 7px;
-    align-items: flex-end;
-    font-size: 12px;
-    color: #646464;
-    user-select: none;
-    cursor: pointer;
-
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.04);
-    }
-
-    &:first-child {
-        flex: 3.05;
-    }
-
-    &:last-child {
-        flex: 1;
-        margin-left: 20px;
-    }
 }

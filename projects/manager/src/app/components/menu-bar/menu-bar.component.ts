@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../classes/enums';
 import { MenuBarButton } from '../../classes/menu-bar-button';
 import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
@@ -144,9 +144,12 @@ export class MenuBarComponent {
     }
   ]
 
-  constructor(public lazyLoadingService: LazyLoadingService, private router: Router) { }
+  constructor(public lazyLoadingService: LazyLoadingService, private router: Router, private dataService: DataService) { }
 
 
+  ngOnInit() {
+    
+  }
 
 
   onMenuBarButtonOver(htmlMenuBarButton: HTMLElement, menuBarButton: MenuBarButton) {

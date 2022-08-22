@@ -16,7 +16,9 @@
     outline: none;
     align-items: center;
     line-height: 22px;
-    
+    overflow: hidden;
+
+
 
     &:hover:not(.no-hover):not(.unselected-item):not(.transparent-item):not(.edited-item):not(.selected-item-top):not(.selected-item-middle):not(.selected-item-bottom):not(.selected-item-all) {
         background: rgba(255, 187, 0, 0.08);
@@ -25,6 +27,10 @@
 }
 
 
+.item-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 
 .selected-item:not(.transparent-item):not(.edited-item) {
@@ -54,7 +60,8 @@
     border-left-color: rgba(255, 187, 0, 0.25);
     border-right-style: double;
     border-right-color: rgba(255, 187, 0, 0.25);
-    &:hover:not(.edited-item):not(.no-hover){
+
+    &:hover:not(.edited-item):not(.no-hover) {
         background: rgba(255, 187, 0, 0.08);
         color: white;
     }
@@ -67,7 +74,8 @@
     border-left-color: rgba(255, 187, 0, 0.25);
     border-right-style: double;
     border-right-color: rgba(255, 187, 0, 0.25);
-    &:hover:not(.edited-item):not(.no-hover){
+
+    &:hover:not(.edited-item):not(.no-hover) {
         background: rgba(255, 187, 0, 0.08);
         color: white;
     }
@@ -82,7 +90,8 @@
     border-right-color: rgba(255, 187, 0, 0.25);
     border-bottom-style: double;
     border-bottom-color: rgba(255, 187, 0, 0.25);
-    &:hover:not(.edited-item){
+
+    &:hover:not(.edited-item) {
         background: rgba(255, 187, 0, 0.08);
         color: white;
     }
@@ -103,6 +112,7 @@
     color: #cccccc;
     outline: none;
 }
+
 .transparent-item {
     opacity: 0.2;
 }
