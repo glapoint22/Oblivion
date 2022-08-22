@@ -69,26 +69,19 @@
                     <div style="display: flex; margin-bottom: 4px; justify-content: space-between;">
 
                         <div style="color: #505050; font-size: 12px;">Media:</div>
-                        <i class="fas fa-trash-alt" style="color: #9e9e9e;" tabindex="0"></i>
-                        <i class="fas fa-pencil-alt" style="color: #9e9e9e;" tabindex="0"></i>
                     </div>
 
 
 
-                    <div style="width: 84px; height: 500px; border: 1px dashed #505050">
-
-                        <div style="display: flex; width: 25px; height: 25px; border: 2px solid #929292; border-radius: 50%; justify-content: center; align-items: center; margin: auto; margin-top: 29px;"
-                            tabindex="0">
-
-                            <div style="width: 5px; height: 3px; background: #aaaaaa;"></div>
-                            <div style="width: 3px; height: 13px; background: #aaaaaa;"></div>
-                            <div style="width: 5px; height: 3px; background: #aaaaaa;"></div>
-
-
+                    <div id="media-container" class="media-container">
+                        <div *ngFor="let media of product.media" class="media-thumbnail-container"
+                            (mousedown)="onMediaSelect(media); onMousedown($event)"
+                            [ngClass]="{'selected-media': media == selectedMedia}" [title]="media.name"
+                            [style.top.px]="media.top" [style.zIndex]="media == selectedMedia ? '100': '1'"
+                            [style.transition]="media.transition">
+                            <img [src]="'images/' + media.thumbnail" draggable="false">
                         </div>
-
                     </div>
-
                 </div>
 
 
@@ -100,17 +93,30 @@
 
                     <div style="display: flex; justify-content: space-between;">
 
-                        <div style="color: #505050; font-size: 12px;">Image:</div>
-
+                        <div style="color: #505050; font-size: 12px;">{{!selectedMedia || selectedMedia.type ==
+                            MediaType.Image ? 'Image' : 'Video'}}</div>
 
                         <div class="icon-container">
-                            <icon-button *ngIf="product.image && product.image.src" [icon]="'fas fa-trash-alt'"
-                                [title]="'Remove Image'" (click)="removeProductImage()">
+                            <icon-button *ngIf="selectedMedia" [icon]="'fas fa-trash-alt'" [title]="!selectedMedia || selectedMedia.type ==
+                            MediaType.Image ? 'Remove Image' : 'Remove Video'" (click)="removeProductMedia()">
                             </icon-button>
 
+                            <div style="position: relative;">
+                                <icon-button *ngIf="product.media && product.media.length > 0" [icon]="'fas fa-plus-circle'" [title]="'Add Image or Video'" (click)="openMediaSelectorPopup()">
+                                </icon-button>
+    
+                                <div style="position: absolute;
+                                z-index: 100;
+                                right: 88px;
+                                top: 28px;">
+                                    <ng-template #mediaSelectorPopupContainer></ng-template>
+                                </div>
+                            </div>
+                            
 
-                            <icon-button [icon]="'fa-solid fa-image'" [title]="'Media Browser'"
-                                (click)="openMediaBrowser()">
+                            <icon-button
+                                [icon]="!selectedMedia || selectedMedia.type == MediaType.Image ? 'fa-solid fa-image' : 'fa-solid fa-film'"
+                                [title]="'Media Browser'" (click)="openMediaBrowser(!selectedMedia ? MediaType.Image : undefined)">
                             </icon-button>
                         </div>
 
@@ -119,15 +125,21 @@
 
 
                     <div style="display: flex; width: 500px; height: 500px; border: 1px dashed #505050; justify-content: center; align-items: center; cursor: pointer;"
-                        (click)="openMediaBrowser()">
+                        (click)="openMediaBrowser(!selectedMedia ? MediaType.Image : undefined)">
 
-                        <div *ngIf="!product.image || !product.image.src"
+                        <div *ngIf="!selectedMedia"
                             style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
                             <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;" tabindex="0"></i>
                         </div>
 
 
-                        <img *ngIf="product.image && product.image.src" [src]="'images/' + product.image.src">
+                        <img *ngIf="selectedMedia && selectedMedia.type == MediaType.Image"
+                            [src]="'images/' + selectedMedia.imageMd">
+
+                        <div class="iframe-container" *ngIf="selectedMedia && selectedMedia.type == MediaType.Video">
+                            <iframe id="video-iframe" allowfullscreen></iframe>
+                        </div>
+
                     </div>
 
                 </div>

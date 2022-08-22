@@ -1,0 +1,25 @@
+<div class="base hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <!-- Arrow -->
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-Border"></div>
+        <div class="popup-arrow-background"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Video -->
+        <div class="media-container" title="Video" (click)="onClick(MediaType.Video)">
+            <i class="fa-solid fa-film"></i>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Image -->
+        <div class="media-container" title="Image" (click)="onClick(MediaType.Image)">
+            <i class="fa-solid fa-image"></i>
+        </div>
+
+    </div>
+</div>

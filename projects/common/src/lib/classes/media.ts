@@ -35,28 +35,30 @@ export class Media {
   public imageAnySizeHeight!: number;
 
 
-  constructor(media: Media) {
-    this.id = media.id;
-    this.type = media.type;
-    this.name = media.name;
-    this.src = media.src;
-    this.videoId = media.videoId;
-    this.videoType = media.videoType;
-    this.thumbnail = media.thumbnail;
-    this.thumbnailWidth = media.thumbnailWidth;
-    this.thumbnailHeight = media.thumbnailHeight;
-    this.imageSm = media.imageSm;
-    this.imageSmWidth = media.imageSmWidth;
-    this.imageSmHeight = media.imageSmHeight;
-    this.imageMd = media.imageMd;
-    this.imageMdWidth = media.imageMdWidth;
-    this.imageMdHeight = media.imageMdHeight;
-    this.imageLg = media.imageLg;
-    this.imageLgWidth = media.imageLgWidth;
-    this.imageLgHeight = media.imageLgHeight;
-    this.imageAnySize = media.imageAnySize;
-    this.imageAnySizeWidth = media.imageAnySizeWidth;
-    this.imageAnySizeHeight = media.imageAnySizeHeight;
+  constructor(media?: Media) {
+    if (media) {
+      this.id = media.id;
+      this.type = media.type;
+      this.name = media.name;
+      this.src = media.src;
+      this.videoId = media.videoId;
+      this.videoType = media.videoType;
+      this.thumbnail = media.thumbnail;
+      this.thumbnailWidth = media.thumbnailWidth;
+      this.thumbnailHeight = media.thumbnailHeight;
+      this.imageSm = media.imageSm;
+      this.imageSmWidth = media.imageSmWidth;
+      this.imageSmHeight = media.imageSmHeight;
+      this.imageMd = media.imageMd;
+      this.imageMdWidth = media.imageMdWidth;
+      this.imageMdHeight = media.imageMdHeight;
+      this.imageLg = media.imageLg;
+      this.imageLgWidth = media.imageLgWidth;
+      this.imageLgHeight = media.imageLgHeight;
+      this.imageAnySize = media.imageAnySize;
+      this.imageAnySizeWidth = media.imageAnySizeWidth;
+      this.imageAnySizeHeight = media.imageAnySizeHeight;
+    }
   }
 
 
