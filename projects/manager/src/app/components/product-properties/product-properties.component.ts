@@ -79,23 +79,11 @@ export class ProductPropertiesComponent {
       this.selectedMedia = this.product.media[0];
     }
 
-
-    // ***************** TEMP!!! **********************
-    for (let i = 0; i < this.product.media.length; i++) {
-      const productMedia = this.product.media[i];
-
-      productMedia.index = i;
-    }
-
-
-
     for (let i = 0; i < this.product.media.length; i++) {
       const productMedia = this.product.media[i];
 
       productMedia.top = this.productMediaSpacing * productMedia.index;
     }
-
-
   }
 
 
@@ -453,8 +441,6 @@ export class ProductPropertiesComponent {
 
         // Callback
         mediaBrowser.callback = (callbackMedia: Image | Video) => {
-          let oldMediaId!: number;
-
           // If we have new media
           if (newMedia) {
             const mediaContainerElement = document.getElementById('media-container') as HTMLElement;
@@ -468,11 +454,6 @@ export class ProductPropertiesComponent {
 
             // Scroll down to the new product media
             window.setTimeout(() => mediaContainerElement.scrollTo(0, mediaContainerElement.scrollHeight));
-          }
-
-          // We have selected media
-          else {
-            oldMediaId = this.selectedMedia.id;
           }
 
           // Assign the properties
@@ -509,11 +490,13 @@ export class ProductPropertiesComponent {
 
 
           // Update the database
-          this.dataService.put('api/Products/Media', {
+          this.dataService.put<number>('api/Products/Media', {
             productId: this.product.id,
-            oldMediaId: oldMediaId,
-            newMediaId: this.selectedMedia.id
-          }).subscribe();
+            productMediaId: this.selectedMedia.productMediaId,
+            mediaId: this.selectedMedia.id
+          }).subscribe((productMediaId: number) => {
+            this.selectedMedia.productMediaId = productMediaId;
+          });
         }
       });
   }
@@ -522,7 +505,7 @@ export class ProductPropertiesComponent {
   // --------------------------------------------------- Remove Product Media ---------------------------------------------------
   public removeProductMedia() {
     // Remove the image
-    this.dataService.delete('api/Products/Media', { productId: this.product.id, mediaId: this.selectedMedia.id })
+    this.dataService.delete('api/Products/Media', { id: this.selectedMedia.productMediaId })
       .subscribe(() => {
         let arrayIndex = this.product.media.findIndex(x => this.selectedMedia == x);
         let index = this.selectedMedia.index + 1;
@@ -556,6 +539,9 @@ export class ProductPropertiesComponent {
         } else {
           this.selectedMedia = null!;
         }
+
+        // Update the indices
+        this.updateIndices();
       });
   }
 
@@ -608,7 +594,7 @@ export class ProductPropertiesComponent {
 
       // Assign the top to the media we are moving
       this.selectedMedia.top = Math.min(mediaContainerElementScrollHeight - 50, Math.max(0, this.selectedMedia.top + mousemoveEvent.movementY));
-      
+
       // This is the current media top we are moving over
       currentMediaTop = Math.round(this.selectedMedia.top / this.productMediaSpacing) * this.productMediaSpacing;
 
@@ -642,6 +628,9 @@ export class ProductPropertiesComponent {
         this.selectedMedia.top = Math.min((this.product.media.length - 1) * this.productMediaSpacing, currentMediaTop);
         this.selectedMedia.index = Math.round(this.selectedMedia.top / this.productMediaSpacing);
         this.selectedMedia.transition = 'all 200ms cubic-bezier(0.22, 0.5, 0.5, 1) 0s';
+
+        // Update the indices
+        this.updateIndices();
       }
     }
 
@@ -650,6 +639,16 @@ export class ProductPropertiesComponent {
   }
 
 
+
+  updateIndices() {
+    this.dataService.put('api/Products/Media/Indices', this.product.media.map((media: ProductMedia) => {
+      return {
+        productId: this.product.id,
+        productMediaId: media.productMediaId,
+        index: media.index
+      }
+    })).subscribe();
+  }
 
 
 
