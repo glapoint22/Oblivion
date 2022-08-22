@@ -77,12 +77,16 @@ export class ProductPropertiesComponent {
   ngOnInit() {
     if (this.product && this.product.media && this.product.media.length > 0) {
       this.selectedMedia = this.product.media[0];
-    }
 
-    for (let i = 0; i < this.product.media.length; i++) {
-      const productMedia = this.product.media[i];
+      for (let i = 0; i < this.product.media.length; i++) {
+        const productMedia = this.product.media[i];
 
-      productMedia.top = this.productMediaSpacing * productMedia.index;
+        productMedia.top = this.productMediaSpacing * productMedia.index;
+      }
+
+      if (this.selectedMedia.type == MediaType.Video) {
+        this.setVideo(this.selectedMedia);
+      }
     }
   }
 
@@ -470,22 +474,12 @@ export class ProductPropertiesComponent {
           else {
             const video = callbackMedia as Video;
 
+            // Assign the video properties
             this.selectedMedia.videoType = video.videoType;
             this.selectedMedia.videoId = video.videoId;
 
             // Set the iframe with the video
-            window.setTimeout(() => {
-              const iframe = document.getElementById('video-iframe') as HTMLIFrameElement;
-              iframe.src = new Video({
-                video: {
-                  id: video.id,
-                  name: video.name,
-                  thumbnail: video.thumbnail,
-                  videoType: video.videoType,
-                  videoId: video.videoId
-                }
-              }).src;
-            });
+            this.setVideo(this.selectedMedia);
           }
 
 
@@ -541,7 +535,10 @@ export class ProductPropertiesComponent {
         }
 
         // Update the indices
-        this.updateIndices();
+        if (this.product.media.length > 0) {
+          this.updateIndices();
+        }
+
       });
   }
 
@@ -641,13 +638,15 @@ export class ProductPropertiesComponent {
 
 
   updateIndices() {
-    this.dataService.put('api/Products/Media/Indices', this.product.media.map((media: ProductMedia) => {
-      return {
-        productId: this.product.id,
-        productMediaId: media.productMediaId,
-        index: media.index
-      }
-    })).subscribe();
+    this.dataService.put('api/Products/Media/Indices', {
+      productId: this.product.id,
+      productMedia: this.product.media.map((media: ProductMedia) => {
+        return {
+          productMediaId: media.productMediaId,
+          index: media.index
+        }
+      })
+    }).subscribe();
   }
 
 
@@ -657,24 +656,27 @@ export class ProductPropertiesComponent {
   // --------------------------------------------------- On Media Select ---------------------------------------------------
   onMediaSelect(productMedia: ProductMedia) {
     productMedia.transition = 'all 0ms ease 0s';
-
-    if (productMedia.type == MediaType.Video) {
-      window.setTimeout(() => {
-        const iframe = document.getElementById('video-iframe') as HTMLIFrameElement;
-        const src = new Video({
-          video: {
-            id: productMedia.id,
-            name: productMedia.name,
-            thumbnail: productMedia.thumbnail,
-            videoType: productMedia.videoType,
-            videoId: productMedia.videoId
-          }
-        }).src;
-
-        if (iframe.src != src) iframe.src = src;
-      });
-    }
-
+    if (productMedia.type == MediaType.Video) this.setVideo(productMedia);
     this.selectedMedia = productMedia;
+  }
+
+
+
+  // --------------------------------------------------- Set Video ---------------------------------------------------
+  setVideo(productMedia: ProductMedia) {
+    window.setTimeout(() => {
+      const iframe = document.getElementById('video-iframe') as HTMLIFrameElement;
+      const src = new Video({
+        video: {
+          id: productMedia.id,
+          name: productMedia.name,
+          thumbnail: productMedia.thumbnail,
+          videoType: productMedia.videoType,
+          videoId: productMedia.videoId
+        }
+      }).src;
+
+      if (iframe.src != src) iframe.src = src;
+    });
   }
 }
