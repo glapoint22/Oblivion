@@ -20,6 +20,7 @@ import { CheckboxItem } from '../../classes/checkbox-item';
 import { KeywordCheckboxItem } from '../../classes/keyword-checkbox-item';
 import { KeywordCheckboxMultiColumnItem } from '../../classes/keyword-checkbox-multi-column-item';
 import { ProductMedia } from '../../classes/product-media';
+import { MediaSelectorPopupComponent } from '../media-selector-popup/media-selector-popup.component';
 
 @Component({
   selector: 'product-properties',
@@ -53,6 +54,7 @@ export class ProductPropertiesComponent {
   public selectedMedia!: ProductMedia;
   public MediaType = MediaType;
   public productMediaSpacing: number = 57;
+  private mediaSelectorPopup!: MediaSelectorPopupComponent;
 
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
@@ -66,6 +68,7 @@ export class ProductPropertiesComponent {
   @ViewChild('filtersPopup', { read: ViewContainerRef }) filtersPopupContainer!: ViewContainerRef;
   @ViewChild('keywordsPopup', { read: ViewContainerRef }) keywordsPopupContainer!: ViewContainerRef;
   @ViewChild('productGroupsPopup', { read: ViewContainerRef }) productGroupsPopupContainer!: ViewContainerRef;
+  @ViewChild('mediaSelectorPopupContainer', { read: ViewContainerRef }) mediaSelectorPopupContainer!: ViewContainerRef;
 
 
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private productService: ProductService) { }
@@ -393,7 +396,7 @@ export class ProductPropertiesComponent {
 
 
   // --------------------------------------------------- Open Media Browser ---------------------------------------------------
-  public async openMediaBrowser(): Promise<void> {
+  public async openMediaBrowser(mediaType?: MediaType): Promise<void> {
     this.lazyLoadingService.load(async () => {
       const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
       const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
@@ -403,13 +406,14 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None)
       .then((mediaBrowser: MediaBrowserComponent) => {
-        let mediaType!: MediaType;
         let media!: Image | Video;
         let productName!: string;
+        let newMedia: boolean;
 
-        if (this.product.media && this.product.media.length > 0) {
-          productName = null!;
+        // If mediaType is undefined, that means we have selected media
+        if (mediaType == undefined) {
 
+          // Selected media is image
           if (this.selectedMedia.type == MediaType.Image) {
             mediaType = MediaType.Image;
             media = new Image();
@@ -418,7 +422,10 @@ export class ProductPropertiesComponent {
             media.src = this.selectedMedia.imageMd;
             media.thumbnail = this.selectedMedia.thumbnail;
             media.imageSizeType = ImageSizeType.Medium;
-          } else {
+          }
+
+          // Selected media is video
+          else {
             mediaType = MediaType.Video;
             media = new Video({
               video: {
@@ -430,63 +437,83 @@ export class ProductPropertiesComponent {
               }
             });
           }
-        } else {
-          mediaType = MediaType.Image;
-          media = new Image();
-          media.imageSizeType = ImageSizeType.Medium;
-          productName = this.product.name;
         }
 
-
+        // We are getting new media
+        else {
+          if (!this.product.media || this.product.media.length == 0) {
+            productName = this.product.name;
+          }
+          newMedia = true;
+        }
 
 
         // Initialize the media browser
         mediaBrowser.init(mediaType, media, ImageSizeType.Medium, productName);
 
         // Callback
-        mediaBrowser.callback = (newMedia: Image | Video) => {
+        mediaBrowser.callback = (callbackMedia: Image | Video) => {
           let oldMediaId!: number;
 
-          if (!this.selectedMedia) {
+          // If we have new media
+          if (newMedia) {
+            const mediaContainerElement = document.getElementById('media-container') as HTMLElement;
+
+            // Create new product media
             this.selectedMedia = new ProductMedia();
-            this.selectedMedia.type = MediaType.Image;
-          } else {
+            this.selectedMedia.type = !mediaType ? MediaType.Image : mediaType;
+            this.selectedMedia.index = this.product.media.length;
+            this.selectedMedia.top = this.selectedMedia.index * this.productMediaSpacing;
+            this.product.media.push(this.selectedMedia);
+
+            // Scroll down to the new product media
+            window.setTimeout(() => mediaContainerElement.scrollTo(0, mediaContainerElement.scrollHeight));
+          }
+
+          // We have selected media
+          else {
             oldMediaId = this.selectedMedia.id;
           }
 
+          // Assign the properties
+          this.selectedMedia.name = callbackMedia.name;
+          this.selectedMedia.id = callbackMedia.id;
+          this.selectedMedia.thumbnail = callbackMedia.thumbnail;
 
-
-          this.selectedMedia.name = newMedia.name;
-          this.selectedMedia.id = newMedia.id;
-          this.selectedMedia.thumbnail = newMedia.thumbnail;
-
+          // Image
           if (this.selectedMedia.type == MediaType.Image) {
-            this.selectedMedia.imageMd = newMedia.src;
-          } else {
-            const video = newMedia as Video;
+            this.selectedMedia.imageMd = callbackMedia.src;
+          }
+
+          // Video
+          else {
+            const video = callbackMedia as Video;
 
             this.selectedMedia.videoType = video.videoType;
             this.selectedMedia.videoId = video.videoId;
 
-            const iframe = document.getElementById('video-iframe') as HTMLIFrameElement;
-            iframe.src = new Video({
-              video: {
-                id: video.id,
-                name: video.name,
-                thumbnail: video.thumbnail,
-                videoType: video.videoType,
-                videoId: video.videoId
-              }
-            }).src;
+            // Set the iframe with the video
+            window.setTimeout(() => {
+              const iframe = document.getElementById('video-iframe') as HTMLIFrameElement;
+              iframe.src = new Video({
+                video: {
+                  id: video.id,
+                  name: video.name,
+                  thumbnail: video.thumbnail,
+                  videoType: video.videoType,
+                  videoId: video.videoId
+                }
+              }).src;
+            });
           }
 
 
+          // Update the database
           this.dataService.put('api/Products/Media', {
             productId: this.product.id,
             oldMediaId: oldMediaId,
             newMediaId: this.selectedMedia.id
           }).subscribe();
-
         }
       });
   }
@@ -503,6 +530,7 @@ export class ProductPropertiesComponent {
 
         this.product.media.splice(arrayIndex, 1);
 
+        // Reorder the media
         do {
           selectedMedia = this.product.media.find(x => x.index == index)!;
 
@@ -515,18 +543,46 @@ export class ProductPropertiesComponent {
 
         } while (selectedMedia);
 
+        // Get the next selected media
         if (this.selectedMedia.index == this.product.media.length) {
           selectedMedia = this.product.media.find(x => x.index == this.selectedMedia.index - 1)!;
         } else {
           selectedMedia = this.product.media.find(x => x.index == this.selectedMedia.index)!;
         }
 
+        // Select the media
         if (selectedMedia) {
           this.onMediaSelect(selectedMedia);
         } else {
           this.selectedMedia = null!;
         }
+      });
+  }
 
+
+
+  // --------------------------------------------------- Open Media Selector Popup ---------------------------------------------------
+  openMediaSelectorPopup() {
+    if (this.mediaSelectorPopupContainer.length > 0) {
+      this.mediaSelectorPopup.close();
+      return;
+    }
+
+    this.lazyLoadingService.load(async () => {
+      const { MediaSelectorPopupComponent } = await import('../media-selector-popup/media-selector-popup.component');
+      const { MediaSelectorPopupModule } = await import('../media-selector-popup/media-selector-popup.module');
+      return {
+        component: MediaSelectorPopupComponent,
+        module: MediaSelectorPopupModule
+      }
+    }, SpinnerAction.None, this.mediaSelectorPopupContainer)
+      .then((mediaSelectorPopup: MediaSelectorPopupComponent) => {
+        this.mediaSelectorPopup = mediaSelectorPopup;
+
+        mediaSelectorPopup.callback = (mediaType: MediaType) => {
+          this.openMediaBrowser(mediaType);
+          mediaSelectorPopup.close();
+        }
       });
   }
 
@@ -535,8 +591,72 @@ export class ProductPropertiesComponent {
 
 
 
+
+  // --------------------------------------------------- On Mousedown ---------------------------------------------------
+  onMousedown(mousedownEvent: MouseEvent) {
+    const mediaContainerElement = (mousedownEvent.target as HTMLElement).parentElement?.parentElement!;
+    const mediaContainerElementScrollHeight = mediaContainerElement.scrollHeight;
+    const mediaContainerElementHeight = mediaContainerElement.clientHeight;
+    let currentMediaTop: number;
+    let yPos = mousedownEvent.clientY;
+
+
+    const onMousemove = (mousemoveEvent: MouseEvent) => {
+      // Get the direction of the mouse move
+      const direction = Math.sign(yPos - mousemoveEvent.clientY);
+      yPos = mousemoveEvent.clientY;
+
+      // Assign the top to the media we are moving
+      this.selectedMedia.top = Math.min(mediaContainerElementScrollHeight - 50, Math.max(0, this.selectedMedia.top + mousemoveEvent.movementY));
+      
+      // This is the current media top we are moving over
+      currentMediaTop = Math.round(this.selectedMedia.top / this.productMediaSpacing) * this.productMediaSpacing;
+
+      // Get the current media using the current media top
+      const currentMedia = this.product.media.find(x => x.top == currentMediaTop);
+
+      // This will move the current media to a new location and assign its index
+      if (currentMedia && currentMedia != this.selectedMedia) {
+        currentMedia.transition = 'all 200ms cubic-bezier(0.22, 0.5, 0.5, 1) 0s';
+        currentMedia.index = currentMedia.index + 1 * direction;
+        currentMedia.top = currentMedia.index * this.productMediaSpacing;
+      }
+
+      // Set the scrollbar
+      if (this.selectedMedia.top < mediaContainerElement.scrollTop) {
+        mediaContainerElement?.scrollTo(0, mediaContainerElement.scrollTop + mousemoveEvent.movementY)
+      }
+
+      if (this.selectedMedia.top > mediaContainerElementHeight - 50) {
+        mediaContainerElement?.scrollTo(0, mediaContainerElement.scrollTop + mousemoveEvent.movementY)
+      }
+    }
+
+
+    const onMouseup = () => {
+      document.removeEventListener('mousemove', onMousemove);
+      document.removeEventListener('mouseup', onMouseup);
+
+      // Set the selected media's top and index
+      if (currentMediaTop != undefined) {
+        this.selectedMedia.top = Math.min((this.product.media.length - 1) * this.productMediaSpacing, currentMediaTop);
+        this.selectedMedia.index = Math.round(this.selectedMedia.top / this.productMediaSpacing);
+        this.selectedMedia.transition = 'all 200ms cubic-bezier(0.22, 0.5, 0.5, 1) 0s';
+      }
+    }
+
+    document.addEventListener('mousemove', onMousemove);
+    document.addEventListener('mouseup', onMouseup);
+  }
+
+
+
+
+
+
+
   // --------------------------------------------------- On Media Select ---------------------------------------------------
-  onMediaSelect(productMedia: ProductMedia, mousedownEvent?: MouseEvent) {
+  onMediaSelect(productMedia: ProductMedia) {
     productMedia.transition = 'all 0ms ease 0s';
 
     if (productMedia.type == MediaType.Video) {
@@ -557,49 +677,5 @@ export class ProductPropertiesComponent {
     }
 
     this.selectedMedia = productMedia;
-
-    if (mousedownEvent) {
-      const mediaContainerElement = (mousedownEvent.target as HTMLElement).parentElement?.parentElement!;
-      const mediaContainerElementScrollHeight = mediaContainerElement.scrollHeight;
-      const mediaContainerElementHeight = mediaContainerElement.clientHeight;
-      let currentTop: number;
-      let yPos = mousedownEvent.clientY;
-
-
-      const onMousemove = (mousemoveEvent: MouseEvent) => {
-        const direction = Math.sign(yPos - mousemoveEvent.clientY);
-
-        yPos = mousemoveEvent.clientY;
-        this.selectedMedia.top = Math.min(mediaContainerElementScrollHeight - 50, Math.max(0, this.selectedMedia.top + mousemoveEvent.movementY));
-        currentTop = Math.round(this.selectedMedia.top / this.productMediaSpacing) * this.productMediaSpacing;
-
-        const currentMedia = this.product.media.find(x => x.top == currentTop);
-
-        if (currentMedia && currentMedia != this.selectedMedia) {
-          currentMedia.transition = 'all 200ms cubic-bezier(0.22, 0.5, 0.5, 1) 0s';
-          currentMedia.index = currentMedia.index + 1 * direction;
-          currentMedia.top = currentMedia.index * this.productMediaSpacing;
-        }
-
-
-        if (this.selectedMedia.top > mediaContainerElementHeight - 50) {
-          mediaContainerElement?.scrollTo(0, mediaContainerElement.scrollTop + mousemoveEvent.movementY)
-        }
-      }
-
-      const onMouseup = () => {
-        document.removeEventListener('mousemove', onMousemove);
-        document.removeEventListener('mouseup', onMouseup);
-
-        if (currentTop != undefined) {
-          this.selectedMedia.top = Math.min((this.product.media.length - 1) * this.productMediaSpacing, currentTop);
-          this.selectedMedia.index = Math.round(this.selectedMedia.top / this.productMediaSpacing);
-          this.selectedMedia.transition = 'all 200ms cubic-bezier(0.22, 0.5, 0.5, 1) 0s';
-        }
-      }
-
-      document.addEventListener('mousemove', onMousemove);
-      document.addEventListener('mouseup', onMouseup);
-    }
   }
 }

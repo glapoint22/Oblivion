@@ -73,21 +73,15 @@
 
 
 
-                    <div class="media-container">
-
-                        <!-- <ng-container *ngIf="product.media.length > 1"> -->
-                            <div *ngFor="let media of product.media" class="media-thumbnail-container"
-                                (mousedown)="onMediaSelect(media, $event)"
-                                [ngClass]="{'selected-media': media == selectedMedia}" [title]="media.name"
-                                [style.top.px]="media.top" [style.zIndex]="media == selectedMedia ? '100': '1'"
-                                [style.transition]="media.transition">
-                                <img [src]="'images/' + media.thumbnail" draggable="false">
-                            </div>
-                        <!-- </ng-container> -->
-
-
+                    <div id="media-container" class="media-container">
+                        <div *ngFor="let media of product.media" class="media-thumbnail-container"
+                            (mousedown)="onMediaSelect(media); onMousedown($event)"
+                            [ngClass]="{'selected-media': media == selectedMedia}" [title]="media.name"
+                            [style.top.px]="media.top" [style.zIndex]="media == selectedMedia ? '100': '1'"
+                            [style.transition]="media.transition">
+                            <img [src]="'images/' + media.thumbnail" draggable="false">
+                        </div>
                     </div>
-
                 </div>
 
 
@@ -104,14 +98,25 @@
 
                         <div class="icon-container">
                             <icon-button *ngIf="selectedMedia" [icon]="'fas fa-trash-alt'" [title]="!selectedMedia || selectedMedia.type ==
-                            MediaType.Image ? 'Remove Image' : 'Remove Video'"
-                                (click)="removeProductMedia()">
+                            MediaType.Image ? 'Remove Image' : 'Remove Video'" (click)="removeProductMedia()">
                             </icon-button>
 
+                            <div style="position: relative;">
+                                <icon-button *ngIf="product.media && product.media.length > 0" [icon]="'fas fa-plus-circle'" [title]="'Add Image or Video'" (click)="openMediaSelectorPopup()">
+                                </icon-button>
+    
+                                <div style="position: absolute;
+                                z-index: 100;
+                                right: 88px;
+                                top: 28px;">
+                                    <ng-template #mediaSelectorPopupContainer></ng-template>
+                                </div>
+                            </div>
+                            
 
                             <icon-button
                                 [icon]="!selectedMedia || selectedMedia.type == MediaType.Image ? 'fa-solid fa-image' : 'fa-solid fa-film'"
-                                [title]="'Media Browser'" (click)="openMediaBrowser()">
+                                [title]="'Media Browser'" (click)="openMediaBrowser(!selectedMedia ? MediaType.Image : undefined)">
                             </icon-button>
                         </div>
 
@@ -120,7 +125,7 @@
 
 
                     <div style="display: flex; width: 500px; height: 500px; border: 1px dashed #505050; justify-content: center; align-items: center; cursor: pointer;"
-                        (click)="openMediaBrowser()">
+                        (click)="openMediaBrowser(!selectedMedia ? MediaType.Image : undefined)">
 
                         <div *ngIf="!selectedMedia"
                             style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
