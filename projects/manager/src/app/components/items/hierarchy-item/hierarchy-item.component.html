@@ -1,7 +1,9 @@
 <div class="item-container" [style.opacity]="item.opacity">
 
     <div *ngIf="listManager.editedItem != null" class="disabled-arrow-container">
-        <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
+        <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"
+             [style.minWidth.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0">
+        </div>
         <div class="disabled-arrow" [ngClass]="{'arrow-down': item.arrowDown}"></div>
     </div>
 
@@ -25,7 +27,9 @@
 
         <ng-container *ngIf="listManager.editedItem == null">
             
-            <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
+            <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"
+                 [style.minWidth.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0">
+            </div>
 
             
             <div class="arrow-container"
@@ -36,7 +40,10 @@
             </div>
         </ng-container>
 
-        {{item.name}}
+        <div class="item-name">
+            {{item.name}}
+        </div>
+        
 
         <div style="width: 10px;"></div>
 

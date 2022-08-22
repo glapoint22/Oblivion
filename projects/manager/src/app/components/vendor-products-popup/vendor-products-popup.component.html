@@ -1,34 +1,13 @@
 <div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
-
     <div class="popup-base">
-
-        
-
-        <div style="width: 328px;
-        height: 262px;
-        padding: 1px 0;
-        background: #1e1e1e;
-        border: 1px solid #3c3c3c;
-        border-left-color: black;
-        border-top-color: black;
-        border-radius: 4px;
-        overflow-y: auto;">
-        
-    
+        <div class="modal-list-container">
             <image-list #listComponent
                         [sourceList]="products"
                         [options]="listOptions"
                         (onListUpdate)="onListUpdate($event)">
             </image-list>
-    
         </div>
-
-
-
-
-
     </div>
-
 
     <!-- Arrow Right -->
     <div class="popup-arrow-container">

@@ -29,15 +29,21 @@
                 'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
                 'no-hover': listManager.contextMenuOpen}">
 
+
         <ng-container *ngIf="listManager.editedItem == null">
             <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"
                  [style.minWidth.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0">
             </div>
 
             <div class="image-container">
-                <img [src]="'images/' + item.thumbnail">
+                <img [src]="item.type == 0 ? 'assets/message-notification.png' : 'images/' + item.thumbnail">
+
+                <div *ngIf="item.count > 1" class="count-circle">
+                    <div>{{item.count}}</div>
+                </div>
             </div>
         </ng-container>
+
 
         <div class="item-name">
             {{item.name}}

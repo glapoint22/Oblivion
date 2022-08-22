@@ -1,7 +1,9 @@
 <div class="item-container">
 
     <ng-container *ngIf="listManager.editedItem != null">
-        <div [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 10 : 0"></div>
+        <div [style.width.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 10 : 0"
+             [style.minWidth.px]="item.hierarchyGroupID ? (item.hierarchyGroupID! * 35) + 10 : 0">
+        </div>
         <label class="checkbox disabled-checkbox">
             
             <input class="disabled-input"
@@ -31,7 +33,9 @@
 
 
         <ng-container *ngIf="listManager.editedItem == null">
-            <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"></div>
+            <div [style.width.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0"
+                 [style.minWidth.px]="item.hierarchyGroupID ? item.hierarchyGroupID! * 35 : 0">
+            </div>
             <label class="checkbox"
                    (mousedown)="$event.stopPropagation()"
                    (dblclick)="$event.stopPropagation()">
@@ -43,7 +47,10 @@
             </label>
         </ng-container>
 
-        {{item.name}}
+        <div class="item-name">
+            {{item.name}}
+        </div>
+        
         
     </div>
 </div>

@@ -7,10 +7,6 @@
 
 
     <div class="popup-base">
-        <search #search [apiUrl]="'Vendors/Search'" (onItemSelect)="onNotificationSelect($event)"
-            [placeholderText]="'Search for a notification'">
-        </search>
-
 
 
 
@@ -27,27 +23,15 @@
             </icon-button>
         </div>
 
-        <div class="columns-container">
-        
-            <div class="column" (click)="onTypeColumnClick()">
-                Type
-                <div class="order-by-arrow" [ngStyle]="{'opacity': orderByDateSelected ? 0 : 1, 'transform': orderByArrowUp ? 'rotate(0)' : 'rotate(180deg)'}"></div>
-            </div>
+        <div class="columns-container"></div>
 
 
-
-            <div class="column" (click)="onDateColumnClick()">
-                Date
-                <div class="order-by-arrow" [ngStyle]="{'opacity': orderByDateSelected ? 1 : 0, 'transform': orderByArrowUp ? 'rotate(0)' : 'rotate(180deg)'}"></div>
-            </div>
+        <div class="modal-list-container">
+            <notification-list #listComponent
+                               [sourceList]="notifications"
+                               [options]="listOptions"
+                               (onListUpdate)="onListUpdate($event)">
+            </notification-list>
         </div>
-
-        <div class="modal-list-container"></div>
     </div>
-
-
-
-
-
-
 </div>
