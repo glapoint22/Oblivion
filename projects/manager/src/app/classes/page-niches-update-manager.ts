@@ -35,6 +35,7 @@ export class PageNichesUpdateManager extends ListUpdateManager {
         this.dataServicePath = 'Pages/Niche';
         this.itemType = 'Niche';
         this.listOptions.editable = false;
+        this.listOptions.deletePrompt = null!;
         this.listOptions.menu!.menuOptions = [
             {
                 name: 'Delete ' + this.itemType,

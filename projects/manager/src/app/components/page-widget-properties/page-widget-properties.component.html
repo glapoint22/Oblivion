@@ -1,0 +1,28 @@
+<ng-container *ngIf="widgetService.selectedWidget">
+    <!-- Button -->
+    <button-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Button"></button-widget-properties>
+
+    <!-- Text -->
+    <page-text-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Text"></page-text-widget-properties>
+
+    <!-- Line -->
+    <line-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Line"></line-widget-properties>
+
+    <!-- Image -->
+    <image-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Image"></image-widget-properties>
+
+    <!-- Container -->
+    <container-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Container">
+    </container-widget-properties>
+
+    <!-- Video -->
+    <video-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Video"></video-widget-properties>
+
+    <!-- Product Slider -->
+    <product-slider-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.ProductSlider">
+    </product-slider-widget-properties>
+
+    <!-- Carousel -->
+    <carousel-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Carousel">
+    </carousel-widget-properties>
+</ng-container>

@@ -107,3 +107,10 @@ export enum MediaBrowserMode {
     Update,
     Swap
 }
+
+
+export enum BuilderType {
+    Product,
+    Page,
+    Email
+}

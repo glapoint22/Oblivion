@@ -14,8 +14,8 @@
     </div>
 </div>
 
-<!-- Normal Properties -->
-<button-widget-normal-properties *ngIf="widget.currentState == buttonState.Normal"></button-widget-normal-properties>
+<!-- Page Button Widget Properties -->
+<page-button-widget-properties *ngIf="widget.currentState == buttonState.Normal"></page-button-widget-properties>
 
 <!-- Hover Colors -->
 <button-color *ngIf="widget.currentState == buttonState.Hover" [backgroundColor]="widget.backgroundHoverColorDev"

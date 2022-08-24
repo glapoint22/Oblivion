@@ -1,20 +1,22 @@
-<div class="icon-buttons-container">
-    <div class="icons">
-        <!-- Delete icon -->
-        <icon-button [icon]="'fas fa-trash-alt'"
-                     [title]="deleteIconButtonTitle"
-                     [isDisabled]="isDisabled('deleteDisabled')"
-                     (onClick)="delete()">
+<div class="property">
+    <div class="label">Niches:</div>
+
+    <!-- Delete -->
+    <div class="icons-container">
+        <icon-button [icon]="'fas fa-trash-alt'" [title]="deleteIconButtonTitle"
+            [isDisabled]="isDisabled('deleteDisabled')" (onClick)="delete()">
         </icon-button>
     </div>
-</div>
 
 
-<!-- List -->
-<div class="modal-list-container">
-    <list #listComponent
-        [sourceList]="thisArray"
-        [options]="listOptions"
-        (onListUpdate)="listUpdate = $event">
-    </list>
+    <!-- Search -->
+    <search [apiUrl]="'Niches/Search'" [placeholderText]="'Add a niche'" [clearOnSelection]="true"
+        (onItemSelect)="add($event.id, $event.name)">
+    </search>
+
+    <!-- List -->
+    <div class="modal-list-container">
+        <list #listComponent [sourceList]="thisArray" [options]="listOptions" (onListUpdate)="listUpdate = $event">
+        </list>
+    </div>
 </div>
