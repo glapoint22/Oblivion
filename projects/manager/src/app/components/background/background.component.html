@@ -59,9 +59,8 @@
     <!-- Image label -->
     <div class="property">
         <div class="label">Image:</div>
+
+        <!-- Image -->
+        <image-box [image]="background.image" [showRemoveImage]="true" (onChange)="onChange.emit()"></image-box>
     </div>
-
-
-    <!-- Image -->
-    <image-box [image]="background.image" [showRemoveImage]="true" (onChange)="onChange.emit()"></image-box>
 </panel>

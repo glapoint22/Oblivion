@@ -1,40 +1,36 @@
-<panel [title]="'Text'" [enabledProperty]="textWidget" (onChange)="textWidget.enabled ? textWidget.onEnabled(): textBox.removeFocus()">
+<panel [title]="'Text'" [enabledProperty]="textWidget"
+    (onChange)="textWidget.enabled ? textWidget.onEnabled(): textBox.removeFocus()">
+
+
     <!-- Font -->
     <div class="property">
-        <div class="label">Font</div>
-        <div style="flex: 1;">
-            <select [(ngModel)]="textBox.fontFamily.selectedOption"
-                (change)="textBox.fontFamily.setStyle(); textBox.setText()">
-                <option *ngFor="let option of textBox.fontFamily.options" [ngValue]="option">{{option.key}}</option>
-            </select>
-        </div>
+        <div class="label">Font:</div>
+        <select [(ngModel)]="textBox.fontFamily.selectedOption"
+            (change)="textBox.fontFamily.setStyle(); textBox.setText()">
+            <option *ngFor="let option of textBox.fontFamily.options" [ngValue]="option">{{option.key}}</option>
+        </select>
     </div>
 
 
 
     <!-- Font Size -->
     <div class="property">
-        <div class="label">Font Size</div>
-        <div style="flex: 1;">
-            <select [(ngModel)]="textBox.fontSize.selectedOption"
-                (change)="textBox.fontSize.setStyle(); textBox.setText()">
-                <option *ngFor="let option of textBox.fontSize.options" [ngValue]="option">{{option.key}}</option>
-            </select>
-        </div>
+        <div class="label">Font Size:</div>
+        <select [(ngModel)]="textBox.fontSize.selectedOption" (change)="textBox.fontSize.setStyle(); textBox.setText()">
+            <option *ngFor="let option of textBox.fontSize.options" [ngValue]="option">{{option.key}}</option>
+        </select>
     </div>
 
 
 
     <!-- Font Color -->
     <div class="property">
-        <div class="label">Color</div>
-        <div style="flex: 1;">
-            <color-swatch [color]="textBox.fontColor.rgbColor"
-                (onChange)="appRef.tick(); textBox.fontColor.setStyle(); textBox.render()"
-                (onColorPickerOpen)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
-                (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
-            </color-swatch>
-        </div>
+        <div class="label">Color:</div>
+        <color-swatch [color]="textBox.fontColor.rgbColor"
+            (onChange)="appRef.tick(); textBox.fontColor.setStyle(); textBox.render()"
+            (onColorPickerOpen)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
+            (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
+        </color-swatch>
     </div>
 
 
@@ -42,57 +38,62 @@
 
     <!-- Hightlight -->
     <div class="property">
-        <div class="label">Highlight</div>
-        <div style="flex: 1;">
-            <color-swatch #highlightColorSwatch [color]="textBox.highlightColor.rgbColor"
-                (onChange)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
-                (onColorPickerOpen)="textBox.highlightColor.color == '#00000000' ? setHighlightColor(highlightColorSwatch.colorPicker.color): null; appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
-                (onColorPickerClose)="textBox.highlightColor.onColorPickerClose(); textBox.setText()">
-            </color-swatch>
-        </div>
+        <div class="label">Highlight:</div>
+        <color-swatch #highlightColorSwatch [color]="textBox.highlightColor.rgbColor"
+            (onChange)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
+            (onColorPickerOpen)="textBox.highlightColor.color == '#00000000' ? setHighlightColor(highlightColorSwatch.colorPicker.color): null; appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
+            (onColorPickerClose)="textBox.highlightColor.onColorPickerClose(); textBox.setText()">
+        </color-swatch>
     </div>
 
 
 
     <!-- Alignment -->
     <div class="property">
-        <div class="label">Alignment</div>
-        <div style="flex: 1; display: flex; justify-content: space-between;">
+        <div class="label">Alignment:</div>
+        <div class="flex-container">
 
             <!-- Align Left -->
-            <div class="icon-container" title="Left align (Ctrl+Shift+L)" (click)="
-                textBox.alignLeft.setStyle();
-                textBox.alignCenter.isSelected = false;
-                textBox.alignRight.isSelected = false;
-                textBox.alignJustify.isSelected = false; 
-                textBox.setText()" [ngClass]="{'selected': textBox.alignLeft.isSelected}">
+            <div class="style-icon" title="Left align" (click)="
+            textBox.alignLeft.setStyle();
+            textBox.alignCenter.isSelected = false;
+            textBox.alignRight.isSelected = false;
+            textBox.alignJustify.isSelected = false; 
+            textBox.setText()" [ngClass]="{'selected': textBox.alignLeft.isSelected}">
                 <i class="fas fa-align-left"></i>
             </div>
 
+
+
+
+
             <!-- Align Center -->
-            <div class="icon-container" title="Center align (Ctrl+Shift+E)" (click)="
-                textBox.alignCenter.setStyle();
-                textBox.alignLeft.isSelected = false;
-                textBox.alignRight.isSelected = false;
-                textBox.alignJustify.isSelected = false;
-                textBox.setText()" [ngClass]="{'selected': textBox.alignCenter.isSelected}">
+            <div class="style-icon" title="Center align" (click)="
+            textBox.alignCenter.setStyle();
+            textBox.alignLeft.isSelected = false;
+            textBox.alignRight.isSelected = false;
+            textBox.alignJustify.isSelected = false;
+            textBox.setText()" [ngClass]="{'selected': textBox.alignCenter.isSelected}">
                 <i class="fas fa-align-center"></i>
             </div>
 
 
+
+
             <!-- Align Right -->
-            <div class="icon-container" title="Right align (Ctrl+Shift+R)" (click)="
-                textBox.alignRight.setStyle();
-                textBox.alignCenter.isSelected = false;
-                textBox.alignLeft.isSelected = false;
-                textBox.alignJustify.isSelected = false;
-                textBox.setText()" [ngClass]="{'selected': textBox.alignRight.isSelected}">
+            <div class="style-icon" title="Right align" (click)="
+            textBox.alignRight.setStyle();
+            textBox.alignCenter.isSelected = false;
+            textBox.alignLeft.isSelected = false;
+            textBox.alignJustify.isSelected = false;
+            textBox.setText()" [ngClass]="{'selected': textBox.alignRight.isSelected}">
                 <i class="fas fa-align-right"></i>
             </div>
 
 
+
             <!-- Align Justify -->
-            <div class="icon-container" title="Justify (Ctrl+Shift+J)" (click)="
+            <div class="style-icon" title="Justify" (click)="
                 textBox.alignJustify.setStyle();
                 textBox.alignCenter.isSelected = false;
                 textBox.alignRight.isSelected = false;
@@ -108,27 +109,24 @@
 
     <!-- Font Style -->
     <div class="property">
-        <div class="label">Style</div>
-        <div style="flex: 1; display: flex; justify-content: space-between;">
-
-            <!-- Spacer -->
-            <div class="icon-container" style="cursor: default;"></div>
+        <div class="label">Style:</div>
+        <div class="flex-container">
 
             <!-- Bold -->
             <div class="style-icon" (click)="textBox.bold.setStyle(); textBox.setText()"
-                [ngClass]="{'selected': textBox.bold.isSelected}">
+                [ngClass]="{'selected': textBox.bold.isSelected}" title="Bold">
                 <i class="fas fa-bold"></i>
             </div>
 
             <!-- Italic -->
             <div class="style-icon" (click)="textBox.italic.setStyle(); textBox.setText()"
-                [ngClass]="{'selected': textBox.italic.isSelected}">
+                [ngClass]="{'selected': textBox.italic.isSelected}" title="Italic">
                 <i class="fas fa-italic"></i>
             </div>
 
             <!-- Underline -->
             <div class="style-icon" (click)="textBox.underline.setStyle(); textBox.setText()"
-                [ngClass]="{'selected': textBox.underline.isSelected}">
+                [ngClass]="{'selected': textBox.underline.isSelected}" title="Underline">
                 <i class="fas fa-underline"></i>
             </div>
         </div>
@@ -138,18 +136,11 @@
 
     <!-- Bullets -->
     <div class="property">
-        <div class="label">Bullets</div>
-        <div style="flex: 1; display: flex; justify-content: space-between;">
-
-            <!-- Spacer -->
-            <div class="icon-container" style="cursor: default;"></div>
-
-            <!-- Spacer -->
-            <div class="icon-container" style="cursor: default;"></div>
-
+        <div class="label">Bullets / Indent:</div>
+        <div class="flex-container">
 
             <!-- Bulleted list -->
-            <div class="icon-container" title="Bulleted list (Ctrl+Shift+8)"
+            <div class="style-icon" title="Bulleted list (Ctrl+Shift+8)" title="Bulleted list"
                 (click)="textBox.bulletedList.setStyle(); textBox.numberedList.isSelected = false; textBox.setText()"
                 [ngClass]="{'selected': textBox.bulletedList.isSelected}">
                 <i class="fas fa-list-ul"></i>
@@ -157,38 +148,21 @@
 
 
             <!-- Numbered list -->
-            <div class="icon-container" title="Numbered list (Ctrl+Shift+7)"
+            <div class="style-icon" title="Numbered list (Ctrl+Shift+7)" title="Numbered list"
                 (click)="textBox.numberedList.setStyle(); textBox.bulletedList.isSelected = false; textBox.setText()"
                 [ngClass]="{'selected': textBox.numberedList.isSelected}">
                 <i class="fas fa-list-ol"></i>
             </div>
-        </div>
-    </div>
-
-
-
-
-
-    <!-- Indent -->
-    <div class="property">
-        <div class="label">Indent</div>
-        <div style="flex: 1; display: flex; justify-content: space-between;">
-
-            <!-- Spacer -->
-            <div class="icon-container" style="cursor: default;"></div>
-
-            <!-- Spacer -->
-            <div class="icon-container" style="cursor: default;"></div>
 
             <!-- Decrease indent -->
-            <div class="icon-container" title="Decrease indent (ctrl+[)"
+            <div class="style-icon" title="Decrease indent"
                 (click)="textBox.decreaseIndent.setStyle(); textBox.setText()">
                 <i class="fas fa-outdent"></i>
             </div>
 
 
             <!-- Increase indent -->
-            <div class="icon-container" title="Increase indent (ctrl+])"
+            <div class="style-icon" title="Increase indent)"
                 (click)="textBox.increaseIndent.setStyle(); textBox.setText()">
                 <i class="fas fa-indent"></i>
             </div>
@@ -198,17 +172,17 @@
 
 
 
+
+
+
+
+
+
     <!-- Link -->
     <div class="property">
         <div class="label">Link</div>
-        <div style="flex: 1; display: flex; justify-content: space-between;">
-            <div #linkElement class="icon-container" title="Link" (click)="onLinkClick(linkElement)">
-                <i class="fas fa-link"></i>
-            </div>
-
-            <!-- <div class="icon-container" title="Remove Link" (click)="textBox.linkStyle.removeLink(); textBox.setText()">
-                <i class="fas fa-outdent"></i>
-            </div> -->
+        <div #linkElement class="style-icon" title="Link" (click)="onLinkClick(linkElement)">
+            <i class="fas fa-link"></i>
         </div>
     </div>
 
@@ -218,31 +192,30 @@
     <!-- Case -->
     <div class="property">
         <div class="label">Case</div>
-        <div style="flex: 1; display: flex; justify-content: space-between;">
+        <div class="flex-container">
 
 
 
             <!-- Lower Case -->
-            <div class="icon-container" title="Lower Case" (click)="textBox.lowerCase.setStyle(); textBox.setText()">
-                <i class="fas fa-outdent"></i>
+            <div class="style-icon" title="Lower Case" (click)="textBox.lowerCase.setStyle(); textBox.setText()">
+                <i class="fa-brands fa-amilia"></i>
             </div>
 
             <!-- Upper Case -->
-            <div class="icon-container" title="Upper Case" (click)="textBox.upperCase.setStyle(); textBox.setText()">
-                <i class="fas fa-outdent"></i>
+            <div class="style-icon" title="Upper Case" (click)="textBox.upperCase.setStyle(); textBox.setText()">
+                <i class="fa-solid fa-font"></i>
             </div>
 
 
             <!-- Sentence Case -->
-            <div class="icon-container" title="Sentence Case"
-                (click)="textBox.sentenceCase.setStyle(); textBox.setText()">
-                <i class="fas fa-outdent"></i>
+            <div class="style-icon" title="Sentence Case" (click)="textBox.sentenceCase.setStyle(); textBox.setText()">
+                <i class="fa-solid fa-file-lines"></i>
             </div>
 
 
             <!-- Title Case -->
-            <div class="icon-container" title="Title Case" (click)="textBox.titleCase.setStyle(); textBox.setText()">
-                <i class="fas fa-outdent"></i>
+            <div class="style-icon" title="Title Case" (click)="textBox.titleCase.setStyle(); textBox.setText()">
+                <i class="fa-solid fa-heading"></i>
             </div>
 
 

@@ -38,6 +38,7 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
         this.childDataServicePath = 'Pages/keywords';
         this.itemType = 'Keyword Group';
         this.listOptions.editable = false;
+        this.listOptions.deletePrompt = null!;
         this.listOptions.menu!.menuOptions = [
             {
                 name: 'Delete ' + this.itemType,

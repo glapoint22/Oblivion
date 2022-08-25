@@ -1,4 +1,4 @@
-<div class="properties">
+<!-- <div class="properties"> -->
     <!-- Page Name -->
     <div class="property">
         <div class="label" style="margin-right: 9px;">Name:</div>
@@ -7,7 +7,7 @@
 
     <!-- Page type -->
     <div class="property">
-        <div class="label" style="margin-right: 15px;">Type:</div>
+        <div class="label" style="margin-right: 15px;">Page Type:</div>
         <div style="width: 100%;">
 
 
@@ -18,28 +18,19 @@
         </div>
     </div>
 
+    <!-- Niches -->
     <ng-container *ngIf="widgetService.page.pageType == pageType.Browse">
-        <div>Niches:</div>
-        <search #nichesSearch [apiUrl]="'Niches/Search'" [placeholderText]="'Add a niche'" [clearOnSelection]="true"
-            (onItemSelect)="pageNiches.add($event.id, $event.name)">
-        </search>
-        <page-niches #pageNiches (onDuplicatePromptOpen)="nichesSearch.searchInput.nativeElement.blur()"
-            (onDuplicatePromptClose)="nichesSearch.searchInput.nativeElement.focus()"></page-niches>
+        <page-niches></page-niches>
     </ng-container>
 
 
-
+    <!-- Keywords -->
     <ng-container *ngIf="widgetService.page.pageType == pageType.Search">
-        <div>Keywords:</div>
-        <search #keywordsSearch [apiUrl]="'Keywords/Search'" [placeholderText]="'Add a keyword group'"
-            [clearOnSelection]="true" (onItemSelect)="pageKeywords.add($event.id, $event.name)">
-        </search>
-        <page-keywords #pageKeywords (onDuplicatePromptOpen)="keywordsSearch.searchInput.nativeElement.blur()"
-            (onDuplicatePromptClose)="keywordsSearch.searchInput.nativeElement.focus()"></page-keywords>
+        <page-keywords></page-keywords>
     </ng-container>
 
 
 
     <!-- Background color & image -->
     <background [background]="widgetService.page.pageContent.background" (onChange)="onBackgroundChange()"></background>
-</div>
+<!-- </div> -->

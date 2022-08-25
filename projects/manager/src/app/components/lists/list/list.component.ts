@@ -124,6 +124,8 @@ export class ListComponent implements OnInit {
 
 
   commitAdd(id: number, name: string) {
+    this.listManager.addEditVerificationInProgress = false;
+
     // Add the new item to the list
     this.sourceList.push({ id: id!, name: name! });
 

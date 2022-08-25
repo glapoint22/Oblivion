@@ -102,9 +102,11 @@
                             </icon-button>
 
                             <div style="position: relative;">
-                                <icon-button *ngIf="product.media && product.media.length > 0" [icon]="'fas fa-plus-circle'" [title]="'Add Image or Video'" (click)="openMediaSelectorPopup()">
+                                <icon-button *ngIf="product.media && product.media.length > 0"
+                                    [icon]="'fas fa-plus-circle'" [title]="'Add Image or Video'"
+                                    (click)="openMediaSelectorPopup()">
                                 </icon-button>
-    
+
                                 <div style="position: absolute;
                                 z-index: 100;
                                 right: 88px;
@@ -112,11 +114,12 @@
                                     <ng-template #mediaSelectorPopupContainer></ng-template>
                                 </div>
                             </div>
-                            
+
 
                             <icon-button
                                 [icon]="!selectedMedia || selectedMedia.type == MediaType.Image ? 'fa-solid fa-image' : 'fa-solid fa-film'"
-                                [title]="'Media Browser'" (click)="openMediaBrowser(!selectedMedia ? MediaType.Image : undefined)">
+                                [title]="'Media Browser'"
+                                (click)="openMediaBrowser(!selectedMedia ? MediaType.Image : undefined)">
                             </icon-button>
                         </div>
 
@@ -129,12 +132,13 @@
 
                         <div *ngIf="!selectedMedia"
                             style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
-                            <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;" tabindex="0"></i>
+                            <i class="fa-solid fa-image" style="font-size: 100px; color: #3c3c3c;" tabindex="0"
+                                title="Media Browser"></i>
                         </div>
 
 
                         <img *ngIf="selectedMedia && selectedMedia.type == MediaType.Image"
-                            [src]="'images/' + selectedMedia.imageMd">
+                            [src]="'images/' + selectedMedia.imageMd" [title]="selectedMedia.name">
 
                         <div class="iframe-container" *ngIf="selectedMedia && selectedMedia.type == MediaType.Video">
                             <iframe id="video-iframe" allowfullscreen></iframe>

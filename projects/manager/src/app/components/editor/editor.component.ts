@@ -17,7 +17,7 @@ export class EditorComponent implements ContainerHost {
   public page!: PageDevComponent;
   public showResizeCover!: boolean;
   public document = document;
-  public widgetCursors = WidgetCursor.getWidgetCursors();
+  // public widgetCursors = WidgetCursor.getWidgetCursors();
   public widgetInspectorView = WidgetInspectorView;
 
   ngOnInit() {

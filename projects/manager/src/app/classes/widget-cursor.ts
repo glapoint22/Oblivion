@@ -1,5 +1,5 @@
 import { WidgetType } from "widgets";
-import { WidgetCursorType } from "./enums";
+import { BuilderType, WidgetCursorType } from "./enums";
 
 export class WidgetCursor {
     private canvas!: HTMLCanvasElement;
@@ -64,7 +64,7 @@ export class WidgetCursor {
 
 
     // ---------------------------------------------------------------Get Widget Cursors------------------------------------------------
-    public static getWidgetCursors(): Array<WidgetCursor> {
+    public static getWidgetCursors(builderType: BuilderType): Array<WidgetCursor> {
         const widgetCursors: Array<WidgetCursor> = [];
 
         // Text
@@ -141,49 +141,31 @@ export class WidgetCursor {
 
 
 
-
-
-        // Video
-        widgetCursors.push(new WidgetCursor(
-            'Video',
-            WidgetType.Video,
-            'fa-solid fa-film',
-            '\uf008',
-            '24px',
-            25,
-            4));
-
-
-
-
-
-
-        // Product Slider
-        widgetCursors.push(new WidgetCursor(
-            'Product Slider',
-            WidgetType.ProductSlider,
-            'fa-brands fa-product-hunt',
-            '\uf288',
-            '24px',
-            25,
-            4));
+        if (builderType == BuilderType.Page) {
+            // Video
+            widgetCursors.push(new WidgetCursor(
+                'Video',
+                WidgetType.Video,
+                'fa-solid fa-film',
+                '\uf008',
+                '24px',
+                25,
+                4));
 
 
 
 
 
 
-
-
-        // Carousel
-        widgetCursors.push(new WidgetCursor(
-            'Carousel',
-            WidgetType.Carousel,
-            'fa-solid fa-rotate',
-            '\uf2f1',
-            '25px',
-            25,
-            4));
+            // Product Slider
+            widgetCursors.push(new WidgetCursor(
+                'Product Slider',
+                WidgetType.ProductSlider,
+                'fa-brands fa-product-hunt',
+                '\uf288',
+                '24px',
+                25,
+                4));
 
 
 
@@ -191,15 +173,35 @@ export class WidgetCursor {
 
 
 
-        // Grid
-        widgetCursors.push(new WidgetCursor(
-            'Grid',
-            WidgetType.Grid,
-            'fa-solid fa-table-cells-large',
-            '\uf009',
-            '24px',
-            25,
-            4));
+
+            // Carousel
+            widgetCursors.push(new WidgetCursor(
+                'Carousel',
+                WidgetType.Carousel,
+                'fa-solid fa-rotate',
+                '\uf2f1',
+                '25px',
+                25,
+                4));
+
+
+
+
+
+
+
+            // Grid
+            widgetCursors.push(new WidgetCursor(
+                'Grid',
+                WidgetType.Grid,
+                'fa-solid fa-table-cells-large',
+                '\uf009',
+                '24px',
+                25,
+                4));
+        }
+
+
 
 
         return widgetCursors;

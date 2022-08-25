@@ -1,27 +1,21 @@
 <div style="padding: 5px; background: #343434">
     <!-- Background -->
     <div class="property">
-        <div class="label">Background</div>
-        <div style="flex: 1;">
-            <color-swatch [color]="backgroundColor" (onChange)="onChange.emit()"></color-swatch>
-        </div>
+        <div class="label">Background:</div>
+        <color-swatch [color]="backgroundColor" (onChange)="onChange.emit()"></color-swatch>
     </div>
 
 
     <!-- Border -->
     <div class="property">
-        <div class="label">Border</div>
-        <div style="flex: 1;">
-            <color-swatch [color]="borderColor" (onChange)="onChange.emit()"></color-swatch>
-        </div>
+        <div class="label">Border:</div>
+        <color-swatch [color]="borderColor" (onChange)="onChange.emit()"></color-swatch>
     </div>
 
 
     <!-- Text -->
     <div class="property">
-        <div class="label">Text</div>
-        <div style="flex: 1;">
-            <color-swatch [color]="textColor" (onChange)="onChange.emit()"></color-swatch>
-        </div>
+        <div class="label">Text:</div>
+        <color-swatch [color]="textColor" (onChange)="onChange.emit()"></color-swatch>
     </div>
 </div>

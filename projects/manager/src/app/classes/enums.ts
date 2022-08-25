@@ -108,6 +108,13 @@ export enum MediaBrowserMode {
     Swap
 }
 
+
+export enum BuilderType {
+    Product,
+    Page,
+    Email
+}
+
 export enum NotificationState {
     New,
     Archive

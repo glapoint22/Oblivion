@@ -2,44 +2,33 @@
 
     <!-- Shadow X -->
     <div class="property">
-        <div class="label">Shadow X</div>
-        <div style="flex: 1;">
-            <number-field [value]="shadow.x" (onValueChange)="shadow.x = $event; onChange.emit()"></number-field>
-        </div>
+        <div class="label">Shadow X:</div>
+        <number-field [value]="shadow.x" (onValueChange)="shadow.x = $event; onChange.emit()"></number-field>
     </div>
 
     <!-- Shadow Y -->
     <div class="property">
-        <div class="label">Shadow Y</div>
-        <div style="flex: 1;">
-            <number-field [value]="shadow.y" (onValueChange)="shadow.y = $event; onChange.emit()"></number-field>
-        </div>
+        <div class="label">Shadow Y:</div>
+        <number-field [value]="shadow.y" (onValueChange)="shadow.y = $event; onChange.emit()"></number-field>
     </div>
 
 
     <!-- Blur -->
     <div class="property">
-        <div class="label">Blur</div>
-        <div style="flex: 1;">
-            <number-field [value]="shadow.blur" (onValueChange)="shadow.blur = $event; onChange.emit()"></number-field>
-        </div>
+        <div class="label">Blur:</div>
+        <number-field [value]="shadow.blur" (onValueChange)="shadow.blur = $event; onChange.emit()"></number-field>
     </div>
 
 
     <!-- Size -->
     <div class="property">
-        <div class="label">Size</div>
-        <div style="flex: 1;">
-            <number-field [value]="shadow.size" (onValueChange)="shadow.size = $event; onChange.emit()"></number-field>
-        </div>
+        <div class="label">Size:</div>
+        <number-field [value]="shadow.size" (onValueChange)="shadow.size = $event; onChange.emit()"></number-field>
     </div>
 
     <!-- Color -->
     <div class="property">
-        <div class="label">Color</div>
-        <div style="flex: 1;">
-            <color-swatch [color]="shadow.rgbColor" (onChange)="onChange.emit()"></color-swatch>
-        </div>
+        <div class="label">Color:</div>
+        <color-swatch [color]="shadow.rgbColor" (onChange)="onChange.emit()"></color-swatch>
     </div>
-
 </panel>

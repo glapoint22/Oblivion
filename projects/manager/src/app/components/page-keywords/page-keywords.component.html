@@ -1,29 +1,30 @@
-<div class="property-box-bar">
+<div class="property">
+    <div class="label">Keywords:</div>
 
-    <div class="icons">
-        <!-- Delete icon -->
-        <icon-button [icon]="'fas fa-trash-alt'"
-            [title]="deleteIconButtonTitle"
-            [isDisabled]="isDisabled('deleteDisabled')"
-            (onClick)="delete()">
+    <div class="icons-container">
+
+        <!-- Delete -->
+        <icon-button [icon]="'fas fa-trash-alt'" [title]="deleteIconButtonTitle"
+            [isDisabled]="isDisabled('deleteDisabled')" (onClick)="delete()">
         </icon-button>
-            
 
-        <!-- Collapse icon -->
-        <icon-button [icon]="'fas fa-minus-square'"
-            [title]="'Collapse'"
-            [isDisabled]="isDisabled('collapseDisabled')"
+
+        <!-- Collapse -->
+        <icon-button [icon]="'fas fa-minus-square'" [title]="'Collapse'" [isDisabled]="isDisabled('collapseDisabled')"
             (onClick)="collapse()">
         </icon-button>
-        
     </div>
-</div>
 
-<!-- Hierarchy -->
-<div class="modal-list-container">
-    <checkbox-hierarchy #hierarchyComponent
-        [sourceList]="thisArray"
-        [options]="listOptions"
-        (onListUpdate)="listUpdate = $event">
-    </checkbox-hierarchy>
+    <!-- Search -->
+    <search [apiUrl]="'Keywords/Search'" [placeholderText]="'Add a keyword group'" [clearOnSelection]="true"
+        (onItemSelect)="add($event.id, $event.name)">
+    </search>
+
+
+    <!-- Hierarchy -->
+    <div class="modal-list-container">
+        <checkbox-hierarchy #hierarchyComponent [sourceList]="thisArray" [options]="listOptions"
+            (onListUpdate)="listUpdate = $event">
+        </checkbox-hierarchy>
+    </div>
 </div>
