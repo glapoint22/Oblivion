@@ -114,3 +114,8 @@ export enum BuilderType {
     Page,
     Email
 }
+
+export enum NotificationState {
+    New,
+    Archive
+}

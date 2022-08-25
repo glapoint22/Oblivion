@@ -8,9 +8,7 @@
 
     <div class="popup-base">
 
-
-
-        <div class="trumpy">
+        <div class="tabs">
             <div class="tabs-container">
                 <div class="tab" [ngClass]="{'selected-tab': newTabSelected}" (click)="newTabSelected = true">New (36)</div>
                 <div class="tab" [ngClass]="{'selected-tab': !newTabSelected}" (click)="newTabSelected = false">Archive</div>
@@ -23,7 +21,7 @@
             </icon-button>
         </div>
 
-        <div class="columns-container"></div>
+        <div class="tabs-base"></div>
 
 
         <div class="modal-list-container">
