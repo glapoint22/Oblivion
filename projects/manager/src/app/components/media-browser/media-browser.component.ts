@@ -5,6 +5,7 @@ import { debounceTime, fromEvent, map, of, switchMap } from 'rxjs';
 import { MediaBrowserMode, MediaBrowserView } from '../../classes/enums';
 import { Item } from '../../classes/item';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
+import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
@@ -36,7 +37,7 @@ export class MediaBrowserComponent extends LazyLoad {
   public showCancelButton!: boolean;
   public hasMultiImages!: boolean;
   private productName!: string;
-  private dropdownList!: DropdownListComponent;
+  private dropdownList!: DropdownListComponent<Item>;
   public invalidVideoLink!: boolean;
 
 
@@ -556,7 +557,7 @@ export class MediaBrowserComponent extends LazyLoad {
       return;
     }
 
-    this.lazyLoadingService.load(async () => {
+    this.lazyLoadingService.load<DropdownListComponent<Item>, DropdownListModule>(async () => {
       const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
       const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
       return {
@@ -564,7 +565,7 @@ export class MediaBrowserComponent extends LazyLoad {
         module: DropdownListModule
       }
     }, SpinnerAction.None)
-      .then((dropdownList: DropdownListComponent) => {
+      .then((dropdownList: DropdownListComponent<Item>) => {
         const rect = this.submitButton.nativeElement.getBoundingClientRect();
         const imageSizes = this.selectedMedia.getImageSizes();
 

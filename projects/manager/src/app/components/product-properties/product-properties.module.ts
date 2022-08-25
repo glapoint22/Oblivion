@@ -9,6 +9,7 @@ import { ColorSwatchModule } from '../color-swatch/color-swatch.module';
 import { RecurringPaymentModule, ShippingModule } from 'common';
 import { SubproductsComponent } from '../subproducts/subproducts.component';
 import { IconButtonModule } from '../icon-button/icon-button.module';
+import { DropdownModule } from '../dropdown/dropdown.module';
 
 
 
@@ -26,7 +27,8 @@ import { IconButtonModule } from '../icon-button/icon-button.module';
     ColorSwatchModule,
     RecurringPaymentModule,
     ShippingModule,
-    IconButtonModule
+    IconButtonModule,
+    DropdownModule
   ],
   exports:[
     ProductPropertiesComponent

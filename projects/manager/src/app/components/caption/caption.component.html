@@ -8,19 +8,15 @@
     <!-- Font -->
     <div class="property">
         <div class="label">Font:</div>
-        <select [(ngModel)]="caption.font" (change)="onChange.emit()">
-            <option *ngFor="let fontOption of caption.fontOptions" [ngValue]="fontOption">
-                {{fontOption.key}}</option>
-        </select>
+        <dropdown [listItems]="caption.fontOptions" [selectedListItem]="caption.font"
+            (onChange)="caption.font = $event; onChange.emit()"></dropdown>
     </div>
 
     <!-- Font Size -->
     <div class="property">
         <div class="label">Font Size:</div>
-        <select [(ngModel)]="caption.fontSize" (change)="onChange.emit()">
-            <option *ngFor="let fontSize of caption.fontSizes" [ngValue]="fontSize">
-                {{fontSize.key}}</option>
-        </select>
+        <dropdown [listItems]="caption.fontSizes" [selectedListItem]="caption.fontSize"
+            (onChange)="caption.fontSize = $event; onChange.emit()"></dropdown>
     </div>
 
     <!-- Font Style -->

@@ -32,6 +32,7 @@ import { ColorSwatchModule } from '../../components/color-swatch/color-swatch.mo
 import { CounterModule } from '../../components/counter/counter.module';
 import { ImageBoxModule } from '../../components/image-box/image-box.module';
 import { VideoPropertiesEditorComponent } from '../../components/video-properties-editor/video-properties-editor.component';
+import { DropdownModule } from '../../components/dropdown/dropdown.module';
 
 
 @NgModule({
@@ -70,7 +71,8 @@ import { VideoPropertiesEditorComponent } from '../../components/video-propertie
     PanelModule,
     ColorSwatchModule,
     CounterModule,
-    ImageBoxModule
+    ImageBoxModule,
+    DropdownModule
   ]
 })
 export class PageBuilderModule { }

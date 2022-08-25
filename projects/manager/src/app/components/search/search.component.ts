@@ -3,6 +3,7 @@ import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { debounceTime, fromEvent, of, switchMap } from 'rxjs';
 import { Item } from '../../classes/item';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
+import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 
 @Component({
   selector: 'search',
@@ -18,7 +19,7 @@ export class SearchComponent {
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('tabElement') tabElement!: ElementRef<HTMLElement>;
   @Output() onGetTabElement: EventEmitter<ElementRef<HTMLElement>> = new EventEmitter();
-  private dropdownList!: DropdownListComponent;
+  private dropdownList!: DropdownListComponent<Item>;
 
   constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
 
@@ -60,7 +61,7 @@ export class SearchComponent {
 
   // ------------------------------------------------------------------------ Load Dropdown List ----------------------------------------------------------
   async loadDropdownList(results: Array<Item>) {
-    this.lazyLoadingService.load(async () => {
+    this.lazyLoadingService.load<DropdownListComponent<Item>, DropdownListModule>(async () => {
       const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
       const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
       return {
@@ -68,7 +69,7 @@ export class SearchComponent {
         module: DropdownListModule
       }
     }, SpinnerAction.None)
-      .then((dropdownList: DropdownListComponent) => {
+      .then((dropdownList: DropdownListComponent<Item>) => {
         const rect = this.searchContainer.nativeElement.getBoundingClientRect();
 
         this.dropdownList = dropdownList;

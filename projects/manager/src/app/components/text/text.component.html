@@ -5,10 +5,9 @@
     <!-- Font -->
     <div class="property">
         <div class="label">Font:</div>
-        <select [(ngModel)]="textBox.fontFamily.selectedOption"
-            (change)="textBox.fontFamily.setStyle(); textBox.setText()">
-            <option *ngFor="let option of textBox.fontFamily.options" [ngValue]="option">{{option.key}}</option>
-        </select>
+        <dropdown [listItems]="textBox.fontFamily.options" [selectedListItem]="textBox.fontFamily.selectedOption"
+            (onChange)="textBox.fontFamily.selectedOption = $event; textBox.fontFamily.setStyle(); textBox.setText()">
+        </dropdown>
     </div>
 
 
@@ -16,9 +15,9 @@
     <!-- Font Size -->
     <div class="property">
         <div class="label">Font Size:</div>
-        <select [(ngModel)]="textBox.fontSize.selectedOption" (change)="textBox.fontSize.setStyle(); textBox.setText()">
-            <option *ngFor="let option of textBox.fontSize.options" [ngValue]="option">{{option.key}}</option>
-        </select>
+        <dropdown [listItems]="textBox.fontSize.options" [selectedListItem]="textBox.fontSize.selectedOption"
+            (onChange)="textBox.fontSize.selectedOption = $event; textBox.fontSize.setStyle(); textBox.setText()">
+        </dropdown>
     </div>
 
 

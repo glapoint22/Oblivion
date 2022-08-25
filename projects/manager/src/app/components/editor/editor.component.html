@@ -19,11 +19,7 @@
         <div *ngIf="page && page.pageContent" class="view-port-dimensions-bar">
             <div class="inputs-container">
                 <!-- Dropdown -->
-                <select [(ngModel)]="breakpointService.selectedViewPortDimension"
-                    (change)="breakpointService.setCurrentBreakpoint(breakpointService.selectedViewPortDimension.value.width)">
-                    <option *ngFor="let dimension of breakpointService.viewPortDimensions" [ngValue]="dimension">
-                        {{dimension.key}}</option>
-                </select>
+                
 
                 <!-- Width Input -->
                 <input #widthInput style="width: 50px;"

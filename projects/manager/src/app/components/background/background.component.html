@@ -14,13 +14,8 @@
             <!-- Position -->
             <div class="property">
                 <div class="label">Position</div>
-                <div style="flex: 1;">
-                    <select [(ngModel)]="background.image.position" (change)="onChange.emit()">
-                        <option *ngFor="let positionOption of background.image.positionOptions"
-                            [ngValue]="positionOption">
-                            {{positionOption.key}}</option>
-                    </select>
-                </div>
+                <dropdown [listItems]="background.image.positionOptions" [selectedListItem]="background.image.position"
+                    (onChange)="background.image.position = $event; onChange.emit()"></dropdown>
             </div>
 
 
@@ -29,12 +24,8 @@
             <!-- Repeat -->
             <div class="property">
                 <div class="label">Repeat</div>
-                <div style="flex: 1;">
-                    <select [(ngModel)]="background.image.repeat" (change)="onChange.emit()">
-                        <option *ngFor="let repeatOption of background.image.repeatOptions" [ngValue]="repeatOption">
-                            {{repeatOption.key}}</option>
-                    </select>
-                </div>
+                <dropdown [listItems]="background.image.repeatOptions" [selectedListItem]="background.image.repeat"
+                    (onChange)="background.image.repeat = $event; onChange.emit()"></dropdown>
             </div>
 
 
@@ -44,13 +35,8 @@
             <!-- Attachment -->
             <div class="property">
                 <div class="label">Attachment</div>
-                <div style="flex: 1;">
-                    <select [(ngModel)]="background.image.attachment" (change)="onChange.emit()">
-                        <option *ngFor="let attachmentOption of background.image.attachmentOptions"
-                            [ngValue]="attachmentOption">
-                            {{attachmentOption.key}}</option>
-                    </select>
-                </div>
+                <dropdown [listItems]="background.image.attachmentOptions" [selectedListItem]="background.image.attachment"
+                    (onChange)="background.image.attachment = $event; onChange.emit()"></dropdown>
             </div>
         </div>
     </ng-container>

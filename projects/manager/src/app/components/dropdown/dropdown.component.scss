@@ -1,0 +1,28 @@
+.dropdown-base {
+    height: 24px;
+    background: #282828;
+    padding: 0 5px;
+    user-select: none;
+    border: 1px solid #3d3d3d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    color: #dadada;
+}
+
+.dropdown-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fa-angle-down {
+    margin-left: 5px;
+}
+
+.disabled {
+    background: #282828;
+    border-color: #323232;
+    color: #323232;
+}
