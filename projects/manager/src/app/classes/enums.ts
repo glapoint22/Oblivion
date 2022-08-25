@@ -107,3 +107,8 @@ export enum MediaBrowserMode {
     Update,
     Swap
 }
+
+export enum NotificationState {
+    New,
+    Archive
+}
