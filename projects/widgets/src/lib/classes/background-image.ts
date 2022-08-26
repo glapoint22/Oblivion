@@ -2,7 +2,7 @@ import { KeyValue } from "@angular/common";
 import { Image } from "common";
 
 export class BackgroundImage extends Image {
-    public _positionOptions: Array<KeyValue<string, string>> = [
+    public positionOptions: Array<KeyValue<string, string>> = [
         {
             key: 'Left Top',
             value: 'left top'
@@ -40,13 +40,10 @@ export class BackgroundImage extends Image {
             value: 'right bottom'
         }
     ]
-    public get positionOptions(): Array<KeyValue<string, string>> {
-        return this._positionOptions;
-    }
     public position: KeyValue<string, string> = this.positionOptions[0];
 
 
-    private _repeatOptions: Array<KeyValue<string, string>> = [
+    public repeatOptions: Array<KeyValue<string, string>> = [
         {
             key: 'Repeat',
             value: 'repeat'
@@ -72,19 +69,10 @@ export class BackgroundImage extends Image {
             value: 'round'
         }
     ]
-    public get repeatOptions(): Array<KeyValue<string, string>> {
-        return this._repeatOptions;
-    }
-
 
     public repeat: KeyValue<string, string> = this.repeatOptions[0];
 
-
-
-
-
-
-    private _attachmentOptions: Array<KeyValue<string, string>> = [
+    public attachmentOptions: Array<KeyValue<string, string>> = [
         {
             key: 'Scroll',
             value: 'scroll'
@@ -98,49 +86,10 @@ export class BackgroundImage extends Image {
             value: 'local'
         }
     ]
-    public get attachmentOptions(): Array<KeyValue<string, string>> {
-        return this._attachmentOptions;
-    }
 
 
     public attachment: KeyValue<string, string> = this.attachmentOptions[0];
-
-
-
-
-
-
-    constructor() {
-        super();
-
-        Object.defineProperty(
-            this,
-            '_positionOptions',
-            {
-                enumerable: false
-            }
-        );
-
-
-        Object.defineProperty(
-            this,
-            '_repeatOptions',
-            {
-                enumerable: false
-            }
-        );
-
-
-        Object.defineProperty(
-            this,
-            '_attachmentOptions',
-            {
-                enumerable: false
-            }
-        );
-
-        Object.assign(this);
-    }
+    
 
     getData(): BackgroundImage {
         if (!this.src) return null!;

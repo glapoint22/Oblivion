@@ -7,7 +7,7 @@ export class Caption extends ColorProperty {
     public textDecoration: string = 'none';
     public text!: string;
 
-    private _fontOptions: Array<KeyValue<string, string>> = [
+    public fontOptions: Array<KeyValue<string, string>> = [
         {
             key: 'Arial',
             value: 'Arial, Helvetica, sans-serif'
@@ -65,13 +65,10 @@ export class Caption extends ColorProperty {
             value: 'Verdana, Geneva, sans-serif'
         }
     ]
-    public get fontOptions(): Array<KeyValue<string, string>> {
-        return this._fontOptions;
-    }
     public font: KeyValue<string, string> = this.fontOptions[0];
 
 
-    private _fontSizes: Array<KeyValue<string, string>> = [
+    public fontSizes: Array<KeyValue<string, string>> = [
         {
             key: '6',
             value: '6px'
@@ -129,37 +126,8 @@ export class Caption extends ColorProperty {
             value: '72px'
         },
     ]
-    public get fontSizes(): Array<KeyValue<string, string>> {
-        return this._fontSizes;
-    }
-
 
     public fontSize: KeyValue<string, string> = this.fontSizes[6];
-
-
-    constructor() {
-        super();
-
-        Object.defineProperty(
-            this,
-            '_fontOptions',
-            {
-                enumerable: false
-            }
-        );
-
-
-        Object.defineProperty(
-            this,
-            '_fontSizes',
-            {
-                enumerable: false
-            }
-        );
-
-        Object.assign(this);
-    }
-
 
 
 

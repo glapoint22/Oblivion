@@ -1,5 +1,8 @@
 import { Image, Video } from "common";
 import { Background } from "./background";
+import { BackgroundImage } from "./background-image";
+import { Caption } from "./caption";
+import { ColorProperty } from "./color-property";
 import { ColumnSpan } from "./column-span";
 import { Row } from "./row";
 
@@ -16,16 +19,56 @@ export class PageContent {
                 (value instanceof ColumnSpan && value.values.length == 1 && value.values[0].span == 12)
             ) {
                 return undefined;
-            } else if (value instanceof Image) {
+            }
+
+            // Background Image
+            else if (value instanceof BackgroundImage) {
+                return {
+                    id: value.id,
+                    imageSizeType: value.imageSizeType,
+                    position: value.position,
+                    repeat: value.repeat,
+                    attachment: value.attachment
+                }
+            }
+
+            // Image
+            else if (value instanceof Image) {
                 return {
                     id: value.id,
                     imageSizeType: value.imageSizeType,
                 }
-            } else if (value instanceof Video) {
+            }
+
+            // Video
+            else if (value instanceof Video) {
                 return {
-                    id: value.id,
+                    id: value.id
                 }
-            } else {
+            }
+
+            // Caption
+            else if (value instanceof Caption) {
+                return {
+                    font: value.font,
+                    fontSize: value.fontSize,
+                    fontWeight: value.fontWeight,
+                    fontStyle: value.fontStyle,
+                    textDecoration: value.textDecoration,
+                    text: value.text,
+                    color: value.color
+                }
+            }
+
+            // Color Property
+            else if (value instanceof ColorProperty) {
+                return {
+                    color: value.color
+                }
+            }
+
+            // Other
+            else {
                 return value;
             }
         });
