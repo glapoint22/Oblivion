@@ -1,3 +1,4 @@
+import { KeyValue } from '@angular/common';
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
 import { Item } from '../../classes/item';
@@ -7,13 +8,14 @@ import { Item } from '../../classes/item';
   templateUrl: './dropdown-list.component.html',
   styleUrls: ['./dropdown-list.component.scss']
 })
-export class DropdownListComponent extends LazyLoad {
+export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends LazyLoad {
   @ViewChild('listElement') listElement!: ElementRef<HTMLElement>;
-  public list!: Array<Item>;
+  public list!: Array<T>;
   public top!: number;
   public left!: number;
   public width!: number;
   public callback!: Function;
+  public onClose!: Function;
   public itemIndex: number = -1;
 
 
@@ -36,7 +38,7 @@ export class DropdownListComponent extends LazyLoad {
 
 
     // Place the name of the item in the input
-    input.value = this.list[this.itemIndex].name!;
+    input.value = this.getName(this.list[this.itemIndex]);
 
     // Adjust the scroll
     if (this.itemIndex * 22 + scrollOffset >= this.listElement.nativeElement.getBoundingClientRect().height + this.listElement.nativeElement.scrollTop) {
@@ -47,7 +49,9 @@ export class DropdownListComponent extends LazyLoad {
   }
 
 
-
+  getName(listItem: T) {
+    return (listItem as KeyValue<any, any>).key || (listItem as Item).name;
+  }
 
 
   // ------------------------------------------------------------------------- On Arrow Up ----------------------------------------------------------
@@ -69,7 +73,7 @@ export class DropdownListComponent extends LazyLoad {
     }
 
     // Place the name of the item in the input
-    input.value = this.list[this.itemIndex].name!;
+    input.value = this.getName(this.list[this.itemIndex]);
 
 
     // Adjust the scroll
@@ -110,5 +114,10 @@ export class DropdownListComponent extends LazyLoad {
   @HostListener('window:mousedown')
   onWindowClick() {
     this.close();
+  }
+
+  close(): void {
+    super.close();
+    if (this.onClose) this.onClose();
   }
 }

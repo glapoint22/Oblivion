@@ -3,7 +3,7 @@ import { Style } from "./style";
 
 export class Font extends Style {
     public options!: Array<KeyValue<string, string>>;
-    public selectedOption!: KeyValue<string, string> | null;
+    public selectedOption!: KeyValue<string, string>;
     protected defaultOption!: KeyValue<string, string>;
 
 
@@ -27,7 +27,7 @@ export class Font extends Style {
             }
 
             // We have a mix of values
-            this.selectedOption = null;
+            this.selectedOption = null!;
             return;
         }
 

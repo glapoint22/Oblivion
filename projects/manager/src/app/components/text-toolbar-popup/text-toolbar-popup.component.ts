@@ -4,6 +4,7 @@ import { TextBoxDev } from 'text-box';
 import { Item } from '../../classes/item';
 import { ColorSwatchComponent } from '../color-swatch/color-swatch.component';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
+import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 import { LinkComponent } from '../link/link.component';
 
 @Component({
@@ -94,7 +95,7 @@ export class TextToolbarPopupComponent {
       return;
     }
 
-    this.lazyLoadingService.load(async () => {
+    this.lazyLoadingService.load<DropdownListComponent<Item>, DropdownListModule>(async () => {
       const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
       const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
       return {
@@ -102,7 +103,7 @@ export class TextToolbarPopupComponent {
         module: DropdownListModule
       }
     }, SpinnerAction.None, this.caseDropdownListContainer)
-      .then((dropdownList: DropdownListComponent) => {
+      .then((dropdownList: DropdownListComponent<Item>) => {
 
         dropdownList.list = [
           {

@@ -3,40 +3,17 @@
     <div class="popup-base" (mousedown)="$event.stopPropagation()">
 
         <!-- Font -->
-        <div style="width: 103px; margin-right: 6px;" title="Font">
-            <!-- <div class="popup-dropdown-base">
-                <div class="popup-dropdown-value-display">Arial</div>
-                <div class="popup-dropdown-arrow">
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
-            </div> -->
-            <select [(ngModel)]="textBox.fontFamily.selectedOption" style="width: 100px;"
-                (change)="textBox.fontFamily.setStyle(); textBox.setText()">
-                <option *ngFor="let option of textBox.fontFamily.options" [ngValue]="option">{{option.key}}</option>
-            </select>
+        <div style="width: 160px; margin-right: 6px;" title="Font">
+            <dropdown [listItems]="textBox.fontFamily.options" [selectedListItem]="textBox.fontFamily.selectedOption"
+                (onChange)="textBox.fontFamily.selectedOption = $event; textBox.fontFamily.setStyle(); textBox.setText()">
+            </dropdown>
         </div>
 
-        <!-- Decrease Font Size Button -->
-        <!-- <div class="font-size-button" title="Decrease Font Size">
-            <i class="fa-solid fa-minus"></i>
-        </div> -->
 
-        <!-- Font size Input text -->
-        <!-- <div style="width: 39px;" title="Font Size">
-            <input>
-        </div> -->
-
-        <!-- Increase Font Size Button -->
-        <!-- <div class="font-size-button" title="Increase Font Size">
-            <i class="fa-solid fa-plus"></i>
-        </div> -->
-
-        <!-- <div style="width: 4px;"></div> -->
-
-        <select [(ngModel)]="textBox.fontSize.selectedOption" style="width: 100px;"
-            (change)="textBox.fontSize.setStyle(); textBox.setText()">
-            <option *ngFor="let option of textBox.fontSize.options" [ngValue]="option">{{option.key}}</option>
-        </select>
+        <!-- Font Size -->
+        <dropdown [listItems]="textBox.fontSize.options" [selectedListItem]="textBox.fontSize.selectedOption"
+            (onChange)="textBox.fontSize.selectedOption = $event; textBox.fontSize.setStyle(); textBox.setText()">
+        </dropdown>
 
         <!-- Bold -->
         <div class="text-toolbar-button" title="Bold" (click)="textBox.bold.setStyle(); textBox.setText()"
@@ -69,9 +46,7 @@
                     </color-swatch>
                 </div>
             </div>
-            <div style="    position: absolute;
-            top: -233px;
-            left: -185px;">
+            <div style="position: absolute; top: -233px; left: -185px;">
                 <ng-template #colorPickerViewContainer></ng-template>
             </div>
 
@@ -92,9 +67,7 @@
                 </div>
             </div>
 
-            <div style="    position: absolute;
-            top: -233px;
-            left: -185px;">
+            <div style="position: absolute;top: -233px; left: -185px;">
                 <ng-template #highlightColorPickerViewContainer></ng-template>
             </div>
         </div>
@@ -200,9 +173,4 @@
             <i class="fa-solid fa-indent"></i>
         </div>
     </div>
-
-    <!-- <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: rgba(255, 0, 0, 0.37); pointer-events: none;">
-        <ng-template #popupContainer></ng-template>
-    </div> -->
-
 </ng-container>

@@ -18,11 +18,9 @@
 
             <div class="inputs-container">
                 <!-- Dropdown -->
-                <select style="width: 185px;"
-                    (change)="breakpointService.setCurrentBreakpoint(breakpointService.selectedViewPortDimension.value.width)">
-                    <option *ngFor="let dimension of breakpointService.viewPortDimensions">
-                        {{dimension.key}}</option>
-                </select>
+                <dropdown [listItems]="breakpointService.viewPortDimensions"
+                    (onChange)="breakpointService.selectedViewPortDimension = $event; breakpointService.setCurrentBreakpoint(breakpointService.selectedViewPortDimension.value.width)"
+                    style="width: 185px;"></dropdown>
 
                 <!-- Width Input -->
                 <input #widthInput [value]="breakpointService.selectedViewPortDimension.value.width"
@@ -40,13 +38,13 @@
         </div>
 
         <!-- View Port -->
-        <div id="view-port" class="view-port" [style.maxWidth.px]="breakpointService.selectedViewPortDimension.value.width + 8"
+        <div id="view-port" class="view-port"
+            [style.maxWidth.px]="breakpointService.selectedViewPortDimension.value.width + 8"
             [style.maxHeight.px]="breakpointService.selectedViewPortDimension.value.height + 5">
 
-            
+
             <!-- Iframe -->
-            <iframe id="iframe" #iframe scrolling="no"
-                frameborder="0" (load)="onLoad(iframe)"></iframe>
+            <iframe id="iframe" #iframe scrolling="no" frameborder="0" (load)="onLoad(iframe)"></iframe>
 
             <!-- Resizers -->
             <ng-container

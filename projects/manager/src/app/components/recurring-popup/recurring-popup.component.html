@@ -1,7 +1,9 @@
 <div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Arrow Left -->
-    <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft || arrowPosition == PopupArrowPosition.BottomLeft" class="popup-arrow-container" [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopLeft ? '13px' : '326px'}">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft || arrowPosition == PopupArrowPosition.BottomLeft"
+        class="popup-arrow-container"
+        [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopLeft ? '13px' : '326px'}">
         <div class="popup-arrow-left-Border"></div>
         <div class="popup-arrow-left-background"></div>
     </div>
@@ -37,18 +39,14 @@
         <!-- Rebill Frequency -->
         <div class="popup-label">Rebill Frequency:</div>
 
-        <div style="height: 24px; border: 1px solid rgb(54, 54, 54); margin-top: 5px; margin-bottom: 15px;">
-            <!-- Temp div -->
-            <select [(ngModel)]="selectedRebillFrequency" (change)="onRebillFrequencyChange()">
-                <option *ngFor="let rebillFrequency of rebillFrequencyList" [ngValue]="rebillFrequency">
-                    {{rebillFrequency.key}}</option>
-            </select>
+        <div style="height: 24px; margin-top: 5px; margin-bottom: 15px;">
+            <dropdown [listItems]="rebillFrequencyList" [selectedListItem]="selectedRebillFrequency"
+                (onChange)="selectedRebillFrequency = $event; onRebillFrequencyChange()"></dropdown>
         </div>
 
 
 
         <!-- Between Rebill -->
-
         <ng-container *ngIf="recurringPayment.rebillFrequency != rebillFrequency.Days && 
                              recurringPayment.rebillFrequency != rebillFrequency.Weeks && 
                              recurringPayment.rebillFrequency != rebillFrequency.Months">
@@ -61,23 +59,12 @@
             <div class="popup-label">Number of {{getTimeFrameBetweenRebill()}} Between Each Rebill:</div>
         </ng-container>
 
-        <div style="height: 24px; border: 1px solid rgb(54, 54, 54); margin-top: 5px; margin-bottom: 15px;">
-            <!-- Temp div -->
-
-
-            <select [(ngModel)]="selectedTimeFrameBetweenRebill"
-                (change)="recurringPayment.timeFrameBetweenRebill = selectedTimeFrameBetweenRebill.value">
-                <option *ngFor="let timeFrameBetweenRebill of timeFrameBetweenRebillList"
-                    [ngValue]="timeFrameBetweenRebill">
-                    {{timeFrameBetweenRebill.key}}</option>
-            </select>
-
+        <div style="height: 24px; margin-top: 5px; margin-bottom: 15px;">
+            <dropdown [listItems]="timeFrameBetweenRebillList" [selectedListItem]="selectedTimeFrameBetweenRebill"
+                (onChange)="selectedTimeFrameBetweenRebill = $event; recurringPayment.timeFrameBetweenRebill = selectedTimeFrameBetweenRebill.value"
+                [disabled]="timeFrameBetweenRebillList == undefined || timeFrameBetweenRebillList.length == 0">
+            </dropdown>
         </div>
-
-
-
-
-
 
 
 
@@ -90,7 +77,9 @@
 
 
     <!-- Arrow Right -->
-    <div *ngIf="arrowPosition == PopupArrowPosition.TopRight || arrowPosition == PopupArrowPosition.BottomRight" class="popup-arrow-container" [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopRight ? '13px' : '326px'}">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopRight || arrowPosition == PopupArrowPosition.BottomRight"
+        class="popup-arrow-container"
+        [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopRight ? '13px' : '326px'}">
         <div class="popup-arrow-right-Border"></div>
         <div class="popup-arrow-right-background"></div>
     </div>

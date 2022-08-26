@@ -16,6 +16,7 @@ import { LinkPropertyComponent } from '../link-property/link-property.component'
 import { IconButtonModule } from '../icon-button/icon-button.module';
 import { CaptionComponent } from '../caption/caption.component';
 import { TextComponent } from '../text/text.component';
+import { DropdownModule } from '../dropdown/dropdown.module';
 
 
 
@@ -39,7 +40,8 @@ import { TextComponent } from '../text/text.component';
     FormsModule,
     ColorSwatchModule,
     PanelModule,
-    IconButtonModule
+    IconButtonModule,
+    DropdownModule
   ],
   exports: [
     BackgroundComponent,

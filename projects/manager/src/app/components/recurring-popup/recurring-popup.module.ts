@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecurringPopupComponent } from './recurring-popup.component';
 import { FormsModule } from '@angular/forms';
+import { DropdownModule } from '../dropdown/dropdown.module';
 
 
 
@@ -9,7 +10,8 @@ import { FormsModule } from '@angular/forms';
   declarations: [RecurringPopupComponent],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    DropdownModule
   ],
   exports: [
     RecurringPopupComponent

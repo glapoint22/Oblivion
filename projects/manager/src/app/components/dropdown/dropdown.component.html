@@ -1,0 +1,8 @@
+<div #base class="dropdown-base" (click)="loadDropdownList()" (mousedown)="$event.stopPropagation()"
+    [ngClass]="{'disabled': disabled}">
+    <div class="dropdown-text">
+        {{!disabled ? selectedListItem.key: ''}}
+    </div>
+
+    <i class="fa-solid fa-angle-down"></i>
+</div>
