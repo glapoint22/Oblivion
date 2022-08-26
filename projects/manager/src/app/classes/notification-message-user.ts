@@ -1,7 +1,6 @@
-import { Notification } from "./notification";
+import { NotificationIdentity } from "./notification-identity";
 
-export class NotificationMessageUser extends Notification {
-    notificationId!: number;
+export class NotificationMessageUser extends NotificationIdentity {
     name!: string;
     message!: string;
 }

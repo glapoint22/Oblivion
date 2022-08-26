@@ -1,6 +1,5 @@
-import { NotificationSecurity } from "./notification-security";
+import { NotificationIdentity } from "./notification-identity";
 
-export class NotificationReviewUser extends NotificationSecurity {
-    notificationId!: number;
+export class NotificationReviewUser extends NotificationIdentity {
     complaint!: string;
 }
