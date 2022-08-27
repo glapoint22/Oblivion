@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Column, ColumnComponent, Row, Widget, WidgetData, WidgetType } from 'widgets';
-import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { Column, ColumnComponent, PaddingType, Row, Widget, WidgetData, WidgetType } from 'widgets';
+import { BuilderType, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { MenuOption } from '../../classes/menu-option';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
@@ -17,12 +17,24 @@ import { RowDevComponent } from '../row-dev/row-dev.component';
 export class ColumnDevComponent extends ColumnComponent {
   public rowComponent!: RowDevComponent;
   public widgetInspectorView = WidgetInspectorView;
+  public BuilderType = BuilderType;
+  public PaddingType = PaddingType;
 
   constructor(
     resolver: ComponentFactoryResolver,
     public widgetService: WidgetService,
     private lazyLoadingService: LazyLoadingService
   ) { super(resolver) }
+
+
+  ngAfterViewInit(): void {
+    this.paddingElement = this.columnElement.firstElementChild as HTMLElement;
+    this.columnSpan.setClasses(this.columnElement);
+
+    if (this.widgetService.page.builderType == BuilderType.Page) {
+      this.padding.setClasses(this.paddingElement);
+    }
+  }
 
 
   // ---------------------------------------------------------------------Create Widget Component Ref----------------------------------------------------------------

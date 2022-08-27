@@ -68,4 +68,23 @@ export class Padding {
 
         return padding!;
     }
+
+
+    public getValue(paddingType: PaddingType): number {
+        const paddingValue = this.values.find(x => x.paddingType == paddingType);
+
+        if (paddingValue) return paddingValue.padding;
+        return 0;
+    }
+
+
+    public setValue(paddingType: PaddingType, value: number): void {
+        const paddingValue = this.values.find(x => x.paddingType == paddingType);
+
+        if (paddingValue) {
+            paddingValue.padding = value;
+        } else {
+            this.values.push(new PaddingValue(paddingType, value, 0));
+        }
+    }
 }

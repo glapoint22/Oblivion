@@ -1,0 +1,22 @@
+<!-- Background -->
+<background [background]="widget.background" [toggleable]="false" (onChange)="update()"></background>
+
+<!-- Link -->
+<panel [title]="'Link'">
+    <link-property [link]="widget.link" (onChange)="update()"></link-property>
+</panel>
+
+<!-- Border -->
+<border [border]="widget.border" (onChange)="update()"></border>
+
+<!-- Corners -->
+<corners [corners]="widget.corners" (onChange)="update()"></corners>
+
+<!-- Shadow -->
+<shadow [shadow]="widget.shadow" (onChange)="update()"></shadow>
+
+<!-- Padding -->
+<padding [padding]="widget.padding"></padding>
+
+<!-- Caption -->
+<caption-property [caption]="widget.caption" (onChange)="update()"></caption-property>

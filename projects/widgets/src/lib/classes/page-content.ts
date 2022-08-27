@@ -2,7 +2,6 @@ import { Image, Video } from "common";
 import { Background } from "./background";
 import { BackgroundImage } from "./background-image";
 import { Caption } from "./caption";
-import { ColorProperty } from "./color-property";
 import { ColumnSpan } from "./column-span";
 import { Row } from "./row";
 
@@ -56,13 +55,6 @@ export class PageContent {
                     fontStyle: value.fontStyle,
                     textDecoration: value.textDecoration,
                     text: value.text,
-                    color: value.color
-                }
-            }
-
-            // Color Property
-            else if (value instanceof ColorProperty) {
-                return {
                     color: value.color
                 }
             }

@@ -5,6 +5,10 @@
     'background-position': background && background.enabled && background.image ? background.image.position.value : null,
     'background-repeat': background && background.enabled && background.image ? background.image.repeat.value : null,
     'background-attachment': background && background.enabled && background.image ? background.image.attachment.value : null}"
+    [style.paddingTop.px]="widgetService.page.builderType == BuilderType.Email ? padding.getValue(PaddingType.Top): null"
+    [style.paddingRight.px]="widgetService.page.builderType == BuilderType.Email ? padding.getValue(PaddingType.Right): null"
+    [style.paddingBottom.px]="widgetService.page.builderType == BuilderType.Email ? padding.getValue(PaddingType.Bottom): null"
+    [style.paddingLeft.px]="widgetService.page.builderType == BuilderType.Email ? padding.getValue(PaddingType.Left): null"
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
     [style.minHeight.px]="height" class="widget-outline">
 

@@ -1,0 +1,14 @@
+<!-- Email Type -->
+<div class="property">
+    <div class="label">Email Type:</div>
+    <dropdown [listItems]="emailTypes" [selectedListItem]="getSelectedEmailType()" (onChange)="onEmailTypeChange($event)"></dropdown>
+</div>
+
+<!-- Width -->
+<div class="property">
+    <div class="label">Email Width:</div>
+    <number-field [value]="600" ></number-field>
+</div>
+
+<!-- Background color & image -->
+<background [background]="widgetService.page.pageContent.background" (onChange)="onBackgroundChange()"></background>

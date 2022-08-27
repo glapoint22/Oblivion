@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TextBoxDev } from 'text-box';
-import { Enableable, TextWidgetComponent, TextWidgetData } from 'widgets';
-import { WidgetHandle, WidgetInspectorView } from '../../classes/enums';
+import { Enableable, PaddingType, TextWidgetComponent, TextWidgetData } from 'widgets';
+import { BuilderType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -16,6 +16,8 @@ export class TextWidgetDevComponent extends TextWidgetComponent implements OnIni
   public enabled!: boolean;
   public widgetInspectorView = WidgetInspectorView;
   public widgetHandleDown!: boolean;
+  public BuilderType = BuilderType;
+  public PaddingType = PaddingType;
 
   constructor(public widgetService: WidgetService) { super() }
 

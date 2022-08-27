@@ -1,19 +1,12 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { forkJoin, Observable, Subscriber, Subscription, tap } from 'rxjs';
 import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
-import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev.component';
-import { CarouselWidgetDevComponent } from '../carousel-widget-dev/carousel-widget-dev.component';
-import { ContainerWidgetDevComponent } from '../container-widget-dev/container-widget-dev.component';
-import { ImageWidgetDevComponent } from '../image-widget-dev/image-widget-dev.component';
 import { PageDevComponent } from '../page-dev/page-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
-import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
-import { VideoWidgetDevComponent } from '../video-widget-dev/video-widget-dev.component';
 
 @Component({
   selector: 'container-dev',
