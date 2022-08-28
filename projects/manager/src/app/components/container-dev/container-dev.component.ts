@@ -2,7 +2,7 @@ import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } f
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { BuilderType, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
 import { PageDevComponent } from '../page-dev/page-dev.component';
@@ -155,7 +155,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
   getWidgetSubmenus(yPos: number) {
-    return [
+    const emailWidgets = [
       {
         name: 'Text',
         type: MenuOptionType.MenuItem,
@@ -190,7 +190,10 @@ export class ContainerDevComponent extends ContainerComponent {
         optionFunction: () => {
           this.addWidget(new WidgetData(WidgetType.Line), this.getRowTop(yPos));
         }
-      },
+      }
+    ]
+
+    const pageWidgets = [
       {
         name: 'Video',
         type: MenuOptionType.MenuItem,
@@ -220,6 +223,12 @@ export class ContainerDevComponent extends ContainerComponent {
         }
       }
     ]
+
+    if (this.widgetService.page.builderType == BuilderType.Email) {
+      return emailWidgets;
+    } else {
+      return emailWidgets.concat(pageWidgets);
+    }
   }
 
 
@@ -486,7 +495,7 @@ export class ContainerDevComponent extends ContainerComponent {
   }
 
 
-  
+
 
   // ----------------------------------------------------------------------- Move Row Index ---------------------------------------------------------
   private moveRowIndex(from: number, to: number): void {

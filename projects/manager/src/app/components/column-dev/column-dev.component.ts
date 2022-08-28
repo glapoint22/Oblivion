@@ -243,7 +243,7 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
   getWidgetSubmenus(pos: number) {
-    return [
+    const emailWidgets = [
       {
         name: 'Text',
         type: MenuOptionType.MenuItem,
@@ -278,7 +278,10 @@ export class ColumnDevComponent extends ColumnComponent {
         optionFunction: () => {
           this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Line));
         }
-      },
+      }
+    ]
+
+    const pageWidgets = [
       {
         name: 'Video',
         type: MenuOptionType.MenuItem,
@@ -308,6 +311,13 @@ export class ColumnDevComponent extends ColumnComponent {
         }
       }
     ]
+
+    if (this.widgetService.page.builderType == BuilderType.Email) {
+      return emailWidgets;
+    } else {
+      return emailWidgets.concat(pageWidgets);
+    }
+
   }
 
 

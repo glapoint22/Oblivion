@@ -1,4 +1,12 @@
-<div #searchContainer class="search-container">
-    <input #searchInput #tabElement [placeholder]="placeholderText" spellcheck="false" (click)="$event.stopPropagation()">
+<div #searchContainer class="search-container" (mousedown)="$event.stopPropagation()">
+    <input #searchInput #tabElement [placeholder]="placeholderText" spellcheck="false"
+        (click)="$event.stopPropagation()">
+
+    <!-- Search Icon -->
     <i class="fa-solid fa-magnifying-glass"></i>
+
+    <!-- Clear -->
+    <div *ngIf="searchInput.value.length > 0" class="clear" title="Clear" (click)="clear()">
+        <i class="fa-solid fa-xmark"></i>
+    </div>
 </div>

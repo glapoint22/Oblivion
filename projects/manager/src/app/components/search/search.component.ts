@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
-import { debounceTime, fromEvent, of, switchMap } from 'rxjs';
+import { debounceTime, fromEvent, merge, of, switchMap } from 'rxjs';
 import { Item } from '../../classes/item';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
 import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
@@ -26,7 +26,12 @@ export class SearchComponent {
   // ------------------------------------------------------------------------ Ng After View Init ----------------------------------------------------------
   ngAfterViewInit() {
     this.onGetTabElement.emit(this.tabElement);
-    fromEvent(this.searchInput.nativeElement, 'input')
+
+    const inputEvent = fromEvent(this.searchInput.nativeElement, 'input');
+    const mousedownEvent = fromEvent(this.searchInput.nativeElement, 'mousedown');
+    const bothEvents = merge(inputEvent, mousedownEvent);
+
+    bothEvents
       .pipe(
         debounceTime(200),
         switchMap(input => {
@@ -92,6 +97,11 @@ export class SearchComponent {
   // ------------------------------------------------------------------------------ Clear -------------------------------------------------------------
   public clear() {
     this.searchInput.nativeElement.value = '';
+
+    if (this.dropdownList) {
+      this.dropdownList.close();
+      this.dropdownList = null!;
+    }
   }
 
 
