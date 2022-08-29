@@ -1,3 +1,6 @@
+<!-- Caption -->
+<caption-property [caption]="widget.caption" (onChange)="update()"></caption-property>
+
 <!-- Background -->
 <background [background]="widget.background" [toggleable]="false" (onChange)="update()"></background>
 
@@ -17,6 +20,3 @@
 
 <!-- Padding -->
 <padding [padding]="widget.padding"></padding>
-
-<!-- Caption -->
-<caption-property [caption]="widget.caption" (onChange)="update()"></caption-property>

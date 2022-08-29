@@ -12,8 +12,8 @@
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
     [style.minHeight.px]="height" class="widget-outline">
 
-    <div #htmlRootElement style="color: #dadada; outline: none; cursor: text; user-select: none;" contenteditable="true"
-        spellcheck="false">
+    <div #htmlRootElement style="outline: none; cursor: text; user-select: none;" contenteditable="true"
+        spellcheck="false" [style.color]="widgetService.page.builderType == BuilderType.Email ? '#000000' : '#dadada'">
     </div>
 
 

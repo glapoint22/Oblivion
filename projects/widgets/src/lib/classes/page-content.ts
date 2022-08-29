@@ -22,13 +22,18 @@ export class PageContent {
 
             // Background Image
             else if (value instanceof BackgroundImage) {
-                return {
-                    id: value.id,
-                    imageSizeType: value.imageSizeType,
-                    position: value.position,
-                    repeat: value.repeat,
-                    attachment: value.attachment
+                if (value.id) {
+                    return {
+                        id: value.id,
+                        imageSizeType: value.imageSizeType,
+                        position: value.position,
+                        repeat: value.repeat,
+                        attachment: value.attachment
+                    }
+                } else {
+                    return undefined;
                 }
+
             }
 
             // Image

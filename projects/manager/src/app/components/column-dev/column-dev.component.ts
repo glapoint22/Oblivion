@@ -19,6 +19,7 @@ export class ColumnDevComponent extends ColumnComponent {
   public widgetInspectorView = WidgetInspectorView;
   public BuilderType = BuilderType;
   public PaddingType = PaddingType;
+  public width!: number;
 
   constructor(
     resolver: ComponentFactoryResolver,
@@ -604,6 +605,7 @@ export class ColumnDevComponent extends ColumnComponent {
     column.padding = this.padding.getData();
     column.horizontalAlignment = this.horizontalAlignment.getData();
     column.columnSpan = this.columnSpan.getData();
+    column.width = this.width;
     return column;
   }
 }

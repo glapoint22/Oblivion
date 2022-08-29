@@ -15,6 +15,7 @@ export class Column {
     public padding!: Padding;
     public columnSpan!: ColumnSpan;
     public horizontalAlignment!: HorizontalAlignment;
+    public width!: number;
 
     constructor(columnSpan: number, public widgetData: WidgetData) {
         this.columnSpan = new ColumnSpan(columnSpan);

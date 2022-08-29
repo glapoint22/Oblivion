@@ -20,6 +20,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public name!: string;
   public pageType: PageType = PageType.Custom;
   public builderType!: BuilderType;
+  public BuilderType = BuilderType;
   public host!: ContainerHost;
   public widgetInspectorView = WidgetInspectorView;
   public container!: ContainerDevComponent;
@@ -120,11 +121,20 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
     this.clear();
     this.name = this.builderType == BuilderType.Page ? 'Untitled' : 'None';
     this.pageContent = new PageContent();
+
+    if (this.builderType == BuilderType.Email) {
+      this.pageContent.background.enabled = true;
+      this.pageContent.background.color = '#ffffff';
+      this.setBackground();
+    }
+
+
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Page;
 
     this.dataService.post<number>(this.apiUrl, {
       name: this.name,
-      pageType: this.pageType
+      pageType: this.pageType,
+      content: this.pageContent.toString()
     }).subscribe((pageId: number) => {
       this.id = pageId;
     });
@@ -165,9 +175,9 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
       }
     }, SpinnerAction.None)
       .then((prompt: PromptComponent) => {
-        prompt.title = this.builderType == BuilderType.Page ? 'Delete Page': 'Delete Email';
+        prompt.title = this.builderType == BuilderType.Page ? 'Delete Page' : 'Delete Email';
         prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-          'The ' + (this.builderType == BuilderType.Page ? 'page': 'email ') + '<span style="color: #ffba00">\"' + this.name + '\"</span>' +
+          'The ' + (this.builderType == BuilderType.Page ? 'page' : 'email ') + '<span style="color: #ffba00">\"' + this.name + '\"</span>' +
           ' will be permanently deleted.');
         prompt.primaryButton.name = 'Delete';
         prompt.primaryButton.buttonFunction = () => {

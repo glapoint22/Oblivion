@@ -13,8 +13,8 @@
 
 
     <!-- View Port Container -->
-    <div class="view-port-container">
-        
+    <div class="view-port-container" [style.background]="page && page.pageContent ? '#dddddd' : null">
+
 
         <!-- View Port -->
         <div id="view-port" class="view-port">
@@ -28,5 +28,3 @@
         <email-inspector></email-inspector>
     </div>
 </div>
-
-

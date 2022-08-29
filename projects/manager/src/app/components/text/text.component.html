@@ -27,7 +27,7 @@
         <div class="label">Color:</div>
         <color-swatch [color]="textBox.fontColor.rgbColor"
             (onChange)="appRef.tick(); textBox.fontColor.setStyle(); textBox.render()"
-            (onColorPickerOpen)="appRef.tick(); textBox.highlightColor.setStyle(); textBox.render()"
+            (onColorPickerOpen)="appRef.tick(); textBox.fontColor.setStyle(); textBox.render()"
             (onColorPickerClose)="textBox.fontColor.onColorPickerClose(); textBox.setText()">
         </color-swatch>
     </div>
