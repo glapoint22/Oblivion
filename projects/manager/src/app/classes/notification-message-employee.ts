@@ -1,5 +1,5 @@
-import { NotificationPerson } from "./notification-person";
+import { NotificationProfile } from "./notification-profile";
 
-export class NotificationMessageEmployee extends NotificationPerson {
+export class NotificationMessageEmployee extends NotificationProfile {
     reply!: string;
 }

@@ -1,6 +1,6 @@
-import { NotificationPerson } from "./notification-person";
+import { NotificationProfile } from "./notification-profile";
 
-export class NotificationSecurity extends NotificationPerson {
-    noncompliantStrikes!: string;
+export class NotificationSecurity extends NotificationProfile {
+    noncompliantStrikes!: number;
     blockNotificationSending!: boolean;
 }
