@@ -23,6 +23,19 @@ export class PagePropertiesComponent implements OnInit {
   public set selectedPageType(v: KeyValue<string, number>) {
     this.widgetService.page.pageType = v.value;
     this._selectedPageType = v;
+
+    if (v.value == PageType.Home) {
+      this.widgetService.page.name = 'Home';
+    } else if (v.value == PageType.Grid) {
+      this.widgetService.page.name = 'Grid';
+    } else if (v.value == PageType.Custom) {
+      this.widgetService.page.name = 'Custom Page';
+    } else if (v.value == PageType.Browse) {
+      this.widgetService.page.name = 'Browse Page';
+    } else if (v.value == PageType.Search) {
+      this.widgetService.page.name = 'Search Page';
+    }
+
     this.widgetService.page.save();
   }
 

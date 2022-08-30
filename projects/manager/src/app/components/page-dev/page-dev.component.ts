@@ -119,7 +119,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   // -------------------------------------------------------------------------------- New -------------------------------------------------------------------
   public new(): void {
     this.clear();
-    this.name = this.builderType == BuilderType.Page ? 'Untitled' : 'None';
+    this.name = this.builderType == BuilderType.Page ? 'Custom Page' : 'None';
     this.pageContent = new PageContent();
 
     if (this.builderType == BuilderType.Email) {
