@@ -580,6 +580,7 @@ export class ContainerDevComponent extends ContainerComponent {
     row.top = top;
     this.createRow(row);
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
+    this.widgetService.page.save();
   }
 
 
@@ -591,6 +592,7 @@ export class ContainerDevComponent extends ContainerComponent {
     row.columns.push(column);
     this.createRow(row);
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
+    this.widgetService.page.save();
   }
 
 

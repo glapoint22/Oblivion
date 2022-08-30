@@ -1,4 +1,4 @@
-import { Image, Video } from "common";
+import { Image, Link, LinkType, Video } from "common";
 import { Background } from "./background";
 import { BackgroundImage } from "./background-image";
 import { Caption } from "./caption";
@@ -62,6 +62,23 @@ export class PageContent {
                     text: value.text,
                     color: value.color
                 }
+            }
+
+            // Link
+            else if (value instanceof Link) {
+                if (value.linkType == LinkType.Page || value.linkType == LinkType.Product) {
+                    return {
+                        id: value.id,
+                        linkType: value.linkType
+                    }
+                } else {
+                    return {
+                        linkType: value.linkType,
+                        url: value.url,
+                    }
+                }
+
+
             }
 
             // Other

@@ -567,6 +567,7 @@ export class TextBoxDev extends TextBox {
 
                 data.link = new Link();
                 data.link.linkType = anchor.link.linkType;
+                data.link.id = anchor.link.id;
                 data.link.url = anchor.link.url;
                 data.link.name = anchor.link.name;
             }

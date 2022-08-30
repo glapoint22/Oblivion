@@ -67,8 +67,6 @@ export class RowDevComponent extends RowComponent {
     // Detect changes
     columnComponentRef.hostView.detectChanges();
 
-    // Get the width
-    columnComponent.width = columnComponent.columnElement.getBoundingClientRect().width;
 
     // Create the widget
     columnComponent.createWidget(column.widgetData);
@@ -90,7 +88,6 @@ export class RowDevComponent extends RowComponent {
 
     this.setColumnSpans(columnSpan);
     this.widgetService.deselectWidget();
-    this.setColumnWidths();
     this.widgetService.page.save();
   }
 
@@ -117,7 +114,6 @@ export class RowDevComponent extends RowComponent {
 
           this.createColumn(new Column(columnSpan, data), this.getColumnIndex(columnElement, addend));
           this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
-          this.setColumnWidths();
           this.widgetService.page.save();
         });
       } else {
@@ -125,7 +121,6 @@ export class RowDevComponent extends RowComponent {
 
         this.createColumn(new Column(columnSpan, data), this.getColumnIndex(columnElement, addend));
         this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Widget;
-        this.setColumnWidths();
         this.widgetService.page.save();
       }
 
@@ -136,7 +131,6 @@ export class RowDevComponent extends RowComponent {
       data.columnSpan.values[0].span = columnSpan;
       this.createColumn(data, this.getColumnIndex(columnElement, addend));
       this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
-      this.setColumnWidths();
       this.widgetService.page.save();
     }
   }
@@ -160,13 +154,6 @@ export class RowDevComponent extends RowComponent {
 
 
 
-
-  // ---------------------------------------------------------------------- Set Column Spans ----------------------------------------------------------
-  private setColumnWidths(): void {
-    this.columns.forEach((column: ColumnDevComponent) => {
-      column.width = column.columnElement.getBoundingClientRect().width;
-    });
-  }
 
 
 

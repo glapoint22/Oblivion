@@ -605,7 +605,7 @@ export class ColumnDevComponent extends ColumnComponent {
     column.padding = this.padding.getData();
     column.horizontalAlignment = this.horizontalAlignment.getData();
     column.columnSpan = this.columnSpan.getData();
-    column.width = this.width;
+    column.width = this.columnElement.getBoundingClientRect().width;
     return column;
   }
 }
