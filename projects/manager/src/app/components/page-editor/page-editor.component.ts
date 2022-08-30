@@ -32,6 +32,13 @@ export class PageEditorComponent extends Editor {
 
 
   
+  onLoad(iframe: HTMLIFrameElement): void {
+    super.onLoad(iframe);
+
+    this.page.builderType = BuilderType.Page;
+  }
+
+  
 
 
 

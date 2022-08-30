@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Column, ColumnComponent, Row, Widget, WidgetData, WidgetType } from 'widgets';
-import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { Column, ColumnComponent, PaddingType, Row, Widget, WidgetData, WidgetType } from 'widgets';
+import { BuilderType, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { MenuOption } from '../../classes/menu-option';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
@@ -17,12 +17,25 @@ import { RowDevComponent } from '../row-dev/row-dev.component';
 export class ColumnDevComponent extends ColumnComponent {
   public rowComponent!: RowDevComponent;
   public widgetInspectorView = WidgetInspectorView;
+  public BuilderType = BuilderType;
+  public PaddingType = PaddingType;
+  public width!: number;
 
   constructor(
     resolver: ComponentFactoryResolver,
     public widgetService: WidgetService,
     private lazyLoadingService: LazyLoadingService
   ) { super(resolver) }
+
+
+  ngAfterViewInit(): void {
+    this.paddingElement = this.columnElement.firstElementChild as HTMLElement;
+    this.columnSpan.setClasses(this.columnElement);
+
+    if (this.widgetService.page.builderType == BuilderType.Page) {
+      this.padding.setClasses(this.paddingElement);
+    }
+  }
 
 
   // ---------------------------------------------------------------------Create Widget Component Ref----------------------------------------------------------------
@@ -231,7 +244,7 @@ export class ColumnDevComponent extends ColumnComponent {
 
 
   getWidgetSubmenus(pos: number) {
-    return [
+    const emailWidgets = [
       {
         name: 'Text',
         type: MenuOptionType.MenuItem,
@@ -266,7 +279,10 @@ export class ColumnDevComponent extends ColumnComponent {
         optionFunction: () => {
           this.rowComponent.addColumn(pos, this.columnElement, new WidgetData(WidgetType.Line));
         }
-      },
+      }
+    ]
+
+    const pageWidgets = [
       {
         name: 'Video',
         type: MenuOptionType.MenuItem,
@@ -296,6 +312,13 @@ export class ColumnDevComponent extends ColumnComponent {
         }
       }
     ]
+
+    if (this.widgetService.page.builderType == BuilderType.Email) {
+      return emailWidgets;
+    } else {
+      return emailWidgets.concat(pageWidgets);
+    }
+
   }
 
 
@@ -582,6 +605,7 @@ export class ColumnDevComponent extends ColumnComponent {
     column.padding = this.padding.getData();
     column.horizontalAlignment = this.horizontalAlignment.getData();
     column.columnSpan = this.columnSpan.getData();
+    column.width = this.columnElement.getBoundingClientRect().width;
     return column;
   }
 }

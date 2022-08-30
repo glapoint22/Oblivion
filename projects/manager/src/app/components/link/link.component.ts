@@ -44,12 +44,14 @@ export class LinkComponent extends LazyLoad {
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    if (this.currentLinkType == LinkType.WebAddress) {
-      this.linkInput.nativeElement.value = this.link.url;
-      this.linkInput.nativeElement.select();
-    } else if (this.currentLinkType == LinkType.Page || this.currentLinkType == LinkType.Product) {
-      this.search.searchInput.nativeElement.value = this.link.name;
-    }
+    window.setTimeout(() => {
+      if (this.currentLinkType == LinkType.WebAddress) {
+        this.linkInput.nativeElement.value = this.link.url;
+        this.linkInput.nativeElement.select();
+      } else if (this.currentLinkType == LinkType.Page || this.currentLinkType == LinkType.Product) {
+        this.search.searchInput.nativeElement.value = this.link.name;
+      }
+    });
   }
 
 
@@ -109,6 +111,8 @@ export class LinkComponent extends LazyLoad {
       this.link.url = this.linkInput.nativeElement.value;
     } else if (this.link.linkType == LinkType.Page || this.link.linkType == LinkType.Product) {
       if (!this.linkItem) return;
+
+      this.link.id = this.linkItem.id!;
       this.link.url = this.linkItem.link;
       this.link.name = this.linkItem.name!;
     } else if (this.link.linkType == LinkType.None) {

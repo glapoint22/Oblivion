@@ -1,0 +1,82 @@
+<!-- Property Box -->
+<div class="property-box-light">
+
+
+    <div style="padding: 5px; margin-bottom: 2px;">
+        <!-- Icons -->
+        <div class="icons-container">
+            <!-- Delete -->
+            <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete'" (click)="widgetService.page.delete()"
+                [isDisabled]="!widgetService.page || !widgetService.page.pageContent">
+            </icon-button>
+
+            <!-- Duplicate -->
+            <icon-button [icon]="'fas fa-clone'" [title]="'Duplicate'" (click)="widgetService.page.duplicate()"
+                [isDisabled]="!widgetService.page || !widgetService.page.pageContent">
+            </icon-button>
+
+            <!-- New -->
+            <icon-button [icon]="'fas fa-plus-circle'" [title]="'New'" (click)="widgetService.page.new()"></icon-button>
+        </div>
+
+        <!-- Search -->
+        <search [apiUrl]="'Emails/Search'" [placeholderText]="'Search for an email'" [clearOnSelection]="true"
+            (onItemSelect)="widgetService.page.getData($event.id!)"></search>
+    </div>
+
+
+    <!-- Page, Row, Column, and Widget buttons -->
+    <ng-container *ngIf="widgetService.page && widgetService.page.pageContent">
+        <!-- Publish -->
+        <div class="grooved-container">
+            <button class="button-center" [disabled]="true">Publish</button>
+        </div>
+
+        <div class="grooved-container-bottom">
+            <!-- Page -->
+            <button class="button-left"
+                [ngClass]="{'button-selected page-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"
+                (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Page">Email</button>
+
+            <!-- Row -->
+            <button class="button-center"
+                [ngClass]="{'button-selected row-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Row}"
+                (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Row"
+                [disabled]="!widgetService.selectedWidget && !widgetService.selectedRow">Row</button>
+
+
+            <!-- Column -->
+            <button class="button-center"
+                [ngClass]="{'button-selected column-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Column}"
+                (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Column"
+                [disabled]="!widgetService.selectedWidget && !widgetService.selectedColumn">Column</button>
+
+
+            <!-- Widget -->
+            <button class="button-right"
+                [ngClass]="{'button-selected widget-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+                (click)="widgetService.currentWidgetInspectorView = widgetInspectorView.Widget"
+                [disabled]="!widgetService.selectedWidget">Widget</button>
+        </div>
+
+
+
+        <!-- Email Properties -->
+        <email-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Page">
+        </email-properties>
+
+        <!-- Email Row Properties -->
+        <email-row-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Row">
+        </email-row-properties>
+
+        <!-- Email Column Properties -->
+        <email-column-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Column">
+        </email-column-properties>
+
+        <!-- Email Widget Properties -->
+        <email-widget-properties *ngIf="widgetService.currentWidgetInspectorView == widgetInspectorView.Widget">
+        </email-widget-properties>
+    </ng-container>
+
+
+</div>

@@ -17,3 +17,21 @@ input {
     font-size: 10px;
     color: #808080;
 }
+
+.clear {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #808080;
+    font-size: 12px;
+    cursor: pointer;
+
+    &:hover {
+        color: #acacac;
+    }
+}

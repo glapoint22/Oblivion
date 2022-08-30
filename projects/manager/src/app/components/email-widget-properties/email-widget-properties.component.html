@@ -1,0 +1,17 @@
+<ng-container *ngIf="widgetService.selectedWidget">
+    <!-- Button -->
+    <email-button-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Button"></email-button-widget-properties>
+
+    <!-- Text -->
+    <email-text-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Text"></email-text-widget-properties>
+
+    <!-- Line -->
+    <line-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Line"></line-widget-properties>
+
+    <!-- Image -->
+    <image-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Image"></image-widget-properties>
+
+    <!-- Container -->
+    <container-widget-properties *ngIf="widgetService.selectedWidget.type == widgetType.Container">
+    </container-widget-properties>
+</ng-container>

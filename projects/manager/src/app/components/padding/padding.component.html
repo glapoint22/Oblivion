@@ -1,0 +1,32 @@
+<panel [title]="'Padding'">
+
+    <!-- Top -->
+    <div class="property">
+        <div class="label">Top:</div>
+        <number-field [value]="padding.getValue(PaddingType.Top)"
+            (onValueChange)="padding.setValue(PaddingType.Top, $event); widgetService.page.save()"></number-field>
+    </div>
+
+    <!-- Right -->
+    <div class="property">
+        <div class="label">Right:</div>
+        <number-field [value]="padding.getValue(PaddingType.Right)"
+            (onValueChange)="padding.setValue(PaddingType.Right, $event); widgetService.page.save()"></number-field>
+    </div>
+
+
+    <!-- Bottom -->
+    <div class="property">
+        <div class="label">Bottom:</div>
+        <number-field [value]="padding.getValue(PaddingType.Bottom)"
+            (onValueChange)="padding.setValue(PaddingType.Bottom, $event); widgetService.page.save()"></number-field>
+    </div>
+
+
+    <!-- Left -->
+    <div class="property">
+        <div class="label">Left:</div>
+        <number-field [value]="padding.getValue(PaddingType.Left)"
+            (onValueChange)="padding.setValue(PaddingType.Left, $event); widgetService.page.save()"></number-field>
+    </div>
+</panel>

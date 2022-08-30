@@ -1,8 +1,7 @@
-import { Image, Video } from "common";
+import { Image, Link, LinkType, Video } from "common";
 import { Background } from "./background";
 import { BackgroundImage } from "./background-image";
 import { Caption } from "./caption";
-import { ColorProperty } from "./color-property";
 import { ColumnSpan } from "./column-span";
 import { Row } from "./row";
 
@@ -23,13 +22,18 @@ export class PageContent {
 
             // Background Image
             else if (value instanceof BackgroundImage) {
-                return {
-                    id: value.id,
-                    imageSizeType: value.imageSizeType,
-                    position: value.position,
-                    repeat: value.repeat,
-                    attachment: value.attachment
+                if (value.id) {
+                    return {
+                        id: value.id,
+                        imageSizeType: value.imageSizeType,
+                        position: value.position,
+                        repeat: value.repeat,
+                        attachment: value.attachment
+                    }
+                } else {
+                    return undefined;
                 }
+
             }
 
             // Image
@@ -60,11 +64,21 @@ export class PageContent {
                 }
             }
 
-            // Color Property
-            else if (value instanceof ColorProperty) {
-                return {
-                    color: value.color
+            // Link
+            else if (value instanceof Link) {
+                if (value.linkType == LinkType.Page || value.linkType == LinkType.Product) {
+                    return {
+                        id: value.id,
+                        linkType: value.linkType
+                    }
+                } else {
+                    return {
+                        linkType: value.linkType,
+                        url: value.url,
+                    }
                 }
+
+
             }
 
             // Other

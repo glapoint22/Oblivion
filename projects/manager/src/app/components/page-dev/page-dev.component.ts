@@ -4,7 +4,7 @@ import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { WidgetInspectorView } from '../../classes/enums';
+import { BuilderType, WidgetInspectorView } from '../../classes/enums';
 import { PageData } from '../../classes/page-data';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
@@ -19,10 +19,13 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public id: number = 0;
   public name!: string;
   public pageType: PageType = PageType.Custom;
+  public builderType!: BuilderType;
+  public BuilderType = BuilderType;
   public host!: ContainerHost;
   public widgetInspectorView = WidgetInspectorView;
   public container!: ContainerDevComponent;
   private saveData = new Subject<void>();
+  private apiUrl!: string;
 
   constructor
     (
@@ -36,6 +39,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   // --------------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
   public ngOnInit(): void {
     this.widgetService.page = this;
+    this.apiUrl = this.builderType == BuilderType.Page ? 'api/Pages' : 'api/Emails';
 
     this.saveData
       .pipe(debounceTime(200))
@@ -46,7 +50,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
         this.pageContent.rows = container.getData();
 
         // Update the database
-        this.dataService.put('api/Pages', {
+        this.dataService.put(this.apiUrl, {
           id: this.id,
           name: this.name,
           pageType: this.pageType,
@@ -76,7 +80,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public getData(pageId: number): void {
     this.clear();
 
-    this.dataService.get<PageData>('api/Pages', [{ key: 'id', value: pageId }])
+    this.dataService.get<PageData>(this.apiUrl, [{ key: 'id', value: pageId }])
       .subscribe((pageData: PageData) => {
         this.setData(pageData);
       });
@@ -115,13 +119,22 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   // -------------------------------------------------------------------------------- New -------------------------------------------------------------------
   public new(): void {
     this.clear();
-    this.name = 'Untitled';
+    this.name = this.builderType == BuilderType.Page ? 'Untitled' : 'None';
     this.pageContent = new PageContent();
+
+    if (this.builderType == BuilderType.Email) {
+      this.pageContent.background.enabled = true;
+      this.pageContent.background.color = '#ffffff';
+      this.setBackground();
+    }
+
+
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Page;
 
-    this.dataService.post<number>('api/Pages', {
+    this.dataService.post<number>(this.apiUrl, {
       name: this.name,
-      pageType: this.pageType
+      pageType: this.pageType,
+      content: this.pageContent.toString()
     }).subscribe((pageId: number) => {
       this.id = pageId;
     });
@@ -162,9 +175,9 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
       }
     }, SpinnerAction.None)
       .then((prompt: PromptComponent) => {
-        prompt.title = 'Delete Page';
+        prompt.title = this.builderType == BuilderType.Page ? 'Delete Page' : 'Delete Email';
         prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-          'The page <span style="color: #ffba00">\"' + this.name + '\"</span>' +
+          'The ' + (this.builderType == BuilderType.Page ? 'page' : 'email ') + '<span style="color: #ffba00">\"' + this.name + '\"</span>' +
           ' will be permanently deleted.');
         prompt.primaryButton.name = 'Delete';
         prompt.primaryButton.buttonFunction = () => {
@@ -186,7 +199,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   private deletePage(): void {
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.None;
 
-    this.dataService.delete('api/Pages', { pageId: this.id })
+    this.dataService.delete(this.apiUrl, { pageId: this.id })
       .subscribe(() => {
         this.clear();
       });
@@ -218,7 +231,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public duplicate(): void {
     if (this.id == 0) return;
 
-    this.dataService.post<number>('api/Pages/Duplicate', {
+    this.dataService.post<number>(this.apiUrl + '/Duplicate', {
       id: this.id
     }).subscribe((pageId: number) => {
       this.getData(pageId);

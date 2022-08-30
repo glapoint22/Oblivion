@@ -1,0 +1,29 @@
+<panel [title]="'Vertical Alignment'">
+
+    <div class="flex-container">
+        <!-- Top -->
+        <div class="style-icon" (click)="setValue(VerticalAlignmentType.Top)"
+            [ngClass]="{'selected': verticalAlignment.values.length == 0 || verticalAlignment.values[0].verticalAlignmentType == VerticalAlignmentType.Top}"
+            title="Align Top">
+            <img src="assets/align-top.png">
+        </div>
+
+
+
+        <!-- Middle -->
+        <div class="style-icon" (click)="setValue(VerticalAlignmentType.Middle)"
+            [ngClass]="{'selected': verticalAlignment.values.length > 0 && verticalAlignment.values[0].verticalAlignmentType == VerticalAlignmentType.Middle}"
+            title="Align Middle">
+            <img src="assets/align-middle.png">
+        </div>
+
+
+
+        <!-- Bottom -->
+        <div class="style-icon" (click)="setValue(VerticalAlignmentType.Bottom)"
+            [ngClass]="{'selected': verticalAlignment.values.length > 0 && verticalAlignment.values[0].verticalAlignmentType == VerticalAlignmentType.Bottom}"
+            title="Align Bottom">
+            <img src="assets/align-bottom.png">
+        </div>
+    </div>
+</panel>

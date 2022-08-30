@@ -18,8 +18,44 @@ export abstract class ColorProperty {
     }
 
 
+
     constructor(color?: string) {
         this.color = color ? color : this.getDefaultColor();
+
+        Object.defineProperty(
+            this,
+            '_color',
+            {
+                enumerable: false
+            }
+        );
+
+        Object.defineProperty(
+            this,
+            '_rgbColor',
+            {
+                enumerable: false
+            }
+        );
+
+
+        Object.defineProperty(
+            this,
+            'color',
+            {
+                enumerable: true,
+                get() {
+                    return this._color;
+                },
+
+                set(v) {
+                    this._rgbColor = Color.hexToRGB(v);
+                    this._color = v;
+                }
+            }
+        );
+
+        Object.assign(this);
     }
 
 

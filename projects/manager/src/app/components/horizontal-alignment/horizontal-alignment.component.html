@@ -1,0 +1,29 @@
+<panel [title]="'Horizontal Alignment'">
+
+    <div class="flex-container">
+        <!-- Left -->
+        <div class="style-icon" (click)="setValue(HorizontalAlignmentType.Left)"
+            [ngClass]="{'selected': horizontalAlignment.values.length == 0 || horizontalAlignment.values[0].horizontalAlignmentType == HorizontalAlignmentType.Left}"
+            title="Align Left">
+            <img src="assets/align-left.png">
+        </div>
+
+
+
+        <!-- Center -->
+        <div class="style-icon" (click)="setValue(HorizontalAlignmentType.Center)"
+            [ngClass]="{'selected': horizontalAlignment.values.length > 0 && horizontalAlignment.values[0].horizontalAlignmentType == HorizontalAlignmentType.Center}"
+            title="Align Center">
+            <img src="assets/align-center.png">
+        </div>
+
+
+
+        <!-- Right -->
+        <div class="style-icon" (click)="setValue(HorizontalAlignmentType.Right)"
+            [ngClass]="{'selected': horizontalAlignment.values.length > 0 && horizontalAlignment.values[0].horizontalAlignmentType == HorizontalAlignmentType.Right}"
+            title="Align Right">
+            <img src="assets/align-right.png">
+        </div>
+    </div>
+</panel>

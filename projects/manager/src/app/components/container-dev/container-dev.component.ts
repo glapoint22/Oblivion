@@ -1,19 +1,12 @@
 import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { forkJoin, Observable, Subscriber, Subscription, tap } from 'rxjs';
 import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
-import { MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
+import { BuilderType, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { WidgetService } from '../../services/widget/widget.service';
-import { ButtonWidgetDevComponent } from '../button-widget-dev/button-widget-dev.component';
-import { CarouselWidgetDevComponent } from '../carousel-widget-dev/carousel-widget-dev.component';
-import { ContainerWidgetDevComponent } from '../container-widget-dev/container-widget-dev.component';
-import { ImageWidgetDevComponent } from '../image-widget-dev/image-widget-dev.component';
 import { PageDevComponent } from '../page-dev/page-dev.component';
 import { RowDevComponent } from '../row-dev/row-dev.component';
-import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
-import { VideoWidgetDevComponent } from '../video-widget-dev/video-widget-dev.component';
 
 @Component({
   selector: 'container-dev',
@@ -162,7 +155,7 @@ export class ContainerDevComponent extends ContainerComponent {
 
 
   getWidgetSubmenus(yPos: number) {
-    return [
+    const emailWidgets = [
       {
         name: 'Text',
         type: MenuOptionType.MenuItem,
@@ -197,7 +190,10 @@ export class ContainerDevComponent extends ContainerComponent {
         optionFunction: () => {
           this.addWidget(new WidgetData(WidgetType.Line), this.getRowTop(yPos));
         }
-      },
+      }
+    ]
+
+    const pageWidgets = [
       {
         name: 'Video',
         type: MenuOptionType.MenuItem,
@@ -227,6 +223,12 @@ export class ContainerDevComponent extends ContainerComponent {
         }
       }
     ]
+
+    if (this.widgetService.page.builderType == BuilderType.Email) {
+      return emailWidgets;
+    } else {
+      return emailWidgets.concat(pageWidgets);
+    }
   }
 
 
@@ -493,7 +495,7 @@ export class ContainerDevComponent extends ContainerComponent {
   }
 
 
-  
+
 
   // ----------------------------------------------------------------------- Move Row Index ---------------------------------------------------------
   private moveRowIndex(from: number, to: number): void {
@@ -578,6 +580,7 @@ export class ContainerDevComponent extends ContainerComponent {
     row.top = top;
     this.createRow(row);
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Row;
+    this.widgetService.page.save();
   }
 
 
@@ -589,6 +592,7 @@ export class ContainerDevComponent extends ContainerComponent {
     row.columns.push(column);
     this.createRow(row);
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Column;
+    this.widgetService.page.save();
   }
 
 

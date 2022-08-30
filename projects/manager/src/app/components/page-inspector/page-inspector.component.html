@@ -2,23 +2,22 @@
 <div class="property-box-light">
 
 
+
     <div style="padding: 5px; margin-bottom: 2px;">
         <!-- Icons -->
         <div class="icons-container">
-            <!-- Publish -->
-            <icon-button [icon]="'fa-solid fa-upload'" [title]="'Publish'"></icon-button>
-
-            <!-- Close -->
-            <icon-button [icon]="'fa-solid fa-circle-xmark'" [title]="'Close'"></icon-button>
-
             <!-- Delete -->
-            <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete'"></icon-button>
+            <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete'" (click)="widgetService.page.delete()"
+                [isDisabled]="!widgetService.page || !widgetService.page.pageContent">
+            </icon-button>
 
             <!-- Duplicate -->
-            <icon-button [icon]="'fas fa-clone'" [title]="'Duplicate'"></icon-button>
+            <icon-button [icon]="'fas fa-clone'" [title]="'Duplicate'" (click)="widgetService.page.duplicate()"
+                [isDisabled]="!widgetService.page || !widgetService.page.pageContent">
+            </icon-button>
 
             <!-- New -->
-            <icon-button [icon]="'fas fa-plus-circle'" [title]="'New'"></icon-button>
+            <icon-button [icon]="'fas fa-plus-circle'" [title]="'New'" (click)="widgetService.page.new()"></icon-button>
         </div>
 
         <!-- Search -->
@@ -27,9 +26,17 @@
     </div>
 
 
+
+
+
     <!-- Page, Row, Column, and Widget buttons -->
     <ng-container *ngIf="widgetService.page && widgetService.page.pageContent">
+        <!-- Publish -->
         <div class="grooved-container">
+            <button class="button-center" [disabled]="true">Publish</button>
+        </div>
+
+        <div class="grooved-container-bottom">
             <!-- Page -->
             <button class="button-left"
                 [ngClass]="{'button-selected page-button-selected': widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"

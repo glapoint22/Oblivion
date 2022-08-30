@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { Column, ColumnSpan, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
-import { MenuOptionType, WidgetInspectorView } from '../../classes/enums';
+import { Column, ColumnSpan, ImageWidgetData, PaddingType, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
+import { BuilderType, MenuOptionType, WidgetInspectorView } from '../../classes/enums';
 import { MenuOption } from '../../classes/menu-option';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ColumnDevComponent } from '../column-dev/column-dev.component';
@@ -17,8 +17,24 @@ export class RowDevComponent extends RowComponent {
   public columns: Array<ColumnDevComponent> = new Array<ColumnDevComponent>();
   public containerComponent!: ContainerDevComponent;
   public widgetInspectorView = WidgetInspectorView;
+  public BuilderType = BuilderType;
+  public PaddingType = PaddingType;
 
   constructor(resolver: ComponentFactoryResolver, public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver); }
+
+
+  ngAfterViewInit(): void {
+    // Get the html row element
+    this.rowElement = this.viewContainerRef.element.nativeElement.parentElement;
+
+    // Set the classes
+    if (this.widgetService.page.builderType == BuilderType.Page) {
+      this.padding.setClasses(this.rowElement);
+    }
+
+    this.verticalAlignment.setClasses(this.rowElement);
+  }
+
 
 
   // ------------------------------------------------------------------------ Create Columns ---------------------------------------------------------
@@ -50,6 +66,7 @@ export class RowDevComponent extends RowComponent {
 
     // Detect changes
     columnComponentRef.hostView.detectChanges();
+
 
     // Create the widget
     columnComponent.createWidget(column.widgetData);
@@ -134,6 +151,9 @@ export class RowDevComponent extends RowComponent {
       column.columnSpan.setClasses(column.columnElement);
     });
   }
+
+
+
 
 
 

@@ -1,32 +1,31 @@
-<!-- <div class="properties"> -->
-    <!-- Page Name -->
-    <div class="property">
-        <div class="label" style="margin-right: 9px;">Name:</div>
-        <input [(ngModel)]="widgetService.page.name" (input)="widgetService.page.save()">
+<!-- Page Name -->
+<div class="property">
+    <div class="label" style="margin-right: 9px;">Name:</div>
+    <input [(ngModel)]="widgetService.page.name" (input)="widgetService.page.save()">
+</div>
+
+<!-- Page type -->
+<div class="property">
+    <div class="label" style="margin-right: 15px;">Page Type:</div>
+    <div style="width: 100%;">
+        <!-- Dropdown -->
+        <dropdown [listItems]="pageTypes" [selectedListItem]="selectedPageType" (onChange)="selectedPageType = $event">
+        </dropdown>
     </div>
+</div>
 
-    <!-- Page type -->
-    <div class="property">
-        <div class="label" style="margin-right: 15px;">Page Type:</div>
-        <div style="width: 100%;">
-            <!-- Dropdown -->
-            <dropdown [listItems]="pageTypes" [selectedListItem]="selectedPageType" (onChange)="selectedPageType = $event"></dropdown>
-        </div>
-    </div>
-
-    <!-- Niches -->
-    <ng-container *ngIf="widgetService.page.pageType == pageType.Browse">
-        <page-niches></page-niches>
-    </ng-container>
+<!-- Niches -->
+<ng-container *ngIf="widgetService.page.pageType == pageType.Browse">
+    <page-niches></page-niches>
+</ng-container>
 
 
-    <!-- Keywords -->
-    <ng-container *ngIf="widgetService.page.pageType == pageType.Search">
-        <page-keywords></page-keywords>
-    </ng-container>
+<!-- Keywords -->
+<ng-container *ngIf="widgetService.page.pageType == pageType.Search">
+    <page-keywords></page-keywords>
+</ng-container>
 
 
 
-    <!-- Background color & image -->
-    <background [background]="widgetService.page.pageContent.background" (onChange)="onBackgroundChange()"></background>
-<!-- </div> -->
+<!-- Background color & image -->
+<background [background]="widgetService.page.pageContent.background" (onChange)="onBackgroundChange()"></background>

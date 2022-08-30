@@ -1,0 +1,30 @@
+<div class="editor-container">
+
+    <!-- Widget Bar -->
+    <div *ngIf="page && page.pageContent" class="widget-bar">
+        <div *ngFor="let widgetCursor of widgetCursors" class="widget-icon" [title]="widgetCursor.name"
+            (mousedown)="onIconMousedown(widgetCursor)">
+            <i [class]="widgetCursor.className"></i>
+        </div>
+    </div>
+
+    <!-- widget cursor cover -->
+    <div *ngIf="document.body.style.cursor != ''" class="widget-cursor-cover"></div>
+
+
+    <!-- View Port Container -->
+    <div class="view-port-container" [style.background]="page && page.pageContent ? '#dddddd' : null">
+
+
+        <!-- View Port -->
+        <div id="view-port" class="view-port">
+            <!-- Iframe -->
+            <iframe id="iframe" #iframe scrolling="no" frameborder="0" (load)="onLoad(iframe)"></iframe>
+        </div>
+    </div>
+
+    <!-- Inspector -->
+    <div class="inspector-container">
+        <email-inspector></email-inspector>
+    </div>
+</div>
