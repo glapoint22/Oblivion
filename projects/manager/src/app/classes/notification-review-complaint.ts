@@ -1,9 +1,9 @@
-import { NotificationEmployeeDetails } from "./notification-employee-details";
-import { NotificationReviewUser } from "./notification-review-user";
+import { NotificationEmployee } from "./notification-employee";
+import { NotificationUser } from "./notification-user";
 import { NotificationReviewWriter } from "./notification-review-writer";
 
 export class NotificationReviewComplaint {
-    users: Array<NotificationReviewUser> = new Array<NotificationReviewUser>();
-    employee: NotificationEmployeeDetails = new NotificationEmployeeDetails();
+    users: Array<NotificationUser> = new Array<NotificationUser>();
+    employee: NotificationEmployee = new NotificationEmployee();
     reviewWriter: NotificationReviewWriter = new NotificationReviewWriter();
 }

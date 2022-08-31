@@ -35,7 +35,6 @@ export class MessageNotificationPopupComponent extends LazyLoad {
       { key: 'state', value: this.notificationItem.state },
       { key: 'email', value: this.notificationItem.email }
     ]).subscribe((notificationMessage: NotificationMessage) => {
-      console.log(notificationMessage)
       this.notification = notificationMessage;
     });
   }
@@ -61,6 +60,14 @@ export class MessageNotificationPopupComponent extends LazyLoad {
       });
   }
 
+
+  onEscape(): void {
+    if (this.notificationUserProfilePopupContainer.length > 0) {
+      this.notificationUserProfilePopup.close();
+    }else {
+      super.onEscape();
+    }
+  }
 
 
   ngOnDestroy() {

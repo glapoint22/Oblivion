@@ -119,6 +119,12 @@
 }
 
 
+.review-info-box {
+    @extend .info-box;
+    margin-bottom: 13px;
+}
+
+
 .info-bar {
     display: flex;
     height: 30px;
@@ -127,6 +133,41 @@
     justify-content: flex-end;
     align-items: center;
     padding-right: 4px;
+}
+
+
+.review-info-bar {
+    @extend .info-bar;
+    justify-content: space-between;
+}
+
+
+.review-title-container {
+    display: flex;
+    align-items: center;
+    padding-left: 3px;
+    font-size: 12px;
+    width: 210px;
+}
+
+
+.review-title-label {
+    color: #dadada;
+    margin-right: 5px;
+}
+
+
+.review-title {
+    color: #999999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.review-writer-info-container {
+    display: flex;
+    align-items: center;
 }
 
 
@@ -173,6 +214,13 @@
     left: 42px;
     top: -139px;
     z-index: 100;
+}
+
+
+.review-profile-popup-container {
+    @extend .profile-popup-container;
+    left: 33px;
+    top: -163px;
 }
 
 

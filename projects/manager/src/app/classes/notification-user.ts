@@ -1,9 +1,5 @@
-export interface NotificationUser {
-    name?: string;
-    noncompliantStrikes: number;
-    blockNotificationSending: boolean;
-    firstName: string;
-    lastName: string;
-    image: string;
-    email: string;
+import { NotificationSecurity } from "./notification-security";
+
+export class NotificationUser extends NotificationSecurity {
+    notificationId!: number;
 }

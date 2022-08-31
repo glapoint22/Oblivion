@@ -60,7 +60,7 @@
                 
                     <!-- User Comment -->
                     <div *ngIf="notification" class="user-comment">
-                        {{notification.users[userIndex].complaint}}
+                        {{notification.users[userIndex].text}}
                     </div>
                 </div>
             </div>
@@ -70,18 +70,18 @@
 
         <!-- Review Writer -->
         <div class="label">Review:</div>
-        <div class="info-box" style="margin-bottom: 13px;">
+        <div class="review-info-box">
 
-            <div class="info-bar" style="justify-content: space-between;">
+            <div class="review-info-bar">
 
-                <div style="display: flex; align-items: center; padding-left: 3px; font-size: 12px; width: 210px;">
-                    <div style="color: #dadada; margin-right: 5px;">Title:</div>
-                    <div *ngIf="notification" style="color: #999999; white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;" [title]="notification.reviewWriter.reviewTitle">{{notification.reviewWriter.reviewTitle}}</div>
+                <div class="review-title-container">
+                    <div class="review-title-label">Title:</div>
+                    <div *ngIf="notification" class="review-title" [title]="notification.reviewWriter.reviewTitle">
+                        {{notification.reviewWriter.reviewTitle}}
+                    </div>
                 </div>
 
-                <div style="display: flex; align-items: center;">
+                <div class="review-writer-info-container">
                     <!-- Date -->
                     <div *ngIf="notification" class="date">
                         {{notification.reviewWriter.date | date: 'MMM d, y, h:mm a'}}
@@ -90,7 +90,7 @@
                     <!-- Image -->
                     <div class="profile-image-container">
 
-                        <div style="position: absolute; left: 33px; top: -163px; z-index: 100;">
+                        <div class="review-profile-popup-container">
                             <ng-template #reviewProfileContainer></ng-template>
                         </div>
 
@@ -104,9 +104,9 @@
                 </div>
             </div>
 
-            <!-- Note -->
+            <!-- Review -->
             <div *ngIf="notification" class="user-comment">
-                {{notification.reviewWriter.review}}
+                {{notification.reviewWriter.text}}
             </div>
         </div>
 
@@ -129,11 +129,10 @@
                         <img *ngIf="notification && notification.employee" [src]="'images/' + notification.employee.image" [title]="notification.employee.firstName + ' ' + notification.employee.lastName">
                     </div>
                 </ng-container>
-                
             </div>
 
-            <!-- Note -->
-            <textarea *ngIf="notification">{{notification.employee ? notification.employee.note : null}}</textarea>
+            <!-- Notes -->
+            <textarea #notes *ngIf="notification">{{notification.employee ? notification.employee.text : null}}</textarea>
         </div>
 
 

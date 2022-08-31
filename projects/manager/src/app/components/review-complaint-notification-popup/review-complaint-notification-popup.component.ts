@@ -2,7 +2,7 @@ import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { NotificationItem } from '../../classes/notification-item';
 import { NotificationReviewComplaint } from '../../classes/notification-review-complaint';
-import { NotificationUser } from '../../classes/notification-user';
+import { NotificationProfilePopupUser } from '../../classes/notification-profile-popup-user';
 import { NotificationUserProfilePopupComponent } from '../notification-user-profile-popup/notification-user-profile-popup.component';
 
 @Component({
@@ -35,7 +35,7 @@ export class ReviewComplaintNotificationPopupComponent extends LazyLoad {
   }
 
 
-  
+
 
   onOpen() {
     this.dataService.get<NotificationReviewComplaint>('api/Notifications/ReviewComplaint', [
@@ -43,14 +43,13 @@ export class ReviewComplaintNotificationPopupComponent extends LazyLoad {
       { key: 'type', value: this.notificationItem.type },
       { key: 'state', value: this.notificationItem.state }
     ]).subscribe((notificationReviewComplaint: NotificationReviewComplaint) => {
-      console.log(notificationReviewComplaint)
       this.notification = notificationReviewComplaint;
     });
   }
 
 
 
-  openUserProfilePopup(notificationUser: NotificationUser) {
+  openUserProfilePopup(notificationUser: NotificationProfilePopupUser) {
     if (this.userProfilePopupContainer.length > 0) {
       this.userProfilePopup.close();
       return;
@@ -72,7 +71,7 @@ export class ReviewComplaintNotificationPopupComponent extends LazyLoad {
 
 
 
-  openReviewProfilePopup(notificationUser: NotificationUser) {
+  openReviewProfilePopup(notificationUser: NotificationProfilePopupUser) {
     if (this.reviewProfilePopupContainer.length > 0) {
       this.reviewProfilePopup.close();
       return;
@@ -91,6 +90,17 @@ export class ReviewComplaintNotificationPopupComponent extends LazyLoad {
         reviewProfilePopup.user = notificationUser;
         reviewProfilePopup.isReview = true;
       });
+  }
+
+
+  onEscape(): void {
+    if (this.userProfilePopupContainer.length > 0 || this.reviewProfilePopupContainer.length > 0) {
+      if (this.userProfilePopupContainer.length > 0) this.userProfilePopup.close();
+      if (this.reviewProfilePopupContainer.length > 0) this.reviewProfilePopup.close();
+
+    } else {
+      super.onEscape();
+    }
   }
 
 

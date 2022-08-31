@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { NotificationItem } from '../../classes/notification-item';
 import { NotificationProduct } from '../../classes/notification-product';
@@ -15,6 +15,7 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   public notificationUserProfilePopup!: NotificationUserProfilePopupComponent;
 
   @ViewChild('profilePopupContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
+  @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
 
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
     super(lazyLoadingService)
@@ -38,7 +39,6 @@ export class ProductNotificationPopupComponent extends LazyLoad {
       { key: 'type', value: this.notificationItem.type },
       { key: 'state', value: this.notificationItem.state }
     ]).subscribe((notificationProduct: NotificationProduct) => {
-      console.log(notificationProduct)
       this.notification = notificationProduct;
     });
   }
@@ -66,6 +66,26 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   }
 
 
+  onEscape(): void {
+    if (this.profilePopupContainer.length > 0) {
+      this.notificationUserProfilePopup.close();
+    }else {
+      super.onEscape();
+    }
+  }
+
+  close(): void {
+    if(!this.notification.employee) {
+      if(this.notes.nativeElement.value.trim().length > 0) {
+        console.log('post databse')
+      }
+    }else {
+      if(this.notes.nativeElement.value.trim() != this.notification.employee.text.trim()) {
+        console.log(this.notification.employee.notificationEmployeeId)
+      }
+    }
+    super.close();
+  }
 
   ngOnDestroy() {
     window.removeEventListener('mousedown', this.mousedown);
