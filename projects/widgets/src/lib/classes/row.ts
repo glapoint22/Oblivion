@@ -14,6 +14,7 @@ export class Row {
     public shadow!: Shadow;
     public padding!: Padding;
     public verticalAlignment!: VerticalAlignment;
+    public relativeTop!: number;
 
     constructor(public top: number) { }
 }
