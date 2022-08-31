@@ -52,7 +52,7 @@
                 
                     <!-- User Comment -->
                     <div *ngIf="notification" class="user-comment">
-                        {{notification.users[userIndex].message}}
+                        {{notification.users[userIndex].text}}
                     </div>
                 </div>
 
@@ -77,8 +77,8 @@
                         </div>
                     </div>
 
-                    <!-- Note -->
-                    <textarea *ngIf="notification">{{notification.employee.length > 0 ? notification.employee[userIndex].reply : null}}</textarea>
+                    <!-- Notes -->
+                    <textarea *ngIf="notification">{{notification.employee.length > 0 ? notification.employee[userIndex].text : null}}</textarea>
                 </div>
             </div>
         </div>

@@ -1,6 +1,5 @@
-import { NotificationIdentity } from "./notification-identity";
+import { NotificationUser } from "./notification-user";
 
-export class NotificationMessageUser extends NotificationIdentity {
+export class NotificationMessageUser extends NotificationUser {
     name!: string;
-    message!: string;
 }
