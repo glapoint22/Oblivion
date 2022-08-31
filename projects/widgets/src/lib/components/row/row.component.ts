@@ -40,7 +40,7 @@ export class RowComponent implements AfterViewInit {
 
 
   setRow(row: Row) {
-    this.top = row.top;
+    this.setTop(row.top);
     this.background.setData(row.background);
     this.border.setData(row.border);
     this.corners.setData(row.corners);
@@ -48,6 +48,10 @@ export class RowComponent implements AfterViewInit {
     this.padding.setData(row.padding);
     this.verticalAlignment.setData(row.verticalAlignment);
     this.columnCount = row.columns.length;
+  }
+
+  setTop(top: number) {
+    this.top = top;
   }
 
   createColumns(columns: Array<Column>) {
