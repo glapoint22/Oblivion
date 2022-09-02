@@ -2,19 +2,17 @@ export enum QueryType {
     None,
     Category,
     Niche,
-    ProductSubgroup,
-    FeaturedProducts,
-    ProductPrice,
-    ProductRating,
-    ProductKeywords,
-    ProductCreationDate,
-    SubQuery,
+    Subgroup,
+    Price,
+    Rating,
+    KeywordGroup,
+    Date,
     Auto
 }
 
 
 export enum ComparisonOperatorType {
-    Equal = 1,
+    Equal,
     NotEqual,
     GreaterThan,
     GreaterThanOrEqual,
@@ -24,7 +22,7 @@ export enum ComparisonOperatorType {
 
 
 export enum LogicalOperatorType {
-    And = 1,
+    And,
     Or
 }
 
@@ -41,6 +39,15 @@ export enum WidgetType {
     Shop,
     Carousel,
     Grid
+}
+
+
+export enum AutoQueryType {
+    Browsed,
+    Related,
+    RelatedBrowsed,
+    RelatedBought,
+    RelatedWishlist
 }
 
 

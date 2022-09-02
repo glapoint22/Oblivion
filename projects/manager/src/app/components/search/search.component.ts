@@ -19,7 +19,7 @@ export class SearchComponent {
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('tabElement') tabElement!: ElementRef<HTMLElement>;
   @Output() onGetTabElement: EventEmitter<ElementRef<HTMLElement>> = new EventEmitter();
-  private dropdownList!: DropdownListComponent<Item>;
+  public dropdownList!: DropdownListComponent<Item>;
 
   constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
 
@@ -82,12 +82,23 @@ export class SearchComponent {
         this.dropdownList.top = rect.top + rect.height;
         this.dropdownList.left = rect.left;
         this.dropdownList.width = rect.width;
+
+        // Callback
         this.dropdownList.callback = (item: Item) => {
           this.searchInput.nativeElement.value = item.name!;
           this.dropdownList = null!;
           this.searchInput.nativeElement.focus();
           this.onItemSelect.emit(item);
           if (this.clearOnSelection) this.clear();
+        }
+
+        this.dropdownList.onArrowSelect = (text: string) => {
+          this.searchInput.nativeElement.value = text;
+        }
+
+        // On Close
+        this.dropdownList.onClose = () => {
+          this.dropdownList = null!;
         }
       });
   }

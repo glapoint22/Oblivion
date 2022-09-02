@@ -1,0 +1,54 @@
+<ng-container *ngIf="queryRow.queryGroup">
+    <query-group [queryGroup]="queryRow.queryGroup"></query-group>
+</ng-container>
+
+<ng-container *ngIf="!queryRow.queryGroup">
+    <div *ngIf="queryRow.queryType" class="query-row" 
+        [ngClass]="{'selected-query-row': queryRow.selected}">
+
+        <div class="query-button" (click)="queryRow.selected = !queryRow.selected"></div>
+
+
+        <div class="query-button">
+            <div class="text">{{QueryType[queryRow.queryType]}}</div>
+            <i class="fa-solid fa-caret-down"></i>
+        </div>
+
+
+        <ng-container>
+
+            <div class="query-button">
+                <div>{{getComparisonOperator(queryRow.comparisonOperatorType!)}}</div>
+            </div>
+
+
+            <div class="query-button">
+                <!-- Item -->
+                <div *ngIf="queryRow.item" class="text" [title]="queryRow.item.name">{{queryRow.item.name}}</div>
+
+                <!-- Integer -->
+                <div *ngIf="queryRow.integer != undefined">{{queryRow.integer}}</div>
+
+                <!-- Price -->
+                <div *ngIf="queryRow.price != undefined">{{queryRow.price | currency:'USD'}}</div>
+
+                <!-- Date -->
+                <div *ngIf="queryRow.date != undefined">{{queryRow.date | date}}</div>
+
+                <!-- Date -->
+                <div *ngIf="queryRow.auto != undefined">{{AutoQueryType[queryRow.auto]}}</div>
+
+                <ng-container *ngIf="!queryRow.price && !queryRow.date">
+                    <i class="fa-solid fa-caret-down"></i>
+                </ng-container>
+
+            </div>
+        </ng-container>
+    </div>
+
+
+    <div *ngIf="queryRow.logicalOperatorType != undefined" class="logical-operator-button">
+        <div>{{LogicalOperatorType[queryRow.logicalOperatorType]}}</div>
+        <i class="fa-solid fa-caret-down"></i>
+    </div>
+</ng-container>

@@ -275,3 +275,89 @@ body {
     outline-style: solid;
     outline-color: lighten($container-outline-color, 10%) !important;
 }
+
+
+
+
+.query-button {
+    $border-color: #1f1f1f;
+    border-left: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    cursor: pointer;
+    font-size: 11px;
+    color: #9b9b9b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    background: #3e3e3e;
+
+    &:first-child {
+        width: 20px;
+    }
+
+    &:nth-child(2) {
+        flex: 1;
+    }
+
+    &:nth-child(3) {
+        width: 30px;
+    }
+
+    &:last-child {
+        border-right: 1px solid $border-color;
+        flex: 1;
+    }
+
+    &:hover {
+        background: #464646;
+        color: #b3b3b3;
+    }
+
+    &:active {
+        background: #3d3d3d;
+        color: #929292;
+    }
+}
+
+
+
+.logical-operator-button {
+    border: 1px solid #1f1f1f;
+    border-top: none;
+    cursor: pointer;
+    font-size: 11px;
+    color: #9b9b9b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 100%;
+    background: #303030;
+
+    &:hover {
+        background: #353535;
+        color: #b3b3b3;
+    }
+
+    &:active {
+        background: #292929;
+        color: #929292;
+    }
+}
+
+
+.selected-query-row {
+    $outline-color: #455660;
+    outline: 1px solid $outline-color;
+    outline-offset: -1px;
+
+    .query-button, .logical-operator-button {
+        background: #35424a;
+        color: #bbbbbb;
+        outline: 1px solid $outline-color;
+        outline-offset: -1px;
+    }
+}

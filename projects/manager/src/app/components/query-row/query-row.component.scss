@@ -1,0 +1,15 @@
+.query-row {
+    display: flex;
+    height: 30px;
+}
+
+
+
+
+.text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 80px;
+    text-align: center;
+}

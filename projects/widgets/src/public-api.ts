@@ -23,7 +23,6 @@ export * from './lib/classes/padding';
 export * from './lib/classes/padding-value';
 export * from './lib/classes/page-content';
 export * from './lib/classes/product-slider-widget-data';
-export * from './lib/classes/query';
 export * from './lib/classes/query-params';
 export * from './lib/classes/row';
 export * from './lib/classes/shadow';
@@ -36,6 +35,9 @@ export * from './lib/classes/widget-data';
 export * from './lib/classes/widget-enums';
 export * from './lib/classes/breakpoint';
 export * from './lib/classes/breakpoint-value';
+export * from './lib/classes/query-group';
+export * from './lib/classes/query-row';
+export * from './lib/classes/query';
 
 // Components
 export * from './lib/components/button-widget/button-widget.component';
