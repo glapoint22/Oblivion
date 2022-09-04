@@ -1,28 +1,40 @@
+<!-- Query Group -->
 <ng-container *ngIf="queryRow.queryGroup">
-    <query-group [queryGroup]="queryRow.queryGroup"></query-group>
+    <query-group [queryGroup]="queryRow.queryGroup" (onRowSelectionChange)="onRowSelectionChange.emit($event)"
+        (onGroupSelectionChange)="onGroupSelectionChange.emit($event)"></query-group>
 </ng-container>
 
 <ng-container *ngIf="!queryRow.queryGroup">
-    <div *ngIf="queryRow.queryType" class="query-row" 
+    <div *ngIf="queryRow.queryType != undefined" class="query-row"
         [ngClass]="{'selected-query-row': queryRow.selected}">
 
-        <div class="query-button" (click)="queryRow.selected = !queryRow.selected"></div>
+        <div class="query-button" (click)="onRowClick(queryRow)"></div>
 
-
-        <div class="query-button">
+        <!-- Query Type -->
+        <div #queryTypeButton class="query-button" (click)="onQueryTypeButtonClick(queryTypeButton)">
             <div class="text">{{QueryType[queryRow.queryType]}}</div>
             <i class="fa-solid fa-caret-down"></i>
         </div>
 
 
-        <ng-container>
+        <ng-container *ngIf="queryRow.queryType > 0">
 
-            <div class="query-button">
+            <!-- Comparison Operator -->
+            <div #comparisonOperatorButton class="query-button"
+                (click)="onComparisonOperatorButtonClick(comparisonOperatorButton)">
+
+
                 <div>{{getComparisonOperator(queryRow.comparisonOperatorType!)}}</div>
+
+
+                <i *ngIf="queryRow.queryType == QueryType.Price ||
+                queryRow.queryType == QueryType.Rating ||
+                queryRow.queryType == QueryType.Date" class="fa-solid fa-caret-down"></i>
             </div>
 
-
-            <div class="query-button">
+            <!-- Value -->
+            <div #valueButton class="query-button" (click)="onValueButtonClick(valueButton)"
+                style="position: relative;">
                 <!-- Item -->
                 <div *ngIf="queryRow.item" class="text" [title]="queryRow.item.name">{{queryRow.item.name}}</div>
 
@@ -33,21 +45,27 @@
                 <div *ngIf="queryRow.price != undefined">{{queryRow.price | currency:'USD'}}</div>
 
                 <!-- Date -->
-                <div *ngIf="queryRow.date != undefined">{{queryRow.date | date}}</div>
+                <div *ngIf="queryRow.date != undefined">
+                    {{queryRow.date | date}}
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <input #dateInput type="date" (change)="onDateChange(dateInput)">
+                </div>
 
-                <!-- Date -->
+                <!-- Auto -->
                 <div *ngIf="queryRow.auto != undefined">{{AutoQueryType[queryRow.auto]}}</div>
 
-                <ng-container *ngIf="!queryRow.price && !queryRow.date">
+                <ng-container *ngIf="queryRow.queryType != QueryType.Price && queryRow.queryType != QueryType.Date">
                     <i class="fa-solid fa-caret-down"></i>
                 </ng-container>
-
             </div>
         </ng-container>
     </div>
 
 
-    <div *ngIf="queryRow.logicalOperatorType != undefined" class="logical-operator-button">
+    <!-- Logical Operator -->
+    <div #logicalOperatorButton *ngIf="queryRow.logicalOperatorType != undefined" class="logical-operator-button"
+        (click)="onLogicalOperatorButtonClick(logicalOperatorButton)">
+
         <div>{{LogicalOperatorType[queryRow.logicalOperatorType]}}</div>
         <i class="fa-solid fa-caret-down"></i>
     </div>

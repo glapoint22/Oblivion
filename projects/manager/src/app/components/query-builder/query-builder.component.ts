@@ -1,16 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { LazyLoadingService } from 'common';
-import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, Query, QueryRow, QueryType } from 'widgets';
+import { Component } from '@angular/core';
+import { ComparisonOperatorType, LogicalOperatorType, Query, QueryGroup, QueryRow, QueryType } from 'widgets';
 
 @Component({
   selector: 'query-builder',
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss']
 })
-export class QueryBuilderComponent implements OnInit {
-  // public queryTypeList!: Array<Item>;
-  // public operatorList!: Array<Item>;
-  // public logicalOperatorList!: Array<Item>;
+export class QueryBuilderComponent {
+  // public query: Query = {
+  //   queryRows: [
+  //     {
+  //       queryType: QueryType.None
+  //     }
+  //   ]
+  // }
+
+  public selectedRows: Array<QueryRow> = [];
+  public selectedGroups: Array<QueryGroup> = [];
+
+
   public query: Query = {
     queryRows: [
       {
@@ -19,7 +27,7 @@ export class QueryBuilderComponent implements OnInit {
             queryRows: [
               {
                 queryType: QueryType.Price,
-                comparisonOperatorType: ComparisonOperatorType.Equal,
+                comparisonOperatorType: ComparisonOperatorType.GreaterThanOrEqual,
                 price: 5.99
               },
               {
@@ -64,117 +72,54 @@ export class QueryBuilderComponent implements OnInit {
     ]
   }
 
-  constructor(private lazyLoadingService: LazyLoadingService) { }
 
-  ngOnInit(): void {
-    // this.queryTypeList = [
-    //   {
-    //     id: QueryType.None,
-    //     name: 'None',
-    //   },
-    //   {
-    //     id: QueryType.Category,
-    //     name: 'Category',
-    //   },
-    //   {
-    //     id: QueryType.Niche,
-    //     name: 'Niche',
-    //   },
-    //   {
-    //     id: QueryType.ProductSubgroup,
-    //     name: 'Subgroup',
-    //   },
-    //   {
-    //     id: QueryType.ProductPrice,
-    //     name: 'Price',
-    //   },
-    //   {
-    //     id: QueryType.ProductRating,
-    //     name: 'Rating',
-    //   },
-    //   {
-    //     id: QueryType.ProductKeywords,
-    //     name: 'Keywords',
-    //   },
-    //   {
-    //     id: QueryType.ProductCreationDate,
-    //     name: 'Date',
-    //   },
-    //   {
-    //     id: QueryType.Auto,
-    //     name: 'Auto',
-    //   }
-    // ];
+  onRowSelectionChange(row: QueryRow) {
+    if (row.selected) {
+      this.selectedRows.push(row);
+    } else {
+      const index = this.selectedRows.findIndex(x => x == row);
 
-
-
-    // this.operatorList = [
-    //   {
-    //     id: ComparisonOperatorType.Equal,
-    //     name: '='
-    //   },
-    //   {
-    //     id: ComparisonOperatorType.NotEqual,
-    //     name: '!='
-    //   },
-    //   {
-    //     id: ComparisonOperatorType.GreaterThan,
-    //     name: '>'
-    //   },
-    //   {
-    //     id: ComparisonOperatorType.GreaterThanOrEqual,
-    //     name: '>='
-    //   },
-    //   {
-    //     id: ComparisonOperatorType.LessThan,
-    //     name: '<'
-    //   },
-    //   {
-    //     id: ComparisonOperatorType.LessThanOrEqual,
-    //     name: '<='
-    //   }
-    // ];
-
-
-
-    // this.logicalOperatorList = [
-    //   {
-    //     id: LogicalOperatorType.And,
-    //     name: 'And'
-    //   },
-    //   {
-    //     id: LogicalOperatorType.Or,
-    //     name: 'Or'
-    //   }
-    // ];
-
+      if (index != -1) this.selectedRows.splice(index, 1);
+    }
   }
 
 
-  // ----------------------------------------------------- Show Dropdown List -----------------------------------------------------
-  // showDropdownList(element: HTMLElement, list: Array<Item>) {
-  //   this.lazyLoadingService.load<DropdownListComponent<Item>, DropdownListModule>(async () => {
-  //     const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
-  //     const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
-  //     return {
-  //       component: DropdownListComponent,
-  //       module: DropdownListModule
-  //     }
-  //   }, SpinnerAction.None)
-  //     .then((dropdownList: DropdownListComponent<Item>) => {
-  //       const elementRect = element.getBoundingClientRect();
 
-  //       dropdownList.list = list;
-  //       dropdownList.top = elementRect.top + elementRect.height + 2;
-  //       dropdownList.left = elementRect.left;
-  //       dropdownList.width = elementRect.width;
+  onGroupSelectionChange(group: QueryGroup) {
+    if (group.selected) {
+      this.selectedGroups.push(group);
+      this.unselectRows(group);
+    } else {
+      const index = this.selectedGroups.findIndex(x => x == group);
 
-  //       dropdownList.onArrowSelect = (text: string) => {
-  //         element.firstElementChild!.innerHTML = text;
-  //       }
-  //     });
-  // }
+      if (index != -1) this.selectedGroups.splice(index, 1);
+    }
+  }
 
 
-  
+
+  isGroupIconDisabled() {
+    if ((this.selectedRows.length <= 1 && this.selectedGroups.length <= 1) ||
+      this.selectedRows.length >= 1 && this.selectedGroups.length >= 1) return true;
+
+    return !this.selectedRows.every(x => x.query == this.selectedRows[0].query);
+  }
+
+
+
+  unselectRows(group: QueryGroup) {
+    group.query.queryRows.forEach((row: QueryRow) => {
+      if (row.queryGroup) {
+        this.unselectRows(row.queryGroup);
+      } else {
+        const index = this.selectedRows.findIndex(x => x == row);
+
+        if (index != -1) {
+          this.selectedRows[index].selected = false;
+          this.selectedRows.splice(index, 1);
+        }
+      }
+    });
+  }
+
 }

@@ -295,6 +295,16 @@ body {
 
     &:first-child {
         width: 20px;
+        background: #383838;
+
+        &:hover {
+            background: #3d3d3d;
+        }
+
+        &:active {
+            background: #313131;
+            color: #929292;
+        }
     }
 
     &:nth-child(2) {
@@ -354,7 +364,9 @@ body {
     outline: 1px solid $outline-color;
     outline-offset: -1px;
 
-    .query-button, .logical-operator-button {
+    .query-button,
+    .query-button:first-child,
+    .logical-operator-button {
         background: #35424a;
         color: #bbbbbb;
         outline: 1px solid $outline-color;

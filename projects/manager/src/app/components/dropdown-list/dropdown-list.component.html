@@ -1,5 +1,5 @@
 <div id="dropdownList" #listElement class="hide list" [ngClass]="{'show': show}" (transitionend)="onHide()"
-    [style.top.px]="top" [style.left.px]="left" [style.width.px]="width" (mousedown)="$event.stopPropagation()">
+    [style.top.px]="top" [style.left.px]="left" [style.minWidth.px]="width" (mousedown)="$event.stopPropagation()">
 
     <!-- List -->
     <ng-container *ngIf="list && list.length > 0">

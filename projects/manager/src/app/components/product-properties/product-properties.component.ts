@@ -216,9 +216,15 @@ export class ProductPropertiesComponent {
       .then((pricePopup: PricePopupComponent) => {
         this.pricePopup = pricePopup;
         pricePopup.price = this.product.minPrice;
-        pricePopup.productId = this.product.id;
+        
         pricePopup.callback = (price: number) => {
           this.product.minPrice = price;
+
+          this.dataService.put('api/Products/MinMaxPrice', {
+            productId: this.product.id,
+            minPrice: price,
+            maxPrice: 0
+          }).subscribe();
         }
       });
   }

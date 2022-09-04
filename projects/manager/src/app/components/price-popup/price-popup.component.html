@@ -1,4 +1,5 @@
-<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()"
+    [style.top.px]="top ? top : null" [style.left.px]="left ? left : null" [ngStyle]="{'position': top && left ? 'absolute' : null}">
 
 
     <div class="popup-base">

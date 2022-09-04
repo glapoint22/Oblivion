@@ -1,3 +1,4 @@
+import { Query } from "./query";
 import { QueryGroup } from "./query-group";
 import { QueryItem } from "./query-item";
 import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, QueryType } from "./widget-enums";
@@ -13,4 +14,5 @@ export class QueryRow {
     public auto?: AutoQueryType; 
     public logicalOperatorType?: LogicalOperatorType;
     public selected?: boolean;
+    public query?: Query;
 }
