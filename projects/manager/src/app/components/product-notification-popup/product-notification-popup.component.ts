@@ -10,6 +10,7 @@ import { NotificationUserProfilePopupComponent } from '../notification-user-prof
 })
 export class ProductNotificationPopupComponent extends LazyLoad {
   public userIndex: number = 0;
+  public employeeIndex: number = 0;
   public notification!: NotificationProduct;
   public notificationItem!: NotificationItem;
   public notificationUserProfilePopup!: NotificationUserProfilePopupComponent;
@@ -26,22 +27,25 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   ngOnInit() {
     super.ngOnInit();
     window.addEventListener('mousedown', this.mousedown);
+
+    this.dataService.get<NotificationProduct>('api/Notifications/Product', [
+      { key: 'productId', value: this.notificationItem.productId },
+      { key: 'type', value: this.notificationItem.type },
+      { key: 'archiveDate', value: this.notificationItem.archiveDate ? this.notificationItem.archiveDate : '' }
+    ]).subscribe((notificationProduct: NotificationProduct) => {
+      this.notification = notificationProduct;
+    });
   }
+
+
+
 
   mousedown = () => {
     if (this.notificationUserProfilePopup) this.notificationUserProfilePopup.close();
   }
 
 
-  onOpen() {
-    this.dataService.get<NotificationProduct>('api/Notifications/Product', [
-      { key: 'productId', value: this.notificationItem.productId },
-      { key: 'type', value: this.notificationItem.type },
-      { key: 'state', value: this.notificationItem.state }
-    ]).subscribe((notificationProduct: NotificationProduct) => {
-      this.notification = notificationProduct;
-    });
-  }
+
 
 
 
@@ -69,23 +73,47 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   onEscape(): void {
     if (this.profilePopupContainer.length > 0) {
       this.notificationUserProfilePopup.close();
-    }else {
+    } else {
       super.onEscape();
     }
   }
 
+
+
+
   close(): void {
-    if(!this.notification.employee) {
-      if(this.notes.nativeElement.value.trim().length > 0) {
-        console.log('post databse')
-      }
-    }else {
-      if(this.notes.nativeElement.value.trim() != this.notification.employee.text.trim()) {
-        console.log(this.notification.employee.notificationEmployeeId)
+    // If no notes were written when this form was opened
+    if (!this.notification.employees) {
+
+      // And now if new notes have been written
+      if (this.notes.nativeElement.value.trim().length > 0) {
+        this.dataService.post('api/Notifications/PostNote', {
+          productId: this.notificationItem.productId,
+          notificationType: this.notificationItem.type,
+          archiveDate: this.notificationItem.archiveDate,
+          text: this.notes.nativeElement.value.trim()
+        }).subscribe();
       }
     }
+
+    // If this is a new notification and it has NOT been sent to archive yet
+    if (this.notificationItem.isNew) {
+
+      // Send it to archive
+      // this.dataService.put('api/Notifications/Product/Archive',
+      //   {
+      //     productId: this.notificationItem.productId,
+      //     notificationType: this.notificationItem.type
+      //   }).subscribe();
+    }
+
+    // Now close
     super.close();
   }
+
+
+
+
 
   ngOnDestroy() {
     window.removeEventListener('mousedown', this.mousedown);

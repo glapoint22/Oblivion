@@ -79,14 +79,21 @@
 
 .dashed-container {
     border: 1px dashed #414141;
-    margin-bottom: 13px;
+    border-top: none;
+    margin: 0 1px 13px;
+}
+
+
+.no-dashed-container {
+    border: none;
+    margin: 13px 0 0;
 }
 
 
 .counter-bar {
-    height: 37px;
+    height: 28px;
     background: #2f2f2f;
-    border: 5px solid #282828;
+    padding-left: 1px;
 }
 
 
@@ -101,6 +108,11 @@
 
 .user-container {
     padding: 11px 8px 8px;
+}
+
+
+.no-user-container {
+    padding: 0;
 }
 
 
@@ -189,7 +201,7 @@
 
 textarea {
     width: 100%;
-    height: 98px;
+    height: 128px;
     resize: none;
     background: none;
     outline: none;

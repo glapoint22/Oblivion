@@ -1,23 +1,25 @@
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { NotificationItem } from '../../classes/notification-item';
-import { NotificationReviewComplaint } from '../../classes/notification-review-complaint';
+import { NotificationReview } from '../../classes/notification-review';
 import { NotificationProfilePopupUser } from '../../classes/notification-profile-popup-user';
 import { NotificationUserProfilePopupComponent } from '../notification-user-profile-popup/notification-user-profile-popup.component';
 
 @Component({
-  templateUrl: './review-complaint-notification-popup.component.html',
-  styleUrls: ['./review-complaint-notification-popup.component.scss']
+  templateUrl: './review-notification-popup.component.html',
+  styleUrls: ['./review-notification-popup.component.scss']
 })
-export class ReviewComplaintNotificationPopupComponent extends LazyLoad {
+export class ReviewNotificationPopupComponent extends LazyLoad {
   public userIndex: number = 0;
-  public notification!: NotificationReviewComplaint;
+  public employeeIndex: number = 0;
+  public notification!: NotificationReview;
   public notificationItem!: NotificationItem;
   public userProfilePopup!: NotificationUserProfilePopupComponent;
   public reviewProfilePopup!: NotificationUserProfilePopupComponent;
 
   @ViewChild('userProfileContainer', { read: ViewContainerRef }) userProfilePopupContainer!: ViewContainerRef;
   @ViewChild('reviewProfileContainer', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
+  @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
 
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
     super(lazyLoadingService)
@@ -27,7 +29,19 @@ export class ReviewComplaintNotificationPopupComponent extends LazyLoad {
   ngOnInit() {
     super.ngOnInit();
     window.addEventListener('mousedown', this.mousedown);
+
+    this.dataService.get<NotificationReview>('api/Notifications/Review', [
+      { key: 'productId', value: this.notificationItem.productId },
+      { key: 'type', value: this.notificationItem.type },
+      { key: 'archiveDate', value: this.notificationItem.archiveDate ? this.notificationItem.archiveDate : '' }
+    ]).subscribe((notificationReview: NotificationReview) => {
+      this.notification = notificationReview;
+    });
   }
+
+
+
+
 
   mousedown = () => {
     if (this.userProfilePopup) this.userProfilePopup.close();
@@ -36,16 +50,6 @@ export class ReviewComplaintNotificationPopupComponent extends LazyLoad {
 
 
 
-
-  onOpen() {
-    this.dataService.get<NotificationReviewComplaint>('api/Notifications/ReviewComplaint', [
-      { key: 'productId', value: this.notificationItem.productId },
-      { key: 'type', value: this.notificationItem.type },
-      { key: 'state', value: this.notificationItem.state }
-    ]).subscribe((notificationReviewComplaint: NotificationReviewComplaint) => {
-      this.notification = notificationReviewComplaint;
-    });
-  }
 
 
 
@@ -102,6 +106,43 @@ export class ReviewComplaintNotificationPopupComponent extends LazyLoad {
       super.onEscape();
     }
   }
+
+
+
+
+  close(): void {
+    // If no notes were written when this form was opened
+    if (!this.notification.employees) {
+
+      // And now notes have been written
+      if (this.notes.nativeElement.value.trim().length > 0) {
+        this.dataService.post('api/Notifications/PostNote', {
+          productId: this.notificationItem.productId,
+          notificationType: this.notificationItem.type,
+          archiveDate: this.notificationItem.archiveDate,
+          text: this.notes.nativeElement.value.trim()
+        }).subscribe();
+      }
+    }
+
+    // If this is a new notification and it has NOT been sent to archive yet
+    if (this.notificationItem.isNew) {
+      // Send it to archive
+      this.dataService.put('api/Notifications/Archive',
+        {
+          productId: this.notificationItem.productId,
+          notificationType: this.notificationItem.type
+        }).subscribe();
+    }
+
+    // Now close
+    super.close();
+  }
+
+
+
+
+
 
 
   ngOnDestroy() {

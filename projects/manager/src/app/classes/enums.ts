@@ -115,10 +115,7 @@ export enum BuilderType {
     Email
 }
 
-export enum NotificationState {
-    New,
-    Archive
-}
+
 
 export enum EmailType
 {

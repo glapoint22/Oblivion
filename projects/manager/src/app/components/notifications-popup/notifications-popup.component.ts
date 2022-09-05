@@ -6,7 +6,7 @@ import { ListUpdate } from '../../classes/list-update';
 import { NotificationItem } from '../../classes/notification-item';
 import { MessageNotificationPopupComponent } from '../message-notification-popup/message-notification-popup.component';
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
-import { ReviewComplaintNotificationPopupComponent } from '../review-complaint-notification-popup/review-complaint-notification-popup.component';
+import { ReviewNotificationPopupComponent } from '../review-notification-popup/review-notification-popup.component';
 
 @Component({
   templateUrl: './notifications-popup.component.html',
@@ -23,9 +23,10 @@ export class NotificationsPopupComponent extends LazyLoad {
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
     super(lazyLoadingService)
   }
+  
 
   onOpen() {
-    this.dataService.get<Array<NotificationItem>>('api/Notifications/New')
+    this.dataService.get<Array<NotificationItem>>('api/Notifications', [{ key: 'isNew', value: true }])
       .subscribe((notifications: Array<NotificationItem>) => {
         notifications.forEach(x => {
           x.name = this.getNotificationName(x.type, x.email);
@@ -160,7 +161,7 @@ export class NotificationsPopupComponent extends LazyLoad {
           component: MessageNotificationPopupComponent,
           module: MessageNotificationPopupModule
         }
-      }, SpinnerAction.None).then((messageNotificationPopup: MessageNotificationPopupComponent)=> {
+      }, SpinnerAction.None).then((messageNotificationPopup: MessageNotificationPopupComponent) => {
         messageNotificationPopup.notificationItem = notificationItem;
       })
     }
@@ -168,14 +169,14 @@ export class NotificationsPopupComponent extends LazyLoad {
 
     if (notificationItem.type == 1) {
       this.lazyLoadingService.load(async () => {
-        const { ReviewComplaintNotificationPopupComponent } = await import('../review-complaint-notification-popup/review-complaint-notification-popup.component');
-        const { ReviewComplaintNotificationPopupModule } = await import('../review-complaint-notification-popup/review-complaint-notification-popup.module');
+        const { ReviewNotificationPopupComponent: ReviewNotificationPopupComponent } = await import('../review-notification-popup/review-notification-popup.component');
+        const { ReviewNotificationPopupModule: ReviewNotificationPopupModule } = await import('../review-notification-popup/review-notification-popup.module');
         return {
-          component: ReviewComplaintNotificationPopupComponent,
-          module: ReviewComplaintNotificationPopupModule
+          component: ReviewNotificationPopupComponent,
+          module: ReviewNotificationPopupModule
         }
-      }, SpinnerAction.None).then((reviewComplaintNotificationPopup: ReviewComplaintNotificationPopupComponent)=> {
-        reviewComplaintNotificationPopup.notificationItem = notificationItem;
+      }, SpinnerAction.None).then((reviewNotificationPopup: ReviewNotificationPopupComponent) => {
+        reviewNotificationPopup.notificationItem = notificationItem;
       })
     }
 
@@ -188,7 +189,7 @@ export class NotificationsPopupComponent extends LazyLoad {
           component: ProductNotificationPopupComponent,
           module: ProductNotificationPopupModule
         }
-      }, SpinnerAction.None).then((productNotificationPopup: ProductNotificationPopupComponent)=> {
+      }, SpinnerAction.None).then((productNotificationPopup: ProductNotificationPopupComponent) => {
         productNotificationPopup.notificationItem = notificationItem;
       })
     }

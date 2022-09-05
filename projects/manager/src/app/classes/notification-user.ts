@@ -1,5 +1,6 @@
-import { NotificationSecurity } from "./notification-security";
+import { NotificationProfile } from "./notification-profile";
 
-export class NotificationUser extends NotificationSecurity {
-    notificationId!: number;
+export class NotificationUser extends NotificationProfile {
+    noncompliantStrikes!: number;
+    blockNotificationSending!: boolean;
 }

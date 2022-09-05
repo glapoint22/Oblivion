@@ -1,7 +1,12 @@
-import { NotificationEmployee } from "./notification-employee";
-import { NotificationMessageUser } from "./notification-message-user";
+import { NotificationUser } from "./notification-user";
 
-export class NotificationMessage {
-    users: Array<NotificationMessageUser> = new Array<NotificationMessageUser>();
-    employee: Array<NotificationEmployee> = new Array<NotificationEmployee>();
+export class NotificationMessage extends NotificationUser {
+    messageId!: number;
+    senderName!: string;
+    employeeReplyId!: number;
+    employeeFirstName!: string;
+    employeeLastName!: string;
+    employeeImage!: string;
+    replyDate!: string;
+    reply!: string;
 }

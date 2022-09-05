@@ -1,5 +1,5 @@
 export interface NotificationProfilePopupUser {
-    name?: string;
+    senderName?: string;
     noncompliantStrikes: number;
     blockNotificationSending: boolean;
     firstName: string;

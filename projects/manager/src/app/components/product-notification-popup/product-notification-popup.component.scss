@@ -74,34 +74,18 @@
     align-items: center;
     color: #e0e0e0;
     font-size: 13px;
-    margin-bottom: 10px;
-}
-
-.dashed-container {
-    border: 1px dashed #414141;
     margin-bottom: 13px;
 }
 
 
-.counter-bar {
-    height: 37px;
-    background: #2f2f2f;
-    border: 5px solid #282828;
-}
 
 
-.counter-container {
+.profile-container {
     display: flex;
-    width: fit-content;
-    height: 100%;
     align-items: center;
-    margin-right: auto;
+    margin-right: 4px;
 }
 
-
-.user-container {
-    padding: 11px 8px 8px;
-}
 
 
 .label {
@@ -115,7 +99,7 @@
     height: 130px;
     background: #242424;
     border: 1px solid #454545;
-    margin-top: 3px;
+    margin: 3px 0 13px;
 }
 
 
@@ -124,9 +108,8 @@
     height: 30px;
     background: #2e2e2e;
     border: 2px solid #242424;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    padding-right: 4px;
 }
 
 
@@ -153,21 +136,6 @@
 }
 
 
-.no-profile-image {
-    position: relative;
-    width: 18px;
-    height: 18px;
-    margin-left: 10px;
-    background: none;
-    outline: none;
-
-    img {
-        max-width: 18px;
-        max-height: 18px;
-    }
-}
-
-
 .profile-popup-container {
     position: absolute;
     left: 42px;
@@ -188,7 +156,6 @@
 
 textarea {
     width: 100%;
-    height: 98px;
     resize: none;
     background: none;
     outline: none;
@@ -201,7 +168,7 @@ textarea {
 
 .button-container {
     display: flex;
-    margin-top: 15px;
+    padding-top: 2px;
     justify-content: flex-end;
 }
 
