@@ -1,0 +1,33 @@
+<panel [title]="'Query Builder'">
+    <div class="property-box-dark">
+
+
+        <div class="property-box-bar">
+
+            <!-- Icons -->
+            <div class="icons-container">
+
+                <!-- Delete -->
+                <icon-button [icon]="'fa-trash-alt fas'" [title]="'Delete'"
+                    [isDisabled]="selectedRows.length == 0 && selectedGroups.length == 0"></icon-button>
+
+                <!-- Ungroup -->
+                <icon-button [icon]="'fa-solid fa-object-ungroup'" [title]="'Ungroup'"
+                    [isDisabled]="selectedGroups.length == 0"></icon-button>
+
+                <!-- Group -->
+                <icon-button [icon]="'fa-solid fa-object-group'" [title]="'Group'"
+                    [isDisabled]="isGroupIconDisabled()"></icon-button>
+
+                <!-- Add -->
+                <icon-button [icon]="'fas fa-plus-circle'" [title]="'Add'"
+                    [isDisabled]="(selectedRows.length != 1 && selectedGroups.length != 1) || selectedRows.length >= 1 && selectedGroups.length >= 1">
+                </icon-button>
+            </div>
+        </div>
+
+        <!-- Query -->
+        <query [query]="query" (onRowSelectionChange)="onRowSelectionChange($event)"
+            (onGroupSelectionChange)="onGroupSelectionChange($event)"></query>
+    </div>
+</panel>

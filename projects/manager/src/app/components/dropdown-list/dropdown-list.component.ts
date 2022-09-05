@@ -16,6 +16,7 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
   public width!: number;
   public callback!: Function;
   public onClose!: Function;
+  public onArrowSelect!: Function;
   public itemIndex: number = -1;
 
 
@@ -23,7 +24,7 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
   onArrowDown(e: KeyboardEvent): void {
     if (!this.list || this.list.length == 0) return;
 
-    const input = e.target as HTMLInputElement;
+    // const input = e.target as HTMLInputElement;
     const scrollOffset = this.listElement.nativeElement.scrollTop % 22;
 
     // Go to the next item in the list
@@ -37,8 +38,9 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
     }
 
 
-    // Place the name of the item in the input
-    input.value = this.getName(this.list[this.itemIndex]);
+    if (this.onArrowSelect) {
+      this.onArrowSelect(this.getText(this.list[this.itemIndex]))
+    }
 
     // Adjust the scroll
     if (this.itemIndex * 22 + scrollOffset >= this.listElement.nativeElement.getBoundingClientRect().height + this.listElement.nativeElement.scrollTop) {
@@ -49,7 +51,7 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
   }
 
 
-  getName(listItem: T) {
+  getText(listItem: T) {
     return (listItem as KeyValue<any, any>).key || (listItem as Item).name;
   }
 
@@ -58,7 +60,7 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
   onArrowUp(e: KeyboardEvent): void {
     if (!this.list || this.list.length == 0) return;
 
-    const input = e.target as HTMLInputElement;
+    // const input = e.target as HTMLInputElement;
     const scrollOffset = 22 - this.listElement.nativeElement.scrollTop % 22;
 
 
@@ -72,8 +74,9 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
       this.listElement.nativeElement.scrollTo(0, this.listElement.nativeElement.scrollHeight);
     }
 
-    // Place the name of the item in the input
-    input.value = this.getName(this.list[this.itemIndex]);
+    if (this.onArrowSelect) {
+      this.onArrowSelect(this.getText(this.list[this.itemIndex]))
+    }
 
 
     // Adjust the scroll
@@ -116,6 +119,12 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
     this.close();
   }
 
+
+
+
+
+
+  // -------------------------------------------------------------------------------- Close ----------------------------------------------------------------
   close(): void {
     super.close();
     if (this.onClose) this.onClose();

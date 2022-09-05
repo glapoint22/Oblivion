@@ -1,5 +1,4 @@
-import { ParamMap, Params } from "@angular/router";
-import { Query } from "./query";
+import { ParamMap } from "@angular/router";
 
 export class QueryParams {
     public search!: string | null;
@@ -9,7 +8,7 @@ export class QueryParams {
     public sort!: string | null;
     public page: number = 1;
     public limit!: number;
-    public queries!: Array<Query>;
+    // public queries!: Array<Query>;
     public id!: string | null;
 
     set(params: ParamMap) {

@@ -36,12 +36,6 @@ export class RowDevComponent extends RowComponent {
   }
 
 
-  // --------------------------------------------------------------------------- Set Top -------------------------------------------------------------
-  setTop(top: number) {
-    this.top = top;
-  }
-
-
   // ------------------------------------------------------------------------ Create Columns ---------------------------------------------------------
   public createColumns(columns: Array<Column>): void {
     columns.forEach((column: Column, index) => {
@@ -299,6 +293,10 @@ export class RowDevComponent extends RowComponent {
   }
 
 
+  // -------------------------------------------------------------------------- Set Top ------------------------------------------------------------
+  public setTop(row: Row) {
+    this.top = row.top;
+  }
 
 
 
@@ -314,10 +312,30 @@ export class RowDevComponent extends RowComponent {
     row.shadow = this.shadow.getData();
     row.padding = this.padding.getData();
     row.verticalAlignment = this.verticalAlignment.getData();
+    row.relativeTop = this.getRelativeTop();
     this.columns.forEach((column: ColumnDevComponent) => row.columns.push(column.getData()));
     return row;
   }
 
+
+
+
+  // ----------------------------------------------------------------------- Get Relative Top ----------------------------------------------------------
+  private getRelativeTop(): number {
+    const index = this.containerComponent.rows.findIndex(x => x == this);
+    let relativeTop!: number;
+
+    if (index == 0) {
+      relativeTop = this.top;
+    } else {
+      const previousRow = this.containerComponent.rows[index - 1];
+      const previousRowElement = previousRow.rowElement;
+
+      relativeTop = this.top - (previousRowElement.offsetTop + previousRowElement.clientHeight);
+    }
+
+    return relativeTop;
+  }
 
 
 

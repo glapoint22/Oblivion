@@ -1,4 +1,4 @@
-<div #searchContainer class="search-container" (mousedown)="$event.stopPropagation()">
+<div #searchContainer class="search-container" (mousedown)="dropdownList ? $event.stopPropagation(): null">
     <input #searchInput #tabElement [placeholder]="placeholderText" spellcheck="false"
         (click)="$event.stopPropagation()">
 
