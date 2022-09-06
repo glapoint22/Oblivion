@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Query, QueryGroup, QueryRow } from 'widgets';
 
 @Component({
@@ -6,15 +6,15 @@ import { Query, QueryGroup, QueryRow } from 'widgets';
   templateUrl: './query.component.html',
   styleUrls: ['./query.component.scss']
 })
-export class QueryComponent implements OnChanges {
+export class QueryComponent {
   @Input() query!: Query;
-  @Input() queryGroup!: QueryGroup;
+  // @Input() queryGroup!: QueryGroup;
   @Output() onRowSelectionChange: EventEmitter<QueryRow> = new EventEmitter();
   @Output() onGroupSelectionChange: EventEmitter<QueryGroup> = new EventEmitter();
 
-  public ngOnChanges(): void {
-    if (this.queryGroup) {
-      this.query.queryGroup = this.queryGroup;
-    }
-  }
+  // public ngOnChanges(): void {
+  //   if (this.queryGroup) {
+  //     this.query.queryGroup = this.queryGroup;
+  //   }
+  // }
 }

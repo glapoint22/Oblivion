@@ -1,8 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { QueryItem } from 'dist/widgets/lib/classes/query-item';
-import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, Query, QueryGroup, QueryRow, QueryType } from 'widgets';
+import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, Query, QueryGroup, QueryItem, QueryRow, QueryType } from 'widgets';
 import { Item } from '../../classes/item';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
 import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
@@ -15,7 +14,7 @@ import { PricePopupComponent } from '../price-popup/price-popup.component';
 })
 export class QueryRowComponent {
   @Input() queryRow!: QueryRow;
-  @Input() query!: Query;
+  // @Input() query!: Query;
   @Output() onRowSelectionChange: EventEmitter<QueryRow> = new EventEmitter();
   @Output() onGroupSelectionChange: EventEmitter<QueryGroup> = new EventEmitter();
   public QueryType = QueryType;
@@ -218,9 +217,9 @@ export class QueryRowComponent {
   constructor(private lazyLoadingService: LazyLoadingService) { }
 
 
-  ngOnChanges() {
-    this.queryRow.query = this.query;
-  }
+  // ngOnChanges() {
+  //   this.queryRow.query = this.query;
+  // }
 
 
   // ----------------------------------------------------------- Get Comparison Operator -----------------------------------------------------------
@@ -496,7 +495,7 @@ export class QueryRowComponent {
 
   // ----------------------------------------------------------------- On Row Click ----------------------------------------------------------------
   onRowClick(row: QueryRow) {
-    if (this.query.queryGroup?.selected) return;
+    // if (this.query.queryGroup?.selected) return;
 
     row.selected = !row.selected;
     this.onRowSelectionChange.emit(row);

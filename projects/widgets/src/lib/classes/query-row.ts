@@ -14,5 +14,5 @@ export class QueryRow {
     public auto?: AutoQueryType; 
     public logicalOperatorType?: LogicalOperatorType;
     public selected?: boolean;
-    public query?: Query;
+    public parentQuery?: Query;
 }

@@ -2,6 +2,6 @@
     <div class="query-button" (click)="onGroupClick()"></div>
 
     <div class="query-container">
-        <query [query]="queryGroup.query" [queryGroup]="queryGroup" (onRowSelectionChange)="onRowSelectionChange.emit($event)"></query>
+        <query [query]="queryGroup.query" (onRowSelectionChange)="onRowSelectionChange.emit($event)"></query>
     </div>
 </div>

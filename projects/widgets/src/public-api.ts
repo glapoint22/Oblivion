@@ -38,6 +38,7 @@ export * from './lib/classes/breakpoint-value';
 export * from './lib/classes/query-group';
 export * from './lib/classes/query-row';
 export * from './lib/classes/query';
+export * from './lib/classes/query-item';
 
 // Components
 export * from './lib/components/button-widget/button-widget.component';
