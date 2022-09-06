@@ -23,69 +23,74 @@
 
 
         <!-- User -->
-        <div class="dashed-container">
-
-            <!-- Counter -->
-            <div class="counter-bar">
-                <div class="counter-container">
-                    <counter [itemCount]="notification ? notification.users.length : 1" (onItemChange)="userIndex = $event"></counter>
-                </div>
-            </div>
+        <div class="label">User Comment:</div>
+        <div class="info-box">
             
-            <div class="user-container">
-                <div class="label">User:</div>
-                <div class="info-box">
-                    
-                    <div class="info-bar">
-                        <!-- Date -->
-                        <div *ngIf="notification" class="date">
-                            {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
-                        </div>
-        
-                        <!-- Image -->
-                        <div class="profile-image-container">
+            <div class="info-bar">
 
-                            <div class="profile-popup-container">
-                                <ng-template #profilePopupContainer></ng-template>
-                            </div>
-
-                            <img *ngIf="notification"
-                                  style="cursor: pointer;"
-                                  (mousedown)="$event.stopPropagation()"
-                                  (click)="openNotificationUserProfilePopup()"
-                                  [src]="'images/' + notification.users[userIndex].image"
-                                  [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
-                        </div>
-                    </div>
+                <!-- Counter -->
+                <div>
+                    <counter *ngIf="notification && notification.users.length > 1" [itemCount]="notification ? notification.users.length : 1" (onItemChange)="userIndex = $event"></counter>
+                </div>
                 
-                    <!-- User Comment -->
-                    <div *ngIf="notification" class="user-comment">
-                        {{notification.users[userIndex].text}}
+
+                <div class="profile-container">
+                    <!-- Date -->
+                    <div *ngIf="notification" class="date">
+                        {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
+                    </div>
+
+                    <!-- Image -->
+                    <div class="profile-image-container">
+
+                        <div class="profile-popup-container">
+                            <ng-template #profilePopupContainer></ng-template>
+                        </div>
+
+                        <img *ngIf="notification"
+                                style="cursor: pointer;"
+                                (mousedown)="$event.stopPropagation()"
+                                (click)="openNotificationUserProfilePopup()"
+                                [src]="'images/' + notification.users[userIndex].image"
+                                [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                     </div>
                 </div>
+                    
+            </div>
+        
+            <!-- User Comment -->
+            <div *ngIf="notification" class="user-comment">
+                {{notification.users[userIndex].text}}
             </div>
         </div>
-
 
 
         <!-- Employee -->
         <div class="label">Notes:</div>
         <div class="info-box">
 
-            <div class="info-bar">
-                <!-- Date -->
-                <div *ngIf="notification && notification.employee" class="date">
-                    {{notification.employee.date | date: 'MMM d, y, h:mm a'}}
+            <div *ngIf="notification && notification.employees[employeeIndex]" class="info-bar">
+
+                <!-- Counter -->
+                <div>
+                    <counter *ngIf="notification && notification.employees.length > 1" [itemCount]="notification ? notification.employees.length : 1" (onItemChange)="employeeIndex = $event"></counter>
                 </div>
 
-                <!-- Image -->
-                <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification.employee == null}">
-                    <img *ngIf="notification && notification.employee" [src]="'images/' + notification.employee.image" [title]="notification.employee.firstName + ' ' + notification.employee.lastName">
+                <div class="profile-container">
+                    <!-- Date -->
+                    <div class="date">
+                        {{notification.employees[employeeIndex].date | date: 'MMM d, y, h:mm a'}}
+                    </div>
+
+                    <!-- Image -->
+                    <div class="profile-image-container">
+                        <img [src]="'images/' + notification.employees[employeeIndex].image" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName">
+                    </div>
                 </div>
             </div>
 
             <!-- Notes -->
-            <textarea #notes *ngIf="notification">{{notification.employee ? notification.employee.text : null}}</textarea>
+            <textarea #notes *ngIf="notification" [ngStyle]="{'height': notification.employees[employeeIndex] ? '98px' : '128px'}">{{notification.employees[employeeIndex] ? notification.employees[employeeIndex].text : null}}</textarea>
         </div>
 
 

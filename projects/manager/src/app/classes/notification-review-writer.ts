@@ -1,5 +1,5 @@
-import { NotificationSecurity } from "./notification-security";
+import { NotificationUser } from "./notification-user";
 
-export class NotificationReviewWriter extends NotificationSecurity {
+export class NotificationReviewWriter extends NotificationUser {
     reviewTitle!: string;
 }

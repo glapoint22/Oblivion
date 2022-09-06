@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MessageNotificationPopupComponent } from './message-notification-popup.component';
 import { CounterModule } from '../counter/counter.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -9,7 +10,8 @@ import { CounterModule } from '../counter/counter.module';
   declarations: [MessageNotificationPopupComponent],
   imports: [
     CommonModule,
-    CounterModule
+    CounterModule,
+    FormsModule
   ],
   exports: [MessageNotificationPopupComponent]
 })

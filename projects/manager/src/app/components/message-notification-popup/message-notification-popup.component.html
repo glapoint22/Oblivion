@@ -13,46 +13,45 @@
         </div>
 
 
-        <!-- User -->
-        <div class="dashed-container">
-
-            <!-- Counter -->
-            <div class="counter-bar">
-                <div class="counter-container">
-                    <counter [itemCount]="notification ? notification.users.length : 1" (onItemChange)="userIndex = $event"></counter>
-                </div>
+        <!-- Counter -->
+        <div *ngIf="notification && notification.length > 1" class="counter-bar">
+            <div class="counter-container">
+                <counter [itemCount]="notification ? notification.length : 1" (onItemChange)="userIndex = $event"></counter>
             </div>
-            
-            <div class="user-container">
-                <div class="label">User:</div>
+        </div>
+
+        <!-- User -->
+        <div class="dashed-container" [ngClass]="{'no-dashed-container': notification && notification.length == 1}">
+            <div class="user-container" [ngClass]="{'no-user-container': notification && notification.length == 1}">
+                <div class="label">Message:</div>
                 <div class="info-box">
                     
                     <div class="info-bar">
                         <!-- Date -->
                         <div *ngIf="notification" class="date">
-                            {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
+                            {{notification[userIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
         
                         <!-- Image -->
-                        <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification.users[userIndex].name}">
+                        <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[userIndex].senderName}">
                             
-                            <div class="profile-popup-container" [ngStyle]="{'top': notification && notification.users[userIndex].name ? '-135px' : '-139px'}">
+                            <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[userIndex].senderName ? '-135px' : '-139px'}">
                                 <ng-template #notificationUserProfilePopupContainer></ng-template>
                             </div>
 
                             <img *ngIf="notification"
                                   style="cursor: pointer;"
-                                  [ngStyle]="{'border-radius': notification && notification.users[userIndex].name ? 'none' : '50%'}"
+                                  [ngStyle]="{'border-radius': notification && notification[userIndex].senderName ? 'none' : '50%'}"
                                   (mousedown)="$event.stopPropagation()"
                                   (click)="openNotificationUserProfilePopup()"
-                                  [src]="notification.users[userIndex].name ? 'assets/message-notification.png' : 'images/' + notification.users[userIndex].image"
-                                  [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
+                                  [src]="notification[userIndex].senderName ? 'assets/message-notification.png' : 'images/' + notification[userIndex].image"
+                                  [title]="notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
                         </div>
                     </div>
                 
                     <!-- User Comment -->
                     <div *ngIf="notification" class="user-comment">
-                        {{notification.users[userIndex].text}}
+                        {{notification[userIndex].text}}
                     </div>
                 </div>
 
@@ -64,21 +63,28 @@
                 <div class="label">Reply:</div>
                 <div class="info-box">
 
-                    <div class="info-bar">
-                        
-                        <!-- Date -->
-                        <div *ngIf="notification && notification.employee.length > 0" class="date">
-                            {{notification.employee[userIndex].date | date: 'MMM d, y, h:mm a'}}
+                    <ng-container *ngIf="notification && notification[userIndex].employeeReplyId">
+                        <div class="info-bar">
+                            
+                            <!-- Date -->
+                            <div class="date">
+                                {{notification[userIndex].replyDate | date: 'MMM d, y, h:mm a'}}
+                            </div>
+
+                            <!-- Image -->
+                            <div class="profile-image-container">
+                                <img [src]="'images/' + notification[userIndex].employeeImage" style="border-radius: 50%;" [title]="notification[userIndex].employeeFirstName + ' ' + notification[userIndex].employeeLastName">
+                            </div>
                         </div>
 
-                        <!-- Image -->
-                        <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification.employee.length == 0}">
-                            <img *ngIf="notification && notification.employee.length > 0" [src]="'images/' + notification.employee[userIndex].image" style="border-radius: 50%;" [title]="notification.employee[userIndex].firstName + ' ' + notification.employee[userIndex].lastName">
+                        <!-- Reply -->
+                        <div class="user-comment">
+                            {{notification[userIndex].reply}}
                         </div>
-                    </div>
-
-                    <!-- Notes -->
-                    <textarea *ngIf="notification">{{notification.employee.length > 0 ? notification.employee[userIndex].text : null}}</textarea>
+                    </ng-container>
+                    
+                    <!-- Empty Reply -->
+                    <textarea *ngIf="notification  && !notification[userIndex].employeeReplyId" [(ngModel)]="notification[userIndex].reply"></textarea>
                 </div>
             </div>
         </div>
