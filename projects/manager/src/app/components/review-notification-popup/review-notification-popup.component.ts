@@ -4,6 +4,7 @@ import { NotificationItem } from '../../classes/notification-item';
 import { NotificationReview } from '../../classes/notification-review';
 import { NotificationProfilePopupUser } from '../../classes/notification-profile-popup-user';
 import { NotificationUserProfilePopupComponent } from '../notification-user-profile-popup/notification-user-profile-popup.component';
+import { NotificationProfile } from '../../classes/notification-profile';
 
 @Component({
   templateUrl: './review-notification-popup.component.html',
@@ -16,10 +17,12 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
   public notificationItem!: NotificationItem;
   public userProfilePopup!: NotificationUserProfilePopupComponent;
   public reviewProfilePopup!: NotificationUserProfilePopupComponent;
+  public newNoteAdded!: boolean;
+  public newNote!: string;
 
+  @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('userProfileContainer', { read: ViewContainerRef }) userProfilePopupContainer!: ViewContainerRef;
   @ViewChild('reviewProfileContainer', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
-  @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
 
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
     super(lazyLoadingService)
@@ -31,9 +34,7 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
     window.addEventListener('mousedown', this.mousedown);
 
     this.dataService.get<NotificationReview>('api/Notifications/Review', [
-      { key: 'productId', value: this.notificationItem.productId },
-      { key: 'type', value: this.notificationItem.type },
-      { key: 'archiveDate', value: this.notificationItem.archiveDate ? this.notificationItem.archiveDate : '' }
+      { key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }
     ]).subscribe((notificationReview: NotificationReview) => {
       this.notification = notificationReview;
     });
@@ -97,13 +98,28 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
   }
 
 
+
+
+
+  addNote() {
+    this.newNoteAdded = true;
+    this.notification.employees.push(new NotificationProfile());
+    this.employeeIndex = this.notification.employees.length - 1;
+    window.setTimeout(() => {
+      this.notes.nativeElement.focus();
+    })
+  }
+
+
+
+
   onEscape(): void {
     if (this.userProfilePopupContainer.length > 0 || this.reviewProfilePopupContainer.length > 0) {
       if (this.userProfilePopupContainer.length > 0) this.userProfilePopup.close();
       if (this.reviewProfilePopupContainer.length > 0) this.reviewProfilePopup.close();
 
     } else {
-      super.onEscape();
+      this.fade();
     }
   }
 
@@ -111,27 +127,35 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
   close(): void {
-    // If no notes were written when this form was opened
-    if (!this.notification.employees) {
+    if (
+      // If notes were never writen yet on this form and now
+      // notes are finally being writen for the first time
+      (this.newNote != null &&
+        // and the text area actually has text writen in it
+        // and not just empty spaces
+        this.newNote.trim().length > 0) ||
 
-      // And now notes have been written
-      if (this.notes.nativeElement.value.trim().length > 0) {
-        this.dataService.post('api/Notifications/PostNote', {
-          productId: this.notificationItem.productId,
-          notificationType: this.notificationItem.type,
-          archiveDate: this.notificationItem.archiveDate,
-          text: this.notes.nativeElement.value.trim()
-        }).subscribe();
-      }
+      // Or if notes had already been previously writen and the (Add Note) button was pressed
+      (this.newNoteAdded &&
+        // and the text area actually has text writen in it
+        this.notification.employees[this.notification.employees.length - 1].text != null &&
+        // and not just empty spaces
+        this.notification.employees[this.notification.employees.length - 1].text.trim().length > 0)) {
+
+      // Then save the new note
+      this.dataService.post('api/Notifications/PostNote', {
+        notificationGroupId: this.notificationItem.notificationGroupId,
+        note: this.newNote != null ? this.newNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
+      }).subscribe();
     }
 
     // If this is a new notification and it has NOT been sent to archive yet
     if (this.notificationItem.isNew) {
+
       // Send it to archive
       this.dataService.put('api/Notifications/Archive',
         {
-          productId: this.notificationItem.productId,
-          notificationType: this.notificationItem.type
+          notificationGroupId: this.notificationItem.notificationGroupId
         }).subscribe();
     }
 

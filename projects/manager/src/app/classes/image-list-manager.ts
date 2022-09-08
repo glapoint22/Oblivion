@@ -21,7 +21,7 @@ export class ImageListManager extends ListManager {
             this.editedItem = (this.sourceList[listItemIndex] as ImageItem) = {
                 id: this.editedItem.id,
                 name: this.editedItem.name,
-                thumbnail: (this.editedItem as ImageItem).thumbnail,
+                image: (this.editedItem as ImageItem).image,
                 case: this.editedItem.case
             }
         }

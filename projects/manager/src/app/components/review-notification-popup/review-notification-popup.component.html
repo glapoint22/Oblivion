@@ -10,9 +10,9 @@
         <!-- Product -->
         <div class="product-container">
             <div class="product-thumbnail-container">
-                <img [src]="'images/' + notificationItem.thumbnail">
+                <img [src]="'images/' + notificationItem.image">
             </div>
-            <div class="product-name">{{notificationItem.productName}}</div>
+            <div class="product-name">{{notificationItem.name}}</div>
         </div>
 
 
@@ -21,45 +21,47 @@
             {{notificationItem.name}}
         </div>
 
-
+        
+        <!-- User -->
         <div class="label">User Comment:</div>
         <div class="info-box">
 
+            <ng-container *ngIf="notification">
             
-            <div class="info-bar">
+                <div class="info-bar">
 
-                <div>
-                    <counter *ngIf="notification && notification.users.length > 1" [itemCount]="notification ? notification.users.length : 1" (onItemChange)="userIndex = $event"></counter>
-                </div>
-
-
-                <div class="profile-container">
-                    <!-- Date -->
-                    <div *ngIf="notification" class="date">
-                        {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
+                    <div class="counter-container">
+                        <counter *ngIf="notification.users.length > 1" [itemCount]="notification.users.length" (onItemChange)="userIndex = $event"></counter>
                     </div>
-    
-                    <!-- Image -->
-                    <div class="profile-image-container">
 
-                        <div class="profile-popup-container">
-                            <ng-template #userProfileContainer></ng-template>
+
+                    <div class="profile-container">
+                        <!-- Date -->
+                        <div class="date">
+                            {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
+        
+                        <!-- Image -->
+                        <div class="profile-image-container">
 
-                        <img *ngIf="notification"
-                            style="cursor: pointer;"
-                            (mousedown)="reviewProfilePopupContainer.length > 0 ? reviewProfilePopup.close() : null; $event.stopPropagation()"
-                            [src]="'images/' + notification.users[userIndex].image"
-                            (click)="openUserProfilePopup(notification.users[userIndex])"
-                            [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
+                            <div class="profile-popup-container">
+                                <ng-template #userProfileContainer></ng-template>
+                            </div>
+
+                            <img style="cursor: pointer;"
+                                (mousedown)="reviewProfilePopupContainer.length > 0 ? reviewProfilePopup.close() : null; $event.stopPropagation()"
+                                [src]="'images/' + notification.users[userIndex].image"
+                                (click)="openUserProfilePopup(notification.users[userIndex])"
+                                [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
+                        </div>
                     </div>
                 </div>
-            </div>
-        
-            <!-- User Comment -->
-            <div *ngIf="notification" class="user-comment">
-                {{notification.users[userIndex].text}}
-            </div>
+            
+                <!-- User Comment -->
+                <div class="user-comment">
+                    {{notification.users[userIndex].text}}
+                </div>
+            </ng-container>
         </div>
 
 
@@ -68,78 +70,102 @@
         <div class="label">Review:</div>
         <div class="review-info-box">
 
-            <div class="review-info-bar">
+            <ng-container *ngIf="notification">
 
-                <div class="review-title-container">
-                    <div class="review-title-label">Title:</div>
-                    <div *ngIf="notification" class="review-title" [title]="notification.reviewWriter.reviewTitle">
-                        {{notification.reviewWriter.reviewTitle}}
-                    </div>
-                </div>
+                <div class="review-info-bar">
 
-                <div class="review-writer-info-container">
-                    <!-- Date -->
-                    <div *ngIf="notification" class="date">
-                        {{notification.reviewWriter.date | date: 'MMM d, y, h:mm a'}}
+                    <div class="review-title-container">
+                        <div class="review-title-label">Title:</div>
+                        <div class="review-title" [title]="notification.reviewWriter.reviewTitle">
+                            {{notification.reviewWriter.reviewTitle}}
+                        </div>
                     </div>
 
-                    <!-- Image -->
-                    <div class="profile-image-container">
-
-                        <div class="review-profile-popup-container">
-                            <ng-template #reviewProfileContainer></ng-template>
+                    <div class="review-writer-info-container">
+                        <!-- Date -->
+                        <div class="date">
+                            {{notification.reviewWriter.date | date: 'MMM d, y, h:mm a'}}
                         </div>
 
-                        <img *ngIf="notification"
-                            style="cursor: pointer;"
-                            (mousedown)="userProfilePopupContainer.length > 0 ? userProfilePopup.close() : null; $event.stopPropagation()"
-                            [src]="'images/' + notification.reviewWriter.image"
-                            (click)="openReviewProfilePopup(notification.reviewWriter)"
-                            [title]="notification.reviewWriter.firstName + ' ' + notification.reviewWriter.lastName">
+                        <!-- Image -->
+                        <div class="profile-image-container">
+
+                            <div class="review-profile-popup-container">
+                                <ng-template #reviewProfileContainer></ng-template>
+                            </div>
+
+                            <img style="cursor: pointer;"
+                                (mousedown)="userProfilePopupContainer.length > 0 ? userProfilePopup.close() : null; $event.stopPropagation()"
+                                [src]="'images/' + notification.reviewWriter.image"
+                                (click)="openReviewProfilePopup(notification.reviewWriter)"
+                                [title]="notification.reviewWriter.firstName + ' ' + notification.reviewWriter.lastName">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Review -->
-            <div *ngIf="notification" class="user-comment">
-                {{notification.reviewWriter.text}}
-            </div>
+                <!-- Review -->
+                <div class="user-comment">
+                    {{notification.reviewWriter.text}}
+                </div>
+            </ng-container>
         </div>
 
 
         <!-- Employee -->
-        <div class="label">Notes:</div>
-        <div class="info-box">
-
-            <div *ngIf="notification && notification.employees[employeeIndex]" class="info-bar">
-
-                <!-- Counter -->
-                <div>
-                    <counter *ngIf="notification && notification.employees.length > 1" [itemCount]="notification ? notification.employees.length : 1" (onItemChange)="employeeIndex = $event"></counter>
-                </div>
-
-                <div class="profile-container">
-                    <!-- Date -->
-                    <div class="date">
-                        {{notification.employees[employeeIndex].date | date: 'MMM d, y, h:mm a'}}
-                    </div>
-
-                    <!-- Image -->
-                    <div class="profile-image-container">
-                        <img [src]="'images/' + notification.employees[employeeIndex].image" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName">
-                    </div>
-                </div>
+        <div class="label-container">
+            <div class="label">Notes:</div>
+            <div *ngIf="notification && notification.employees.length > 0" class="notes-button-container">
+                <icon-button [icon]="'fa-solid fa-file-lines'"
+                             [title]="'Add New Note'"
+                             [fontSize]="'16'"
+                             [isDisabled]="newNoteAdded"
+                             (onClick)="addNote()">
+                </icon-button>
             </div>
-
-            <!-- Notes -->
-            <textarea #notes *ngIf="notification" [ngStyle]="{'height': notification.employees[employeeIndex] ? '98px' : '128px'}">{{notification.employees[employeeIndex] ? notification.employees[employeeIndex].text : null}}</textarea>
         </div>
+        
+        <div class="info-box">
+            <ng-container *ngIf="notification">
+                <div *ngIf="notification.employees.length > 0" class="info-bar">
+
+                    <!-- Counter -->
+                    <div class="counter-container">
+                        <counter *ngIf="notification.employees.length > 1"
+                                 [itemCount]="notification.employees.length"
+                                 (onItemChange)="employeeIndex = $event"
+                                 [currentIndex]="employeeIndex">
+                        </counter>
+                    </div>
+
+                    <div class="profile-container">
+                        <!-- Date -->
+                        <div *ngIf="notification.employees[employeeIndex].date != null" class="date">
+                            {{notification.employees[employeeIndex].date | date: 'MMM d, y, h:mm a'}}
+                        </div>
+
+                        <!-- Image -->
+                        <div *ngIf="notification.employees[employeeIndex].image != null" class="profile-image-container">
+                            <img [src]="'images/' + notification.employees[employeeIndex].image" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <textarea #notes *ngIf="notification.employees.length == 0 || notification.employees[employeeIndex].date == null" [ngStyle]="{'height': notification.employees[employeeIndex] ? '94px' : '128px'}" (input)="notification.employees.length == 0 ? newNote = notes.value : notification.employees[employeeIndex].text = notes.value"></textarea>
+            
+                
+                <div *ngIf="notification.employees.length > 0 && notification.employees[employeeIndex].date != null" class="user-comment">
+                    {{notification.employees[employeeIndex].text}}
+                </div>
+            </ng-container>
+        </div>
+        
 
 
         <!-- Buttons -->
         <div class="button-container">
-            <button class="dark-button" (click)="close()">Close</button>
-            <button class="gold-button">Disable Product</button>
+            <button class="dark-button" (click)="close()">Remove Review</button>
+            <button class="gold-button">Archive</button>
         </div>
     </div>
 </div>

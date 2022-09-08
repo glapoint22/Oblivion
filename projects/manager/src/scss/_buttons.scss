@@ -8,6 +8,7 @@
     margin-left: 10px;
     background: linear-gradient(#fedb7d, #c28f06);
     outline: none;
+    font-weight: bold;
 
     &:hover {
         background: linear-gradient(lighten(#fedb7d, 6), lighten(#c28f06, 6));

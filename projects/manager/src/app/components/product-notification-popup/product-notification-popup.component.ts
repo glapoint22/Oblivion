@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/cor
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { NotificationItem } from '../../classes/notification-item';
 import { NotificationProduct } from '../../classes/notification-product';
+import { NotificationProfile } from '../../classes/notification-profile';
 import { NotificationUserProfilePopupComponent } from '../notification-user-profile-popup/notification-user-profile-popup.component';
 
 @Component({
@@ -14,9 +15,11 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   public notification!: NotificationProduct;
   public notificationItem!: NotificationItem;
   public notificationUserProfilePopup!: NotificationUserProfilePopupComponent;
+  public newNoteAdded!: boolean;
+  public newNote!: string;
 
-  @ViewChild('profilePopupContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('profilePopupContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
 
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
     super(lazyLoadingService)
@@ -29,9 +32,7 @@ export class ProductNotificationPopupComponent extends LazyLoad {
     window.addEventListener('mousedown', this.mousedown);
 
     this.dataService.get<NotificationProduct>('api/Notifications/Product', [
-      { key: 'productId', value: this.notificationItem.productId },
-      { key: 'type', value: this.notificationItem.type },
-      { key: 'archiveDate', value: this.notificationItem.archiveDate ? this.notificationItem.archiveDate : '' }
+      { key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }
     ]).subscribe((notificationProduct: NotificationProduct) => {
       this.notification = notificationProduct;
     });
@@ -70,41 +71,66 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   }
 
 
+
+
+  addNote() {
+    this.newNoteAdded = true;
+    this.notification.employees.push(new NotificationProfile());
+    this.employeeIndex = this.notification.employees.length - 1;
+    window.setTimeout(() => {
+      this.notes.nativeElement.focus();
+    })
+  }
+
+
+
+
+
+
   onEscape(): void {
     if (this.profilePopupContainer.length > 0) {
       this.notificationUserProfilePopup.close();
     } else {
-      super.onEscape();
+      this.fade();
     }
   }
 
 
 
 
-  close(): void {
-    // If no notes were written when this form was opened
-    if (!this.notification.employees) {
 
-      // And now if new notes have been written
-      if (this.notes.nativeElement.value.trim().length > 0) {
-        this.dataService.post('api/Notifications/PostNote', {
-          productId: this.notificationItem.productId,
-          notificationType: this.notificationItem.type,
-          archiveDate: this.notificationItem.archiveDate,
-          text: this.notes.nativeElement.value.trim()
-        }).subscribe();
-      }
+
+  close(): void {
+    if (
+      // If notes were never writen yet on this form and now
+      // notes are finally being writen for the first time
+      (this.newNote != null &&
+        // and the text area actually has text writen in it
+        // and not just empty spaces
+        this.newNote.trim().length > 0) ||
+
+      // Or if notes had already been previously writen and the (Add Note) button was pressed
+      (this.newNoteAdded &&
+        // and the text area actually has text writen in it
+        this.notification.employees[this.notification.employees.length - 1].text != null &&
+        // and not just empty spaces
+        this.notification.employees[this.notification.employees.length - 1].text.trim().length > 0)) {
+
+      // Then save the new note
+      this.dataService.post('api/Notifications/PostNote', {
+        notificationGroupId: this.notificationItem.notificationGroupId,
+        note: this.newNote != null ? this.newNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
+      }).subscribe();
     }
 
     // If this is a new notification and it has NOT been sent to archive yet
     if (this.notificationItem.isNew) {
 
       // Send it to archive
-      // this.dataService.put('api/Notifications/Product/Archive',
-      //   {
-      //     productId: this.notificationItem.productId,
-      //     notificationType: this.notificationItem.type
-      //   }).subscribe();
+      this.dataService.put('api/Notifications/Archive',
+        {
+          notificationGroupId: this.notificationItem.notificationGroupId
+        }).subscribe();
     }
 
     // Now close

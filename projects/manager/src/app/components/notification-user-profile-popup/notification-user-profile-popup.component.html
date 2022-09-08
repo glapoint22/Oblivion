@@ -5,17 +5,17 @@
         <div style="display: flex;">
 
             <div class="profile-image-container" 
-            [ngStyle]="{'background': user.senderName ? 'none' : '#555555',
-            'outline': user.senderName ? 'none' : '1px solid #868686',
-            'margin-top': user.senderName ? '-1px' : '2px'
+            [ngStyle]="{'background': user.userName ? 'none' : '#555555',
+            'outline': user.userName ? 'none' : '1px solid #868686',
+            'margin-top': user.userName ? '-1px' : '2px'
         
         }">
            
                 <img 
                 
-                [src]="user.senderName ? 'assets/message-notification.png' : 'images/' + user.image"
+                [src]="user.userName ? 'assets/message-notification.png' : 'images/' + user.image"
                 
-                [ngStyle]="{'border-radius': user.senderName ? 'none' : '50%'}"
+                [ngStyle]="{'border-radius': user.userName ? 'none' : '50%'}"
                 >
             </div>
 
@@ -23,19 +23,19 @@
             <div style="font-size: 12px; color: #ffba00; margin-left: 8px; margin-bottom: 15px; white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;">
-                <span style="margin-right: 3px;">{{user.senderName ? user.senderName : user.firstName}}</span>
+                <span style="margin-right: 3px;">{{user.userName ? user.userName : user.firstName}}</span>
                 <span>{{user.lastName}}</span>
                 <div style="margin-bottom: 3px;"></div>
 
                 <ng-container *ngIf="!isReview">
 
-                    <ng-container *ngIf="user.senderName">
+                    <ng-container *ngIf="user.userName">
                         <div style="color: #b0b0b0; white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;" [title]="user.email">{{user.email}}</div>
                     </ng-container>
                     
-                    <ng-container *ngIf="!user.senderName">
+                    <ng-container *ngIf="!user.userName">
                         <span style="color: #b0b0b0; margin-right: 4px;">Noncompliant Strikes:</span>
                         <span>{{user.noncompliantStrikes}}</span>
                     </ng-container>
@@ -68,7 +68,7 @@
 
     
     <!-- Arrow -->
-    <div class="popup-arrow-container" [ngStyle]="{'left': isReview ? '179px' : '170px'}">
+    <div class="popup-arrow-container">
         <div class="popup-arrow-down-Border"></div>
         <div class="popup-arrow-down-background"></div>
     </div>

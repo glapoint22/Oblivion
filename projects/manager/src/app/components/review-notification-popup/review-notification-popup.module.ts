@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CounterModule } from '../counter/counter.module';
 import { ReviewNotificationPopupComponent } from './review-notification-popup.component';
+import { IconButtonModule } from '../icon-button/icon-button.module';
 
 
 
@@ -9,7 +10,8 @@ import { ReviewNotificationPopupComponent } from './review-notification-popup.co
   declarations: [ReviewNotificationPopupComponent],
   imports: [
     CommonModule,
-    CounterModule
+    CounterModule,
+    IconButtonModule
   ],
   exports: [ReviewNotificationPopupComponent]
 })

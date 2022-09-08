@@ -1,12 +1,11 @@
 import { NotificationUser } from "./notification-user";
 
 export class NotificationMessage extends NotificationUser {
-    messageId!: number;
-    senderName!: string;
-    employeeReplyId!: number;
+    notificationId!: number;
+    userName!: string;
     employeeFirstName!: string;
     employeeLastName!: string;
     employeeImage!: string;
-    replyDate!: string;
-    reply!: string;
+    employeeMessageDate!: string;
+    employeeMessage!: string;
 }

@@ -1,4 +1,5 @@
-<button [title]="title"
+<button class="icon-button"
+        [title]="title"
         (mousedown)="$event.stopPropagation()"
         (click)="!isDisabled ? onClick.next() : null"
         [disabled]="isDisabled">
