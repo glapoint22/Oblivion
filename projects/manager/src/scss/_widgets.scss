@@ -296,6 +296,7 @@ body {
     &:first-child {
         width: 20px;
         background: #383838;
+        flex-shrink: 0;
 
         &:hover {
             background: #3d3d3d;

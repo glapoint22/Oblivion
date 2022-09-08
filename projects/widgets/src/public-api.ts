@@ -35,9 +35,7 @@ export * from './lib/classes/widget-data';
 export * from './lib/classes/widget-enums';
 export * from './lib/classes/breakpoint';
 export * from './lib/classes/breakpoint-value';
-export * from './lib/classes/query-group';
-export * from './lib/classes/query-row';
-export * from './lib/classes/query';
+
 
 // Components
 export * from './lib/components/button-widget/button-widget.component';

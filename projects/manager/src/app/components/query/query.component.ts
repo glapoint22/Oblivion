@@ -1,20 +1,28 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { Query, QueryGroup, QueryRow } from 'widgets';
+import { Component, Input } from '@angular/core';
+import { Query } from '../../classes/query';
+import { QueryElement } from '../../classes/query-element';
+import { QueryGroup } from '../../classes/query-group';
+import { QueryRow } from '../../classes/query-row';
 
 @Component({
   selector: 'query',
   templateUrl: './query.component.html',
   styleUrls: ['./query.component.scss']
 })
-export class QueryComponent implements OnChanges {
+export class QueryComponent {
   @Input() query!: Query;
-  @Input() queryGroup!: QueryGroup;
-  @Output() onRowSelectionChange: EventEmitter<QueryRow> = new EventEmitter();
-  @Output() onGroupSelectionChange: EventEmitter<QueryGroup> = new EventEmitter();
+  public QueryRow = QueryRow;
+  public QueryGroup = QueryGroup;
 
-  public ngOnChanges(): void {
-    if (this.queryGroup) {
-      this.query.queryGroup = this.queryGroup;
-    }
+  isQueryRow(element: QueryElement): boolean {
+    return element instanceof QueryRow;
+  }
+
+  isQueryGroup(element: QueryElement): boolean {
+    return element instanceof QueryGroup;
+  }
+
+  getGroup(element: QueryElement): QueryGroup {
+    return element as QueryGroup;
   }
 }

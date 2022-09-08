@@ -1,4 +1,4 @@
-<ng-container *ngFor="let queryRow of query.queryRows">
-    <query-row [queryRow]="queryRow" [query]="query" (onRowSelectionChange)="onRowSelectionChange.emit($event)"
-        (onGroupSelectionChange)="onGroupSelectionChange.emit($event)"></query-row>
+<ng-container *ngFor="let element of query.elements">
+    <query-row *ngIf="isQueryRow(element)" [queryRow]="element" [parent]="this.query"></query-row>
+    <query-group *ngIf="isQueryGroup(element)" [queryGroup]="getGroup(element)" [parent]="this.query"></query-group>
 </ng-container>

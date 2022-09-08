@@ -1,125 +1,113 @@
-import { Component } from '@angular/core';
-import { ComparisonOperatorType, LogicalOperatorType, Query, QueryGroup, QueryRow, QueryType } from 'widgets';
+import { Component, OnInit } from '@angular/core';
+import { Query } from '../../classes/query';
+import { QueryElement } from '../../classes/query-element';
+import { QueryGroup } from '../../classes/query-group';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 
 @Component({
   selector: 'query-builder',
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss']
 })
-export class QueryBuilderComponent {
-  // public query: Query = {
-  //   queryRows: [
-  //     {
-  //       queryType: QueryType.None
-  //     }
-  //   ]
-  // }
+export class QueryBuilderComponent implements OnInit {
+  public query: Query = new Query();
 
-  public selectedRows: Array<QueryRow> = [];
-  public selectedGroups: Array<QueryGroup> = [];
+  constructor(public queryBuilderService: QueryBuilderService) { }
 
 
-  public query: Query = {
-    queryRows: [
-      {
-        queryGroup: {
-          query: {
-            queryRows: [
-              {
-                queryType: QueryType.Price,
-                comparisonOperatorType: ComparisonOperatorType.GreaterThanOrEqual,
-                price: 5.99
-              },
-              {
-                logicalOperatorType: LogicalOperatorType.And
-              },
-              {
-                queryType: QueryType.Date,
-                comparisonOperatorType: ComparisonOperatorType.GreaterThan,
-                date: new Date('09/01/2022')
-              }
-            ]
-          }
-        }
-      },
-      {
-        logicalOperatorType: LogicalOperatorType.Or
-      },
-      {
-        queryGroup: {
-          query: {
-            queryRows: [
-              {
-                queryType: QueryType.Niche,
-                comparisonOperatorType: ComparisonOperatorType.Equal,
-                item: {
-                  id: 2,
-                  name: 'Recipes'
-                }
-              },
-              {
-                logicalOperatorType: LogicalOperatorType.And
-              },
-              {
-                queryType: QueryType.Rating,
-                comparisonOperatorType: ComparisonOperatorType.GreaterThanOrEqual,
-                integer: 3
-              }
-            ]
-          }
-        }
-      }
-    ]
-  }
-
-
-  onRowSelectionChange(row: QueryRow) {
-    if (row.selected) {
-      this.selectedRows.push(row);
-    } else {
-      const index = this.selectedRows.findIndex(x => x == row);
-
-      if (index != -1) this.selectedRows.splice(index, 1);
-    }
+  // ---------------------------------------------------------------- Ng On Init -------------------------------------------------------------------
+  public ngOnInit(): void {
+    this.queryBuilderService.getQueryLists();
   }
 
 
 
-  onGroupSelectionChange(group: QueryGroup) {
-    if (group.selected) {
-      this.selectedGroups.push(group);
-      this.unselectRows(group);
-    } else {
-      const index = this.selectedGroups.findIndex(x => x == group);
 
-      if (index != -1) this.selectedGroups.splice(index, 1);
-    }
+  // ----------------------------------------------------------- Is Group Icon Disabled ------------------------------------------------------------
+  isGroupIconDisabled(): boolean {
+    if (this.queryBuilderService.selectedQueryElements.length <= 1) return true;
+
+    return !this.queryBuilderService.selectedQueryElements.every(x => x.parent == this.queryBuilderService.selectedQueryElements[0].parent);
   }
 
 
 
-  isGroupIconDisabled() {
-    if ((this.selectedRows.length <= 1 && this.selectedGroups.length <= 1) ||
-      this.selectedRows.length >= 1 && this.selectedGroups.length >= 1) return true;
 
-    return !this.selectedRows.every(x => x.query == this.selectedRows[0].query);
+
+
+
+  // ---------------------------------------------------------- Is Ungroup Icon Disabled -----------------------------------------------------------
+  isUngroupIconDisabled(): boolean {
+    if (this.queryBuilderService.selectedQueryElements.length == 0) return true;
+
+    return !this.queryBuilderService.selectedQueryElements.every(x => x instanceof QueryGroup);
   }
 
 
 
-  unselectRows(group: QueryGroup) {
-    group.query.queryRows.forEach((row: QueryRow) => {
-      if (row.queryGroup) {
-        this.unselectRows(row.queryGroup);
-      } else {
-        const index = this.selectedRows.findIndex(x => x == row);
 
-        if (index != -1) {
-          this.selectedRows[index].selected = false;
-          this.selectedRows.splice(index, 1);
-        }
-      }
+
+
+
+  // ------------------------------------------------------------------- Add Row -------------------------------------------------------------------
+  public onAddRowClick(): void {
+    const parent = this.queryBuilderService.selectedQueryElements[0].parent;
+    
+    parent.addRow();
+    this.queryBuilderService.selectedQueryElements = [];
+  }
+
+
+
+
+
+
+
+  // -------------------------------------------------------------- On Group Click --------------------------------------------------------------
+  public onGroupClick(): void {
+    const parent = this.queryBuilderService.selectedQueryElements[0].parent;
+    parent.createGroup();
+
+    this.queryBuilderService.selectedQueryElements = [];
+  }
+
+
+
+
+
+  // ------------------------------------------------------------- On Ungroup Click -------------------------------------------------------------
+  public onUngroupClick(): void {
+    const groups = this.queryBuilderService.selectedQueryElements.filter((value, index, self) => {
+      return self.findIndex(x => x.parent == value.parent) == index;
     });
+
+    groups.forEach((group: QueryElement) => {
+      group.parent.ungroupElements();
+    });
+
+    this.queryBuilderService.selectedQueryElements = [];
   }
 
+
+
+
+
+
+  // ------------------------------------------------------------- On Delete Click --------------------------------------------------------------
+  onDeleteClick() {
+    const elements = this.queryBuilderService.selectedQueryElements.filter((value, index, self) => {
+      return self.findIndex(x => x.parent == value.parent) == index;
+    });
+
+    elements.forEach((element: QueryElement) => {
+      element.parent.deleteElements();
+    });
+
+    this.queryBuilderService.selectedQueryElements = [];
+
+
+    if (this.query.elements.length == 0) {
+      this.query = new Query();
+    }
+  }
 }
