@@ -9,7 +9,7 @@
 
                 <!-- Delete -->
                 <icon-button [icon]="'fa-trash-alt fas'" [title]="'Delete'" (click)="onDeleteClick()"
-                    [isDisabled]="queryBuilderService.selectedQueryRows.length == 0"></icon-button>
+                    [isDisabled]="queryBuilderService.selectedQueryElements.length == 0"></icon-button>
 
                 <!-- Ungroup -->
                 <icon-button [icon]="'fa-solid fa-object-ungroup'" [title]="'Ungroup'"
@@ -21,7 +21,7 @@
 
                 <!-- Add -->
                 <icon-button [icon]="'fas fa-plus-circle'" [title]="'Add'" (click)="onAddRowClick()"
-                    [isDisabled]="queryBuilderService.selectedQueryRows.length != 1">
+                    [isDisabled]="queryBuilderService.selectedQueryElements.length != 1">
                 </icon-button>
             </div>
         </div>

@@ -146,7 +146,7 @@ export enum QueryType {
     None,
     Category,
     Niche,
-    Subgroup,
+    ProductGroup,
     Price,
     Rating,
     KeywordGroup,

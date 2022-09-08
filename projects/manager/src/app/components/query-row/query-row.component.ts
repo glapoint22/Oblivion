@@ -1,36 +1,37 @@
 import { KeyValue } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, QueryType } from '../../classes/enums';
 import { Item } from '../../classes/item';
+import { Query } from '../../classes/query';
 import { QueryRow } from '../../classes/query-row';
-import { SelectableQueryRow } from '../../classes/selectable-query-row';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
 import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 import { PricePopupComponent } from '../price-popup/price-popup.component';
-import { QueryComponent } from '../query/query.component';
 
 @Component({
   selector: 'query-row',
   templateUrl: './query-row.component.html',
   styleUrls: ['./query-row.component.scss']
 })
-export class QueryRowComponent implements SelectableQueryRow {
+export class QueryRowComponent implements OnChanges {
   @Input() queryRow!: QueryRow;
-  @Input() parentQuery!: QueryComponent;
+  @Input() parent!: Query;
   public QueryType = QueryType;
   public LogicalOperatorType = LogicalOperatorType;
   public AutoQueryType = AutoQueryType;
-  public get selected() : boolean {
-    return this.queryRow.selected!;
-  }
-  public set selected(v : boolean) {
-    this.queryRow.selected = v;
-  }
 
   constructor(private lazyLoadingService: LazyLoadingService, public queryBuilderService: QueryBuilderService) { }
 
+
+  // ---------------------------------------------------------------- Ng On Changes ----------------------------------------------------------------
+  public ngOnChanges(): void {
+    this.queryRow.parent = this.parent;
+  }
+
+
+  
   // ----------------------------------------------------------- Get Comparison Operator -----------------------------------------------------------
   public getComparisonOperator(comparisonOperatorType: ComparisonOperatorType): string {
     let comparisonOperator!: string;
@@ -89,7 +90,7 @@ export class QueryRowComponent implements SelectableQueryRow {
           break;
 
         // Subgroup
-        case QueryType.Subgroup:
+        case QueryType.ProductGroup:
           this.queryRow.item = this.queryBuilderService.subgroupsList[0];
           break;
 
@@ -164,7 +165,7 @@ export class QueryRowComponent implements SelectableQueryRow {
 
 
       // Subgroup
-      case QueryType.Subgroup:
+      case QueryType.ProductGroup:
         this.openDropdownList(valueButton, this.queryBuilderService.subgroupsList, (item: Item) => {
           this.queryRow.item = item;
         });

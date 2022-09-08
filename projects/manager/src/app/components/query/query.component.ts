@@ -1,6 +1,8 @@
-import { Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Query } from '../../classes/query';
-import { SelectableQueryRow } from '../../classes/selectable-query-row';
+import { QueryElement } from '../../classes/query-element';
+import { QueryGroup } from '../../classes/query-group';
+import { QueryRow } from '../../classes/query-row';
 
 @Component({
   selector: 'query',
@@ -9,5 +11,18 @@ import { SelectableQueryRow } from '../../classes/selectable-query-row';
 })
 export class QueryComponent {
   @Input() query!: Query;
-  @ViewChildren('row') queryRows!: QueryList<SelectableQueryRow>;
+  public QueryRow = QueryRow;
+  public QueryGroup = QueryGroup;
+
+  isQueryRow(element: QueryElement): boolean {
+    return element instanceof QueryRow;
+  }
+
+  isQueryGroup(element: QueryElement): boolean {
+    return element instanceof QueryGroup;
+  }
+
+  getGroup(element: QueryElement): QueryGroup {
+    return element as QueryGroup;
+  }
 }

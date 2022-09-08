@@ -4,14 +4,15 @@ import { DataService } from 'common';
 import { forkJoin } from 'rxjs';
 import { QueryType, ComparisonOperatorType, AutoQueryType, LogicalOperatorType } from '../../classes/enums';
 import { Item } from '../../classes/item';
-import { SelectableQueryRow } from '../../classes/selectable-query-row';
+import { QueryElement } from '../../classes/query-element';
+import { QueryGroup } from '../../classes/query-group';
 import { InputService } from '../input/input.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QueryBuilderService {
-  public selectedQueryRows: Array<SelectableQueryRow> = [];
+  public selectedQueryElements: Array<QueryElement> = [];
   public categoriesList!: Array<Item>;
   public nichesList!: Array<Item>;
   public keywordGroupsList!: Array<Item>;
@@ -30,8 +31,8 @@ export class QueryBuilderService {
       value: QueryType.Niche
     },
     {
-      key: 'Subgroup',
-      value: QueryType.Subgroup
+      key: 'Product Group',
+      value: QueryType.ProductGroup
     },
     {
       key: 'Price',
@@ -150,42 +151,71 @@ export class QueryBuilderService {
   constructor(private inputService: InputService, private dataService: DataService) { }
 
 
-  // ----------------------------------------------------------------- On Row Click ----------------------------------------------------------------
-  public onQueryRowClick(queryRow: SelectableQueryRow): void {
+
+  // ------------------------------------------------------------- On Query Element Click ----------------------------------------------------------
+  public onQueryElementClick(queryElement: QueryElement): void {
     // Ctrl key is down
     if (this.inputService.ctrlKeydown) {
 
       // Is NOT selected
-      if (!queryRow.selected) {
-        queryRow.selected = true;
-        this.selectedQueryRows.push(queryRow);
+      if (!queryElement.selected) {
+        if (queryElement instanceof QueryGroup) {
+
+          // This will unselect all children of this group
+          for (let i = 0; i < this.selectedQueryElements.length; i++) {
+            const selectedQueryElement = this.selectedQueryElements[i];
+
+            if (this.isParent(queryElement, selectedQueryElement)) {
+              selectedQueryElement.selected = false;
+              this.selectedQueryElements.splice(i, 1);
+              i--;
+            }
+          }
+        }
+
+        // This will prevent selecting an element if any of its parents are already selected
+        for (let i = 0; i < this.selectedQueryElements.length; i++) {
+          const currentElement = this.selectedQueryElements[i];
+
+          // If current element is a query group
+          if (currentElement instanceof QueryGroup) {
+            const queryGroup = currentElement as QueryGroup;
+
+            if (this.isParent(queryGroup, queryElement)) return;
+          }
+        }
+
+
+
+        queryElement.selected = true;
+        this.selectedQueryElements.push(queryElement);
 
         // Is selected
       } else {
-        const index = this.selectedQueryRows.findIndex(x => x == queryRow);
+        const index = this.selectedQueryElements.findIndex(x => x == queryElement);
 
-        queryRow.selected = false;
-        this.selectedQueryRows.splice(index, 1);
+        queryElement.selected = false;
+        this.selectedQueryElements.splice(index, 1);
       }
 
       // Ctrl key is not down
     } else {
 
       // Is NOT selected
-      if (!queryRow.selected) {
-        this.selectedQueryRows.forEach(x => x.selected = false);
-        queryRow.selected = true;
-        this.selectedQueryRows = [queryRow];
+      if (!queryElement.selected) {
+        this.selectedQueryElements.forEach(x => x.selected = false);
+        queryElement.selected = true;
+        this.selectedQueryElements = [queryElement];
 
         // Is Selected
       } else {
-        if (this.selectedQueryRows.length > 1) {
-          this.selectedQueryRows.forEach(x => x.selected = false);
-          queryRow.selected = true;
-          this.selectedQueryRows = [queryRow];
+        if (this.selectedQueryElements.length > 1) {
+          this.selectedQueryElements.forEach(x => x.selected = false);
+          queryElement.selected = true;
+          this.selectedQueryElements = [queryElement];
         } else {
-          queryRow.selected = false;
-          this.selectedQueryRows = [];
+          queryElement.selected = false;
+          this.selectedQueryElements = [];
         }
       }
     }
@@ -197,6 +227,8 @@ export class QueryBuilderService {
 
   // ---------------------------------------------------------------- Get Query Lists --------------------------------------------------------------
   public getQueryLists(): void {
+    if (this.categoriesList && this.categoriesList.length > 0) return;
+
     const categories$ = this.dataService.get('api/Categories');
     const niches$ = this.dataService.get('api/Niches');
     const KeywordGroups$ = this.dataService.get('api/Keywords');
@@ -209,5 +241,21 @@ export class QueryBuilderService {
         this.keywordGroupsList = results[2];
         this.subgroupsList = results[3];
       });
+  }
+
+
+
+
+
+  // ------------------------------------------------------------------- Is Parent -----------------------------------------------------------------
+  private isParent(targetParent: QueryElement, element: QueryElement): boolean {
+    let parent: any = element.parent;
+
+    while (parent != null) {
+      if (parent == targetParent) return true;
+      parent = parent.parent;
+    }
+
+    return false;
   }
 }

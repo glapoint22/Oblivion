@@ -1,16 +1,17 @@
 import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, QueryType } from "./enums";
 import { Item } from "./item";
-import { QueryGroup } from "./query-group";
+import { Query } from "./query";
+import { QueryElement } from "./query-element";
 
-export class QueryRow {
-    public queryGroup?: QueryGroup;
-    public queryType?: QueryType;
+export class QueryRow implements QueryElement {
     public comparisonOperatorType?: ComparisonOperatorType;
     public item?: Item;
     public integer?: number;
     public date?: Date;
     public price?: number;
-    public auto?: AutoQueryType; 
-    public logicalOperatorType?: LogicalOperatorType;
-    public selected?: boolean;
+    public auto?: AutoQueryType;
+    public selected!: boolean;
+    public parent!: Query;
+
+    constructor(public queryType?: QueryType, public logicalOperatorType?: LogicalOperatorType) { }
 }

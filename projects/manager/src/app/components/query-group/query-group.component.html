@@ -1,5 +1,5 @@
 <div class="query-group" [ngClass]="{'selected-query-row': queryGroup.selected}">
-    <div class="query-button" (click)="queryBuilderService.onQueryRowClick(this)"></div>
+    <div class="query-button" (click)="queryBuilderService.onQueryElementClick(this.queryGroup)"></div>
 
     <div class="query-container">
         <query [query]="queryGroup.query"></query>

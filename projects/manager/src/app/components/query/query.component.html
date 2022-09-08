@@ -1,4 +1,4 @@
-<ng-container *ngFor="let queryRow of query.queryRows">
-    <query-row #row *ngIf="!queryRow.queryGroup"  [queryRow]="queryRow" [parentQuery]="this"></query-row>
-    <query-group #row *ngIf="queryRow.queryGroup" [queryGroup]="queryRow.queryGroup!" [parentQuery]="this"></query-group>
+<ng-container *ngFor="let element of query.elements">
+    <query-row *ngIf="isQueryRow(element)" [queryRow]="element" [parent]="this.query"></query-row>
+    <query-group *ngIf="isQueryGroup(element)" [queryGroup]="getGroup(element)" [parent]="this.query"></query-group>
 </ng-container>
