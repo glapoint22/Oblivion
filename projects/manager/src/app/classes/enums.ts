@@ -139,3 +139,45 @@ export enum EmailType
     DeleteAccountOneTimePassword,
     WelcomeToNicheShack
 }
+
+
+
+export enum QueryType {
+    None,
+    Category,
+    Niche,
+    Subgroup,
+    Price,
+    Rating,
+    KeywordGroup,
+    Date,
+    Auto
+}
+
+
+export enum ComparisonOperatorType {
+    Equal,
+    NotEqual,
+    GreaterThan,
+    GreaterThanOrEqual,
+    LessThan,
+    LessThanOrEqual
+}
+
+
+export enum LogicalOperatorType {
+    And,
+    Or
+}
+
+
+
+
+
+export enum AutoQueryType {
+    Browsed,
+    Related,
+    RelatedBrowsed,
+    RelatedBought,
+    RelatedWishlist
+}

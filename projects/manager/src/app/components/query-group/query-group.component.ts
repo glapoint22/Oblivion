@@ -1,18 +1,23 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { QueryGroup, QueryRow } from 'widgets';
+import { Component, Input } from '@angular/core';
+import { QueryGroup } from '../../classes/query-group';
+import { SelectableQueryRow } from '../../classes/selectable-query-row';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import { QueryComponent } from '../query/query.component';
 
 @Component({
   selector: 'query-group',
   templateUrl: './query-group.component.html',
   styleUrls: ['./query-group.component.scss']
 })
-export class QueryGroupComponent {
+export class QueryGroupComponent implements SelectableQueryRow {
   @Input() queryGroup!: QueryGroup;
-  @Output() onRowSelectionChange: EventEmitter<QueryRow> = new EventEmitter();
-  @Output() onGroupSelectionChange: EventEmitter<QueryGroup> = new EventEmitter();
-
-  onGroupClick() {
-    this.queryGroup.selected = !this.queryGroup.selected;
-    this.onGroupSelectionChange.emit(this.queryGroup);
+  @Input() parentQuery!: QueryComponent;
+  public get selected() : boolean {
+    return this.queryGroup.selected!;
   }
+  public set selected(v : boolean) {
+    this.queryGroup.selected = v;
+  }
+
+  constructor(public queryBuilderService: QueryBuilderService) { }
 }

@@ -1,226 +1,35 @@
 import { KeyValue } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, Query, QueryGroup, QueryItem, QueryRow, QueryType } from 'widgets';
+import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, QueryType } from '../../classes/enums';
 import { Item } from '../../classes/item';
+import { QueryRow } from '../../classes/query-row';
+import { SelectableQueryRow } from '../../classes/selectable-query-row';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
 import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 import { PricePopupComponent } from '../price-popup/price-popup.component';
+import { QueryComponent } from '../query/query.component';
 
 @Component({
   selector: 'query-row',
   templateUrl: './query-row.component.html',
   styleUrls: ['./query-row.component.scss']
 })
-export class QueryRowComponent {
+export class QueryRowComponent implements SelectableQueryRow {
   @Input() queryRow!: QueryRow;
-  // @Input() query!: Query;
-  @Output() onRowSelectionChange: EventEmitter<QueryRow> = new EventEmitter();
-  @Output() onGroupSelectionChange: EventEmitter<QueryGroup> = new EventEmitter();
+  @Input() parentQuery!: QueryComponent;
   public QueryType = QueryType;
   public LogicalOperatorType = LogicalOperatorType;
   public AutoQueryType = AutoQueryType;
-  public queryTypeList: Array<KeyValue<string, QueryType>> = [
-    {
-      key: 'None',
-      value: QueryType.None
-    },
-    {
-      key: 'Category',
-      value: QueryType.Category
-    },
-    {
-      key: 'Niche',
-      value: QueryType.Niche
-    },
-    {
-      key: 'Subgroup',
-      value: QueryType.Subgroup
-    },
-    {
-      key: 'Price',
-      value: QueryType.Price
-    },
-    {
-      key: 'Rating',
-      value: QueryType.Rating
-    },
-    {
-      key: 'Keyword Group',
-      value: QueryType.KeywordGroup
-    },
-    {
-      key: 'Date',
-      value: QueryType.Date
-    },
-    {
-      key: 'Auto',
-      value: QueryType.Auto
-    }
-  ];
+  public get selected() : boolean {
+    return this.queryRow.selected!;
+  }
+  public set selected(v : boolean) {
+    this.queryRow.selected = v;
+  }
 
-
-
-  public comparisonOperatorList: Array<KeyValue<string, ComparisonOperatorType>> = [
-    {
-      key: '=',
-      value: ComparisonOperatorType.Equal
-    },
-    {
-      key: '!=',
-      value: ComparisonOperatorType.NotEqual
-    },
-    {
-      key: '>',
-      value: ComparisonOperatorType.GreaterThan
-    },
-    {
-      key: '>=',
-      value: ComparisonOperatorType.GreaterThanOrEqual
-    },
-    {
-      key: '<',
-      value: ComparisonOperatorType.LessThan
-    },
-    {
-      key: '<=',
-      value: ComparisonOperatorType.LessThanOrEqual
-    }
-  ];
-
-
-
-
-  public autoQueryTypeList: Array<KeyValue<string, AutoQueryType>> = [
-    {
-      key: 'Browsed',
-      value: AutoQueryType.Browsed
-    },
-    {
-      key: 'Related',
-      value: AutoQueryType.Related
-    },
-    {
-      key: 'Related Bought',
-      value: AutoQueryType.RelatedBought
-    },
-    {
-      key: 'Related Browsed',
-      value: AutoQueryType.RelatedBrowsed
-    },
-    {
-      key: 'Related Wishlist',
-      value: AutoQueryType.RelatedWishlist
-    }
-  ];
-
-
-
-  public logicalOperatorTypeList: Array<KeyValue<string, LogicalOperatorType>> = [
-    {
-      key: 'And',
-      value: LogicalOperatorType.And
-    },
-    {
-      key: 'Or',
-      value: LogicalOperatorType.Or
-    }
-  ];
-
-
-  public ratingList: Array<KeyValue<string, number>> = [
-    {
-      key: '1',
-      value: 1
-    },
-    {
-      key: '2',
-      value: 2
-    },
-    {
-      key: '3',
-      value: 3
-    },
-    {
-      key: '4',
-      value: 4
-    },
-    {
-      key: '5',
-      value: 5
-    }
-  ];
-
-
-  public categoriesList: Array<QueryItem> = [
-    {
-      id: 1,
-      name: 'Health & Fitness'
-    },
-    {
-      id: 2,
-      name: 'Business & Investing'
-    }
-  ]
-
-
-  public nichesList: Array<QueryItem> = [
-    {
-      id: 1,
-      name: 'Diets & Weightloss'
-    },
-    {
-      id: 2,
-      name: 'Food & beverage'
-    }
-  ]
-
-
-
-  public keywordGroupsList: Array<QueryItem> = [
-    {
-      id: 1,
-      name: 'Trumpy'
-    },
-    {
-      id: 2,
-      name: 'Musky'
-    },
-    {
-      id: 3,
-      name: 'Alita'
-    },
-    {
-      id: 4,
-      name: 'Stargate'
-    },
-    {
-      id: 5,
-      name: 'Game Of Thrones'
-    }
-  ]
-
-
-
-
-  public subgroupsList: Array<QueryItem> = [
-    {
-      id: 1,
-      name: 'Ex'
-    },
-    {
-      id: 2,
-      name: 'Butt'
-    }
-  ]
-
-  constructor(private lazyLoadingService: LazyLoadingService) { }
-
-
-  // ngOnChanges() {
-  //   this.queryRow.query = this.query;
-  // }
-
+  constructor(private lazyLoadingService: LazyLoadingService, public queryBuilderService: QueryBuilderService) { }
 
   // ----------------------------------------------------------- Get Comparison Operator -----------------------------------------------------------
   public getComparisonOperator(comparisonOperatorType: ComparisonOperatorType): string {
@@ -260,63 +69,57 @@ export class QueryRowComponent {
 
   // ---------------------------------------------------------- On Query Type Button Click ---------------------------------------------------------
   public onQueryTypeButtonClick(queryTypeButton: HTMLElement): void {
-    this.openDropdownList(queryTypeButton, this.queryTypeList, (item: KeyValue<string, QueryType>) => {
+    this.openDropdownList(queryTypeButton, this.queryBuilderService.queryTypeList, (item: KeyValue<string, QueryType>) => {
       const queryType = item.value;
 
       this.queryRow.queryType = queryType;
       this.clearValue();
 
+      this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
+
       // Category
       switch (queryType) {
         case QueryType.Category:
-          this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
-          this.queryRow.item = this.categoriesList[0];
+          this.queryRow.item = this.queryBuilderService.categoriesList[0];
           break;
 
         // Niche
         case QueryType.Niche:
-          this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
-          this.queryRow.item = this.nichesList[0];
+          this.queryRow.item = this.queryBuilderService.nichesList[0];
           break;
 
         // Subgroup
         case QueryType.Subgroup:
-          this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
-          this.queryRow.item = this.subgroupsList[0];
+          this.queryRow.item = this.queryBuilderService.subgroupsList[0];
           break;
 
 
         // Price
         case QueryType.Price:
-          this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
           this.queryRow.price = 0;
           break;
 
 
         // Rating
         case QueryType.Rating:
-          this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
           this.queryRow.integer = 1;
           break;
 
 
         // Keyword Group
         case QueryType.KeywordGroup:
-          this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
-          this.queryRow.item = this.keywordGroupsList[0];
+          this.queryRow.item = this.queryBuilderService.keywordGroupsList[0];
           break;
 
 
         // Date
         case QueryType.Date:
-          this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
           this.queryRow.date = new Date();
           break;
 
 
         // Auto
         case QueryType.Auto:
-          this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
           this.queryRow.auto = AutoQueryType.Browsed;
           break;
       }
@@ -332,7 +135,7 @@ export class QueryRowComponent {
       this.queryRow.queryType != QueryType.Rating &&
       this.queryRow.queryType != QueryType.Date) return;
 
-    this.openDropdownList(comparisonOperatorButton, this.comparisonOperatorList, (item: KeyValue<string, ComparisonOperatorType>) => {
+    this.openDropdownList(comparisonOperatorButton, this.queryBuilderService.comparisonOperatorList, (item: KeyValue<string, ComparisonOperatorType>) => {
       this.queryRow.comparisonOperatorType = item.value;
     });
   }
@@ -346,7 +149,7 @@ export class QueryRowComponent {
 
       // Category
       case QueryType.Category:
-        this.openDropdownList(valueButton, this.categoriesList, (item: QueryItem) => {
+        this.openDropdownList(valueButton, this.queryBuilderService.categoriesList, (item: Item) => {
           this.queryRow.item = item;
         });
         break;
@@ -354,7 +157,7 @@ export class QueryRowComponent {
 
       // Niche
       case QueryType.Niche:
-        this.openDropdownList(valueButton, this.nichesList, (item: QueryItem) => {
+        this.openDropdownList(valueButton, this.queryBuilderService.nichesList, (item: Item) => {
           this.queryRow.item = item;
         });
         break;
@@ -362,7 +165,7 @@ export class QueryRowComponent {
 
       // Subgroup
       case QueryType.Subgroup:
-        this.openDropdownList(valueButton, this.subgroupsList, (item: QueryItem) => {
+        this.openDropdownList(valueButton, this.queryBuilderService.subgroupsList, (item: Item) => {
           this.queryRow.item = item;
         });
         break;
@@ -376,7 +179,7 @@ export class QueryRowComponent {
 
       // Rating
       case QueryType.Rating:
-        this.openDropdownList(valueButton, this.ratingList, (item: KeyValue<string, number>) => {
+        this.openDropdownList(valueButton, this.queryBuilderService.ratingList, (item: KeyValue<string, number>) => {
           this.queryRow.integer = item.value;
         });
         break;
@@ -384,7 +187,7 @@ export class QueryRowComponent {
 
       // Keyword Group
       case QueryType.KeywordGroup:
-        this.openDropdownList(valueButton, this.keywordGroupsList, (item: QueryItem) => {
+        this.openDropdownList(valueButton, this.queryBuilderService.keywordGroupsList, (item: Item) => {
           this.queryRow.item = item;
         });
         break;
@@ -399,7 +202,7 @@ export class QueryRowComponent {
 
       // Auto
       case QueryType.Auto:
-        this.openDropdownList(valueButton, this.autoQueryTypeList, (item: KeyValue<string, AutoQueryType>) => {
+        this.openDropdownList(valueButton, this.queryBuilderService.autoQueryTypeList, (item: KeyValue<string, AutoQueryType>) => {
           this.queryRow.auto = item.value;
         });
         break;
@@ -410,7 +213,7 @@ export class QueryRowComponent {
 
   // ------------------------------------------------------- On Logical Operator Button Click ------------------------------------------------------
   onLogicalOperatorButtonClick(logicalOperatorButton: HTMLElement) {
-    this.openDropdownList(logicalOperatorButton, this.logicalOperatorTypeList, (item: KeyValue<string, LogicalOperatorType>) => {
+    this.openDropdownList(logicalOperatorButton, this.queryBuilderService.logicalOperatorTypeList, (item: KeyValue<string, LogicalOperatorType>) => {
       this.queryRow.logicalOperatorType = item.value;
     });
   }
@@ -487,17 +290,5 @@ export class QueryRowComponent {
     const milliseconds = new Date(1970, 0, 1).setMilliseconds(Date.parse(dateInput.value));
 
     this.queryRow.date = new Date(milliseconds);
-  }
-
-
-
-
-
-  // ----------------------------------------------------------------- On Row Click ----------------------------------------------------------------
-  onRowClick(row: QueryRow) {
-    // if (this.query.queryGroup?.selected) return;
-
-    row.selected = !row.selected;
-    this.onRowSelectionChange.emit(row);
   }
 }

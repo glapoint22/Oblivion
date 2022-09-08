@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
+import { Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Video } from 'common';
 import { Subject } from 'rxjs';
 import { Column, HorizontalAlignmentType, ImageWidgetData, Row, VerticalAlignmentType, VideoWidgetData, Widget, WidgetData, WidgetType } from 'widgets';
 import { WidgetCursorType, WidgetHandle, WidgetInspectorView } from '../../classes/enums';
@@ -28,7 +28,7 @@ export class WidgetService {
   public viewPortTop!: number;
 
 
-  constructor(private breakpointService: BreakpointService, private lazyLoadingService: LazyLoadingService, private dataService: DataService) { }
+  constructor(private breakpointService: BreakpointService, private lazyLoadingService: LazyLoadingService) { }
 
 
   // ------------------------------------------------------------------------Set Widget Cursor------------------------------------------------------------
@@ -102,7 +102,7 @@ export class WidgetService {
 
 
 
-  
+
 
 
   // ----------------------------------------------------------------------On Widget Handle Mousedown---------------------------------------------------------

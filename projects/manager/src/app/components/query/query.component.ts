@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Query, QueryGroup, QueryRow } from 'widgets';
+import { Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { Query } from '../../classes/query';
+import { SelectableQueryRow } from '../../classes/selectable-query-row';
 
 @Component({
   selector: 'query',
@@ -8,13 +9,5 @@ import { Query, QueryGroup, QueryRow } from 'widgets';
 })
 export class QueryComponent {
   @Input() query!: Query;
-  // @Input() queryGroup!: QueryGroup;
-  @Output() onRowSelectionChange: EventEmitter<QueryRow> = new EventEmitter();
-  @Output() onGroupSelectionChange: EventEmitter<QueryGroup> = new EventEmitter();
-
-  // public ngOnChanges(): void {
-  //   if (this.queryGroup) {
-  //     this.query.queryGroup = this.queryGroup;
-  //   }
-  // }
+  @ViewChildren('row') queryRows!: QueryList<SelectableQueryRow>;
 }

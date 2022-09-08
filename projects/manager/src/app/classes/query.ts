@@ -1,20 +1,17 @@
+import { LogicalOperatorType, QueryType } from "./enums";
 import { QueryGroup } from "./query-group";
 import { QueryRow } from "./query-row";
-import { LogicalOperatorType, QueryType } from "./widget-enums";
 
 export class Query {
     public queryRows!: Array<QueryRow>;
-    public queryGroup?: QueryGroup;
 
     constructor(queryRows?: Array<QueryRow>) {
         if (queryRows) {
             this.queryRows = queryRows;
-            this.queryRows.forEach((row: QueryRow) => row.queryGroup ? row.queryGroup.parentQuery = this : row.parentQuery = this);
         } else {
             this.queryRows = [
                 {
-                    queryType: QueryType.None,
-                    parentQuery: this
+                    queryType: QueryType.None
                 }
             ];
         }
@@ -23,31 +20,57 @@ export class Query {
 
     // ---------------------------------------------------------------- Add Row ----------------------------------------------------------------
     public addRow(): void {
+        const index = this.queryRows.findIndex(x => x.selected || x.queryGroup?.selected);
+
+        if (this.queryRows[index].queryGroup && this.queryRows[index].queryGroup?.selected) {
+            this.queryRows[index].queryGroup!.selected = false;
+        } else {
+            this.queryRows[index].selected = false;
+        }
+
+
         // Add logicalOperator row
-        this.queryRows.push({
+        this.queryRows.splice(index + 1, 0, {
             logicalOperatorType: LogicalOperatorType.And
         });
 
         // Add a blank row
-        this.queryRows.push({
+        this.queryRows.splice(index + 2, 0, {
             queryType: QueryType.None,
-            parentQuery: this
+            selected: true
         });
     }
 
 
 
+    // --------------------------------------------------------------- Delete Rows --------------------------------------------------------------
+    public deleteRows(): void {
+        for (let i = 0; i < this.queryRows.length; i++) {
+            const row = this.queryRows[i];
+
+            if (row.selected || row.queryGroup?.selected) {
+                this.deleteRow(row);
+                i--;
+            }
+        }
+    }
+
+
 
     // --------------------------------------------------------------- Delete Row --------------------------------------------------------------
-    public deleteRow(row: QueryRow): void {
+    private deleteRow(row: QueryRow): void {
         const index = this.queryRows.findIndex(x => x == row);
 
         if (index != this.queryRows.length - 1) {
             this.queryRows.splice(index, 1);
             this.queryRows.splice(index, 1);
         } else {
-            this.queryRows.splice(index - 1, 1);
-            this.queryRows.splice(index - 1, 1);
+            if (this.queryRows.length == 1) {
+                this.queryRows.splice(index, 1);
+            } else {
+                this.queryRows.splice(index - 1, 1);
+                this.queryRows.splice(index - 1, 1);
+            }
         }
     }
 
@@ -55,16 +78,18 @@ export class Query {
 
 
     // -------------------------------------------------------------- Create Group -------------------------------------------------------------
-    public createGroup(selectedRows: Array<QueryRow>) {
+    public createGroup(): void {
+        const selectedCount = this.queryRows.filter(x => x.selected || x.queryGroup?.selected).length;
         let groupedRows: Array<QueryRow> = [];
         let counter: number = 0;
         let startIndex!: number;
         let logicalOperator: LogicalOperatorType = LogicalOperatorType.And;
 
+
         for (let i = 0; i < this.queryRows.length; i++) {
             const row = this.queryRows[i];
 
-            if (selectedRows.some(x => x == row || x == row.queryGroup)) {
+            if (row.selected || row.queryGroup?.selected) {
                 row.selected = false;
                 row.queryGroup ? row.queryGroup.selected = false : null;
 
@@ -75,7 +100,7 @@ export class Query {
                 i--;
                 counter++;
 
-                if (counter != selectedRows.length) {
+                if (counter != selectedCount) {
                     groupedRows.push(this.queryRows[i + 1]);
                     this.queryRows.splice(i + 1, 1);
                 } else {
@@ -89,14 +114,32 @@ export class Query {
         }
 
         const query = new Query(groupedRows);
-        const queryGroup = new QueryGroup(query, this);
+        const queryGroup = new QueryGroup(query);
 
-        query.queryGroup = queryGroup;
-
+        queryGroup.selected = true;
         this.queryRows.splice(startIndex, 0, { queryGroup });
 
         if (startIndex != this.queryRows.length - 1) {
             this.queryRows.splice(startIndex + 1, 0, { logicalOperatorType: logicalOperator });
         }
     }
+
+
+
+
+
+    // ----------------------------------------------------------------- Ungroup ---------------------------------------------------------------
+    public ungroup(): void {
+        for (let i = 0; i < this.queryRows.length; i++) {
+            const row = this.queryRows[i];
+
+            if (row.queryGroup?.selected) {
+                row.queryGroup.query.queryRows.forEach((queryRow: QueryRow, index: number) => {
+                    this.queryRows.splice(i, index == 0 ? 1 : 0, queryRow);
+                    i++;
+                });
+            }
+        }
+    }
+
 }

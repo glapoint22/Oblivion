@@ -1,136 +1,63 @@
-import { Component } from '@angular/core';
-import { ComparisonOperatorType, LogicalOperatorType, Query, QueryGroup, QueryRow, QueryType } from 'widgets';
+import { Component, OnInit } from '@angular/core';
+import { Query } from '../../classes/query';
+import { SelectableQueryRow } from '../../classes/selectable-query-row';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import { QueryGroupComponent } from '../query-group/query-group.component';
 
 @Component({
   selector: 'query-builder',
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss']
 })
-export class QueryBuilderComponent {
+export class QueryBuilderComponent implements OnInit {
   public query: Query = new Query();
-  public selectedRows: Array<QueryRow> = [];
-  public selectedGroups: Array<QueryGroup> = [];
+
+  constructor(public queryBuilderService: QueryBuilderService) { }
 
 
-
-
-  // ngOnInit() {
-  //   this.query = {
-  //     addRow: () => { },
-  //     deleteRow: () => { },
-  //     createGroup: () => { },
-  //     queryRows: [
-  //       {
-  //         queryGroup: {
-  //           query: {
-  //             addRow: () => { },
-  //             deleteRow: () => { },
-  //             createGroup: () => { },
-  //             queryRows: [
-  //               {
-  //                 queryType: QueryType.Price,
-  //                 comparisonOperatorType: ComparisonOperatorType.GreaterThanOrEqual,
-  //                 price: 5.99
-  //               },
-  //               {
-  //                 logicalOperatorType: LogicalOperatorType.And
-  //               },
-  //               {
-  //                 queryType: QueryType.Date,
-  //                 comparisonOperatorType: ComparisonOperatorType.GreaterThan,
-  //                 date: new Date('09/01/2022')
-  //               }
-  //             ]
-  //           }
-  //         }
-  //       },
-  //       {
-  //         logicalOperatorType: LogicalOperatorType.Or
-  //       },
-  //       {
-  //         queryGroup: {
-  //           query: {
-  //             addRow: () => { },
-  //             deleteRow: () => { },
-  //             createGroup: () => { },
-  //             queryRows: [
-  //               {
-  //                 queryType: QueryType.Niche,
-  //                 comparisonOperatorType: ComparisonOperatorType.Equal,
-  //                 item: {
-  //                   id: 2,
-  //                   name: 'Recipes'
-  //                 }
-  //               },
-  //               {
-  //                 logicalOperatorType: LogicalOperatorType.And
-  //               },
-  //               {
-  //                 queryType: QueryType.Rating,
-  //                 comparisonOperatorType: ComparisonOperatorType.GreaterThanOrEqual,
-  //                 integer: 3
-  //               }
-  //             ]
-  //           }
-  //         }
-  //       }
-  //     ]
-  //   }
-  // }
-
-
-
-
-
-  // -------------------------------------------------------- On Row Selection Change -----------------------------------------------------------
-  onRowSelectionChange(row: QueryRow) {
-    if (row.selected) {
-      this.selectedRows.push(row);
-    } else {
-      const index = this.selectedRows.findIndex(x => x == row);
-
-      if (index != -1) this.selectedRows.splice(index, 1);
-    }
-  }
-
-
-
-  // ------------------------------------------------------- On Group Selection Change ----------------------------------------------------------
-  onGroupSelectionChange(group: QueryGroup) {
-    if (group.selected) {
-      this.selectedGroups.push(group);
-      this.unselectRows(group);
-    } else {
-      const index = this.selectedGroups.findIndex(x => x == group);
-
-      if (index != -1) this.selectedGroups.splice(index, 1);
-    }
-  }
-
-
-  // -------------------------------------------------------- Is Group Icon Disabled ------------------------------------------------------------
-  isGroupIconDisabled() {
-    if (this.selectedRows.length + this.selectedGroups.length <= 1) return true;
-
-    return !this.selectedRows.every(x => x.parentQuery == this.selectedRows[0].parentQuery);
+  // ---------------------------------------------------------------- Ng On Init -------------------------------------------------------------------
+  public ngOnInit(): void {
+    this.queryBuilderService.getQueryLists();
   }
 
 
 
 
-  // ------------------------------------------------------------- Unselect Rows ----------------------------------------------------------------
-  unselectRows(group: QueryGroup) {
-    group.query.queryRows.forEach((row: QueryRow) => {
-      if (row.queryGroup) {
-        this.unselectRows(row.queryGroup);
-      } else {
-        const index = this.selectedRows.findIndex(x => x == row);
+  // ----------------------------------------------------------- Is Group Icon Disabled ------------------------------------------------------------
+  isGroupIconDisabled(): boolean {
+    if (this.queryBuilderService.selectedQueryRows.length <= 1) return true;
 
-        if (index != -1) {
-          this.selectedRows[index].selected = false;
-          this.selectedRows.splice(index, 1);
-        }
-      }
+    return !this.queryBuilderService.selectedQueryRows.every(x => x.parentQuery == this.queryBuilderService.selectedQueryRows[0].parentQuery);
+  }
+
+
+
+
+
+
+
+  // ---------------------------------------------------------- Is Ungroup Icon Disabled -----------------------------------------------------------
+  isUngroupIconDisabled(): boolean {
+    if (this.queryBuilderService.selectedQueryRows.length == 0) return true;
+
+    return !this.queryBuilderService.selectedQueryRows.every(x => x instanceof QueryGroupComponent);
+  }
+
+
+
+
+
+
+
+  // ------------------------------------------------------------------- Add Row -------------------------------------------------------------------
+  public onAddRowClick(): void {
+    const parentQuery = this.queryBuilderService.selectedQueryRows[0].parentQuery;
+
+    parentQuery.query.addRow();
+    window.setTimeout(() => {
+      const queryRow = parentQuery.queryRows.find(x => x.selected);
+
+      this.queryBuilderService.selectedQueryRows = [queryRow!];
     });
   }
 
@@ -138,40 +65,57 @@ export class QueryBuilderComponent {
 
 
 
-  // -------------------------------------------------------------- On Add Click ----------------------------------------------------------------
-  onAddClick() {
-    if (this.selectedRows.length > 0) {
-      this.selectedRows[0].parentQuery?.addRow();
-    } else {
 
-    }
+
+  // -------------------------------------------------------------- On Group Click --------------------------------------------------------------
+  public onGroupClick(): void {
+    const parentQuery = this.queryBuilderService.selectedQueryRows[0].parentQuery;
+
+    parentQuery.query.createGroup();
+    window.setTimeout(() => {
+      const queryRow = parentQuery.queryRows.find(x => x.selected);
+
+      this.queryBuilderService.selectedQueryRows = [queryRow!];
+    });
   }
+
+
+
+
+
+  // ------------------------------------------------------------- On Ungroup Click -------------------------------------------------------------
+  public onUngroupClick(): void {
+    const groups = this.queryBuilderService.selectedQueryRows.filter((value, index, self) => {
+      return self.findIndex(x => x.parentQuery == value.parentQuery) == index;
+    });
+
+    groups.forEach((group: SelectableQueryRow) => {
+      group.parentQuery.query.ungroup();
+    });
+
+    this.queryBuilderService.selectedQueryRows = [];
+  }
+
+
+
 
 
 
   // ------------------------------------------------------------- On Delete Click --------------------------------------------------------------
   onDeleteClick() {
-    for (let i = 0; i < this.selectedRows.length; i++) {
-      const row = this.selectedRows[i];
+    const rows = this.queryBuilderService.selectedQueryRows.filter((value, index, self) => {
+      return self.findIndex(x => x.parentQuery == value.parentQuery) == index;
+    });
 
-      row.parentQuery?.deleteRow(row);
-      this.selectedRows.splice(0, 1);
-      i--;
-    }
+    rows.forEach((row: SelectableQueryRow) => {
+      row.parentQuery.query.deleteRows();
+    });
+
+    this.queryBuilderService.selectedQueryRows = [];
+
 
     if (this.query.queryRows.length == 0) {
       this.query = new Query();
     }
-  }
-
-
-
-  // -------------------------------------------------------------- On Group Click --------------------------------------------------------------
-  onGroupClick() {
-    const query = this.selectedRows[0].parentQuery!;
-
-    query.createGroup(this.selectedRows.concat(this.selectedGroups));
-    this.selectedRows = [];
-    this.selectedGroups = [];
   }
 }
