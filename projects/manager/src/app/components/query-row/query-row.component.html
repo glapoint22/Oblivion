@@ -1,6 +1,6 @@
-<div *ngIf="queryRow.queryType != undefined" class="query-row" [ngClass]="{'selected-query-row': queryRow.selected}">
+<div *ngIf="queryRow.queryType != undefined" class="query-row" [ngClass]="{'selected-query-row': queryElement.selected}">
 
-    <div class="query-button" (click)="queryBuilderService.onQueryElementClick(this.queryRow)"></div>
+    <div class="query-button" (click)="queryBuilderService.onQueryElementClick(queryElement)"></div>
 
     <!-- Query Type -->
     <div #queryTypeButton class="query-button" (click)="onQueryTypeButtonClick(queryTypeButton)">

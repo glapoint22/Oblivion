@@ -181,3 +181,9 @@ export enum AutoQueryType {
     RelatedBought,
     RelatedWishlist
 }
+
+
+export enum QueryElementType {
+    QueryRow,
+    QueryGroup
+}

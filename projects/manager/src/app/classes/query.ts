@@ -1,17 +1,21 @@
-import { LogicalOperatorType, QueryType } from "./enums";
+import { LogicalOperatorType, QueryElementType } from "./enums";
 import { QueryElement } from "./query-element";
 import { QueryGroup } from "./query-group";
 import { QueryRow } from "./query-row";
 
 export class Query {
     public elements!: Array<QueryElement>;
-    public parent!: QueryGroup;
 
-    constructor(queryElements?: Array<QueryElement>) {
+    constructor(queryElements?: Array<QueryElement>, public parent?: QueryElement) {
         if (queryElements) {
-            this.elements = queryElements;
+            this.elements = [];
+            queryElements.forEach((queryElement: QueryElement) => {
+                this.elements.push(new QueryElement(queryElement.queryRow ? queryElement.queryRow! : queryElement.queryGroup!, this));
+            });
+
         } else {
-            this.elements = new Array<QueryElement>(new QueryRow(QueryType.None));
+            const queryElement = new QueryElement(new QueryRow(), this);
+            this.elements = new Array<QueryElement>(queryElement);
         }
     }
 
@@ -24,11 +28,10 @@ export class Query {
         this.elements[index].selected = false;
 
         // Add logicalOperator row
-        this.elements.splice(index + 1, 0, new QueryRow(undefined, LogicalOperatorType.And));
+        this.elements.splice(index + 1, 0, new QueryElement(new QueryRow({ logicalOperatorType: LogicalOperatorType.And }), this));
 
-        // Add a blank row
-        const row = new QueryRow(QueryType.None);
-        this.elements.splice(index + 2, 0, row);
+        // Add a query type row
+        this.elements.splice(index + 2, 0, new QueryElement(new QueryRow(), this));
     }
 
 
@@ -36,10 +39,10 @@ export class Query {
     // --------------------------------------------------------------- Delete Elements --------------------------------------------------------------
     public deleteElements(): void {
         for (let i = 0; i < this.elements.length; i++) {
-            const element = this.elements[i];
+            const queryElement = this.elements[i];
 
-            if (element.selected) {
-                this.deleteElement(element);
+            if (queryElement.selected) {
+                this.deleteElement(queryElement);
                 i--;
             }
         }
@@ -69,10 +72,9 @@ export class Query {
             }
         } else if (this.elements.length == 1 && !this.elements[0].selected) {
             if (this.parent) {
-                const queryGroup = this.parent as QueryGroup;
-                const index = queryGroup.parent.elements.findIndex(x => x == queryGroup);
+                const index = this.parent.parent.elements.findIndex(x => x.element == this.parent!.element);
 
-                queryGroup.parent.ungroup(this.parent, index);
+                this.parent.parent.ungroup(this.parent.element as QueryGroup, index);
             }
         }
     }
@@ -90,14 +92,14 @@ export class Query {
 
 
         for (let i = 0; i < this.elements.length; i++) {
-            const element = this.elements[i];
+            const queryElement = this.elements[i];
 
             // If element is selected
-            if (element.selected) {
-                element.selected = false;
+            if (queryElement.selected) {
+                queryElement.selected = false;
 
                 // Group the element
-                groupedElements.push(element);
+                groupedElements.push(queryElement);
 
                 // The start index is where the group will be placed
                 if (startIndex == undefined) startIndex = i;
@@ -114,7 +116,7 @@ export class Query {
                 } else {
                     // If we are not at the last element in the query, get the logical operator value
                     if (i + 1 != this.elements.length) {
-                        logicalOperator = (this.elements[i + 1] as QueryRow).logicalOperatorType!;
+                        logicalOperator = (this.elements[i + 1].element as QueryRow).logicalOperatorType!;
                         this.elements.splice(i + 1, 1);
                     }
                     break;
@@ -123,19 +125,21 @@ export class Query {
         }
 
         const query = new Query(groupedElements);
-        const queryGroup = new QueryGroup(query);
 
         // Place the group
-        this.elements.splice(startIndex, 0, queryGroup);
+        const queryElement = new QueryElement(new QueryGroup(query), this);
+        query.parent = queryElement;
+
+        this.elements.splice(startIndex, 0, queryElement);
 
         // If the group is not the last element, place a logical operator
         if (startIndex != this.elements.length - 1) {
-            this.elements.splice(startIndex + 1, 0, new QueryRow(undefined, logicalOperator));
+            this.elements.splice(startIndex + 1, 0, new QueryElement(new QueryRow({ logicalOperatorType: logicalOperator }), this));
         }
 
         // If the last element in the query is a logical operator, remove it
-        if (this.elements[this.elements.length - 1] instanceof QueryRow) {
-            const queryRow = this.elements[this.elements.length - 1] as QueryRow;
+        if (this.elements[this.elements.length - 1].queryElementType == QueryElementType.QueryRow) {
+            const queryRow = this.elements[this.elements.length - 1].element as QueryRow;
 
             if (queryRow.logicalOperatorType != undefined) {
                 this.elements.splice(this.elements.length - 1, 1);
@@ -147,13 +151,13 @@ export class Query {
 
 
 
-    // ----------------------------------------------------------------- Ungroup ---------------------------------------------------------------
+    // ------------------------------------------------------------- Ungroup Elements ----------------------------------------------------------
     public ungroupElements(): void {
         for (let i = 0; i < this.elements.length; i++) {
-            const element = this.elements[i];
+            const queryElement = this.elements[i];
 
-            if (element.selected) {
-                const queryGroup = element as QueryGroup;
+            if (queryElement.selected) {
+                const queryGroup = queryElement.element as QueryGroup;
 
                 i = this.ungroup(queryGroup, i);
             }
@@ -161,8 +165,15 @@ export class Query {
     }
 
 
+
+
+
+
+
+    // ----------------------------------------------------------------- Ungroup ---------------------------------------------------------------
     private ungroup(queryGroup: QueryGroup, startIndex: number): number {
         queryGroup.query.elements.forEach((queryElement: QueryElement, index: number) => {
+            queryElement.parent = this;
             this.elements.splice(startIndex, index == 0 ? 1 : 0, queryElement);
             startIndex++;
         });

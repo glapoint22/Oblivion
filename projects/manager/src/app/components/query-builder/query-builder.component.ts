@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Query } from '../../classes/query';
 import { QueryElement } from '../../classes/query-element';
 import { QueryGroup } from '../../classes/query-group';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import { ProductSliderWidgetDevComponent } from '../product-slider-widget-dev/product-slider-widget-dev.component';
 
 @Component({
   selector: 'query-builder',
@@ -10,7 +11,7 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
   styleUrls: ['./query-builder.component.scss']
 })
 export class QueryBuilderComponent implements OnInit {
-  public query: Query = new Query();
+  @Input() productSliderWidget!: ProductSliderWidgetDevComponent
 
   constructor(public queryBuilderService: QueryBuilderService) { }
 
@@ -40,7 +41,7 @@ export class QueryBuilderComponent implements OnInit {
   isUngroupIconDisabled(): boolean {
     if (this.queryBuilderService.selectedQueryElements.length == 0) return true;
 
-    return !this.queryBuilderService.selectedQueryElements.every(x => x instanceof QueryGroup);
+    return !this.queryBuilderService.selectedQueryElements.every(x => x.element instanceof QueryGroup);
   }
 
 
@@ -52,9 +53,10 @@ export class QueryBuilderComponent implements OnInit {
   // ------------------------------------------------------------------- Add Row -------------------------------------------------------------------
   public onAddRowClick(): void {
     const parent = this.queryBuilderService.selectedQueryElements[0].parent;
-    
+
     parent.addRow();
     this.queryBuilderService.selectedQueryElements = [];
+    this.queryBuilderService.onChange();
   }
 
 
@@ -69,6 +71,7 @@ export class QueryBuilderComponent implements OnInit {
     parent.createGroup();
 
     this.queryBuilderService.selectedQueryElements = [];
+    this.queryBuilderService.onChange();
   }
 
 
@@ -77,15 +80,16 @@ export class QueryBuilderComponent implements OnInit {
 
   // ------------------------------------------------------------- On Ungroup Click -------------------------------------------------------------
   public onUngroupClick(): void {
-    const groups = this.queryBuilderService.selectedQueryElements.filter((value, index, self) => {
+    const elements = this.queryBuilderService.selectedQueryElements.filter((value, index, self) => {
       return self.findIndex(x => x.parent == value.parent) == index;
     });
 
-    groups.forEach((group: QueryElement) => {
-      group.parent.ungroupElements();
+    elements.forEach((element: QueryElement) => {
+      element.parent.ungroupElements();
     });
 
     this.queryBuilderService.selectedQueryElements = [];
+    this.queryBuilderService.onChange();
   }
 
 
@@ -99,15 +103,17 @@ export class QueryBuilderComponent implements OnInit {
       return self.findIndex(x => x.parent == value.parent) == index;
     });
 
-    elements.forEach((element: QueryElement) => {
-      element.parent.deleteElements();
+    elements.forEach((queryElement: QueryElement) => {
+      queryElement.parent.deleteElements();
     });
 
     this.queryBuilderService.selectedQueryElements = [];
 
 
-    if (this.query.elements.length == 0) {
-      this.query = new Query();
+    if (this.productSliderWidget.query.elements.length == 0) {
+      this.productSliderWidget.query = new Query();
     }
+
+    this.queryBuilderService.onChange();
   }
 }

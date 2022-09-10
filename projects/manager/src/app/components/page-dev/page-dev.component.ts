@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, Image, LazyLoadingService, Link, LinkType, SpinnerAction, Video } from 'common';
 import { debounceTime, Subject } from 'rxjs';
-import { PageComponent, PageContent, PageType } from 'widgets';
+import { Background, BackgroundImage, Caption, ColumnSpan, PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { BuilderType, WidgetInspectorView } from '../../classes/enums';
 import { PageData } from '../../classes/page-data';
+import { Query } from '../../classes/query';
+import { QueryElement } from '../../classes/query-element';
+import { QueryRow } from '../../classes/query-row';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { PromptComponent } from '../prompt/prompt.component';
@@ -54,13 +57,134 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
           id: this.id,
           name: this.name,
           pageType: this.pageType,
-          content: this.pageContent.toString()
+          content: this.stringify()
         }).subscribe();
       });
   }
 
 
 
+
+
+
+  // --------------------------------------------------------------------------- Stringify ---------------------------------------------------------
+  stringify() {
+    return JSON.stringify(this.pageContent, (key, value) => {
+      if (
+        (typeof value != 'number' && !value) ||
+        (typeof value == 'object' && Object.values(value).length == 0) ||
+        (value instanceof Background && !value.enabled) ||
+        (value instanceof ColumnSpan && value.values.length == 1 && value.values[0].span == 12)
+      ) {
+        return undefined;
+      }
+
+      // Background Image
+      else if (value instanceof BackgroundImage) {
+        if (value.id) {
+          return {
+            id: value.id,
+            imageSizeType: value.imageSizeType,
+            position: value.position,
+            repeat: value.repeat,
+            attachment: value.attachment
+          }
+        } else {
+          return undefined;
+        }
+
+      }
+
+      // Image
+      else if (value instanceof Image) {
+        return {
+          id: value.id,
+          imageSizeType: value.imageSizeType,
+        }
+      }
+
+      // Video
+      else if (value instanceof Video) {
+        return {
+          id: value.id
+        }
+      }
+
+      // Caption
+      else if (value instanceof Caption) {
+        return {
+          font: value.font,
+          fontSize: value.fontSize,
+          fontWeight: value.fontWeight,
+          fontStyle: value.fontStyle,
+          textDecoration: value.textDecoration,
+          text: value.text,
+          color: value.color
+        }
+      }
+
+      // Link
+      else if (value instanceof Link) {
+        if (value.linkType == LinkType.Page || value.linkType == LinkType.Product) {
+          return {
+            id: value.id,
+            linkType: value.linkType
+          }
+        } else {
+          return {
+            linkType: value.linkType,
+            url: value.url,
+          }
+        }
+      }
+
+
+      // Query
+      else if (value instanceof Query) {
+        return {
+          elements: value.elements
+        }
+      }
+
+
+      // Query Element
+      else if (value instanceof QueryElement) {
+        if (value.element instanceof QueryRow) {
+
+          // Query Row
+          return {
+            queryElementType: value.queryElementType,
+            queryRow: {
+              queryType: value.element.queryType,
+              logicalOperatorType: value.element.logicalOperatorType,
+              comparisonOperatorType: value.element.comparisonOperatorType,
+              item: value.element.item ? {
+                id: value.element.item?.id
+              } : null,
+              integer: value.element.integer,
+              date: value.element.date,
+              price: value.element.price,
+              auto: value.element.auto
+            }
+          }
+        } else {
+
+          // Query Group
+          return {
+            queryElementType: value.queryElementType,
+            queryGroup: {
+              query: value.element.query
+            }
+          }
+        }
+      }
+
+      // Other
+      else {
+        return value;
+      }
+    });
+  }
 
 
 
