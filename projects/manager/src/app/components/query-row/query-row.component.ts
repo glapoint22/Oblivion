@@ -31,7 +31,7 @@ export class QueryRowComponent implements OnChanges {
   }
 
 
-  
+
   // ----------------------------------------------------------- Get Comparison Operator -----------------------------------------------------------
   public getComparisonOperator(comparisonOperatorType: ComparisonOperatorType): string {
     let comparisonOperator!: string;
@@ -91,7 +91,7 @@ export class QueryRowComponent implements OnChanges {
 
         // Subgroup
         case QueryType.ProductGroup:
-          this.queryRow.item = this.queryBuilderService.subgroupsList[0];
+          this.queryRow.item = this.queryBuilderService.productGroupsList[0];
           break;
 
 
@@ -171,7 +171,7 @@ export class QueryRowComponent implements OnChanges {
 
       // Subgroup
       case QueryType.ProductGroup:
-        this.openDropdownList(valueButton, this.queryBuilderService.subgroupsList, (item: Item) => {
+        this.openDropdownList(valueButton, this.queryBuilderService.productGroupsList, (item: Item) => {
           this.queryRow.item = item;
           this.queryBuilderService.onChange();
         });
@@ -200,7 +200,7 @@ export class QueryRowComponent implements OnChanges {
           this.queryBuilderService.onChange();
         });
         break;
-      
+
 
 
       // Auto
@@ -291,11 +291,55 @@ export class QueryRowComponent implements OnChanges {
 
 
 
+
   // ---------------------------------------------------------------- On Date Change ---------------------------------------------------------------
   onDateChange(dateInput: HTMLInputElement) {
     const milliseconds = new Date(1970, 0, 1).setMilliseconds(Date.parse(dateInput.value));
 
     this.queryRow.date = new Date(milliseconds);
     this.queryBuilderService.onChange();
+  }
+
+
+
+  // ---------------------------------------------------------------- Get Item Name ---------------------------------------------------------------
+  getItemName(): string {
+    let name!: string;
+
+    if (!this.queryBuilderService.listsDownloadComplete) return null!;
+
+    if (this.queryRow.item) {
+      if (!this.queryRow.item.name) {
+        switch (this.queryRow.queryType) {
+
+          // Categroy
+          case QueryType.Category:
+            name = this.queryBuilderService.categoriesList.find(x => x.id == this.queryRow.item?.id)?.name!;
+            break;
+
+          // Niche
+          case QueryType.Niche:
+            name = this.queryBuilderService.nichesList.find(x => x.id == this.queryRow.item?.id)?.name!;
+            break;
+
+          // Keyword Group
+          case QueryType.KeywordGroup:
+            name = this.queryBuilderService.keywordGroupsList.find(x => x.id == this.queryRow.item?.id)?.name!;
+            break;
+
+
+          // Product Group
+          case QueryType.ProductGroup:
+            name = this.queryBuilderService.productGroupsList.find(x => x.id == this.queryRow.item?.id)?.name!;
+            break;
+        }
+
+        this.queryRow.item.name = name;
+      } else {
+        name = this.queryRow.item.name;
+      }
+    }
+
+    return name;
   }
 }

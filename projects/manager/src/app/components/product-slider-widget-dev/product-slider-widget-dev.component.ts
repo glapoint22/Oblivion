@@ -3,6 +3,7 @@ import { ProductSliderWidgetComponent } from 'widgets';
 import { WidgetInspectorView } from '../../classes/enums';
 import { ProductSliderWidgetDevData } from '../../classes/product-slider-widget-dev-data';
 import { Query } from '../../classes/query';
+import { Queryable } from '../../classes/queryable';
 import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
@@ -10,7 +11,7 @@ import { WidgetService } from '../../services/widget/widget.service';
   templateUrl: './product-slider-widget-dev.component.html',
   styleUrls: ['./product-slider-widget-dev.component.scss']
 })
-export class ProductSliderWidgetDevComponent extends ProductSliderWidgetComponent {
+export class ProductSliderWidgetDevComponent extends ProductSliderWidgetComponent implements Queryable {
   public query: Query = new Query();
   public widgetInspectorView = WidgetInspectorView;
 

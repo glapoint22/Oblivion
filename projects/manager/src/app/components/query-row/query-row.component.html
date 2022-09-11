@@ -27,7 +27,7 @@
         <!-- Value -->
         <div #valueButton class="query-button" (click)="onValueButtonClick(valueButton)" style="position: relative;">
             <!-- Item -->
-            <div *ngIf="queryRow.item" class="text" [title]="queryRow.item.name">{{queryRow.item.name}}</div>
+            <div *ngIf="queryRow.item" class="text" [title]="getItemName()">{{getItemName()}}</div>
 
             <!-- Integer -->
             <div *ngIf="queryRow.integer != undefined">{{queryRow.integer}}</div>

@@ -16,7 +16,8 @@ export class QueryBuilderService {
   public categoriesList!: Array<Item>;
   public nichesList!: Array<Item>;
   public keywordGroupsList!: Array<Item>;
-  public subgroupsList!: Array<Item>;
+  public productGroupsList!: Array<Item>;
+  public listsDownloadComplete!: boolean;
   public queryTypeList: Array<KeyValue<string, QueryType>> = [
     {
       key: 'None',
@@ -225,7 +226,7 @@ export class QueryBuilderService {
 
   // ---------------------------------------------------------------- Get Query Lists --------------------------------------------------------------
   public getQueryLists(): void {
-    if (this.categoriesList && this.categoriesList.length > 0) return;
+    if (this.listsDownloadComplete) return;
 
     const categories$ = this.dataService.get('api/Categories');
     const niches$ = this.dataService.get('api/Niches');
@@ -237,7 +238,8 @@ export class QueryBuilderService {
         this.categoriesList = results[0];
         this.nichesList = results[1];
         this.keywordGroupsList = results[2];
-        this.subgroupsList = results[3];
+        this.productGroupsList = results[3];
+        this.listsDownloadComplete = true;
       });
   }
 
