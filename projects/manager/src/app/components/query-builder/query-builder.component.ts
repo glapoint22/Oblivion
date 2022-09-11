@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Query } from '../../classes/query';
 import { QueryElement } from '../../classes/query-element';
 import { QueryGroup } from '../../classes/query-group';
+import { Queryable } from '../../classes/queryable';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-import { ProductSliderWidgetDevComponent } from '../product-slider-widget-dev/product-slider-widget-dev.component';
 
 @Component({
   selector: 'query-builder',
@@ -11,7 +11,7 @@ import { ProductSliderWidgetDevComponent } from '../product-slider-widget-dev/pr
   styleUrls: ['./query-builder.component.scss']
 })
 export class QueryBuilderComponent implements OnInit {
-  @Input() productSliderWidget!: ProductSliderWidgetDevComponent
+  @Input() widget!: Queryable
 
   constructor(public queryBuilderService: QueryBuilderService) { }
 
@@ -110,8 +110,8 @@ export class QueryBuilderComponent implements OnInit {
     this.queryBuilderService.selectedQueryElements = [];
 
 
-    if (this.productSliderWidget.query.elements.length == 0) {
-      this.productSliderWidget.query = new Query();
+    if (this.widget.query.elements.length == 0) {
+      this.widget.query = new Query();
     }
 
     this.queryBuilderService.onChange();
