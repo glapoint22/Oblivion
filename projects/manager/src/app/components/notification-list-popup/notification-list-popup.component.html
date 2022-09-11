@@ -1,0 +1,42 @@
+<div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="!archiveList || (archiveList && !archiveList.listManager.contextMenuOpen && !archiveList.listManager.selectedItem) ? $event.stopPropagation() : null">
+
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-up-Border"></div>
+        <div class="popup-arrow-up-background"></div>
+    </div>
+
+
+    <div class="popup-base">
+
+        <div class="tabs">
+            <div class="tabs-container">
+                <div class="tab" [ngClass]="{'selected-tab': newTabSelected}" (click)="newTabSelected = true">New ({{notificationService.notificationCount}})</div>
+                <div class="tab" [ngClass]="{'selected-tab': !newTabSelected}" (click)="newTabSelected = false">Archive</div>
+            </div>
+            
+            <icon-button [icon]="'fa-solid fa-arrows-rotate'"
+                         [title]="'Refresh'"
+                         [isDisabled]="false"
+                         (onClick)="null">
+            </icon-button>
+        </div>
+
+        <div class="tabs-base"></div>
+
+
+        <div class="modal-list-container">
+            <notification-list *ngIf="newTabSelected"
+                               [sourceList]="notificationService.newNotifications"
+                               [options]="newListOptions"
+                               (onListUpdate)="onListUpdate($event)">
+            </notification-list>
+
+            <notification-list #archiveList
+                               *ngIf="!newTabSelected"
+                               [sourceList]="notificationService.archiveNotifications"
+                               [options]="archiveListOptions"
+                               (onListUpdate)="onListUpdate($event)">
+            </notification-list>
+        </div>
+    </div>
+</div>

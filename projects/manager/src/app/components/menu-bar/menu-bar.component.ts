@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../classes/enums';
 import { MenuBarButton } from '../../classes/menu-bar-button';
 import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { NotificationService } from '../../services/notification/notification.service';
+import { NotificationListPopupComponent } from '../notification-list-popup/notification-list-popup.component';
 
 @Component({
   selector: 'menu-bar',
@@ -16,8 +18,10 @@ export class MenuBarComponent {
   private menuOpen!: boolean;
   private menu!: ContextMenuComponent;
   private nichesSideMenuOpen!: boolean;
+  private notificationListPopup!: NotificationListPopupComponent
 
   // Public
+  public notificationCount!: number;
   public selectedMenuBarButton!: MenuBarButton;
   public nichesSideMenu!: NichesSideMenuComponent;
   public menuBarButtons: Array<MenuBarButton> = [
@@ -144,11 +148,21 @@ export class MenuBarComponent {
     }
   ]
 
-  constructor(public lazyLoadingService: LazyLoadingService, private router: Router, private dataService: DataService) { }
+  @ViewChild('notificationListPopupContainer', { read: ViewContainerRef }) notificationListPopupContainer!: ViewContainerRef;
+  @ViewChild('notificationPopup', { read: ViewContainerRef }) notificationPopupContainer!: ViewContainerRef;
+
+  constructor(public lazyLoadingService: LazyLoadingService, private router: Router, private notificationService: NotificationService) { }
 
 
   ngOnInit() {
-    
+    this.notificationService.onNotificationCount.subscribe((notificationCount) => {
+      this.notificationCount = notificationCount;
+    });
+  }
+
+
+  ngAfterViewInit() {
+    this.notificationService.notificationPopupContainer = this.notificationPopupContainer;
   }
 
 
@@ -316,14 +330,25 @@ export class MenuBarComponent {
 
 
 
-  openNotificationsPopup() {
-    this.lazyLoadingService.load(async () => {
-      const { NotificationsPopupComponent } = await import('../notifications-popup/notifications-popup.component');
-      const { NotificationsPopupModule } = await import('../notifications-popup/notifications-popup.module');
-      return {
-        component: NotificationsPopupComponent,
-        module: NotificationsPopupModule
-      }
-    }, SpinnerAction.None)
+  openNotificationListPopup() {
+    if (this.notificationListPopupContainer.length > 0) {
+      this.notificationListPopup.close();
+      return;
+    }
+
+    // If a message, review, or product notification popup is open then the notification list popup can NOT be opened
+    if (this.notificationPopupContainer.length == 0) {
+      this.lazyLoadingService.load(async () => {
+        const { NotificationListPopupComponent: NotificationListPopupComponent } = await import('../notification-list-popup/notification-list-popup.component');
+        const { NotificationListPopupModule: NotificationListPopupModule } = await import('../notification-list-popup/notification-list-popup.module');
+        return {
+          component: NotificationListPopupComponent,
+          module: NotificationListPopupModule
+        }
+      }, SpinnerAction.None, this.notificationListPopupContainer)
+        .then((notificationListPopup: NotificationListPopupComponent) => {
+          this.notificationListPopup = notificationListPopup;
+        });
+    }
   }
 }

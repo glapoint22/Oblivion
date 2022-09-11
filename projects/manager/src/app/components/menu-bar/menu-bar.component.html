@@ -1,13 +1,14 @@
 <div class="menu-bar">
     <div class="left-container">
         
+        <!-- Niche Shack Icon -->
         <div class="shack-container"
              (click)="openNichesSideMenu()"
              (mousedown)="$event.stopPropagation()">
             <img src="assets/shack.png">
         </div>
 
-
+        <!-- Menu buttons container -->
         <div class="menu-buttons-container">
             <div #htmlMenuBarButton
                  *ngFor="let menuBarButton of menuBarButtons"
@@ -15,16 +16,39 @@
                  (mouseover)="onMenuBarButtonOver(htmlMenuBarButton, menuBarButton)"
                  (mousedown)="onMenuBarButtonDown(htmlMenuBarButton, menuBarButton, $event)"
                  [ngClass]="{'selected': menuBarButton == selectedMenuBarButton}">
-                 
                 {{menuBarButton.name}}
             </div>
         </div>
     </div>
 
-    <icon-button [icon]="'fas fa-bell'"
-                 [title]="'Notifications'"
-                 [isDisabled]="false"
-                 [fontSize]="'19'"
-                 (onClick)="openNotificationsPopup()">
-    </icon-button>
+
+
+
+    <div>
+        <!-- Notification bell container -->
+        <div class="notification-bell-container"
+             [ngStyle]="{'margin-right': notificationCount > 0 ? '4px' : '24px'}"
+             (click)="openNotificationListPopup()"
+             [ngClass]="{'disabled-notification-bell-container': !notificationPopupContainer ? false : notificationPopupContainer.length > 0}"
+             (mousedown)="$event.stopPropagation()">
+
+            <i class="fa-solid fa-bell"></i>
+
+            <div *ngIf="notificationCount > 0" class="count-circle">
+                {{notificationCount}}
+            </div>
+        </div>
+
+
+        <!-- Notification list popup container -->
+        <div class="notification-list-popup-container">
+            <ng-template #notificationListPopupContainer></ng-template>
+        </div>
+
+
+        <!-- Notification popup container -->
+        <div class="notification-popup-container">
+            <ng-template #notificationPopup></ng-template>
+        </div>
+    </div>
 </div>

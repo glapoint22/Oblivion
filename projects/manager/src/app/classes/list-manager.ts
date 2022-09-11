@@ -33,6 +33,8 @@ export class ListManager {
   public multiselectable: boolean = true;
   public sortable: boolean = true;
   public verifyAddEdit: boolean = false;
+  public showSelection: boolean = true;
+  public cursor!: string;
   public addEditVerificationInProgress!: boolean;
   public onListUpdate = new Subject<ListUpdate>();
   public contextMenuOpen!: boolean;
