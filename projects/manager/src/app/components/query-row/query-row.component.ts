@@ -3,7 +3,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, QueryType } from '../../classes/enums';
 import { Item } from '../../classes/item';
-import { Query } from '../../classes/query';
+import { QueryElement } from '../../classes/query-element';
 import { QueryRow } from '../../classes/query-row';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
@@ -16,8 +16,8 @@ import { PricePopupComponent } from '../price-popup/price-popup.component';
   styleUrls: ['./query-row.component.scss']
 })
 export class QueryRowComponent implements OnChanges {
-  @Input() queryRow!: QueryRow;
-  @Input() parent!: Query;
+  @Input() queryElement!: QueryElement;
+  public queryRow!: QueryRow;
   public QueryType = QueryType;
   public LogicalOperatorType = LogicalOperatorType;
   public AutoQueryType = AutoQueryType;
@@ -27,7 +27,7 @@ export class QueryRowComponent implements OnChanges {
 
   // ---------------------------------------------------------------- Ng On Changes ----------------------------------------------------------------
   public ngOnChanges(): void {
-    this.queryRow.parent = this.parent;
+    this.queryRow = this.queryElement.element as QueryRow;
   }
 
 
@@ -124,6 +124,8 @@ export class QueryRowComponent implements OnChanges {
           this.queryRow.auto = AutoQueryType.Browsed;
           break;
       }
+
+      this.queryBuilderService.onChange();
     });
   }
 
@@ -138,6 +140,7 @@ export class QueryRowComponent implements OnChanges {
 
     this.openDropdownList(comparisonOperatorButton, this.queryBuilderService.comparisonOperatorList, (item: KeyValue<string, ComparisonOperatorType>) => {
       this.queryRow.comparisonOperatorType = item.value;
+      this.queryBuilderService.onChange();
     });
   }
 
@@ -152,6 +155,7 @@ export class QueryRowComponent implements OnChanges {
       case QueryType.Category:
         this.openDropdownList(valueButton, this.queryBuilderService.categoriesList, (item: Item) => {
           this.queryRow.item = item;
+          this.queryBuilderService.onChange();
         });
         break;
 
@@ -160,6 +164,7 @@ export class QueryRowComponent implements OnChanges {
       case QueryType.Niche:
         this.openDropdownList(valueButton, this.queryBuilderService.nichesList, (item: Item) => {
           this.queryRow.item = item;
+          this.queryBuilderService.onChange();
         });
         break;
 
@@ -168,6 +173,7 @@ export class QueryRowComponent implements OnChanges {
       case QueryType.ProductGroup:
         this.openDropdownList(valueButton, this.queryBuilderService.subgroupsList, (item: Item) => {
           this.queryRow.item = item;
+          this.queryBuilderService.onChange();
         });
         break;
 
@@ -182,6 +188,7 @@ export class QueryRowComponent implements OnChanges {
       case QueryType.Rating:
         this.openDropdownList(valueButton, this.queryBuilderService.ratingList, (item: KeyValue<string, number>) => {
           this.queryRow.integer = item.value;
+          this.queryBuilderService.onChange();
         });
         break;
 
@@ -190,21 +197,17 @@ export class QueryRowComponent implements OnChanges {
       case QueryType.KeywordGroup:
         this.openDropdownList(valueButton, this.queryBuilderService.keywordGroupsList, (item: Item) => {
           this.queryRow.item = item;
+          this.queryBuilderService.onChange();
         });
         break;
-
-
-
-      // Date
-      case QueryType.Date:
-        // Load date popup
-        break;
+      
 
 
       // Auto
       case QueryType.Auto:
         this.openDropdownList(valueButton, this.queryBuilderService.autoQueryTypeList, (item: KeyValue<string, AutoQueryType>) => {
           this.queryRow.auto = item.value;
+          this.queryBuilderService.onChange();
         });
         break;
     }
@@ -216,6 +219,7 @@ export class QueryRowComponent implements OnChanges {
   onLogicalOperatorButtonClick(logicalOperatorButton: HTMLElement) {
     this.openDropdownList(logicalOperatorButton, this.queryBuilderService.logicalOperatorTypeList, (item: KeyValue<string, LogicalOperatorType>) => {
       this.queryRow.logicalOperatorType = item.value;
+      this.queryBuilderService.onChange();
     });
   }
 
@@ -280,6 +284,7 @@ export class QueryRowComponent implements OnChanges {
 
         pricePopup.callback = (price: number) => {
           this.queryRow.price = price;
+          this.queryBuilderService.onChange();
         }
       });
   }
@@ -291,5 +296,6 @@ export class QueryRowComponent implements OnChanges {
     const milliseconds = new Date(1970, 0, 1).setMilliseconds(Date.parse(dateInput.value));
 
     this.queryRow.date = new Date(milliseconds);
+    this.queryBuilderService.onChange();
   }
 }

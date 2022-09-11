@@ -1,6 +1,5 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { Query } from '../../classes/query';
-import { QueryGroup } from '../../classes/query-group';
+import { Component, Input } from '@angular/core';
+import { QueryElement } from '../../classes/query-element';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 
 @Component({
@@ -8,16 +7,8 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
   templateUrl: './query-group.component.html',
   styleUrls: ['./query-group.component.scss']
 })
-export class QueryGroupComponent implements OnChanges {
-  @Input() queryGroup!: QueryGroup;
-  @Input() parent!: Query;
+export class QueryGroupComponent {
+  @Input() queryElement!: QueryElement;
 
   constructor(public queryBuilderService: QueryBuilderService) { }
-
-
-  // ---------------------------------------------------------------- Ng On Changes ----------------------------------------------------------------
-  public ngOnChanges(): void {
-    this.queryGroup.parent = this.parent;
-    this.queryGroup.query.parent = this.queryGroup;
-  }
 }

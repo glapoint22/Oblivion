@@ -2,11 +2,11 @@ import { KeyValue } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { DataService } from 'common';
 import { forkJoin } from 'rxjs';
-import { QueryType, ComparisonOperatorType, AutoQueryType, LogicalOperatorType } from '../../classes/enums';
+import { QueryType, ComparisonOperatorType, AutoQueryType, LogicalOperatorType, QueryElementType } from '../../classes/enums';
 import { Item } from '../../classes/item';
 import { QueryElement } from '../../classes/query-element';
-import { QueryGroup } from '../../classes/query-group';
 import { InputService } from '../input/input.service';
+import { WidgetService } from '../widget/widget.service';
 
 @Injectable({
   providedIn: 'root'
@@ -148,7 +148,7 @@ export class QueryBuilderService {
     }
   ];
 
-  constructor(private inputService: InputService, private dataService: DataService) { }
+  constructor(private inputService: InputService, private dataService: DataService, private widgetService: WidgetService) { }
 
 
 
@@ -159,7 +159,7 @@ export class QueryBuilderService {
 
       // Is NOT selected
       if (!queryElement.selected) {
-        if (queryElement instanceof QueryGroup) {
+        if (queryElement.queryElementType == QueryElementType.QueryGroup) {
 
           // This will unselect all children of this group
           for (let i = 0; i < this.selectedQueryElements.length; i++) {
@@ -178,10 +178,8 @@ export class QueryBuilderService {
           const currentElement = this.selectedQueryElements[i];
 
           // If current element is a query group
-          if (currentElement instanceof QueryGroup) {
-            const queryGroup = currentElement as QueryGroup;
-
-            if (this.isParent(queryGroup, queryElement)) return;
+          if (currentElement.queryElementType == QueryElementType.QueryGroup) {
+            if (this.isParent(currentElement, queryElement)) return;
           }
         }
 
@@ -241,6 +239,14 @@ export class QueryBuilderService {
         this.keywordGroupsList = results[2];
         this.subgroupsList = results[3];
       });
+  }
+
+
+
+
+  // ------------------------------------------------------------------- On Change -----------------------------------------------------------------
+  public onChange() {
+    this.widgetService.page.save();
   }
 
 

@@ -1,9 +1,6 @@
 import { Query } from "./query";
-import { QueryElement } from "./query-element";
 
-export class QueryGroup implements QueryElement {
-    public selected!: boolean;
-    public parent!: Query;
+export class QueryGroup {
 
     constructor(public query: Query) { }
 }

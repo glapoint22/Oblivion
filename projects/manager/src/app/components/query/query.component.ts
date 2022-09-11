@@ -1,8 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { QueryElementType } from '../../classes/enums';
 import { Query } from '../../classes/query';
-import { QueryElement } from '../../classes/query-element';
-import { QueryGroup } from '../../classes/query-group';
-import { QueryRow } from '../../classes/query-row';
 
 @Component({
   selector: 'query',
@@ -11,18 +9,5 @@ import { QueryRow } from '../../classes/query-row';
 })
 export class QueryComponent {
   @Input() query!: Query;
-  public QueryRow = QueryRow;
-  public QueryGroup = QueryGroup;
-
-  isQueryRow(element: QueryElement): boolean {
-    return element instanceof QueryRow;
-  }
-
-  isQueryGroup(element: QueryElement): boolean {
-    return element instanceof QueryGroup;
-  }
-
-  getGroup(element: QueryElement): QueryGroup {
-    return element as QueryGroup;
-  }
+  public QueryElementType = QueryElementType;
 }
