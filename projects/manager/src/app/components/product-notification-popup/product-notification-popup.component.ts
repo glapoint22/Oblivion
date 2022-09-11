@@ -9,7 +9,7 @@ import { ContextMenuComponent } from '../../components/context-menu/context-menu
 import { PromptComponent } from '../../components/prompt/prompt.component';
 import { NotificationService } from '../../services/notification/notification.service';
 import { ProductService } from '../../services/product/product.service';
-import { NotificationUserProfilePopupComponent } from '../notification-user-profile-popup/notification-user-profile-popup.component';
+import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
@@ -24,7 +24,7 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   public employeeIndex: number = 0;
   public notification!: NotificationProduct;
   public notificationItem!: NotificationItem;
-  public notificationUserProfilePopup!: NotificationUserProfilePopupComponent;
+  public profilePopup!: NotificationProfilePopupComponent;
   public newNoteAdded!: boolean;
   public newNote!: string;
 
@@ -55,7 +55,7 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
 
   mousedown = () => {
-    if (this.notificationUserProfilePopup) this.notificationUserProfilePopup.close();
+    if (this.profilePopup) this.profilePopup.close();
   }
 
 
@@ -117,23 +117,23 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
 
 
-  openNotificationUserProfilePopup() {
+  openProfilePopup() {
     if (this.profilePopupContainer.length > 0) {
-      this.notificationUserProfilePopup.close();
+      this.profilePopup.close();
       return;
     }
 
     this.lazyLoadingService.load(async () => {
-      const { NotificationUserProfilePopupComponent } = await import('../notification-user-profile-popup/notification-user-profile-popup.component');
-      const { NotificationUserProfilePopupModule } = await import('../notification-user-profile-popup/notification-user-profile-popup.module');
+      const { NotificationProfilePopupComponent } = await import('../notification-profile-popup/notification-profile-popup.component');
+      const { NotificationProfilePopupModule } = await import('../notification-profile-popup/notification-profile-popup.module');
       return {
-        component: NotificationUserProfilePopupComponent,
-        module: NotificationUserProfilePopupModule
+        component: NotificationProfilePopupComponent,
+        module: NotificationProfilePopupModule
       }
     }, SpinnerAction.None, this.profilePopupContainer)
-      .then((notificationUserProfilePopup: NotificationUserProfilePopupComponent) => {
-        this.notificationUserProfilePopup = notificationUserProfilePopup;
-        notificationUserProfilePopup.user = this.notification.users[this.userIndex];
+      .then((profilePopup: NotificationProfilePopupComponent) => {
+        this.profilePopup = profilePopup;
+        profilePopup.user = this.notification.users[this.userIndex];
       });
   }
 
@@ -203,7 +203,7 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
   onEscape(): void {
     if (this.profilePopupContainer.length > 0) {
-      this.notificationUserProfilePopup.close();
+      this.profilePopup.close();
     } else {
       this.fade();
     }

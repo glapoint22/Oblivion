@@ -1,0 +1,144 @@
+.popup-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.popup-arrow-container {
+    position: relative;
+    left: 179px;
+    width: 24px;
+}
+
+.popup-arrow-down-Border {
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 12px solid #505050;
+}
+
+.popup-arrow-down-background {
+    position: absolute;
+    top: -1px;
+    left: 1px;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-top: 12px solid #323232;
+}
+
+
+.popup-base {
+    width: 210px;
+    padding: 8px 10px 10px;
+    background: #323232;
+    border: 1px solid #505050;
+    border-radius: 5px;
+    box-shadow: 0px 0px 7px 7px rgba(0, 0, 0, 0.25);
+}
+
+
+.profile {
+    display: flex;
+}
+
+
+.profile-image-container {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+
+    img {
+        max-width: 18px;
+        max-height: 18px;
+    }
+}
+
+
+
+.profile-info-container {
+    font-size: 12px;
+    color: #ffba00;
+    margin-left: 8px;
+    margin-bottom: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.profile-name {
+    margin-bottom: 3px;
+}
+
+
+.first-name {
+    margin-right: 3px;
+}
+
+
+.user-email {
+    color: #b0b0b0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.user-compliant-type {
+    color: #b0b0b0;
+    margin-right: 4px;
+}
+
+
+.checkbox {
+    margin-bottom: 0;
+    padding-left: 25px;
+    margin-left: 1px;
+
+    div {
+        color: #dadada;
+        font-size: 12px;
+    }
+
+    &:hover {
+        div {
+            color: white;
+        }
+    }
+}
+
+
+.button {
+    width: 100%;
+    background: #424242;
+    border: 1px solid #626262;
+    color: #dedede;
+    font-size: 12px;
+    padding: 4px 0;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+
+    &:first-of-type {
+        margin-bottom: 10px;
+    }
+
+    &:hover:not(:disabled):not(:active) {
+        background: lighten(#424242, 2);
+        border-color: lighten(#626262, 6);
+        color: lighten(#dedede, 10);
+    }
+
+    &:active {
+        background: lighten(#424242, 6);
+        border-color: lighten(#626262, 10);
+        color: lighten(#dedede, 14);
+    }
+
+    &:disabled {
+        background: #4242426c;
+        border-color: #6262625e;
+        color: #dedede59;
+        cursor: default;
+    }
+}

@@ -1,0 +1,82 @@
+<div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()">
+
+    <div class="popup-base">
+
+        <div class="profile">
+
+            <!-- Profile Image -->
+            <div class="profile-image-container" 
+                 [ngStyle]="{'background': user.userName ? 'none' : '#555555',
+                             'outline': user.userName ? 'none' : '1px solid #868686',
+                             'margin-top': user.userName ? '-1px' : '2px'}">
+           
+                <img [src]="user.userName ? 'assets/message-notification.png' : 'images/' + user.image"
+                     [ngStyle]="{'border-radius': user.userName ? 'none' : '50%'}">
+            </div>
+
+
+            <!-- Profile Info -->
+            <div class="profile-info-container">
+                <!-- Profile Name -->
+                <div class="profile-name">
+                    <span class="first-name">{{user.userName ? user.userName : user.firstName}}</span>
+                    <span>{{user.lastName}}</span>
+                </div>
+
+                <!-- User Info -->
+                <ng-container *ngIf="!isReview">
+                    <ng-container *ngIf="user.userName">
+                        <div class="user-email" [title]="user.email">
+                            {{user.email}}
+                        </div>
+                    </ng-container>
+                    
+                    <ng-container *ngIf="!user.userName">
+                        <span class="user-compliant-type">Noncompliant Strikes:</span>
+                        <span>{{user.noncompliantStrikes}}</span>
+                    </ng-container>
+                </ng-container>
+
+                <!-- Review Writer Info -->
+                <ng-container *ngIf="isReview">
+                    <div style="margin-bottom: 3px;">
+                        <span class="user-compliant-type">Noncompliant Strikes:</span>
+                        <span>{{user.noncompliantStrikes}}</span>
+                    </div>
+                    <span class="user-compliant-type">Notification Sending:</span>
+                    <span [ngStyle]="{'color': user.blockNotificationSending ? '#ff2121' : '#12eb12'}">{{user.blockNotificationSending ? 'Blocked' : 'Allowed'}}</span>
+                </ng-container>
+            </div>
+        </div>
+
+
+        <!-- Checkbox -->
+        <ng-container *ngIf="!isReview">
+            <label class="checkbox" (click)="openNotificationSendingPrompt()">
+                <div>Block this user from sending notifications</div>
+                <input type="checkbox" [checked]="user.blockNotificationSending" disabled="true">
+                <span class="checkmark"></span>
+            </label>
+        </ng-container>
+
+
+        <!-- Noncompliant Strikes -->
+        <ng-container *ngIf="isReview">
+            
+            <button class="button">
+                Add Noncompliant Strike
+            </button>
+
+            <button class="button">
+                Remove User's Profile Pic
+            </button>
+        </ng-container>
+    </div>
+
+    
+    <!-- Arrow -->
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-down-Border"></div>
+        <div class="popup-arrow-down-background"></div>
+    </div>
+</div>

@@ -53,13 +53,13 @@
                         <div class="profile-image-container">
 
                             <div class="profile-popup-container">
-                                <ng-template #userProfileContainer></ng-template>
+                                <ng-template #profileContainer></ng-template>
                             </div>
 
                             <img style="cursor: pointer;"
                                 (mousedown)="reviewProfilePopupContainer.length > 0 ? reviewProfilePopup.close() : null; $event.stopPropagation()"
                                 [src]="'images/' + notification.users[userIndex].image"
-                                (click)="openUserProfilePopup(notification.users[userIndex])"
+                                (click)="openProfilePopup()"
                                 [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>
                     </div>
@@ -103,9 +103,9 @@
                             </div>
 
                             <img style="cursor: pointer;"
-                                (mousedown)="userProfilePopupContainer.length > 0 ? userProfilePopup.close() : null; $event.stopPropagation()"
+                                (mousedown)="profilePopupContainer.length > 0 ? profilePopup.close() : null; $event.stopPropagation()"
                                 [src]="'images/' + notification.reviewWriter.image"
-                                (click)="openReviewProfilePopup(notification.reviewWriter)"
+                                (click)="openReviewProfilePopup()"
                                 [title]="notification.reviewWriter.firstName + ' ' + notification.reviewWriter.lastName">
                         </div>
                     </div>

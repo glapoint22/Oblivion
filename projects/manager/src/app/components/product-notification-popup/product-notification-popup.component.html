@@ -63,7 +63,7 @@
 
                             <img style="cursor: pointer;"
                                 (mousedown)="$event.stopPropagation()"
-                                (click)="openNotificationUserProfilePopup()"
+                                (click)="openProfilePopup()"
                                 [src]="'images/' + notification.users[userIndex].image"
                                 [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>

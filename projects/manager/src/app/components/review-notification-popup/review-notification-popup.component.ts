@@ -3,7 +3,7 @@ import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common
 import { NotificationItem } from '../../classes/notification-item';
 import { NotificationReview } from '../../classes/notification-review';
 import { NotificationProfilePopupUser } from '../../classes/notification-profile-popup-user';
-import { NotificationUserProfilePopupComponent } from '../notification-user-profile-popup/notification-user-profile-popup.component';
+import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
 import { NotificationProfile } from '../../classes/notification-profile';
 
 @Component({
@@ -15,13 +15,13 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
   public employeeIndex: number = 0;
   public notification!: NotificationReview;
   public notificationItem!: NotificationItem;
-  public userProfilePopup!: NotificationUserProfilePopupComponent;
-  public reviewProfilePopup!: NotificationUserProfilePopupComponent;
+  public profilePopup!: NotificationProfilePopupComponent;
+  public reviewProfilePopup!: NotificationProfilePopupComponent;
   public newNoteAdded!: boolean;
   public newNote!: string;
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
-  @ViewChild('userProfileContainer', { read: ViewContainerRef }) userProfilePopupContainer!: ViewContainerRef;
+  @ViewChild('profileContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
   @ViewChild('reviewProfileContainer', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
 
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
@@ -45,7 +45,7 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
   mousedown = () => {
-    if (this.userProfilePopup) this.userProfilePopup.close();
+    if (this.profilePopup) this.profilePopup.close();
     if (this.reviewProfilePopup) this.reviewProfilePopup.close();
   }
 
@@ -54,45 +54,45 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
 
-  openUserProfilePopup(notificationUser: NotificationProfilePopupUser) {
-    if (this.userProfilePopupContainer.length > 0) {
-      this.userProfilePopup.close();
+  openProfilePopup() {
+    if (this.profilePopupContainer.length > 0) {
+      this.profilePopup.close();
       return;
     }
 
     this.lazyLoadingService.load(async () => {
-      const { NotificationUserProfilePopupComponent } = await import('../notification-user-profile-popup/notification-user-profile-popup.component');
-      const { NotificationUserProfilePopupModule } = await import('../notification-user-profile-popup/notification-user-profile-popup.module');
+      const { NotificationProfilePopupComponent } = await import('../notification-profile-popup/notification-profile-popup.component');
+      const { NotificationProfilePopupModule } = await import('../notification-profile-popup/notification-profile-popup.module');
       return {
-        component: NotificationUserProfilePopupComponent,
-        module: NotificationUserProfilePopupModule
+        component: NotificationProfilePopupComponent,
+        module: NotificationProfilePopupModule
       }
-    }, SpinnerAction.None, this.userProfilePopupContainer)
-      .then((userProfilePopup: NotificationUserProfilePopupComponent) => {
-        this.userProfilePopup = userProfilePopup;
-        userProfilePopup.user = notificationUser;
+    }, SpinnerAction.None, this.profilePopupContainer)
+      .then((userProfilePopup: NotificationProfilePopupComponent) => {
+        this.profilePopup = userProfilePopup;
+        userProfilePopup.user = this.notification.users[this.userIndex];
       });
   }
 
 
 
-  openReviewProfilePopup(notificationUser: NotificationProfilePopupUser) {
+  openReviewProfilePopup() {
     if (this.reviewProfilePopupContainer.length > 0) {
       this.reviewProfilePopup.close();
       return;
     }
 
     this.lazyLoadingService.load(async () => {
-      const { NotificationUserProfilePopupComponent } = await import('../notification-user-profile-popup/notification-user-profile-popup.component');
-      const { NotificationUserProfilePopupModule } = await import('../notification-user-profile-popup/notification-user-profile-popup.module');
+      const { NotificationProfilePopupComponent } = await import('../notification-profile-popup/notification-profile-popup.component');
+      const { NotificationProfilePopupModule } = await import('../notification-profile-popup/notification-profile-popup.module');
       return {
-        component: NotificationUserProfilePopupComponent,
-        module: NotificationUserProfilePopupModule
+        component: NotificationProfilePopupComponent,
+        module: NotificationProfilePopupModule
       }
     }, SpinnerAction.None, this.reviewProfilePopupContainer)
-      .then((reviewProfilePopup: NotificationUserProfilePopupComponent) => {
+      .then((reviewProfilePopup: NotificationProfilePopupComponent) => {
         this.reviewProfilePopup = reviewProfilePopup;
-        reviewProfilePopup.user = notificationUser;
+        reviewProfilePopup.user = this.notification.reviewWriter;
         reviewProfilePopup.isReview = true;
       });
   }
@@ -114,8 +114,8 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
   onEscape(): void {
-    if (this.userProfilePopupContainer.length > 0 || this.reviewProfilePopupContainer.length > 0) {
-      if (this.userProfilePopupContainer.length > 0) this.userProfilePopup.close();
+    if (this.profilePopupContainer.length > 0 || this.reviewProfilePopupContainer.length > 0) {
+      if (this.profilePopupContainer.length > 0) this.profilePopup.close();
       if (this.reviewProfilePopupContainer.length > 0) this.reviewProfilePopup.close();
 
     } else {
