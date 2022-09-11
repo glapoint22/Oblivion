@@ -50,6 +50,8 @@ export class ListComponent implements OnInit {
       if (this.options.multiselectable != null) this.listManager.multiselectable = this.options.multiselectable;
       if (this.options.sortable != null) this.listManager.sortable = this.options.sortable;
       if (this.options.verifyAddEdit != null) this.listManager.verifyAddEdit = this.options.verifyAddEdit;
+      if (this.options.showSelection != null) this.listManager.showSelection = this.options.showSelection;
+      if (this.options.cursor != null) this.listManager.cursor = this.options.cursor;
     }
   }
 

@@ -129,7 +129,7 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
   close(): void {
     if (
       // If notes were never writen yet on this form and now
-      // notes are finally being writen for the first time
+      // for the first time notes are finally being writen
       (this.newNote != null &&
         // and the text area actually has text writen in it
         // and not just empty spaces

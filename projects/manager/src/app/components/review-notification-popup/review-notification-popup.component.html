@@ -7,14 +7,22 @@
 
     <div class="popup-base">
 
-        <!-- Product -->
-        <div class="product-container">
-            <div class="product-thumbnail-container">
-                <img [src]="'images/' + notificationItem.image">
-            </div>
-            <div class="product-name">{{notificationItem.name}}</div>
-        </div>
 
+        <div class="top-container">
+
+            <!-- Product -->
+            <div class="product-container">
+                <div class="product-thumbnail-container">
+                    <img [src]="'images/' + notificationItem.image">
+                </div>
+                <div class="product-name">{{notificationItem.productName}}</div>
+            </div>
+
+
+            <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
+                         (onClick)="null">
+            </icon-button>
+        </div>
 
         <!-- Notification Type -->
         <div class="notification-type-container">

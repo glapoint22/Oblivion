@@ -5,13 +5,14 @@
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
          (mousedown)="listManager.onItemDown(item, $event)"
-         [ngClass]="{'selected-item': item == listManager.selectedItem,
-                    'unselected-item': item == listManager.unselectedItem,
-                    'selected-item-top': item.selectType == listManager.SelectType.Top,
-                    'selected-item-all': item.selectType == listManager.SelectType.All && item != listManager.editedItem,
-                    'selected-item-middle': item.selectType == listManager.SelectType.Middle,
-                    'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
-                    'no-hover': listManager.contextMenuOpen || item == listManager.editedItem}">
+         [ngStyle]="{'cursor': listManager.cursor ? listManager.cursor : 'default'}"
+         [ngClass]="{'selected-item': listManager.showSelection ? item == listManager.selectedItem : null,
+                     'unselected-item': listManager.showSelection ? item == listManager.unselectedItem : null,
+                     'selected-item-top': listManager.showSelection ? item.selectType == listManager.SelectType.Top : null,
+                     'selected-item-all': listManager.showSelection ? item.selectType == listManager.SelectType.All && item != listManager.editedItem : null,
+                     'selected-item-middle': listManager.showSelection ? item.selectType == listManager.SelectType.Middle : null,
+                     'selected-item-bottom': listManager.showSelection ? item.selectType == listManager.SelectType.Bottom : null,
+                     'no-hover': listManager.contextMenuOpen || item == listManager.editedItem}">
 
 
         <ng-container *ngIf="listManager.editedItem != null && item.values[1].name != parentSearchType">

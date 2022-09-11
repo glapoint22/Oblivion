@@ -2,14 +2,14 @@
 
 .popup-container {
     position: absolute;
-    top: 29px;
-    right: 5px;
+    top: 0px;
+    right: 0px;
 }
 
 .popup-arrow-container {
     position: relative;
     width: 24px;
-    left: 420px;
+    left: 419px;
 }
 
 .popup-arrow-up-Border {
@@ -43,15 +43,16 @@
     width: 100%;
     padding: 0 5px 0 135px;
     justify-content: space-between;
-    @include tabs(80px,
+    @include tabs(
+        80px,
         22px,
         24px,
         true,
-        #393939,
-        #424242,
-        #2b2b2b,
+        #383838,
+        #404040,
+        #282828,
         #2d2d2d,
-        #626262,
+        #656565,
         #898989)
 }
 

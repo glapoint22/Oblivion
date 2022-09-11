@@ -13,14 +13,15 @@
          (mousedown)="listManager.onItemDown(item, $event)"
          (dblclick)="listManager.onItemDoubleClick(item)"
          [contentEditable]="item == listManager.editedItem"
-         [ngClass]="{'selected-item': item == listManager.selectedItem,
-                     'unselected-item': item == listManager.unselectedItem,
+         [ngStyle]="{'cursor': listManager.cursor ? listManager.cursor : 'default'}"
+         [ngClass]="{'selected-item': listManager.showSelection ? item == listManager.selectedItem : null,
+                     'unselected-item': listManager.showSelection ? item == listManager.unselectedItem : null,
+                     'transparent-item': listManager.showSelection ? listManager.editedItem != null && listManager.editedItem != item : null,
+                     'selected-item-top': listManager.showSelection ? item.selectType == listManager.SelectType.Top : null,
+                     'selected-item-all': listManager.showSelection ? item.selectType == listManager.SelectType.All : null,
+                     'selected-item-middle': listManager.showSelection ? item.selectType == listManager.SelectType.Middle : null,
+                     'selected-item-bottom': listManager.showSelection ? item.selectType == listManager.SelectType.Bottom : null,
                      'edited-item': item == listManager.editedItem,
-                     'transparent-item': listManager.editedItem != null && listManager.editedItem != item,
-                     'selected-item-top': item.selectType == listManager.SelectType.Top,
-                     'selected-item-all': item.selectType == listManager.SelectType.All,
-                     'selected-item-middle': item.selectType == listManager.SelectType.Middle,
-                     'selected-item-bottom': item.selectType == listManager.SelectType.Bottom,
                      'no-hover': listManager.contextMenuOpen}">
 
         <div *ngIf="listManager.editedItem == null"
