@@ -20,7 +20,7 @@
                 <!-- Products -->
                 <div *ngFor="let productGroup of productGroups" [style.width.px]="sliderContainer.clientWidth"
                     class="product-group">
-                    <div class="product-summary-container" *ngFor="let product of productGroup">
+                    <div class="product-summary-container" *ngFor="let product of productGroup" style="pointer-events: none;">
                         <product-summary [product]="product"></product-summary>
                     </div>
                 </div>
@@ -28,12 +28,12 @@
 
             <!-- Left Arrow Button -->
             <div #leftArrowButton class="left-arrow-button">
-                <i></i>
+                <i class="fa-solid fa-angle-left"></i>
             </div>
 
             <!-- Right Arrow Button -->
             <div #rightArrowButton class="right-arrow-button">
-                <i></i>
+                <i class="fa-solid fa-angle-right"></i>
             </div>
         </div>
     </div>

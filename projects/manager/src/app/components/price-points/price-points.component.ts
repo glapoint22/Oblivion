@@ -61,7 +61,7 @@ export class PricePointsComponent {
       unitPrice: pricePoint.unitPrice && pricePoint.unitPrice.length > 0 ? pricePoint.unitPrice : null,
       unit: pricePoint.unit && pricePoint.unit.length > 0 ? pricePoint.unit : null,
       strikethroughPrice: pricePoint.strikethroughPrice && pricePoint.strikethroughPrice.length > 0 ? pricePoint.strikethroughPrice : null,
-      price: pricePoint.price && pricePoint.price.length > 0 ? pricePoint.price : null,
+      price: pricePoint.price && pricePoint.price.length > 0 ? parseFloat(pricePoint.price) : null,
       shippingType: pricePoint.shippingType,
       recurringPayment: pricePoint.recurringPayment
     }).subscribe();

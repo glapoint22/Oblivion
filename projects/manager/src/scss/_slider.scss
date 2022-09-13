@@ -1,0 +1,107 @@
+@mixin arrow-button ($size) {
+    width: $size;
+    height: $size;
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    transform: translateY(-50%);
+    border: 1px solid #dadada;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(24, 24, 24, 0.75);
+
+    &:hover {
+        cursor: pointer;
+        background: rgba(24, 24, 24, 1);
+        border-color: white;
+
+        i {
+            color: white;
+        }
+    }
+
+    &:active {
+        background: rgb(20, 20, 20);
+        border-color: #b4b4b4;
+        i {
+            color: #b4b4b4;
+        }
+    }
+}
+
+
+.left-arrow-button, .right-arrow-button {
+    @include arrow-button(50px);
+
+    i {
+        color: #dadada;
+        font-size: 24px;
+    }
+
+    
+}
+
+.left-arrow-button {
+    left: 20px;
+}
+
+.right-arrow-button {
+    right: 20px;
+}
+
+.scrollbar-container {
+    margin: auto;
+    height: 44px;
+}
+
+.scroll-track {
+    background: #242424;
+    height: 2px;
+    position: relative;
+    top: 23px;
+}
+
+.scroll-thumb-container {
+    width: fit-content;
+    padding: 18px 0;
+    position: absolute;
+}
+
+.scroll-thumb {
+    cursor: pointer;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(#404040, #2b2b2b);
+
+    &:hover {
+        background: linear-gradient(lighten(#404040, 5) , lighten(#2b2b2b, 5));
+    }
+}
+
+
+
+@media(max-width: 600px) {
+    .left-arrow-button, .right-arrow-button {
+        width: 38px;
+        height: 38px;
+    
+        i {
+            font-size: 18px;
+        }
+    }
+}
+
+
+
+@media(max-width: 360px) {
+    .left-arrow-button, .right-arrow-button {
+        width: 34px;
+        height: 34px;
+    
+        i {
+            font-size: 16px;
+        }
+    }
+}

@@ -1,9 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { DataService } from 'common';
+import { Product } from '../../classes/product';
 import { Query } from '../../classes/query';
 import { QueryElement } from '../../classes/query-element';
 import { QueryGroup } from '../../classes/query-group';
 import { Queryable } from '../../classes/queryable';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
   selector: 'query-builder',
@@ -11,14 +14,22 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
   styleUrls: ['./query-builder.component.scss']
 })
 export class QueryBuilderComponent implements OnInit {
-  @Input() widget!: Queryable
+  @Input() widget!: Queryable;
 
-  constructor(public queryBuilderService: QueryBuilderService) { }
+  constructor(public queryBuilderService: QueryBuilderService, private dataService: DataService, private widgetService: WidgetService) { }
 
 
   // ---------------------------------------------------------------- Ng On Init -------------------------------------------------------------------
   public ngOnInit(): void {
     this.queryBuilderService.getQueryLists();
+    this.queryBuilderService.change$.subscribe(() => {
+
+      this.dataService.get<Array<Product>>('api/Products/QueryBuilder', [{key: 'queryString', value: this.widgetService.stringify(this.widget.query)}])
+        .subscribe((products: Array<Product>) => {
+          this.widget.products = products;
+          this.widget.ngOnChanges();
+        });
+    });
   }
 
 

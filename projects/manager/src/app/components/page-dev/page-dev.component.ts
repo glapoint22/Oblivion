@@ -57,7 +57,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
           id: this.id,
           name: this.name,
           pageType: this.pageType,
-          content: this.stringify()
+          content: this.widgetService.stringify(this.pageContent)
         }).subscribe();
       });
   }
@@ -67,124 +67,124 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
 
-  // --------------------------------------------------------------------------- Stringify ---------------------------------------------------------
-  stringify() {
-    return JSON.stringify(this.pageContent, (key, value) => {
-      if (
-        (typeof value != 'number' && !value) ||
-        (typeof value == 'object' && Object.values(value).length == 0) ||
-        (value instanceof Background && !value.enabled) ||
-        (value instanceof ColumnSpan && value.values.length == 1 && value.values[0].span == 12)
-      ) {
-        return undefined;
-      }
+  // // --------------------------------------------------------------------------- Stringify ---------------------------------------------------------
+  // stringify() {
+  //   return JSON.stringify(this.pageContent, (key, value) => {
+  //     if (
+  //       (typeof value != 'number' && !value) ||
+  //       (typeof value == 'object' && Object.values(value).length == 0) ||
+  //       (value instanceof Background && !value.enabled) ||
+  //       (value instanceof ColumnSpan && value.values.length == 1 && value.values[0].span == 12)
+  //     ) {
+  //       return undefined;
+  //     }
 
-      // Background Image
-      else if (value instanceof BackgroundImage) {
-        if (value.id) {
-          return {
-            id: value.id,
-            imageSizeType: value.imageSizeType,
-            position: value.position,
-            repeat: value.repeat,
-            attachment: value.attachment
-          }
-        } else {
-          return undefined;
-        }
+  //     // Background Image
+  //     else if (value instanceof BackgroundImage) {
+  //       if (value.id) {
+  //         return {
+  //           id: value.id,
+  //           imageSizeType: value.imageSizeType,
+  //           position: value.position,
+  //           repeat: value.repeat,
+  //           attachment: value.attachment
+  //         }
+  //       } else {
+  //         return undefined;
+  //       }
 
-      }
+  //     }
 
-      // Image
-      else if (value instanceof Image) {
-        return {
-          id: value.id,
-          imageSizeType: value.imageSizeType,
-        }
-      }
+  //     // Image
+  //     else if (value instanceof Image) {
+  //       return {
+  //         id: value.id,
+  //         imageSizeType: value.imageSizeType,
+  //       }
+  //     }
 
-      // Video
-      else if (value instanceof Video) {
-        return {
-          id: value.id
-        }
-      }
+  //     // Video
+  //     else if (value instanceof Video) {
+  //       return {
+  //         id: value.id
+  //       }
+  //     }
 
-      // Caption
-      else if (value instanceof Caption) {
-        return {
-          font: value.font,
-          fontSize: value.fontSize,
-          fontWeight: value.fontWeight,
-          fontStyle: value.fontStyle,
-          textDecoration: value.textDecoration,
-          text: value.text,
-          color: value.color
-        }
-      }
+  //     // Caption
+  //     else if (value instanceof Caption) {
+  //       return {
+  //         font: value.font,
+  //         fontSize: value.fontSize,
+  //         fontWeight: value.fontWeight,
+  //         fontStyle: value.fontStyle,
+  //         textDecoration: value.textDecoration,
+  //         text: value.text,
+  //         color: value.color
+  //       }
+  //     }
 
-      // Link
-      else if (value instanceof Link) {
-        if (value.linkType == LinkType.Page || value.linkType == LinkType.Product) {
-          return {
-            id: value.id,
-            linkType: value.linkType
-          }
-        } else {
-          return {
-            linkType: value.linkType,
-            url: value.url,
-          }
-        }
-      }
-
-
-      // Query
-      else if (value instanceof Query) {
-        return {
-          elements: value.elements
-        }
-      }
+  //     // Link
+  //     else if (value instanceof Link) {
+  //       if (value.linkType == LinkType.Page || value.linkType == LinkType.Product) {
+  //         return {
+  //           id: value.id,
+  //           linkType: value.linkType
+  //         }
+  //       } else {
+  //         return {
+  //           linkType: value.linkType,
+  //           url: value.url,
+  //         }
+  //       }
+  //     }
 
 
-      // Query Element
-      else if (value instanceof QueryElement) {
-        if (value.element instanceof QueryRow) {
+  //     // Query
+  //     else if (value instanceof Query) {
+  //       return {
+  //         elements: value.elements
+  //       }
+  //     }
 
-          // Query Row
-          return {
-            queryElementType: value.queryElementType,
-            queryRow: {
-              queryType: value.element.queryType,
-              logicalOperatorType: value.element.logicalOperatorType,
-              comparisonOperatorType: value.element.comparisonOperatorType,
-              item: value.element.item ? {
-                id: value.element.item?.id
-              } : null,
-              integer: value.element.integer,
-              date: value.element.date,
-              price: value.element.price,
-              auto: value.element.auto
-            }
-          }
-        } else {
 
-          // Query Group
-          return {
-            queryElementType: value.queryElementType,
-            queryGroup: {
-              query: value.element.query
-            }
-          }
-        }
-      }
+  //     // Query Element
+  //     else if (value instanceof QueryElement) {
+  //       if (value.element instanceof QueryRow) {
 
-      // Other
-      else {
-        return value;
-      }
-    });
-  }
+  //         // Query Row
+  //         return {
+  //           queryElementType: value.queryElementType,
+  //           queryRow: {
+  //             queryType: value.element.queryType,
+  //             logicalOperatorType: value.element.logicalOperatorType,
+  //             comparisonOperatorType: value.element.comparisonOperatorType,
+  //             item: value.element.item ? {
+  //               id: value.element.item?.id
+  //             } : null,
+  //             integer: value.element.integer,
+  //             date: value.element.date,
+  //             price: value.element.price,
+  //             auto: value.element.auto
+  //           }
+  //         }
+  //       } else {
+
+  //         // Query Group
+  //         return {
+  //           queryElementType: value.queryElementType,
+  //           queryGroup: {
+  //             query: value.element.query
+  //           }
+  //         }
+  //       }
+  //     }
+
+  //     // Other
+  //     else {
+  //       return value;
+  //     }
+  //   });
+  // }
 
 
 
