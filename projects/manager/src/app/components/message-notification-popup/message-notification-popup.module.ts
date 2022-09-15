@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MessageNotificationPopupComponent } from './message-notification-popup.component';
 import { CounterModule } from '../counter/counter.module';
 import { FormsModule } from '@angular/forms';
+import { IconButtonModule } from '../icon-button/icon-button.module';
 
 
 
@@ -11,7 +12,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     CounterModule,
-    FormsModule
+    FormsModule,
+    IconButtonModule
   ],
   exports: [MessageNotificationPopupComponent]
 })

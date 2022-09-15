@@ -2,15 +2,22 @@ import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/cor
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { NotificationItem } from '../../classes/notification-item';
 import { NotificationReview } from '../../classes/notification-review';
-import { NotificationProfilePopupUser } from '../../classes/notification-profile-popup-user';
 import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
 import { NotificationProfile } from '../../classes/notification-profile';
+import { MenuOptionType } from '../../classes/enums';
+import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NotificationService } from '../../services/notification/notification.service';
+import { PromptComponent } from '../../components/prompt/prompt.component';
 
 @Component({
   templateUrl: './review-notification-popup.component.html',
   styleUrls: ['./review-notification-popup.component.scss']
 })
 export class ReviewNotificationPopupComponent extends LazyLoad {
+  private isNew!: boolean;
+  private contextMenu!: ContextMenuComponent;
+
   public userIndex: number = 0;
   public employeeIndex: number = 0;
   public notification!: NotificationReview;
@@ -24,15 +31,19 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
   @ViewChild('profileContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
   @ViewChild('reviewProfileContainer', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
 
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
+  constructor(lazyLoadingService: LazyLoadingService,
+    private dataService: DataService,
+    private notificationService: NotificationService,
+    private sanitizer: DomSanitizer) {
     super(lazyLoadingService)
   }
 
 
   ngOnInit() {
     super.ngOnInit();
-    window.addEventListener('mousedown', this.mousedown);
-
+    this.notificationItem.selected = false;
+    this.notificationItem.selectType = null!;
+    
     this.dataService.get<NotificationReview>('api/Notifications/Review', [
       { key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }
     ]).subscribe((notificationReview: NotificationReview) => {
@@ -44,11 +55,52 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
 
-  mousedown = () => {
-    if (this.profilePopup) this.profilePopup.close();
-    if (this.reviewProfilePopup) this.reviewProfilePopup.close();
-  }
+  openContextMenu(ellipsis: HTMLElement) {
+    if (this.contextMenu) {
+      this.contextMenu.close();
+      return;
+    }
+    this.lazyLoadingService.load(async () => {
+      const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
 
+      return {
+        component: ContextMenuComponent,
+        module: ContextMenuModule
+      }
+    }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
+      this.contextMenu = contextMenu;
+      contextMenu.xPos = ellipsis.getBoundingClientRect().left + 25;
+      contextMenu.yPos = ellipsis.getBoundingClientRect().top + 21;
+      contextMenu.parentObj = this;
+      contextMenu.options = [
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Restore as New',
+          optionFunction: () => {
+            this.close(true);
+          }
+        },
+        {
+          type: MenuOptionType.Divider,
+          hidden: this.notificationItem.isNew ? true : false
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Delete',
+          hidden: this.notificationItem.isNew ? true : false,
+          optionFunction: () => {
+            this.openDeleteNotificationPrompt();
+          }
+        }
+      ]
+
+      const contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
+        contextMenuOpenListener.unsubscribe();
+        this.contextMenu = null!;
+      })
+    });
+  }
 
 
 
@@ -73,6 +125,8 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
         userProfilePopup.user = this.notification.users[this.userIndex];
       });
   }
+
+
 
 
 
@@ -113,6 +167,44 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
 
+  openRemoveReviewPrompt() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../../components/prompt/prompt.component');
+      const { PromptModule } = await import('../../components/prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      prompt.parentObj = this;
+      prompt.title = (!this.notification.reviewDeleted ? 'Remove' : 'Restore') + ' Review';
+      prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+        'The review with the title' +
+        ' <span style="color: #ffba00">\"' + this.notification.reviewWriter.reviewTitle + '\"</span>' +
+        ' will be ' + (!this.notification.reviewDeleted ? 'removed' : 'restored') + '.');
+      prompt.primaryButton = {
+        name: !this.notification.reviewDeleted ? 'Remove' : 'Restore',
+        buttonFunction: this.removeReview
+      }
+      prompt.secondaryButton.name = 'Cancel'
+    })
+  }
+
+
+
+
+  removeReview() {
+    this.notification.reviewDeleted = !this.notification.reviewDeleted;
+
+    this.dataService.put('api/Notifications/RemoveReview', {
+      reviewId: this.notification.reviewId
+    }).subscribe();
+  }
+
+
+
+
   onEscape(): void {
     if (this.profilePopupContainer.length > 0 || this.reviewProfilePopupContainer.length > 0) {
       if (this.profilePopupContainer.length > 0) this.profilePopup.close();
@@ -126,7 +218,47 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
 
-  close(): void {
+  openDeleteNotificationPrompt() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../../components/prompt/prompt.component');
+      const { PromptModule } = await import('../../components/prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      prompt.parentObj = this;
+      prompt.title = 'Delete Notification';
+      prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+        'The notification' +
+        ' <span style="color: #ffba00">\"' + this.notificationItem.name + '\"</span>' +
+        ' will be permanently deleted.');
+      prompt.primaryButton = {
+        name: 'Delete',
+        buttonFunction: this.deleteNotification
+      }
+      prompt.secondaryButton.name = 'Cancel'
+    })
+  }
+
+
+
+  deleteNotification() {
+    this.notificationService.archiveNotifications.splice(this.notificationItem.index!, 1);
+    const index = this.container.indexOf(this.viewRef);
+    this.container.remove(index);
+
+    this.dataService.delete('api/Notifications', {
+      notificationGroupId: this.notificationItem.notificationGroupId
+    }).subscribe();
+  }
+
+
+
+
+
+  close(restore?: boolean): void {
     if (
       // If notes were never writen yet on this form and now
       // for the first time notes are finally being writen
@@ -151,11 +283,29 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
     // If this is a new notification and it has NOT been sent to archive yet
     if (this.notificationItem.isNew) {
+      this.isNew = false;
+      this.notificationService.archiveNotifications.unshift(this.notificationItem)
+      this.notificationService.newNotifications.splice(this.notificationItem.index!, 1);
+      this.notificationService.notificationCount -= this.notificationItem.count;
 
-      // Send it to archive
+      // Update database
       this.dataService.put('api/Notifications/Archive',
         {
           notificationGroupId: this.notificationItem.notificationGroupId
+        }).subscribe();
+
+    } else if (restore) {
+      this.isNew = true;
+      this.notificationService.newNotifications.push(this.notificationItem)
+      this.notificationService.archiveNotifications.splice(this.notificationItem.index!, 1);
+      this.notificationService.notificationCount += this.notificationItem.count;
+      this.notificationService.newNotifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
+
+      // Update database
+      this.dataService.put('api/Notifications/Archive',
+        {
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          restore: true
         }).subscribe();
     }
 
@@ -166,10 +316,7 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
 
-
-
-
   ngOnDestroy() {
-    window.removeEventListener('mousedown', this.mousedown);
+    if (this.isNew != null) this.notificationItem.isNew = this.isNew;
   }
 }

@@ -91,8 +91,10 @@ export class NotificationListPopupComponent extends LazyLoad {
         }
       }
 
-      this.close();
-      this.openNotificationPopup(listUpdate.selectedItems![0] as NotificationItem);
+      if (!listUpdate.rightClick) {
+        this.close();
+        this.openNotificationPopup(listUpdate.selectedItems![0] as NotificationItem);
+      }
     }
   }
 
@@ -101,7 +103,6 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   openNotificationPopup(notificationItem: NotificationItem) {
-
     if (notificationItem.notificationType == 0) {
       this.lazyLoadingService.load(async () => {
         const { MessageNotificationPopupComponent } = await import('../message-notification-popup/message-notification-popup.component');
@@ -149,18 +150,54 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   restore() {
-    this.archiveList.listManager.selectedItem = null!;
     this.notificationItem.isNew = true;
-    this.notificationService.newNotifications.push(this.notificationItem)
+    this.notificationItem.selected = false;
+    this.notificationItem.selectType = null!;
+    this.archiveList.listManager.selectedItem = null!;
+
+    // If the type of this notification is a message, see if the sender of this message happens to have a message sitting in the NEW list
+    const newMessageNotificationItem = this.notificationService.newNotifications.find(x => x.notificationType == 0 && x.name == this.notificationItem.name);
+    // If the sender of this message notification has a message sitting in the NEW list
+    if (newMessageNotificationItem) {
+      // Increase the count for the message notification that is sitting in the NEW list by the number of messages in the message notification from the ARCHIVE list
+      newMessageNotificationItem.count += this.notificationItem.count;
+    }
+
+    // If the notification is anything other than a message notification
+    if (this.notificationItem.notificationType != 0 ||
+      // Or the notification is a message notification but the sender of that message
+      // notification does NOT have a NEW message notification sitting in the NEW list
+      !newMessageNotificationItem) {
+      // Then put that notification back into the NEW list
+      this.notificationService.newNotifications.push(this.notificationItem)
+      this.notificationService.newNotifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
+    }
+
+    // Remove the notification from the archive list
     this.notificationService.archiveNotifications.splice(this.notificationItem.index!, 1);
+    // Update the count for the notification bell
     this.notificationService.notificationCount += this.notificationItem.count;
-    this.notificationService.newNotifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
+
 
     // Update database
     this.dataService.put('api/Notifications/Archive',
       {
-        notificationGroupId: this.notificationItem.notificationGroupId
+        restore: true,
+        notificationGroupId: this.notificationItem.notificationGroupId,
+        restoreAllMessagesInGroup: this.notificationItem.notificationType == 0 ? true : false
       }).subscribe();
+  }
+
+
+
+  onEscape(): void {
+    if (!this.archiveList || (this.archiveList && !this.archiveList.listManager.contextMenuOpen && !this.archiveList.listManager.selectedItem)) {
+      this.close();
+    }
+
+    if (this.archiveList && !this.archiveList.listManager.contextMenuOpen) {
+      this.archiveList.listManager.showSelection = false;
+    }
   }
 
 

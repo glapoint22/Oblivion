@@ -18,10 +18,11 @@
                 <div class="product-name">{{notificationItem.productName}}</div>
             </div>
 
-
-            <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
-                         (onClick)="null">
-            </icon-button>
+            <div *ngIf="!notificationItem.isNew" #ellipsis>
+                <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
+                             (onClick)="openContextMenu(ellipsis)">
+                </icon-button>
+            </div>
         </div>
 
         <!-- Notification Type -->
@@ -58,7 +59,7 @@
 
                             <img style="cursor: pointer;"
                                 (mousedown)="reviewProfilePopupContainer.length > 0 ? reviewProfilePopup.close() : null; $event.stopPropagation()"
-                                [src]="'images/' + notification.users[userIndex].image"
+                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
                                 (click)="openProfilePopup()"
                                 [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>
@@ -104,7 +105,7 @@
 
                             <img style="cursor: pointer;"
                                 (mousedown)="profilePopupContainer.length > 0 ? profilePopup.close() : null; $event.stopPropagation()"
-                                [src]="'images/' + notification.reviewWriter.image"
+                                [src]="notification.reviewWriter.image ? 'images/' + notification.reviewWriter.image : 'assets/no-account-pic.png'"
                                 (click)="openReviewProfilePopup()"
                                 [title]="notification.reviewWriter.firstName + ' ' + notification.reviewWriter.lastName">
                         </div>
@@ -152,8 +153,8 @@
                         </div>
 
                         <!-- Image -->
-                        <div *ngIf="notification.employees[employeeIndex].image != null" class="profile-image-container">
-                            <img [src]="'images/' + notification.employees[employeeIndex].image" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName">
+                        <div class="profile-image-container">
+                            <img [src]="notification.employees[employeeIndex].image ? 'images/' + notification.employees[employeeIndex].image : 'assets/no-account-pic.png'" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName">
                         </div>
                     </div>
                 </div>
@@ -172,8 +173,8 @@
 
         <!-- Buttons -->
         <div class="button-container">
-            <button class="dark-button" (click)="close()">Remove Review</button>
-            <button class="gold-button">Archive</button>
+            <button class="notification-button" (click)="openRemoveReviewPrompt()">{{notification && !notification.reviewDeleted ? 'Remove' : 'Restore'}} Review</button>
+            <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="close()">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
         </div>
     </div>
 </div>

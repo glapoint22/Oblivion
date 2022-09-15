@@ -8,7 +8,6 @@ import { NotificationProfile } from '../../classes/notification-profile';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { PromptComponent } from '../../components/prompt/prompt.component';
 import { NotificationService } from '../../services/notification/notification.service';
-import { ProductService } from '../../services/product/product.service';
 import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
 
 @Component({
@@ -17,8 +16,7 @@ import { NotificationProfilePopupComponent } from '../notification-profile-popup
 })
 export class ProductNotificationPopupComponent extends LazyLoad {
   private isNew!: boolean;
-  private contextMenuOpen!: boolean;
-  private contextMenu!: ContextMenuComponent
+  private contextMenu!: ContextMenuComponent;
 
   public userIndex: number = 0;
   public employeeIndex: number = 0;
@@ -34,8 +32,7 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
     private notificationService: NotificationService,
-    private sanitizer: DomSanitizer,
-    private productService: ProductService) {
+    private sanitizer: DomSanitizer) {
     super(lazyLoadingService)
   }
 
@@ -43,9 +40,11 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
   ngOnInit() {
     super.ngOnInit();
-    window.addEventListener('mousedown', this.mousedown);
+    this.notificationItem.selected = false;
+    this.notificationItem.selectType = null!;
 
-    this.dataService.get<NotificationProduct>('api/Notifications/Product', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }
+    this.dataService.get<NotificationProduct>('api/Notifications/Product', [
+      { key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }
     ]).subscribe((notificationProduct: NotificationProduct) => {
       this.notification = notificationProduct;
     });
@@ -54,18 +53,13 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
 
 
-  mousedown = () => {
-    if (this.profilePopup) this.profilePopup.close();
-  }
-
 
 
 
 
   openContextMenu(ellipsis: HTMLElement) {
-    if (this.contextMenuOpen) {
+    if (this.contextMenu) {
       this.contextMenu.close();
-      this.contextMenuOpen = false;
       return;
     }
     this.lazyLoadingService.load(async () => {
@@ -77,7 +71,6 @@ export class ProductNotificationPopupComponent extends LazyLoad {
         module: ContextMenuModule
       }
     }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-      this.contextMenuOpen = true;
       this.contextMenu = contextMenu;
       contextMenu.xPos = ellipsis.getBoundingClientRect().left + 25;
       contextMenu.yPos = ellipsis.getBoundingClientRect().top + 21;
@@ -85,29 +78,35 @@ export class ProductNotificationPopupComponent extends LazyLoad {
       contextMenu.options = [
         {
           type: MenuOptionType.MenuItem,
-          name: 'Open Product',
-          optionFunction: ()=> {
-            this.productService.goToProduct(this.notification.productId);
-          }
-        },
-        {
-          type: MenuOptionType.MenuItem,
           name: 'Go to Product Website',
-          optionFunction: ()=> {
+          optionFunction: () => {
             window.open(this.notification.productHoplink, '_blank');
           }
         },
         {
           type: MenuOptionType.MenuItem,
           name: this.notificationItem.isNew ? 'Archive' : 'Restore as New',
-          optionFunction: this.close,
-          optionFunctionParameters: [true]
+          optionFunction: () => {
+            this.close(true);
+          }
+        },
+        {
+          type: MenuOptionType.Divider,
+          hidden: this.notificationItem.isNew ? true : false
+        },
+        {
+          type: MenuOptionType.MenuItem,
+          name: 'Delete',
+          hidden: this.notificationItem.isNew ? true : false,
+          optionFunction: () => {
+            this.openDeleteNotificationPrompt();
+          }
         }
       ]
 
       const contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
         contextMenuOpenListener.unsubscribe();
-        this.contextMenuOpen = menuOpen;
+        this.contextMenu = null!;
       })
     });
   }
@@ -187,15 +186,9 @@ export class ProductNotificationPopupComponent extends LazyLoad {
     this.notification.productDisabled = !this.notification.productDisabled;
 
     this.dataService.put('api/Notifications/DisableProduct', {
-      productId: this.notification.productId,
-      productDisabled: this.notification.productDisabled
+      productId: this.notification.productId
     }).subscribe();
   }
-
-
-
-
-
 
 
 
@@ -205,12 +198,51 @@ export class ProductNotificationPopupComponent extends LazyLoad {
     if (this.profilePopupContainer.length > 0) {
       this.profilePopup.close();
     } else {
-      this.fade();
+
+      if (!this.contextMenu) {
+        this.fade();
+      }
     }
   }
 
 
 
+
+  openDeleteNotificationPrompt() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../../components/prompt/prompt.component');
+      const { PromptModule } = await import('../../components/prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      prompt.parentObj = this;
+      prompt.title = 'Delete Notification';
+      prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+        'The notification' +
+        ' <span style="color: #ffba00">\"' + this.notificationItem.name + '\"</span>' +
+        ' will be permanently deleted.');
+      prompt.primaryButton = {
+        name: 'Delete',
+        buttonFunction: this.deleteNotification
+      }
+      prompt.secondaryButton.name = 'Cancel'
+    })
+  }
+
+
+
+  deleteNotification() {
+    this.notificationService.archiveNotifications.splice(this.notificationItem.index!, 1);
+    const index = this.container.indexOf(this.viewRef);
+    this.container.remove(index);
+
+    this.dataService.delete('api/Notifications', {
+      notificationGroupId: this.notificationItem.notificationGroupId
+    }).subscribe();
+  }
 
 
 
@@ -245,11 +277,11 @@ export class ProductNotificationPopupComponent extends LazyLoad {
       this.notificationService.newNotifications.splice(this.notificationItem.index!, 1);
       this.notificationService.notificationCount -= this.notificationItem.count;
 
-      // // Update database
-      // this.dataService.put('api/Notifications/Archive',
-      //   {
-      //     notificationGroupId: this.notificationItem.notificationGroupId
-      //   }).subscribe();
+      // Update database
+      this.dataService.put('api/Notifications/Archive',
+        {
+          notificationGroupId: this.notificationItem.notificationGroupId
+        }).subscribe();
 
     } else if (restore) {
       this.isNew = true;
@@ -258,15 +290,13 @@ export class ProductNotificationPopupComponent extends LazyLoad {
       this.notificationService.notificationCount += this.notificationItem.count;
       this.notificationService.newNotifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
 
-      // // Update database
-      // this.dataService.put('api/Notifications/Archive',
-      //   {
-      //     notificationGroupId: this.notificationItem.notificationGroupId
-      //   }).subscribe();
+      // Update database
+      this.dataService.put('api/Notifications/Archive',
+        {
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          restore: true
+        }).subscribe();
     }
-
-
-
 
     // Now close
     super.close();
@@ -276,8 +306,8 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
 
 
+
   ngOnDestroy() {
     if (this.isNew != null) this.notificationItem.isNew = this.isNew;
-    window.removeEventListener('mousedown', this.mousedown);
   }
 }
