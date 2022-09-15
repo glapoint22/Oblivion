@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { DataService } from 'common';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { QueryType, ComparisonOperatorType, AutoQueryType, LogicalOperatorType, QueryElementType } from '../../classes/enums';
 import { Item } from '../../classes/item';
 import { QueryElement } from '../../classes/query-element';
@@ -18,6 +18,7 @@ export class QueryBuilderService {
   public keywordGroupsList!: Array<Item>;
   public productGroupsList!: Array<Item>;
   public listsDownloadComplete!: boolean;
+  public change$: Subject<void> = new Subject<void>()
   public queryTypeList: Array<KeyValue<string, QueryType>> = [
     {
       key: 'None',
@@ -249,6 +250,7 @@ export class QueryBuilderService {
   // ------------------------------------------------------------------- On Change -----------------------------------------------------------------
   public onChange() {
     this.widgetService.page.save();
+    this.change$.next();
   }
 
 
