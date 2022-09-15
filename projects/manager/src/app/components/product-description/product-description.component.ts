@@ -2,6 +2,7 @@ import { ApplicationRef, Component, ElementRef, Input, ViewChild } from '@angula
 import { DataService, IProduct } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { TextBoxData, TextBoxDev } from 'text-box';
+import { WidgetService } from '../../services/widget/widget.service';
 
 @Component({
   selector: 'product-description',
@@ -18,7 +19,7 @@ export class ProductDescriptionComponent {
   private saveData = new Subject<void>();
   private mousedown!: boolean;
 
-  constructor(private appRef: ApplicationRef, private dataService: DataService) { }
+  constructor(private appRef: ApplicationRef, private dataService: DataService, private widgetService: WidgetService) { }
 
 
   // --------------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
@@ -28,7 +29,7 @@ export class ProductDescriptionComponent {
       .subscribe(() => {
         this.dataService.put('api/Products/' + this.apiUrl, {
           productId: this.product.id,
-          description: JSON.stringify(this.textBox.getData())
+          description: this.widgetService.stringify(this.textBox.getData())
         }).subscribe();
       });
   }
