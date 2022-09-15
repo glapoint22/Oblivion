@@ -10,7 +10,7 @@
                              'outline': user.userName ? 'none' : '1px solid #868686',
                              'margin-top': user.userName ? '-1px' : '2px'}">
            
-                <img [src]="user.userName ? 'assets/message-notification.png' : 'images/' + user.image"
+                <img [src]="user.userName ? 'assets/message-notification.png' : user.image ? 'images/' + user.image : 'assets/no-account-pic.png'"
                      [ngStyle]="{'border-radius': user.userName ? 'none' : '50%'}">
             </div>
 
@@ -52,22 +52,21 @@
 
         <!-- Checkbox -->
         <ng-container *ngIf="!isReview">
-            <label class="checkbox" (click)="openNotificationSendingPrompt()">
-                <div>Block this user from sending notifications</div>
+            <label class="checkbox" (click)="oncheckboxClick()">
+                <div>{{!user.blockNotificationSending ? 'Block' : 'Unblock'}} this user from sending notifications</div>
                 <input type="checkbox" [checked]="user.blockNotificationSending" disabled="true">
                 <span class="checkmark"></span>
             </label>
         </ng-container>
 
 
-        <!-- Noncompliant Strikes -->
+        <!-- Noncompliant Strike Buttons -->
         <ng-container *ngIf="isReview">
-            
-            <button class="button">
+            <button class="button" (click)="onAddNoncompliantStrikeButtonClick()" [disabled]="AddNoncompliantStrikeButtonDisabled">
                 Add Noncompliant Strike
             </button>
 
-            <button class="button">
+            <button class="button" (click)="onRemoveUserProfilePicButtonClick()" [disabled]="user.image == null || RemoveUserProfilePicButtonDisabled">
                 Remove User's Profile Pic
             </button>
         </ng-container>

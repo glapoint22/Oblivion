@@ -23,11 +23,7 @@
                              (onClick)="openContextMenu(ellipsis)">
                 </icon-button>
             </div>
-            
         </div>
-
-        
-
 
         <!-- Notification Type -->
         <div class="notification-type-container">
@@ -64,7 +60,7 @@
                             <img style="cursor: pointer;"
                                 (mousedown)="$event.stopPropagation()"
                                 (click)="openProfilePopup()"
-                                [src]="'images/' + notification.users[userIndex].image"
+                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
                                 [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>
                     </div>
@@ -112,8 +108,8 @@
                         </div>
 
                         <!-- Image -->
-                        <div *ngIf="notification.employees[employeeIndex].image != null" class="profile-image-container">
-                            <img [src]="'images/' + notification.employees[employeeIndex].image" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName">
+                        <div class="profile-image-container">
+                            <img [src]="notification.employees[employeeIndex].image ? 'images/' + notification.employees[employeeIndex].image : 'assets/no-account-pic.png'" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName">
                         </div>
                     </div>
                 </div>
@@ -131,9 +127,8 @@
 
         <!-- Buttons -->
         <div class="button-container">
-            <button class="disable-product-button" (click)="openDisableProductPrompt()">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
-            <button *ngIf="notificationItem.isNew" class="gold-button" (click)="close()">Archive</button>
-            <button *ngIf="!notificationItem.isNew" class="dark-button" (click)="close()">Close</button>
+            <button class="notification-button" (click)="openDisableProductPrompt()">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
+            <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="close()">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
         </div>
     </div>
 </div>
