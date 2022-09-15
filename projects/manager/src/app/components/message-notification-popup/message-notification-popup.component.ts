@@ -67,8 +67,22 @@ export class MessageNotificationPopupComponent extends LazyLoad {
           type: MenuOptionType.MenuItem,
           name: this.notificationItem.isNew ? 'Archive All Messages' : 'Restore as New',
           optionFunction: () => {
-            this.notificationItem.isNew ? this.archiveAll() : this.restore()
-            
+            this.notificationItem.isNew ?
+
+              // Archive All
+              this.transfer(this.notificationService.newNotifications, null!, this.notificationService.archiveNotifications, this.notificationItem.count, {
+                archiveAllMessagesInGroup: true,
+                notificationGroupId: this.notificationItem.notificationGroupId
+              })
+
+              :
+
+              // Restore
+              this.transfer(this.notificationService.archiveNotifications, this.notificationItem.count, this.notificationService.newNotifications, 1, {
+                restore: true,
+                notificationId: this.notification[this.messageIndex].notificationId,
+                notificationGroupId: this.notificationItem.notificationGroupId
+              });
           }
         },
         {
@@ -76,7 +90,13 @@ export class MessageNotificationPopupComponent extends LazyLoad {
           name: 'Restore All Messages as New',
           hidden: this.notificationItem.isNew || (!this.notificationItem.isNew && this.notificationItem.count == 1),
           optionFunction: () => {
-            this.restoreAll()
+
+            // Restore All
+            this.transfer(this.notificationService.archiveNotifications, null!, this.notificationService.newNotifications, this.notificationItem.count, {
+              restore: true,
+              restoreAllMessagesInGroup: true,
+              notificationGroupId: this.notificationItem.notificationGroupId
+            });
           }
         },
         {
@@ -169,131 +189,64 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
 
   archive() {
-    const notificationId = this.notification[this.messageIndex].notificationId;
-
-    // --- For the NEW list --- \\
-
-    // If there is more than one message in this message notification (i.e. counter: 1/3)
-    if (this.notificationItem.count > 1) {
-      // Then first, minus the count for the notification's red circle by one
-      this.notificationItem.count -= 1;
-      // And then remove the current message from the popup
-      this.notification.splice(this.messageIndex, 1);
-      // Set the counter so that the first message is being displayed (if not already)
-      this.messageIndex = 0;
-      // Disable send button
-      this.setSendButtonDisabled();
-
-      // If there is only one message in this message notification
-    } else {
-
-      // Remove the notification from the NEW list
-      const newNotificationItemIndex = this.notificationService.newNotifications.findIndex(x => x.name == this.notificationItem.name);
-      this.notificationService.newNotifications.splice(newNotificationItemIndex, 1);
-      // Then close the popup
-      this.close();
-    }
-
-
-    // --- For the ARCHIVE list --- \\
-
-    // See if the sender of this message already has a previous message that was archived
-    const archivedNotificationItemIndex = this.notificationService.archiveNotifications.findIndex(x => x.name == this.notificationItem.name);
-
-    // If so
-    if (archivedNotificationItemIndex != -1) {
-      // Make a copy of that archive message notification that's in the archive list
-      const archivedNotificationItemCopy = this.notificationService.archiveNotifications[archivedNotificationItemIndex];
-      // Increase the count for that archive message notification's red circle by one
-      archivedNotificationItemCopy.count += 1;
-      // Then remove that archive notification from the archive list and then put it back up at the top of the list
-      this.notificationService.archiveNotifications.splice(archivedNotificationItemIndex, 1);
-      this.notificationService.archiveNotifications.unshift(archivedNotificationItemCopy);
-
-      // If the sender of this message NEVER had a message that was archiveded
-    } else {
-
-      // Then we need to create a new archived message
-      const newArchiveNotificationItem = new NotificationItem();
-      newArchiveNotificationItem.isNew = false;
-      newArchiveNotificationItem.id = this.notificationItem.id;
-      newArchiveNotificationItem.notificationType = this.notificationItem.notificationType;
-      newArchiveNotificationItem.notificationGroupId = this.notificationItem.notificationGroupId;
-      newArchiveNotificationItem.image = this.notificationItem.image;
-      newArchiveNotificationItem.creationDate = this.notificationItem.creationDate;
-      newArchiveNotificationItem.name = this.notificationItem.name;
-      newArchiveNotificationItem.productName = this.notificationItem.productName;
-      newArchiveNotificationItem.count = 1;
-      // And then make it the first item in the archive list
-      this.notificationService.archiveNotifications.unshift(newArchiveNotificationItem);
-    }
-
-    // Update the count for the notification bell
-    this.notificationService.notificationCount -= 1;
-
-    // Update database
-    this.dataService.put('api/Notifications/Archive',
-      {
-        notificationGroupId: this.notificationItem.notificationGroupId,
-        notificationId: notificationId
-      }).subscribe();
+    this.transfer(this.notificationService.newNotifications, this.notificationItem.count, this.notificationService.archiveNotifications, 1, {
+      notificationId: this.notification[this.messageIndex].notificationId,
+      notificationGroupId: this.notificationItem.notificationGroupId
+    });
   }
 
 
 
+  removeMessage() {
+    // Minus the count for the notification's red circle by one
+    this.notificationItem.count -= 1;
+    // And then remove the current message from the popup
+    this.notification.splice(this.messageIndex, 1);
+    // Set the counter so that the first message is being displayed (if not already)
+    this.messageIndex = 0;
+    // Disable the send button
+    this.setSendButtonDisabled();
+  }
 
-  archiveAll() {
-    // --- For the NEW list --- \\
 
-    // Remove the notification from the NEW list
-    const newNotificationItemIndex = this.notificationService.newNotifications.findIndex(x => x.name == this.notificationItem.name);
-    this.notificationService.newNotifications.splice(newNotificationItemIndex, 1);
-    // Then close the popup
+
+  removeNotification(notifications: Array<NotificationItem>) {
+    const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
+    notifications.splice(notificationItemIndex, 1);
     this.close();
+  }
 
 
-    // --- For the ARCHIVE list --- \\
 
-    // See if the sender of this message already has a previous message that was archived
-    const archivedNotificationItemIndex = this.notificationService.archiveNotifications.findIndex(x => x.name == this.notificationItem.name);
+  createNewNotificationItem(isNew: boolean, messageCount: number): NotificationItem {
+    const newNotificationItem = new NotificationItem();
+    newNotificationItem.isNew = isNew;
+    newNotificationItem.id = this.notificationItem.id;
+    newNotificationItem.notificationType = this.notificationItem.notificationType;
+    newNotificationItem.notificationGroupId = this.notificationItem.notificationGroupId;
+    newNotificationItem.image = this.notificationItem.image;
+    newNotificationItem.creationDate = this.notificationItem.creationDate;
+    newNotificationItem.name = this.notificationItem.name;
+    newNotificationItem.productName = this.notificationItem.productName;
+    newNotificationItem.count = messageCount;
+    return newNotificationItem;
+  }
 
-    // If so
-    if (archivedNotificationItemIndex != -1) {
-      // Make a copy of that archive message notification that's in the archive list
-      const archivedNotificationItemCopy = this.notificationService.archiveNotifications[archivedNotificationItemIndex];
-      // Increase the count for the message notification in the ARCHIVE list by the number of messages in the message notification from the NEW list
-      archivedNotificationItemCopy.count += this.notificationItem.count;
-      // Then remove that archive notification from the archive list and then put it back up at the top of the list
-      this.notificationService.archiveNotifications.splice(archivedNotificationItemIndex, 1);
-      this.notificationService.archiveNotifications.unshift(archivedNotificationItemCopy);
 
-      // If the sender of this message NEVER had a message that was archiveded
+
+  removeFromOriginList(notifications: Array<NotificationItem>, messageCount?: number) {
+    // If we're moving just a message (NOT a notification item)
+    //  And there is more than just one message in the message notification
+    if (messageCount != null && messageCount > 1) {
+      this.removeMessage();
+
+      // But if we're moving just a message (NOT a notification item)
+      // And there is only one message in the message notification
+      // OR
+      // If we ARE moving a notification item
     } else {
-
-      // Then we need to create a new archived message
-      const newArchiveNotificationItem = new NotificationItem();
-      newArchiveNotificationItem.isNew = false;
-      newArchiveNotificationItem.id = this.notificationItem.id;
-      newArchiveNotificationItem.notificationType = this.notificationItem.notificationType;
-      newArchiveNotificationItem.notificationGroupId = this.notificationItem.notificationGroupId;
-      newArchiveNotificationItem.image = this.notificationItem.image;
-      newArchiveNotificationItem.creationDate = this.notificationItem.creationDate;
-      newArchiveNotificationItem.name = this.notificationItem.name;
-      newArchiveNotificationItem.productName = this.notificationItem.productName;
-      newArchiveNotificationItem.count = this.notificationItem.count;
-      // And then make it the first item in the archive list
-      this.notificationService.archiveNotifications.unshift(newArchiveNotificationItem);
+      this.removeNotification(notifications);
     }
-
-    // Update the count for the notification bell
-    this.notificationService.notificationCount -= this.notificationItem.count;
-
-    // Update database
-    this.dataService.put('api/Notifications/Archive',
-      {
-        notificationGroupId: this.notificationItem.notificationGroupId,
-        archiveAllMessagesInGroup: true
-      }).subscribe();
   }
 
 
@@ -301,167 +254,66 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  restore() {
-    const notificationId = this.notification[this.messageIndex].notificationId;
-
-    // --- For the ARCHIVE list --- \\
-
-    // If there is more than one message in this message notification (i.e. counter: 1/3)
-    if (this.notificationItem.count > 1) {
-      // Then first, minus the count for the notification's red circle by one
-      this.notificationItem.count -= 1;
-      // And then remove the current message from the popup
-      this.notification.splice(this.messageIndex, 1);
-      // Set the counter so that the first message is being displayed (if not already)
-      this.messageIndex = 0;
-      // Disable send button
-      this.setSendButtonDisabled();
-
-      // If there is only one message in this message notification
-    } else {
-
-      // Remove the notification from the ARCHIVE list
-      const archiveNotificationItemIndex = this.notificationService.archiveNotifications.findIndex(x => x.name == this.notificationItem.name);
-      this.notificationService.archiveNotifications.splice(archiveNotificationItemIndex, 1);
-      // Then close the popup
-      this.close();
-    }
-
-
-    // --- For the NEW list --- \\
-
-    // See if the sender of this message has a message in the NEW list
-    const newNotificationItemIndex = this.notificationService.newNotifications.findIndex(x => x.name == this.notificationItem.name);
+  addToDestinationList(notifications: Array<NotificationItem>, messageCount: number) {
+    // See if the sender of this message already has a message notification in the list
+    const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
 
     // If so
-    if (newNotificationItemIndex != -1) {
-      // Make a copy of that new message notification that's in the new list
-      const newNotificationItemCopy = this.notificationService.newNotifications[newNotificationItemIndex];
-      // Increase the count for that new message notification's red circle by one
-      newNotificationItemCopy.count += 1;
+    if (notificationItemIndex != -1) {
+      // Make a copy of that message notification that's in the list
+      const notificationItemCopy = notifications[notificationItemIndex];
+      // Update the count for that message notification's red circle
+      notificationItemCopy.count += messageCount;
 
-      // If the sender of this message does NOT have a message in the NEW list
+      // If we're in the archive list
+      if (notifications == this.notificationService.archiveNotifications) {
+        // Then remove that message notification from the list and then put it back up at the top of the list
+        notifications.splice(notificationItemIndex, 1);
+        notifications.unshift(notificationItemCopy);
+      }
+
+      // If the sender of this message does NOT have a message in the list
     } else {
 
-      // Then we need to create a new message
-      const newNotificationItem = new NotificationItem();
-      newNotificationItem.isNew = true;
-      newNotificationItem.id = this.notificationItem.id;
-      newNotificationItem.notificationType = this.notificationItem.notificationType;
-      newNotificationItem.notificationGroupId = this.notificationItem.notificationGroupId;
-      newNotificationItem.image = this.notificationItem.image;
-      newNotificationItem.creationDate = this.notificationItem.creationDate;
-      newNotificationItem.name = this.notificationItem.name;
-      newNotificationItem.productName = this.notificationItem.productName;
-      newNotificationItem.count = 1;
+      // If we're in the archive list
+      if (notifications == this.notificationService.archiveNotifications) {
+        // Create a new message notification and put it at the top of the list
+        notifications.unshift(this.createNewNotificationItem(false, messageCount));
 
-      // Add the new notification item to the NEW list
-      this.notificationService.newNotifications.push(newNotificationItem)
-      // Sort the NEW list by the creation date of each item
-      this.notificationService.newNotifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
+        // If we're in the new list
+      } else {
+        // Create a new message notification and order it in the list based on its creation date
+        notifications.push(this.createNewNotificationItem(true, messageCount))
+        notifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
+      }
     }
-
-    // Update the count for the notification bell
-    this.notificationService.notificationCount += 1;
-
-
-    // Update database
-    this.dataService.put('api/Notifications/Archive',
-      {
-        restore: true,
-        notificationId: notificationId,
-        notificationGroupId: this.notificationItem.notificationGroupId
-      }).subscribe();
   }
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  restoreAll() {
-    // --- For the ARCHIVE list --- \\
-
-    // Remove the notification from the ARCHIVE list
-    const archiveNotificationItemIndex = this.notificationService.archiveNotifications.findIndex(x => x.name == this.notificationItem.name);
-    this.notificationService.archiveNotifications.splice(archiveNotificationItemIndex, 1);
-    // Then close the popup
-    this.close();
-
-
-    // --- For the NEW list --- \\
-
-    // See if the sender of this message has a message in the NEW list
-    const newNotificationItemIndex = this.notificationService.newNotifications.findIndex(x => x.name == this.notificationItem.name);
-
-    // If so
-    if (newNotificationItemIndex != -1) {
-      // Make a copy of that new message notification that's in the NEW list
-      const newNotificationItemCopy = this.notificationService.archiveNotifications[newNotificationItemIndex];
-      // Increase the count for the message notification in the NEW list by the number of messages in the notification from the ARCHIVE list
-      newNotificationItemCopy.count += this.notificationItem.count;
-
-      // If the sender of this message does NOT have a message in the NEW list
-    } else {
-
-      // Then we need to create a new message
-      const newNotificationItem = new NotificationItem();
-      newNotificationItem.isNew = true;
-      newNotificationItem.id = this.notificationItem.id;
-      newNotificationItem.notificationType = this.notificationItem.notificationType;
-      newNotificationItem.notificationGroupId = this.notificationItem.notificationGroupId;
-      newNotificationItem.image = this.notificationItem.image;
-      newNotificationItem.creationDate = this.notificationItem.creationDate;
-      newNotificationItem.name = this.notificationItem.name;
-      newNotificationItem.productName = this.notificationItem.productName;
-      newNotificationItem.count = this.notificationItem.count;
-
-      // Add the new notification item to the NEW list
-      this.notificationService.newNotifications.push(newNotificationItem)
-      // Sort the NEW list by the creation date of each item
-      this.notificationService.newNotifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
-    }
+  transfer(originList: Array<NotificationItem>, originMessageCount: number, destinationList: Array<NotificationItem>, destinationMessageCount: number, dataServiceParameters: {}) {
+    this.removeFromOriginList(originList, originMessageCount);
+    this.addToDestinationList(destinationList, destinationMessageCount);
 
     // Update the count for the notification bell
-    this.notificationService.notificationCount += this.notificationItem.count;
-
+    this.notificationService.notificationCount += (destinationList == this.notificationService.archiveNotifications ? -destinationMessageCount : destinationMessageCount);
     // Update database
-    this.dataService.put('api/Notifications/Archive',
-      {
-        restore: true,
-        restoreAllMessagesInGroup: true,
-        notificationGroupId: this.notificationItem.notificationGroupId,
-      }).subscribe();
+    this.dataService.put('api/Notifications/Archive', dataServiceParameters).subscribe();
   }
 
 
 
-
-
-
-
+  // 1) Archive: Has only one message (NO messages in archive list)
+  // 2) Archive: Has more than one message (NO messages in archive list)
+  // 3) Archive: Has only one message (HAS messages in archive list)
+  // 4) Archive: Has more than one message (HAS messages in archive list)
+  // 5) Archive All: (NO messages in archive list)
+  // 6) Archive All: (HAS messages in archive list)
+  // 7) Restore: Has only one message (NO messages in new list)
+  // 8) Restore: Has more than one message (NO messages in new list)
+  // 9) Restore: Has only one message (HAS messages in new list)
+  // 10) Restore: Has more than one message (HAS messages in new list)
+  // 11) Restore All: (NO messages in new list)
+  // 12) Restore All: (HAS messages in new list)
 }

@@ -40,7 +40,11 @@
                 <div class="info-bar">
 
                     <div class="counter-container">
-                        <counter *ngIf="notification.users.length > 1" [itemCount]="notification.users.length" (onItemChange)="userIndex = $event"></counter>
+                        <counter *ngIf="notification.users.length > 1"
+                                 [itemCount]="notification.users.length"
+                                 (onItemChange)="userIndex = $event"
+                                 [currentIndex]="userIndex">
+                        </counter>
                     </div>
 
 

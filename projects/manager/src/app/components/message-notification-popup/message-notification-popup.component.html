@@ -10,7 +10,11 @@
         <!-- Notification Type -->
         <div class="notification-type-container">
             <div class="counter-container">
-                <counter *ngIf="notificationItem.count > 1" [itemCount]="notificationItem.count" (onItemChange)="messageIndex = $event; setSendButtonDisabled()"></counter>
+                <counter *ngIf="notificationItem.count > 1"
+                         [itemCount]="notificationItem.count"
+                         (onItemChange)="messageIndex = $event; setSendButtonDisabled()"
+                         [currentIndex]="messageIndex">
+                </counter>
             </div>
 
             <div style="position: absolute; left: 175px;">Message</div>
@@ -24,17 +28,6 @@
         </div>
 
         
-        <!-- Counter -->
-        <!-- <div class="counter-bar">
-            
-
-            <div #ellipsis>
-                <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
-                             (onClick)="openContextMenu(ellipsis)">
-                </icon-button>
-            </div>
-        </div> -->
-
         <!-- User -->
         <div class="dashed-container">
             <div class="user-container">
