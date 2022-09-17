@@ -20,25 +20,30 @@
                 <!-- Products -->
                 <div *ngFor="let productGroup of productGroups" [style.width.px]="sliderContainer.clientWidth"
                     class="product-group">
-                    <div class="product-summary-container" *ngFor="let product of productGroup" style="pointer-events: none;">
+                    <div class="product-summary-container" *ngFor="let product of productGroup"
+                        style="pointer-events: none;">
                         <product-summary [product]="product"></product-summary>
                     </div>
                 </div>
             </div>
 
             <!-- Left Arrow Button -->
-            <div #leftArrowButton class="left-arrow-button">
+            <div #leftArrowButton class="left-arrow-button"
+                [style.visibility]="!products || products.length == 0 ? 'hidden' : 'visible'">
                 <i class="fa-solid fa-angle-left"></i>
             </div>
 
             <!-- Right Arrow Button -->
-            <div #rightArrowButton class="right-arrow-button">
+            <div #rightArrowButton class="right-arrow-button"
+                [style.visibility]="!products || products.length == 0 ? 'hidden' : 'visible'">
                 <i class="fa-solid fa-angle-right"></i>
             </div>
         </div>
     </div>
 
-    <div #scrollbarContainer class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth">
+    <div #scrollbarContainer class="scrollbar-container" [style.width.px]="sliderContainer.clientWidth"
+        [style.visibility]="!products || products.length == 0 ? 'hidden' : 'visible'"
+        [style.height.px]="!products || products.length == 0 ? 0 : 44">
         <!-- Scroll Track -->
         <div class="scroll-track"></div>
 
@@ -48,4 +53,10 @@
             </div>
         </div>
     </div>
+
+
+    <!-- No Results -->
+    <ng-container *ngIf="!products || products.length == 0">
+        <div style="text-align: center; font-size: 18px; color: #b7b7b7;">No results found</div>
+    </ng-container>
 </div>
