@@ -231,7 +231,7 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
       prompt.parentObj = this;
       prompt.title = 'Delete Notification';
       prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-        'The notification' +
+        'The notification,' +
         ' <span style="color: #ffba00">\"' + this.notificationItem.name + '\"</span>' +
         ' will be permanently deleted.');
       prompt.primaryButton = {

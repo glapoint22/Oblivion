@@ -1,4 +1,5 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../classes/enums';
 import { NotificationItem } from '../../classes/notification-item';
@@ -6,6 +7,7 @@ import { NotificationMessage } from '../../classes/notification-message';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { NotificationService } from '../../services/notification/notification.service';
 import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
+import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
   templateUrl: './message-notification-popup.component.html',
@@ -22,7 +24,10 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
   @ViewChild('profilePopupContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
 
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private notificationService: NotificationService) {
+  constructor(lazyLoadingService: LazyLoadingService,
+    private dataService: DataService,
+    private notificationService: NotificationService,
+    private sanitizer: DomSanitizer) {
     super(lazyLoadingService)
   }
 
@@ -32,6 +37,8 @@ export class MessageNotificationPopupComponent extends LazyLoad {
     super.ngOnInit();
     this.notificationItem.selected = false;
     this.notificationItem.selectType = null!;
+
+
 
     this.dataService.get<Array<NotificationMessage>>('api/Notifications/Message', [
       { key: 'notificationGroupId', value: this.notificationItem.notificationGroupId },
@@ -70,19 +77,21 @@ export class MessageNotificationPopupComponent extends LazyLoad {
             this.notificationItem.isNew ?
 
               // Archive All
-              this.transfer(this.notificationService.newNotifications, null!, this.notificationService.archiveNotifications, this.notificationItem.count, {
-                archiveAllMessagesInGroup: true,
-                notificationGroupId: this.notificationItem.notificationGroupId
-              })
+              this.transfer(this.notificationService.newNotifications, null!, this.notificationService.archiveNotifications, this.notificationItem.count,
+                {
+                  archiveAllMessagesInGroup: true,
+                  notificationGroupId: this.notificationItem.notificationGroupId
+                })
 
               :
 
               // Restore
-              this.transfer(this.notificationService.archiveNotifications, this.notificationItem.count, this.notificationService.newNotifications, 1, {
-                restore: true,
-                notificationId: this.notification[this.messageIndex].notificationId,
-                notificationGroupId: this.notificationItem.notificationGroupId
-              });
+              this.transfer(this.notificationService.archiveNotifications, this.notificationItem.count, this.notificationService.newNotifications, 1,
+                {
+                  restore: true,
+                  notificationId: this.notification[this.messageIndex].notificationId,
+                  notificationGroupId: this.notificationItem.notificationGroupId
+                })
           }
         },
         {
@@ -92,11 +101,12 @@ export class MessageNotificationPopupComponent extends LazyLoad {
           optionFunction: () => {
 
             // Restore All
-            this.transfer(this.notificationService.archiveNotifications, null!, this.notificationService.newNotifications, this.notificationItem.count, {
-              restore: true,
-              restoreAllMessagesInGroup: true,
-              notificationGroupId: this.notificationItem.notificationGroupId
-            });
+            this.transfer(this.notificationService.archiveNotifications, null!, this.notificationService.newNotifications, this.notificationItem.count,
+              {
+                restore: true,
+                restoreAllMessagesInGroup: true,
+                notificationGroupId: this.notificationItem.notificationGroupId
+              })
           }
         },
         {
@@ -108,7 +118,7 @@ export class MessageNotificationPopupComponent extends LazyLoad {
           name: 'Delete',
           hidden: this.notificationItem.isNew ? true : false,
           optionFunction: () => {
-            null
+            this.openDeletePrompt(false);
           }
         },
         {
@@ -116,7 +126,7 @@ export class MessageNotificationPopupComponent extends LazyLoad {
           name: 'Delete All Messages',
           hidden: this.notificationItem.isNew || (!this.notificationItem.isNew && this.notificationItem.count == 1),
           optionFunction: () => {
-            null
+            this.openDeletePrompt(true);
           }
         }
       ]
@@ -234,16 +244,16 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
 
 
-  removeFromOriginList(notifications: Array<NotificationItem>, messageCount?: number) {
-    // If we're moving just a message (NOT a notification item)
+  removeFromList(notifications: Array<NotificationItem>, messageCount?: number) {
+    // If we're removing just a message (NOT a notification item)
     //  And there is more than just one message in the message notification
     if (messageCount != null && messageCount > 1) {
       this.removeMessage();
 
-      // But if we're moving just a message (NOT a notification item)
+      // But if we're removing just a message (NOT a notification item)
       // And there is only one message in the message notification
       // OR
-      // If we ARE moving a notification item
+      // If we ARE removing a notification item
     } else {
       this.removeNotification(notifications);
     }
@@ -254,7 +264,7 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
 
 
-  addToDestinationList(notifications: Array<NotificationItem>, messageCount: number) {
+  addToList(notifications: Array<NotificationItem>, messageCount: number) {
     // See if the sender of this message already has a message notification in the list
     const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
 
@@ -293,8 +303,8 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
 
   transfer(originList: Array<NotificationItem>, originMessageCount: number, destinationList: Array<NotificationItem>, destinationMessageCount: number, dataServiceParameters: {}) {
-    this.removeFromOriginList(originList, originMessageCount);
-    this.addToDestinationList(destinationList, destinationMessageCount);
+    this.removeFromList(originList, originMessageCount);
+    this.addToList(destinationList, destinationMessageCount);
 
     // Update the count for the notification bell
     this.notificationService.notificationCount += (destinationList == this.notificationService.archiveNotifications ? -destinationMessageCount : destinationMessageCount);
@@ -304,16 +314,63 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
 
 
-  // 1) Archive: Has only one message (NO messages in archive list)
-  // 2) Archive: Has more than one message (NO messages in archive list)
-  // 3) Archive: Has only one message (HAS messages in archive list)
-  // 4) Archive: Has more than one message (HAS messages in archive list)
-  // 5) Archive All: (NO messages in archive list)
-  // 6) Archive All: (HAS messages in archive list)
-  // 7) Restore: Has only one message (NO messages in new list)
-  // 8) Restore: Has more than one message (NO messages in new list)
-  // 9) Restore: Has only one message (HAS messages in new list)
-  // 10) Restore: Has more than one message (HAS messages in new list)
-  // 11) Restore All: (NO messages in new list)
-  // 12) Restore All: (HAS messages in new list)
+
+  openDeletePrompt(deleteAll: boolean) {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../../components/prompt/prompt.component');
+      const { PromptModule } = await import('../../components/prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      prompt.parentObj = this;
+      prompt.title = !deleteAll ? 'Delete Message' : 'Delete Messages';
+      prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+        (!deleteAll ? (this.notificationItem.count > 1 ? 'This' : 'The') + ' message' : 'All messages') +
+        ' from,' +
+        ' <span style="color: #ffba00">\"' + this.notificationItem.name + '\"</span>' +
+        ' will be permanently deleted.');
+      prompt.primaryButton = {
+        name: 'Delete',
+        buttonFunction: () => {
+          if (!deleteAll) {
+
+            this.delete(
+              {
+                notificationGroupId: this.notification.length == 1 ? this.notificationItem.notificationGroupId : 0,
+                notificationId: this.notification[this.messageIndex].notificationId,
+                employeeMessageIds: this.notification[this.messageIndex].employeeMessageId != null ? [this.notification[this.messageIndex].employeeMessageId] : []
+              }, this.notificationItem.count);
+
+          } else {
+
+            let employeeMessageIds = new Array<number>();
+            this.notification.forEach(x => {
+              if (x.employeeMessageId != null) employeeMessageIds.push(x.employeeMessageId)
+            });
+
+            this.delete(
+              {
+                notificationGroupId: this.notificationItem.notificationGroupId,
+                employeeMessageIds: employeeMessageIds
+              }
+            );
+          }
+        }
+      }
+      prompt.secondaryButton.name = 'Cancel'
+    })
+  }
+
+
+
+
+  delete(dataServiceParameters: {}, messageCount?: number) {
+    this.removeFromList(this.notificationService.archiveNotifications, messageCount);
+
+    // Update database
+    this.dataService.delete('api/Notifications', dataServiceParameters).subscribe();
+  }
 }
