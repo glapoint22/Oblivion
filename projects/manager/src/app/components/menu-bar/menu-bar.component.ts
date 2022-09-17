@@ -6,7 +6,7 @@ import { MenuBarButton } from '../../classes/menu-bar-button';
 import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { NotificationService } from '../../services/notification/notification.service';
-import { NotificationListPopupComponent } from '../notification-list-popup/notification-list-popup.component';
+import { NotificationListPopupComponent } from '../notifications/notification-list-popup/notification-list-popup.component';
 
 @Component({
   selector: 'menu-bar',
@@ -336,11 +336,16 @@ export class MenuBarComponent {
       return;
     }
 
+    if(this.notificationService.notificationPopupContainer.length > 0) {
+      this.notificationService.notificationPopup.onEscape();
+      return;
+    }
+
     // If a message, review, or product notification popup is open then the notification list popup can NOT be opened
     if (this.notificationPopupContainer.length == 0) {
       this.lazyLoadingService.load(async () => {
-        const { NotificationListPopupComponent: NotificationListPopupComponent } = await import('../notification-list-popup/notification-list-popup.component');
-        const { NotificationListPopupModule: NotificationListPopupModule } = await import('../notification-list-popup/notification-list-popup.module');
+        const { NotificationListPopupComponent: NotificationListPopupComponent } = await import('../notifications/notification-list-popup/notification-list-popup.component');
+        const { NotificationListPopupModule: NotificationListPopupModule } = await import('../notifications/notification-list-popup/notification-list-popup.module');
         return {
           component: NotificationListPopupComponent,
           module: NotificationListPopupModule

@@ -1,20 +1,21 @@
 import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { MenuOptionType } from '../../classes/enums';
-import { NotificationItem } from '../../classes/notification-item';
-import { NotificationProduct } from '../../classes/notification-product';
-import { NotificationProfile } from '../../classes/notification-profile';
-import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
-import { PromptComponent } from '../../components/prompt/prompt.component';
-import { NotificationService } from '../../services/notification/notification.service';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { MenuOptionType } from '../../../classes/enums';
+import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationProduct } from '../../../classes/notification-product';
+import { NotificationProfile } from '../../../classes/notification-profile';
+import { ContextMenuComponent } from '../../context-menu/context-menu.component';
+import { PromptComponent } from '../../prompt/prompt.component';
+import { NotificationService } from '../../../services/notification/notification.service';
 import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
+import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
   styleUrls: ['./product-notification-popup.component.scss']
 })
-export class ProductNotificationPopupComponent extends LazyLoad {
+export class ProductNotificationPopupComponent extends NotificationPopupComponent {
   private isNew!: boolean;
   private contextMenu!: ContextMenuComponent;
 
@@ -24,10 +25,31 @@ export class ProductNotificationPopupComponent extends LazyLoad {
   public notificationItem!: NotificationItem;
   public profilePopup!: NotificationProfilePopupComponent;
   public newNoteAdded!: boolean;
-  public newNote!: string;
+  public firstNote!: string;
+  public secondaryButtonDisabled!: boolean;
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('profilePopupContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
+
+
+
+  public get notesWritten(): boolean {
+    // If notes were never written yet on this form and now
+    // for the first time notes are finally being written
+    return (this.firstNote != null &&
+      // and the text area actually has text written in it
+      // and not just empty spaces
+      this.firstNote.trim().length > 0) ||
+
+      // Or if notes had already been previously written and the (Add Note) button was pressed
+      (this.newNoteAdded &&
+        // and the text area actually has text written in it
+        this.notification.employees[this.notification.employees.length - 1].text != null &&
+        // and not just empty spaces
+        this.notification.employees[this.notification.employees.length - 1].text.trim().length > 0)
+  }
+
+
 
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
@@ -63,8 +85,8 @@ export class ProductNotificationPopupComponent extends LazyLoad {
       return;
     }
     this.lazyLoadingService.load(async () => {
-      const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
-      const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
+      const { ContextMenuComponent } = await import('../../context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../../context-menu/context-menu.module');
 
       return {
         component: ContextMenuComponent,
@@ -155,8 +177,8 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
   openDisableProductPrompt() {
     this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../components/prompt/prompt.component');
-      const { PromptModule } = await import('../../components/prompt/prompt.module');
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
 
       return {
         component: PromptComponent,
@@ -166,12 +188,14 @@ export class ProductNotificationPopupComponent extends LazyLoad {
       prompt.parentObj = this;
       prompt.title = (this.notification.productDisabled ? 'Enable' : 'Disable') + ' Product';
       prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-        'The product' +
+        'The product,' +
         ' <span style="color: #ffba00">\"' + this.notificationItem.productName + '\"</span>' +
         ' will be ' + (this.notification.productDisabled ? 'enabled' : 'disabled') + '.');
       prompt.primaryButton = {
         name: this.notification.productDisabled ? 'Enable' : 'Disable',
-        buttonFunction: this.disableProduct
+        buttonFunction: () => {
+          this.secondaryButtonDisabled = true;
+        }
       }
       prompt.secondaryButton.name = 'Cancel'
     })
@@ -179,16 +203,6 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
 
 
-
-
-
-  disableProduct() {
-    this.notification.productDisabled = !this.notification.productDisabled;
-
-    this.dataService.put('api/Notifications/DisableProduct', {
-      productId: this.notification.productId
-    }).subscribe();
-  }
 
 
 
@@ -200,7 +214,11 @@ export class ProductNotificationPopupComponent extends LazyLoad {
     } else {
 
       if (!this.contextMenu) {
-        this.fade();
+        if (!this.notesWritten && !this.secondaryButtonDisabled) {
+          this.fade();
+        } else {
+          this.openUndoChangesPrompt();
+        }
       }
     }
   }
@@ -208,10 +226,34 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
 
 
+  openUndoChangesPrompt() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      prompt.parentObj = this;
+      prompt.title = 'Warning';
+      prompt.message = 'Any changes you have made will be undone. Do you want to continue closing?';
+      prompt.primaryButton = {
+        name: 'Continue',
+        buttonFunction: this.fade
+      }
+      prompt.secondaryButton.name = 'Cancel'
+    })
+  }
+
+
+
+
   openDeleteNotificationPrompt() {
     this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../components/prompt/prompt.component');
-      const { PromptModule } = await import('../../components/prompt/prompt.module');
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
 
       return {
         component: PromptComponent,
@@ -247,26 +289,14 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
 
 
+
   close(restore?: boolean): void {
-    if (
-      // If notes were never writen yet on this form and now
-      // for the first time notes are finally being writen
-      (this.newNote != null &&
-        // and the text area actually has text writen in it
-        // and not just empty spaces
-        this.newNote.trim().length > 0) ||
-
-      // Or if notes had already been previously writen and the (Add Note) button was pressed
-      (this.newNoteAdded &&
-        // and the text area actually has text writen in it
-        this.notification.employees[this.notification.employees.length - 1].text != null &&
-        // and not just empty spaces
-        this.notification.employees[this.notification.employees.length - 1].text.trim().length > 0)) {
-
+    // If notes were written
+    if (this.notesWritten) {
       // Then save the new note
       this.dataService.post('api/Notifications/PostNote', {
         notificationGroupId: this.notificationItem.notificationGroupId,
-        note: this.newNote != null ? this.newNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
+        note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
       }).subscribe();
     }
 
@@ -298,6 +328,12 @@ export class ProductNotificationPopupComponent extends LazyLoad {
         }).subscribe();
     }
 
+    if (this.secondaryButtonDisabled) {
+      this.dataService.put('api/Notifications/DisableProduct', {
+        productId: this.notification.productId
+      }).subscribe();
+    }
+
     // Now close
     super.close();
   }
@@ -308,6 +344,7 @@ export class ProductNotificationPopupComponent extends LazyLoad {
 
 
   ngOnDestroy() {
+    // Update isNew property here so that the primary button isn't being seen changing to other button type as popup closes
     if (this.isNew != null) this.notificationItem.isNew = this.isNew;
   }
 }

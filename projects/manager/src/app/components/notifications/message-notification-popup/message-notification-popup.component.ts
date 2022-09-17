@@ -1,19 +1,20 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { MenuOptionType } from '../../classes/enums';
-import { NotificationItem } from '../../classes/notification-item';
-import { NotificationMessage } from '../../classes/notification-message';
-import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
-import { NotificationService } from '../../services/notification/notification.service';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { MenuOptionType } from '../../../classes/enums';
+import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationMessage } from '../../../classes/notification-message';
+import { ContextMenuComponent } from '../../context-menu/context-menu.component';
+import { NotificationService } from '../../../services/notification/notification.service';
 import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
-import { PromptComponent } from '../prompt/prompt.component';
+import { PromptComponent } from '../../prompt/prompt.component';
+import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
   templateUrl: './message-notification-popup.component.html',
   styleUrls: ['./message-notification-popup.component.scss']
 })
-export class MessageNotificationPopupComponent extends LazyLoad {
+export class MessageNotificationPopupComponent extends NotificationPopupComponent {
   private contextMenu!: ContextMenuComponent;
 
   public messageIndex: number = 0;
@@ -23,6 +24,21 @@ export class MessageNotificationPopupComponent extends LazyLoad {
   public profilePopup!: NotificationProfilePopupComponent;
 
   @ViewChild('profilePopupContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
+
+  public get employeeMessageWritten(): boolean {
+    let isWritten: boolean = false;
+
+    for (let i = 0; i < this.notification.length; i++) {
+      // If a new reply has been written in any of the messages and they're not just empty spaces
+      if (!this.notification[i].employeeMessageDate &&
+        this.notification[i].employeeMessage != null &&
+        this.notification[i].employeeMessage.trim().length > 0) {
+        isWritten = true;
+        break;
+      }
+    }
+    return isWritten
+  }
 
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
@@ -57,8 +73,8 @@ export class MessageNotificationPopupComponent extends LazyLoad {
       return;
     }
     this.lazyLoadingService.load(async () => {
-      const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
-      const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
+      const { ContextMenuComponent } = await import('../../context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../../context-menu/context-menu.module');
 
       return {
         component: ContextMenuComponent,
@@ -165,11 +181,17 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
 
   setSendButtonDisabled() {
-    // And if now a new reply has been written in this current message and it's not just empty spaces
-    if (!this.notification[this.messageIndex].employeeMessageDate && this.notification[this.messageIndex].employeeMessage != null && this.notification[this.messageIndex].employeeMessage.trim().length > 0) {
+    // If a new reply has been written in this current message and it's not just empty spaces
+    if (!this.notification[this.messageIndex].employeeMessageDate &&
+      this.notification[this.messageIndex].employeeMessage != null &&
+      this.notification[this.messageIndex].employeeMessage.trim().length > 0) {
+      // Enable the send button
       this.sendButtonDisabled = false;
 
+      // Otherwise
     } else {
+
+      // Disable the send button
       this.sendButtonDisabled = true;
     }
   }
@@ -180,9 +202,36 @@ export class MessageNotificationPopupComponent extends LazyLoad {
       this.profilePopup.close();
     } else {
       if (!this.contextMenu) {
-        this.close();
+        if (!this.employeeMessageWritten) {
+          this.close();
+        } else {
+          this.openUndoChangesPrompt();
+        }
       }
     }
+  }
+
+
+
+  openUndoChangesPrompt() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      prompt.parentObj = this;
+      prompt.title = 'Warning';
+      prompt.message = 'Any changes you have made will be undone. Do you want to continue closing?';
+      prompt.primaryButton = {
+        name: 'Continue',
+        buttonFunction: this.close
+      }
+      prompt.secondaryButton.name = 'Cancel'
+    })
   }
 
 
@@ -317,8 +366,8 @@ export class MessageNotificationPopupComponent extends LazyLoad {
 
   openDeletePrompt(deleteAll: boolean) {
     this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../components/prompt/prompt.component');
-      const { PromptModule } = await import('../../components/prompt/prompt.module');
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
 
       return {
         component: PromptComponent,

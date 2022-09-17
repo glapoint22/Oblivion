@@ -1,20 +1,21 @@
 import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { NotificationItem } from '../../classes/notification-item';
-import { NotificationReview } from '../../classes/notification-review';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationReview } from '../../../classes/notification-review';
 import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
-import { NotificationProfile } from '../../classes/notification-profile';
-import { MenuOptionType } from '../../classes/enums';
-import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
+import { NotificationProfile } from '../../../classes/notification-profile';
+import { MenuOptionType } from '../../../classes/enums';
+import { ContextMenuComponent } from '../../context-menu/context-menu.component';
 import { DomSanitizer } from '@angular/platform-browser';
-import { NotificationService } from '../../services/notification/notification.service';
-import { PromptComponent } from '../../components/prompt/prompt.component';
+import { NotificationService } from '../../../services/notification/notification.service';
+import { PromptComponent } from '../../prompt/prompt.component';
+import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
   templateUrl: './review-notification-popup.component.html',
   styleUrls: ['./review-notification-popup.component.scss']
 })
-export class ReviewNotificationPopupComponent extends LazyLoad {
+export class ReviewNotificationPopupComponent extends NotificationPopupComponent {
   private isNew!: boolean;
   private contextMenu!: ContextMenuComponent;
 
@@ -25,11 +26,30 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
   public profilePopup!: NotificationProfilePopupComponent;
   public reviewProfilePopup!: NotificationProfilePopupComponent;
   public newNoteAdded!: boolean;
-  public newNote!: string;
+  public firstNote!: string;
+  public secondaryButtonDisabled!: boolean;
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('profileContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
   @ViewChild('reviewProfileContainer', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
+
+
+  public get notesWritten(): boolean {
+    // If notes were never written yet on this form and now
+    // for the first time notes are finally being written
+    return (this.firstNote != null &&
+      // and the text area actually has text written in it
+      // and not just empty spaces
+      this.firstNote.trim().length > 0) ||
+
+      // Or if notes had already been previously written and the (Add Note) button was pressed
+      (this.newNoteAdded &&
+        // and the text area actually has text written in it
+        this.notification.employees[this.notification.employees.length - 1].text != null &&
+        // and not just empty spaces
+        this.notification.employees[this.notification.employees.length - 1].text.trim().length > 0)
+  }
+
 
   constructor(lazyLoadingService: LazyLoadingService,
     private dataService: DataService,
@@ -43,7 +63,7 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
     super.ngOnInit();
     this.notificationItem.selected = false;
     this.notificationItem.selectType = null!;
-    
+
     this.dataService.get<NotificationReview>('api/Notifications/Review', [
       { key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }
     ]).subscribe((notificationReview: NotificationReview) => {
@@ -61,8 +81,8 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
       return;
     }
     this.lazyLoadingService.load(async () => {
-      const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
-      const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
+      const { ContextMenuComponent } = await import('../../context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../../context-menu/context-menu.module');
 
       return {
         component: ContextMenuComponent,
@@ -169,8 +189,8 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
   openRemoveReviewPrompt() {
     this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../components/prompt/prompt.component');
-      const { PromptModule } = await import('../../components/prompt/prompt.module');
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
 
       return {
         component: PromptComponent,
@@ -180,27 +200,20 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
       prompt.parentObj = this;
       prompt.title = (!this.notification.reviewDeleted ? 'Remove' : 'Restore') + ' Review';
       prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-        'The review with the title' +
+        'The review with the title,' +
         ' <span style="color: #ffba00">\"' + this.notification.reviewWriter.reviewTitle + '\"</span>' +
         ' will be ' + (!this.notification.reviewDeleted ? 'removed' : 'restored') + '.');
       prompt.primaryButton = {
         name: !this.notification.reviewDeleted ? 'Remove' : 'Restore',
-        buttonFunction: this.removeReview
+        buttonFunction: () => {
+          this.secondaryButtonDisabled = true;
+        }
       }
       prompt.secondaryButton.name = 'Cancel'
     })
   }
 
 
-
-
-  removeReview() {
-    this.notification.reviewDeleted = !this.notification.reviewDeleted;
-
-    this.dataService.put('api/Notifications/RemoveReview', {
-      reviewId: this.notification.reviewId
-    }).subscribe();
-  }
 
 
 
@@ -211,8 +224,38 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
       if (this.reviewProfilePopupContainer.length > 0) this.reviewProfilePopup.close();
 
     } else {
-      this.fade();
+
+      if (!this.contextMenu) {
+        if (!this.notesWritten && !this.secondaryButtonDisabled) {
+          this.fade();
+        } else {
+          this.openUndoChangesPrompt();
+        }
+      }
     }
+  }
+
+
+
+  openUndoChangesPrompt() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
+
+      return {
+        component: PromptComponent,
+        module: PromptModule
+      }
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      prompt.parentObj = this;
+      prompt.title = 'Warning';
+      prompt.message = 'Any changes you have made will be undone. Do you want to continue closing?';
+      prompt.primaryButton = {
+        name: 'Continue',
+        buttonFunction: this.fade
+      }
+      prompt.secondaryButton.name = 'Cancel'
+    })
   }
 
 
@@ -220,8 +263,8 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
   openDeleteNotificationPrompt() {
     this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../components/prompt/prompt.component');
-      const { PromptModule } = await import('../../components/prompt/prompt.module');
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
 
       return {
         component: PromptComponent,
@@ -259,25 +302,12 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
   close(restore?: boolean): void {
-    if (
-      // If notes were never writen yet on this form and now
-      // for the first time notes are finally being writen
-      (this.newNote != null &&
-        // and the text area actually has text writen in it
-        // and not just empty spaces
-        this.newNote.trim().length > 0) ||
-
-      // Or if notes had already been previously writen and the (Add Note) button was pressed
-      (this.newNoteAdded &&
-        // and the text area actually has text writen in it
-        this.notification.employees[this.notification.employees.length - 1].text != null &&
-        // and not just empty spaces
-        this.notification.employees[this.notification.employees.length - 1].text.trim().length > 0)) {
-
+    // If notes were written
+    if (this.notesWritten) {
       // Then save the new note
       this.dataService.post('api/Notifications/PostNote', {
         notificationGroupId: this.notificationItem.notificationGroupId,
-        note: this.newNote != null ? this.newNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
+        note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
       }).subscribe();
     }
 
@@ -309,6 +339,13 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
         }).subscribe();
     }
 
+
+    if (this.secondaryButtonDisabled) {
+      this.dataService.put('api/Notifications/RemoveReview', {
+        reviewId: this.notification.reviewId
+      }).subscribe();
+    }
+
     // Now close
     super.close();
   }
@@ -317,6 +354,7 @@ export class ReviewNotificationPopupComponent extends LazyLoad {
 
 
   ngOnDestroy() {
+    // Update isNew property here so that the primary button isn't being seen changing to other button type as popup closes
     if (this.isNew != null) this.notificationItem.isNew = this.isNew;
   }
 }

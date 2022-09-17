@@ -2,12 +2,14 @@ import { Injectable, ViewContainerRef } from '@angular/core';
 import { DataService } from 'common';
 import { Subject } from 'rxjs';
 import { NotificationItem } from '../../classes/notification-item';
+import { NotificationPopupComponent } from '../../components/notifications/notification-popup/notification-popup.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
   public notificationPopupContainer!: ViewContainerRef;
+  public notificationPopup!: NotificationPopupComponent;
   public onNotificationCount: Subject<number> = new Subject<number>();
   public newNotifications!: Array<NotificationItem>;
   public archiveNotifications: Array<NotificationItem> = new Array<NotificationItem>();

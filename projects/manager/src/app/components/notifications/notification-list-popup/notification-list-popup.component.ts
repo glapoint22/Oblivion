@@ -1,11 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { ListUpdateType, MenuOptionType } from '../../classes/enums';
-import { ListOptions } from '../../classes/list-options';
-import { ListUpdate } from '../../classes/list-update';
-import { NotificationItem } from '../../classes/notification-item';
-import { NotificationService } from '../../services/notification/notification.service';
-import { NotificationListComponent } from '../lists/notification-list/notification-list.component';
+import { ListUpdateType, MenuOptionType } from '../../../classes/enums';
+import { ListOptions } from '../../../classes/list-options';
+import { ListUpdate } from '../../../classes/list-update';
+import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationService } from '../../../services/notification/notification.service';
+import { NotificationListComponent } from '../../lists/notification-list/notification-list.component';
 import { MessageNotificationPopupComponent } from '../message-notification-popup/message-notification-popup.component';
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
 import { ReviewNotificationPopupComponent } from '../review-notification-popup/review-notification-popup.component';
@@ -17,8 +17,9 @@ import { ReviewNotificationPopupComponent } from '../review-notification-popup/r
 export class NotificationListPopupComponent extends LazyLoad {
   private notificationItem!: NotificationItem;
 
-
   public newTabSelected: boolean = true;
+  public newListZIndex: number = 1;
+  public archiveListZIndex: number = 0;
   public newListOptions: ListOptions = {
     editable: false,
     multiselectable: false,
@@ -64,13 +65,7 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   mousedown = () => {
-    if (!this.archiveList || (this.archiveList && !this.archiveList.listManager.contextMenuOpen && !this.archiveList.listManager.selectedItem)) {
-      this.close();
-    }
-
-    if (this.archiveList && !this.archiveList.listManager.contextMenuOpen) {
-      this.archiveList.listManager.showSelection = false;
-    }
+    this.close()
   }
 
 
@@ -80,19 +75,28 @@ export class NotificationListPopupComponent extends LazyLoad {
   onListUpdate(listUpdate: ListUpdate) {
     if (listUpdate.type == ListUpdateType.SelectedItems) {
 
-      if (this.archiveList) {
+      // If the archive tab is selected
+      if (!this.newTabSelected) {
+        // and we right click on a archived notification item
         if (listUpdate.rightClick) {
+          // Allow the selection to be shown
           this.archiveList.listManager.showSelection = true;
+          // Record the notification item that was right clicked
           this.notificationItem = listUpdate.selectedItems![0] as NotificationItem;
           return
 
+          // If a archived notification was NOT right clicked (just clicked)
         } else {
+          // Clear any selection (if any)
           this.archiveList.listManager.showSelection = false;
         }
       }
 
+      // Regardless of what tab is selected, if a notification item is just clicked (NOT right clicked)
       if (!listUpdate.rightClick) {
-        this.close();
+        // Close the popup
+        super.close();
+        // Open the notification that was clicked
         this.openNotificationPopup(listUpdate.selectedItems![0] as NotificationItem);
       }
     }
@@ -114,6 +118,7 @@ export class NotificationListPopupComponent extends LazyLoad {
       }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
         .then((messageNotificationPopup: MessageNotificationPopupComponent) => {
           messageNotificationPopup.notificationItem = notificationItem;
+          this.notificationService.notificationPopup = messageNotificationPopup;
         })
     }
 
@@ -129,6 +134,7 @@ export class NotificationListPopupComponent extends LazyLoad {
       }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
         .then((reviewNotificationPopup: ReviewNotificationPopupComponent) => {
           reviewNotificationPopup.notificationItem = notificationItem;
+          this.notificationService.notificationPopup = reviewNotificationPopup;
         })
     }
 
@@ -144,6 +150,7 @@ export class NotificationListPopupComponent extends LazyLoad {
       }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
         .then((productNotificationPopup: ProductNotificationPopupComponent) => {
           productNotificationPopup.notificationItem = notificationItem;
+          this.notificationService.notificationPopup = productNotificationPopup;
         })
     }
   }
@@ -191,15 +198,24 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   onEscape(): void {
-    if (!this.archiveList || (this.archiveList && !this.archiveList.listManager.contextMenuOpen && !this.archiveList.listManager.selectedItem)) {
-      this.close();
-    }
-
-    if (this.archiveList && !this.archiveList.listManager.contextMenuOpen) {
-      this.archiveList.listManager.showSelection = false;
-    }
+    this.close();
   }
 
+  close(): void {
+    // If the context menu is NOT open
+    if (!this.archiveList.listManager.contextMenuOpen) {
+      // Unselect any notification item that may be selected (if any)
+      this.archiveList.listManager.showSelection = false;
+
+      // And if the New tab is selected
+      if(this.newTabSelected ||
+        // Or if the Archive tab IS selected and NO archived notification item is selected
+        (!this.newTabSelected && !this.archiveList.listManager.selectedItem)) {
+        // Close the popup
+        super.close();
+      }
+    }
+  }
 
 
   ngOnDestroy() {

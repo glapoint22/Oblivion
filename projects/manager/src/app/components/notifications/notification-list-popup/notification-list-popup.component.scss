@@ -1,4 +1,4 @@
-@import '../../../scss/tabs';
+@import '../../../../scss/tabs';
 
 .popup-container {
     position: absolute;
@@ -29,6 +29,8 @@
 
 
 .popup-base {
+    width: 452px;
+    height: 463px;
     padding: 6px 10px 9px;
     background: #282828;
     border: 1px solid #414141;
