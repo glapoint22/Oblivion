@@ -58,13 +58,13 @@
                         <div class="profile-image-container">
 
                             <div class="profile-popup-container">
-                                <ng-template #profileContainer></ng-template>
+                                <ng-template #profilePopupContainerTemplate></ng-template>
                             </div>
 
                             <img style="cursor: pointer;"
                                 (mousedown)="reviewProfilePopupContainer.length > 0 ? reviewProfilePopup.close() : null; $event.stopPropagation()"
                                 [src]="notification.users[counterIndex].image ? 'images/' + notification.users[counterIndex].image : 'assets/no-account-pic.png'"
-                                (click)="openProfilePopup(notification.users[counterIndex])"
+                                (click)="openProfilePopup(notification.users[counterIndex], profilePopupContainer)"
                                 [title]="notification.users[counterIndex].firstName + ' ' + notification.users[counterIndex].lastName">
                         </div>
                     </div>
@@ -104,13 +104,13 @@
                         <div class="profile-image-container">
 
                             <div class="review-profile-popup-container">
-                                <ng-template #reviewProfileContainer></ng-template>
+                                <ng-template #reviewProfilePopupContainerTemplate></ng-template>
                             </div>
 
                             <img style="cursor: pointer;"
                                 (mousedown)="profilePopupContainer.length > 0 ? profilePopup.close() : null; $event.stopPropagation()"
                                 [src]="notification.reviewWriter.image ? 'images/' + notification.reviewWriter.image : 'assets/no-account-pic.png'"
-                                (click)="openReviewProfilePopup()"
+                                (click)="openProfilePopup(notification.reviewWriter, reviewProfilePopupContainer, true)"
                                 [title]="notification.reviewWriter.firstName + ' ' + notification.reviewWriter.lastName">
                         </div>
                     </div>
@@ -179,7 +179,7 @@
         <div class="button-container">
             <div>
                 <!-- Show button only when data loads, otherwise button's length changes which looks terrible -->
-                <button *ngIf="notification" class="notification-button" (click)="openNotificationPrompt()" [disabled]="secondaryButtonDisabled">{{!notification.reviewDeleted ? 'Remove' : 'Restore'}} Review</button>
+                <button *ngIf="notification" class="notification-button" (click)="openDisableButtonPrompt()" [disabled]="secondaryButtonDisabled">{{!notification.reviewDeleted ? 'Remove' : 'Restore'}} Review</button>
             </div>
             
             <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onClose(notification.employees)">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>

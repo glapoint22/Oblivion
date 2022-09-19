@@ -33,19 +33,23 @@ export class NotificationPopupComponent extends LazyLoad {
   public deletePromptTitle: string = 'Delete Notification';
   public undoChangesPrompt!: PromptComponent;
   public deletePromptMessage!: SafeHtml;
-  public notificationPromptTitle!: string;
-  public notificationPromptMessage!: SafeHtml;
-  public notificationPromptPrimaryButtonName!: string;
-  public notificationPrompt!: PromptComponent;
+  public disableButtonPromptTitle!: string;
+  public disableButtonPromptMessage!: SafeHtml;
+  public disableButtonPromptPrimaryButtonName!: string;
+  public disableButtonPrompt!: PromptComponent;
   public deletePrompt!: PromptComponent;
   public notification!: any;
-
+  public reviewProfilePopup!: NotificationProfilePopupComponent;
+  public secondaryButtonDisabledPath!: string;
+  public secondaryButtonDisabledParameters!: {};
 
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
-  @ViewChild('profilePopupContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
+  @ViewChild('profilePopupContainerTemplate', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
+  @ViewChild('reviewProfilePopupContainerTemplate', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
 
 
+  // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
   constructor(lazyLoadingService: LazyLoadingService,
     public dataService: DataService,
@@ -56,14 +60,12 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-
-
+  // ====================================================================( NG ON INIT )===================================================================== \\
 
   ngOnInit() {
     super.ngOnInit();
     this.notificationItem.selected = false;
     this.notificationItem.selectType = null!;
-
 
     this.deletePromptMessage = this.sanitizer.bypassSecurityTrustHtml(
       'The notification,' +
@@ -73,14 +75,7 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-
-
-
-
-
-
-
-
+  // =================================================================( GET NOTIFICATION )================================================================== \\
 
   getNotification<T>(notificationPath: string, notificationParameters: Array<KeyValue<any, any>>) {
     this.dataService.get<T>(notificationPath, notificationParameters)
@@ -91,13 +86,19 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
+  // =============================================================( GET CONTEXT MENU OPTIONS )============================================================== \\
+  
+  getContextMenuOptions(): Array<MenuOption> {
+    return [];
+  }
 
 
 
+  // ================================================================( OPEN PROFILE POPUP )================================================================= \\
 
-  openProfilePopup(user: NotificationProfilePopupUser) {
-    if (this.profilePopupContainer.length > 0) {
-      this.profilePopup.close();
+  openProfilePopup(user: NotificationProfilePopupUser, container: ViewContainerRef, isReview?: boolean) {
+    if (container.length > 0) {
+      !isReview ? this.profilePopup.close() : this.reviewProfilePopup.close();
       return;
     }
 
@@ -108,15 +109,17 @@ export class NotificationPopupComponent extends LazyLoad {
         component: NotificationProfilePopupComponent,
         module: NotificationProfilePopupModule
       }
-    }, SpinnerAction.None, this.profilePopupContainer)
+    }, SpinnerAction.None, container)
       .then((profilePopup: NotificationProfilePopupComponent) => {
-        this.profilePopup = profilePopup;
+        !isReview ? this.profilePopup = profilePopup : this.reviewProfilePopup = profilePopup;
         profilePopup.user = user;
+        profilePopup.isReview = isReview!;
       });
   }
 
 
 
+  // =============================================================( OPEN UNDO CHANGES PROMPT )============================================================== \\
 
   openUndoChangesPrompt(continueFunction: Function) {
     this.lazyLoadingService.load(async () => {
@@ -147,10 +150,9 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
+  // ============================================================( OPEN DISABLE BUTTON PROMPT )============================================================= \\
 
-
-
-  openNotificationPrompt() {
+  openDisableButtonPrompt() {
     this.lazyLoadingService.load(async () => {
       const { PromptComponent } = await import('../../prompt/prompt.component');
       const { PromptModule } = await import('../../prompt/prompt.module');
@@ -160,12 +162,12 @@ export class NotificationPopupComponent extends LazyLoad {
         module: PromptModule
       }
     }, SpinnerAction.None).then((prompt: PromptComponent) => {
-      this.notificationPrompt = prompt;
+      this.disableButtonPrompt = prompt;
       prompt.parentObj = this;
-      prompt.title = this.notificationPromptTitle;
-      prompt.message = this.notificationPromptMessage;
+      prompt.title = this.disableButtonPromptTitle;
+      prompt.message = this.disableButtonPromptMessage;
       prompt.primaryButton = {
-        name: this.notificationPromptPrimaryButtonName,
+        name: this.disableButtonPromptPrimaryButtonName,
         buttonFunction: () => {
           this.secondaryButtonDisabled = true;
         }
@@ -174,21 +176,14 @@ export class NotificationPopupComponent extends LazyLoad {
 
       const promptCloseListener = prompt.onClose.subscribe(() => {
         promptCloseListener.unsubscribe();
-        this.notificationPrompt = null!;
+        this.disableButtonPrompt = null!;
       })
     })
   }
 
 
 
-
-
-
-
-
-
-
-
+  // =====================================================================( ADD NOTE )====================================================================== \\
 
   addNote(employees: Array<NotificationProfile>) {
     this.newNoteAdded = true;
@@ -200,10 +195,8 @@ export class NotificationPopupComponent extends LazyLoad {
   }
 
 
-  getContextMenuOptions(): Array<MenuOption> {
-    return [];
-  }
-
+  
+  // =================================================================( OPEN CONTEXT MENU )================================================================= \\
 
   openContextMenu(ellipsis: HTMLElement) {
     if (this.contextMenu) {
@@ -234,6 +227,7 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
+  // ================================================================( OPEN DELETE PROMPT )================================================================= \\
 
   openDeletePrompt() {
     this.lazyLoadingService.load(async () => {
@@ -252,7 +246,7 @@ export class NotificationPopupComponent extends LazyLoad {
       prompt.primaryButton = {
         name: 'Delete',
         buttonFunction: () => {
-          this.deleteNotification();
+          this.onDelete();
         }
       }
       prompt.secondaryButton.name = 'Cancel'
@@ -266,12 +260,9 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
+  // =====================================================================( ON DELETE )===================================================================== \\
 
-
-
-
-
-  deleteNotification() {
+  onDelete() {
     this.notificationService.archiveNotifications.splice(this.notificationItem.index!, 1);
     const index = this.container.indexOf(this.viewRef);
     this.container.remove(index);
@@ -283,6 +274,8 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
+  // ===================================================================( NOTES WRITTEN )=================================================================== \\
+  
   notesWritten(employees: Array<NotificationProfile>): boolean {
     // If notes were never written yet on this form and now
     // for the first time notes are finally being written
@@ -301,14 +294,14 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-
-
+  // ================================================================( SEND EMPLOYEE TEXT )================================================================= \\
+  
   sendEmployeeText() {
     this.dataService.post(this.employeeTextPath, this.employeeTextParameters).subscribe();
   }
 
 
-
+  // =====================================================================( ON CLOSE )====================================================================== \\
 
   onClose(employees: Array<NotificationProfile>, restore?: boolean): void {
     // If notes were written
@@ -346,7 +339,7 @@ export class NotificationPopupComponent extends LazyLoad {
     }
 
     if (this.secondaryButtonDisabled) {
-      this.onDisabledSecondaryButton();
+      this.dataService.put(this.secondaryButtonDisabledPath, this.secondaryButtonDisabledParameters).subscribe();
     }
 
     // Now close
@@ -354,5 +347,11 @@ export class NotificationPopupComponent extends LazyLoad {
   }
 
 
-  onDisabledSecondaryButton() { }
+
+  // ==================================================================( NG ON DESTROY )==================================================================== \\
+
+  ngOnDestroy() {
+    // Update isNew property here so that the primary button isn't being seen changing to other button type as popup closes
+    if (this.isNew != null) this.notificationItem.isNew = this.isNew;
+  }
 }

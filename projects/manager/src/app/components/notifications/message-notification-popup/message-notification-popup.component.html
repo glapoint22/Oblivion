@@ -45,13 +45,13 @@
                             <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[counterIndex].userName}">
                                 
                                 <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[counterIndex].userName ? '-106px' : '-110px'}">
-                                    <ng-template #profilePopupContainer></ng-template>
+                                    <ng-template #profilePopupContainerTemplate></ng-template>
                                 </div>
 
                                 <img style="cursor: pointer;"
                                     [ngStyle]="{'border-radius': notification && notification[counterIndex].userName ? 'none' : '50%'}"
                                     (mousedown)="$event.stopPropagation()"
-                                    (click)="openProfilePopup(notification[counterIndex])"
+                                    (click)="openProfilePopup(notification[counterIndex], profilePopupContainer)"
                                     [src]="notification[counterIndex].userName ? 'assets/message-notification.png' : notification[counterIndex].image ? 'images/' + notification[counterIndex].image : 'assets/no-account-pic.png'"
                                     [title]="notification[counterIndex].firstName + ' ' + notification[counterIndex].lastName">
                             </div>

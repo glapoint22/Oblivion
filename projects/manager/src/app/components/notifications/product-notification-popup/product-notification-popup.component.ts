@@ -3,6 +3,7 @@ import { MenuOptionType } from '../../../classes/enums';
 import { NotificationProduct } from '../../../classes/notification-product';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { MenuOption } from '../../../classes/menu-option';
+import { NotificationProfile } from '../../../classes/notification-profile';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
@@ -10,44 +11,10 @@ import { MenuOption } from '../../../classes/menu-option';
 })
 export class ProductNotificationPopupComponent extends NotificationPopupComponent {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   ngOnInit() {
     super.ngOnInit();
     this.getNotification<NotificationProduct>('api/Notifications/Product', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
   }
-
-
-
-  sendEmployeeText() {
-    this.employeeTextPath = 'api/Notifications/PostNote';
-    this.employeeTextParameters = {
-      notificationGroupId: this.notificationItem.notificationGroupId,
-      note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
-    }
-    super.sendEmployeeText();
-  }
-
-
-
-
 
 
   getContextMenuOptions(): Array<MenuOption> {
@@ -82,41 +49,30 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   }
 
 
-
-
-
-
-
-
-  openNotificationPrompt() {
-    this.notificationPromptPrimaryButtonName = this.notification.productDisabled ? 'Enable' : 'Disable';
-    this.notificationPromptTitle = (this.notification.productDisabled ? 'Enable' : 'Disable') + ' Product';
-    this.notificationPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
+  openDisableButtonPrompt() {
+    this.disableButtonPromptPrimaryButtonName = this.notification.productDisabled ? 'Enable' : 'Disable';
+    this.disableButtonPromptTitle = (this.notification.productDisabled ? 'Enable' : 'Disable') + ' Product';
+    this.disableButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
       'The product,' +
       ' <span style="color: #ffba00">\"' + this.notificationItem.productName + '\"</span>' +
       ' will be ' + (this.notification.productDisabled ? 'enabled' : 'disabled') + '.');
 
-      super.openNotificationPrompt();
+    super.openDisableButtonPrompt();
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  sendEmployeeText() {
+    this.employeeTextPath = 'api/Notifications/PostNote';
+    this.employeeTextParameters = {
+      notificationGroupId: this.notificationItem.notificationGroupId,
+      note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
+    }
+    super.sendEmployeeText();
+  }
 
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.notificationPrompt && !this.deletePrompt) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.disableButtonPrompt && !this.deletePrompt) {
       if (!this.notesWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
         this.fade();
       } else {
@@ -128,31 +84,9 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-
-
-
-
-
-  onDisabledSecondaryButton() {
-    this.dataService.put('api/Notifications/DisableProduct', {
-      productId: this.notification.productId
-    }).subscribe();
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  ngOnDestroy() {
-    // Update isNew property here so that the primary button isn't being seen changing to other button type as popup closes
-    if (this.isNew != null) this.notificationItem.isNew = this.isNew;
+  onClose(employees: Array<NotificationProfile>, restore?: boolean): void {
+    this.secondaryButtonDisabledPath = 'api/Notifications/DisableProduct';
+    this.secondaryButtonDisabledParameters = { productId: this.notification.productId };
+    super.onClose(employees, restore);
   }
 }

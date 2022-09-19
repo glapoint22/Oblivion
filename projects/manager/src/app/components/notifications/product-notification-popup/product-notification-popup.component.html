@@ -58,12 +58,12 @@
                         <div class="profile-image-container">
 
                             <div class="profile-popup-container">
-                                <ng-template #profilePopupContainer></ng-template>
+                                <ng-template #profilePopupContainerTemplate></ng-template>
                             </div>
 
                             <img style="cursor: pointer;"
                                 (mousedown)="$event.stopPropagation()"
-                                (click)="openProfilePopup(notification.users[counterIndex])"
+                                (click)="openProfilePopup(notification.users[counterIndex], profilePopupContainer)"
                                 [src]="notification.users[counterIndex].image ? 'images/' + notification.users[counterIndex].image : 'assets/no-account-pic.png'"
                                 [title]="notification.users[counterIndex].firstName + ' ' + notification.users[counterIndex].lastName">
                         </div>
@@ -133,7 +133,7 @@
         <div class="button-container">
             <div>
                 <!-- Show button only when data loads, otherwise button's length changes which looks terrible -->
-                <button class="notification-button" (click)="openNotificationPrompt()" [disabled]="secondaryButtonDisabled">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
+                <button class="notification-button" (click)="openDisableButtonPrompt()" [disabled]="secondaryButtonDisabled">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
             </div>
             
             <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onClose(notification.employees)">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>

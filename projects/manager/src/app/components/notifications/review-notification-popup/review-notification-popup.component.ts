@@ -1,25 +1,15 @@
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { SpinnerAction } from 'common';
+import { Component } from '@angular/core';
 import { NotificationReview } from '../../../classes/notification-review';
-import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
 import { MenuOptionType } from '../../../classes/enums';
-import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { MenuOption } from '../../../classes/menu-option';
+import { NotificationProfile } from '../../../classes/notification-profile';
+import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
 
 @Component({
   templateUrl: './review-notification-popup.component.html',
   styleUrls: ['./review-notification-popup.component.scss']
 })
-export class ReviewNotificationPopupComponent extends NotificationPopupComponent {
-  public reviewProfilePopup!: NotificationProfilePopupComponent;
-
-
-
-  @ViewChild('profileContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
-  @ViewChild('reviewProfileContainer', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
-
-
-
+export class ReviewNotificationPopupComponent extends ProductNotificationPopupComponent {
 
 
 
@@ -32,18 +22,7 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
 
 
-
-  sendEmployeeText() {
-    this.employeeTextPath = 'api/Notifications/PostNote';
-    this.employeeTextParameters = {
-      notificationGroupId: this.notificationItem.notificationGroupId,
-      note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
-    }
-    super.sendEmployeeText();
-  }
-
-
-
+  
 
 
   getContextMenuOptions(): Array<MenuOption> {
@@ -76,66 +55,23 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
 
 
-
-
-
-
-
-
-  openReviewProfilePopup() {
-    if (this.reviewProfilePopupContainer.length > 0) {
-      this.reviewProfilePopup.close();
-      return;
-    }
-
-    this.lazyLoadingService.load(async () => {
-      const { NotificationProfilePopupComponent } = await import('../notification-profile-popup/notification-profile-popup.component');
-      const { NotificationProfilePopupModule } = await import('../notification-profile-popup/notification-profile-popup.module');
-      return {
-        component: NotificationProfilePopupComponent,
-        module: NotificationProfilePopupModule
-      }
-    }, SpinnerAction.None, this.reviewProfilePopupContainer)
-      .then((reviewProfilePopup: NotificationProfilePopupComponent) => {
-        this.reviewProfilePopup = reviewProfilePopup;
-        reviewProfilePopup.user = this.notification.reviewWriter;
-        reviewProfilePopup.isReview = true;
-      });
-  }
-
-
-
-
-
-
-
-
-
-
-  openNotificationPrompt() {
-    this.notificationPromptPrimaryButtonName = !this.notification.reviewDeleted ? 'Remove' : 'Restore';
-    this.notificationPromptTitle = (!this.notification.reviewDeleted ? 'Remove' : 'Restore') + ' Review';
-    this.notificationPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
+  openDisableButtonPrompt() {
+    this.disableButtonPromptPrimaryButtonName = !this.notification.reviewDeleted ? 'Remove' : 'Restore';
+    this.disableButtonPromptTitle = (!this.notification.reviewDeleted ? 'Remove' : 'Restore') + ' Review';
+    this.disableButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
       'The review with the title,' +
       ' <span style="color: #ffba00">\"' + this.notification.reviewWriter.reviewTitle + '\"</span>' +
       ' will be ' + (!this.notification.reviewDeleted ? 'removed' : 'restored') + '.');
 
 
-    super.openNotificationPrompt();
+    super.openDisableButtonPrompt();
   }
 
 
 
 
-
-
-
-
-
-
-
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && this.reviewProfilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.notificationPrompt && !this.deletePrompt) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && this.reviewProfilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.disableButtonPrompt && !this.deletePrompt) {
       if (!this.notesWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
         this.fade();
       } else {
@@ -147,26 +83,9 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
 
 
-
-  onDisabledSecondaryButton() {
-    this.dataService.put('api/Notifications/RemoveReview', {
-      reviewId: this.notification.reviewId
-    }).subscribe();
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-  ngOnDestroy() {
-    // Update isNew property here so that the primary button isn't being seen changing to other button type as popup closes
-    if (this.isNew != null) this.notificationItem.isNew = this.isNew;
-  }
+  onClose(employees: Array<NotificationProfile>, restore?: boolean): void {
+    this.secondaryButtonDisabledPath = 'api/Notifications/RemoveReview';
+    this.secondaryButtonDisabledParameters = { reviewId: this.notification.reviewId }
+    super.onClose(employees, restore);
+  }  
 }

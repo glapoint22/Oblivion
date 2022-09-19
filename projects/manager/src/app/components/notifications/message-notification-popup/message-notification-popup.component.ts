@@ -22,20 +22,6 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
  
 
-
-  sendEmployeeText() {
-    this.employeeTextPath = 'api/Notifications/PostMessage';
-    this.employeeTextParameters = {
-      notificationId: this.notification[this.counterIndex].notificationId,
-      message: this.notification[this.counterIndex].employeeMessage.trim()
-    }
-    super.sendEmployeeText();
-  }
-
-
- 
-
-
   getContextMenuOptions(): Array<MenuOption> {
     return [
       {
@@ -106,6 +92,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  
+
 
 
 
@@ -134,7 +122,14 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-
+  sendEmployeeText() {
+    this.employeeTextPath = 'api/Notifications/PostMessage';
+    this.employeeTextParameters = {
+      notificationId: this.notification[this.counterIndex].notificationId,
+      message: this.notification[this.counterIndex].employeeMessage.trim()
+    }
+    super.sendEmployeeText();
+  }
 
 
 
@@ -273,7 +268,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   }
 
 
-  deleteNotification() {
+  onDelete() {
     if (!this.deleteAll) {
 
       this.delete(
