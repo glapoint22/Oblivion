@@ -42,8 +42,8 @@
                     <div class="counter-container">
                         <counter *ngIf="notification.users.length > 1"
                                  [itemCount]="notification.users.length"
-                                 (onItemChange)="userIndex = $event"
-                                 [currentIndex]="userIndex">
+                                 (onItemChange)="counterIndex = $event"
+                                 [currentIndex]="counterIndex">
                         </counter>
                     </div>
                     
@@ -51,7 +51,7 @@
                     <div class="profile-container">
                         <!-- Date -->
                         <div class="date">
-                            {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
+                            {{notification.users[counterIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->
@@ -63,16 +63,16 @@
 
                             <img style="cursor: pointer;"
                                 (mousedown)="$event.stopPropagation()"
-                                (click)="openProfilePopup()"
-                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
-                                [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
+                                (click)="openProfilePopup(notification.users[counterIndex])"
+                                [src]="notification.users[counterIndex].image ? 'images/' + notification.users[counterIndex].image : 'assets/no-account-pic.png'"
+                                [title]="notification.users[counterIndex].firstName + ' ' + notification.users[counterIndex].lastName">
                         </div>
                     </div>
                 </div>
             
                 <!-- User Comment -->
                 <div class="user-comment">
-                    {{notification.users[userIndex].text}}
+                    {{notification.users[counterIndex].text}}
                 </div>
             </ng-container>
         </div>
@@ -87,7 +87,7 @@
                              [title]="'Add New Note'"
                              [fontSize]="'16'"
                              [isDisabled]="newNoteAdded"
-                             (onClick)="addNote()">
+                             (onClick)="addNote(notification.employees)">
                 </icon-button>
             </div>
         </div>
@@ -133,10 +133,10 @@
         <div class="button-container">
             <div>
                 <!-- Show button only when data loads, otherwise button's length changes which looks terrible -->
-                <button class="notification-button" (click)="openDisableProductPrompt()" [disabled]="secondaryButtonDisabled">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
+                <button class="notification-button" (click)="openNotificationPrompt()" [disabled]="secondaryButtonDisabled">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
             </div>
             
-            <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="close()">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
+            <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onClose(notification.employees)">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
         </div>
     </div>
 </div>

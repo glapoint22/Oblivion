@@ -12,8 +12,8 @@
             <div class="counter-container">
                 <counter *ngIf="notificationItem.count > 1"
                          [itemCount]="notificationItem.count"
-                         (onItemChange)="messageIndex = $event; setSendButtonDisabled()"
-                         [currentIndex]="messageIndex">
+                         (onItemChange)="counterIndex = $event; setSendButtonDisabled()"
+                         [currentIndex]="counterIndex">
                 </counter>
             </div>
 
@@ -38,28 +38,28 @@
                         <div class="info-bar">
                             <!-- Date -->
                             <div class="date">
-                                {{notification[messageIndex].date | date: 'MMM d, y, h:mm a'}}
+                                {{notification[counterIndex].date | date: 'MMM d, y, h:mm a'}}
                             </div>
             
                             <!-- Image -->
-                            <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[messageIndex].userName}">
+                            <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[counterIndex].userName}">
                                 
-                                <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[messageIndex].userName ? '-106px' : '-110px'}">
+                                <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[counterIndex].userName ? '-106px' : '-110px'}">
                                     <ng-template #profilePopupContainer></ng-template>
                                 </div>
 
                                 <img style="cursor: pointer;"
-                                    [ngStyle]="{'border-radius': notification && notification[messageIndex].userName ? 'none' : '50%'}"
+                                    [ngStyle]="{'border-radius': notification && notification[counterIndex].userName ? 'none' : '50%'}"
                                     (mousedown)="$event.stopPropagation()"
-                                    (click)="openProfilePopup()"
-                                    [src]="notification[messageIndex].userName ? 'assets/message-notification.png' : notification[messageIndex].image ? 'images/' + notification[messageIndex].image : 'assets/no-account-pic.png'"
-                                    [title]="notification[messageIndex].firstName + ' ' + notification[messageIndex].lastName">
+                                    (click)="openProfilePopup(notification[counterIndex])"
+                                    [src]="notification[counterIndex].userName ? 'assets/message-notification.png' : notification[counterIndex].image ? 'images/' + notification[counterIndex].image : 'assets/no-account-pic.png'"
+                                    [title]="notification[counterIndex].firstName + ' ' + notification[counterIndex].lastName">
                             </div>
                         </div>
                     
                         <!-- User Comment -->
                         <div class="user-comment">
-                            {{notification[messageIndex].text}}
+                            {{notification[counterIndex].text}}
                         </div>
                     </ng-container>
                 </div>
@@ -73,28 +73,28 @@
                 <div class="info-box">
 
                     <ng-container *ngIf="notification">
-                        <ng-container *ngIf="notification[messageIndex].employeeMessageDate">
+                        <ng-container *ngIf="notification[counterIndex].employeeMessageDate">
                             <div class="info-bar">
                                 
                                 <!-- Date -->
                                 <div class="date">
-                                    {{notification[messageIndex].employeeMessageDate | date: 'MMM d, y, h:mm a'}}
+                                    {{notification[counterIndex].employeeMessageDate | date: 'MMM d, y, h:mm a'}}
                                 </div>
 
                                 <!-- Image -->
                                 <div class="profile-image-container">
-                                    <img [src]="notification[messageIndex].employeeImage ? 'images/' + notification[messageIndex].employeeImage : 'assets/no-account-pic.png'" style="border-radius: 50%;" [title]="notification[messageIndex].employeeFirstName + ' ' + notification[messageIndex].employeeLastName">
+                                    <img [src]="notification[counterIndex].employeeImage ? 'images/' + notification[counterIndex].employeeImage : 'assets/no-account-pic.png'" style="border-radius: 50%;" [title]="notification[counterIndex].employeeFirstName + ' ' + notification[counterIndex].employeeLastName">
                                 </div>
                             </div>
 
                             <!-- Reply -->
                             <div class="user-comment">
-                                {{notification[messageIndex].employeeMessage}}
+                                {{notification[counterIndex].employeeMessage}}
                             </div>
                         </ng-container>
                     
                         <!-- Empty Reply -->
-                        <textarea *ngIf="!notification[messageIndex].employeeMessageDate" [(ngModel)]="notification[messageIndex].employeeMessage" (input)="setSendButtonDisabled()"></textarea>
+                        <textarea *ngIf="!notification[counterIndex].employeeMessageDate" [(ngModel)]="notification[counterIndex].employeeMessage" (input)="setSendButtonDisabled()"></textarea>
                     </ng-container>
                 </div>
             </div>
@@ -104,7 +104,7 @@
         <!-- Buttons -->
         <div class="button-container">
             <button class="dark-button" (click)="notificationItem.isNew ? archive() : close()">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
-            <button class="gold-button" [disabled]="sendButtonDisabled" (click)="sendMessage()">Send</button>
+            <button class="gold-button" [disabled]="sendButtonDisabled" (click)="sendEmployeeText(); notificationItem.isNew ? archive() : close()">Send</button>
         </div>
     </div>
 </div>

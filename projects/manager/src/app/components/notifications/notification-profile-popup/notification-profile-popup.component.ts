@@ -39,6 +39,11 @@ export class NotificationProfilePopupComponent extends LazyLoad {
   }
 
 
+  onEscape(): void {
+    if (!this.prompt) this.close();
+  }
+
+
   openPrompt() {
     this.lazyLoadingService.load(async () => {
       const { PromptComponent } = await import('../../prompt/prompt.component');

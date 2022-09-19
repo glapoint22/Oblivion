@@ -1,190 +1,122 @@
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { Component } from '@angular/core';
 import { MenuOptionType } from '../../../classes/enums';
 import { NotificationItem } from '../../../classes/notification-item';
 import { NotificationMessage } from '../../../classes/notification-message';
-import { ContextMenuComponent } from '../../context-menu/context-menu.component';
-import { NotificationService } from '../../../services/notification/notification.service';
-import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
-import { PromptComponent } from '../../prompt/prompt.component';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
+import { MenuOption } from '../../../classes/menu-option';
 
 @Component({
   templateUrl: './message-notification-popup.component.html',
   styleUrls: ['./message-notification-popup.component.scss']
 })
 export class MessageNotificationPopupComponent extends NotificationPopupComponent {
-  private contextMenu!: ContextMenuComponent;
-
-  public messageIndex: number = 0;
+  private deleteAll!: boolean;
   public sendButtonDisabled: boolean = true;
-  public notificationItem!: NotificationItem;
-  public notification!: Array<NotificationMessage>;
-  public profilePopup!: NotificationProfilePopupComponent;
-
-  @ViewChild('profilePopupContainer', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
-
-  public get employeeMessageWritten(): boolean {
-    let isWritten: boolean = false;
-
-    for (let i = 0; i < this.notification.length; i++) {
-      // If a new reply has been written in any of the messages and they're not just empty spaces
-      if (!this.notification[i].employeeMessageDate &&
-        this.notification[i].employeeMessage != null &&
-        this.notification[i].employeeMessage.trim().length > 0) {
-        isWritten = true;
-        break;
-      }
-    }
-    return isWritten
-  }
-
-  constructor(lazyLoadingService: LazyLoadingService,
-    private dataService: DataService,
-    private notificationService: NotificationService,
-    private sanitizer: DomSanitizer) {
-    super(lazyLoadingService)
-  }
-
 
 
   ngOnInit() {
     super.ngOnInit();
-    this.notificationItem.selected = false;
-    this.notificationItem.selectType = null!;
-
-
-
-    this.dataService.get<Array<NotificationMessage>>('api/Notifications/Message', [
-      { key: 'notificationGroupId', value: this.notificationItem.notificationGroupId },
-      { key: 'isNew', value: this.notificationItem.isNew }
-    ]).subscribe((notificationMessages: Array<NotificationMessage>) => {
-      this.notification = notificationMessages;
-    });
+    this.getNotification<Array<NotificationMessage>>('api/Notifications/Message', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
   }
 
 
+ 
 
 
-  openContextMenu(ellipsis: HTMLElement) {
-    if (this.contextMenu) {
-      this.contextMenu.close();
-      return;
+  sendEmployeeText() {
+    this.employeeTextPath = 'api/Notifications/PostMessage';
+    this.employeeTextParameters = {
+      notificationId: this.notification[this.counterIndex].notificationId,
+      message: this.notification[this.counterIndex].employeeMessage.trim()
     }
-    this.lazyLoadingService.load(async () => {
-      const { ContextMenuComponent } = await import('../../context-menu/context-menu.component');
-      const { ContextMenuModule } = await import('../../context-menu/context-menu.module');
+    super.sendEmployeeText();
+  }
 
-      return {
-        component: ContextMenuComponent,
-        module: ContextMenuModule
-      }
-    }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-      this.contextMenu = contextMenu;
-      contextMenu.xPos = ellipsis.getBoundingClientRect().left + 25;
-      contextMenu.yPos = ellipsis.getBoundingClientRect().top + 21;
-      contextMenu.parentObj = this;
-      contextMenu.options = [
-        {
-          type: MenuOptionType.MenuItem,
-          name: this.notificationItem.isNew ? 'Archive All Messages' : 'Restore as New',
-          optionFunction: () => {
-            this.notificationItem.isNew ?
 
-              // Archive All
-              this.transfer(this.notificationService.newNotifications, null!, this.notificationService.archiveNotifications, this.notificationItem.count,
-                {
-                  archiveAllMessagesInGroup: true,
-                  notificationGroupId: this.notificationItem.notificationGroupId
-                })
+ 
 
-              :
 
-              // Restore
-              this.transfer(this.notificationService.archiveNotifications, this.notificationItem.count, this.notificationService.newNotifications, 1,
-                {
-                  restore: true,
-                  notificationId: this.notification[this.messageIndex].notificationId,
-                  notificationGroupId: this.notificationItem.notificationGroupId
-                })
-          }
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Restore All Messages as New',
-          hidden: this.notificationItem.isNew || (!this.notificationItem.isNew && this.notificationItem.count == 1),
-          optionFunction: () => {
+  getContextMenuOptions(): Array<MenuOption> {
+    return [
+      {
+        type: MenuOptionType.MenuItem,
+        name: this.notificationItem.isNew ? 'Archive All Messages' : 'Restore as New',
+        optionFunction: () => {
+          this.notificationItem.isNew ?
 
-            // Restore All
-            this.transfer(this.notificationService.archiveNotifications, null!, this.notificationService.newNotifications, this.notificationItem.count,
+            // Archive All
+            this.transfer(this.notificationService.newNotifications, null!, this.notificationService.archiveNotifications, this.notificationItem.count,
               {
-                restore: true,
-                restoreAllMessagesInGroup: true,
+                archiveAllMessagesInGroup: true,
                 notificationGroupId: this.notificationItem.notificationGroupId
               })
-          }
-        },
-        {
-          type: MenuOptionType.Divider,
-          hidden: this.notificationItem.isNew ? true : false
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Delete',
-          hidden: this.notificationItem.isNew ? true : false,
-          optionFunction: () => {
-            this.openDeletePrompt(false);
-          }
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Delete All Messages',
-          hidden: this.notificationItem.isNew || (!this.notificationItem.isNew && this.notificationItem.count == 1),
-          optionFunction: () => {
-            this.openDeletePrompt(true);
-          }
+
+            :
+
+            // Restore
+            this.transfer(this.notificationService.archiveNotifications, this.notificationItem.count, this.notificationService.newNotifications, 1,
+              {
+                restore: true,
+                notificationId: this.notification[this.counterIndex].notificationId,
+                notificationGroupId: this.notificationItem.notificationGroupId
+              })
         }
-      ]
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Restore All Messages as New',
+        hidden: this.notificationItem.isNew || (!this.notificationItem.isNew && this.notificationItem.count == 1),
+        optionFunction: () => {
 
-      const contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
-        contextMenuOpenListener.unsubscribe();
-        this.contextMenu = null!;
-      })
-    });
-  }
-
-
-
-
-
-  openProfilePopup() {
-    if (this.profilePopupContainer.length > 0) {
-      this.profilePopup.close();
-      return;
-    }
-
-    this.lazyLoadingService.load(async () => {
-      const { NotificationProfilePopupComponent } = await import('../notification-profile-popup/notification-profile-popup.component');
-      const { NotificationProfilePopupModule } = await import('../notification-profile-popup/notification-profile-popup.module');
-      return {
-        component: NotificationProfilePopupComponent,
-        module: NotificationProfilePopupModule
+          // Restore All
+          this.transfer(this.notificationService.archiveNotifications, null!, this.notificationService.newNotifications, this.notificationItem.count,
+            {
+              restore: true,
+              restoreAllMessagesInGroup: true,
+              notificationGroupId: this.notificationItem.notificationGroupId
+            })
+        }
+      },
+      {
+        type: MenuOptionType.Divider,
+        hidden: this.notificationItem.isNew ? true : false
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Delete',
+        hidden: this.notificationItem.isNew ? true : false,
+        optionFunction: () => {
+          this.openDeletePrompt(false);
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Delete All Messages',
+        hidden: this.notificationItem.isNew || (!this.notificationItem.isNew && this.notificationItem.count == 1),
+        optionFunction: () => {
+          this.openDeletePrompt(true);
+        }
       }
-    }, SpinnerAction.None, this.profilePopupContainer)
-      .then((profilePopup: NotificationProfilePopupComponent) => {
-        this.profilePopup = profilePopup;
-        profilePopup.user = this.notification[this.messageIndex];
-      });
+    ];
   }
+
+
+
+
+
+
+
+
+
+
 
 
 
   setSendButtonDisabled() {
     // If a new reply has been written in this current message and it's not just empty spaces
-    if (!this.notification[this.messageIndex].employeeMessageDate &&
-      this.notification[this.messageIndex].employeeMessage != null &&
-      this.notification[this.messageIndex].employeeMessage.trim().length > 0) {
+    if (!this.notification[this.counterIndex].employeeMessageDate &&
+      this.notification[this.counterIndex].employeeMessage != null &&
+      this.notification[this.counterIndex].employeeMessage.trim().length > 0) {
       // Enable the send button
       this.sendButtonDisabled = false;
 
@@ -197,59 +129,24 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   }
 
 
-  onEscape(): void {
-    if (this.profilePopupContainer.length > 0) {
-      this.profilePopup.close();
-    } else {
-      if (!this.contextMenu) {
-        if (!this.employeeMessageWritten) {
-          this.close();
-        } else {
-          this.openUndoChangesPrompt();
-        }
-      }
-    }
-  }
 
 
 
-  openUndoChangesPrompt() {
-    this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../prompt/prompt.component');
-      const { PromptModule } = await import('../../prompt/prompt.module');
-
-      return {
-        component: PromptComponent,
-        module: PromptModule
-      }
-    }, SpinnerAction.None).then((prompt: PromptComponent) => {
-      prompt.parentObj = this;
-      prompt.title = 'Warning';
-      prompt.message = 'Any changes you have made will be undone. Do you want to continue closing?';
-      prompt.primaryButton = {
-        name: 'Continue',
-        buttonFunction: this.close
-      }
-      prompt.secondaryButton.name = 'Cancel'
-    })
-  }
 
 
 
-  sendMessage() {
-    this.dataService.post('api/Notifications/PostMessage', {
-      notificationId: this.notification[this.messageIndex].notificationId,
-      message: this.notification[this.messageIndex].employeeMessage.trim()
-    }).subscribe();
 
-    if (this.notificationItem.isNew) this.archive();
-  }
+
+
+
+
+
 
 
 
   archive() {
     this.transfer(this.notificationService.newNotifications, this.notificationItem.count, this.notificationService.archiveNotifications, 1, {
-      notificationId: this.notification[this.messageIndex].notificationId,
+      notificationId: this.notification[this.counterIndex].notificationId,
       notificationGroupId: this.notificationItem.notificationGroupId
     });
   }
@@ -260,9 +157,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
     // Minus the count for the notification's red circle by one
     this.notificationItem.count -= 1;
     // And then remove the current message from the popup
-    this.notification.splice(this.messageIndex, 1);
+    this.notification.splice(this.counterIndex, 1);
     // Set the counter so that the first message is being displayed (if not already)
-    this.messageIndex = 0;
+    this.counterIndex = 0;
     // Disable the send button
     this.setSendButtonDisabled();
   }
@@ -363,55 +260,51 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  openDeletePrompt(deleteAll?: boolean) {
+    this.deleteAll = deleteAll!;
+    this.deletePromptTitle = !deleteAll ? 'Delete Message' : 'Delete Messages';
+    this.deletePromptMessage = this.sanitizer.bypassSecurityTrustHtml(
+      (!deleteAll ? (this.notificationItem.count > 1 ? 'This' : 'The') + ' message' : 'All messages') +
+      ' from,' +
+      ' <span style="color: #ffba00">\"' + this.notificationItem.name + '\"</span>' +
+      ' will be permanently deleted.');
 
-  openDeletePrompt(deleteAll: boolean) {
-    this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../prompt/prompt.component');
-      const { PromptModule } = await import('../../prompt/prompt.module');
-
-      return {
-        component: PromptComponent,
-        module: PromptModule
-      }
-    }, SpinnerAction.None).then((prompt: PromptComponent) => {
-      prompt.parentObj = this;
-      prompt.title = !deleteAll ? 'Delete Message' : 'Delete Messages';
-      prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-        (!deleteAll ? (this.notificationItem.count > 1 ? 'This' : 'The') + ' message' : 'All messages') +
-        ' from,' +
-        ' <span style="color: #ffba00">\"' + this.notificationItem.name + '\"</span>' +
-        ' will be permanently deleted.');
-      prompt.primaryButton = {
-        name: 'Delete',
-        buttonFunction: () => {
-          if (!deleteAll) {
-
-            this.delete(
-              {
-                notificationGroupId: this.notification.length == 1 ? this.notificationItem.notificationGroupId : 0,
-                notificationId: this.notification[this.messageIndex].notificationId,
-                employeeMessageIds: this.notification[this.messageIndex].employeeMessageId != null ? [this.notification[this.messageIndex].employeeMessageId] : []
-              }, this.notificationItem.count);
-
-          } else {
-
-            let employeeMessageIds = new Array<number>();
-            this.notification.forEach(x => {
-              if (x.employeeMessageId != null) employeeMessageIds.push(x.employeeMessageId)
-            });
-
-            this.delete(
-              {
-                notificationGroupId: this.notificationItem.notificationGroupId,
-                employeeMessageIds: employeeMessageIds
-              }
-            );
-          }
-        }
-      }
-      prompt.secondaryButton.name = 'Cancel'
-    })
+    super.openDeletePrompt();
   }
+
+
+  deleteNotification() {
+    if (!this.deleteAll) {
+
+      this.delete(
+        {
+          notificationGroupId: this.notification.length == 1 ? this.notificationItem.notificationGroupId : 0,
+          notificationId: this.notification[this.counterIndex].notificationId,
+          employeeMessageIds: this.notification[this.counterIndex].employeeMessageId != null ? [this.notification[this.counterIndex].employeeMessageId] : []
+        }, this.notificationItem.count);
+
+    } else {
+
+      let employeeMessageIds = new Array<number>();
+      (this.notification as Array<NotificationMessage>).forEach(x => {
+        if (x.employeeMessageId != null) employeeMessageIds.push(x.employeeMessageId)
+      });
+
+      this.delete(
+        {
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          employeeMessageIds: employeeMessageIds
+        }
+      );
+    }
+  }
+
+
+
+
+
+
+
 
 
 
@@ -421,5 +314,35 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
     // Update database
     this.dataService.delete('api/Notifications', dataServiceParameters).subscribe();
+  }
+
+
+
+
+  employeeMessageWritten(): boolean {
+    let isWritten: boolean = false;
+
+    for (let i = 0; i < this.notification.length; i++) {
+      // If a new reply has been written in any of the messages and they're not just empty spaces
+      if (!this.notification[i].employeeMessageDate &&
+        this.notification[i].employeeMessage != null &&
+        this.notification[i].employeeMessage.trim().length > 0) {
+        isWritten = true;
+        break;
+      }
+    }
+    return isWritten
+  }
+
+
+
+  onEscape(): void {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.deletePrompt) {
+      if (!this.employeeMessageWritten()) {
+        this.close();
+      } else {
+        this.openUndoChangesPrompt(this.close);
+      }
+    }
   }
 }
