@@ -7,7 +7,7 @@ import { MenuOption } from '../../../classes/menu-option';
 
 @Component({
   templateUrl: './message-notification-popup.component.html',
-  styleUrls: ['./message-notification-popup.component.scss']
+  styleUrls: ['../notification-popup/notification-popup.component.scss', './message-notification-popup.component.scss']
 })
 export class MessageNotificationPopupComponent extends NotificationPopupComponent {
   private deleteAll!: boolean;
@@ -131,7 +131,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
   // ================================================================( SEND EMPLOYEE TEXT )================================================================= \\
-  
+
   sendEmployeeText() {
     this.employeeTextPath = 'api/Notifications/PostMessage';
     this.employeeTextParameters = {
@@ -142,9 +142,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   }
 
 
-  
+
   // ======================================================================( ARCHIVE )====================================================================== \\
-  
+
   archive() {
     this.transfer(this.notificationService.newNotifications, this.notificationItem.count, this.notificationService.archiveNotifications, 1, {
       notificationId: this.notification[this.counterIndex].notificationId,
@@ -155,7 +155,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
   // ==================================================================( REMOVE MESSAGE )=================================================================== \\
-  
+
   removeMessage() {
     // Minus the count for the notification's red circle by one
     this.notificationItem.count -= 1;
@@ -170,7 +170,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
   // ================================================================( REMOVE NOTIFICATION )================================================================ \\
-  
+
   removeNotification(notifications: Array<NotificationItem>) {
     const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
     notifications.splice(notificationItemIndex, 1);
@@ -180,7 +180,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
   // ===========================================================( CREATE NEW NOTIFICATION ITEM )============================================================ \\
-  
+
   createNewNotificationItem(isNew: boolean, messageCount: number): NotificationItem {
     const newNotificationItem = new NotificationItem();
     newNotificationItem.isNew = isNew;
@@ -198,7 +198,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
   // =================================================================( REMOVE FROM LIST )================================================================== \\
-  
+
   removeFromList(notifications: Array<NotificationItem>, messageCount?: number) {
     // If we're removing just a message (NOT a notification item)
     //  And there is more than just one message in the message notification
@@ -217,7 +217,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
   // ====================================================================( ADD TO LIST )==================================================================== \\
-  
+
   addToList(notifications: Array<NotificationItem>, messageCount: number) {
     // See if the sender of this message already has a message notification in the list
     const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
@@ -267,7 +267,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
     this.dataService.put('api/Notifications/Archive', dataServiceParameters).subscribe();
   }
 
-  
+
 
   // ================================================================( OPEN DELETE PROMPT )================================================================= \\
 
@@ -286,7 +286,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
   // =====================================================================( ON DELETE )===================================================================== \\
-  
+
   onDelete() {
     if (!this.deleteAll) {
 

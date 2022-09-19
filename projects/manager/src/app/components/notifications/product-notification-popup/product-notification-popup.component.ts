@@ -7,7 +7,7 @@ import { NotificationProfile } from '../../../classes/notification-profile';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
-  styleUrls: ['./product-notification-popup.component.scss']
+  styleUrls: ['../notification-popup/notification-popup.component.scss', './product-notification-popup.component.scss']
 })
 export class ProductNotificationPopupComponent extends NotificationPopupComponent {
 
