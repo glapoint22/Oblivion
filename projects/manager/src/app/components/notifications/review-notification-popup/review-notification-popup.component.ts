@@ -12,8 +12,7 @@ import { ProductNotificationPopupComponent } from '../product-notification-popup
 export class ReviewNotificationPopupComponent extends ProductNotificationPopupComponent {
 
 
-
-
+  // ====================================================================( NG ON INIT )===================================================================== \\
 
   ngOnInit() {
     super.ngOnInit();
@@ -22,8 +21,7 @@ export class ReviewNotificationPopupComponent extends ProductNotificationPopupCo
 
 
 
-  
-
+  // =============================================================( GET CONTEXT MENU OPTIONS )============================================================== \\
 
   getContextMenuOptions(): Array<MenuOption> {
     return [
@@ -51,9 +49,7 @@ export class ReviewNotificationPopupComponent extends ProductNotificationPopupCo
 
 
 
-
-
-
+  // ============================================================( OPEN DISABLE BUTTON PROMPT )============================================================= \\
 
   openDisableButtonPrompt() {
     this.disableButtonPromptPrimaryButtonName = !this.notification.reviewDeleted ? 'Remove' : 'Restore';
@@ -63,25 +59,26 @@ export class ReviewNotificationPopupComponent extends ProductNotificationPopupCo
       ' <span style="color: #ffba00">\"' + this.notification.reviewWriter.reviewTitle + '\"</span>' +
       ' will be ' + (!this.notification.reviewDeleted ? 'removed' : 'restored') + '.');
 
-
     super.openDisableButtonPrompt();
   }
 
 
 
+  // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
     if (!this.contextMenu && this.profilePopupContainer.length == 0 && this.reviewProfilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.disableButtonPrompt && !this.deletePrompt) {
-      if (!this.notesWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
-        this.fade();
+      if (!this.isNoteWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
+        this.close();
       } else {
-        this.openUndoChangesPrompt(this.fade);
+        this.openUndoChangesPrompt();
       }
     }
   }
 
 
 
+  // =====================================================================( ON CLOSE )====================================================================== \\
 
   onClose(employees: Array<NotificationProfile>, restore?: boolean): void {
     this.secondaryButtonDisabledPath = 'api/Notifications/RemoveReview';

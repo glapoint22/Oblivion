@@ -86,10 +86,54 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
+  // =================================================================( OPEN CONTEXT MENU )================================================================= \\
+
+  openContextMenu(ellipsis: HTMLElement) {
+    if (this.contextMenu) {
+      this.contextMenu.close();
+      return;
+    }
+    this.lazyLoadingService.load(async () => {
+      const { ContextMenuComponent } = await import('../../context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../../context-menu/context-menu.module');
+
+      return {
+        component: ContextMenuComponent,
+        module: ContextMenuModule
+      }
+    }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
+      this.contextMenu = contextMenu;
+      contextMenu.xPos = ellipsis.getBoundingClientRect().left + 25;
+      contextMenu.yPos = ellipsis.getBoundingClientRect().top + 21;
+      contextMenu.parentObj = this;
+      contextMenu.options = this.getContextMenuOptions();
+
+      const contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
+        contextMenuOpenListener.unsubscribe();
+        this.contextMenu = null!;
+      })
+    });
+  }
+
+
+
   // =============================================================( GET CONTEXT MENU OPTIONS )============================================================== \\
   
   getContextMenuOptions(): Array<MenuOption> {
     return [];
+  }
+
+
+
+  // =====================================================================( ADD NOTE )====================================================================== \\
+
+  addNote(employees: Array<NotificationProfile>) {
+    this.newNoteAdded = true;
+    employees.push(new NotificationProfile());
+    this.employeeIndex = employees.length - 1;
+    window.setTimeout(() => {
+      this.notes.nativeElement.focus();
+    })
   }
 
 
@@ -119,33 +163,30 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-  // =============================================================( OPEN UNDO CHANGES PROMPT )============================================================== \\
+  // =================================================================( IS NOTE WRITTEN )=================================================================== \\
+  
+  isNoteWritten(employees: Array<NotificationProfile>): boolean {
+    // If notes were never written yet on this form and now
+    // for the first time notes are finally being written
+    return (this.firstNote != null &&
+      // and the text area actually has text written in it
+      // and not just empty spaces
+      this.firstNote.trim().length > 0) ||
 
-  openUndoChangesPrompt(continueFunction: Function) {
-    this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../prompt/prompt.component');
-      const { PromptModule } = await import('../../prompt/prompt.module');
+      // Or if notes had already been previously written and the (Add Note) button was pressed
+      (this.newNoteAdded &&
+        // and the text area actually has text written in it
+        employees[employees.length - 1].text != null &&
+        // and not just empty spaces
+        employees[employees.length - 1].text.trim().length > 0)
+  }
 
-      return {
-        component: PromptComponent,
-        module: PromptModule
-      }
-    }, SpinnerAction.None).then((prompt: PromptComponent) => {
-      this.undoChangesPrompt = prompt;
-      prompt.parentObj = this;
-      prompt.title = 'Warning';
-      prompt.message = 'Any changes you have made will be undone. Do you want to continue closing?';
-      prompt.primaryButton = {
-        name: 'Continue',
-        buttonFunction: continueFunction
-      }
-      prompt.secondaryButton.name = 'Cancel'
 
-      const promptCloseListener = prompt.onClose.subscribe(() => {
-        promptCloseListener.unsubscribe();
-        this.undoChangesPrompt = null!;
-      })
-    })
+
+  // ================================================================( SEND EMPLOYEE TEXT )================================================================= \\
+  
+  sendEmployeeText() {
+    this.dataService.post(this.employeeTextPath, this.employeeTextParameters).subscribe();
   }
 
 
@@ -183,46 +224,33 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-  // =====================================================================( ADD NOTE )====================================================================== \\
+  // =============================================================( OPEN UNDO CHANGES PROMPT )============================================================== \\
 
-  addNote(employees: Array<NotificationProfile>) {
-    this.newNoteAdded = true;
-    employees.push(new NotificationProfile());
-    this.employeeIndex = employees.length - 1;
-    window.setTimeout(() => {
-      this.notes.nativeElement.focus();
-    })
-  }
-
-
-  
-  // =================================================================( OPEN CONTEXT MENU )================================================================= \\
-
-  openContextMenu(ellipsis: HTMLElement) {
-    if (this.contextMenu) {
-      this.contextMenu.close();
-      return;
-    }
+  openUndoChangesPrompt() {
     this.lazyLoadingService.load(async () => {
-      const { ContextMenuComponent } = await import('../../context-menu/context-menu.component');
-      const { ContextMenuModule } = await import('../../context-menu/context-menu.module');
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
 
       return {
-        component: ContextMenuComponent,
-        module: ContextMenuModule
+        component: PromptComponent,
+        module: PromptModule
       }
-    }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-      this.contextMenu = contextMenu;
-      contextMenu.xPos = ellipsis.getBoundingClientRect().left + 25;
-      contextMenu.yPos = ellipsis.getBoundingClientRect().top + 21;
-      contextMenu.parentObj = this;
-      contextMenu.options = this.getContextMenuOptions();
+    }, SpinnerAction.None).then((prompt: PromptComponent) => {
+      this.undoChangesPrompt = prompt;
+      prompt.parentObj = this;
+      prompt.title = 'Warning';
+      prompt.message = 'Any changes you have made will be undone. Do you want to continue closing?';
+      prompt.primaryButton = {
+        name: 'Continue',
+        buttonFunction: this.close
+      }
+      prompt.secondaryButton.name = 'Cancel'
 
-      const contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
-        contextMenuOpenListener.unsubscribe();
-        this.contextMenu = null!;
+      const promptCloseListener = prompt.onClose.subscribe(() => {
+        promptCloseListener.unsubscribe();
+        this.undoChangesPrompt = null!;
       })
-    });
+    })
   }
 
 
@@ -273,39 +301,12 @@ export class NotificationPopupComponent extends LazyLoad {
   }
 
 
-
-  // ===================================================================( NOTES WRITTEN )=================================================================== \\
   
-  notesWritten(employees: Array<NotificationProfile>): boolean {
-    // If notes were never written yet on this form and now
-    // for the first time notes are finally being written
-    return (this.firstNote != null &&
-      // and the text area actually has text written in it
-      // and not just empty spaces
-      this.firstNote.trim().length > 0) ||
-
-      // Or if notes had already been previously written and the (Add Note) button was pressed
-      (this.newNoteAdded &&
-        // and the text area actually has text written in it
-        employees[employees.length - 1].text != null &&
-        // and not just empty spaces
-        employees[employees.length - 1].text.trim().length > 0)
-  }
-
-
-
-  // ================================================================( SEND EMPLOYEE TEXT )================================================================= \\
-  
-  sendEmployeeText() {
-    this.dataService.post(this.employeeTextPath, this.employeeTextParameters).subscribe();
-  }
-
-
   // =====================================================================( ON CLOSE )====================================================================== \\
 
   onClose(employees: Array<NotificationProfile>, restore?: boolean): void {
     // If notes were written
-    if (this.notesWritten(employees)) {
+    if (this.isNoteWritten(employees)) {
       // Then save the new note
       this.sendEmployeeText();
     }

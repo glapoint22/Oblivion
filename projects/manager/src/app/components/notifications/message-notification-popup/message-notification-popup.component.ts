@@ -14,13 +14,16 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   public sendButtonDisabled: boolean = true;
 
 
+  // ====================================================================( NG ON INIT )===================================================================== \\
+
   ngOnInit() {
     super.ngOnInit();
     this.getNotification<Array<NotificationMessage>>('api/Notifications/Message', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
   }
 
 
- 
+
+  // =============================================================( GET CONTEXT MENU OPTIONS )============================================================== \\
 
   getContextMenuOptions(): Array<MenuOption> {
     return [
@@ -88,17 +91,26 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  // ===========================================================( IS EMPLOYEE MESSAGE WRITTEN  )============================================================ \\
+
+  isEmployeeMessageWritten(): boolean {
+    let isWritten: boolean = false;
+
+    for (let i = 0; i < this.notification.length; i++) {
+      // If a new reply has been written in any of the messages and they're not just empty spaces
+      if (!this.notification[i].employeeMessageDate &&
+        this.notification[i].employeeMessage != null &&
+        this.notification[i].employeeMessage.trim().length > 0) {
+        isWritten = true;
+        break;
+      }
+    }
+    return isWritten
+  }
 
 
 
-
-  
-
-
-
-
-
-
+  // =============================================================( SET SEND BUTTON DISABLED )============================================================== \\
 
   setSendButtonDisabled() {
     // If a new reply has been written in this current message and it's not just empty spaces
@@ -118,10 +130,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-
-
-
-
+  // ================================================================( SEND EMPLOYEE TEXT )================================================================= \\
+  
   sendEmployeeText() {
     this.employeeTextPath = 'api/Notifications/PostMessage';
     this.employeeTextParameters = {
@@ -132,13 +142,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   }
 
 
-
-
-
-
-
-
-
+  
+  // ======================================================================( ARCHIVE )====================================================================== \\
+  
   archive() {
     this.transfer(this.notificationService.newNotifications, this.notificationItem.count, this.notificationService.archiveNotifications, 1, {
       notificationId: this.notification[this.counterIndex].notificationId,
@@ -148,6 +154,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  // ==================================================================( REMOVE MESSAGE )=================================================================== \\
+  
   removeMessage() {
     // Minus the count for the notification's red circle by one
     this.notificationItem.count -= 1;
@@ -161,6 +169,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  // ================================================================( REMOVE NOTIFICATION )================================================================ \\
+  
   removeNotification(notifications: Array<NotificationItem>) {
     const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
     notifications.splice(notificationItemIndex, 1);
@@ -169,6 +179,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  // ===========================================================( CREATE NEW NOTIFICATION ITEM )============================================================ \\
+  
   createNewNotificationItem(isNew: boolean, messageCount: number): NotificationItem {
     const newNotificationItem = new NotificationItem();
     newNotificationItem.isNew = isNew;
@@ -185,6 +197,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  // =================================================================( REMOVE FROM LIST )================================================================== \\
+  
   removeFromList(notifications: Array<NotificationItem>, messageCount?: number) {
     // If we're removing just a message (NOT a notification item)
     //  And there is more than just one message in the message notification
@@ -202,9 +216,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-
-
-
+  // ====================================================================( ADD TO LIST )==================================================================== \\
+  
   addToList(notifications: Array<NotificationItem>, messageCount: number) {
     // See if the sender of this message already has a message notification in the list
     const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
@@ -242,6 +255,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  // ======================================================================( TRANSFER )===================================================================== \\
 
   transfer(originList: Array<NotificationItem>, originMessageCount: number, destinationList: Array<NotificationItem>, destinationMessageCount: number, dataServiceParameters: {}) {
     this.removeFromList(originList, originMessageCount);
@@ -253,7 +267,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
     this.dataService.put('api/Notifications/Archive', dataServiceParameters).subscribe();
   }
 
+  
 
+  // ================================================================( OPEN DELETE PROMPT )================================================================= \\
 
   openDeletePrompt(deleteAll?: boolean) {
     this.deleteAll = deleteAll!;
@@ -268,6 +284,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   }
 
 
+
+  // =====================================================================( ON DELETE )===================================================================== \\
+  
   onDelete() {
     if (!this.deleteAll) {
 
@@ -296,13 +315,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-
-
-
-
-
-
-
+  // =======================================================================( DELETE )====================================================================== \\
 
   delete(dataServiceParameters: {}, messageCount?: number) {
     this.removeFromList(this.notificationService.archiveNotifications, messageCount);
@@ -313,30 +326,14 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-
-  employeeMessageWritten(): boolean {
-    let isWritten: boolean = false;
-
-    for (let i = 0; i < this.notification.length; i++) {
-      // If a new reply has been written in any of the messages and they're not just empty spaces
-      if (!this.notification[i].employeeMessageDate &&
-        this.notification[i].employeeMessage != null &&
-        this.notification[i].employeeMessage.trim().length > 0) {
-        isWritten = true;
-        break;
-      }
-    }
-    return isWritten
-  }
-
-
+  // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
     if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.deletePrompt) {
-      if (!this.employeeMessageWritten()) {
+      if (!this.isEmployeeMessageWritten()) {
         this.close();
       } else {
-        this.openUndoChangesPrompt(this.close);
+        this.openUndoChangesPrompt();
       }
     }
   }
