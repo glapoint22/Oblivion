@@ -139,11 +139,11 @@ export class NotificationProfilePopupComponent extends LazyLoad {
 
 
   onRemoveUserProfilePicButtonClick() {
-    this.promptTitle = 'Remove Profile Picture';
+    this.promptTitle = 'Remove Profile Image';
     this.promptMessage = this.sanitizer.bypassSecurityTrustHtml(
-      'The profile picture of the user' +
+      'The profile image of the user' +
       ' <span style="color: #ffba00">\"' + this.user.firstName + ' ' + this.user.lastName + '\"</span>' +
-      ' will be removed and a strike will be added against them for not complying with the terms of use.');
+      ' will be removed. Also, a strike will be added against them for not complying with the terms of use.');
     this.promptButtonName = 'Remove';
     this.promptFunction = () => {
       this.user.image = null!

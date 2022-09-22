@@ -18,6 +18,7 @@ import { ReviewNotificationPopupComponent } from '../review-notification-popup/r
 export class NotificationListPopupComponent extends LazyLoad {
   private notificationItem!: NotificationItem;
 
+  public refreshNotificationsInProgress!: boolean;
   public newTabSelected: boolean = true;
   public newListZIndex: number = 1;
   public archiveListZIndex: number = 0;
@@ -71,6 +72,13 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
 
+  refreshNotifications() {
+    this.refreshNotificationsInProgress = true;
+    this.notificationService.refreshNotifications();
+    window.setTimeout(()=> {
+      this.refreshNotificationsInProgress = false;
+    })
+  }
 
 
   onListUpdate(listUpdate: ListUpdate) {

@@ -8,6 +8,8 @@ import { NotificationPopupComponent } from '../../components/notifications/notif
   providedIn: 'root'
 })
 export class NotificationService {
+  private getNotificationsTimer!: number;
+
   public notificationPopupContainer!: ViewContainerRef;
   public notificationPopup!: NotificationPopupComponent;
   public onNotificationCount: Subject<number> = new Subject<number>();
@@ -20,7 +22,6 @@ export class NotificationService {
   }
   public set notificationCount(v: number) {
     this._notificationCount = v;
-
     this.onNotificationCount.next(v);
   }
 
@@ -33,9 +34,10 @@ export class NotificationService {
 
   getNewNotifications() {
     this.getNotificationCount();
-    // window.setTimeout(() => {
-    //   this.getNewNotifications();
-    // }, 50000)
+
+    this.getNotificationsTimer = window.setTimeout(() => {
+      this.getNewNotifications();
+    }, 50000)
   }
 
   getNotificationCount() {
@@ -53,6 +55,12 @@ export class NotificationService {
           })
         }
       });
+  }
+
+
+  refreshNotifications() {
+    clearTimeout(this.getNotificationsTimer);
+    this.getNewNotifications();
   }
 
 

@@ -17,7 +17,7 @@
             <icon-button [icon]="'fa-solid fa-arrows-rotate'"
                          [title]="'Refresh'"
                          [isDisabled]="false"
-                         (onClick)="null">
+                         (onClick)="refreshNotifications()">
             </icon-button>
         </div>
 
@@ -25,7 +25,8 @@
 
         <div style="position: relative;">
             <div class="modal-list-container" style="position: absolute; top: 0;" [style.zIndex]="newListZIndex">
-                <notification-list [sourceList]="notificationService.newNotifications"
+                <notification-list *ngIf="!refreshNotificationsInProgress"
+                                   [sourceList]="notificationService.newNotifications"
                                    [options]="newListOptions"
                                    (onListUpdate)="onListUpdate($event)">
                 </notification-list>
@@ -34,10 +35,9 @@
 
             <div class="modal-list-container" style="position: absolute; top: 0;" [style.zIndex]="archiveListZIndex">
                 <notification-list #archiveList
-                                
-                                [sourceList]="notificationService.archiveNotifications"
-                                [options]="archiveListOptions"
-                                (onListUpdate)="onListUpdate($event)">
+                                   [sourceList]="notificationService.archiveNotifications"
+                                   [options]="archiveListOptions"
+                                   (onListUpdate)="onListUpdate($event)">
                 </notification-list>
             </div>
         </div>
