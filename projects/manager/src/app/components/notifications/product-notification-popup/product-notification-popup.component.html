@@ -1,6 +1,6 @@
 <div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="popup-arrow-container">
+    <div class="popup-arrow-container" [ngClass]="{'product-popup-arrow-container': fromProduct}">
         <div class="popup-arrow-up-Border"></div>
         <div class="popup-arrow-up-background"></div>
     </div>
@@ -26,8 +26,16 @@
         </div>
 
         <!-- Notification Type -->
-        <div class="notification-type-container">
+        <div *ngIf="!notificationItems || (notificationItems && notificationItems.length == 1)" class="notification-type-container">
             {{notificationItem.name}}
+        </div>
+
+
+        <div *ngIf="notificationItems && notificationItems.length > 1" class="dropdown-container">
+            <dropdown [listItems]="notificationItemDropdownList"
+                      [selectedListItem]="selectedNotificationItem"
+                      (onChange)="selectedNotificationItem = $event; getProductNotification(notificationItems[selectedNotificationItem.value])">
+            </dropdown>
         </div>
 
 
@@ -42,8 +50,8 @@
                     <div class="counter-container">
                         <counter *ngIf="notification.users.length > 1"
                                  [itemCount]="notification.users.length"
-                                 (onItemChange)="counterIndex = $event"
-                                 [currentIndex]="counterIndex">
+                                 (onItemChange)="userIndex = $event"
+                                 [currentIndex]="userIndex">
                         </counter>
                     </div>
                     
@@ -51,7 +59,7 @@
                     <div class="profile-container">
                         <!-- Date -->
                         <div class="date">
-                            {{notification.users[counterIndex].date | date: 'MMM d, y, h:mm a'}}
+                            {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->
@@ -63,16 +71,16 @@
 
                             <img style="cursor: pointer;"
                                 (mousedown)="$event.stopPropagation()"
-                                (click)="openProfilePopup(notification.users[counterIndex], profilePopupContainer)"
-                                [src]="notification.users[counterIndex].image ? 'images/' + notification.users[counterIndex].image : 'assets/no-account-pic.png'"
-                                [title]="notification.users[counterIndex].firstName + ' ' + notification.users[counterIndex].lastName">
+                                (click)="openProfilePopup(notification.users[userIndex], profilePopupContainer)"
+                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
+                                [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>
                     </div>
                 </div>
             
                 <!-- User Comment -->
                 <div class="user-comment">
-                    {{notification.users[counterIndex].text}}
+                    {{notification.users[userIndex].text}}
                 </div>
             </ng-container>
         </div>
@@ -133,7 +141,7 @@
         <div class="button-container">
             <div>
                 <!-- Show button only when data loads, otherwise button's length changes which looks terrible -->
-                <button class="notification-button" (click)="openDisableButtonPrompt()" [disabled]="secondaryButtonDisabled">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
+                <button *ngIf="notification && !fromProduct" class="notification-button" (click)="openDisableButtonPrompt()" [disabled]="secondaryButtonDisabled">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
             </div>
             
             <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onClose(notification.employees)">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>

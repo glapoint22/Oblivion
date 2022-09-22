@@ -18,6 +18,7 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
   public onClose!: Function;
   public onArrowSelect!: Function;
   public itemIndex: number = -1;
+  public selectedListItem!: KeyValue<any, any>;
 
 
   // ------------------------------------------------------------------------ On Arrow Down ----------------------------------------------------------

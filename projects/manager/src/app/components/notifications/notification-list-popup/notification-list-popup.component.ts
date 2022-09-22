@@ -5,6 +5,7 @@ import { ListOptions } from '../../../classes/list-options';
 import { ListUpdate } from '../../../classes/list-update';
 import { NotificationItem } from '../../../classes/notification-item';
 import { NotificationService } from '../../../services/notification/notification.service';
+import { ProductService } from '../../../services/product/product.service';
 import { NotificationListComponent } from '../../lists/notification-list/notification-list.component';
 import { MessageNotificationPopupComponent } from '../message-notification-popup/message-notification-popup.component';
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
@@ -50,7 +51,7 @@ export class NotificationListPopupComponent extends LazyLoad {
   @ViewChild('archiveList') archiveList!: NotificationListComponent;
 
 
-  constructor(lazyLoadingService: LazyLoadingService, public notificationService: NotificationService, private dataService: DataService) {
+  constructor(lazyLoadingService: LazyLoadingService, public notificationService: NotificationService, private dataService: DataService, private productService: ProductService) {
     super(lazyLoadingService)
   }
 
@@ -136,6 +137,10 @@ export class NotificationListPopupComponent extends LazyLoad {
           reviewNotificationPopup.notificationItem = notificationItem;
           this.notificationService.notificationPopup = reviewNotificationPopup;
         })
+    }
+
+    if (notificationItem.notificationType > 1 && notificationItem.notificationType < 17)  {
+      this.productService.openNotificationProduct(notificationItem.productId, notificationItem);
     }
 
 

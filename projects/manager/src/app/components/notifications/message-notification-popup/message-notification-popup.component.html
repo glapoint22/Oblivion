@@ -12,15 +12,15 @@
             <div class="counter-container">
                 <counter *ngIf="notificationItem.count > 1"
                          [itemCount]="notificationItem.count"
-                         (onItemChange)="counterIndex = $event; setSendButtonDisabled()"
-                         [currentIndex]="counterIndex">
+                         (onItemChange)="userIndex = $event; setSendButtonDisabled()"
+                         [currentIndex]="userIndex">
                 </counter>
             </div>
 
             <div style="position: absolute; left: 175px;">Message</div>
             
 
-            <div *ngIf="notificationItem.count > 1 || !notificationItem.isNew" #ellipsis>
+            <div #ellipsis>
                 <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
                              (onClick)="openContextMenu(ellipsis)">
                 </icon-button>
@@ -38,28 +38,28 @@
                         <div class="info-bar">
                             <!-- Date -->
                             <div class="date">
-                                {{notification[counterIndex].date | date: 'MMM d, y, h:mm a'}}
+                                {{notification[userIndex].date | date: 'MMM d, y, h:mm a'}}
                             </div>
             
                             <!-- Image -->
-                            <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[counterIndex].userName}">
+                            <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[userIndex].userName}">
                                 
-                                <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[counterIndex].userName ? '-106px' : '-110px'}">
+                                <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[userIndex].userName ? '-106px' : '-110px'}">
                                     <ng-template #profilePopupContainerTemplate></ng-template>
                                 </div>
 
                                 <img style="cursor: pointer;"
-                                    [ngStyle]="{'border-radius': notification && notification[counterIndex].userName ? 'none' : '50%'}"
+                                    [ngStyle]="{'border-radius': notification && notification[userIndex].userName ? 'none' : '50%'}"
                                     (mousedown)="$event.stopPropagation()"
-                                    (click)="openProfilePopup(notification[counterIndex], profilePopupContainer)"
-                                    [src]="notification[counterIndex].userName ? 'assets/message-notification.png' : notification[counterIndex].image ? 'images/' + notification[counterIndex].image : 'assets/no-account-pic.png'"
-                                    [title]="notification[counterIndex].firstName + ' ' + notification[counterIndex].lastName">
+                                    (click)="openProfilePopup(notification[userIndex], profilePopupContainer)"
+                                    [src]="notification[userIndex].userName ? 'assets/message-notification.png' : notification[userIndex].image ? 'images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
+                                    [title]="notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
                             </div>
                         </div>
                     
                         <!-- User Comment -->
                         <div class="user-comment">
-                            {{notification[counterIndex].text}}
+                            {{notification[userIndex].text}}
                         </div>
                     </ng-container>
                 </div>
@@ -73,28 +73,28 @@
                 <div class="info-box">
 
                     <ng-container *ngIf="notification">
-                        <ng-container *ngIf="notification[counterIndex].employeeMessageDate">
+                        <ng-container *ngIf="notification[userIndex].employeeMessageDate">
                             <div class="info-bar">
                                 
                                 <!-- Date -->
                                 <div class="date">
-                                    {{notification[counterIndex].employeeMessageDate | date: 'MMM d, y, h:mm a'}}
+                                    {{notification[userIndex].employeeMessageDate | date: 'MMM d, y, h:mm a'}}
                                 </div>
 
                                 <!-- Image -->
                                 <div class="profile-image-container">
-                                    <img [src]="notification[counterIndex].employeeImage ? 'images/' + notification[counterIndex].employeeImage : 'assets/no-account-pic.png'" style="border-radius: 50%;" [title]="notification[counterIndex].employeeFirstName + ' ' + notification[counterIndex].employeeLastName">
+                                    <img [src]="notification[userIndex].employeeImage ? 'images/' + notification[userIndex].employeeImage : 'assets/no-account-pic.png'" style="border-radius: 50%;" [title]="notification[userIndex].employeeFirstName + ' ' + notification[userIndex].employeeLastName">
                                 </div>
                             </div>
 
                             <!-- Reply -->
                             <div class="user-comment">
-                                {{notification[counterIndex].employeeMessage}}
+                                {{notification[userIndex].employeeMessage}}
                             </div>
                         </ng-container>
                     
                         <!-- Empty Reply -->
-                        <textarea *ngIf="!notification[counterIndex].employeeMessageDate" [(ngModel)]="notification[counterIndex].employeeMessage" (input)="setSendButtonDisabled()"></textarea>
+                        <textarea *ngIf="!notification[userIndex].employeeMessageDate" [(ngModel)]="notification[userIndex].employeeMessage" (input)="setSendButtonDisabled()"></textarea>
                     </ng-container>
                 </div>
             </div>
@@ -104,7 +104,7 @@
         <!-- Buttons -->
         <div class="button-container">
             <button class="dark-button" (click)="notificationItem.isNew ? archive() : close()">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
-            <button class="gold-button" [disabled]="sendButtonDisabled" (click)="sendEmployeeText(); notificationItem.isNew ? archive() : close()">Send</button>
+            <button class="gold-button" [disabled]="sendButtonDisabled" (click)="saveEmployeeText(); notificationItem.isNew ? archive() : close()">Send</button>
         </div>
     </div>
 </div>

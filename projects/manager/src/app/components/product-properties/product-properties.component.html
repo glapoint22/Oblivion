@@ -5,6 +5,12 @@
         <div
             style="position: relative; height: 100%; display: flex; align-items: center; justify-content: flex-end; border-top-left-radius: 6px; border-top-right-radius: 6px; background: linear-gradient(#323232, #202020);">
 
+            <div *ngIf="this.product.notificationItems.length > 0" class="circle-button"
+                [ngClass]="{'circle-button-clicked': notificationPopupContainer ? notificationPopupContainer.length > 0 : false}"
+                (click)="openNotificationPopup()" title="Notification">
+                <i class="fa-solid fa-bell"></i>
+            </div>
+
             <div class="circle-button"
                 [ngClass]="{'circle-button-clicked': vendorPopupContainer ? vendorPopupContainer.length > 0 : false}"
                 (click)="openVendorPopup()" title="Vendor">
@@ -30,6 +36,7 @@
             </div>
 
             <div style="position: absolute; right: 5px; top: 40px; z-index: 100;">
+                <ng-template #notificationPopup></ng-template>
                 <ng-template #vendorPopup></ng-template>
                 <ng-template #filtersPopup></ng-template>
                 <ng-template #keywordsPopup></ng-template>

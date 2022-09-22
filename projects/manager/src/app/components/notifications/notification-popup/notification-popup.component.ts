@@ -27,7 +27,7 @@ export class NotificationPopupComponent extends LazyLoad {
   public employeeIndex: number = 0;
   public firstNote!: string;
   public secondaryButtonDisabled!: boolean;
-  public counterIndex: number = 0;
+  public userIndex: number = 0;
   public employeeTextPath = '';
   public employeeTextParameters = {};
   public deletePromptTitle: string = 'Delete Notification';
@@ -80,6 +80,8 @@ export class NotificationPopupComponent extends LazyLoad {
   getNotification<T>(notificationPath: string, notificationParameters: Array<KeyValue<any, any>>) {
     this.dataService.get<T>(notificationPath, notificationParameters)
       .subscribe((notification: T) => {
+        this.userIndex = 0;
+        this.employeeIndex = 0;
         this.notification = notification;
       });
   }
@@ -183,9 +185,9 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-  // ================================================================( SEND EMPLOYEE TEXT )================================================================= \\
+  // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
   
-  sendEmployeeText() {
+  saveEmployeeText() {
     this.dataService.post(this.employeeTextPath, this.employeeTextParameters).subscribe();
   }
 
@@ -239,7 +241,7 @@ export class NotificationPopupComponent extends LazyLoad {
       this.undoChangesPrompt = prompt;
       prompt.parentObj = this;
       prompt.title = 'Warning';
-      prompt.message = 'Any changes you have made will be undone. Do you want to continue closing?';
+      prompt.message = 'Any changes you have made will be undone. Do you still want to continue closing?';
       prompt.primaryButton = {
         name: 'Continue',
         buttonFunction: this.close
@@ -308,7 +310,7 @@ export class NotificationPopupComponent extends LazyLoad {
     // If notes were written
     if (this.isNoteWritten(employees)) {
       // Then save the new note
-      this.sendEmployeeText();
+      this.saveEmployeeText();
     }
 
     // If this is a new notification and it has NOT been sent to archive yet

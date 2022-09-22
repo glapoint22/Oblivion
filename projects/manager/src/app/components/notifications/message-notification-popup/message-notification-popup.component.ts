@@ -30,6 +30,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
       {
         type: MenuOptionType.MenuItem,
         name: this.notificationItem.isNew ? 'Archive All Messages' : 'Restore as New',
+        hidden: this.notificationItem.isNew && this.notificationItem.count == 1,
         optionFunction: () => {
           this.notificationItem.isNew ?
 
@@ -46,9 +47,17 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
             this.transfer(this.notificationService.archiveNotifications, this.notificationItem.count, this.notificationService.newNotifications, 1,
               {
                 restore: true,
-                notificationId: this.notification[this.counterIndex].notificationId,
+                notificationId: this.notification[this.userIndex].notificationId,
                 notificationGroupId: this.notificationItem.notificationGroupId
               })
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Close (Remain as New)',
+        hidden: !this.notificationItem.isNew,
+        optionFunction: () => {
+          this.onEscape();
         }
       },
       {
@@ -114,9 +123,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   setSendButtonDisabled() {
     // If a new reply has been written in this current message and it's not just empty spaces
-    if (!this.notification[this.counterIndex].employeeMessageDate &&
-      this.notification[this.counterIndex].employeeMessage != null &&
-      this.notification[this.counterIndex].employeeMessage.trim().length > 0) {
+    if (!this.notification[this.userIndex].employeeMessageDate &&
+      this.notification[this.userIndex].employeeMessage != null &&
+      this.notification[this.userIndex].employeeMessage.trim().length > 0) {
       // Enable the send button
       this.sendButtonDisabled = false;
 
@@ -130,15 +139,15 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-  // ================================================================( SEND EMPLOYEE TEXT )================================================================= \\
+  // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
 
-  sendEmployeeText() {
+  saveEmployeeText() {
     this.employeeTextPath = 'api/Notifications/PostMessage';
     this.employeeTextParameters = {
-      notificationId: this.notification[this.counterIndex].notificationId,
-      message: this.notification[this.counterIndex].employeeMessage.trim()
+      notificationId: this.notification[this.userIndex].notificationId,
+      message: this.notification[this.userIndex].employeeMessage.trim()
     }
-    super.sendEmployeeText();
+    super.saveEmployeeText();
   }
 
 
@@ -147,7 +156,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   archive() {
     this.transfer(this.notificationService.newNotifications, this.notificationItem.count, this.notificationService.archiveNotifications, 1, {
-      notificationId: this.notification[this.counterIndex].notificationId,
+      notificationId: this.notification[this.userIndex].notificationId,
       notificationGroupId: this.notificationItem.notificationGroupId
     });
   }
@@ -160,9 +169,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
     // Minus the count for the notification's red circle by one
     this.notificationItem.count -= 1;
     // And then remove the current message from the popup
-    this.notification.splice(this.counterIndex, 1);
+    this.notification.splice(this.userIndex, 1);
     // Set the counter so that the first message is being displayed (if not already)
-    this.counterIndex = 0;
+    this.userIndex = 0;
     // Disable the send button
     this.setSendButtonDisabled();
   }
@@ -293,8 +302,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
       this.delete(
         {
           notificationGroupId: this.notification.length == 1 ? this.notificationItem.notificationGroupId : 0,
-          notificationId: this.notification[this.counterIndex].notificationId,
-          employeeMessageIds: this.notification[this.counterIndex].employeeMessageId != null ? [this.notification[this.counterIndex].employeeMessageId] : []
+          notificationId: this.notification[this.userIndex].notificationId,
+          employeeMessageIds: this.notification[this.userIndex].employeeMessageId != null ? [this.notification[this.userIndex].employeeMessageId] : []
         }, this.notificationItem.count);
 
     } else {

@@ -3,13 +3,13 @@ import { NotificationReview } from '../../../classes/notification-review';
 import { MenuOptionType } from '../../../classes/enums';
 import { MenuOption } from '../../../classes/menu-option';
 import { NotificationProfile } from '../../../classes/notification-profile';
-import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
+import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
   templateUrl: './review-notification-popup.component.html',
   styleUrls: ['../notification-popup/notification-popup.component.scss', '../product-notification-popup/product-notification-popup.component.scss', './review-notification-popup.component.scss']
 })
-export class ReviewNotificationPopupComponent extends ProductNotificationPopupComponent {
+export class ReviewNotificationPopupComponent extends NotificationPopupComponent {
 
 
   // ====================================================================( NG ON INIT )===================================================================== \\
@@ -27,9 +27,9 @@ export class ReviewNotificationPopupComponent extends ProductNotificationPopupCo
     return [
       {
         type: MenuOptionType.MenuItem,
-        name: 'Restore as New',
+        name: this.notificationItem.isNew ? 'Close (Remain as New)' : 'Restore as New',
         optionFunction: () => {
-          this.onClose(this.notification.employees, true);
+          this.notificationItem.isNew ? this.onEscape() : this.onClose(this.notification.employees, true);
         }
       },
       {
@@ -45,6 +45,19 @@ export class ReviewNotificationPopupComponent extends ProductNotificationPopupCo
         }
       }
     ];
+  }
+
+
+
+  // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
+
+  saveEmployeeText() {
+    this.employeeTextPath = 'api/Notifications/PostNote';
+    this.employeeTextParameters = {
+      notificationGroupId: this.notificationItem.notificationGroupId,
+      note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
+    }
+    super.saveEmployeeText();
   }
 
 

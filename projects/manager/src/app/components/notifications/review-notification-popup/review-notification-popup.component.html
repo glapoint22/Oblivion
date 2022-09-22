@@ -18,7 +18,7 @@
                 <div class="product-name">{{notificationItem.productName}}</div>
             </div>
 
-            <div *ngIf="!notificationItem.isNew" #ellipsis>
+            <div #ellipsis>
                 <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
                              (onClick)="openContextMenu(ellipsis)">
                 </icon-button>
@@ -42,8 +42,8 @@
                     <div class="counter-container">
                         <counter *ngIf="notification.users.length > 1"
                                  [itemCount]="notification.users.length"
-                                 (onItemChange)="counterIndex = $event"
-                                 [currentIndex]="counterIndex">
+                                 (onItemChange)="userIndex = $event"
+                                 [currentIndex]="userIndex">
                         </counter>
                     </div>
 
@@ -51,7 +51,7 @@
                     <div class="profile-container">
                         <!-- Date -->
                         <div class="date">
-                            {{notification.users[counterIndex].date | date: 'MMM d, y, h:mm a'}}
+                            {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
         
                         <!-- Image -->
@@ -63,16 +63,16 @@
 
                             <img style="cursor: pointer;"
                                 (mousedown)="reviewProfilePopupContainer.length > 0 ? reviewProfilePopup.close() : null; $event.stopPropagation()"
-                                [src]="notification.users[counterIndex].image ? 'images/' + notification.users[counterIndex].image : 'assets/no-account-pic.png'"
-                                (click)="openProfilePopup(notification.users[counterIndex], profilePopupContainer)"
-                                [title]="notification.users[counterIndex].firstName + ' ' + notification.users[counterIndex].lastName">
+                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
+                                (click)="openProfilePopup(notification.users[userIndex], profilePopupContainer)"
+                                [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>
                     </div>
                 </div>
             
                 <!-- User Comment -->
                 <div class="user-comment">
-                    {{notification.users[counterIndex].text}}
+                    {{notification.users[userIndex].text}}
                 </div>
             </ng-container>
         </div>

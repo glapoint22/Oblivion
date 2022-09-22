@@ -21,6 +21,8 @@ import { KeywordCheckboxItem } from '../../classes/keyword-checkbox-item';
 import { KeywordCheckboxMultiColumnItem } from '../../classes/keyword-checkbox-multi-column-item';
 import { ProductMedia } from '../../classes/product-media';
 import { MediaSelectorPopupComponent } from '../media-selector-popup/media-selector-popup.component';
+import { ProductNotificationPopupComponent } from '../notifications/product-notification-popup/product-notification-popup.component';
+import { NotificationItem } from '../../classes/notification-item';
 
 @Component({
   selector: 'product-properties',
@@ -28,6 +30,7 @@ import { MediaSelectorPopupComponent } from '../media-selector-popup/media-selec
   styleUrls: ['./product-properties.component.scss']
 })
 export class ProductPropertiesComponent {
+  private notificationPopup!: ProductNotificationPopupComponent;
   private filtersPopup!: FiltersPopupComponent;
   private keywordsPopup!: KeywordsPopupComponent;
   private productGroupsPopup!: ProductGroupsPopupComponent;
@@ -64,6 +67,7 @@ export class ProductPropertiesComponent {
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
   @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
+  @ViewChild('notificationPopup', { read: ViewContainerRef }) notificationPopupContainer!: ViewContainerRef;
   @ViewChild('vendorPopup', { read: ViewContainerRef }) vendorPopupContainer!: ViewContainerRef;
   @ViewChild('filtersPopup', { read: ViewContainerRef }) filtersPopupContainer!: ViewContainerRef;
   @ViewChild('keywordsPopup', { read: ViewContainerRef }) keywordsPopupContainer!: ViewContainerRef;
@@ -91,7 +95,50 @@ export class ProductPropertiesComponent {
   }
 
 
+  openNotificationPopup(notificationItem?: NotificationItem) {
+    if (this.vendorPopupContainer.length > 0) this.vendorPopupContainer.remove(0);
+    if (this.filtersPopupContainer.length > 0) this.filtersPopupContainer.remove(0);
+    if (this.keywordsPopupContainer.length > 0) this.keywordsPopupContainer.remove(0);
+    if (this.productGroupsPopupContainer.length > 0) this.productGroupsPopupContainer.remove(0);
+
+    // If the popup is already open
+    if (this.notificationPopupContainer.length > 0) {
+      // And it's being opened again from the notification list
+      if(notificationItem) {
+        // Keep it open and select the notification type in the dropdown that's the same as
+        // notification type of the notification that was just selected in the notification list
+        this.notificationPopup.selectNotificationType(notificationItem, true);
+
+        // But if the circle button is being clicked
+      }else {
+        // Just close the popup
+        this.notificationPopup.close();
+      }
+      return;
+    }
+
+    
+
+    this.lazyLoadingService.load(async () => {
+      const { ProductNotificationPopupComponent } = await import('../notifications/product-notification-popup/product-notification-popup.component');
+      const { ProductNotificationPopupModule } = await import('../notifications/product-notification-popup/product-notification-popup.module');
+      return {
+        component: ProductNotificationPopupComponent,
+        module: ProductNotificationPopupModule
+      }
+    }, SpinnerAction.None, this.notificationPopupContainer)
+      .then((notificationPopup: ProductNotificationPopupComponent) => {
+        this.notificationPopup = notificationPopup;
+        notificationPopup.fromProduct = true;
+        // If this popup is being opened from the notification list
+        if (notificationItem) notificationPopup.notificationItem = notificationItem!;
+        notificationPopup.notificationItems = this.product.notificationItems;
+      });
+  }
+
+
   openVendorPopup() {
+    if (this.notificationPopupContainer.length > 0) this.notificationPopupContainer.remove(0);
     if (this.filtersPopupContainer.length > 0) this.filtersPopupContainer.remove(0);
     if (this.keywordsPopupContainer.length > 0) this.keywordsPopupContainer.remove(0);
     if (this.productGroupsPopupContainer.length > 0) this.productGroupsPopupContainer.remove(0);
@@ -120,6 +167,7 @@ export class ProductPropertiesComponent {
 
 
   openFiltersPopup() {
+    if (this.notificationPopupContainer.length > 0) this.notificationPopupContainer.remove(0);
     if (this.vendorPopupContainer.length > 0) this.vendorPopupContainer.remove(0);
     if (this.keywordsPopupContainer.length > 0) this.keywordsPopupContainer.remove(0);
     if (this.productGroupsPopupContainer.length > 0) this.productGroupsPopupContainer.remove(0);
@@ -147,6 +195,7 @@ export class ProductPropertiesComponent {
 
 
   openKeywordsPopup() {
+    if (this.notificationPopupContainer.length > 0) this.notificationPopupContainer.remove(0);
     if (this.vendorPopupContainer.length > 0) this.vendorPopupContainer.remove(0);
     if (this.filtersPopupContainer.length > 0) this.filtersPopupContainer.remove(0);
     if (this.productGroupsPopupContainer.length > 0) this.productGroupsPopupContainer.remove(0);
@@ -173,6 +222,7 @@ export class ProductPropertiesComponent {
 
 
   openProductGroupsPopup() {
+    if (this.notificationPopupContainer.length > 0) this.notificationPopupContainer.remove(0);
     if (this.vendorPopupContainer.length > 0) this.vendorPopupContainer.remove(0);
     if (this.filtersPopupContainer.length > 0) this.filtersPopupContainer.remove(0);
     if (this.keywordsPopupContainer.length > 0) this.keywordsPopupContainer.remove(0);
@@ -216,7 +266,7 @@ export class ProductPropertiesComponent {
       .then((pricePopup: PricePopupComponent) => {
         this.pricePopup = pricePopup;
         pricePopup.price = this.product.minPrice;
-        
+
         pricePopup.callback = (price: number) => {
           this.product.minPrice = price;
 
