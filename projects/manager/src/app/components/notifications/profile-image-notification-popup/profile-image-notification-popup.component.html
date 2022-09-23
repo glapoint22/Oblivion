@@ -1,0 +1,132 @@
+<div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-up-Border"></div>
+        <div class="popup-arrow-up-background"></div>
+    </div>
+
+    <div class="popup-base">
+
+         <!-- Notification Type -->
+        <div class="notification-type-container">
+
+            <div class="notification-type-name">Profile Image</div>
+            
+
+            <div #ellipsis>
+                <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
+                             (onClick)="openContextMenu(ellipsis)">
+                </icon-button>
+            </div>
+        </div>
+
+        
+        <!-- User -->
+        <div class="label">User Profile Image:</div>
+        <div class="image-info-box">
+            <ng-container> <!-- *ngIf="notification" -->
+                <div class="info-bar">
+
+                    <!-- Counter -->
+                    <div class="counter-container">
+                        <counter>
+                                 <!-- *ngIf="notification.users.length > 1"
+                                 [itemCount]="notification.users.length"
+                                 (onItemChange)="userIndex = $event"
+                                 [currentIndex]="userIndex" -->
+                                 
+                        </counter>
+                    </div>
+                    
+
+                    <div class="profile-container">
+                        <!-- Date -->
+                        <div class="date">
+                            <!-- {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}} -->
+                        </div>
+
+                        <!-- Image -->
+                        <div class="profile-image-container">
+
+                            <div class="profile-popup-container">
+                                <ng-template #profilePopupContainerTemplate></ng-template>
+                            </div>
+
+                            <img style="cursor: pointer;"
+                                (mousedown)="$event.stopPropagation()">
+                                <!-- (click)="openProfilePopup(notification.users[userIndex], profilePopupContainer)"
+                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
+                                [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName" -->
+                        </div>
+                    </div>
+                </div>
+            
+                <div style="display: flex; justify-content: center; align-items: center; padding-top: 3px;">
+                    <img [src]="'images/Alita.png'">
+                </div>
+            </ng-container>
+        </div>
+
+        <!--  -->
+
+        <!-- Employee -->
+        <div class="label-container">
+            <div class="label">Notes:</div>
+            <div class="notes-button-container"> <!-- *ngIf="notification && notification.employees.length > 0" -->
+                <icon-button [icon]="'fa-solid fa-file-lines'"
+                             [title]="'Add New Note'"
+                             [fontSize]="'16'"
+                             ><!-- [isDisabled]="newNoteAdded" (onClick)="addNote(notification.employees)" -->
+                </icon-button>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <ng-container><!-- *ngIf="notification" -->
+                <div  class="info-bar"><!-- *ngIf="notification.employees.length > 0" -->
+
+                    <!-- Counter -->
+                    <div class="counter-container">
+                        <counter >
+                        </counter><!-- *ngIf="notification.employees.length > 1"
+                            [itemCount]="notification.employees.length"
+                            (onItemChange)="employeeIndex = $event"
+                            [currentIndex]="employeeIndex" -->
+                        
+                    </div>
+
+                    <div  class="profile-container"><!-- *ngIf="notification.employees[employeeIndex].date != null" -->
+                        <!-- Date -->
+                        <div class="date">
+                            <!-- {{notification.employees[employeeIndex].date | date: 'MMM d, y, h:mm a'}} -->
+                        </div>
+
+                        <!-- Image -->
+                        <div class="profile-image-container">
+                            <!-- <img [src]="notification.employees[employeeIndex].image ? 'images/' + notification.employees[employeeIndex].image : 'assets/no-account-pic.png'" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName"> -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <!-- <textarea #notes *ngIf="notification.employees.length == 0 || notification.employees[employeeIndex].date == null" [ngStyle]="{'height': notification.employees[employeeIndex] ? '94px' : '128px'}" (input)="notification.employees.length == 0 ? firstNote = notes.value : notification.employees[employeeIndex].text = notes.value">{{notification.employees[employeeIndex] ? notification.employees[employeeIndex].text : null}}</textarea> -->
+            
+                
+                <!-- <div *ngIf="notification.employees.length > 0 && notification.employees[employeeIndex].date != null" class="user-comment">
+                    {{notification.employees[employeeIndex].text}}
+                </div> -->
+            </ng-container>
+        </div>
+        
+        
+        <!-- Buttons -->
+        <div class="button-container">
+            <div>
+                <!-- Show button only when data loads, otherwise button's length changes which looks terrible -->
+                <button  class="notification-button" (click)="null" [disabled]="secondaryButtonDisabled">Remove Image</button>
+            </div>
+            
+            <button class="gold-button" (click)="null">OK</button>
+        </div>
+    </div>
+</div>

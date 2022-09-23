@@ -1,6 +1,7 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
 import { DataService } from 'common';
 import { Subject } from 'rxjs';
+import { NotificationType } from '../../classes/enums';
 import { NotificationItem } from '../../classes/notification-item';
 import { NotificationPopupComponent } from '../../components/notifications/notification-popup/notification-popup.component';
 
@@ -50,7 +51,7 @@ export class NotificationService {
 
           this.newNotifications = new Array<NotificationItem>();
           x.notifications.forEach(y => {
-            y.name = y.notificationType == 0 ? y.email : this.getNotificationName(y.notificationType);
+            y.name = y.notificationType == NotificationType.Message ? y.email : this.getNotificationName(y.notificationType);
             this.newNotifications.push(y);
           })
         }
@@ -68,7 +69,7 @@ export class NotificationService {
     this.dataService.get<Array<NotificationItem>>('api/Notifications', [{ key: 'isNew', value: false }])
       .subscribe((notifications: Array<NotificationItem>) => {
         notifications.forEach(x => {
-          x.name = x.notificationType == 0 ? x.email : this.getNotificationName(x.notificationType);
+          x.name = x.notificationType == NotificationType.Message ? x.email : this.getNotificationName(x.notificationType);
           this.archiveNotifications.push(x);
         })
       })
@@ -81,93 +82,97 @@ export class NotificationService {
     let notificationName: string = '';
 
     switch (notificationType) {
-      case 1:
+      case NotificationType.ProfileImage:
+        notificationName = "Profile Image";
+        break;
+
+      case NotificationType.ReviewComplaint:
         notificationName = "Review Complaint";
         break;
 
-      case 2:
+      case NotificationType.ProductNameDoesNotMatchWithProductDescription:
         notificationName = "Product Name Doesn\'t Match With Product Description";
         break;
 
-      case 3:
+      case NotificationType.ProductNameDoesNotMatchWithProductImage:
         notificationName = "Product Name Doesn\'t Match With Product Image";
         break;
 
-      case 4:
+      case NotificationType.ProductNameOther:
         notificationName = "Product Name (Other)";
         break;
 
-      case 5:
+      case NotificationType.ProductPriceTooHigh:
         notificationName = "Product Price Too High";
         break;
 
-      case 6:
+      case NotificationType.ProductPriceNotCorrect:
         notificationName = "Product Price Not Correct";
         break;
 
-      case 7:
+      case NotificationType.ProductPriceOther:
         notificationName = "Product Price (Other)";
         break;
 
-      case 8:
+      case NotificationType.VideosAndImagesAreDifferentFromProduct:
         notificationName = "Videos & Images are Different From Product";
         break;
 
-      case 9:
+      case NotificationType.NotEnoughVideosAndImages:
         notificationName = "Not Enough Videos & Images";
         break;
 
-      case 10:
+      case NotificationType.VideosAndImagesNotClear:
         notificationName = "Videos & Images Not Clear";
         break;
 
-      case 11:
+      case NotificationType.VideosAndImagesMisleading:
         notificationName = "Videos & Images Misleading";
         break;
 
-      case 12:
+      case NotificationType.VideosAndImagesOther:
         notificationName = "Videos & Images (Other)";
         break;
 
-      case 13:
+      case NotificationType.ProductDescriptionIncorrect:
         notificationName = "Product Description Incorrect";
         break;
 
-      case 14:
+      case NotificationType.ProductDescriptionTooVague:
         notificationName = "Product Description Too Vague";
         break;
 
-      case 15:
+      case NotificationType.ProductDescriptionMisleading:
         notificationName = "Product Description Misleading";
         break;
 
-      case 16:
+      case NotificationType.ProductDescriptionOther:
         notificationName = "Product Description (Other)";
         break;
 
-      case 17:
+      case NotificationType.ProductReportedAsIllegal:
         notificationName = "Product Reported As Illegal";
         break;
 
-      case 18:
+      case NotificationType.ProductReportedAsHavingAdultContent:
         notificationName = "Product Reported As Having Adult Content";
         break;
 
-      case 19:
+      case NotificationType.OffensiveProductOther:
         notificationName = "Offensive Product (Other)";
         break;
 
 
-      case 20:
+      case NotificationType.ProductInactive:
         notificationName = "Product Inactive";
         break;
 
-      case 21:
+      case NotificationType.ProductSiteNolongerInService:
         notificationName = "Product site no longer in service";
         break;
 
 
-      case 22:
+      case NotificationType.MissingProductOther:
         notificationName = "Missing Product (Other)";
         break;
     }

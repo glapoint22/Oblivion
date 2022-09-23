@@ -117,8 +117,7 @@ export enum BuilderType {
 
 
 
-export enum EmailType
-{
+export enum EmailType {
     None,
     AccountActivation,
     ResetPassword,
@@ -186,4 +185,32 @@ export enum AutoQueryType {
 export enum QueryElementType {
     QueryRow,
     QueryGroup
+}
+
+
+export enum NotificationType {
+    ProfileImage,
+    Message,
+    ReviewComplaint,
+    ProductNameDoesNotMatchWithProductDescription,
+    ProductNameDoesNotMatchWithProductImage,
+    ProductNameOther,
+    ProductPriceTooHigh,
+    ProductPriceNotCorrect,
+    ProductPriceOther,
+    VideosAndImagesAreDifferentFromProduct,
+    NotEnoughVideosAndImages,
+    VideosAndImagesNotClear,
+    VideosAndImagesMisleading,
+    VideosAndImagesOther,
+    ProductDescriptionIncorrect,
+    ProductDescriptionTooVague,
+    ProductDescriptionMisleading,
+    ProductDescriptionOther,
+    ProductReportedAsIllegal,
+    ProductReportedAsHavingAdultContent,
+    OffensiveProductOther,
+    ProductInactive,
+    ProductSiteNolongerInService,
+    MissingProductOther,
 }

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { ListUpdateType, MenuOptionType } from '../../../classes/enums';
+import { ListUpdateType, MenuOptionType, NotificationType } from '../../../classes/enums';
 import { ListOptions } from '../../../classes/list-options';
 import { ListUpdate } from '../../../classes/list-update';
 import { NotificationItem } from '../../../classes/notification-item';
@@ -9,6 +9,7 @@ import { ProductService } from '../../../services/product/product.service';
 import { NotificationListComponent } from '../../lists/notification-list/notification-list.component';
 import { MessageNotificationPopupComponent } from '../message-notification-popup/message-notification-popup.component';
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
+import { ProfileImageNotificationPopupComponent } from '../profile-image-notification-popup/profile-image-notification-popup.component';
 import { ReviewNotificationPopupComponent } from '../review-notification-popup/review-notification-popup.component';
 
 @Component({
@@ -116,7 +117,22 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   openNotificationPopup(notificationItem: NotificationItem) {
-    if (notificationItem.notificationType == 0) {
+    if (notificationItem.notificationType == NotificationType.ProfileImage) {
+      this.lazyLoadingService.load(async () => {
+        const { ProfileImageNotificationPopupComponent } = await import('../profile-image-notification-popup/profile-image-notification-popup.component');
+        const { ProfileImageNotificationPopupModule } = await import('../profile-image-notification-popup/profile-image-notification-popup.module');
+        return {
+          component: ProfileImageNotificationPopupComponent,
+          module: ProfileImageNotificationPopupModule
+        }
+      }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
+        .then((profileImageNotificationPopup: ProfileImageNotificationPopupComponent) => {
+          // profileImageNotificationPopup.notificationItem = notificationItem;
+          // this.notificationService.notificationPopup = profileImageNotificationPopup;
+        })
+    }
+
+    if (notificationItem.notificationType == NotificationType.Message) {
       this.lazyLoadingService.load(async () => {
         const { MessageNotificationPopupComponent } = await import('../message-notification-popup/message-notification-popup.component');
         const { MessageNotificationPopupModule } = await import('../message-notification-popup/message-notification-popup.module');
@@ -132,7 +148,7 @@ export class NotificationListPopupComponent extends LazyLoad {
     }
 
 
-    if (notificationItem.notificationType == 1) {
+    if (notificationItem.notificationType == NotificationType.ReviewComplaint) {
       this.lazyLoadingService.load(async () => {
         const { ReviewNotificationPopupComponent: ReviewNotificationPopupComponent } = await import('../review-notification-popup/review-notification-popup.component');
         const { ReviewNotificationPopupModule: ReviewNotificationPopupModule } = await import('../review-notification-popup/review-notification-popup.module');
@@ -147,12 +163,12 @@ export class NotificationListPopupComponent extends LazyLoad {
         })
     }
 
-    if (notificationItem.notificationType > 1 && notificationItem.notificationType < 17)  {
+    if (notificationItem.notificationType > NotificationType.ReviewComplaint && notificationItem.notificationType < NotificationType.ProductReportedAsIllegal)  {
       this.productService.openNotificationProduct(notificationItem.productId, notificationItem);
     }
 
 
-    if (notificationItem.notificationType >= 17) {
+    if (notificationItem.notificationType >= NotificationType.ProductReportedAsIllegal) {
       this.lazyLoadingService.load(async () => {
         const { ProductNotificationPopupComponent } = await import('../product-notification-popup/product-notification-popup.component');
         const { ProductNotificationPopupModule } = await import('../product-notification-popup/product-notification-popup.module');
@@ -176,7 +192,7 @@ export class NotificationListPopupComponent extends LazyLoad {
     this.archiveList.listManager.selectedItem = null!;
 
     // If the type of this notification is a message, see if the sender of this message happens to have a message sitting in the NEW list
-    const newMessageNotificationItem = this.notificationService.newNotifications.find(x => x.notificationType == 0 && x.name == this.notificationItem.name);
+    const newMessageNotificationItem = this.notificationService.newNotifications.find(x => x.notificationType == NotificationType.Message && x.name == this.notificationItem.name);
     // If the sender of this message notification has a message sitting in the NEW list
     if (newMessageNotificationItem) {
       // Increase the count for the message notification that is sitting in the NEW list by the number of messages in the message notification from the ARCHIVE list
@@ -184,7 +200,7 @@ export class NotificationListPopupComponent extends LazyLoad {
     }
 
     // If the notification is anything other than a message notification
-    if (this.notificationItem.notificationType != 0 ||
+    if (this.notificationItem.notificationType != NotificationType.Message ||
       // Or the notification is a message notification but the sender of that message
       // notification does NOT have a NEW message notification sitting in the NEW list
       !newMessageNotificationItem) {
@@ -204,7 +220,7 @@ export class NotificationListPopupComponent extends LazyLoad {
       {
         restore: true,
         notificationGroupId: this.notificationItem.notificationGroupId,
-        restoreAllMessagesInGroup: this.notificationItem.notificationType == 0 ? true : false
+        restoreAllMessagesInGroup: this.notificationItem.notificationType == NotificationType.Message ? true : false
       }).subscribe();
   }
 
