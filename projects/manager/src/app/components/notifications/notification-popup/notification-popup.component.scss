@@ -1,3 +1,5 @@
+@import '../../../../scss/buttons';
+
 .popup-container {
     position: absolute;
     top: 0px;
@@ -7,7 +9,7 @@
 .popup-arrow-container {
     position: relative;
     width: 24px;
-    left: 369px;
+    left: 369px;//179px
 }
 
 .popup-arrow-up-Border {
@@ -36,11 +38,18 @@
 }
 
 
+.top-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 11px;
+}
+
+
 .product-container {
     display: flex;
     height: 30px;
     align-items: center;
-    margin-bottom: 11px;
 }
 
 
@@ -59,58 +68,51 @@
 
 
 .product-name {
+    width: 320px;
     font-size: 12px;
     color: #a0a0a0;
     margin-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 
 .notification-type-container {
     display: flex;
     height: 35px;
-    padding-left: 3px;
     border: 1px solid #393939;
     border-left: none;
     border-right: none;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     color: #e0e0e0;
     font-size: 13px;
 }
 
-.dashed-container {
-    border: 1px dashed #373737;
-    border-top: none;
-    margin-bottom: 13px;
-}
 
-
-
-
-.counter-bar {
+.profile-container {
     display: flex;
-    height: 28px;
-    background: #2f2f2f;
-    padding-left: 1px;
     align-items: center;
-    justify-content: space-between;
+    margin-right: 4px;
 }
 
 
 .counter-container {
+    margin-left: -2px;
+}
+
+
+.label-container {
     display: flex;
-    width: fit-content;
-    height: 100%;
-    align-items: center;
-    // margin-right: auto;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: -5px;
+
+    .label {
+        padding-bottom: 5px;
+    }
 }
-
-
-.user-container {
-    padding: 11px 8px 8px;
-}
-
-
-
 
 
 .label {
@@ -118,6 +120,11 @@
     color: #787878;
     margin-left: 2px;
     user-select: none;
+}
+
+
+.notes-button-container {
+    margin-top: -10px;
 }
 
 
@@ -134,13 +141,9 @@
     height: 34px;
     background: #2e2e2e;
     border: 2px solid #242424;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    padding-right: 4px;
 }
-
-
-
 
 
 .date {
@@ -154,8 +157,8 @@
     width: 18px;
     height: 18px;
     background: #555555;
-    outline: 1px solid #868686;
     border-radius: 50%;
+    outline: 1px solid #868686;
     margin-left: 10px;
 
     img {
@@ -163,23 +166,6 @@
         max-height: 18px;
     }
 }
-
-
-
-.no-profile-image {
-    position: relative;
-    width: 18px;
-    height: 18px;
-    margin-left: 10px;
-    background: none;
-    outline: none;
-
-    img {
-        max-width: 18px;
-        max-height: 18px;
-    }
-}
-
 
 
 .profile-popup-container {
@@ -187,7 +173,6 @@
     left: 28px;
     z-index: 100;
 }
-
 
 
 .user-comment {
@@ -202,7 +187,6 @@
 
 textarea {
     width: 100%;
-    height: 128px;
     resize: none;
     background: none;
     outline: none;
@@ -213,13 +197,15 @@ textarea {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+
 .button-container {
     display: flex;
-    margin-top: 15px;
     justify-content: space-between;
 }
 
 
-.dark-button {
+.notification-button {
+    @extend .dark-button;
     margin-left: 0;
+    padding: 1px 10px 0;
 }

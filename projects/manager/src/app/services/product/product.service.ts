@@ -6,6 +6,7 @@ import { HierarchyItem } from '../../classes/hierarchy-item';
 import { ListItem } from '../../classes/list-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
 import { NicheHierarchy } from '../../classes/niche-hierarchy';
+import { NotificationItem } from '../../classes/notification-item';
 import { Product } from '../../classes/product';
 import { ProductPropertiesComponent } from '../../components/product-properties/product-properties.component';
 
@@ -29,6 +30,9 @@ export class ProductService {
   public productComponents: Array<ProductPropertiesComponent> = new Array<ProductPropertiesComponent>();
   public onProductSelect: Subject<void> = new Subject<void>();
 
+
+  public onProductOpen: Subject<ProductPropertiesComponent> = new Subject<ProductPropertiesComponent>();
+
   constructor(private resolver: ComponentFactoryResolver, private dataService: DataService) { }
 
 
@@ -48,14 +52,28 @@ export class ProductService {
           this.productComponents.push(productComponent);
           productComponent.product = product;
           productComponent.zIndex = this.zIndex;
+          this.onProductOpen.next(productComponent);
         })
 
       // If the product is already open
     } else {
       openedProduct.zIndex = this.zIndex;
+      this.onProductOpen.next(openedProduct);
     }
   }
 
+
+
+  openNotificationProduct(productId: number, notificationItem: NotificationItem) {
+    let onProductOpenListener = this.onProductOpen.subscribe((notificationProduct: ProductPropertiesComponent) => {
+      onProductOpenListener.unsubscribe();
+      window.setTimeout(()=> {
+        notificationProduct.openNotificationPopup(notificationItem);
+      })
+    });
+
+    this.goToProduct(productId);
+  }
 
 
 

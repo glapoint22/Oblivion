@@ -1,4 +1,5 @@
 import { IProduct, PricePoint, RecurringPayment, ShippingType, Subproduct } from "common";
+import { NotificationItem } from "./notification-item";
 import { ProductMedia } from "./product-media";
 import { Vendor } from "./vendor";
 
@@ -16,4 +17,5 @@ export class Product implements IProduct {
     public components!: Array<Subproduct>;
     public bonuses!: Array<Subproduct>;
     public media!: Array<ProductMedia>;
+    public notificationItems!: Array<NotificationItem>;
 }

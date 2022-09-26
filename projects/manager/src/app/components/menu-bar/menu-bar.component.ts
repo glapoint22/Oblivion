@@ -1,12 +1,12 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { LazyLoadingService, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../classes/enums';
 import { MenuBarButton } from '../../classes/menu-bar-button';
 import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { NotificationService } from '../../services/notification/notification.service';
-import { NotificationListPopupComponent } from '../notification-list-popup/notification-list-popup.component';
+import { NotificationListPopupComponent } from '../notifications/notification-list-popup/notification-list-popup.component';
 
 @Component({
   selector: 'menu-bar',
@@ -24,133 +24,13 @@ export class MenuBarComponent {
   public notificationCount!: number;
   public selectedMenuBarButton!: MenuBarButton;
   public nichesSideMenu!: NichesSideMenuComponent;
-  public menuBarButtons: Array<MenuBarButton> = [
+  public menuBarButtons: Array<MenuBarButton> = this.getMenuBarButtons();
 
-    // Builders
-    {
-      name: 'Builders',
-      menuOptions: [
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Product Builder',
-          shortcut: 'Alt+P',
-          optionFunction: this.openProductBuilder
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Page Builder',
-          shortcut: 'Ctrl+Alt+P',
-          optionFunction: this.openPageBuilder
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Email Builder',
-          shortcut: 'Shift+E',
-          optionFunction: this.openEmailBuilder
-        }
-      ]
-    },
-
-
-
-    // Forms
-    {
-      name: 'Forms',
-      menuOptions: [
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Vendor',
-          shortcut: 'Alt+V',
-          optionFunction: this.openVendorForm
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Filters',
-          shortcut: 'Shift+F',
-          optionFunction: this.openFiltersForm
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Keywords',
-          shortcut: 'Alt+K',
-          optionFunction: this.openKeywordsForm
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Product Groups',
-          shortcut: 'Alt+G',
-          optionFunction: this.openProductGroupsForm
-        }
-      ]
-    },
-
-
-    // Edit
-    {
-      name: 'Edit',
-      menuOptions: [
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Undo',
-          shortcut: 'Ctrl+Z'
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Redo',
-          shortcut: 'Ctrl+Y'
-        },
-        {
-          type: MenuOptionType.Divider
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Cut',
-          shortcut: 'Ctrl+X'
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Copy',
-          shortcut: 'Ctrl+C'
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Paste',
-          shortcut: 'Ctrl+V'
-        }
-      ]
-    },
-
-
-    // Account
-    {
-      name: 'Account',
-      menuOptions: [
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Change Name'
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Change Email'
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Change Password'
-        },
-        {
-          type: MenuOptionType.Divider
-        },
-        {
-          type: MenuOptionType.MenuItem,
-          name: 'Sign Out'
-        }
-      ]
-    }
-  ]
-
+  // Decorators
   @ViewChild('notificationListPopupContainer', { read: ViewContainerRef }) notificationListPopupContainer!: ViewContainerRef;
   @ViewChild('notificationPopup', { read: ViewContainerRef }) notificationPopupContainer!: ViewContainerRef;
 
+  // Constructor
   constructor(public lazyLoadingService: LazyLoadingService, private router: Router, private notificationService: NotificationService) { }
 
 
@@ -163,6 +43,134 @@ export class MenuBarComponent {
 
   ngAfterViewInit() {
     this.notificationService.notificationPopupContainer = this.notificationPopupContainer;
+  }
+
+
+
+  getMenuBarButtons(): Array<MenuBarButton> {
+    return [
+
+      // Builders
+      {
+        name: 'Builders',
+        menuOptions: [
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Product Builder',
+            shortcut: 'Alt+P',
+            optionFunction: this.openProductBuilder
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Page Builder',
+            shortcut: 'Ctrl+Alt+P',
+            optionFunction: this.openPageBuilder
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Email Builder',
+            shortcut: 'Shift+E',
+            optionFunction: this.openEmailBuilder
+          }
+        ]
+      },
+  
+  
+  
+      // Forms
+      {
+        name: 'Forms',
+        menuOptions: [
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Vendor',
+            shortcut: 'Alt+V',
+            optionFunction: this.openVendorForm
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Filters',
+            shortcut: 'Shift+F',
+            optionFunction: this.openFiltersForm
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Keywords',
+            shortcut: 'Alt+K',
+            optionFunction: this.openKeywordsForm
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Product Groups',
+            shortcut: 'Alt+G',
+            optionFunction: this.openProductGroupsForm
+          }
+        ]
+      },
+  
+  
+      // Edit
+      {
+        name: 'Edit',
+        menuOptions: [
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Undo',
+            shortcut: 'Ctrl+Z'
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Redo',
+            shortcut: 'Ctrl+Y'
+          },
+          {
+            type: MenuOptionType.Divider
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Cut',
+            shortcut: 'Ctrl+X'
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Copy',
+            shortcut: 'Ctrl+C'
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Paste',
+            shortcut: 'Ctrl+V'
+          }
+        ]
+      },
+  
+  
+      // Account
+      {
+        name: 'Account',
+        menuOptions: [
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Change Name'
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Change Email'
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Change Password'
+          },
+          {
+            type: MenuOptionType.Divider
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Sign Out'
+          }
+        ]
+      }
+    ]
   }
 
 
@@ -336,11 +344,16 @@ export class MenuBarComponent {
       return;
     }
 
+    if(this.notificationService.notificationPopupContainer.length > 0) {
+      this.notificationService.notificationPopup.onEscape();
+      return;
+    }
+
     // If a message, review, or product notification popup is open then the notification list popup can NOT be opened
     if (this.notificationPopupContainer.length == 0) {
       this.lazyLoadingService.load(async () => {
-        const { NotificationListPopupComponent: NotificationListPopupComponent } = await import('../notification-list-popup/notification-list-popup.component');
-        const { NotificationListPopupModule: NotificationListPopupModule } = await import('../notification-list-popup/notification-list-popup.module');
+        const { NotificationListPopupComponent: NotificationListPopupComponent } = await import('../notifications/notification-list-popup/notification-list-popup.component');
+        const { NotificationListPopupModule: NotificationListPopupModule } = await import('../notifications/notification-list-popup/notification-list-popup.module');
         return {
           component: NotificationListPopupComponent,
           module: NotificationListPopupModule

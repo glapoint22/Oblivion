@@ -1,0 +1,65 @@
+.notification-type-container {
+    padding-left: 3px;
+    justify-content: space-between;
+}
+
+
+.notification-type-name {
+    position: absolute;
+    left: 175px;
+}
+
+.dashed-container {
+    border: 1px dashed #373737;
+    border-top: none;
+    margin-bottom: 13px;
+}
+
+
+.counter-container {
+    display: flex;
+    width: fit-content;
+    height: 100%;
+    align-items: center;
+}
+
+
+.user-container {
+    padding: 11px 8px 8px;
+}
+
+
+.info-bar {
+    justify-content: flex-end;
+    padding-right: 4px;
+}
+
+
+.no-profile-image {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    margin-left: 10px;
+    background: none;
+    outline: none;
+
+    img {
+        max-width: 18px;
+        max-height: 18px;
+    }
+}
+
+
+textarea {
+    height: 128px;
+}
+
+
+.button-container {
+    margin-top: 15px;
+}
+
+
+.dark-button {
+    margin-left: 0;
+}

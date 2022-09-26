@@ -1,0 +1,46 @@
+<div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="!archiveList || (archiveList && !archiveList.listManager.contextMenuOpen && !archiveList.listManager.selectedItem) ? $event.stopPropagation() : null">
+
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-up-Border"></div>
+        <div class="popup-arrow-up-background"></div>
+    </div>
+
+
+    <div class="popup-base">
+
+        <div class="tabs">
+            <div class="tabs-container">
+                <div class="tab" [ngClass]="{'selected-tab': newTabSelected}" (click)="newTabSelected = true; newListZIndex = archiveListZIndex + 1;">New ({{notificationService.notificationCount}})</div>
+                <div class="tab" [ngClass]="{'selected-tab': !newTabSelected}" (click)="newTabSelected = false; archiveListZIndex = newListZIndex + 1">Archive</div>
+            </div>
+            
+            <icon-button [icon]="'fa-solid fa-arrows-rotate'"
+                         [title]="'Refresh'"
+                         [isDisabled]="false"
+                         (onClick)="refreshNotifications()">
+            </icon-button>
+        </div>
+
+        <div class="tabs-base"></div>
+
+        <div style="position: relative;">
+            <div class="modal-list-container" style="position: absolute; top: 0;" [style.zIndex]="newListZIndex">
+                <notification-list *ngIf="!refreshNotificationsInProgress"
+                                   [sourceList]="notificationService.newNotifications"
+                                   [options]="newListOptions"
+                                   (onListUpdate)="onListUpdate($event)">
+                </notification-list>
+            </div>
+
+
+            <div class="modal-list-container" style="position: absolute; top: 0;" [style.zIndex]="archiveListZIndex">
+                <notification-list #archiveList
+                                   [sourceList]="notificationService.archiveNotifications"
+                                   [options]="archiveListOptions"
+                                   (onListUpdate)="onListUpdate($event)">
+                </notification-list>
+            </div>
+        </div>
+        
+    </div>
+</div>

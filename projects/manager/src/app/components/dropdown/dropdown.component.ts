@@ -52,6 +52,7 @@ export class DropdownComponent {
         dropdownList.top = rect.top + rect.height;
         dropdownList.left = rect.left + 1;
         dropdownList.width = rect.width - 2;
+        dropdownList.selectedListItem = this.selectedListItem;
 
         dropdownList.callback = (item: KeyValue<any, any>) => {
           this.selectedListItem = item;

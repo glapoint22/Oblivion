@@ -1,9 +1,10 @@
 .dropdown-base {
     height: 24px;
-    background: #282828;
+    background: #333333;
     padding: 0 5px;
     user-select: none;
-    border: 1px solid #3d3d3d;
+    border: 1px solid #4e4e4e;
+    border-radius: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;

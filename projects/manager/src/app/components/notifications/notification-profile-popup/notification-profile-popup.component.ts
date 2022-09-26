@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { NotificationProfilePopupUser } from '../../classes/notification-profile-popup-user';
-import { PromptComponent } from '../../components/prompt/prompt.component';
+import { NotificationProfilePopupUser } from '../../../classes/notification-profile-popup-user';
+import { PromptComponent } from '../../prompt/prompt.component';
 
 @Component({
   templateUrl: './notification-profile-popup.component.html',
@@ -39,10 +39,15 @@ export class NotificationProfilePopupComponent extends LazyLoad {
   }
 
 
+  onEscape(): void {
+    if (!this.prompt) this.close();
+  }
+
+
   openPrompt() {
     this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../components/prompt/prompt.component');
-      const { PromptModule } = await import('../../components/prompt/prompt.module');
+      const { PromptComponent } = await import('../../prompt/prompt.component');
+      const { PromptModule } = await import('../../prompt/prompt.module');
 
       return {
         component: PromptComponent,
@@ -134,11 +139,11 @@ export class NotificationProfilePopupComponent extends LazyLoad {
 
 
   onRemoveUserProfilePicButtonClick() {
-    this.promptTitle = 'Remove Profile Picture';
+    this.promptTitle = 'Remove Profile Image';
     this.promptMessage = this.sanitizer.bypassSecurityTrustHtml(
-      'The profile picture of the user' +
+      'The profile image of the user' +
       ' <span style="color: #ffba00">\"' + this.user.firstName + ' ' + this.user.lastName + '\"</span>' +
-      ' will be removed and a strike will be added against them for not complying with the terms of use.');
+      ' will be removed. Also, a strike will be added against them for not complying with the terms of use.');
     this.promptButtonName = 'Remove';
     this.promptFunction = () => {
       this.user.image = null!

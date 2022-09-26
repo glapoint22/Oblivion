@@ -1,0 +1,50 @@
+@import '../notification-popup/notification-popup.component.scss';
+
+
+.review-info-box {
+    @extend .info-box;
+    margin-bottom: 13px;
+}
+
+
+.review-info-bar {
+    @extend .info-bar;
+    justify-content: space-between;
+}
+
+
+.review-title-container {
+    display: flex;
+    align-items: center;
+    padding-left: 3px;
+    font-size: 12px;
+    width: 210px;
+}
+
+
+.review-title-label {
+    color: #dadada;
+    margin-right: 5px;
+}
+
+
+.review-title {
+    color: #999999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.review-writer-info-container {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
+
+.review-profile-popup-container {
+    @extend .profile-popup-container;
+    left: 28px;
+    top: -157px;
+}

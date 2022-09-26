@@ -29,7 +29,7 @@
         <div class="notification-bell-container"
              [ngStyle]="{'margin-right': notificationCount > 0 ? '4px' : '24px'}"
              (click)="openNotificationListPopup()"
-             [ngClass]="{'disabled-notification-bell-container': !notificationPopupContainer ? false : notificationPopupContainer.length > 0}"
+             
              (mousedown)="$event.stopPropagation()">
 
             <i class="fa-solid fa-bell"></i>
