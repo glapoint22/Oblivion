@@ -16,15 +16,16 @@ export class VendorPopupComponent extends LazyLoad {
     super(lazyLoadingService);
   }
 
+  // Not sure if this was needed
+  
+  // ngOnInit(): void {
+  //   super.ngOnInit();
 
-  ngOnInit(): void {
-    super.ngOnInit();
-
-    this.dataService.get<Vendor>('api/Vendors/Vendor', [{ key: 'vendorId', value: this.product.vendor.id }])
-      .subscribe((vendor: Vendor) => {
-        this.product.vendor = vendor;
-      })
-  }
+  //   this.dataService.get<Vendor>('api/Vendors/Vendor', [{ key: 'vendorId', value: this.product.vendor.id }])
+  //     .subscribe((vendor: Vendor) => {
+  //       this.product.vendor = vendor;
+  //     })
+  // }
 
 
   onVendorSelect(vendor: Vendor) {
