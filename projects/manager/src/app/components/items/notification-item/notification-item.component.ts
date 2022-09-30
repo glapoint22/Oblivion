@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { NotificationType } from '../../../classes/enums';
 import { NotificationItem } from '../../../classes/notification-item';
 import { ImageItemComponent } from '../image-item/image-item.component';
 
@@ -9,4 +10,5 @@ import { ImageItemComponent } from '../image-item/image-item.component';
 })
 export class NotificationItemComponent extends ImageItemComponent {
   @Input() item!: NotificationItem;
- }
+  public NotificationType = NotificationType;
+}

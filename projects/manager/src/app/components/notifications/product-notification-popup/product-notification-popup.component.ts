@@ -3,7 +3,7 @@ import { MenuOptionType } from '../../../classes/enums';
 import { NotificationProduct } from '../../../classes/notification-product';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { MenuOption } from '../../../classes/menu-option';
-import { NotificationProfile } from '../../../classes/notification-profile';
+import { NotificationEmployee } from '../../../classes/notification-employee';
 import { NotificationItem } from '../../../classes/notification-item';
 import { KeyValue } from '@angular/common';
 
@@ -133,7 +133,6 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
 
   saveEmployeeText() {
-    this.employeeTextPath = 'api/Notifications/PostNote';
     this.employeeTextParameters = {
       notificationGroupId: this.notificationItem.notificationGroupId,
       note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
@@ -145,15 +144,15 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
   // ============================================================( OPEN DISABLE BUTTON PROMPT )============================================================= \\
 
-  openDisableButtonPrompt() {
-    this.disableButtonPromptPrimaryButtonName = this.notification.productDisabled ? 'Enable' : 'Disable';
-    this.disableButtonPromptTitle = (this.notification.productDisabled ? 'Enable' : 'Disable') + ' Product';
-    this.disableButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
+  openSecondaryButtonPrompt() {
+    this.secondaryButtonPromptPrimaryButtonName = this.notification.productDisabled ? 'Enable' : 'Disable';
+    this.secondaryButtonPromptTitle = (this.notification.productDisabled ? 'Enable' : 'Disable') + ' Product';
+    this.secondaryButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
       'The product,' +
       ' <span style="color: #ffba00">\"' + this.notificationItem.productName + '\"</span>' +
       ' will be ' + (this.notification.productDisabled ? 'enabled' : 'disabled') + '.');
 
-    super.openDisableButtonPrompt();
+    super.openSecondaryButtonPrompt();
   }
 
 
@@ -161,8 +160,8 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.disableButtonPrompt && !this.deletePrompt) {
-      if (!this.isNoteWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt) {
+      if (!this.areNotesWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
         this.close();
       } else {
         this.openUndoChangesPrompt();
@@ -174,7 +173,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
   // =====================================================================( ON CLOSE )====================================================================== \\
 
-  onClose(employees: Array<NotificationProfile>, restore?: boolean): void {
+  onClose(employees: Array<NotificationEmployee>, restore?: boolean): void {
     this.secondaryButtonDisabledPath = 'api/Notifications/DisableProduct';
     this.secondaryButtonDisabledParameters = { productId: this.notificationItem.productId };
     super.onClose(employees, restore);

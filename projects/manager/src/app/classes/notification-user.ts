@@ -1,6 +1,6 @@
-import { NotificationProfile } from "./notification-profile";
+import { NotificationEmployee } from "./notification-employee";
 
-export class NotificationUser extends NotificationProfile {
+export class NotificationUser extends NotificationEmployee {
     userId!: string;
     noncompliantStrikes!: number;
     blockNotificationSending!: boolean;

@@ -36,9 +36,9 @@ export class NotificationService {
   getNewNotifications() {
     this.getNotificationCount();
 
-    this.getNotificationsTimer = window.setTimeout(() => {
-      this.getNewNotifications();
-    }, 50000)
+    // this.getNotificationsTimer = window.setTimeout(() => {
+    //   this.getNewNotifications();
+    // }, 50000)
   }
 
   getNotificationCount() {
@@ -82,8 +82,12 @@ export class NotificationService {
     let notificationName: string = '';
 
     switch (notificationType) {
-      case NotificationType.ProfileImage:
-        notificationName = "Profile Image";
+      case NotificationType.UserName:
+        notificationName = "User Name";
+        break;
+
+      case NotificationType.UserImage:
+        notificationName = "User Image";
         break;
 
       case NotificationType.ReviewComplaint:

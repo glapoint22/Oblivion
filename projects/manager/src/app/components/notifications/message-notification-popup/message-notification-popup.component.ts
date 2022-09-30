@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { MenuOptionType } from '../../../classes/enums';
 import { NotificationItem } from '../../../classes/notification-item';
-import { NotificationMessage } from '../../../classes/notification-message';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { MenuOption } from '../../../classes/menu-option';
+import { NotificationMessage } from '../../../classes/notification-message';
+import { NotificationEmployee } from '../../../classes/notification-employee';
 
 @Component({
   templateUrl: './message-notification-popup.component.html',
@@ -19,6 +20,11 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   ngOnInit() {
     super.ngOnInit();
     this.getNotification<Array<NotificationMessage>>('api/Notifications/Message', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
+    this.onInitialize.subscribe(() => {
+      (this.notification as Array<NotificationMessage>).forEach(x => {
+        if (x.employeeMessage == null) x.employeeMessage = new NotificationEmployee();
+      })
+    });
   }
 
 
@@ -107,9 +113,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
     for (let i = 0; i < this.notification.length; i++) {
       // If a new reply has been written in any of the messages and they're not just empty spaces
-      if (!this.notification[i].employeeMessageDate &&
-        this.notification[i].employeeMessage != null &&
-        this.notification[i].employeeMessage.trim().length > 0) {
+      if (!this.notification[i].employeeMessage.date &&
+        this.notification[i].employeeMessage.text != null &&
+        this.notification[i].employeeMessage.text.trim().length > 0) {
         isWritten = true;
         break;
       }
@@ -123,9 +129,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   setSendButtonDisabled() {
     // If a new reply has been written in this current message and it's not just empty spaces
-    if (!this.notification[this.userIndex].employeeMessageDate &&
-      this.notification[this.userIndex].employeeMessage != null &&
-      this.notification[this.userIndex].employeeMessage.trim().length > 0) {
+    if (!this.notification[this.userIndex].employeeMessage.date &&
+      this.notification[this.userIndex].employeeMessage.text != null &&
+      this.notification[this.userIndex].employeeMessage.text.trim().length > 0) {
       // Enable the send button
       this.sendButtonDisabled = false;
 
@@ -142,10 +148,10 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
 
   saveEmployeeText() {
-    this.employeeTextPath = 'api/Notifications/PostMessage';
     this.employeeTextParameters = {
+      notificationGroupId: this.notificationItem.notificationGroupId,
       notificationId: this.notification[this.userIndex].notificationId,
-      message: this.notification[this.userIndex].employeeMessage.trim()
+      note: this.notification[this.userIndex].employeeMessage.text.trim()
     }
     super.saveEmployeeText();
   }
@@ -238,7 +244,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
       // Update the count for that message notification's red circle
       notificationItemCopy.count += messageCount;
 
-      // If we're in the archive list
+      // If the message is being added to the archive list
       if (notifications == this.notificationService.archiveNotifications) {
         // Then remove that message notification from the list and then put it back up at the top of the list
         notifications.splice(notificationItemIndex, 1);
@@ -248,12 +254,12 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
       // If the sender of this message does NOT have a message in the list
     } else {
 
-      // If we're in the archive list
+      // If the message is being added to the archive list
       if (notifications == this.notificationService.archiveNotifications) {
         // Create a new message notification and put it at the top of the list
         notifications.unshift(this.createNewNotificationItem(false, messageCount));
 
-        // If we're in the new list
+        // If the message is being added to the new list
       } else {
         // Create a new message notification and order it in the list based on its creation date
         notifications.push(this.createNewNotificationItem(true, messageCount))
@@ -301,22 +307,22 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
       this.delete(
         {
-          notificationGroupId: this.notification.length == 1 ? this.notificationItem.notificationGroupId : 0,
-          notificationId: this.notification[this.userIndex].notificationId,
-          employeeMessageIds: this.notification[this.userIndex].employeeMessageId != null ? [this.notification[this.userIndex].employeeMessageId] : []
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          notificationIds: [this.notification[this.userIndex].notificationId]
         }, this.notificationItem.count);
 
     } else {
 
-      let employeeMessageIds = new Array<number>();
+
+      let notificationIds = new Array<number>();
       (this.notification as Array<NotificationMessage>).forEach(x => {
-        if (x.employeeMessageId != null) employeeMessageIds.push(x.employeeMessageId)
+        notificationIds.push(x.notificationId)
       });
 
       this.delete(
         {
           notificationGroupId: this.notificationItem.notificationGroupId,
-          employeeMessageIds: employeeMessageIds
+          notificationIds: notificationIds
         }
       );
     }

@@ -73,28 +73,28 @@
                 <div class="info-box">
 
                     <ng-container *ngIf="notification">
-                        <ng-container *ngIf="notification[userIndex].employeeMessageDate">
+                        <ng-container *ngIf="notification[userIndex].employeeMessage.date">
                             <div class="info-bar">
                                 
                                 <!-- Date -->
                                 <div class="date">
-                                    {{notification[userIndex].employeeMessageDate | date: 'MMM d, y, h:mm a'}}
+                                    {{notification[userIndex].employeeMessage.date | date: 'MMM d, y, h:mm a'}}
                                 </div>
 
                                 <!-- Image -->
                                 <div class="profile-image-container">
-                                    <img [src]="notification[userIndex].employeeImage ? 'images/' + notification[userIndex].employeeImage : 'assets/no-account-pic.png'" style="border-radius: 50%;" [title]="notification[userIndex].employeeFirstName + ' ' + notification[userIndex].employeeLastName">
+                                    <img [src]="notification[userIndex].employeeMessage.image ? 'images/' + notification[userIndex].employeeMessage.image : 'assets/no-account-pic.png'" style="border-radius: 50%;" [title]="notification[userIndex].employeeMessage.firstName + ' ' + notification[userIndex].employeeMessage.lastName">
                                 </div>
                             </div>
 
                             <!-- Reply -->
                             <div class="user-comment">
-                                {{notification[userIndex].employeeMessage}}
+                                {{notification[userIndex].employeeMessage.text}}
                             </div>
                         </ng-container>
                     
                         <!-- Empty Reply -->
-                        <textarea *ngIf="!notification[userIndex].employeeMessageDate" [(ngModel)]="notification[userIndex].employeeMessage" (input)="setSendButtonDisabled()"></textarea>
+                        <textarea *ngIf="!notification[userIndex].employeeMessage.date" [(ngModel)]="notification[userIndex].employeeMessage.text" (input)="setSendButtonDisabled()"></textarea>
                     </ng-container>
                 </div>
             </div>

@@ -9,7 +9,7 @@ import { ProductService } from '../../../services/product/product.service';
 import { NotificationListComponent } from '../../lists/notification-list/notification-list.component';
 import { MessageNotificationPopupComponent } from '../message-notification-popup/message-notification-popup.component';
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
-import { ProfileImageNotificationPopupComponent } from '../profile-image-notification-popup/profile-image-notification-popup.component';
+import { UserImageNotificationPopupComponent } from '../user-image-notification-popup/user-image-notification-popup.component';
 import { ReviewNotificationPopupComponent } from '../review-notification-popup/review-notification-popup.component';
 
 @Component({
@@ -76,7 +76,7 @@ export class NotificationListPopupComponent extends LazyLoad {
   refreshNotifications() {
     this.refreshNotificationsInProgress = true;
     this.notificationService.refreshNotifications();
-    window.setTimeout(()=> {
+    window.setTimeout(() => {
       this.refreshNotificationsInProgress = false;
     })
   }
@@ -84,18 +84,35 @@ export class NotificationListPopupComponent extends LazyLoad {
 
   onListUpdate(listUpdate: ListUpdate) {
     if (listUpdate.type == ListUpdateType.SelectedItems) {
+      
 
       // If the archive tab is selected
       if (!this.newTabSelected) {
         // and we right click on a archived notification item
         if (listUpdate.rightClick) {
-          // Allow the selection to be shown
-          this.archiveList.listManager.showSelection = true;
-          // Record the notification item that was right clicked
-          this.notificationItem = listUpdate.selectedItems![0] as NotificationItem;
-          return
 
-          // If a archived notification was NOT right clicked (just clicked)
+          // If the notification is either a User Name notification or a User Image notification
+          if ((listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.UserName ||
+            (listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.UserImage) {
+            
+              // Don't allow the context menu to be shown
+              listUpdate.selectedItems![0].selectable = false;
+              // And don't allow the selection to be shown
+              this.archiveList.listManager.showSelection = false;
+              
+              // But if it's any other type of notification
+          } else {
+
+            // Allow the context menu to be shown
+            listUpdate.selectedItems![0].selectable = true;
+            // And allow the selection to be shown
+            this.archiveList.listManager.showSelection = true;
+            // Record the notification item that was right clicked
+            this.notificationItem = listUpdate.selectedItems![0] as NotificationItem;
+            return
+          }
+
+          // If an archived notification was NOT right clicked (just clicked)
         } else {
           // Clear any selection (if any)
           this.archiveList.listManager.showSelection = false;
@@ -117,18 +134,18 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   openNotificationPopup(notificationItem: NotificationItem) {
-    if (notificationItem.notificationType == NotificationType.ProfileImage) {
+    if (notificationItem.notificationType == NotificationType.UserImage) {
       this.lazyLoadingService.load(async () => {
-        const { ProfileImageNotificationPopupComponent } = await import('../profile-image-notification-popup/profile-image-notification-popup.component');
-        const { ProfileImageNotificationPopupModule } = await import('../profile-image-notification-popup/profile-image-notification-popup.module');
+        const { UserImageNotificationPopupComponent: UserImageNotificationPopupComponent } = await import('../user-image-notification-popup/user-image-notification-popup.component');
+        const { UserImageNotificationPopupModule: UserImageNotificationPopupModule } = await import('../user-image-notification-popup/user-image-notification-popup.module');
         return {
-          component: ProfileImageNotificationPopupComponent,
-          module: ProfileImageNotificationPopupModule
+          component: UserImageNotificationPopupComponent,
+          module: UserImageNotificationPopupModule
         }
       }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
-        .then((profileImageNotificationPopup: ProfileImageNotificationPopupComponent) => {
-          // profileImageNotificationPopup.notificationItem = notificationItem;
-          // this.notificationService.notificationPopup = profileImageNotificationPopup;
+        .then((userImageNotificationPopup: UserImageNotificationPopupComponent) => {
+          userImageNotificationPopup.notificationItem = notificationItem;
+          this.notificationService.notificationPopup = userImageNotificationPopup;
         })
     }
 
@@ -163,7 +180,7 @@ export class NotificationListPopupComponent extends LazyLoad {
         })
     }
 
-    if (notificationItem.notificationType > NotificationType.ReviewComplaint && notificationItem.notificationType < NotificationType.ProductReportedAsIllegal)  {
+    if (notificationItem.notificationType > NotificationType.ReviewComplaint && notificationItem.notificationType < NotificationType.ProductReportedAsIllegal) {
       this.productService.openNotificationProduct(notificationItem.productId, notificationItem);
     }
 
@@ -237,7 +254,7 @@ export class NotificationListPopupComponent extends LazyLoad {
       this.archiveList.listManager.showSelection = false;
 
       // And if the New tab is selected
-      if(this.newTabSelected ||
+      if (this.newTabSelected ||
         // Or if the Archive tab IS selected and NO archived notification item is selected
         (!this.newTabSelected && !this.archiveList.listManager.selectedItem)) {
         // Close the popup

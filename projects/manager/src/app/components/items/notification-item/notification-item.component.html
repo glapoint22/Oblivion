@@ -36,7 +36,7 @@
             </div>
 
             <div class="image-container">
-                <img [src]="item.image == null ? 'assets/message-notification.png' : 'images/' + item.image">
+                <img [src]="item.notificationType == NotificationType.UserName ? 'assets/user-name-notification.png' : item.notificationType == NotificationType.UserImage ? 'assets/user-image-notification.png' : item.notificationType == NotificationType.Message ? 'assets/message-notification.png' : 'images/' + item.image">
 
                 <div *ngIf="item.count > 1" class="count-circle">
                     <div>{{item.count}}</div>

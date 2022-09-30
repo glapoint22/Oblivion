@@ -189,7 +189,8 @@ export enum QueryElementType {
 
 
 export enum NotificationType {
-    ProfileImage,
+    UserName,
+    UserImage,
     Message,
     ReviewComplaint,
     ProductNameDoesNotMatchWithProductDescription,

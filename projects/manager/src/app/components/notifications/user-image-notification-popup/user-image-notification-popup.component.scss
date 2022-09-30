@@ -18,6 +18,13 @@
 }
 
 
+.profile-image-container {
+    img {
+        border-radius: 50%;
+    }
+}
+
+
 .image-info-box {
     @extend .info-box;
     height: 114px;

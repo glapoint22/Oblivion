@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NotificationReview } from '../../../classes/notification-review';
 import { MenuOptionType } from '../../../classes/enums';
 import { MenuOption } from '../../../classes/menu-option';
-import { NotificationProfile } from '../../../classes/notification-profile';
+import { NotificationEmployee } from '../../../classes/notification-employee';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
@@ -52,7 +52,6 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
   // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
 
   saveEmployeeText() {
-    this.employeeTextPath = 'api/Notifications/PostNote';
     this.employeeTextParameters = {
       notificationGroupId: this.notificationItem.notificationGroupId,
       note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
@@ -64,15 +63,15 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
   // ============================================================( OPEN DISABLE BUTTON PROMPT )============================================================= \\
 
-  openDisableButtonPrompt() {
-    this.disableButtonPromptPrimaryButtonName = !this.notification.reviewDeleted ? 'Remove' : 'Restore';
-    this.disableButtonPromptTitle = (!this.notification.reviewDeleted ? 'Remove' : 'Restore') + ' Review';
-    this.disableButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
+  openSecondaryButtonPrompt() {
+    this.secondaryButtonPromptPrimaryButtonName = !this.notification.reviewDeleted ? 'Remove' : 'Restore';
+    this.secondaryButtonPromptTitle = (!this.notification.reviewDeleted ? 'Remove' : 'Restore') + ' Review';
+    this.secondaryButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
       'The review with the title,' +
       ' <span style="color: #ffba00">\"' + this.notification.reviewWriter.reviewTitle + '\"</span>' +
       ' will be ' + (!this.notification.reviewDeleted ? 'removed' : 'restored') + '.');
 
-    super.openDisableButtonPrompt();
+    super.openSecondaryButtonPrompt();
   }
 
 
@@ -80,8 +79,8 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && this.reviewProfilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.disableButtonPrompt && !this.deletePrompt) {
-      if (!this.isNoteWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && this.reviewProfilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt) {
+      if (!this.areNotesWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
         this.close();
       } else {
         this.openUndoChangesPrompt();
@@ -93,7 +92,7 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
   // =====================================================================( ON CLOSE )====================================================================== \\
 
-  onClose(employees: Array<NotificationProfile>, restore?: boolean): void {
+  onClose(employees: Array<NotificationEmployee>, restore?: boolean): void {
     this.secondaryButtonDisabledPath = 'api/Notifications/RemoveReview';
     this.secondaryButtonDisabledParameters = { reviewId: this.notification.reviewId }
     super.onClose(employees, restore);

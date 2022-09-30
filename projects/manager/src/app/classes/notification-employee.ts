@@ -1,4 +1,4 @@
-export class NotificationProfile {
+export class NotificationEmployee {
     firstName!: string;
     lastName!: string;
     image!: string;
