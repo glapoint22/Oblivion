@@ -50,7 +50,7 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
     this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
         this.dataService
-          .put('api/Account/UpdatePassword', {
+          .put('api/Account/ChangePassword', {
             CurrentPassword: this.form.get('currentPassword')?.value,
             NewPassword: this.form.get('newPassword')?.value
           }, {

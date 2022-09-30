@@ -17,7 +17,7 @@ export class SharedListResolver implements Resolve<SharedList> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<SharedList> {
 
-    return this.dataService.get<SharedList>('api/Lists/List',
+    return this.dataService.get<SharedList>('api/Lists/SharedList',
       [
         { key: 'listId', value: route.paramMap.get('listId') },
         { key: 'sort', value: route.queryParamMap.get('sort') ? route.queryParamMap.get('sort') : '' }
