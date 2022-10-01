@@ -4,6 +4,7 @@ import { ProductNotificationPopupComponent } from './product-notification-popup.
 import { CounterModule } from '../../counter/counter.module';
 import { IconButtonModule } from '../../icon-button/icon-button.module';
 import { DropdownModule } from '../../dropdown/dropdown.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -13,7 +14,8 @@ import { DropdownModule } from '../../dropdown/dropdown.module';
     CommonModule,
     CounterModule,
     IconButtonModule,
-    DropdownModule
+    DropdownModule,
+    FormsModule
   ],
   exports: [ProductNotificationPopupComponent]
 })

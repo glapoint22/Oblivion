@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UserImageNotificationPopupComponent } from './user-image-notification-popup.component';
 import { IconButtonModule } from '../../icon-button/icon-button.module';
 import { CounterModule } from '../../counter/counter.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -11,7 +12,8 @@ import { CounterModule } from '../../counter/counter.module';
   imports: [
     CommonModule,
     IconButtonModule,
-    CounterModule
+    CounterModule,
+    FormsModule
   ],
   exports: [
     UserImageNotificationPopupComponent

@@ -90,7 +90,7 @@
         <!-- Employee -->
         <div class="label-container">
             <div class="label">Notes:</div>
-            <div *ngIf="notification && notification.employees.length > 0" class="notes-button-container">
+            <div *ngIf="notification && (notification.employees[employeeIndex].firstName || newNoteAdded)" class="notes-button-container">
                 <icon-button [icon]="'fa-solid fa-file-lines'"
                              [title]="'Add New Note'"
                              [fontSize]="'16'"
@@ -102,7 +102,7 @@
         
         <div class="info-box">
             <ng-container *ngIf="notification">
-                <div *ngIf="notification.employees.length > 0" class="info-bar">
+                <div *ngIf="notification.employees[employeeIndex].firstName || newNoteAdded" class="info-bar">
 
                     <!-- Counter -->
                     <div class="counter-container">
@@ -113,7 +113,7 @@
                         </counter>
                     </div>
 
-                    <div *ngIf="notification.employees[employeeIndex].date != null" class="profile-container">
+                    <div *ngIf="notification.employees[employeeIndex].firstName" class="profile-container">
                         <!-- Date -->
                         <div class="date">
                             {{notification.employees[employeeIndex].date | date: 'MMM d, y, h:mm a'}}
@@ -127,10 +127,10 @@
                 </div>
 
                 <!-- Notes -->
-                <textarea #notes *ngIf="notification.employees.length == 0 || notification.employees[employeeIndex].date == null" [ngStyle]="{'height': notification.employees[employeeIndex] ? '94px' : '128px'}" (input)="notification.employees.length == 0 ? firstNote = notes.value : notification.employees[employeeIndex].text = notes.value">{{notification.employees[employeeIndex] ? notification.employees[employeeIndex].text : null}}</textarea>
+                <textarea #notes *ngIf="!notification.employees[employeeIndex].firstName" [ngStyle]="{'height': newNoteAdded ? '94px' : '128px'}" [(ngModel)]="notification.employees[employeeIndex].text"></textarea>
             
                 
-                <div *ngIf="notification.employees.length > 0 && notification.employees[employeeIndex].date != null" class="user-comment">
+                <div *ngIf="notification.employees[employeeIndex].firstName" class="user-comment">
                     {{notification.employees[employeeIndex].text}}
                 </div>
             </ng-container>

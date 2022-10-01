@@ -1,5 +1,5 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
-import { DataService } from 'common';
+import { DataService, LazyLoad } from 'common';
 import { Subject } from 'rxjs';
 import { NotificationType } from '../../classes/enums';
 import { NotificationItem } from '../../classes/notification-item';
@@ -73,6 +73,74 @@ export class NotificationService {
           this.archiveNotifications.push(x);
         })
       })
+  }
+
+
+
+  // ================================================================( REMOVE NOTIFICATION )================================================================ \\
+
+  removeNotification(notifications: Array<NotificationItem>, notificationItem: NotificationItem, popup: LazyLoad) {
+    const notificationItemIndex = notifications.findIndex(x => x.notificationGroupId == notificationItem.notificationGroupId);
+    notifications.splice(notificationItemIndex, 1);
+    popup.close();
+  }
+
+
+
+
+  // ====================================================================( ADD TO LIST )==================================================================== \\
+
+  addToList(notifications: Array<NotificationItem>, messageCount: number, notificationItem: NotificationItem) {
+    // See if the sender of this message already has a message notification in the list
+    const notificationItemIndex = notifications.findIndex(x => x.notificationGroupId == notificationItem.notificationGroupId);
+
+    // If so
+    if (notificationItemIndex != -1) {
+      // Make a copy of that message notification that's in the list
+      const notificationItemCopy = notifications[notificationItemIndex];
+      // Update the count for that message notification's red circle
+      notificationItemCopy.count += messageCount;
+
+      // If the message is being added to the archive list
+      if (notifications == this.archiveNotifications) {
+        // Then remove that message notification from the list and then put it back up at the top of the list
+        notifications.splice(notificationItemIndex, 1);
+        notifications.unshift(notificationItemCopy);
+      }
+
+      // If the sender of this message does NOT have a message in the list
+    } else {
+
+      // If the message is being added to the archive list
+      if (notifications == this.archiveNotifications) {
+        // Create a new message notification and put it at the top of the list
+        notifications.unshift(this.createNewNotificationItem(false, messageCount, notificationItem));
+
+        // If the message is being added to the new list
+      } else {
+        // Create a new message notification and order it in the list based on its creation date
+        notifications.push(this.createNewNotificationItem(true, messageCount, notificationItem))
+        notifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
+      }
+    }
+  }
+
+
+
+  // ===========================================================( CREATE NEW NOTIFICATION ITEM )============================================================ \\
+
+  createNewNotificationItem(isNew: boolean, messageCount: number, notificationItem: NotificationItem): NotificationItem {
+    const newNotificationItem = new NotificationItem();
+    newNotificationItem.isNew = isNew;
+    newNotificationItem.id = notificationItem.id;
+    newNotificationItem.notificationType = notificationItem.notificationType;
+    newNotificationItem.notificationGroupId = notificationItem.notificationGroupId;
+    newNotificationItem.image = notificationItem.image;
+    newNotificationItem.creationDate = notificationItem.creationDate;
+    newNotificationItem.name = notificationItem.name;
+    newNotificationItem.productName = notificationItem.productName;
+    newNotificationItem.count = messageCount;
+    return newNotificationItem;
   }
 
 

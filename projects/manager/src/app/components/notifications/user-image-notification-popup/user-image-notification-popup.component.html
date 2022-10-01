@@ -70,21 +70,19 @@
         <!-- Employee -->
         <div class="label-container">
             <div class="label">Notes:</div>
-            <div *ngIf="notification && notification[userIndex].employeeNotes.length > 0" class="notes-button-container">
+            <div *ngIf="notification && (notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName || newNotesAdded[userIndex])" class="notes-button-container">
                 <icon-button [icon]="'fa-solid fa-file-lines'"
                              [title]="'Add New Note'"
                              [fontSize]="'16'"
-                             [isDisabled]="newNoteAdded"
+                             [isDisabled]="newNotesAdded[userIndex]"
                              (onClick)="addNote(notification[userIndex].employeeNotes)">
                 </icon-button>
             </div>
         </div>
         
         <div class="info-box">
-            
             <ng-container *ngIf="notification">
-                
-                <div *ngIf="notification[userIndex].employeeNotes.length > 0" class="info-bar">
+                <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName || newNotesAdded[userIndex]" class="info-bar">
 
                     <!-- Counter -->
                     <div class="counter-container">
@@ -95,7 +93,7 @@
                         </counter>
                     </div>
 
-                    <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].date != null" class="profile-container">
+                    <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" class="profile-container">
                         <!-- Date -->
                         <div class="date">
                             {{notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].date | date: 'MMM d, y, h:mm a'}}
@@ -109,10 +107,10 @@
                 </div>
 
                 <!-- Notes -->
-                <textarea #notes *ngIf="notification[userIndex].employeeNotes.length == 0 || notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].date == null" [ngStyle]="{'height': notification[userIndex].employeeNotes[notification[userIndex].employeeIndex] ? '94px' : '128px'}" (input)="notification[userIndex].employeeNotes.length == 0 ? firstNote = notes.value : notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].text = notes.value">{{notification[userIndex].employeeNotes[notification[userIndex].employeeIndex] ? notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].text : null}}</textarea>
+                <textarea #notes *ngIf="!notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" [ngStyle]="{'height': newNotesAdded[userIndex] ? '94px' : '128px'}" [(ngModel)]="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].text"></textarea>
             
                 
-                <div *ngIf="notification[userIndex].employeeNotes.length > 0 && notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].date != null" class="user-comment">
+                <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" class="user-comment">
                     {{notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].text}}
                 </div>
             </ng-container>

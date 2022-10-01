@@ -41,7 +41,7 @@ export class NotificationPopupComponent extends LazyLoad {
   public reviewProfilePopup!: NotificationProfilePopupComponent;
   public secondaryButtonDisabledPath!: string;
   public secondaryButtonDisabledParameters!: {};
-  public onInitialize: Subject<void> = new Subject<void>();
+  public onNotificationLoad: Subject<void> = new Subject<void>();
 
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
@@ -82,7 +82,7 @@ export class NotificationPopupComponent extends LazyLoad {
         this.userIndex = 0;
         this.employeeIndex = 0;
         this.notification = notification;
-        this.onInitialize.next();
+        this.onNotificationLoad.next();
       });
   }
 
@@ -165,22 +165,30 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-  // =================================================================( IS NOTE WRITTEN )=================================================================== \\
+  // ============================================================( IS EMPLOYEE NOTES WRITTEN )============================================================== \\
   
-  areNotesWritten(employees: Array<NotificationEmployee>): boolean {
+  isEmployeeNotesWritten(employees: Array<NotificationEmployee>, newNoteAdded: boolean): boolean {
     // If notes were never written yet on this form and now
     // for the first time notes are finally being written
-    return (this.firstNote != null &&
-      // and the text area actually has text written in it
+    return (!employees[0].firstName && 
+      
+      
+      employees[0].text != null &&
       // and not just empty spaces
-      this.firstNote.trim().length > 0) ||
+      employees[0].text.trim().length > 0
+      
+      
+      ) ||
 
       // Or if notes had already been previously written and the (Add Note) button was pressed
-      (this.newNoteAdded &&
+      (newNoteAdded &&
         // and the text area actually has text written in it
         employees[employees.length - 1].text != null &&
         // and not just empty spaces
-        employees[employees.length - 1].text.trim().length > 0)
+        employees[employees.length - 1].text.trim().length > 0
+        
+        
+        )
   }
 
 
@@ -248,7 +256,7 @@ export class NotificationPopupComponent extends LazyLoad {
       this.undoChangesPrompt = prompt;
       prompt.parentObj = this;
       prompt.title = 'Warning';
-      prompt.message = 'Any changes you have made will be undone. Do you still want to continue closing?';
+      prompt.message = 'The changes you have made will NOT be saved. Do you still want to continue closing?';
       prompt.primaryButton = {
         name: 'Continue',
         buttonFunction: this.close
@@ -315,7 +323,7 @@ export class NotificationPopupComponent extends LazyLoad {
 
   onClose(employees: Array<NotificationEmployee>, restore?: boolean): void {
     // If notes were written
-    if (this.areNotesWritten(employees)) {
+    if (this.isEmployeeNotesWritten(employees, this.newNoteAdded)) {
       // Then save the new note
       this.saveEmployeeText();
     }

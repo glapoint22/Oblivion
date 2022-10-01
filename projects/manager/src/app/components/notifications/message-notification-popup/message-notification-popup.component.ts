@@ -20,7 +20,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   ngOnInit() {
     super.ngOnInit();
     this.getNotification<Array<NotificationMessage>>('api/Notifications/Message', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
-    this.onInitialize.subscribe(() => {
+    this.onNotificationLoad.subscribe(() => {
       (this.notification as Array<NotificationMessage>).forEach(x => {
         if (x.employeeMessage == null) x.employeeMessage = new NotificationEmployee();
       })
@@ -125,6 +125,19 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
+
+  saveEmployeeText() {
+    this.employeeTextParameters = {
+      notificationGroupId: this.notificationItem.notificationGroupId,
+      notificationId: this.notification[this.userIndex].notificationId,
+      note: this.notification[this.userIndex].employeeMessage.text.trim()
+    }
+    super.saveEmployeeText();
+  }
+
+
+
   // =============================================================( SET SEND BUTTON DISABLED )============================================================== \\
 
   setSendButtonDisabled() {
@@ -143,20 +156,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
     }
   }
 
-
-
-  // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
-
-  saveEmployeeText() {
-    this.employeeTextParameters = {
-      notificationGroupId: this.notificationItem.notificationGroupId,
-      notificationId: this.notification[this.userIndex].notificationId,
-      note: this.notification[this.userIndex].employeeMessage.text.trim()
-    }
-    super.saveEmployeeText();
-  }
-
-
+  
 
   // ======================================================================( ARCHIVE )====================================================================== \\
 
@@ -184,34 +184,6 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-  // ================================================================( REMOVE NOTIFICATION )================================================================ \\
-
-  removeNotification(notifications: Array<NotificationItem>) {
-    const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
-    notifications.splice(notificationItemIndex, 1);
-    this.close();
-  }
-
-
-
-  // ===========================================================( CREATE NEW NOTIFICATION ITEM )============================================================ \\
-
-  createNewNotificationItem(isNew: boolean, messageCount: number): NotificationItem {
-    const newNotificationItem = new NotificationItem();
-    newNotificationItem.isNew = isNew;
-    newNotificationItem.id = this.notificationItem.id;
-    newNotificationItem.notificationType = this.notificationItem.notificationType;
-    newNotificationItem.notificationGroupId = this.notificationItem.notificationGroupId;
-    newNotificationItem.image = this.notificationItem.image;
-    newNotificationItem.creationDate = this.notificationItem.creationDate;
-    newNotificationItem.name = this.notificationItem.name;
-    newNotificationItem.productName = this.notificationItem.productName;
-    newNotificationItem.count = messageCount;
-    return newNotificationItem;
-  }
-
-
-
   // =================================================================( REMOVE FROM LIST )================================================================== \\
 
   removeFromList(notifications: Array<NotificationItem>, messageCount?: number) {
@@ -225,46 +197,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
       // OR
       // If we ARE removing a notification item
     } else {
-      this.removeNotification(notifications);
-    }
-  }
-
-
-
-  // ====================================================================( ADD TO LIST )==================================================================== \\
-
-  addToList(notifications: Array<NotificationItem>, messageCount: number) {
-    // See if the sender of this message already has a message notification in the list
-    const notificationItemIndex = notifications.findIndex(x => x.name == this.notificationItem.name);
-
-    // If so
-    if (notificationItemIndex != -1) {
-      // Make a copy of that message notification that's in the list
-      const notificationItemCopy = notifications[notificationItemIndex];
-      // Update the count for that message notification's red circle
-      notificationItemCopy.count += messageCount;
-
-      // If the message is being added to the archive list
-      if (notifications == this.notificationService.archiveNotifications) {
-        // Then remove that message notification from the list and then put it back up at the top of the list
-        notifications.splice(notificationItemIndex, 1);
-        notifications.unshift(notificationItemCopy);
-      }
-
-      // If the sender of this message does NOT have a message in the list
-    } else {
-
-      // If the message is being added to the archive list
-      if (notifications == this.notificationService.archiveNotifications) {
-        // Create a new message notification and put it at the top of the list
-        notifications.unshift(this.createNewNotificationItem(false, messageCount));
-
-        // If the message is being added to the new list
-      } else {
-        // Create a new message notification and order it in the list based on its creation date
-        notifications.push(this.createNewNotificationItem(true, messageCount))
-        notifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
-      }
+      this.notificationService.removeNotification(notifications, this.notificationItem, this);
     }
   }
 
@@ -274,7 +207,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   transfer(originList: Array<NotificationItem>, originMessageCount: number, destinationList: Array<NotificationItem>, destinationMessageCount: number, dataServiceParameters: {}) {
     this.removeFromList(originList, originMessageCount);
-    this.addToList(destinationList, destinationMessageCount);
+    this.notificationService.addToList(destinationList, destinationMessageCount, this.notificationItem);
 
     // Update the count for the notification bell
     this.notificationService.notificationCount += (destinationList == this.notificationService.archiveNotifications ? -destinationMessageCount : destinationMessageCount);
@@ -334,8 +267,6 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   delete(dataServiceParameters: {}, messageCount?: number) {
     this.removeFromList(this.notificationService.archiveNotifications, messageCount);
-
-    // Update database
     this.dataService.delete('api/Notifications', dataServiceParameters).subscribe();
   }
 

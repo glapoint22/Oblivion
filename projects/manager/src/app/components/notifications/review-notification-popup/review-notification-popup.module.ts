@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CounterModule } from '../../counter/counter.module';
 import { ReviewNotificationPopupComponent } from './review-notification-popup.component';
 import { IconButtonModule } from '../../icon-button/icon-button.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -11,7 +12,8 @@ import { IconButtonModule } from '../../icon-button/icon-button.module';
   imports: [
     CommonModule,
     CounterModule,
-    IconButtonModule
+    IconButtonModule,
+    FormsModule
   ],
   exports: [ReviewNotificationPopupComponent]
 })

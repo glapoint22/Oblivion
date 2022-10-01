@@ -17,6 +17,10 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
   ngOnInit() {
     super.ngOnInit();
     this.getNotification<NotificationReview>('api/Notifications/Review', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
+
+    this.onNotificationLoad.subscribe(() => {
+      if (this.notification.employees.length == 0) this.notification.employees.push(new NotificationEmployee());
+    });
   }
 
 
@@ -54,7 +58,7 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
   saveEmployeeText() {
     this.employeeTextParameters = {
       notificationGroupId: this.notificationItem.notificationGroupId,
-      note: this.firstNote != null ? this.firstNote.trim() : this.notification.employees[this.notification.employees.length - 1].text.trim()
+      note: this.notification.employees[this.notification.employees.length - 1].text.trim()
     }
     super.saveEmployeeText();
   }
@@ -80,7 +84,7 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
   onEscape(): void {
     if (!this.contextMenu && this.profilePopupContainer.length == 0 && this.reviewProfilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt) {
-      if (!this.areNotesWritten(this.notification.employees) && !this.secondaryButtonDisabled) {
+      if (!this.isEmployeeNotesWritten(this.notification.employees, this.newNoteAdded) && !this.secondaryButtonDisabled) {
         this.close();
       } else {
         this.openUndoChangesPrompt();
@@ -96,5 +100,5 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
     this.secondaryButtonDisabledPath = 'api/Notifications/RemoveReview';
     this.secondaryButtonDisabledParameters = { reviewId: this.notification.reviewId }
     super.onClose(employees, restore);
-  }  
+  }
 }
