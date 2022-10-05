@@ -3,6 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { NotificationProfilePopupUser } from '../../../classes/notification-profile-popup-user';
 import { PromptComponent } from '../../prompt/prompt.component';
+import { UserImageNotificationFormComponent } from '../user-image-notification-form/user-image-notification-form.component';
 
 @Component({
   templateUrl: './notification-profile-popup.component.html',
@@ -14,11 +15,13 @@ export class NotificationProfilePopupComponent extends LazyLoad {
   private promptMessage!: SafeHtml;
   private promptButtonName!: string;
   private promptFunction!: Function;
+  private userImageNotificationForm!: UserImageNotificationFormComponent;
 
   public user!: NotificationProfilePopupUser;
   public isReview!: boolean;
   public AddNoncompliantStrikeButtonDisabled!: boolean;
-  public RemoveUserProfilePicButtonDisabled!: boolean;
+  public RemoveUserNameButtonDisabled!: boolean;
+  public RemoveUserProfileImageButtonDisabled!: boolean;
 
 
   constructor(lazyLoadingService: LazyLoadingService,
@@ -35,12 +38,12 @@ export class NotificationProfilePopupComponent extends LazyLoad {
 
 
   mousedown = () => {
-    if (!this.prompt) this.close();
+    if (!this.prompt && !this.userImageNotificationForm) this.close();
   }
 
 
   onEscape(): void {
-    if (!this.prompt) this.close();
+    if (!this.prompt && !this.userImageNotificationForm) this.close();
   }
 
 
@@ -77,26 +80,26 @@ export class NotificationProfilePopupComponent extends LazyLoad {
     this.promptTitle = (!this.user.blockNotificationSending ? 'Block' : 'Unblock') + ' Notification Sending';
     this.promptMessage = this.sanitizer.bypassSecurityTrustHtml(
       'The user' +
-      ' <span style="color: #ffba00">\"' + (this.user.userName ? this.user.userName : this.user.firstName + ' ' + this.user.lastName) + '\"</span>' +
+      ' <span style="color: #ffba00">\"' + (this.user.nonAccountUserName ? this.user.nonAccountUserName : this.user.firstName + ' ' + this.user.lastName) + '\"</span>' +
       ' will ' + (!this.user.blockNotificationSending ? 'be blocked' : 'no longer be blocked') + ' from sending notifications.');
     this.promptButtonName = !this.user.blockNotificationSending ? 'Block' : 'Unblock';
     this.promptFunction = () => {
 
       // If the user is a non-account user
-      if (this.user.userName) {
+      if (this.user.nonAccountUserName) {
 
         // And that user's email is NOT currently blocked
         if (!this.user.blockNotificationSending) {
           // Block user's email
-          this.dataService.post('api/Notifications/BlockEmail', {
+          this.dataService.post('api/Notifications/BlockNonAccountEmail', {
             email: this.user.email
           }).subscribe();
 
           // But if the user's email IS blocked
         } else {
-          
+
           // Unblock users email
-          this.dataService.delete('api/Notifications/UnblockEmail', {
+          this.dataService.delete('api/Notifications/UnblockNonAccountEmail', {
             blockedEmail: this.user.email
           }).subscribe();
         }
@@ -106,7 +109,7 @@ export class NotificationProfilePopupComponent extends LazyLoad {
       } else {
 
         // Block user from sending notifications
-        this.dataService.put('api/Notifications/NotificationSending', {
+        this.dataService.put('api/Notifications/BlockNotificationSending', {
           userId: this.user.userId
         }).subscribe();
       }
@@ -127,7 +130,6 @@ export class NotificationProfilePopupComponent extends LazyLoad {
     this.promptFunction = () => {
       this.user.noncompliantStrikes++;
       this.AddNoncompliantStrikeButtonDisabled = true;
-      this.RemoveUserProfilePicButtonDisabled = true;
 
       this.dataService.put('api/Notifications/AddNoncompliantStrike', {
         userId: this.user.userId
@@ -138,24 +140,78 @@ export class NotificationProfilePopupComponent extends LazyLoad {
 
 
 
-  onRemoveUserProfilePicButtonClick() {
-    this.promptTitle = 'Remove Profile Image';
-    this.promptMessage = this.sanitizer.bypassSecurityTrustHtml(
-      'The profile image of the user' +
-      ' <span style="color: #ffba00">\"' + this.user.firstName + ' ' + this.user.lastName + '\"</span>' +
-      ' will be removed. Also, a strike will be added against them for not complying with the terms of use.');
-    this.promptButtonName = 'Remove';
-    this.promptFunction = () => {
-      this.user.image = null!
-      this.user.noncompliantStrikes++;
-      this.AddNoncompliantStrikeButtonDisabled = true;
+  onRemoveUserNameButtonClick() {
+    // this.promptTitle = 'Remove User Name';
+    // this.promptMessage = this.sanitizer.bypassSecurityTrustHtml(
+    //   'The name' +
+    //   ' <span style="color: #ffba00">\"' + this.user.firstName + ' ' + this.user.lastName + '\"</span>' +
+    //   ' will be removed from this user. Also, a strike will be added against them for not complying with the terms of use.');
+    // this.promptButtonName = 'Remove';
+    // this.promptFunction = () => {
+    //   this.RemoveUserNameButtonDisabled = true;
 
-      this.dataService.put('api/Notifications/AddNoncompliantStrike', {
-        userId: this.user.userId,
-        removeProfilePic: true
-      }).subscribe();
-    }
-    this.openPrompt();
+    //   this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrike', {
+    //     userId: this.user.userId,
+    //     name: this.user.firstName + ' ' + this.user.lastName
+    //   }).subscribe((nameRemovalSuccessful: boolean) => {
+    //     if (nameRemovalSuccessful) {
+    //       this.user.firstName = 'NicheShack';
+    //       this.user.lastName = 'User';
+    //       this.user.noncompliantStrikes++;
+    //     }
+    //   });
+    // }
+    // this.openPrompt();
+
+
+
+
+
+    this.lazyLoadingService.load(async () => {
+      const { UserImageNotificationFormComponent } = await import('../user-image-notification-form/user-image-notification-form.component');
+      const { UserImageNotificationFormModule } = await import('../user-image-notification-form/user-image-notification-form.module');
+      return {
+        component: UserImageNotificationFormComponent,
+        module: UserImageNotificationFormModule
+      }
+    }, SpinnerAction.None)
+      .then((userImageNotificationForm: UserImageNotificationFormComponent) => {
+        this.userImageNotificationForm = userImageNotificationForm;
+        userImageNotificationForm.user = this.user;
+        userImageNotificationForm.isUserName = true;
+
+        
+        const userImageNotificationFormCloseListener = userImageNotificationForm.onClose.subscribe((RemoveUserProfileImageButtonDisabled: boolean) => {
+          userImageNotificationFormCloseListener.unsubscribe();
+          this.userImageNotificationForm = null!;
+          this.RemoveUserProfileImageButtonDisabled = RemoveUserProfileImageButtonDisabled;
+        })
+      })
+
+  }
+
+
+
+  onRemoveUserProfileImageButtonClick() {
+    this.lazyLoadingService.load(async () => {
+      const { UserImageNotificationFormComponent } = await import('../user-image-notification-form/user-image-notification-form.component');
+      const { UserImageNotificationFormModule } = await import('../user-image-notification-form/user-image-notification-form.module');
+      return {
+        component: UserImageNotificationFormComponent,
+        module: UserImageNotificationFormModule
+      }
+    }, SpinnerAction.None)
+      .then((userImageNotificationForm: UserImageNotificationFormComponent) => {
+        this.userImageNotificationForm = userImageNotificationForm;
+        userImageNotificationForm.user = this.user;
+        userImageNotificationForm.isUserName = false;
+        
+        const userImageNotificationFormCloseListener = userImageNotificationForm.onClose.subscribe((RemoveUserProfileImageButtonDisabled: boolean) => {
+          userImageNotificationFormCloseListener.unsubscribe();
+          this.userImageNotificationForm = null!;
+          this.RemoveUserProfileImageButtonDisabled = RemoveUserProfileImageButtonDisabled;
+        })
+      })
   }
 
 

@@ -1,27 +1,24 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
+import { SafeHtml } from '@angular/platform-browser';
+import { SpinnerAction } from 'common';
 import { MenuOption } from '../../../classes/menu-option';
 import { NotificationItem } from '../../../classes/notification-item';
 import { NotificationEmployee } from '../../../classes/notification-employee';
-import { NotificationProfilePopupUser } from '../../../classes/notification-profile-popup-user';
-import { NotificationService } from '../../../services/notification/notification.service';
 import { ContextMenuComponent } from '../../context-menu/context-menu.component';
 import { PromptComponent } from '../../prompt/prompt.component';
-import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
 import { Subject } from 'rxjs';
+import { NotificationFormComponent } from '../notification-form/notification-form.component';
 
 @Component({
-  selector: 'app-notification-popup',
   templateUrl: './notification-popup.component.html',
   styleUrls: ['./notification-popup.component.scss']
 })
-export class NotificationPopupComponent extends LazyLoad {
+export class NotificationPopupComponent extends NotificationFormComponent {
   public isNew!: boolean;
   public notificationItem!: NotificationItem;
   public contextMenu!: ContextMenuComponent;
-  public profilePopup!: NotificationProfilePopupComponent;
+  
   public newNoteAdded!: boolean;
   public employeeIndex!: number;
   public firstNote!: string;
@@ -30,7 +27,7 @@ export class NotificationPopupComponent extends LazyLoad {
   public employeeTextPath = 'api/Notifications/PostNote';
   public employeeTextParameters = {};
   public deletePromptTitle: string = 'Delete Notification';
-  public undoChangesPrompt!: PromptComponent;
+  
   public deletePromptMessage!: SafeHtml;
   public secondaryButtonPromptTitle!: string;
   public secondaryButtonPromptMessage!: SafeHtml;
@@ -38,26 +35,14 @@ export class NotificationPopupComponent extends LazyLoad {
   public secondaryButtonPrompt!: PromptComponent;
   public deletePrompt!: PromptComponent;
   public notification!: any;
-  public reviewProfilePopup!: NotificationProfilePopupComponent;
+  
   public secondaryButtonDisabledPath!: string;
   public secondaryButtonDisabledParameters!: {};
   public onNotificationLoad: Subject<void> = new Subject<void>();
 
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
-  @ViewChild('profilePopupContainerTemplate', { read: ViewContainerRef }) profilePopupContainer!: ViewContainerRef;
   @ViewChild('reviewProfilePopupContainerTemplate', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
-
-
-  // ====================================================================( CONSTRUCTOR )==================================================================== \\
-
-  constructor(lazyLoadingService: LazyLoadingService,
-    public dataService: DataService,
-    public notificationService: NotificationService,
-    public sanitizer: DomSanitizer) {
-    super(lazyLoadingService)
-  }
-
 
 
   // ====================================================================( NG ON INIT )===================================================================== \\
@@ -140,28 +125,7 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-  // ================================================================( OPEN PROFILE POPUP )================================================================= \\
-
-  openProfilePopup(user: NotificationProfilePopupUser, container: ViewContainerRef, isReview?: boolean) {
-    if (container.length > 0) {
-      !isReview ? this.profilePopup.close() : this.reviewProfilePopup.close();
-      return;
-    }
-
-    this.lazyLoadingService.load(async () => {
-      const { NotificationProfilePopupComponent } = await import('../notification-profile-popup/notification-profile-popup.component');
-      const { NotificationProfilePopupModule } = await import('../notification-profile-popup/notification-profile-popup.module');
-      return {
-        component: NotificationProfilePopupComponent,
-        module: NotificationProfilePopupModule
-      }
-    }, SpinnerAction.None, container)
-      .then((profilePopup: NotificationProfilePopupComponent) => {
-        !isReview ? this.profilePopup = profilePopup : this.reviewProfilePopup = profilePopup;
-        profilePopup.user = user;
-        profilePopup.isReview = isReview!;
-      });
-  }
+  
 
 
 
@@ -201,7 +165,7 @@ export class NotificationPopupComponent extends LazyLoad {
 
 
 
-  // ============================================================( OPEN DISABLE BUTTON PROMPT )============================================================= \\
+  // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
 
   openSecondaryButtonPrompt() {
     this.lazyLoadingService.load(async () => {
@@ -241,34 +205,7 @@ export class NotificationPopupComponent extends LazyLoad {
   }
 
 
-  // =============================================================( OPEN UNDO CHANGES PROMPT )============================================================== \\
   
-  openUndoChangesPrompt() {
-    this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../prompt/prompt.component');
-      const { PromptModule } = await import('../../prompt/prompt.module');
-
-      return {
-        component: PromptComponent,
-        module: PromptModule
-      }
-    }, SpinnerAction.None).then((prompt: PromptComponent) => {
-      this.undoChangesPrompt = prompt;
-      prompt.parentObj = this;
-      prompt.title = 'Warning';
-      prompt.message = 'The changes you have made will NOT be saved. Do you still want to continue closing?';
-      prompt.primaryButton = {
-        name: 'Continue',
-        buttonFunction: this.close
-      }
-      prompt.secondaryButton.name = 'Cancel'
-
-      const promptCloseListener = prompt.onClose.subscribe(() => {
-        promptCloseListener.unsubscribe();
-        this.undoChangesPrompt = null!;
-      })
-    })
-  }
 
 
 

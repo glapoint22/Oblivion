@@ -1,0 +1,62 @@
+<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+
+    <div class="popup-base">
+
+        <!-- Notification Type -->
+        <div class="notification-type-container">
+            User {{isUserName ? 'Name' : 'Image'}}
+        </div>
+
+        <!-- User -->
+        <div class="label">User {{isUserName ? 'Name' : 'Image'}}:</div>
+        <div class="image-info-box">
+            <div class="info-bar">
+                <div class="profile-container">
+                    <!-- Date -->
+                    <div class="date">
+                        {{user.date | date: 'MMM d, y, h:mm a'}}
+                    </div>
+
+                    <!-- Image -->
+                    <div class="profile-image-container">
+
+                        <div class="profile-popup-container">
+                            <ng-template #profilePopupContainerTemplate></ng-template>
+                        </div>
+                        
+                        <img style="cursor: pointer;"
+                            (mousedown)="$event.stopPropagation()"
+                            (click)="openProfilePopup(user, profilePopupContainer)"
+                            [src]="'images/' + user.image"
+                            [title]="user.firstName + ' ' + user.lastName">
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="isUserName" style="display: flex; justify-content: center; align-items: center; padding-top: 3px; font-size: 20px; color: white; height: 78px;">
+                {{user.firstName + ' ' + user.lastName}}
+            </div>
+        
+            <div *ngIf="!isUserName" style="display: flex; justify-content: center; align-items: center; padding-top: 3px;">
+                <img [src]="'images/' + user.image">
+            </div>
+
+            
+        </div>
+
+
+        <!-- Employee -->
+        <div class="label">Notes:</div>
+        <div class="info-box">
+            <!-- Notes -->
+            <textarea #notes style="height: 128px;"></textarea>
+        </div>
+       
+       
+        <!-- Buttons -->
+        <div class="button-container">
+            <button class="dark-button" (click)="close()">Close</button>
+            <button class="gold-button" (click)="removeImage()">Remove {{isUserName ? 'Name' : 'Image'}}</button>
+        </div>
+    </div>
+</div>

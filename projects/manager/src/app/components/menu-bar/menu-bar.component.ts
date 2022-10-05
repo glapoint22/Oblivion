@@ -74,9 +74,9 @@ export class MenuBarComponent {
           }
         ]
       },
-  
-  
-  
+
+
+
       // Forms
       {
         name: 'Forms',
@@ -107,8 +107,8 @@ export class MenuBarComponent {
           }
         ]
       },
-  
-  
+
+
       // Edit
       {
         name: 'Edit',
@@ -143,8 +143,8 @@ export class MenuBarComponent {
           }
         ]
       },
-  
-  
+
+
       // Account
       {
         name: 'Account',
@@ -339,29 +339,30 @@ export class MenuBarComponent {
 
 
   openNotificationListPopup() {
+    // If the notification list popup is already open,
+    // then close the notification list popup
     if (this.notificationListPopupContainer.length > 0) {
       this.notificationListPopup.close();
       return;
     }
 
-    if(this.notificationService.notificationPopupContainer.length > 0) {
+    // If a notification popup happens to be open when the notification bell is clicked,
+    // then close that notification popup, don't open the notification list popup
+    if (this.notificationService.notificationPopupContainer.length > 0) {
       this.notificationService.notificationPopup.onEscape();
       return;
     }
 
-    // If a message, review, or product notification popup is open then the notification list popup can NOT be opened
-    if (this.notificationPopupContainer.length == 0) {
-      this.lazyLoadingService.load(async () => {
-        const { NotificationListPopupComponent: NotificationListPopupComponent } = await import('../notifications/notification-list-popup/notification-list-popup.component');
-        const { NotificationListPopupModule: NotificationListPopupModule } = await import('../notifications/notification-list-popup/notification-list-popup.module');
-        return {
-          component: NotificationListPopupComponent,
-          module: NotificationListPopupModule
-        }
-      }, SpinnerAction.None, this.notificationListPopupContainer)
-        .then((notificationListPopup: NotificationListPopupComponent) => {
-          this.notificationListPopup = notificationListPopup;
-        });
-    }
+    this.lazyLoadingService.load(async () => {
+      const { NotificationListPopupComponent: NotificationListPopupComponent } = await import('../notifications/notification-list-popup/notification-list-popup.component');
+      const { NotificationListPopupModule: NotificationListPopupModule } = await import('../notifications/notification-list-popup/notification-list-popup.module');
+      return {
+        component: NotificationListPopupComponent,
+        module: NotificationListPopupModule
+      }
+    }, SpinnerAction.None, this.notificationListPopupContainer)
+      .then((notificationListPopup: NotificationListPopupComponent) => {
+        this.notificationListPopup = notificationListPopup;
+      });
   }
 }

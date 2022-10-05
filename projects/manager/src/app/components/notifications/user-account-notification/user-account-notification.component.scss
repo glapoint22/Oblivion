@@ -1,0 +1,52 @@
+.notification-type-container {
+    padding-left: 3px;
+    justify-content: flex-end;
+    margin-bottom: 13px;
+}
+
+
+.notification-type-name {
+    position: absolute;
+    left: 163px;
+}
+
+
+
+
+.info-box {
+    margin: 3px 0 13px;
+}
+
+
+.profile-image-container {
+    img {
+        border-radius: 50%;
+    }
+}
+
+
+.profile-popup-container {
+    top: -110px;
+}
+
+
+.image-info-box {
+    @extend .info-box;
+    height: 114px;
+    background: none;
+    border: 1px solid #454545;
+}
+
+
+.info-bar {
+    display: flex;
+    height: 34px;
+    background: #2e2e2e;
+    border: 2px solid #282828;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gold-button {
+    width: 75px;
+}

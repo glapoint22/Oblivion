@@ -6,12 +6,12 @@
 
             <!-- Profile Image -->
             <div class="profile-image-container" 
-                 [ngStyle]="{'background': user.userName ? 'none' : '#555555',
-                             'outline': user.userName ? 'none' : '1px solid #868686',
-                             'margin-top': user.userName ? '-1px' : '2px'}">
+                 [ngStyle]="{'background': user.nonAccountUserName ? 'none' : '#555555',
+                             'outline': user.nonAccountUserName ? 'none' : '1px solid #868686',
+                             'margin-top': user.nonAccountUserName ? '-1px' : '2px'}">
            
-                <img [src]="user.userName ? 'assets/message-notification.png' : user.image ? 'images/' + user.image : 'assets/no-account-pic.png'"
-                     [ngStyle]="{'border-radius': user.userName ? 'none' : '50%'}">
+                <img [src]="user.nonAccountUserName ? 'assets/message-notification.png' : user.image ? 'images/' + user.image : 'assets/no-account-pic.png'"
+                     [ngStyle]="{'border-radius': user.nonAccountUserName ? 'none' : '50%'}">
             </div>
 
 
@@ -19,19 +19,19 @@
             <div class="profile-info-container">
                 <!-- Profile Name -->
                 <div class="profile-name">
-                    <span class="first-name">{{user.userName ? user.userName : user.firstName}}</span>
+                    <span class="first-name">{{user.nonAccountUserName ? user.nonAccountUserName : user.firstName}}</span>
                     <span>{{user.lastName}}</span>
                 </div>
 
                 <!-- User Info -->
                 <ng-container *ngIf="!isReview">
-                    <ng-container *ngIf="user.userName">
+                    <ng-container *ngIf="user.nonAccountUserName">
                         <div class="user-email" [title]="user.email">
                             {{user.email}}
                         </div>
                     </ng-container>
                     
-                    <ng-container *ngIf="!user.userName">
+                    <ng-container *ngIf="!user.nonAccountUserName">
                         <span class="user-compliant-type">Noncompliant Strikes:</span>
                         <span>{{user.noncompliantStrikes}}</span>
                     </ng-container>
@@ -66,7 +66,11 @@
                 Add Noncompliant Strike
             </button>
 
-            <button class="button" (click)="onRemoveUserProfilePicButtonClick()" [disabled]="user.image == null || RemoveUserProfilePicButtonDisabled">
+            <button class="button" (click)="onRemoveUserNameButtonClick()" [disabled]="(user.firstName == 'NicheShack' && user.lastName == 'User') || RemoveUserNameButtonDisabled">
+                Remove User's Name
+            </button>
+
+            <button class="button" (click)="onRemoveUserProfileImageButtonClick()" [disabled]="user.image == null || RemoveUserProfileImageButtonDisabled">
                 Remove User's Profile Image
             </button>
         </ng-container>

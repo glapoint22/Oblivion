@@ -131,15 +131,15 @@ export class NotificationService {
 
   createNewNotificationItem(isNew: boolean, messageCount: number, notificationItem: NotificationItem): NotificationItem {
     const newNotificationItem = new NotificationItem();
-    newNotificationItem.isNew = isNew;
     newNotificationItem.id = notificationItem.id;
-    newNotificationItem.notificationType = notificationItem.notificationType;
     newNotificationItem.notificationGroupId = notificationItem.notificationGroupId;
-    newNotificationItem.image = notificationItem.image;
-    newNotificationItem.creationDate = notificationItem.creationDate;
-    newNotificationItem.name = notificationItem.name;
+    newNotificationItem.notificationType = notificationItem.notificationType;
     newNotificationItem.productName = notificationItem.productName;
+    newNotificationItem.image = notificationItem.image;
+    newNotificationItem.isNew = isNew;
+    newNotificationItem.creationDate = notificationItem.creationDate;
     newNotificationItem.count = messageCount;
+    newNotificationItem.name = notificationItem.name;
     return newNotificationItem;
   }
 

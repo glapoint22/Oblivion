@@ -6,6 +6,7 @@ export class NotificationItem extends ImageItem {
   email!: string;
   productId!: number;
   productName!: string;
+  userName!: string;
   userImage!: string;
   isNew!: boolean;
   creationDate!: string;

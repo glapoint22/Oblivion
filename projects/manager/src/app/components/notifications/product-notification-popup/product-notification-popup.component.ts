@@ -147,7 +147,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-  // ============================================================( OPEN DISABLE BUTTON PROMPT )============================================================= \\
+  // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
 
   openSecondaryButtonPrompt() {
     this.secondaryButtonPromptPrimaryButtonName = this.notification.productDisabled ? 'Enable' : 'Disable';

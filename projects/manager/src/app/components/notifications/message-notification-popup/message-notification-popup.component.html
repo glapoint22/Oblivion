@@ -42,17 +42,17 @@
                             </div>
             
                             <!-- Image -->
-                            <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[userIndex].userName}">
+                            <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[userIndex].nonAccountUserName}">
                                 
-                                <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[userIndex].userName ? '-106px' : '-110px'}">
+                                <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[userIndex].nonAccountUserName ? '-106px' : '-110px'}">
                                     <ng-template #profilePopupContainerTemplate></ng-template>
                                 </div>
 
                                 <img style="cursor: pointer;"
-                                    [ngStyle]="{'border-radius': notification && notification[userIndex].userName ? 'none' : '50%'}"
+                                    [ngStyle]="{'border-radius': notification && notification[userIndex].nonAccountUserName ? 'none' : '50%'}"
                                     (mousedown)="$event.stopPropagation()"
                                     (click)="openProfilePopup(notification[userIndex], profilePopupContainer)"
-                                    [src]="notification[userIndex].userName ? 'assets/message-notification.png' : notification[userIndex].image ? 'images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
+                                    [src]="notification[userIndex].nonAccountUserName ? 'assets/message-notification.png' : notification[userIndex].image ? 'images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
                                     [title]="notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
                             </div>
                         </div>

@@ -5,7 +5,7 @@ import { NotificationEmployee } from "./notification-employee";
 export class NotificationReview {
     reviewId!: number;
     reviewDeleted!: boolean;
-    users: Array<NotificationUser> = new Array<NotificationUser>();
-    reviewWriter: NotificationReviewWriter = new NotificationReviewWriter();
-    employees: Array<NotificationEmployee> = new Array<NotificationEmployee>();
+    users!: Array<NotificationUser>;
+    reviewWriter!: NotificationReviewWriter;
+    employees!: Array<NotificationEmployee>;
 }

@@ -11,6 +11,7 @@ import { MessageNotificationPopupComponent } from '../message-notification-popup
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
 import { UserImageNotificationPopupComponent } from '../user-image-notification-popup/user-image-notification-popup.component';
 import { ReviewNotificationPopupComponent } from '../review-notification-popup/review-notification-popup.component';
+import { UserNameNotificationPopupComponent } from '../user-name-notification-popup/user-name-notification-popup.component';
 
 @Component({
   templateUrl: './notification-list-popup.component.html',
@@ -134,10 +135,26 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   openNotificationPopup(notificationItem: NotificationItem) {
+    if (notificationItem.notificationType == NotificationType.UserName) {
+      this.lazyLoadingService.load(async () => {
+        const { UserNameNotificationPopupComponent } = await import('../user-name-notification-popup/user-name-notification-popup.component');
+        const { UserNameNotificationPopupModule } = await import('../user-name-notification-popup/user-name-notification-popup.module');
+        return {
+          component: UserNameNotificationPopupComponent,
+          module: UserNameNotificationPopupModule
+        }
+      }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
+        .then((userNameNotificationPopup: UserNameNotificationPopupComponent) => {
+          userNameNotificationPopup.notificationItem = notificationItem;
+          this.notificationService.notificationPopup = userNameNotificationPopup;
+        })
+    }
+
+
     if (notificationItem.notificationType == NotificationType.UserImage) {
       this.lazyLoadingService.load(async () => {
-        const { UserImageNotificationPopupComponent: UserImageNotificationPopupComponent } = await import('../user-image-notification-popup/user-image-notification-popup.component');
-        const { UserImageNotificationPopupModule: UserImageNotificationPopupModule } = await import('../user-image-notification-popup/user-image-notification-popup.module');
+        const { UserImageNotificationPopupComponent } = await import('../user-image-notification-popup/user-image-notification-popup.component');
+        const { UserImageNotificationPopupModule } = await import('../user-image-notification-popup/user-image-notification-popup.module');
         return {
           component: UserImageNotificationPopupComponent,
           module: UserImageNotificationPopupModule
@@ -167,8 +184,8 @@ export class NotificationListPopupComponent extends LazyLoad {
 
     if (notificationItem.notificationType == NotificationType.ReviewComplaint) {
       this.lazyLoadingService.load(async () => {
-        const { ReviewNotificationPopupComponent: ReviewNotificationPopupComponent } = await import('../review-notification-popup/review-notification-popup.component');
-        const { ReviewNotificationPopupModule: ReviewNotificationPopupModule } = await import('../review-notification-popup/review-notification-popup.module');
+        const { ReviewNotificationPopupComponent } = await import('../review-notification-popup/review-notification-popup.component');
+        const { ReviewNotificationPopupModule } = await import('../review-notification-popup/review-notification-popup.module');
         return {
           component: ReviewNotificationPopupComponent,
           module: ReviewNotificationPopupModule
