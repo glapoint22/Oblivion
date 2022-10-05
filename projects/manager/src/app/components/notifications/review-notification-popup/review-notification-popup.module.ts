@@ -14,7 +14,6 @@ import { FormsModule } from '@angular/forms';
     CounterModule,
     IconButtonModule,
     FormsModule
-  ],
-  exports: [ReviewNotificationPopupComponent]
+  ]
 })
 export class ReviewNotificationPopupModule { }

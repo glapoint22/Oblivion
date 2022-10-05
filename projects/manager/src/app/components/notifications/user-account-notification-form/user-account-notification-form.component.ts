@@ -6,10 +6,10 @@ import { NotificationProfilePopupUser } from '../../../classes/notification-prof
 import { NotificationFormComponent } from '../notification-form/notification-form.component';
 
 @Component({
-  templateUrl: './user-image-notification-form.component.html',
-  styleUrls: ['./user-image-notification-form.component.scss']
+  templateUrl: './user-account-notification-form.component.html',
+  styleUrls: ['./user-account-notification-form.component.scss']
 })
-export class UserImageNotificationFormComponent extends NotificationFormComponent {
+export class UserAccountNotificationFormComponent extends NotificationFormComponent {
   private removedButtonClicked!: boolean;
 
   public user!: NotificationProfilePopupUser;
@@ -29,27 +29,41 @@ export class UserImageNotificationFormComponent extends NotificationFormComponen
 
 
 
-  // ===================================================================( REMOVE IMAGE )==================================================================== \\
+  // ======================================================================( REMOVE )======================================================================= \\
   
-  removeImage() {
+  remove() {
     this.removedButtonClicked = true;
     this.close();
 
     this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrike', {
       userId: this.user.userId,
-      image: this.user.image
-    }).subscribe((imageRemovalSuccessful: boolean) => {
-      if (imageRemovalSuccessful) {
-        // 
+      userName: this.isUserName ? this.user.firstName + ' ' + this.user.lastName : null,
+      userImage: !this.isUserName ? this.user.image : null
+
+    }).subscribe((removalSuccessful: boolean) => {
+
+      // If the removal of the name or the image was successful
+      if (removalSuccessful) {
+
+        // Create the notification
         this.dataService.post<NotificationItem>('api/Notifications/CreateNotification', {
           userId: this.user.userId,
-          notificationType: NotificationType.UserImage,
-          userImage: this.user.image,
+          notificationType: this.isUserName ? NotificationType.UserName : NotificationType.UserImage,
+          userName: this.isUserName ? this.user.firstName + ' ' + this.user.lastName : null,
+          userImage: !this.isUserName ? this.user.image : null,
           employeeNotes: this.isEmployeeNotesWritten() ? this.notes.nativeElement.value : null
         }).subscribe((notificationItem: NotificationItem) => {
           this.notificationService.addToList(this.notificationService.archiveNotifications, 1, notificationItem);
         })
-        this.user.image = null!
+
+        this.user.noncompliantStrikes++;
+
+        if(this.isUserName) {
+          this.user.firstName = 'NicheShack';
+          this.user.lastName = 'User';
+        }else {
+          this.user.image = null!
+        }
       }
     });
   }

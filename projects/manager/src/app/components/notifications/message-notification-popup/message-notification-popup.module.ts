@@ -14,7 +14,6 @@ import { IconButtonModule } from '../../icon-button/icon-button.module';
     CounterModule,
     FormsModule,
     IconButtonModule
-  ],
-  exports: [MessageNotificationPopupComponent]
+  ]
 })
 export class MessageNotificationPopupModule { }

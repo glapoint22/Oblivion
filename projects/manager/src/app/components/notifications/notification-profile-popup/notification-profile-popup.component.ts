@@ -3,7 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { NotificationProfilePopupUser } from '../../../classes/notification-profile-popup-user';
 import { PromptComponent } from '../../prompt/prompt.component';
-import { UserImageNotificationFormComponent } from '../user-image-notification-form/user-image-notification-form.component';
+import { UserAccountNotificationFormComponent } from '../user-account-notification-form/user-account-notification-form.component';
 
 @Component({
   templateUrl: './notification-profile-popup.component.html',
@@ -15,7 +15,7 @@ export class NotificationProfilePopupComponent extends LazyLoad {
   private promptMessage!: SafeHtml;
   private promptButtonName!: string;
   private promptFunction!: Function;
-  private userImageNotificationForm!: UserImageNotificationFormComponent;
+  private userAccountNotificationForm!: UserAccountNotificationFormComponent;
 
   public user!: NotificationProfilePopupUser;
   public isReview!: boolean;
@@ -38,12 +38,12 @@ export class NotificationProfilePopupComponent extends LazyLoad {
 
 
   mousedown = () => {
-    if (!this.prompt && !this.userImageNotificationForm) this.close();
+    if (!this.prompt && !this.userAccountNotificationForm) this.close();
   }
 
 
   onEscape(): void {
-    if (!this.prompt && !this.userImageNotificationForm) this.close();
+    if (!this.prompt && !this.userAccountNotificationForm) this.close();
   }
 
 
@@ -140,76 +140,27 @@ export class NotificationProfilePopupComponent extends LazyLoad {
 
 
 
-  onRemoveUserNameButtonClick() {
-    // this.promptTitle = 'Remove User Name';
-    // this.promptMessage = this.sanitizer.bypassSecurityTrustHtml(
-    //   'The name' +
-    //   ' <span style="color: #ffba00">\"' + this.user.firstName + ' ' + this.user.lastName + '\"</span>' +
-    //   ' will be removed from this user. Also, a strike will be added against them for not complying with the terms of use.');
-    // this.promptButtonName = 'Remove';
-    // this.promptFunction = () => {
-    //   this.RemoveUserNameButtonDisabled = true;
 
-    //   this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrike', {
-    //     userId: this.user.userId,
-    //     name: this.user.firstName + ' ' + this.user.lastName
-    //   }).subscribe((nameRemovalSuccessful: boolean) => {
-    //     if (nameRemovalSuccessful) {
-    //       this.user.firstName = 'NicheShack';
-    //       this.user.lastName = 'User';
-    //       this.user.noncompliantStrikes++;
-    //     }
-    //   });
-    // }
-    // this.openPrompt();
-
-
-
-
-
+  remove(isUserName: boolean) {
     this.lazyLoadingService.load(async () => {
-      const { UserImageNotificationFormComponent } = await import('../user-image-notification-form/user-image-notification-form.component');
-      const { UserImageNotificationFormModule } = await import('../user-image-notification-form/user-image-notification-form.module');
+      const { UserAccountNotificationFormComponent } = await import('../user-account-notification-form/user-account-notification-form.component');
+      const { UserAccountNotificationFormModule } = await import('../user-account-notification-form/user-account-notification-form.module');
       return {
-        component: UserImageNotificationFormComponent,
-        module: UserImageNotificationFormModule
+        component: UserAccountNotificationFormComponent,
+        module: UserAccountNotificationFormModule
       }
     }, SpinnerAction.None)
-      .then((userImageNotificationForm: UserImageNotificationFormComponent) => {
-        this.userImageNotificationForm = userImageNotificationForm;
-        userImageNotificationForm.user = this.user;
-        userImageNotificationForm.isUserName = true;
-
-        
-        const userImageNotificationFormCloseListener = userImageNotificationForm.onClose.subscribe((RemoveUserProfileImageButtonDisabled: boolean) => {
-          userImageNotificationFormCloseListener.unsubscribe();
-          this.userImageNotificationForm = null!;
-          this.RemoveUserProfileImageButtonDisabled = RemoveUserProfileImageButtonDisabled;
-        })
-      })
-
-  }
+      .then((userAccountNotificationForm: UserAccountNotificationFormComponent) => {
+        this.userAccountNotificationForm = userAccountNotificationForm;
+        userAccountNotificationForm.user = this.user;
+        userAccountNotificationForm.isUserName = isUserName;
 
 
-
-  onRemoveUserProfileImageButtonClick() {
-    this.lazyLoadingService.load(async () => {
-      const { UserImageNotificationFormComponent } = await import('../user-image-notification-form/user-image-notification-form.component');
-      const { UserImageNotificationFormModule } = await import('../user-image-notification-form/user-image-notification-form.module');
-      return {
-        component: UserImageNotificationFormComponent,
-        module: UserImageNotificationFormModule
-      }
-    }, SpinnerAction.None)
-      .then((userImageNotificationForm: UserImageNotificationFormComponent) => {
-        this.userImageNotificationForm = userImageNotificationForm;
-        userImageNotificationForm.user = this.user;
-        userImageNotificationForm.isUserName = false;
-        
-        const userImageNotificationFormCloseListener = userImageNotificationForm.onClose.subscribe((RemoveUserProfileImageButtonDisabled: boolean) => {
-          userImageNotificationFormCloseListener.unsubscribe();
-          this.userImageNotificationForm = null!;
-          this.RemoveUserProfileImageButtonDisabled = RemoveUserProfileImageButtonDisabled;
+        const userAccountNotificationFormCloseListener = userAccountNotificationForm.onClose.subscribe((isDisabled: boolean) => {
+          userAccountNotificationFormCloseListener.unsubscribe();
+          this.userAccountNotificationForm = null!;
+          if (isUserName) this.RemoveUserNameButtonDisabled = isDisabled;
+          if (!isUserName) this.RemoveUserProfileImageButtonDisabled = isDisabled;
         })
       })
   }

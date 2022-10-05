@@ -66,11 +66,11 @@
                 Add Noncompliant Strike
             </button>
 
-            <button class="button" (click)="onRemoveUserNameButtonClick()" [disabled]="(user.firstName == 'NicheShack' && user.lastName == 'User') || RemoveUserNameButtonDisabled">
+            <button class="button" (click)="remove(true)" [disabled]="(user.firstName == 'NicheShack' && user.lastName == 'User') || RemoveUserNameButtonDisabled">
                 Remove User's Name
             </button>
 
-            <button class="button" (click)="onRemoveUserProfileImageButtonClick()" [disabled]="user.image == null || RemoveUserProfileImageButtonDisabled">
+            <button class="button" (click)="remove(false)" [disabled]="user.image == null || RemoveUserProfileImageButtonDisabled">
                 Remove User's Profile Image
             </button>
         </ng-container>

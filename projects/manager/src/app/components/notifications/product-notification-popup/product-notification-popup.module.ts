@@ -16,7 +16,6 @@ import { FormsModule } from '@angular/forms';
     IconButtonModule,
     DropdownModule,
     FormsModule
-  ],
-  exports: [ProductNotificationPopupComponent]
+  ]
 })
 export class ProductNotificationPopupModule { }

@@ -11,7 +11,6 @@ import { NotificationListModule } from '../../lists/notification-list/notificati
 
     IconButtonModule,
     NotificationListModule
-  ],
-  exports: [NotificationListPopupComponent]
+  ]
 })
 export class NotificationListPopupModule { }

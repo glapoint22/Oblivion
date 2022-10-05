@@ -6,12 +6,13 @@ import { NotificationUserAccount } from '../../../classes/notification-user-acco
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
-  templateUrl: './user-account-notification.component.html',
-  styleUrls: ['./user-account-notification.component.scss']
+  templateUrl: './user-account-notification-popup.component.html',
+  styleUrls: ['../notification-popup/notification-popup.component.scss', './user-account-notification-popup.component.scss']
 })
-export class UserAccountNotificationComponent extends NotificationPopupComponent {
+export class UserAccountNotificationPopupComponent extends NotificationPopupComponent {
   public newNotesAdded: Array<boolean> = new Array<boolean>();
-  
+  public isUserName!: boolean;
+
 
   // ====================================================================( NG ON INIT )===================================================================== \\
 
@@ -21,6 +22,7 @@ export class UserAccountNotificationComponent extends NotificationPopupComponent
     this.onNotificationLoad.subscribe(() => {
       if (this.notification[this.userIndex].employeeNotes.length == 0) this.notification[this.userIndex].employeeNotes.push(new NotificationEmployee());
     });
+    this.getNotification<Array<NotificationUserAccount>>('api/Notifications/' + (this.isUserName ? 'UserName' : 'UserImage'), [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
   }
 
 
@@ -81,7 +83,7 @@ export class UserAccountNotificationComponent extends NotificationPopupComponent
 
 
   // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
-  
+
   saveEmployeeText() {
     this.employeeTextParameters = {
       notificationGroupId: this.notificationItem.notificationGroupId,
@@ -114,6 +116,21 @@ export class UserAccountNotificationComponent extends NotificationPopupComponent
 
 
 
+
+  // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
+
+  openSecondaryButtonPrompt() {
+    this.secondaryButtonPromptPrimaryButtonName = 'Remove';
+    this.secondaryButtonPromptTitle = 'Remove ' + this.isUserName ? 'User Name' : 'Profile Image';
+    this.secondaryButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
+      (this.isUserName ? 'The name,' : 'The profile image for the user,') +
+      ' <span style="color: #ffba00">\"' + this.notification[0].firstName + ' ' + this.notification[0].lastName + '\"</span>' +
+      (this.isUserName ? ' will be removed from this user. ' : ' will be removed. ') + 'Also, a strike will be added against them for not complying with the terms of use.');
+    super.openSecondaryButtonPrompt();
+  }
+
+
+
   // =========================================================( SECONDARY BUTTON PROMPT FUNCTION )========================================================== \\
 
   secondaryButtonPromptFunction() {
@@ -133,6 +150,17 @@ export class UserAccountNotificationComponent extends NotificationPopupComponent
 
     // Update the lists
     this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
+
+    // Add a non-compliant strike
+    this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrike', {
+      userId: this.notification[this.userIndex].userId,
+      userName: this.isUserName ? this.notification[this.userIndex].userName : null,
+      userImage: !this.isUserName ? this.notification[this.userIndex].userImage: null
+    }).subscribe((removalSuccessful: boolean)=> {
+      if(removalSuccessful) {
+        this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+      }
+    });
   }
 
 

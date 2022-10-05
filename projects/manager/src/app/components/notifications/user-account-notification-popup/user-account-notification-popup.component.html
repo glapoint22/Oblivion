@@ -10,7 +10,7 @@
          <!-- Notification Type -->
         <div class="notification-type-container">
 
-            <div class="notification-type-name">User Name</div>
+            <div class="notification-type-name">User {{isUserName ? 'Name' : 'Image'}}</div>
             
 
             <div #ellipsis>
@@ -22,7 +22,7 @@
 
         
         <!-- User -->
-        <div class="label">User Name:</div>
+        <div class="label">User {{isUserName ? 'Name' : 'Image'}}:</div>
         <div class="image-info-box">
             <ng-container *ngIf="notification">
                 <div class="info-bar">
@@ -55,13 +55,16 @@
                                  (click)="openProfilePopup(notification[userIndex], profilePopupContainer)"
                                  [src]="notification[userIndex].image ? 'images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
                                  [title]="notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
-                                
                         </div>
                     </div>
                 </div>
-            
-                <div style="display: flex; justify-content: center; align-items: center; padding-top: 3px; font-size: 20px; color: white; height: 78px;">
+
+                <div *ngIf="isUserName" style="display: flex; justify-content: center; align-items: center; padding-top: 3px; font-size: 20px; color: white; height: 78px;">
                     {{notification[userIndex].userName}}
+                </div>
+            
+                <div *ngIf="!isUserName" style="display: flex; justify-content: center; align-items: center; padding-top: 3px;">
+                    <img [src]="'images/' + notification[userIndex].userImage">
                 </div>
             </ng-container>
         </div>
@@ -120,7 +123,7 @@
         <!-- Buttons -->
         <div class="button-container">
             <div>
-                <button *ngIf="notificationItem.isNew"  class="notification-button" (click)="openSecondaryButtonPrompt()" [disabled]="secondaryButtonDisabled">Remove Name</button>
+                <button *ngIf="notificationItem.isNew"  class="notification-button" (click)="openSecondaryButtonPrompt()" [disabled]="secondaryButtonDisabled">Remove {{isUserName ? 'Name' : 'Image'}}</button>
             </div>
             
             <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onPrimaryButtonClick()">{{notificationItem.isNew ? 'Ok' : 'Close'}}</button>

@@ -9,9 +9,8 @@ import { ProductService } from '../../../services/product/product.service';
 import { NotificationListComponent } from '../../lists/notification-list/notification-list.component';
 import { MessageNotificationPopupComponent } from '../message-notification-popup/message-notification-popup.component';
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
-import { UserImageNotificationPopupComponent } from '../user-image-notification-popup/user-image-notification-popup.component';
 import { ReviewNotificationPopupComponent } from '../review-notification-popup/review-notification-popup.component';
-import { UserNameNotificationPopupComponent } from '../user-name-notification-popup/user-name-notification-popup.component';
+import { UserAccountNotificationPopupComponent } from '../user-account-notification-popup/user-account-notification-popup.component';
 
 @Component({
   templateUrl: './notification-list-popup.component.html',
@@ -86,7 +85,6 @@ export class NotificationListPopupComponent extends LazyLoad {
   onListUpdate(listUpdate: ListUpdate) {
     if (listUpdate.type == ListUpdateType.SelectedItems) {
       
-
       // If the archive tab is selected
       if (!this.newTabSelected) {
         // and we right click on a archived notification item
@@ -135,36 +133,22 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   openNotificationPopup(notificationItem: NotificationItem) {
-    if (notificationItem.notificationType == NotificationType.UserName) {
+    if (notificationItem.notificationType == NotificationType.UserName || notificationItem.notificationType == NotificationType.UserImage) {
       this.lazyLoadingService.load(async () => {
-        const { UserNameNotificationPopupComponent } = await import('../user-name-notification-popup/user-name-notification-popup.component');
-        const { UserNameNotificationPopupModule } = await import('../user-name-notification-popup/user-name-notification-popup.module');
+        const { UserAccountNotificationPopupComponent } = await import('../user-account-notification-popup/user-account-notification-popup.component');
+        const { UserAccountNotificationPopupModule } = await import('../user-account-notification-popup/user-account-notification-popup.module');
         return {
-          component: UserNameNotificationPopupComponent,
-          module: UserNameNotificationPopupModule
+          component: UserAccountNotificationPopupComponent,
+          module: UserAccountNotificationPopupModule
         }
       }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
-        .then((userNameNotificationPopup: UserNameNotificationPopupComponent) => {
-          userNameNotificationPopup.notificationItem = notificationItem;
-          this.notificationService.notificationPopup = userNameNotificationPopup;
+        .then((userAccountNotificationPopup: UserAccountNotificationPopupComponent) => {
+          userAccountNotificationPopup.isUserName = notificationItem.notificationType == NotificationType.UserName ? true : false;
+          userAccountNotificationPopup.notificationItem = notificationItem;
+          this.notificationService.notificationPopup = userAccountNotificationPopup;
         })
     }
 
-
-    if (notificationItem.notificationType == NotificationType.UserImage) {
-      this.lazyLoadingService.load(async () => {
-        const { UserImageNotificationPopupComponent } = await import('../user-image-notification-popup/user-image-notification-popup.component');
-        const { UserImageNotificationPopupModule } = await import('../user-image-notification-popup/user-image-notification-popup.module');
-        return {
-          component: UserImageNotificationPopupComponent,
-          module: UserImageNotificationPopupModule
-        }
-      }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
-        .then((userImageNotificationPopup: UserImageNotificationPopupComponent) => {
-          userImageNotificationPopup.notificationItem = notificationItem;
-          this.notificationService.notificationPopup = userImageNotificationPopup;
-        })
-    }
 
     if (notificationItem.notificationType == NotificationType.Message) {
       this.lazyLoadingService.load(async () => {

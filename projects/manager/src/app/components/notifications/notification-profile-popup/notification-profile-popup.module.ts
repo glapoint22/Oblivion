@@ -8,7 +8,6 @@ import { NotificationProfilePopupComponent } from './notification-profile-popup.
   declarations: [NotificationProfilePopupComponent],
   imports: [
     CommonModule
-  ],
-  exports: [NotificationProfilePopupComponent]
+  ]
 })
 export class NotificationProfilePopupModule { }
