@@ -3,8 +3,8 @@ import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/cor
 import { SafeHtml } from '@angular/platform-browser';
 import { SpinnerAction } from 'common';
 import { MenuOption } from '../../../classes/menu-option';
-import { NotificationItem } from '../../../classes/notification-item';
-import { NotificationEmployee } from '../../../classes/notification-employee';
+import { NotificationItem } from '../../../classes/notifications/notification-item';
+import { NotificationEmployee } from '../../../classes/notifications/notification-employee';
 import { ContextMenuComponent } from '../../context-menu/context-menu.component';
 import { PromptComponent } from '../../prompt/prompt.component';
 import { Subject } from 'rxjs';

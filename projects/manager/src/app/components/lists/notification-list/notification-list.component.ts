@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { ImageListComponent } from '../image-list/image-list.component';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { NotificationProfilePopupUser } from '../../../classes/notification-profile-popup-user';
+import { NotificationProfilePopupUser } from '../../../classes/notifications/notification-profile-popup-user';
 import { PromptComponent } from '../../prompt/prompt.component';
 import { UserAccountNotificationFormComponent } from '../user-account-notification-form/user-account-notification-form.component';
 

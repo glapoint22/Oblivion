@@ -127,48 +127,48 @@
         <!-- Employee -->
         <div class="label-container">
             <div class="label">Notes:</div>
-            <div *ngIf="notification && (notification.employees[employeeIndex].firstName || newNoteAdded)" class="notes-button-container">
+            <div *ngIf="notification && (notification.employeeNotes[employeeIndex].firstName || newNoteAdded)" class="notes-button-container">
                 <icon-button [icon]="'fa-solid fa-file-lines'"
                              [title]="'Add New Note'"
                              [fontSize]="'16'"
                              [isDisabled]="newNoteAdded"
-                             (onClick)="addNote(notification.employees)">
+                             (onClick)="addNote(notification.employeeNotes)">
                 </icon-button>
             </div>
         </div>
         
         <div class="info-box">
             <ng-container *ngIf="notification">
-                <div *ngIf="notification.employees[employeeIndex].firstName || newNoteAdded" class="info-bar">
+                <div *ngIf="notification.employeeNotes[employeeIndex].firstName || newNoteAdded" class="info-bar">
 
                     <!-- Counter -->
                     <div class="counter-container">
-                        <counter *ngIf="notification.employees.length > 1"
-                                 [itemCount]="notification.employees.length"
+                        <counter *ngIf="notification.employeeNotes.length > 1"
+                                 [itemCount]="notification.employeeNotes.length"
                                  (onItemChange)="employeeIndex = $event"
                                  [currentIndex]="employeeIndex">
                         </counter>
                     </div>
 
-                    <div *ngIf="notification.employees[employeeIndex].firstName" class="profile-container">
+                    <div *ngIf="notification.employeeNotes[employeeIndex].firstName" class="profile-container">
                         <!-- Date -->
                         <div class="date">
-                            {{notification.employees[employeeIndex].date | date: 'MMM d, y, h:mm a'}}
+                            {{notification.employeeNotes[employeeIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->
                         <div class="profile-image-container">
-                            <img [src]="notification.employees[employeeIndex].image ? 'images/' + notification.employees[employeeIndex].image : 'assets/no-account-pic.png'" [title]="notification.employees[employeeIndex].firstName + ' ' + notification.employees[employeeIndex].lastName">
+                            <img [src]="notification.employeeNotes[employeeIndex].image ? 'images/' + notification.employeeNotes[employeeIndex].image : 'assets/no-account-pic.png'" [title]="notification.employeeNotes[employeeIndex].firstName + ' ' + notification.employeeNotes[employeeIndex].lastName">
                         </div>
                     </div>
                 </div>
 
                 <!-- Notes -->
-                <textarea #notes *ngIf="!notification.employees[employeeIndex].firstName" [ngStyle]="{'height': newNoteAdded ? '94px' : '128px'}" [(ngModel)]="notification.employees[employeeIndex].text"></textarea>
+                <textarea #notes *ngIf="!notification.employeeNotes[employeeIndex].firstName" [ngStyle]="{'height': newNoteAdded ? '94px' : '128px'}" [(ngModel)]="notification.employeeNotes[employeeIndex].text"></textarea>
             
                 
-                <div *ngIf="notification.employees[employeeIndex].firstName" class="user-comment">
-                    {{notification.employees[employeeIndex].text}}
+                <div *ngIf="notification.employeeNotes[employeeIndex].firstName" class="user-comment">
+                    {{notification.employeeNotes[employeeIndex].text}}
                 </div>
             </ng-container>
         </div>
@@ -181,7 +181,7 @@
                 <button *ngIf="notification" class="notification-button" (click)="openSecondaryButtonPrompt()" [disabled]="secondaryButtonDisabled">{{!notification.reviewDeleted ? 'Remove' : 'Restore'}} Review</button>
             </div>
             
-            <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onClose(notification.employees)">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
+            <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onClose(notification.employeeNotes)">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
         </div>
     </div>
 </div>

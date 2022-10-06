@@ -6,7 +6,7 @@ import { HierarchyItem } from '../../classes/hierarchy-item';
 import { ListItem } from '../../classes/list-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
 import { NicheHierarchy } from '../../classes/niche-hierarchy';
-import { NotificationItem } from '../../classes/notification-item';
+import { NotificationItem } from '../../classes/notifications/notification-item';
 import { Product } from '../../classes/product';
 import { ProductPropertiesComponent } from '../../components/product-properties/product-properties.component';
 

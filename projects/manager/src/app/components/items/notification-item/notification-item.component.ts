@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NotificationType } from '../../../classes/enums';
-import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { ImageItemComponent } from '../image-item/image-item.component';
 
 @Component({

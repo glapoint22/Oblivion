@@ -214,4 +214,5 @@ export enum NotificationType {
     ProductInactive,
     ProductSiteNolongerInService,
     MissingProductOther,
+    Error
 }

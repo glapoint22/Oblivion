@@ -1,4 +1,4 @@
-import { ImageItem } from "./image-item";
+import { ImageItem } from "../image-item";
 
 export class NotificationItem extends ImageItem {
   notificationGroupId!: number;

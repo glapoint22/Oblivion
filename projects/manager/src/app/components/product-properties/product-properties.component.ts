@@ -22,7 +22,7 @@ import { KeywordCheckboxMultiColumnItem } from '../../classes/keyword-checkbox-m
 import { ProductMedia } from '../../classes/product-media';
 import { MediaSelectorPopupComponent } from '../media-selector-popup/media-selector-popup.component';
 import { ProductNotificationPopupComponent } from '../notifications/product-notification-popup/product-notification-popup.component';
-import { NotificationItem } from '../../classes/notification-item';
+import { NotificationItem } from '../../classes/notifications/notification-item';
 
 @Component({
   selector: 'product-properties',

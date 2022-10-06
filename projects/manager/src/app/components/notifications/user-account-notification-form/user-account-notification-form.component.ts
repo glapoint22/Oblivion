@@ -1,8 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { NotificationType } from '../../../classes/enums';
-import { NotificationItem } from '../../../classes/notification-item';
-import { NotificationProfilePopupUser } from '../../../classes/notification-profile-popup-user';
+import { NotificationItem } from '../../../classes/notifications/notification-item';
+import { NotificationProfilePopupUser } from '../../../classes/notifications/notification-profile-popup-user';
 import { NotificationFormComponent } from '../notification-form/notification-form.component';
 
 @Component({

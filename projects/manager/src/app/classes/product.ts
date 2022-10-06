@@ -1,5 +1,5 @@
 import { IProduct, PricePoint, RecurringPayment, ShippingType, Subproduct } from "common";
-import { NotificationItem } from "./notification-item";
+import { NotificationItem } from "./notifications/notification-item";
 import { ProductMedia } from "./product-media";
 import { Vendor } from "./vendor";
 

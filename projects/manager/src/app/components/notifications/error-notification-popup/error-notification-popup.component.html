@@ -1,22 +1,16 @@
 <div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="popup-arrow-container" [ngClass]="{'product-popup-arrow-container': fromProduct}">
+    <div class="popup-arrow-container">
         <div class="popup-arrow-up-Border"></div>
         <div class="popup-arrow-up-background"></div>
     </div>
 
     <div class="popup-base">
 
-
-        <div class="top-container">
-
-            <!-- Product -->
-            <div class="product-container">
-                <div class="product-thumbnail-container">
-                    <img [src]="'images/' + notificationItem.image">
-                </div>
-                <div class="product-name">{{notificationItem.productName}}</div>
-            </div>
+        <!-- Notification Type -->
+        <div class="notification-type-container">
+            <div class="notification-type-name">Error</div>
+            
 
             <div #ellipsis>
                 <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
@@ -25,67 +19,42 @@
             </div>
         </div>
 
-        <!-- Notification Type -->
-        <div *ngIf="!notificationItems || (notificationItems && notificationItems.length == 1)" class="notification-type-container">
-            {{notificationItem.name}}
-        </div>
-
-
-        <div *ngIf="notificationItems && notificationItems.length > 1" class="dropdown-container">
-            <dropdown [listItems]="notificationItemDropdownList"
-                      [selectedListItem]="selectedNotificationItem"
-                      (onChange)="selectedNotificationItem = $event; getProductNotification(notificationItems[selectedNotificationItem.value])">
-            </dropdown>
-        </div>
-
-
-        
         <!-- User -->
-        <div class="label">User Comment:</div>
+        <div class="label">Error Details:</div>
         <div class="info-box">
+
             <ng-container *ngIf="notification">
+
                 <div class="info-bar">
-
-                    <!-- Counter -->
-                    <div class="counter-container">
-                        <counter *ngIf="notification.users.length > 1"
-                                 [itemCount]="notification.users.length"
-                                 (onItemChange)="userIndex = $event"
-                                 [currentIndex]="userIndex">
-                        </counter>
-                    </div>
-                    
-
+                    <div></div>
                     <div class="profile-container">
                         <!-- Date -->
                         <div class="date">
-                            {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
-                        </div>
-
-                        <!-- Image -->
-                        <div class="profile-image-container">
-
-                            <div class="profile-popup-container">
-                                <ng-template #profilePopupContainerTemplate></ng-template>
-                            </div>
-
-                            <img style="cursor: pointer;"
-                                (mousedown)="$event.stopPropagation()"
-                                (click)="openProfilePopup(notification.users[userIndex], profilePopupContainer)"
-                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
-                                [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
+                            {{notification.date | date: 'MMM d, y, h:mm a'}}
                         </div>
                     </div>
                 </div>
-            
-                <!-- User Comment -->
+
+                <!-- Error Details -->
                 <div class="user-comment">
-                    {{notification.users[userIndex].text}}
+                    <div class="error">
+                        <span class="error-type">Inner Exeption: </span><span>{{errorDetails.innerExeption}}</span>
+                    </div>
+                    <div class="error">
+                        <span class="error-type">Message: </span><span>{{errorDetails.message}}</span>
+                    </div>
+                    <div class="error">
+                        <span class="error-type">Source: </span><span>{{errorDetails.source}}</span>
+                    </div>
+                    <div class="error">
+                        <span class="error-type">Request Name: </span><span>{{errorDetails.requestName}}</span>
+                    </div>
                 </div>
             </ng-container>
         </div>
 
-
+        
+        
 
         <!-- Employee -->
         <div class="label-container">
@@ -135,15 +104,10 @@
                 </div>
             </ng-container>
         </div>
-        
-
+       
+       
         <!-- Buttons -->
         <div class="button-container">
-            <div>
-                <!-- Show button only when data loads, otherwise button's length changes which looks terrible -->
-                <button *ngIf="notification && !fromProduct" class="notification-button" (click)="openSecondaryButtonPrompt()" [disabled]="secondaryButtonDisabled">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>
-            </div>
-            
             <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onClose(notification.employeeNotes)">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
         </div>
     </div>

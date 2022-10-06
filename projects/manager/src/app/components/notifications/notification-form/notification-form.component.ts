@@ -1,7 +1,7 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { NotificationProfilePopupUser } from '../../../classes/notification-profile-popup-user';
+import { NotificationProfilePopupUser } from '../../../classes/notifications/notification-profile-popup-user';
 import { NotificationService } from '../../../services/notification/notification.service';
 import { PromptComponent } from '../../prompt/prompt.component';
 import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';

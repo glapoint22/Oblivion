@@ -1,0 +1,38 @@
+.notification-type-container {
+    justify-content: flex-end;
+    margin-bottom: 13px;
+}
+
+
+.notification-type-name {
+    position: absolute;
+    left: 175px;
+}
+
+
+.info-box {
+    margin: 3px 0 13px;
+}
+
+
+.error {
+    margin-bottom: 5px;
+}
+
+
+.error-type {
+    font-weight: bold;
+    color: #ff3936;
+}
+
+
+.profile-image-container {
+    img {
+        border-radius: 50%;
+    }
+}
+
+
+.button-container {
+    justify-content: flex-end;
+}

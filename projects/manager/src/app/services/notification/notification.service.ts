@@ -2,7 +2,7 @@ import { Injectable, ViewContainerRef } from '@angular/core';
 import { DataService, LazyLoad } from 'common';
 import { Subject } from 'rxjs';
 import { NotificationType } from '../../classes/enums';
-import { NotificationItem } from '../../classes/notification-item';
+import { NotificationItem } from '../../classes/notifications/notification-item';
 import { NotificationPopupComponent } from '../../components/notifications/notification-popup/notification-popup.component';
 
 @Injectable({
@@ -246,6 +246,11 @@ export class NotificationService {
 
       case NotificationType.MissingProductOther:
         notificationName = "Missing Product (Other)";
+        break;
+
+
+      case NotificationType.Error:
+        notificationName = "Error";
         break;
     }
 

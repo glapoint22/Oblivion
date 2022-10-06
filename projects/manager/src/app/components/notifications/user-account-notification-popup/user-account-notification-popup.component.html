@@ -59,11 +59,11 @@
                     </div>
                 </div>
 
-                <div *ngIf="isUserName" style="display: flex; justify-content: center; align-items: center; padding-top: 3px; font-size: 20px; color: white; height: 78px;">
+                <div *ngIf="isUserName" class="user-name-container">
                     {{notification[userIndex].userName}}
                 </div>
             
-                <div *ngIf="!isUserName" style="display: flex; justify-content: center; align-items: center; padding-top: 3px;">
+                <div *ngIf="!isUserName" class="user-image-container">
                     <img [src]="'images/' + notification[userIndex].userImage">
                 </div>
             </ng-container>

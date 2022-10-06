@@ -3,10 +3,11 @@ import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common
 import { ListUpdateType, MenuOptionType, NotificationType } from '../../../classes/enums';
 import { ListOptions } from '../../../classes/list-options';
 import { ListUpdate } from '../../../classes/list-update';
-import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { NotificationService } from '../../../services/notification/notification.service';
 import { ProductService } from '../../../services/product/product.service';
 import { NotificationListComponent } from '../../lists/notification-list/notification-list.component';
+import { ErrorNotificationPopupComponent } from '../error-notification-popup/error-notification-popup.component';
 import { MessageNotificationPopupComponent } from '../message-notification-popup/message-notification-popup.component';
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
 import { ReviewNotificationPopupComponent } from '../review-notification-popup/review-notification-popup.component';
@@ -186,7 +187,7 @@ export class NotificationListPopupComponent extends LazyLoad {
     }
 
 
-    if (notificationItem.notificationType >= NotificationType.ProductReportedAsIllegal) {
+    if (notificationItem.notificationType >= NotificationType.ProductReportedAsIllegal && notificationItem.notificationType < NotificationType.Error) {
       this.lazyLoadingService.load(async () => {
         const { ProductNotificationPopupComponent } = await import('../product-notification-popup/product-notification-popup.component');
         const { ProductNotificationPopupModule } = await import('../product-notification-popup/product-notification-popup.module');
@@ -198,6 +199,22 @@ export class NotificationListPopupComponent extends LazyLoad {
         .then((productNotificationPopup: ProductNotificationPopupComponent) => {
           productNotificationPopup.notificationItem = notificationItem;
           this.notificationService.notificationPopup = productNotificationPopup;
+        })
+    }
+
+
+    if (notificationItem.notificationType == NotificationType.Error) {
+      this.lazyLoadingService.load(async () => {
+        const { ErrorNotificationPopupComponent } = await import('../error-notification-popup/error-notification-popup.component');
+        const { ErrorNotificationPopupModule } = await import('../error-notification-popup/error-notification-popup.module');
+        return {
+          component: ErrorNotificationPopupComponent,
+          module: ErrorNotificationPopupModule
+        }
+      }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
+        .then((errorNotificationPopup: ErrorNotificationPopupComponent) => {
+          errorNotificationPopup.notificationItem = notificationItem;
+          this.notificationService.notificationPopup = errorNotificationPopup;
         })
     }
   }

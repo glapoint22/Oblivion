@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { MenuOptionType } from '../../../classes/enums';
-import { NotificationProduct } from '../../../classes/notification-product';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { MenuOption } from '../../../classes/menu-option';
-import { NotificationEmployee } from '../../../classes/notification-employee';
-import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationEmployee } from '../../../classes/notifications/notification-employee';
+import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { KeyValue } from '@angular/common';
+import { ProductNotification } from '../../../classes/notifications/product-notification';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
-  styleUrls: ['../notification-popup/notification-popup.component.scss', './product-notification-popup.component.scss']
+  styleUrls: ['./product-notification-popup.component.scss']
 })
 export class ProductNotificationPopupComponent extends NotificationPopupComponent {
   public fromProduct!: boolean;
@@ -27,7 +27,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
 
     this.onNotificationLoad.subscribe(() => {
-      if (this.notification.employees.length == 0) this.notification.employees.push(new NotificationEmployee());
+      if (this.notification.employeeNotes.length == 0) this.notification.employeeNotes.push(new NotificationEmployee());
     });
   }
 
@@ -80,7 +80,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   getProductNotification(notificationItem?: NotificationItem) {
     // Update the notification item if the dropdown was selected
     if (notificationItem) this.notificationItem = notificationItem!;
-    this.getNotification<NotificationProduct>('api/Notifications/Product', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
+    this.getNotification<ProductNotification>('api/Notifications/Product', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
   }
 
 
@@ -115,7 +115,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
         type: MenuOptionType.MenuItem,
         name: this.notificationItem.isNew ? 'Close (Remain as New)' : 'Restore as New',
         optionFunction: () => {
-          this.notificationItem.isNew ? this.onEscape() : this.onClose(this.notification.employees, true);
+          this.notificationItem.isNew ? this.onEscape() : this.onClose(this.notification.employeeNotes, true);
         }
       },
       {
@@ -140,7 +140,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   saveEmployeeText() {
     this.employeeTextParameters = {
       notificationGroupId: this.notificationItem.notificationGroupId,
-      note: this.notification.employees[this.notification.employees.length - 1].text.trim()
+      note: this.notification.employeeNotes[this.notification.employeeNotes.length - 1].text.trim()
     }
     super.saveEmployeeText();
   }
@@ -166,7 +166,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
   onEscape(): void {
     if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt) {
-      if (!this.isEmployeeNotesWritten(this.notification.employees, this.newNoteAdded) && !this.secondaryButtonDisabled) {
+      if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded) && !this.secondaryButtonDisabled) {
         this.close();
       } else {
         this.openUndoChangesPrompt();

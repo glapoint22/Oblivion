@@ -1,25 +1,29 @@
 import { Component } from '@angular/core';
 import { MenuOptionType } from '../../../classes/enums';
 import { MenuOption } from '../../../classes/menu-option';
+import { ErrorDetails } from '../../../classes/notifications/error-details';
+import { ErrorNotification } from '../../../classes/notifications/error-notification';
 import { NotificationEmployee } from '../../../classes/notifications/notification-employee';
-import { ReviewNotification } from '../../../classes/notifications/review-notification';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
-  templateUrl: './review-notification-popup.component.html',
-  styleUrls: ['../product-notification-popup/product-notification-popup.component.scss', './review-notification-popup.component.scss']
+  selector: 'app-error-notification-popup',
+  templateUrl: './error-notification-popup.component.html',
+  styleUrls: ['./error-notification-popup.component.scss']
 })
-export class ReviewNotificationPopupComponent extends NotificationPopupComponent {
+export class ErrorNotificationPopupComponent extends NotificationPopupComponent {
+  public errorDetails!: ErrorDetails;
 
 
   // ====================================================================( NG ON INIT )===================================================================== \\
 
   ngOnInit() {
     super.ngOnInit();
-    this.getNotification<ReviewNotification>('api/Notifications/Review', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
+    this.getNotification<ErrorNotification>('api/Notifications/Error', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
 
     this.onNotificationLoad.subscribe(() => {
       if (this.notification.employeeNotes.length == 0) this.notification.employeeNotes.push(new NotificationEmployee());
+      this.errorDetails = JSON.parse(this.notification.text);
     });
   }
 
@@ -65,26 +69,11 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
 
 
-  // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
-
-  openSecondaryButtonPrompt() {
-    this.secondaryButtonPromptPrimaryButtonName = !this.notification.reviewDeleted ? 'Remove' : 'Restore';
-    this.secondaryButtonPromptTitle = (!this.notification.reviewDeleted ? 'Remove' : 'Restore') + ' Review';
-    this.secondaryButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
-      'The review with the title,' +
-      ' <span style="color: #ffba00">\"' + this.notification.reviewWriter.reviewTitle + '\"</span>' +
-      ' will be ' + (!this.notification.reviewDeleted ? 'removed' : 'restored') + '.');
-
-    super.openSecondaryButtonPrompt();
-  }
-
-
-
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && this.reviewProfilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt) {
-      if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded) && !this.secondaryButtonDisabled) {
+    if (!this.contextMenu && !this.undoChangesPrompt && !this.deletePrompt) {
+      if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded)) {
         this.close();
       } else {
         this.openUndoChangesPrompt();
@@ -94,11 +83,6 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
 
 
-  // =====================================================================( ON CLOSE )====================================================================== \\
 
-  onClose(employees: Array<NotificationEmployee>, restore?: boolean): void {
-    this.secondaryButtonDisabledPath = 'api/Notifications/RemoveReview';
-    this.secondaryButtonDisabledParameters = { reviewId: this.notification.reviewId }
-    super.onClose(employees, restore);
-  }
+
 }

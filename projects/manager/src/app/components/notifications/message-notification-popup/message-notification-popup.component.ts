@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { MenuOptionType } from '../../../classes/enums';
-import { NotificationItem } from '../../../classes/notification-item';
+import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { MenuOption } from '../../../classes/menu-option';
-import { NotificationMessage } from '../../../classes/notification-message';
-import { NotificationEmployee } from '../../../classes/notification-employee';
+import { NotificationEmployee } from '../../../classes/notifications/notification-employee';
+import { MessageNotification } from '../../../classes/notifications/message-notification';
 
 @Component({
   templateUrl: './message-notification-popup.component.html',
-  styleUrls: ['../notification-popup/notification-popup.component.scss', './message-notification-popup.component.scss']
+  styleUrls: ['./message-notification-popup.component.scss']
 })
 export class MessageNotificationPopupComponent extends NotificationPopupComponent {
   private deleteAll!: boolean;
@@ -19,9 +19,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   ngOnInit() {
     super.ngOnInit();
-    this.getNotification<Array<NotificationMessage>>('api/Notifications/Message', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
+    this.getNotification<Array<MessageNotification>>('api/Notifications/Message', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
     this.onNotificationLoad.subscribe(() => {
-      (this.notification as Array<NotificationMessage>).forEach(x => {
+      (this.notification as Array<MessageNotification>).forEach(x => {
         if (x.employeeMessage == null) x.employeeMessage = new NotificationEmployee();
       })
     });
@@ -248,7 +248,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
 
       let notificationIds = new Array<number>();
-      (this.notification as Array<NotificationMessage>).forEach(x => {
+      (this.notification as Array<MessageNotification>).forEach(x => {
         notificationIds.push(x.notificationId)
       });
 

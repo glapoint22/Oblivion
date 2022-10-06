@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { MenuOptionType } from '../../../classes/enums';
 import { MenuOption } from '../../../classes/menu-option';
-import { NotificationEmployee } from '../../../classes/notification-employee';
-import { NotificationUserAccount } from '../../../classes/notification-user-account';
+import { NotificationEmployee } from '../../../classes/notifications/notification-employee';
+import { UserAccountNotification } from '../../../classes/notifications/user-account-notification';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
   templateUrl: './user-account-notification-popup.component.html',
-  styleUrls: ['../notification-popup/notification-popup.component.scss', './user-account-notification-popup.component.scss']
+  styleUrls: ['./user-account-notification-popup.component.scss']
 })
 export class UserAccountNotificationPopupComponent extends NotificationPopupComponent {
   public newNotesAdded: Array<boolean> = new Array<boolean>();
@@ -22,7 +22,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     this.onNotificationLoad.subscribe(() => {
       if (this.notification[this.userIndex].employeeNotes.length == 0) this.notification[this.userIndex].employeeNotes.push(new NotificationEmployee());
     });
-    this.getNotification<Array<NotificationUserAccount>>('api/Notifications/' + (this.isUserName ? 'UserName' : 'UserImage'), [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
+    this.getNotification<Array<UserAccountNotification>>('api/Notifications/' + (this.isUserName ? 'UserName' : 'UserImage'), [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
   }
 
 
@@ -171,7 +171,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     this.notificationService.removeNotification(this.notificationItem.isNew ? this.notificationService.newNotifications : this.notificationService.archiveNotifications, this.notificationItem, this);
 
     let notificationIds = new Array<number>();
-    (this.notification as Array<NotificationUserAccount>).forEach(x => {
+    (this.notification as Array<UserAccountNotification>).forEach(x => {
       notificationIds.push(x.notificationId)
     });
 
