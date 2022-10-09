@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
+import { AccountService } from '../../services/account/account.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -10,12 +11,15 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./contact-us-form.component.scss']
 })
 export class ContactUsFormComponent extends Validation implements OnInit {
+  @ViewChild('name') name!: ElementRef<HTMLInputElement>;
+  @ViewChild('email') email!: ElementRef<HTMLInputElement>;
 
   constructor
     (
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
-  ) { super(dataService, lazyLoadingService) }
+      public accountService: AccountService
+    ) { super(dataService, lazyLoadingService) }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -45,17 +49,46 @@ export class ContactUsFormComponent extends Validation implements OnInit {
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
-    this.setFocus(0);
+
+    // If the user is logged in
+    if (this.accountService.customer) {
+      // Set focus to the message field
+      this.setFocus(2);
+
+      // Populate the name field with the user's name
+      this.name.nativeElement.disabled = true;
+      this.name.nativeElement.value = this.accountService.customer.firstName + ' ' + this.accountService.customer.lastName;
+
+      // Populate the email field with the user's email
+      this.email.nativeElement.disabled = true;
+      this.email.nativeElement.value = this.accountService.customer.email;
+
+      // If the user is NOT logged in
+    } else {
+
+      // Set focus to the name field
+      this.setFocus(0);
+    }
   }
 
-
+  
   onSubmit() {
-    if (this.form.valid) {
+    // If the user is (NOT) logged in and as long as the form is valid
+    if ((!this.accountService.customer && this.form.valid) ||
+      // Or if the user (IS) logged in and as long as the message field is valid
+      (this.accountService.customer && !this.form.controls.message.errors)) {
+
+      // Post the message
       this.dataService.post('api/Notifications/Message', {
-        name: this.form.get('name')?.value,
-        email: this.form.get('email')?.value,
-        message: this.form.get('message')?.value
-      }, { spinnerAction: SpinnerAction.Start }).subscribe(() => {
+        type: NotificationType.Message,
+        nonAccountName: !this.accountService.customer ? this.form.get('name')?.value.trim() : null,
+        nonAccountEmail: !this.accountService.customer ? this.form.get('email')?.value.trim() : null,
+        email: this.accountService.customer ? this.email.nativeElement.value : null,
+        text: this.form.get('message')?.value.trim()
+      }, {
+        authorization: this.accountService.customer ? true : false,
+        spinnerAction: SpinnerAction.Start
+      }).subscribe(() => {
         this.openSuccessPrompt();
       });
     }

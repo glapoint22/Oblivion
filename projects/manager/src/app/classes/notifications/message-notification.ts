@@ -3,6 +3,6 @@ import { NotificationUser } from "./notification-user";
 
 export class MessageNotification extends NotificationUser {
     notificationId!: number;
-    nonAccountUserName!: string;
+    nonAccountName!: string;
     employeeMessage!: NotificationEmployee;
 }

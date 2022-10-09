@@ -53,7 +53,7 @@
         border-top-left-radius: 7px;
         border-top-right-radius: 7px;
         font-weight: bold;
-        color: white;
+        color: #bbbbbb;
         user-select: none;
         flex-shrink: 0;
     }
@@ -61,12 +61,21 @@
     .x {
         margin-right: 5px;
         font-weight: bold;
-        font-family: 'lithos pro';
-        font-size: 15px;
         width: 20px;
         height: 20px;
         text-align: center;
+        line-height: 20px;
+        border-radius: 4px;
         cursor: pointer;
+
+        &:hover {
+            color: #dadada;
+            background: rgba(255, 255, 255, 0.13);
+        }
+
+        &:active {
+            color: white;
+        }
     }
 
 

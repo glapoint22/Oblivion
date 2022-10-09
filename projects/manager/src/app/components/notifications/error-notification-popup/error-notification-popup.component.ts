@@ -7,9 +7,8 @@ import { NotificationEmployee } from '../../../classes/notifications/notificatio
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 
 @Component({
-  selector: 'app-error-notification-popup',
   templateUrl: './error-notification-popup.component.html',
-  styleUrls: ['./error-notification-popup.component.scss']
+  styleUrls: ['../notification-form/notification-form.component.scss', './error-notification-popup.component.scss']
 })
 export class ErrorNotificationPopupComponent extends NotificationPopupComponent {
   public errorDetails!: ErrorDetails;

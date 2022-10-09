@@ -1,6 +1,6 @@
 .label {
     font-weight: bold;
-    color: #dadada;
+    color: #c0c0c0;
     margin-bottom: 7px;
 }
 
@@ -8,7 +8,7 @@
 
 
 .message-text {
-    color: #c0c0c0;
+    color: #aaaaaa;
 }
 
 
@@ -31,4 +31,11 @@
         color: lighten($purple-text, 12);
         outline: none;
     }
+}
+
+
+
+::selection {
+    color: #ffffff;
+    background: #670e5a;
 }

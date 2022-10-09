@@ -37,11 +37,11 @@ export class ProductInfoComponent implements OnChanges {
 
 
   getDescription(rootElement: HTMLElement) {
-    const textBoxData: Array<TextBoxData> = JSON.parse(this.product.description);
-    const textBox = new TextBox(rootElement);
+    // const textBoxData: Array<TextBoxData> = JSON.parse(this.product.description);
+    // const textBox = new TextBox(rootElement);
     
-    textBox.load(textBoxData);
-    textBox.render();
+    // textBox.load(textBoxData);
+    // textBox.render();
   }
 
 

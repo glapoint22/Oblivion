@@ -1,21 +1,21 @@
-<div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="hide notification-popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="popup-arrow-container" [ngClass]="{'product-popup-arrow-container': fromProduct}">
-        <div class="popup-arrow-up-Border"></div>
-        <div class="popup-arrow-up-background"></div>
+    <div class="notification-popup-arrow-container" [ngClass]="{'product-notification-popup-arrow-container': fromProduct}">
+        <div class="notification-popup-arrow-up-Border"></div>
+        <div class="notification-popup-arrow-up-background"></div>
     </div>
 
-    <div class="popup-base">
+    <div class="notification-popup-base">
 
 
-        <div class="top-container">
+        <div class="notification-top-container">
 
             <!-- Product -->
-            <div class="product-container">
-                <div class="product-thumbnail-container">
+            <div class="notification-product-container">
+                <div class="notification-product-thumbnail-container">
                     <img [src]="'images/' + notificationItem.image">
                 </div>
-                <div class="product-name">{{notificationItem.productName}}</div>
+                <div class="notification-product-name">{{notificationItem.productName}}</div>
             </div>
 
             <div #ellipsis>
@@ -41,13 +41,13 @@
 
         
         <!-- User -->
-        <div class="label">User Comment:</div>
-        <div class="info-box">
+        <div class="notification-label">User Comment:</div>
+        <div class="notification-info-box">
             <ng-container *ngIf="notification">
-                <div class="info-bar">
+                <div class="notification-info-bar">
 
                     <!-- Counter -->
-                    <div class="counter-container">
+                    <div class="notification-counter-container">
                         <counter *ngIf="notification.users.length > 1"
                                  [itemCount]="notification.users.length"
                                  (onItemChange)="userIndex = $event"
@@ -56,16 +56,16 @@
                     </div>
                     
 
-                    <div class="profile-container">
+                    <div class="notification-profile-container">
                         <!-- Date -->
-                        <div class="date">
+                        <div class="notification-date">
                             {{notification.users[userIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->
-                        <div class="profile-image-container">
+                        <div class="notification-profile-image-container">
 
-                            <div class="profile-popup-container">
+                            <div class="notification-profile-popup-container">
                                 <ng-template #profilePopupContainerTemplate></ng-template>
                             </div>
 
@@ -79,7 +79,7 @@
                 </div>
             
                 <!-- User Comment -->
-                <div class="user-comment">
+                <div class="notification-user-comment">
                     {{notification.users[userIndex].text}}
                 </div>
             </ng-container>
@@ -88,9 +88,9 @@
 
 
         <!-- Employee -->
-        <div class="label-container">
-            <div class="label">Notes:</div>
-            <div *ngIf="notification && (notification.employeeNotes[employeeIndex].firstName || newNoteAdded)" class="notes-button-container">
+        <div class="notification-label-container">
+            <div class="notification-label">Notes:</div>
+            <div *ngIf="notification && (notification.employeeNotes[employeeIndex].firstName || newNoteAdded)" class="notification-employee-notes-button-container">
                 <icon-button [icon]="'fa-solid fa-file-lines'"
                              [title]="'Add New Note'"
                              [fontSize]="'16'"
@@ -100,12 +100,12 @@
             </div>
         </div>
         
-        <div class="info-box">
+        <div class="notification-info-box">
             <ng-container *ngIf="notification">
-                <div *ngIf="notification.employeeNotes[employeeIndex].firstName || newNoteAdded" class="info-bar">
+                <div *ngIf="notification.employeeNotes[employeeIndex].firstName || newNoteAdded" class="notification-info-bar">
 
                     <!-- Counter -->
-                    <div class="counter-container">
+                    <div class="notification-counter-container">
                         <counter *ngIf="notification.employeeNotes.length > 1"
                                  [itemCount]="notification.employeeNotes.length"
                                  (onItemChange)="employeeIndex = $event"
@@ -113,14 +113,14 @@
                         </counter>
                     </div>
 
-                    <div *ngIf="notification.employeeNotes[employeeIndex].firstName" class="profile-container">
+                    <div *ngIf="notification.employeeNotes[employeeIndex].firstName" class="notification-profile-container">
                         <!-- Date -->
-                        <div class="date">
+                        <div class="notification-date">
                             {{notification.employeeNotes[employeeIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->
-                        <div class="profile-image-container">
+                        <div class="notification-profile-image-container">
                             <img [src]="notification.employeeNotes[employeeIndex].image ? 'images/' + notification.employeeNotes[employeeIndex].image : 'assets/no-account-pic.png'" [title]="notification.employeeNotes[employeeIndex].firstName + ' ' + notification.employeeNotes[employeeIndex].lastName">
                         </div>
                     </div>
@@ -130,7 +130,7 @@
                 <textarea #notes *ngIf="!notification.employeeNotes[employeeIndex].firstName" [ngStyle]="{'height': newNoteAdded ? '94px' : '128px'}" [(ngModel)]="notification.employeeNotes[employeeIndex].text"></textarea>
             
                 
-                <div *ngIf="notification.employeeNotes[employeeIndex].firstName" class="user-comment">
+                <div *ngIf="notification.employeeNotes[employeeIndex].firstName" class="notification-user-comment">
                     {{notification.employeeNotes[employeeIndex].text}}
                 </div>
             </ng-container>
@@ -138,7 +138,7 @@
         
 
         <!-- Buttons -->
-        <div class="button-container">
+        <div class="notification-button-container">
             <div>
                 <!-- Show button only when data loads, otherwise button's length changes which looks terrible -->
                 <button *ngIf="notification && !fromProduct" class="notification-button" (click)="openSecondaryButtonPrompt()" [disabled]="secondaryButtonDisabled">{{notification && notification.productDisabled ? 'Enable' : 'Disable'}} Product</button>

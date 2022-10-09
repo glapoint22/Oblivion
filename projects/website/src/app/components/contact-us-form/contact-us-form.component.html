@@ -35,10 +35,10 @@
 
                 <!-- Name -->
                 <div class="label"> Name:</div>
-                <input #tabElement type="text" formControlName="name"
-                    [ngClass]="{'error-border': _form.submitted && form.controls.name.errors}">
+                <input #name #tabElement type="text" formControlName="name"
+                    [ngClass]="{'error-border':!accountService.customer && _form.submitted && form.controls.name.errors}" spellcheck="false">
 
-                <ng-container *ngIf="_form.submitted && form.controls.name.errors">
+                <ng-container *ngIf="!accountService.customer && _form.submitted && form.controls.name.errors">
                     <ul>
                         <li *ngFor="let message of getErrorMessages('name', 'Name')">
                             {{message}}
@@ -51,10 +51,10 @@
 
                 <!-- Email -->
                 <div class="label">Email:</div>
-                <input #tabElement type="text" formControlName="email"
-                    [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
+                <input #email #tabElement type="text" formControlName="email"
+                    [ngClass]="{'error-border': !accountService.customer && _form.submitted && form.controls.email.errors}">
 
-                <ng-container *ngIf="_form.submitted && form.controls.email.errors">
+                <ng-container *ngIf="!accountService.customer && _form.submitted && form.controls.email.errors">
                     <ul>
                         <li *ngFor="let message of getErrorMessages('email', 'Email')">
                             {{message}}
@@ -66,8 +66,7 @@
 
                 <!-- Comments -->
                 <div class="label">Write your message:</div>
-                <textarea #tabElement formControlName="message"
-                    [ngClass]="{'error-border': _form.submitted && form.controls.message.errors}"></textarea>
+                <textarea #tabElement formControlName="message" [ngClass]="{'error-border': _form.submitted && form.controls.message.errors}"></textarea>
 
                 <ng-container *ngIf="_form.submitted && form.controls.message.errors">
                     <ul>

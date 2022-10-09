@@ -16,7 +16,7 @@
 }
 
 
-.counter-container {
+.notification-counter-container {
     display: flex;
     width: fit-content;
     height: 100%;
@@ -29,7 +29,7 @@
 }
 
 
-.info-bar {
+.notification-info-bar {
     justify-content: flex-end;
     padding-right: 4px;
 }
@@ -51,7 +51,7 @@
 
 
 
-.button-container {
+.notification-button-container {
     margin-top: 15px;
 }
 

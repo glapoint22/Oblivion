@@ -8,7 +8,7 @@ import { MessageNotification } from '../../../classes/notifications/message-noti
 
 @Component({
   templateUrl: './message-notification-popup.component.html',
-  styleUrls: ['./message-notification-popup.component.scss']
+  styleUrls: ['../notification-form/notification-form.component.scss', './message-notification-popup.component.scss']
 })
 export class MessageNotificationPopupComponent extends NotificationPopupComponent {
   private deleteAll!: boolean;

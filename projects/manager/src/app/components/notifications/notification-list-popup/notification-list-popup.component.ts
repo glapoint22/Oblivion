@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { ListUpdateType, MenuOptionType, NotificationType } from '../../../classes/enums';
+import { DataService, LazyLoad, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
+import { ListUpdateType, MenuOptionType } from '../../../classes/enums';
 import { ListOptions } from '../../../classes/list-options';
 import { ListUpdate } from '../../../classes/list-update';
 import { NotificationItem } from '../../../classes/notifications/notification-item';
@@ -20,7 +20,6 @@ import { UserAccountNotificationPopupComponent } from '../user-account-notificat
 export class NotificationListPopupComponent extends LazyLoad {
   private notificationItem!: NotificationItem;
 
-  public refreshNotificationsInProgress!: boolean;
   public newTabSelected: boolean = true;
   public newListZIndex: number = 1;
   public archiveListZIndex: number = 0;
@@ -75,17 +74,13 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   refreshNotifications() {
-    this.refreshNotificationsInProgress = true;
     this.notificationService.refreshNotifications();
-    window.setTimeout(() => {
-      this.refreshNotificationsInProgress = false;
-    })
   }
 
 
   onListUpdate(listUpdate: ListUpdate) {
     if (listUpdate.type == ListUpdateType.SelectedItems) {
-      
+
       // If the archive tab is selected
       if (!this.newTabSelected) {
         // and we right click on a archived notification item
@@ -94,13 +89,13 @@ export class NotificationListPopupComponent extends LazyLoad {
           // If the notification is either a User Name notification or a User Image notification
           if ((listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.UserName ||
             (listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.UserImage) {
-            
-              // Don't allow the context menu to be shown
-              listUpdate.selectedItems![0].selectable = false;
-              // And don't allow the selection to be shown
-              this.archiveList.listManager.showSelection = false;
-              
-              // But if it's any other type of notification
+
+            // Don't allow the context menu to be shown
+            listUpdate.selectedItems![0].selectable = false;
+            // And don't allow the selection to be shown
+            this.archiveList.listManager.showSelection = false;
+
+            // But if it's any other type of notification
           } else {
 
             // Allow the context menu to be shown
@@ -134,6 +129,7 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   openNotificationPopup(notificationItem: NotificationItem) {
+    // User Name / User Image
     if (notificationItem.notificationType == NotificationType.UserName || notificationItem.notificationType == NotificationType.UserImage) {
       this.lazyLoadingService.load(async () => {
         const { UserAccountNotificationPopupComponent } = await import('../user-account-notification-popup/user-account-notification-popup.component');
@@ -150,7 +146,7 @@ export class NotificationListPopupComponent extends LazyLoad {
         })
     }
 
-
+    // Message
     if (notificationItem.notificationType == NotificationType.Message) {
       this.lazyLoadingService.load(async () => {
         const { MessageNotificationPopupComponent } = await import('../message-notification-popup/message-notification-popup.component');
@@ -166,8 +162,8 @@ export class NotificationListPopupComponent extends LazyLoad {
         })
     }
 
-
-    if (notificationItem.notificationType == NotificationType.ReviewComplaint) {
+    // Review
+    if (notificationItem.notificationType == NotificationType.Review) {
       this.lazyLoadingService.load(async () => {
         const { ReviewNotificationPopupComponent } = await import('../review-notification-popup/review-notification-popup.component');
         const { ReviewNotificationPopupModule } = await import('../review-notification-popup/review-notification-popup.module');
@@ -182,11 +178,12 @@ export class NotificationListPopupComponent extends LazyLoad {
         })
     }
 
-    if (notificationItem.notificationType > NotificationType.ReviewComplaint && notificationItem.notificationType < NotificationType.ProductReportedAsIllegal) {
+    // Product (Form)
+    if (notificationItem.notificationType > NotificationType.Review && notificationItem.notificationType < NotificationType.ProductReportedAsIllegal) {
       this.productService.openNotificationProduct(notificationItem.productId, notificationItem);
     }
 
-
+    // Product (Non-Form)
     if (notificationItem.notificationType >= NotificationType.ProductReportedAsIllegal && notificationItem.notificationType < NotificationType.Error) {
       this.lazyLoadingService.load(async () => {
         const { ProductNotificationPopupComponent } = await import('../product-notification-popup/product-notification-popup.component');
@@ -202,7 +199,7 @@ export class NotificationListPopupComponent extends LazyLoad {
         })
     }
 
-
+    // Error
     if (notificationItem.notificationType == NotificationType.Error) {
       this.lazyLoadingService.load(async () => {
         const { ErrorNotificationPopupComponent } = await import('../error-notification-popup/error-notification-popup.component');

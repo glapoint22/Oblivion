@@ -7,7 +7,7 @@ import { NotificationPopupComponent } from '../notification-popup/notification-p
 
 @Component({
   templateUrl: './review-notification-popup.component.html',
-  styleUrls: ['../product-notification-popup/product-notification-popup.component.scss', './review-notification-popup.component.scss']
+  styleUrls: ['../notification-form/notification-form.component.scss', '../product-notification-popup/product-notification-popup.component.scss', './review-notification-popup.component.scss']
 })
 export class ReviewNotificationPopupComponent extends NotificationPopupComponent {
 

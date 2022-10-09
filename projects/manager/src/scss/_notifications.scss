@@ -1,22 +1,22 @@
-.popup-container {
+.notification-popup-container {
     position: absolute;
     top: 0px;
     right: 0px;
 }
 
-.popup-arrow-container {
+.notification-popup-arrow-container {
     position: relative;
     width: 24px;
     left: 369px;
 }
 
-.popup-arrow-up-Border {
+.notification-popup-arrow-up-Border {
     border-left: 12px solid transparent;
     border-right: 12px solid transparent;
     border-bottom: 12px solid #414141;
 }
 
-.popup-arrow-up-background {
+.notification-popup-arrow-up-background {
     position: absolute;
     top: 1px;
     left: 1px;
@@ -26,7 +26,7 @@
 }
 
 
-.popup-base {
+.notification-popup-base {
     width: 402px;
     padding: 10px;
     background: #282828;
@@ -36,7 +36,7 @@
 }
 
 
-.top-container {
+.notification-top-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -44,14 +44,14 @@
 }
 
 
-.product-container {
+.notification-product-container {
     display: flex;
     height: 30px;
     align-items: center;
 }
 
 
-.product-thumbnail-container {
+.notification-product-thumbnail-container {
     width: 30px;
     border: 1px solid #555555;
     display: flex;
@@ -65,7 +65,7 @@
 }
 
 
-.product-name {
+.notification-product-name {
     width: 320px;
     font-size: 12px;
     color: #a0a0a0;
@@ -90,31 +90,31 @@
 }
 
 
-.profile-container {
+.notification-profile-container {
     display: flex;
     align-items: center;
     margin-right: 4px;
 }
 
 
-.counter-container {
+.notification-counter-container {
     margin-left: -2px;
 }
 
 
-.label-container {
+.notification-label-container {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     margin-bottom: -5px;
 
-    .label {
+    .notification-label {
         padding-bottom: 5px;
     }
 }
 
 
-.label {
+.notification-label {
     font-size: 12px;
     color: #787878;
     margin-left: 2px;
@@ -122,12 +122,12 @@
 }
 
 
-.notes-button-container {
+.notification-employee-notes-button-container {
     margin-top: -10px;
 }
 
 
-.info-box {
+.notification-info-box {
     height: 130px;
     background: #242424;
     border: 1px solid #454545;
@@ -135,7 +135,7 @@
 }
 
 
-.info-bar {
+.notification-info-bar {
     display: flex;
     height: 34px;
     background: #2e2e2e;
@@ -145,13 +145,13 @@
 }
 
 
-.date {
+.notification-date {
     font-size: 12px;
     color: #999999;
 }
 
 
-.profile-image-container {
+.notification-profile-image-container {
     position: relative;
     width: 18px;
     height: 18px;
@@ -167,14 +167,14 @@
 }
 
 
-.profile-popup-container {
+.notification-profile-popup-container {
     position: absolute;
     left: 28px;
     z-index: 100;
 }
 
 
-.user-comment {
+.notification-user-comment {
     height: 94px;
     padding: 4px 5px;
     color: #bababa;
@@ -184,20 +184,10 @@
 }
 
 
-textarea {
-    width: 100%;
-    resize: none;
-    background: none;
-    outline: none;
-    border: none;
-    padding: 4px 5px;
-    color: #bababa;
-    font-size: 13px;
-    font-family: Arial, Helvetica, sans-serif;
-}
 
 
-.button-container {
+
+.notification-button-container {
     display: flex;
     justify-content: space-between;
 }

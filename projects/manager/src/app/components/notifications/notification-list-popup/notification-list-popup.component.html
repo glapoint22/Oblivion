@@ -25,7 +25,7 @@
 
         <div style="position: relative;">
             <div class="modal-list-container" style="position: absolute; top: 0;" [style.zIndex]="newListZIndex">
-                <notification-list *ngIf="!refreshNotificationsInProgress"
+                <notification-list *ngIf="!notificationService.refreshNotificationsInProgress"
                                    [sourceList]="notificationService.newNotifications"
                                    [options]="newListOptions"
                                    (onListUpdate)="onListUpdate($event)">

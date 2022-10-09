@@ -3,13 +3,13 @@
 
 
 .review-info-box {
-    @extend .info-box;
+    @extend .notification-info-box;
     margin-bottom: 13px;
 }
 
 
 .review-info-bar {
-    @extend .info-bar;
+    @extend .notification-info-bar;
     justify-content: space-between;
 }
 
@@ -45,7 +45,7 @@
 
 
 .review-profile-popup-container {
-    @extend .profile-popup-container;
+    @extend .notification-profile-popup-container;
     left: 28px;
     top: -191px;
 }

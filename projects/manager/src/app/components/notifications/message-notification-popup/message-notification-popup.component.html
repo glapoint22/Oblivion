@@ -1,15 +1,15 @@
-<div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="hide notification-popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="popup-arrow-container">
-        <div class="popup-arrow-up-Border"></div>
-        <div class="popup-arrow-up-background"></div>
+    <div class="notification-popup-arrow-container">
+        <div class="notification-popup-arrow-up-Border"></div>
+        <div class="notification-popup-arrow-up-background"></div>
     </div>
 
-    <div class="popup-base">
+    <div class="notification-popup-base">
 
         <!-- Notification Type -->
         <div class="notification-type-container">
-            <div class="counter-container">
+            <div class="notification-counter-container">
                 <counter *ngIf="notificationItem.count > 1"
                          [itemCount]="notificationItem.count"
                          (onItemChange)="userIndex = $event; setSendButtonDisabled()"
@@ -31,34 +31,34 @@
         <!-- User -->
         <div class="dashed-container">
             <div class="user-container">
-                <div class="label">Message:</div>
-                <div class="info-box">
+                <div class="notification-label">Message:</div>
+                <div class="notification-info-box">
 
                     <ng-container *ngIf="notification">
-                        <div class="info-bar">
+                        <div class="notification-info-bar">
                             <!-- Date -->
-                            <div class="date">
+                            <div class="notification-date">
                                 {{notification[userIndex].date | date: 'MMM d, y, h:mm a'}}
                             </div>
             
                             <!-- Image -->
-                            <div class="profile-image-container" [ngClass]="{'no-profile-image': notification && notification[userIndex].nonAccountUserName}">
+                            <div class="notification-profile-image-container" [ngClass]="{'no-profile-image': notification && notification[userIndex].nonAccountName}">
                                 
-                                <div class="profile-popup-container" [ngStyle]="{'top': notification && notification[userIndex].nonAccountUserName ? '-106px' : '-110px'}">
+                                <div class="notification-profile-popup-container" [ngStyle]="{'top': notification && notification[userIndex].nonAccountName ? '-106px' : '-110px'}">
                                     <ng-template #profilePopupContainerTemplate></ng-template>
                                 </div>
 
                                 <img style="cursor: pointer;"
-                                    [ngStyle]="{'border-radius': notification && notification[userIndex].nonAccountUserName ? 'none' : '50%'}"
+                                    [ngStyle]="{'border-radius': notification && notification[userIndex].nonAccountName ? 'none' : '50%'}"
                                     (mousedown)="$event.stopPropagation()"
                                     (click)="openProfilePopup(notification[userIndex], profilePopupContainer)"
-                                    [src]="notification[userIndex].nonAccountUserName ? 'assets/message-notification.png' : notification[userIndex].image ? 'images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
+                                    [src]="notification[userIndex].nonAccountName ? 'assets/message-notification.png' : notification[userIndex].image ? 'images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
                                     [title]="notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
                             </div>
                         </div>
                     
                         <!-- User Comment -->
-                        <div class="user-comment">
+                        <div class="notification-user-comment">
                             {{notification[userIndex].text}}
                         </div>
                     </ng-container>
@@ -69,26 +69,26 @@
 
 
                 <!-- Employee -->
-                <div class="label">Reply:</div>
-                <div class="info-box">
+                <div class="notification-label">Reply:</div>
+                <div class="notification-info-box">
 
                     <ng-container *ngIf="notification">
                         <ng-container *ngIf="notification[userIndex].employeeMessage.date">
-                            <div class="info-bar">
+                            <div class="notification-info-bar">
                                 
                                 <!-- Date -->
-                                <div class="date">
+                                <div class="notification-date">
                                     {{notification[userIndex].employeeMessage.date | date: 'MMM d, y, h:mm a'}}
                                 </div>
 
                                 <!-- Image -->
-                                <div class="profile-image-container">
+                                <div class="notification-profile-image-container">
                                     <img [src]="notification[userIndex].employeeMessage.image ? 'images/' + notification[userIndex].employeeMessage.image : 'assets/no-account-pic.png'" style="border-radius: 50%;" [title]="notification[userIndex].employeeMessage.firstName + ' ' + notification[userIndex].employeeMessage.lastName">
                                 </div>
                             </div>
 
                             <!-- Reply -->
-                            <div class="user-comment">
+                            <div class="notification-user-comment">
                                 {{notification[userIndex].employeeMessage.text}}
                             </div>
                         </ng-container>
@@ -102,7 +102,7 @@
 
 
         <!-- Buttons -->
-        <div class="button-container">
+        <div class="notification-button-container">
             <button class="dark-button" (click)="notificationItem.isNew ? archive() : close()">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>
             <button class="gold-button" [disabled]="sendButtonDisabled" (click)="saveEmployeeText(); notificationItem.isNew ? archive() : close()">Send</button>
         </div>

@@ -18,6 +18,7 @@
 @mixin gold-button ($width, $height, $radius) {
     
     color: black;
+    font-weight: bold;
 
     @include button($width, $height, $radius);
     background: linear-gradient(map-get($gold-gradient-map, light), map-get($gold-gradient-map, dark));

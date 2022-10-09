@@ -7,7 +7,7 @@ import { NotificationPopupComponent } from '../notification-popup/notification-p
 
 @Component({
   templateUrl: './user-account-notification-popup.component.html',
-  styleUrls: ['./user-account-notification-popup.component.scss']
+  styleUrls: ['../notification-form/notification-form.component.scss', './user-account-notification-popup.component.scss']
 })
 export class UserAccountNotificationPopupComponent extends NotificationPopupComponent {
   public newNotesAdded: Array<boolean> = new Array<boolean>();
@@ -20,7 +20,9 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     super.ngOnInit();
 
     this.onNotificationLoad.subscribe(() => {
-      if (this.notification[this.userIndex].employeeNotes.length == 0) this.notification[this.userIndex].employeeNotes.push(new NotificationEmployee());
+      (this.notification as Array<UserAccountNotification>).forEach(x => {
+        if (x.employeeNotes.length == 0) x.employeeNotes.push(new NotificationEmployee());
+      });
     });
     this.getNotification<Array<UserAccountNotification>>('api/Notifications/' + (this.isUserName ? 'UserName' : 'UserImage'), [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
   }
@@ -155,9 +157,9 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrike', {
       userId: this.notification[this.userIndex].userId,
       userName: this.isUserName ? this.notification[this.userIndex].userName : null,
-      userImage: !this.isUserName ? this.notification[this.userIndex].userImage: null
-    }).subscribe((removalSuccessful: boolean)=> {
-      if(removalSuccessful) {
+      userImage: !this.isUserName ? this.notification[this.userIndex].userImage : null
+    }).subscribe((removalSuccessful: boolean) => {
+      if (removalSuccessful) {
         this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
       }
     });

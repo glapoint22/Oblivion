@@ -1,6 +1,6 @@
 <div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="popup-base">
+    <div class="notification-popup-base">
 
         <!-- Notification Type -->
         <div class="notification-type-container">
@@ -8,19 +8,19 @@
         </div>
 
         <!-- User -->
-        <div class="label">User {{isUserName ? 'Name' : 'Image'}}:</div>
+        <div class="notification-label">User {{isUserName ? 'Name' : 'Image'}}:</div>
         <div class="image-info-box">
-            <div class="info-bar">
-                <div class="profile-container">
+            <div class="notification-info-bar">
+                <div class="notification-profile-container">
                     <!-- Date -->
-                    <div class="date">
+                    <div class="notification-date">
                         {{user.date | date: 'MMM d, y, h:mm a'}}
                     </div>
 
                     <!-- Image -->
-                    <div class="profile-image-container">
+                    <div class="notification-profile-image-container">
 
-                        <div class="profile-popup-container">
+                        <div class="notification-profile-popup-container">
                             <ng-template #profilePopupContainerTemplate></ng-template>
                         </div>
                         
@@ -46,15 +46,15 @@
 
 
         <!-- Employee -->
-        <div class="label">Notes:</div>
-        <div class="info-box">
+        <div class="notification-label">Notes:</div>
+        <div class="notification-info-box">
             <!-- Notes -->
             <textarea #notes style="height: 128px;"></textarea>
         </div>
        
        
         <!-- Buttons -->
-        <div class="button-container">
+        <div class="notification-button-container">
             <button class="dark-button" (click)="close()">Close</button>
             <button class="gold-button" (click)="remove()">Remove {{isUserName ? 'Name' : 'Image'}}</button>
         </div>

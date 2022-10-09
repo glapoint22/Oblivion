@@ -186,33 +186,3 @@ export enum QueryElementType {
     QueryRow,
     QueryGroup
 }
-
-
-export enum NotificationType {
-    UserName,
-    UserImage,
-    Message,
-    ReviewComplaint,
-    ProductNameDoesNotMatchWithProductDescription,
-    ProductNameDoesNotMatchWithProductImage,
-    ProductNameOther,
-    ProductPriceTooHigh,
-    ProductPriceNotCorrect,
-    ProductPriceOther,
-    VideosAndImagesAreDifferentFromProduct,
-    NotEnoughVideosAndImages,
-    VideosAndImagesNotClear,
-    VideosAndImagesMisleading,
-    VideosAndImagesOther,
-    ProductDescriptionIncorrect,
-    ProductDescriptionTooVague,
-    ProductDescriptionMisleading,
-    ProductDescriptionOther,
-    ProductReportedAsIllegal,
-    ProductReportedAsHavingAdultContent,
-    OffensiveProductOther,
-    ProductInactive,
-    ProductSiteNolongerInService,
-    MissingProductOther,
-    Error
-}

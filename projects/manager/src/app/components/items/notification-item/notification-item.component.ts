@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NotificationType } from '../../../classes/enums';
+import { NotificationType } from 'common';
 import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { ImageItemComponent } from '../image-item/image-item.component';
 

@@ -1,11 +1,11 @@
-<div class="hide popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="hide notification-popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
-    <div class="popup-arrow-container">
-        <div class="popup-arrow-up-Border"></div>
-        <div class="popup-arrow-up-background"></div>
+    <div class="notification-popup-arrow-container">
+        <div class="notification-popup-arrow-up-Border"></div>
+        <div class="notification-popup-arrow-up-background"></div>
     </div>
 
-    <div class="popup-base">
+    <div class="notification-popup-base">
 
          <!-- Notification Type -->
         <div class="notification-type-container">
@@ -22,13 +22,13 @@
 
         
         <!-- User -->
-        <div class="label">User {{isUserName ? 'Name' : 'Image'}}:</div>
+        <div class="notification-label">User {{isUserName ? 'Name' : 'Image'}}:</div>
         <div class="image-info-box">
             <ng-container *ngIf="notification">
-                <div class="info-bar">
+                <div class="notification-info-bar">
 
                     <!-- Counter -->
-                    <div class="counter-container">
+                    <div class="notification-counter-container">
                         <counter *ngIf="notification.length > 1"
                                  [itemCount]="notification.length"
                                  (onItemChange)="userIndex = $event"
@@ -37,16 +37,16 @@
                     </div>
                     
 
-                    <div class="profile-container">
+                    <div class="notification-profile-container">
                         <!-- Date -->
-                        <div class="date">
+                        <div class="notification-date">
                             {{notification[userIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->
-                        <div class="profile-image-container">
+                        <div class="notification-profile-image-container">
 
-                            <div class="profile-popup-container">
+                            <div class="notification-profile-popup-container">
                                 <ng-template #profilePopupContainerTemplate></ng-template>
                             </div>
 
@@ -71,9 +71,9 @@
 
 
         <!-- Employee -->
-        <div class="label-container">
-            <div class="label">Notes:</div>
-            <div *ngIf="notification && (notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName || newNotesAdded[userIndex])" class="notes-button-container">
+        <div class="notification-label-container">
+            <div class="notification-label">Notes:</div>
+            <div *ngIf="notification && (notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName || newNotesAdded[userIndex])" class="notification-employee-notes-button-container">
                 <icon-button [icon]="'fa-solid fa-file-lines'"
                              [title]="'Add New Note'"
                              [fontSize]="'16'"
@@ -83,12 +83,12 @@
             </div>
         </div>
         
-        <div class="info-box">
+        <div class="notification-info-box">
             <ng-container *ngIf="notification">
-                <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName || newNotesAdded[userIndex]" class="info-bar">
+                <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName || newNotesAdded[userIndex]" class="notification-info-bar">
 
                     <!-- Counter -->
-                    <div class="counter-container">
+                    <div class="notification-counter-container">
                         <counter *ngIf="notification[userIndex].employeeNotes.length > 1"
                                  [itemCount]="notification[userIndex].employeeNotes.length"
                                  (onItemChange)="notification[userIndex].employeeIndex = $event"
@@ -96,14 +96,14 @@
                         </counter>
                     </div>
 
-                    <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" class="profile-container">
+                    <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" class="notification-profile-container">
                         <!-- Date -->
-                        <div class="date">
+                        <div class="notification-date">
                             {{notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].date | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->
-                        <div class="profile-image-container">
+                        <div class="notification-profile-image-container">
                             <img [src]="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].image ? 'images/' + notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].image : 'assets/no-account-pic.png'" [title]="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName + ' ' + notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].lastName">
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                 <textarea #notes *ngIf="!notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" [ngStyle]="{'height': newNotesAdded[userIndex] ? '94px' : '128px'}" [(ngModel)]="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].text"></textarea>
             
                 
-                <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" class="user-comment">
+                <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" class="notification-user-comment">
                     {{notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].text}}
                 </div>
             </ng-container>
@@ -121,7 +121,7 @@
         
         
         <!-- Buttons -->
-        <div class="button-container">
+        <div class="notification-button-container">
             <div>
                 <button *ngIf="notificationItem.isNew"  class="notification-button" (click)="openSecondaryButtonPrompt()" [disabled]="secondaryButtonDisabled">Remove {{isUserName ? 'Name' : 'Image'}}</button>
             </div>

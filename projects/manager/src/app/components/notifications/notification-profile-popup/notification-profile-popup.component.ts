@@ -80,13 +80,13 @@ export class NotificationProfilePopupComponent extends LazyLoad {
     this.promptTitle = (!this.user.blockNotificationSending ? 'Block' : 'Unblock') + ' Notification Sending';
     this.promptMessage = this.sanitizer.bypassSecurityTrustHtml(
       'The user' +
-      ' <span style="color: #ffba00">\"' + (this.user.nonAccountUserName ? this.user.nonAccountUserName : this.user.firstName + ' ' + this.user.lastName) + '\"</span>' +
+      ' <span style="color: #ffba00">\"' + (this.user.nonAccountName ? this.user.nonAccountName : this.user.firstName + ' ' + this.user.lastName) + '\"</span>' +
       ' will ' + (!this.user.blockNotificationSending ? 'be blocked' : 'no longer be blocked') + ' from sending notifications.');
     this.promptButtonName = !this.user.blockNotificationSending ? 'Block' : 'Unblock';
     this.promptFunction = () => {
 
       // If the user is a non-account user
-      if (this.user.nonAccountUserName) {
+      if (this.user.nonAccountName) {
 
         // And that user's email is NOT currently blocked
         if (!this.user.blockNotificationSending) {

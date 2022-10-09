@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DataService, DropdownComponent, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, DropdownComponent, LazyLoad, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -11,7 +11,7 @@ export class ReportItemFormComponent extends LazyLoad {
   public isFromRedirect!: boolean;
   public productId!: number;
   public comments!: string;
-  public type: number = 2;
+  public type: number = NotificationType.ProductNameDoesNotMatchWithProductDescription;
   public whereTabElement!: ElementRef<HTMLElement>;
   public whatTabElement!: ElementRef<HTMLElement>;
   @ViewChild('whereDropdown') whereDropdown!: DropdownComponent;
@@ -23,15 +23,15 @@ export class ReportItemFormComponent extends LazyLoad {
       value: [
         {
           key: 'Doesn\'t match with product description',
-          value: 2
+          value: NotificationType.ProductNameDoesNotMatchWithProductDescription
         },
         {
           key: 'Doesn\'t match with product image',
-          value: 3
+          value: NotificationType.ProductNameDoesNotMatchWithProductImage
         },
         {
           key: 'Other',
-          value: 4
+          value: NotificationType.ProductNameOther
         }
       ]
     },
@@ -40,15 +40,15 @@ export class ReportItemFormComponent extends LazyLoad {
       value: [
         {
           key: 'Too high',
-          value: 5
+          value: NotificationType.ProductPriceTooHigh
         },
         {
           key: 'Not correct',
-          value: 6
+          value: NotificationType.ProductPriceNotCorrect
         },
         {
           key: 'Other',
-          value: 7
+          value: NotificationType.ProductPriceOther
         }
       ]
     },
@@ -57,23 +57,23 @@ export class ReportItemFormComponent extends LazyLoad {
       value: [
         {
           key: 'Different from product',
-          value: 8
+          value: NotificationType.VideosAndImagesAreDifferentFromProduct
         },
         {
           key: 'Not enough',
-          value: 9
+          value: NotificationType.NotEnoughVideosAndImages
         },
         {
           key: 'Not clear',
-          value: 10
+          value: NotificationType.VideosAndImagesNotClear
         },
         {
           key: 'Misleading',
-          value: 11
+          value: NotificationType.VideosAndImagesMisleading
         },
         {
           key: 'Other',
-          value: 12
+          value: NotificationType.VideosAndImagesOther
         }
       ]
     },
@@ -82,19 +82,19 @@ export class ReportItemFormComponent extends LazyLoad {
       value: [
         {
           key: 'Incorrect description',
-          value: 13
+          value: NotificationType.ProductDescriptionIncorrect
         },
         {
           key: 'Too vague',
-          value: 14
+          value: NotificationType.ProductDescriptionTooVague
         },
         {
           key: 'Misleading',
-          value: 15
+          value: NotificationType.ProductDescriptionMisleading
         },
         {
           key: 'Other',
-          value: 16
+          value: NotificationType.ProductDescriptionOther
         }
       ]
     },
@@ -103,15 +103,15 @@ export class ReportItemFormComponent extends LazyLoad {
       value: [
         {
           key: 'Illegal product',
-          value: 17
+          value: NotificationType.ProductReportedAsIllegal
         },
         {
           key: 'Adult content',
-          value: 18
+          value: NotificationType.ProductReportedAsHavingAdultContent
         },
         {
           key: 'Other',
-          value: 19
+          value: NotificationType.OffensiveProductOther
         }
       ]
     },
@@ -120,15 +120,15 @@ export class ReportItemFormComponent extends LazyLoad {
       value: [
         {
           key: 'Inactive product',
-          value: 20
+          value: NotificationType.ProductInactive
         },
         {
           key: 'Product site is no longer in service',
-          value: 21
+          value: NotificationType.ProductSiteNolongerInService
         },
         {
           key: 'Other',
-          value: 22
+          value: NotificationType.MissingProductOther
         }
       ]
     }
@@ -160,10 +160,12 @@ export class ReportItemFormComponent extends LazyLoad {
 
 
   onSubmit() {
-    this.dataService.post('api/Notifications', {
-      productId: this.productId,
+
+
+    this.dataService.post('api/Notifications/Post', {
       type: this.type,
-      comments: this.comments
+      productId: this.productId,
+      text: this.comments != null && this.comments.trim().length > 0 ? this.comments.trim() : null
     }, {
       authorization: true,
       spinnerAction: SpinnerAction.Start

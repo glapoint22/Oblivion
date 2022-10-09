@@ -6,12 +6,12 @@
 
             <!-- Profile Image -->
             <div class="profile-image-container" 
-                 [ngStyle]="{'background': user.nonAccountUserName ? 'none' : '#555555',
-                             'outline': user.nonAccountUserName ? 'none' : '1px solid #868686',
-                             'margin-top': user.nonAccountUserName ? '-1px' : '2px'}">
+                 [ngStyle]="{'background': user.nonAccountName ? 'none' : '#555555',
+                             'outline': user.nonAccountName ? 'none' : '1px solid #868686',
+                             'margin-top': user.nonAccountName ? '-1px' : '2px'}">
            
-                <img [src]="user.nonAccountUserName ? 'assets/message-notification.png' : user.image ? 'images/' + user.image : 'assets/no-account-pic.png'"
-                     [ngStyle]="{'border-radius': user.nonAccountUserName ? 'none' : '50%'}">
+                <img [src]="user.nonAccountName ? 'assets/message-notification.png' : user.image ? 'images/' + user.image : 'assets/no-account-pic.png'"
+                     [ngStyle]="{'border-radius': user.nonAccountName ? 'none' : '50%'}">
             </div>
 
 
@@ -19,19 +19,19 @@
             <div class="profile-info-container">
                 <!-- Profile Name -->
                 <div class="profile-name">
-                    <span class="first-name">{{user.nonAccountUserName ? user.nonAccountUserName : user.firstName}}</span>
+                    <span class="first-name">{{user.nonAccountName ? user.nonAccountName : user.firstName}}</span>
                     <span>{{user.lastName}}</span>
                 </div>
 
                 <!-- User Info -->
                 <ng-container *ngIf="!isReview">
-                    <ng-container *ngIf="user.nonAccountUserName">
+                    <ng-container *ngIf="user.nonAccountName">
                         <div class="user-email" [title]="user.email">
                             {{user.email}}
                         </div>
                     </ng-container>
                     
-                    <ng-container *ngIf="!user.nonAccountUserName">
+                    <ng-container *ngIf="!user.nonAccountName">
                         <span class="user-compliant-type">Noncompliant Strikes:</span>
                         <span>{{user.noncompliantStrikes}}</span>
                     </ng-container>

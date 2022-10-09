@@ -1,13 +1,13 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { NotificationType } from 'common';
 import { Subject } from 'rxjs';
-import { NotificationType } from '../../../classes/enums';
 import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { NotificationProfilePopupUser } from '../../../classes/notifications/notification-profile-popup-user';
 import { NotificationFormComponent } from '../notification-form/notification-form.component';
 
 @Component({
   templateUrl: './user-account-notification-form.component.html',
-  styleUrls: ['./user-account-notification-form.component.scss']
+  styleUrls: ['../notification-form/notification-form.component.scss', './user-account-notification-form.component.scss']
 })
 export class UserAccountNotificationFormComponent extends NotificationFormComponent {
   private removedButtonClicked!: boolean;
@@ -45,10 +45,10 @@ export class UserAccountNotificationFormComponent extends NotificationFormCompon
       // If the removal of the name or the image was successful
       if (removalSuccessful) {
 
-        // Create the notification
-        this.dataService.post<NotificationItem>('api/Notifications/CreateNotification', {
+        // Post a new notification
+        this.dataService.post<NotificationItem>('api/Notifications/Post', {
           userId: this.user.userId,
-          notificationType: this.isUserName ? NotificationType.UserName : NotificationType.UserImage,
+          type: this.isUserName ? NotificationType.UserName : NotificationType.UserImage,
           userName: this.isUserName ? this.user.firstName + ' ' + this.user.lastName : null,
           userImage: !this.isUserName ? this.user.image : null,
           employeeNotes: this.isEmployeeNotesWritten() ? this.notes.nativeElement.value : null

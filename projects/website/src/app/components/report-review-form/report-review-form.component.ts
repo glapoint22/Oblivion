@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, LazyLoad, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -26,11 +26,11 @@ export class ReportReviewFormComponent extends LazyLoad {
 
 
   onSubmit() {
-    this.dataService.post('api/Notifications', {
+    this.dataService.post('api/Notifications/Post', {
       productId: this.productId,
       reviewId: this.reviewId,
-      type: 1,
-      comments: this.comments
+      type: NotificationType.Review,
+      text: this.comments != null && this.comments.trim().length > 0 ? this.comments.trim() : null
     }, {
       authorization: true,
       spinnerAction: SpinnerAction.Start

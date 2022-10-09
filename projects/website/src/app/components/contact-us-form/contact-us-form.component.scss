@@ -1,3 +1,12 @@
 .message-text {
     margin-bottom: 19px;
 }
+
+
+input {
+
+    &:disabled {
+        opacity: 1;
+        cursor: text;
+    }
+}

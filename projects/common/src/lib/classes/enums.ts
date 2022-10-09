@@ -59,3 +59,34 @@ export enum ImageSizeType {
     Medium = 500,
     Large = 675
 }
+
+
+
+export enum NotificationType {
+    UserName,
+    UserImage,
+    Message,
+    Review,
+    ProductNameDoesNotMatchWithProductDescription,
+    ProductNameDoesNotMatchWithProductImage,
+    ProductNameOther,
+    ProductPriceTooHigh,
+    ProductPriceNotCorrect,
+    ProductPriceOther,
+    VideosAndImagesAreDifferentFromProduct,
+    NotEnoughVideosAndImages,
+    VideosAndImagesNotClear,
+    VideosAndImagesMisleading,
+    VideosAndImagesOther,
+    ProductDescriptionIncorrect,
+    ProductDescriptionTooVague,
+    ProductDescriptionMisleading,
+    ProductDescriptionOther,
+    ProductReportedAsIllegal,
+    ProductReportedAsHavingAdultContent,
+    OffensiveProductOther,
+    ProductInactive,
+    ProductSiteNolongerInService,
+    MissingProductOther,
+    Error
+}

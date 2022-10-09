@@ -13,19 +13,25 @@
 
 
 
-.info-box {
+.notification-info-box {
     margin: 3px 0 13px;
 }
 
 
-.profile-image-container {
+
+.notification-info-bar {
+    border: 2px solid #282828;
+}
+
+
+.notification-profile-image-container {
     img {
         border-radius: 50%;
     }
 }
 
 
-.profile-popup-container {
+.notification-profile-popup-container {
     top: -110px;
 }
 
@@ -47,7 +53,7 @@
 
 
 .image-info-box {
-    @extend .info-box;
+    @extend .notification-info-box;
     height: 114px;
     background: none;
     border: 1px solid #454545;

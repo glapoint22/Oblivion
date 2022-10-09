@@ -1,23 +1,25 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
-import { DataService, LazyLoad } from 'common';
+import { DataService, LazyLoad, NotificationType } from 'common';
 import { Subject } from 'rxjs';
-import { NotificationType } from '../../classes/enums';
 import { NotificationItem } from '../../classes/notifications/notification-item';
+import { NotificationQueue } from '../../classes/notifications/notification-queue';
 import { NotificationPopupComponent } from '../../components/notifications/notification-popup/notification-popup.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
+  // Private
+  private _notificationCount: number = 0;
   private getNotificationsTimer!: number;
 
+  // Public
+  public refreshNotificationsInProgress!: boolean;
   public notificationPopupContainer!: ViewContainerRef;
   public notificationPopup!: NotificationPopupComponent;
   public onNotificationCount: Subject<number> = new Subject<number>();
   public newNotifications!: Array<NotificationItem>;
   public archiveNotifications: Array<NotificationItem> = new Array<NotificationItem>();
-
-  private _notificationCount: number = 0;
   public get notificationCount(): number {
     return this._notificationCount;
   }
@@ -36,30 +38,35 @@ export class NotificationService {
   getNewNotifications() {
     this.getNotificationCount();
 
-    // this.getNotificationsTimer = window.setTimeout(() => {
-    //   this.getNewNotifications();
-    // }, 50000)
+    this.getNotificationsTimer = window.setTimeout(() => {
+      this.getNewNotifications();
+    }, 50000)
   }
 
   getNotificationCount() {
-    this.dataService.get<{ count: number, notifications: Array<NotificationItem> }>('api/Notifications/Count', [{ key: 'currentCount', value: this.notificationCount }])
-      .subscribe((x: { count: number, notifications: Array<NotificationItem> }) => {
+    // Query the database to get a count of how many notifications are currently in the queue
+    this.dataService.get<NotificationQueue>('api/Notifications/Count', [{ key: 'currentCount', value: this.notificationCount }])
+      .subscribe((notificationQueue: NotificationQueue) => {
+        
+        // If the number of notifications in the queue are different from the number of notifications we have in our list
+        if (notificationQueue != null) {
+          // Update the count of the list
+          this.notificationCount = notificationQueue.count;
 
-
-        if (x != null) {
-          this.notificationCount = x.count;
-
+          // Update the list
           this.newNotifications = new Array<NotificationItem>();
-          x.notifications.forEach(y => {
+          notificationQueue.notifications.forEach(y => {
             y.name = y.notificationType == NotificationType.Message ? y.email : this.getNotificationName(y.notificationType);
             this.newNotifications.push(y);
           })
         }
+        this.refreshNotificationsInProgress = false;
       });
   }
 
 
   refreshNotifications() {
+    this.refreshNotificationsInProgress = true;
     clearTimeout(this.getNotificationsTimer);
     this.getNewNotifications();
   }
@@ -158,7 +165,7 @@ export class NotificationService {
         notificationName = "User Image";
         break;
 
-      case NotificationType.ReviewComplaint:
+      case NotificationType.Review:
         notificationName = "Review Complaint";
         break;
 
