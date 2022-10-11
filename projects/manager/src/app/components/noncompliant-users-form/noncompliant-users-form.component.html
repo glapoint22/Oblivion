@@ -1,0 +1,33 @@
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div class="modal-base">
+        <div class="modal-bar">
+            <div>Noncompliant Users</div>
+            <div class="modal-x-button"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+
+        <div class="modal-content">
+            <div class="header" [ngStyle]="{'padding-right': nonCompliantUsers.length <= 10 ? '9px' : '23px'}">
+                <div>Users</div>
+                <div>Strikes</div>
+            </div>
+            <div class="modal-list-container">
+                <multi-column-list [sourceList]="nonCompliantUsers">
+                </multi-column-list>
+            </div>
+        </div>
+
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button class="dark-button"
+                    (click)="close()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>

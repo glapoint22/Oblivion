@@ -92,7 +92,8 @@ export class NotificationProfilePopupComponent extends LazyLoad {
         if (!this.user.blockNotificationSending) {
           // Block user's email
           this.dataService.post('api/Notifications/BlockNonAccountEmail', {
-            email: this.user.email
+            email: this.user.email,
+            userName: this.user.nonAccountName
           }).subscribe();
 
           // But if the user's email IS blocked

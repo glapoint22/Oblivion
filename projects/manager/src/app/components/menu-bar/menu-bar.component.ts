@@ -88,6 +88,9 @@ export class MenuBarComponent {
             optionFunction: this.openVendorForm
           },
           {
+            type: MenuOptionType.Divider
+          },
+          {
             type: MenuOptionType.MenuItem,
             name: 'Filters',
             shortcut: 'Shift+F',
@@ -104,6 +107,21 @@ export class MenuBarComponent {
             name: 'Product Groups',
             shortcut: 'Alt+G',
             optionFunction: this.openProductGroupsForm
+          },
+          {
+            type: MenuOptionType.Divider
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Blocked Users',
+            shortcut: 'Alt+B',
+            optionFunction: this.openBlockedUserForm
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Noncompliant Users',
+            shortcut: 'Alt+N',
+            optionFunction: this.openNoncompliantUserForm
           }
         ]
       },
@@ -332,6 +350,32 @@ export class MenuBarComponent {
       return {
         component: ProductGroupsFormComponent,
         module: ProductGroupsFormModule
+      }
+    }, SpinnerAction.None)
+  }
+
+
+
+  openBlockedUserForm() {
+    this.lazyLoadingService.load(async () => {
+      const { BlockedUsersFormComponent } = await import('../blocked-users-form/blocked-users-form.component');
+      const { BlockedUsersFormModule } = await import('../blocked-users-form/blocked-users-form.module');
+      return {
+        component: BlockedUsersFormComponent,
+        module: BlockedUsersFormModule
+      }
+    }, SpinnerAction.None)
+  }
+
+
+
+  openNoncompliantUserForm() {
+    this.lazyLoadingService.load(async () => {
+      const { NoncompliantUsersFormComponent } = await import('../noncompliant-users-form/noncompliant-users-form.component');
+      const { NoncompliantUsersFormModule } = await import('../noncompliant-users-form/noncompliant-users-form.module');
+      return {
+        component: NoncompliantUsersFormComponent,
+        module: NoncompliantUsersFormModule
       }
     }, SpinnerAction.None)
   }
