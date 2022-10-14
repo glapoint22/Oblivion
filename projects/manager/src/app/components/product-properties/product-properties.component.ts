@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct, Video } from 'common';
@@ -39,6 +39,7 @@ export class ProductPropertiesComponent {
   private recurringPopup!: RecurringPopupComponent;
   private hoplinkPopup!: HoplinkPopupComponent;
 
+  public viewRef!: ViewRef;
   public vendorPopup!: VendorPopupComponent;
   public zIndex!: number;
   public product: Product = new Product();

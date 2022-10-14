@@ -19,6 +19,7 @@ export class ProductService {
   private productId!: number;
 
   public zIndex: number = 0;
+  public selectedProduct!: ProductPropertiesComponent;
   public productsContainer!: ViewContainerRef;
   public sideMenuNicheArray: Array<HierarchyItem> = new Array<HierarchyItem>();
   public formFilterArray: Array<HierarchyItem> = new Array<HierarchyItem>();
@@ -29,10 +30,9 @@ export class ProductService {
   public formProductGroupSearchArray: Array<ListItem> = new Array<ListItem>();
   public productComponents: Array<ProductPropertiesComponent> = new Array<ProductPropertiesComponent>();
   public onProductSelect: Subject<void> = new Subject<void>();
-
-
   public onProductOpen: Subject<ProductPropertiesComponent> = new Subject<ProductPropertiesComponent>();
 
+  
   constructor(private resolver: ComponentFactoryResolver, private dataService: DataService) { }
 
 
@@ -48,16 +48,19 @@ export class ProductService {
           const productComponentFactory: ComponentFactory<ProductPropertiesComponent> = this.resolver.resolveComponentFactory(ProductPropertiesComponent);
           const productComponentRef = this.productsContainer.createComponent(productComponentFactory);
           const productComponent: ProductPropertiesComponent = productComponentRef.instance;
+          productComponentRef.instance.viewRef = productComponentRef.hostView;
 
           this.productComponents.push(productComponent);
           productComponent.product = product;
           productComponent.zIndex = this.zIndex;
+          this.selectedProduct = productComponent;
           this.onProductOpen.next(productComponent);
         })
 
       // If the product is already open
     } else {
       openedProduct.zIndex = this.zIndex;
+      this.selectedProduct = openedProduct;
       this.onProductOpen.next(openedProduct);
     }
   }
@@ -103,7 +106,6 @@ export class ProductService {
 
       // If the niches have already been loaded into the niches side menu
     } else {
-
       // Show the product in the niches side menu hierarchy
       this.showProductInHierarchy(productId);
     }
