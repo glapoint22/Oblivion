@@ -4,7 +4,7 @@
         <!-- Niche Shack Icon -->
         <div class="shack-container"
              (click)="openNichesSideMenu()"
-             (mousedown)="$event.stopPropagation()">
+             (mousedown)="$event.stopPropagation(); productService.productTabContextMenu ? productService.productTabContextMenu.close() : null">
             <img src="assets/shack.png">
         </div>
 
@@ -30,7 +30,7 @@
              [ngStyle]="{'margin-right': notificationCount > 0 ? '4px' : '24px'}"
              (click)="openNotificationListPopup()"
              
-             (mousedown)="$event.stopPropagation()">
+             (mousedown)="$event.stopPropagation(); productService.productTabContextMenu ? productService.productTabContextMenu.close() : null">
 
             <i class="fa-solid fa-bell"></i>
 

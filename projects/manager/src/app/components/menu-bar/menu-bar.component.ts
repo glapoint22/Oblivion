@@ -7,6 +7,7 @@ import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.co
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { NotificationService } from '../../services/notification/notification.service';
 import { NotificationListPopupComponent } from '../notifications/notification-list-popup/notification-list-popup.component';
+import { ProductService } from '../../services/product/product.service';
 
 @Component({
   selector: 'menu-bar',
@@ -31,8 +32,7 @@ export class MenuBarComponent {
   @ViewChild('notificationPopup', { read: ViewContainerRef }) notificationPopupContainer!: ViewContainerRef;
 
   // Constructor
-  constructor(public lazyLoadingService: LazyLoadingService, private router: Router, private notificationService: NotificationService) { }
-
+  constructor(public lazyLoadingService: LazyLoadingService, private router: Router, private notificationService: NotificationService, public productService: ProductService) { }
 
   ngOnInit() {
     this.notificationService.onNotificationCount.subscribe((notificationCount) => {

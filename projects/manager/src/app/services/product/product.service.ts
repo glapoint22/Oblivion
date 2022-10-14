@@ -8,6 +8,7 @@ import { MultiColumnItem } from '../../classes/multi-column-item';
 import { NicheHierarchy } from '../../classes/niche-hierarchy';
 import { NotificationItem } from '../../classes/notifications/notification-item';
 import { Product } from '../../classes/product';
+import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { ProductPropertiesComponent } from '../../components/product-properties/product-properties.component';
 
 @Injectable({
@@ -18,6 +19,7 @@ export class ProductService {
   private subNicheId!: number;
   private productId!: number;
 
+  public productTabContextMenu!: ContextMenuComponent;
   public zIndex: number = 0;
   public selectedProduct!: ProductPropertiesComponent;
   public productsContainer!: ViewContainerRef;

@@ -1,33 +1,43 @@
-<div class="product-builder-container">
+<div class="product-builder-container" (contextmenu)="$event.preventDefault()">
 
     <!-- Tabs Container -->
-    <div #tabsContainer class="product-tabs-container">
+    <div #tabsContainer class="tabs-container">
         
         <!-- Tab -->
         <ng-container *ngFor="let productComponent of productService.productComponents; let i = index">
             <!-- Unselected Tab -->
-            <div *ngIf="productComponent != productService.selectedProduct" class="tab" (contextmenu)="$event.preventDefault()" (mousedown)="onTabMouseDown($event, i, productComponent)" [title]="productComponent.product.name">
+            <div *ngIf="productComponent != productService.selectedProduct"
+                 class="tab"
+                 (contextmenu)="$event.preventDefault()"
+                 (mousedown)="onTabMouseDown($event, i)"
+                 [title]="productComponent.product.name">
+
                 <div class="padding-left"></div>
                 <div class="tab-label" [style.width.px]="getTabLabelWidth(tabsContainer)">{{productComponent.product.name}}</div>
-                <div class="x" (mousedown)="$event.stopPropagation()" (click)="closeProduct(i, productComponent)">x</div>
+                <div class="x"
+                     (mousedown)="$event.stopPropagation(); productService.productTabContextMenu ? productService.productTabContextMenu.close() : null"
+                     (click)="closeProduct(i)">x</div>
                 <div class="padding-right"></div>
             </div>
             
             <!-- Selected Tab -->
-            <div *ngIf="productComponent == productService.selectedProduct" class="selected-tab" (contextmenu)="$event.preventDefault()" [style.zIndex]="this.productService.zIndex + 1" (mousedown)="onTabMouseDown($event, i, productComponent)" [title]="productComponent.product.name">
+            <div *ngIf="productComponent == productService.selectedProduct"
+                 class="selected-tab"
+                 (contextmenu)="$event.preventDefault()"
+                 [style.zIndex]="this.productService.zIndex + 1"
+                 (mousedown)="onTabMouseDown($event, i)"
+                 [title]="productComponent.product.name">
+
                 <div class="padding-left"></div>
                 <div class="tab-label" [style.width.px]="getTabLabelWidth(tabsContainer)">{{productComponent.product.name}}</div> 
-                <div class="x" (mousedown)="$event.stopPropagation()" (click)="closeProduct(i, productComponent)">x</div>
+                <div class="x"
+                     (mousedown)="$event.stopPropagation(); productService.productTabContextMenu ? productService.productTabContextMenu.close() : null"
+                     (click)="closeProduct(i)">x</div>
                 <div class="padding-right"></div>
                 <div class="selected-tab-curve-left"></div>
                 <div class="selected-tab-curve-right"></div>
             </div>
         </ng-container>
     </div>
-
-
-
-
-
     <ng-template #productsContainer></ng-template>
 </div>

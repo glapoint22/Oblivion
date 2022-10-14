@@ -2,7 +2,6 @@ import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../classes/enums';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
-import { ProductPropertiesComponent } from '../../components/product-properties/product-properties.component';
 import { ProductService } from '../../services/product/product.service';
 
 @Component({
@@ -11,15 +10,25 @@ import { ProductService } from '../../services/product/product.service';
   styleUrls: ['./product-builder.component.scss']
 })
 export class ProductBuilderComponent {
-  constructor(public productService: ProductService, private lazyLoadingService: LazyLoadingService) { }
   @ViewChild('productsContainer', { read: ViewContainerRef }) productsContainer!: ViewContainerRef;
 
 
+  // ===================================================================( CONSTRUCTOR )===================================================================== \\
+  
+  constructor(public productService: ProductService, private lazyLoadingService: LazyLoadingService) { }
+
+
+
+  // ================================================================( NG AFTER VIEW INIT )================================================================= \\
+  
   ngAfterViewInit() {
     this.productService.productsContainer = this.productsContainer;
   }
 
 
+
+  // ================================================================( GET TAB LABEL WIDTH )================================================================ \\
+  
   getTabLabelWidth(tabsContainer: HTMLElement) {
     const leftPadding = 10;
     const x = 16;
@@ -29,139 +38,214 @@ export class ProductBuilderComponent {
   }
 
 
-  onTabMouseDown(e: MouseEvent, tabIndex: number, product: ProductPropertiesComponent) {
 
+  // =================================================================( ON TAB MOUSE DOWN )================================================================= \\
+  
+  onTabMouseDown(e: MouseEvent, tabIndex: number) {
+    // As long as we're not right clicking on the tab
+    if (e.button != 2) {
+      // Show the product
+      this.showProduct(tabIndex);
 
-    if (e.button == 2) {
-
-      this.lazyLoadingService.load(async () => {
-        const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
-        const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
-
-        return {
-          component: ContextMenuComponent,
-          module: ContextMenuModule
-        }
-      }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
-        contextMenu.xPos = e.clientX + 5;
-        contextMenu.yPos = e.clientY + 5;
-        contextMenu.options = [
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Close',
-            optionFunction: () => {
-              this.closeProduct(tabIndex, product);
-            }
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Close Others',
-            optionFunction: () => {
-              this.closeOthers(product);
-            }
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Close All',
-            optionFunction: () => {
-              this.closeAll();
-            }
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Close to the Right',
-            optionFunction: () => {
-              this.closeToTheRight(tabIndex);
-            }
-          }
-        ]
-      });
-
-
+      // If we are right clicking on the tab
     } else {
 
-      if (product != this.productService.selectedProduct) this.productService.goToProduct(product.product.id);
+      // Open the context menu
+      this.openContextMenu(e, tabIndex);
     }
   }
 
 
 
+  // ===================================================================( SHOW PRODUCT )==================================================================== \\
+  
+  showProduct(tabIndex: number) {
+    // As long as we're NOT selecting a tab that is already selected
+    if (this.productService.productComponents[tabIndex] != this.productService.selectedProduct) {
+      // Show the product
+      this.productService.goToProduct(this.productService.productComponents[tabIndex].product.id);
+    }
+  }
 
-  closeProduct(tabIndex: number, product: ProductPropertiesComponent) {
 
-    if (product == this.productService.selectedProduct) {
-      if (this.productService.productComponents.length - 1 > tabIndex) {
-        this.productService.goToProduct(this.productService.productComponents[tabIndex + 1].product.id)
 
-      } else if (tabIndex > 0) {
+  // =================================================================( OPEN CONTEXT MENU )================================================================= \\
+  
+  openContextMenu(e: MouseEvent, tabIndex: number) {
+    this.lazyLoadingService.load(async () => {
+      const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
+      const { ContextMenuModule } = await import('../../components/context-menu/context-menu.module');
 
-        this.productService.goToProduct(this.productService.productComponents[tabIndex - 1].product.id)
+      return {
+        component: ContextMenuComponent,
+        module: ContextMenuModule
+      }
+    }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
+      this.productService.productTabContextMenu = contextMenu;
+      contextMenu.xPos = e.clientX + 5;
+      contextMenu.yPos = e.clientY + 5;
+      contextMenu.options = this.getContextMenuOptions(tabIndex);
 
-      } else {
+      const contextMenuOpenListener = contextMenu.menuOpen.subscribe((menuOpen: boolean) => {
+        contextMenuOpenListener.unsubscribe();
+        this.productService.productTabContextMenu = null!;
+      })
+    });
+  }
 
-        const selectedItem = this.productService.sideMenuNicheArray.filter(x => x.selectType != null || x.selected == true)[0];
 
-        // If so, remove the selection from that item
-        if (selectedItem) {
-          selectedItem.selectType = null!;
-          selectedItem.selected = null!;
+
+  // =============================================================( GET CONTEXT MENU OPTIONS )============================================================== \\
+  
+  getContextMenuOptions(tabIndex: number) {
+    return [
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Close',
+        optionFunction: () => {
+          this.closeProduct(tabIndex);
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Close Others',
+        isDisabled: this.productService.productComponents.length == 1,
+        optionFunction: () => {
+          this.closeOthers(tabIndex);
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Close All',
+        isDisabled: this.productService.productComponents.length == 1,
+        optionFunction: () => {
+          this.closeAll();
+        }
+      },
+      {
+        type: MenuOptionType.MenuItem,
+        name: 'Close to the Right',
+        isDisabled: tabIndex == this.productService.productComponents.length - 1,
+        optionFunction: () => {
+          this.closeToTheRight(tabIndex);
         }
       }
-    }
-
-    this.productService.productComponents.splice(tabIndex, 1);
-    const productIndex = this.productService.productsContainer.indexOf(product.viewRef);
-    this.productService.productsContainer.remove(productIndex);
+    ]
   }
 
 
-  closeOthers(product: ProductPropertiesComponent) {
-    var index = 0;
 
-    while (this.productService.productComponents.length > 1) {
-      if (this.productService.productComponents[index] == product) index = 1;
-      const productIndex = this.productService.productsContainer.indexOf(this.productService.productComponents[index].viewRef);
-      this.productService.productsContainer.remove(productIndex);
-      this.productService.productComponents.splice(index, 1);
+  // ===================================================================( CLOSE PRODUCT )=================================================================== \\
+  
+  closeProduct(tabIndex: number) {
+    // If we're closing a selected tab
+    if (this.productService.productComponents[tabIndex] == this.productService.selectedProduct) {
+
+      // If there's a tab to the right
+      if (this.productService.productComponents.length - 1 > tabIndex) {
+        // Select that tab that's to the right
+        this.productService.goToProduct(this.productService.productComponents[tabIndex + 1].product.id)
+
+        // If there's a tab to the left
+      } else if (tabIndex > 0) {
+
+        // Select that tab that's to the left
+        this.productService.goToProduct(this.productService.productComponents[tabIndex - 1].product.id)
+
+        // If there is NO tab to the left and NO tab to the right
+      } else {
+        this.unselectListItem();
+      }
     }
+    // Remove product
+    this.removeProduct(tabIndex);
+  }
 
+
+
+  // ===================================================================( CLOSE OTHERS )==================================================================== \\
+  
+  closeOthers(tabIndex: number) {
+    var index = 0;
+    const product = this.productService.productComponents[tabIndex];
+
+    // Loop until all products are closed except one
+    while (this.productService.productComponents.length > 1) {
+      // When we come across the tab we (DON'T) want to close
+      // Chage the value of the index from 0 to 1
+      // This will remove all other tabs becuase the tab we (DON'T) want to close
+      // will have an index of 0 and all the rest will eventually get an index of 1
+      if (this.productService.productComponents[index] == product) index = 1;
+
+      // Remove product
+      this.removeProduct(index);
+    }
+    // If the tab we (DON'T) want to close was (NOT) selected, then select it now
     if (product != this.productService.selectedProduct) this.productService.goToProduct(product.product.id)
   }
 
 
 
+  // =====================================================================( CLOSE ALL )===================================================================== \\
+  
   closeAll() {
+    // Loop until all products are closed
     while (this.productService.productComponents.length > 0) {
-      const productIndex = this.productService.productsContainer.indexOf(this.productService.productComponents[0].viewRef);
-      this.productService.productsContainer.remove(productIndex);
-      this.productService.productComponents.splice(0, 1);
+      // Remove product
+      this.removeProduct(0);
     }
+    this.unselectListItem();
+  }
 
-    const selectedItem = this.productService.sideMenuNicheArray.filter(x => x.selectType != null || x.selected == true)[0];
 
-    // If so, remove the selection from that item
-    if (selectedItem) {
-      selectedItem.selectType = null!;
-      selectedItem.selected = null!;
+
+  // =================================================================( CLOSE TO THE RIGHT )================================================================ \\
+  
+  closeToTheRight(tabIndex: number) {
+    var index = 0;
+
+    // Loop until all products to the right of the tab we right-clicked on are closed
+    while (this.productService.productComponents.length > tabIndex + 1) {
+      // If a tab is to the right of the tab we right-clicked on
+      if (index > tabIndex) {
+
+        // And that tab happens to be selected,
+        // then select the tab we right-clicked on
+        if (this.productService.productComponents[index] == this.productService.selectedProduct) this.productService.goToProduct(this.productService.productComponents[tabIndex].product.id)
+
+        // Remove product
+        this.removeProduct(index);
+
+        // If a tab is (NOT) to the right of the tab we right-clicked on 
+      } else {
+        // Keep iterating through each index until we reach a tab that is right of the tab we right-clicked on
+        index++;
+      }
     }
   }
 
 
-  closeToTheRight(tabIndex: number) {
-    var index = 0;
 
-    while (this.productService.productComponents.length > tabIndex + 1) {
-      if (index > tabIndex) {
+  // ==================================================================( REMOVE PRODUCT )=================================================================== \\
+  
+  removeProduct(index: number) {
+    const productIndex = this.productService.productsContainer.indexOf(this.productService.productComponents[index].viewRef);
+    this.productService.productsContainer.remove(productIndex);
+    this.productService.productComponents.splice(index, 1);
+  }
 
-        if (this.productService.productComponents[index] == this.productService.selectedProduct) this.productService.goToProduct(this.productService.productComponents[tabIndex].product.id)
 
-        const productIndex = this.productService.productsContainer.indexOf(this.productService.productComponents[index].viewRef);
-        this.productService.productsContainer.remove(productIndex);
-        this.productService.productComponents.splice(index, 1);
-      }else {
-        index++;
-      }
 
+  // ================================================================( UNSELECT LIST ITEM )================================================================= \\
+
+  unselectListItem() {
+    // Find the the selected list item in the niche hierarchy of the product that's being closed
+    const selectedItem = this.productService.sideMenuNicheArray.filter(x => x.selectType != null || x.selected == true)[0];
+
+    // And unselect that list item
+    if (selectedItem) {
+      selectedItem.selectType = null!;
+      selectedItem.selected = null!;
     }
   }
 }

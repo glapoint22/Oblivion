@@ -6,6 +6,10 @@ import { NotificationEmployee } from '../../../classes/notifications/notificatio
 import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { KeyValue } from '@angular/common';
 import { ProductNotification } from '../../../classes/notifications/product-notification';
+import { DomSanitizer } from '@angular/platform-browser';
+import { LazyLoadingService, DataService } from 'common';
+import { NotificationService } from '../../../services/notification/notification.service';
+import { ProductService } from '../../../services/product/product.service';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
@@ -16,6 +20,17 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   public notificationItems!: Array<NotificationItem>;
   public notificationItemDropdownList: Array<KeyValue<string, number>> = [];
   public selectedNotificationItem!: KeyValue<string, number>;
+
+
+  // ====================================================================( CONSTRUCTOR )==================================================================== \\
+
+  constructor(lazyLoadingService: LazyLoadingService,
+    dataService: DataService,
+    notificationService: NotificationService,
+    sanitizer: DomSanitizer,
+    private productService: ProductService) {
+    super(lazyLoadingService, dataService, notificationService, sanitizer);
+  }
 
 
   // ====================================================================( NG ON INIT )===================================================================== \\
@@ -165,7 +180,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.productService.productTabContextMenu) {
       if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded) && !this.secondaryButtonDisabled) {
         this.close();
       } else {
