@@ -1,7 +1,8 @@
 <button class="icon-button"
+        tabindex="-1"
         [title]="title ? title : ''"
         (mousedown)="$event.stopPropagation()"
         (click)="!isDisabled ? onClick.next() : null"
         [disabled]="isDisabled">
-    <i style="pointer-events: none;" [class]="icon" [style.fontSize.px]="!fontSize ? 13 : fontSize"></i>
+    <i style="pointer-events: none;" [class]="icon" [style.fontSize.px]="!fontSize ? 13 : fontSize" [tabindex]="0"></i>
 </button>

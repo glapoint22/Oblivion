@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
+import { Subject } from 'rxjs';
 import { PopupArrowPosition } from '../../classes/enums';
 
 @Component({
@@ -13,6 +14,18 @@ export class HoplinkPopupComponent extends LazyLoad {
   public PopupArrowPosition = PopupArrowPosition;
   public hoplink!: string;
   public callback!: Function;
+  public onClose: Subject<void> = new Subject<void>();
+
+
+  ngOnInit() {
+    super.ngOnInit();
+    window.addEventListener('mousedown', this.mousedown);
+  }
+
+
+  mousedown = () => {
+    this.close();
+  }
 
 
   ngAfterViewInit(): void {
@@ -27,5 +40,16 @@ export class HoplinkPopupComponent extends LazyLoad {
   onSubmitClick() {
     this.callback(this.hoplink);
     this.close();
+  }
+
+
+  close(): void {
+    super.close();
+    this.onClose.next();
+  }
+
+
+  ngOnDestroy() {
+    window.removeEventListener('mousedown', this.mousedown);
   }
 }

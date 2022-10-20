@@ -30,7 +30,6 @@ export class VendorProductsPopupComponent extends LazyLoad {
     }
   }
 
-
   @Output() onGoToProductClick: EventEmitter<void> = new EventEmitter();
 
 

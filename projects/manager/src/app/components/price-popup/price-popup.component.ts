@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'price-popup',
@@ -12,39 +13,52 @@ export class PricePopupComponent extends LazyLoad {
   public callback!: Function;
   public top!: number;
   public left!: number;
+  public onClose: Subject<void> = new Subject<void>();
+  public submitButtonDisabled: boolean = true;
   
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
     this.priceInput.nativeElement.value = this.price.toFixed(2);
-
-    window.setTimeout(() => {
-      this.priceInput.nativeElement.focus();
-      this.priceInput.nativeElement.select();
-    });
+    window.addEventListener('mousedown', this.mousedown);
+    this.setFocus(0);
   }
+
+
+  mousedown = () => {
+    this.close();
+  }
+
+
 
   onInput() {
     !(/^[0-9.]*$/i).test(this.priceInput.nativeElement.value) ? this.priceInput.nativeElement.value = this.priceInput.nativeElement.value.replace(/[^0-9.]/ig, '') : null;
 
-    if (this.priceInput.nativeElement.value) {
-      this.price = parseFloat(this.priceInput.nativeElement.value);
-
-      if (isNaN(this.price)) {
-        this.price = 0;
-      }
-
-    } else {
-      this.price = 0;
-      window.setTimeout(() => {
-        this.priceInput.nativeElement.value = '';
-      });
-    }
+    // Disable the submit button if:
+    this.submitButtonDisabled = 
+    // the price in the input field is no different than the initial price
+    !(parseFloat(this.priceInput.nativeElement.value) != this.price &&
+    // the input field is empty
+    this.priceInput.nativeElement.value.length > 0 &&
+    // the value in the input field is NOT a number
+    !isNaN(parseFloat(this.priceInput.nativeElement.value)));
   }
 
 
   onSubmitClick() {
+    this.price = parseFloat(this.priceInput.nativeElement.value);
     this.callback(this.price);
     this.close();
+  }
+
+
+  close(): void {
+    super.close();
+    this.onClose.next();
+  }
+
+
+  ngOnDestroy() {
+    window.removeEventListener('mousedown', this.mousedown);
   }
 }

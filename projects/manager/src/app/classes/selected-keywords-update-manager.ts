@@ -43,10 +43,10 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         this.childDataServicePath = 'SelectedKeywords';
         this.dataServicePath = 'SelectedKeywords/Groups';
         this.searchInputName = 'selectedKeywordsSearchInput' + this.productId;
-        this.thisArray = this.productService.productComponents[this.productIndex].selectedKeywordArray;
-        this.thisSearchArray = this.productService.productComponents[this.productIndex].selectedKeywordSearchArray;
-        this.otherArray = this.productService.productComponents[this.productIndex].availableKeywordArray;
-        this.otherSearchArray = this.productService.productComponents[this.productIndex].availableKeywordSearchArray;
+        this.thisArray = this.productService.products[this.productIndex].selectedKeywordArray;
+        this.thisSearchArray = this.productService.products[this.productIndex].selectedKeywordSearchArray;
+        this.otherArray = this.productService.products[this.productIndex].availableKeywordArray;
+        this.otherSearchArray = this.productService.products[this.productIndex].availableKeywordSearchArray;
     }
 
 

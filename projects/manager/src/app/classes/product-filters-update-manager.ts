@@ -29,8 +29,8 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
         this.otherArray = this.productService.formFilterArray;
         this.otherSearchArray = this.productService.formFilterSearchArray;
         this.searchInputName = 'productFiltersSearchInput' + this.productId;
-        this.thisArray = this.productService.productComponents[this.productIndex].productFilterArray;
-        this.thisSearchArray = this.productService.productComponents[this.productIndex].productFilterSearchArray;
+        this.thisArray = this.productService.products[this.productIndex].productFilterArray;
+        this.thisSearchArray = this.productService.products[this.productIndex].productFilterSearchArray;
     }
 
 

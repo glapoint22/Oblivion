@@ -9,7 +9,7 @@ import { NicheHierarchy } from '../../classes/niche-hierarchy';
 import { NotificationItem } from '../../classes/notifications/notification-item';
 import { Product } from '../../classes/product';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
-import { ProductPropertiesComponent } from '../../components/product-properties/product-properties.component';
+import { ProductComponent } from '../../components/product/product.component';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +18,12 @@ export class ProductService {
   private nicheId!: number;
   private subNicheId!: number;
   private productId!: number;
+  private onProductLoad: Subject<void> = new Subject<void>();
+  private onProductOpen: Subject<ProductComponent> = new Subject<ProductComponent>();
 
   public productTabContextMenu!: ContextMenuComponent;
   public zIndex: number = 0;
-  public selectedProduct!: ProductPropertiesComponent;
+  public selectedProduct!: ProductComponent;
   public productsContainer!: ViewContainerRef;
   public sideMenuNicheArray: Array<HierarchyItem> = new Array<HierarchyItem>();
   public formFilterArray: Array<HierarchyItem> = new Array<HierarchyItem>();
@@ -30,39 +32,48 @@ export class ProductService {
   public formKeywordSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
   public formProductGroupArray: Array<ListItem> = new Array<ListItem>();
   public formProductGroupSearchArray: Array<ListItem> = new Array<ListItem>();
-  public productComponents: Array<ProductPropertiesComponent> = new Array<ProductPropertiesComponent>();
+  public products: Array<ProductComponent> = new Array<ProductComponent>();
   public onProductSelect: Subject<void> = new Subject<void>();
-  public onProductOpen: Subject<ProductPropertiesComponent> = new Subject<ProductPropertiesComponent>();
 
-  
+
+
+
   constructor(private resolver: ComponentFactoryResolver, private dataService: DataService) { }
 
 
   openProduct(productId: number) {
+    this.productId = productId;
     this.zIndex++;
-    const openedProduct = this.productComponents.find(x => x.product.id == productId);
+    const openedProduct = this.products.find(x => x.product.id == productId);
 
     // If the product has NOT been opened yet
     if (!openedProduct) {
 
       this.dataService.get<Product>('api/Products/Product', [{ key: 'productId', value: productId }])
         .subscribe((product: Product) => {
-          const productComponentFactory: ComponentFactory<ProductPropertiesComponent> = this.resolver.resolveComponentFactory(ProductPropertiesComponent);
+          this.nicheId = product.niche.id!;
+          this.subNicheId = product.subNiche.id!;
+          const productComponentFactory: ComponentFactory<ProductComponent> = this.resolver.resolveComponentFactory(ProductComponent);
           const productComponentRef = this.productsContainer.createComponent(productComponentFactory);
-          const productComponent: ProductPropertiesComponent = productComponentRef.instance;
+          const productComponent: ProductComponent = productComponentRef.instance;
           productComponentRef.instance.viewRef = productComponentRef.hostView;
 
-          this.productComponents.push(productComponent);
+          this.products.push(productComponent);
           productComponent.product = product;
           productComponent.zIndex = this.zIndex;
           this.selectedProduct = productComponent;
           this.onProductOpen.next(productComponent);
+
+          this.onProductLoad.next();
         })
 
       // If the product is already open
     } else {
+      this.nicheId = openedProduct.product.niche.id!;
+      this.subNicheId = openedProduct.product.subNiche.id!;
       openedProduct.zIndex = this.zIndex;
       this.selectedProduct = openedProduct;
+      this.onProductLoad.next();
       this.onProductOpen.next(openedProduct);
     }
   }
@@ -70,9 +81,9 @@ export class ProductService {
 
 
   openNotificationProduct(productId: number, notificationItem: NotificationItem) {
-    let onProductOpenListener = this.onProductOpen.subscribe((notificationProduct: ProductPropertiesComponent) => {
+    const onProductOpenListener = this.onProductOpen.subscribe((notificationProduct: ProductComponent) => {
       onProductOpenListener.unsubscribe();
-      window.setTimeout(()=> {
+      window.setTimeout(() => {
         notificationProduct.openNotificationPopup(notificationItem);
       })
     });
@@ -83,34 +94,37 @@ export class ProductService {
 
 
   goToProduct(productId: number) {
-    this.openProduct(productId);
+    const onProductLoadListener = this.onProductLoad.subscribe(() => {
+      onProductLoadListener.unsubscribe();
 
-    // If the niches have NOT been loaded yet
-    if (this.sideMenuNicheArray.length == 0) {
+      // If the niches have NOT been loaded yet
+      if (this.sideMenuNicheArray.length == 0) {
 
-      // Then first, load the niches into the niches side menu
-      this.dataService.get<Array<HierarchyItem>>('api/Categories')
-        .subscribe((niches: Array<HierarchyItem>) => {
-          niches.forEach(x => {
-            this.sideMenuNicheArray.push(
-              {
-                id: x.id,
-                name: x.name,
-                hierarchyGroupID: 0,
-                hidden: false,
-                arrowDown: false
-              }
-            );
+        // Then first, load the niches into the niches side menu
+        this.dataService.get<Array<HierarchyItem>>('api/Categories')
+          .subscribe((niches: Array<HierarchyItem>) => {
+            niches.forEach(x => {
+              this.sideMenuNicheArray.push(
+                {
+                  id: x.id,
+                  name: x.name,
+                  hierarchyGroupID: 0,
+                  hidden: false,
+                  arrowDown: false
+                }
+              );
+            })
+            // Show the product in the niches side menu hierarchy
+            this.showProductInHierarchy(productId);
           })
-          // Show the product in the niches side menu hierarchy
-          this.showProductInHierarchy(productId);
-        })
 
-      // If the niches have already been loaded into the niches side menu
-    } else {
-      // Show the product in the niches side menu hierarchy
-      this.showProductInHierarchy(productId);
-    }
+        // If the niches have already been loaded into the niches side menu
+      } else {
+        // Show the product in the niches side menu hierarchy
+        this.showProductInHierarchy(productId);
+      }
+    });
+    this.openProduct(productId);
   }
 
 
@@ -118,32 +132,25 @@ export class ProductService {
 
 
   showProductInHierarchy(productId: number) {
-    // First, get the id of the niche and the subniche that this product falls under
-    this.dataService.get<NicheHierarchy>('api/Products/NicheId_SubNicheId', [{ key: 'productId', value: productId }])
-      .subscribe((nicheHierarchy: NicheHierarchy) => {
-        this.nicheId = nicheHierarchy.nicheId;
-        this.subNicheId = nicheHierarchy.subNicheId;
-        this.productId = productId;
+    // Then check to see if an item was selected before the niches side menu was last closed
+    const selectedItem = this.sideMenuNicheArray.filter(x => x.selectType != null || x.selected == true)[0];
 
-        // Then check to see if an item was selected before the niches side menu was last closed
-        const selectedItem = this.sideMenuNicheArray.filter(x => x.selectType != null || x.selected == true)[0];
+    // If so, remove the selection from that item
+    if (selectedItem) {
+      selectedItem.selectType = null!;
+      selectedItem.selected = null!;
+    }
 
-        // If so, remove the selection from that item
-        if (selectedItem) {
-          selectedItem.selectType = null!;
-          selectedItem.selected = null!;
-        }
-
-        // Get the index of the niche
-        const nicheIndex: number = this.sideMenuNicheArray.findIndex(x => x.hierarchyGroupID == 0 && x.id == this.nicheId)!;
-        this.setHierarchy(nicheIndex, this.subNicheId, 1, this.loadSubNichesAndProducts, [nicheIndex], this.setSubNiche, [nicheIndex], this.setSubNiche, null!);
-      })
+    // Get the index of the niche
+    const nicheIndex: number = this.sideMenuNicheArray.findIndex(x => x.hierarchyGroupID == 0 && x.id == this.nicheId)!;
+    this.setHierarchy(nicheIndex, this.subNicheId, 1, this.loadSubNichesAndProducts, [nicheIndex], this.setSubNiche, [nicheIndex], this.setSubNiche, null!);
   }
 
 
 
 
   setHierarchy(parentIndex: number, childId: number, childHierarchyGroupID: number, childrenNotLoaded: Function, childrenNotLoadedParameters: Array<any>, childrenLoaded: Function, childrenLoadedParameters: Array<any>, func3: Function, func3Parameters: Array<any>) {
+
     // If the parent does NOT have its arrow down
     if (!this.sideMenuNicheArray[parentIndex].arrowDown) {
 

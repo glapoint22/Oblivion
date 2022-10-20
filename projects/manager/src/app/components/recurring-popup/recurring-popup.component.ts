@@ -1,6 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component } from '@angular/core';
 import { LazyLoad, RebillFrequency, RecurringPayment } from 'common';
+import { Subject } from 'rxjs';
 import { PopupArrowPosition } from '../../classes/enums';
 
 @Component({
@@ -18,12 +19,15 @@ export class RecurringPopupComponent extends LazyLoad {
   public selectedTimeFrameBetweenRebill!: KeyValue<string, number>;
   public rebillFrequency = RebillFrequency;
   public callback!: Function;
+  public onClose: Subject<void> = new Subject<void>();
 
   // ---------------------------------------------------------------------- Ng On Init --------------------------------------------------
   public ngOnInit(): void {
     super.ngOnInit();
     let keys = Object.keys(RebillFrequency);
     let counter: number = 0;
+
+    window.addEventListener('mousedown', this.mousedown);
 
     // This generates the rebill frequency dropdown list using the elements in the RebillFrequency enum
     for (let i = keys.length * 0.5; i < keys.length; i++) {
@@ -46,6 +50,10 @@ export class RecurringPopupComponent extends LazyLoad {
 
 
 
+  // ------------------------------------------------------------------ Mouse Down ----------------------------------------------
+  mousedown = () => {
+    this.close();
+  }
 
 
 
@@ -179,5 +187,18 @@ export class RecurringPopupComponent extends LazyLoad {
   public onSubmitClick(): void {
     this.callback(this.recurringPayment);
     this.close();
+  }
+
+
+  // ------------------------------------------------------------------- Close --------------------------------------------------
+  close(): void {
+    super.close();
+    this.onClose.next();
+  }
+
+
+  // ------------------------------------------------------------------- NG On Destroy --------------------------------------------------
+  ngOnDestroy() {
+    window.removeEventListener('mousedown', this.mousedown);
   }
 }

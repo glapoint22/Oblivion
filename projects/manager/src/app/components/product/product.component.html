@@ -1,0 +1,441 @@
+<!-- Product Form -->
+<div class="product-form" [style.z-index]="zIndex">
+
+    <!-- Circle Buttons -->
+    <div class="circle-button-container-border" (contextmenu)="$event.preventDefault()">
+        <div class="circle-button-container">
+
+            <!-- Notification -->
+            <div *ngIf="this.product.notificationItems.length > 0"
+                 title="Notification"
+                 class="circle-button"
+                 (click)="openNotificationPopup()"
+                 [ngClass]="{'circle-button-clicked': notificationPopupContainer ? notificationPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-bell"></i>
+            </div>
+
+            <!-- Vendor -->
+            <div title="Vendor"
+                 class="circle-button"
+                 (click)="openVendorPopup()"
+                 [ngClass]="{'circle-button-clicked': vendorPopupContainer ? vendorPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-store"></i>
+            </div>
+
+            <!-- Filters -->
+            <div title="Filters"
+                 class="circle-button"
+                 (click)="openFiltersPopup()"
+                 [ngClass]="{'circle-button-clicked': filtersPopupContainer ? filtersPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-filter"></i>
+            </div>
+
+            <!-- Keywords -->
+            <div title="Keywords"
+                 class="circle-button"
+                 (click)="openKeywordsPopup()"
+                 [ngClass]="{'circle-button-clicked': keywordsPopupContainer ? keywordsPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-key"></i>
+            </div>
+
+            <!-- Product Groups -->
+            <div title="Product Groups"
+                 class="circle-button"
+                 (click)="openProductGroupsPopup()"
+                 [ngClass]="{'circle-button-clicked': productGroupsPopupContainer ? productGroupsPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-layer-group"></i>
+            </div>
+
+            <!-- Circle Button Popup Container -->
+            <div class="circle-button-popup-container">
+                <ng-template #notificationPopup></ng-template>
+                <ng-template #vendorPopup></ng-template>
+                <ng-template #filtersPopup></ng-template>
+                <ng-template #keywordsPopup></ng-template>
+                <ng-template #productGroupsPopup></ng-template>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Breadcrumbs -->
+    <div class="breadcrumb-base">
+        <div class="drop-shadow"></div>
+        <div class="breadcrumb-container">
+            <div class="breadcrumb">{{product.niche.name}}</div>
+            <div class="breadcrumb-arrow"></div>
+            <div class="breadcrumb">{{product.subNiche.name}}</div>
+            <div class="breadcrumb-arrow"></div>
+            <div class="breadcrumb-product">{{product.name}}</div>
+        </div>
+    </div>
+
+
+    <!-- Product -->
+    <div class="product-container">
+        <div class="product">
+            <div class="flex-container">
+
+                <!-- Media List -->
+                <div class="media-container">
+                    <div class="label">Media:</div>
+                    <div class="media-list-dashed-container">
+                        <div id="media-list-item" class="media-list-item">
+                            <div *ngFor="let mediaListItem of product.media"
+                                 [title]="mediaListItem.name"
+                                 class="media-thumbnail-container"
+                                 [style.top.px]="mediaListItem.top"
+                                 [style.transition]="mediaListItem.transition"
+                                 [style.zIndex]="mediaListItem == selectedMedia ? '100': '1'"
+                                 (mousedown)="onMediaSelect(mediaListItem); onMousedown($event)"
+                                 [ngClass]="{'selected-media-list-item': mediaListItem == selectedMedia && product.media.length > 1}">
+                                 <img [src]="'images/' + mediaListItem.thumbnail" draggable="false">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Media Display -->
+                <div class="media-container">
+                    <div class="label-container">
+                        <div class="label">{{!selectedMedia || selectedMedia.type == MediaType.Image ? 'Image' : 'Video'}}</div>
+                        <div class="icon-button-container">
+                            <span class="media-display-icon-button-container">
+                                <icon-button [icon]="!selectedMedia || selectedMedia.type == MediaType.Image ? 'fa-solid fa-image' : 'fa-solid fa-film'"
+                                             [title]="'Media Browser'"
+                                             (onClick)="openMediaBrowser(!selectedMedia ? MediaType.Image : undefined)">
+                                </icon-button>
+                                <icon-button *ngIf="product.media && product.media.length > 0"
+                                             [icon]="'fas fa-plus-circle'"
+                                             [title]="'Add Image or Video'"
+                                             (onClick)="openMediaSelectorPopup()">
+                                </icon-button>
+                                <div class="media-selector-popup-container">
+                                    <ng-template #mediaSelectorPopupContainer></ng-template>
+                                </div>
+                            </span>
+                            <icon-button *ngIf="selectedMedia"
+                                         [icon]="'fas fa-trash-alt'"
+                                         [title]="!selectedMedia || selectedMedia.type == MediaType.Image ? 'Remove Image' : 'Remove Video'"
+                                         (onClick)="removeProductMedia()">
+                            </icon-button>
+                        </div>
+                    </div>
+                    <div class="media-display-dashed-container"
+                        (click)="openMediaBrowser(!selectedMedia ? MediaType.Image : undefined)">
+
+                        <div *ngIf="!selectedMedia" class="image-icon-container">
+                            <i class="fa-solid fa-image"
+                               tabindex="0"
+                               title="Media Browser">
+                            </i>
+                        </div>
+                        <img *ngIf="selectedMedia && selectedMedia.type == MediaType.Image"
+                             [src]="'images/' + selectedMedia.imageMd"
+                             [title]="selectedMedia.name">
+
+                        <div *ngIf="selectedMedia && selectedMedia.type == MediaType.Video"
+                             class="iframe-container" >
+                            <iframe id="video-iframe" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <div class="top-right-container">
+
+
+                    <!-- Name -->
+                    <div class="name-property-container">
+                        <div class="label">Name:</div>
+                        <div class="dashed-container">
+                            <div class="name-container"
+                                 tabindex="0"
+                                 contenteditable="true"
+                                 (keydown.enter)="$event.preventDefault()">
+                                {{product.name}}
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+
+
+
+
+                    <!-- Price -->
+                    <div class="property-container">
+                        <div class="label-container">
+                            <div class="label">Price:</div>
+                            <div *ngIf="product.pricePoints.length == 0" class="edit-icon-button-container">
+                                <i #priceEditButton
+                                   tabindex="0"
+                                   title="Edit Price"
+                                   class="fas fa-pencil-alt"
+                                   [ngClass]="{'edit-button-focus': pricePopupOpen}"
+                                   (click)="openPricePopup()"
+                                   (mousedown)="$event.stopPropagation()"
+                                   (keydown.enter)="openPricePopup()">
+                                </i>
+                            </div>
+                            <div class="edit-popup-container-1">
+                                <ng-template #editPricePopup></ng-template>
+                            </div>
+                        </div>
+                        <div class="dashed-container">
+                            <div class="price-container">
+                                <ng-container *ngIf="product.pricePoints.length == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+                                <ng-container *ngIf="product.pricePoints.length > 0">
+                                    {{product.minPrice | currency:'USD'}} -
+                                    {{product.pricePoints.length > 1 ? (product.maxPrice | currency:'USD') : ''}}
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <!-- Shipping -->
+                    <div class="property-container">
+                        <div class="label-container">
+                            <div class="label">Shipping:</div>
+                            <div *ngIf="product.shippingType != shippingType.None" class="icon-button-container">
+                                <i #shippingEditButton
+                                   tabindex="0"
+                                   title="Edit Shipping"
+                                   class="fas fa-pencil-alt"
+                                   [ngClass]="{'edit-button-focus': shippingPopupOpen}"
+                                   (click)="openShippingPopup(PopupArrowPosition.TopRight)"
+                                   (mousedown)="$event.stopPropagation()"
+                                   (keydown.enter)="openShippingPopup(PopupArrowPosition.TopRight)">
+                                </i>
+                                <icon-button [icon]="'fas fa-trash-alt'"
+                                             [title]="'Remove shipping'"
+                                             (onClick)="product.shippingType = 0; updateShipping()">
+                                </icon-button>
+                            </div>
+                            <div class="edit-popup-container-2">
+                                <ng-template #editShippingPopup></ng-template>
+                            </div>
+                        </div>
+                        <div class="dashed-container">
+                            <div *ngIf="product.shippingType == shippingType.None" class="plus-button-container">
+                                <i #shippingPlusButton
+                                   tabindex="0"
+                                   title="Add Shipping"
+                                   class="fa-regular fa-circle-xmark"
+                                   [ngClass]="{'plus-button-focus': shippingPopupOpen}"
+                                   (click)="openShippingPopup(PopupArrowPosition.TopLeft)"
+                                   (mousedown)="$event.stopPropagation()"
+                                   (keydown.enter)="openShippingPopup(PopupArrowPosition.TopLeft)">
+                                </i>
+                            </div>
+                            <div *ngIf="product.shippingType != shippingType.None" class="shipping-container">
+                                <shipping [shippingType]="product.shippingType"></shipping>
+                            </div>
+                            <div class="add-shipping-popup-container">
+                                <ng-template #addShippingPopup></ng-template>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <!-- Recurring -->
+                    <div class="property-container">
+                        <div class="label-container">
+                            <div class="label">Recurring Payment:</div>
+                            <div *ngIf="product.recurringPayment.recurringPrice > 0" class="icon-button-container">
+                                <i #recurringEditButton
+                                   tabindex="0"
+                                   title="Edit Recurring Payment"
+                                   class="fas fa-pencil-alt"
+                                   [ngClass]="{'edit-button-focus': recurringPopupOpen}"
+                                   (click)="openRecurringPopup(PopupArrowPosition.TopRight)"
+                                   (mousedown)="$event.stopPropagation()"
+                                   (keydown.enter)="openRecurringPopup(PopupArrowPosition.TopRight)">
+                                </i>
+                                <icon-button [icon]="'fas fa-trash-alt'"
+                                             [title]="'Remove recurring payment'"
+                                             (onClick)="removeRecurringPayment()">
+                                </icon-button>
+                            </div>
+                            <div class="edit-popup-container-2">
+                                <ng-template #editRecurringPopup></ng-template>
+                            </div>
+                        </div>
+                        <div class="dashed-container">
+                            <div *ngIf="product.recurringPayment.recurringPrice == 0" class="plus-button-container">
+                                <i #recurringPlusButton
+                                   tabindex="0"
+                                   title="Add Recurring Payment"
+                                   class="fa-regular fa-circle-xmark"
+                                   [ngClass]="{'plus-button-focus': recurringPopupOpen}"
+                                   (click)="openRecurringPopup(PopupArrowPosition.TopLeft)"
+                                   (mousedown)="$event.stopPropagation()"
+                                   (keydown.enter)="openRecurringPopup(PopupArrowPosition.TopLeft)">
+                                </i>
+                            </div>
+                            <div *ngIf="product.recurringPayment.recurringPrice > 0" class="recurring-container">
+                                <recurring-payment [recurringPayment]="product.recurringPayment"></recurring-payment>
+                            </div>
+                            <div class="add-popup-container">
+                                <ng-template #addRecurringPopup></ng-template>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <!-- Hoplink -->
+                    <div class="property-container">
+                        <div class="label-container">
+                            <div class="label">Hoplink:</div>
+                            <div *ngIf="product.hoplink" class="edit-icon-button-container">
+                                <i #hoplinkEditButton
+                                   tabindex="0"
+                                   title="Edit Hoplink"
+                                   class="fas fa-pencil-alt"
+                                   [ngClass]="{'edit-button-focus': hoplinkPopupOpen}"
+                                   (click)="openHoplinkPopup(PopupArrowPosition.TopRight)"
+                                   (mousedown)="$event.stopPropagation()"
+                                   (keydown.enter)="openHoplinkPopup(PopupArrowPosition.TopRight)">
+                                </i>
+                            </div>
+                            <div class="edit-popup-container-1">
+                                <ng-template #editHoplinkPopup></ng-template>
+                            </div>
+                        </div>
+                        <div class="dashed-container">
+                            <div *ngIf="!product.hoplink" class="plus-button-container">
+                                <i #hoplinkPlusButton
+                                   tabindex="0"
+                                   title="Add Hoplink"
+                                   class="fa-regular fa-circle-xmark"
+                                   [ngClass]="{'plus-button-focus': hoplinkPopupOpen}"
+                                   (click)="openHoplinkPopup(PopupArrowPosition.TopLeft)"
+                                   (mousedown)="$event.stopPropagation()"
+                                   (keydown.enter)="openHoplinkPopup(PopupArrowPosition.TopLeft)">
+                                </i>
+                            </div>
+                            <div *ngIf="product.hoplink" class="hoplink-container">
+                                <a [href]="product.hoplink" class="hoplink" target="_blank">{{product.hoplink}}</a>
+                            </div>
+                            <div class="add-popup-container">
+                                <ng-template #addHoplinkPopup></ng-template>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <!-- Description -->
+                    <div class="property-container">
+                        <div class="label">Description:</div>
+                        <div class="description-dashed-container">
+                            <product-description [product]="product" [apiUrl]="'Description'"></product-description>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!-- Price Points -->
+            <div class="property-container">
+
+                <div class="label">Price Points:</div>
+                <div class="dashed-container">
+                    
+                    
+                    
+                    <div *ngIf="product.pricePoints.length == 0"
+                    style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; margin: 8px 0 -2px 8px;"
+                         (click)="addPricePoints()"
+                         tabindex="0">
+
+                        <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                        <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                        <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    </div>
+
+
+                    <price-points *ngIf="product.pricePoints.length > 0" #pricePoints [product]="product"></price-points>
+                
+
+
+                </div>
+            </div>
+
+
+
+
+            <!-- Components -->
+            <div class="property-container">
+                <div class="label">Components:</div>
+                <div class="dashed-container">
+
+
+                    <div *ngIf="!product.components || product.components.length == 0"
+                    style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; margin: 8px 0 -2px 8px;"
+                         (click)="addSubproduct(subproductType.Component)"
+                         tabindex="0">
+
+                        <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                        <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                        <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    </div>
+
+
+
+                    <subproducts *ngIf="product.components && product.components.length > 0"
+                        [subproducts]="product.components" [subproductType]="subproductType.Component"
+                        [productId]="product.id"></subproducts>
+                </div>
+            </div>
+
+
+            
+
+
+            <!-- Bonuses -->
+            <div class="property-container">
+                <div class="label">Bonuses:</div>
+                <div class="dashed-container">
+
+
+                    <div *ngIf="!product.bonuses || product.bonuses.length == 0"
+                    style="display: flex; width: 18px; height: 18px; border: 1px solid #929292; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; margin: 8px 0 -2px 8px;"
+                         (click)="addSubproduct(subproductType.Bonus)"
+                         tabindex="0">
+
+                        <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                        <div style="width: 2px; height: 10px; background: #aaaaaa;"></div>
+                        <div style="width: 4px; height: 2px; background: #aaaaaa;"></div>
+                    </div>
+
+
+
+                    <subproducts *ngIf="product.bonuses && product.bonuses.length > 0" [subproducts]="product.bonuses"
+                        [subproductType]="subproductType.Bonus" [productId]="product.id">
+                    </subproducts>
+                </div>
+            </div>
+
+            
+
+
+        </div>
+    </div>
+</div>

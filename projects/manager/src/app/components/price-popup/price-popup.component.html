@@ -1,4 +1,4 @@
-<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()"
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()"
     [style.top.px]="top ? top : null" [style.left.px]="left ? left : null" [ngStyle]="{'position': top && left ? 'absolute' : null}">
 
 
@@ -6,13 +6,13 @@
 
         <!-- Price -->
         <div class="popup-label">Price:</div>
-        <input #priceInput (keydown.enter)="onSubmitClick()" (input)="onInput()">
+        <input #priceInput #tabElement (keydown.enter)="onSubmitClick()" (input)="onInput()">
 
 
         <!-- Buttons -->
         <div class="popup-button-container">
-            <button class="dark-button" (click)="close()">Close</button>
-            <button class="gold-button" (click)="onSubmitClick()">Submit</button>
+            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #tabElement class="gold-button" (click)="onSubmitClick()" [disabled]="submitButtonDisabled">Submit</button>
         </div>
     </div>
 

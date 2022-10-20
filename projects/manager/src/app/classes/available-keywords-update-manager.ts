@@ -29,8 +29,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         this.otherArray = this.productService.formKeywordArray;
         this.otherSearchArray = this.productService.formKeywordSearchArray;
         this.searchInputName = 'availableKeywordsSearchInput' + this.productId;
-        this.thisArray = this.productService.productComponents[this.productIndex].availableKeywordArray;
-        this.thisSearchArray = this.productService.productComponents[this.productIndex].availableKeywordSearchArray;
+        this.thisArray = this.productService.products[this.productIndex].availableKeywordArray;
+        this.thisSearchArray = this.productService.products[this.productIndex].availableKeywordSearchArray;
 
         this.listOptions.menu!.menuOptions[6] = { type: MenuOptionType.Divider };
         this.listOptions.menu!.menuOptions[7] = {
@@ -152,8 +152,8 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         }
 
 
-        this.productService.productComponents[this.productIndex].selectedKeywordArray.push(keywordGroup);
-        this.sort(keywordGroup, this.productService.productComponents[this.productIndex].selectedKeywordArray);
+        this.productService.products[this.productIndex].selectedKeywordArray.push(keywordGroup);
+        this.sort(keywordGroup, this.productService.products[this.productIndex].selectedKeywordArray);
     }
 
 

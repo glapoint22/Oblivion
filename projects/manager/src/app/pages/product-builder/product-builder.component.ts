@@ -33,7 +33,7 @@ export class ProductBuilderComponent {
     const leftPadding = 10;
     const x = 16;
     const rightPadding = 3;
-    const labelWidth = Math.floor((tabsContainer.offsetWidth / this.productService.productComponents.length) - leftPadding - x - rightPadding);
+    const labelWidth = Math.floor((tabsContainer.offsetWidth / this.productService.products.length) - leftPadding - x - rightPadding);
     return labelWidth > 0 ? labelWidth : 0;
   }
 
@@ -61,9 +61,9 @@ export class ProductBuilderComponent {
   
   showProduct(tabIndex: number) {
     // As long as we're NOT selecting a tab that is already selected
-    if (this.productService.productComponents[tabIndex] != this.productService.selectedProduct) {
+    if (this.productService.products[tabIndex] != this.productService.selectedProduct) {
       // Show the product
-      this.productService.goToProduct(this.productService.productComponents[tabIndex].product.id);
+      this.productService.goToProduct(this.productService.products[tabIndex].product.id);
     }
   }
 
@@ -109,7 +109,7 @@ export class ProductBuilderComponent {
       {
         type: MenuOptionType.MenuItem,
         name: 'Close Others',
-        isDisabled: this.productService.productComponents.length == 1,
+        isDisabled: this.productService.products.length == 1,
         optionFunction: () => {
           this.closeOthers(tabIndex);
         }
@@ -117,7 +117,7 @@ export class ProductBuilderComponent {
       {
         type: MenuOptionType.MenuItem,
         name: 'Close All',
-        isDisabled: this.productService.productComponents.length == 1,
+        isDisabled: this.productService.products.length == 1,
         optionFunction: () => {
           this.closeAll();
         }
@@ -125,7 +125,7 @@ export class ProductBuilderComponent {
       {
         type: MenuOptionType.MenuItem,
         name: 'Close to the Right',
-        isDisabled: tabIndex == this.productService.productComponents.length - 1,
+        isDisabled: tabIndex == this.productService.products.length - 1,
         optionFunction: () => {
           this.closeToTheRight(tabIndex);
         }
@@ -139,18 +139,18 @@ export class ProductBuilderComponent {
   
   closeProduct(tabIndex: number) {
     // If we're closing a selected tab
-    if (this.productService.productComponents[tabIndex] == this.productService.selectedProduct) {
+    if (this.productService.products[tabIndex] == this.productService.selectedProduct) {
 
       // If there's a tab to the right
-      if (this.productService.productComponents.length - 1 > tabIndex) {
+      if (this.productService.products.length - 1 > tabIndex) {
         // Select that tab that's to the right
-        this.productService.goToProduct(this.productService.productComponents[tabIndex + 1].product.id)
+        this.productService.goToProduct(this.productService.products[tabIndex + 1].product.id)
 
         // If there's a tab to the left
       } else if (tabIndex > 0) {
 
         // Select that tab that's to the left
-        this.productService.goToProduct(this.productService.productComponents[tabIndex - 1].product.id)
+        this.productService.goToProduct(this.productService.products[tabIndex - 1].product.id)
 
         // If there is NO tab to the left and NO tab to the right
       } else {
@@ -167,15 +167,15 @@ export class ProductBuilderComponent {
   
   closeOthers(tabIndex: number) {
     var index = 0;
-    const product = this.productService.productComponents[tabIndex];
+    const product = this.productService.products[tabIndex];
 
     // Loop until all products are closed except one
-    while (this.productService.productComponents.length > 1) {
+    while (this.productService.products.length > 1) {
       // When we come across the tab we (DON'T) want to close
       // Chage the value of the index from 0 to 1
       // This will remove all other tabs becuase the tab we (DON'T) want to close
       // will have an index of 0 and all the rest will eventually get an index of 1
-      if (this.productService.productComponents[index] == product) index = 1;
+      if (this.productService.products[index] == product) index = 1;
 
       // Remove product
       this.removeProduct(index);
@@ -190,7 +190,7 @@ export class ProductBuilderComponent {
   
   closeAll() {
     // Loop until all products are closed
-    while (this.productService.productComponents.length > 0) {
+    while (this.productService.products.length > 0) {
       // Remove product
       this.removeProduct(0);
     }
@@ -205,13 +205,13 @@ export class ProductBuilderComponent {
     var index = 0;
 
     // Loop until all products to the right of the tab we right-clicked on are closed
-    while (this.productService.productComponents.length > tabIndex + 1) {
+    while (this.productService.products.length > tabIndex + 1) {
       // If a tab is to the right of the tab we right-clicked on
       if (index > tabIndex) {
 
         // And that tab happens to be selected,
         // then select the tab we right-clicked on
-        if (this.productService.productComponents[index] == this.productService.selectedProduct) this.productService.goToProduct(this.productService.productComponents[tabIndex].product.id)
+        if (this.productService.products[index] == this.productService.selectedProduct) this.productService.goToProduct(this.productService.products[tabIndex].product.id)
 
         // Remove product
         this.removeProduct(index);
@@ -229,9 +229,9 @@ export class ProductBuilderComponent {
   // ==================================================================( REMOVE PRODUCT )=================================================================== \\
   
   removeProduct(index: number) {
-    const productIndex = this.productService.productsContainer.indexOf(this.productService.productComponents[index].viewRef);
+    const productIndex = this.productService.productsContainer.indexOf(this.productService.products[index].viewRef);
     this.productService.productsContainer.remove(productIndex);
-    this.productService.productComponents.splice(index, 1);
+    this.productService.products.splice(index, 1);
   }
 
 

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ProductBuilderRoutingModule } from './product-builder-routing.module';
 import { ProductBuilderComponent } from './product-builder.component';
 import { NichesSideMenuModule } from '../../components/niches-side-menu/niches-side-menu.module';
-import { ProductPropertiesModule } from '../../components/product-properties/product-properties.module';
+import { ProductModule } from '../../components/product/product.module';
 
 
 @NgModule({
@@ -14,7 +14,7 @@ import { ProductPropertiesModule } from '../../components/product-properties/pro
     CommonModule,
     ProductBuilderRoutingModule,
     NichesSideMenuModule,
-    ProductPropertiesModule
+    ProductModule
   ]
 })
 export class ProductBuilderModule { }

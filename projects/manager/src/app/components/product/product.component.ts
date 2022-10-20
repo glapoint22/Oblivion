@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct, Video } from 'common';
@@ -25,11 +25,11 @@ import { ProductNotificationPopupComponent } from '../notifications/product-noti
 import { NotificationItem } from '../../classes/notifications/notification-item';
 
 @Component({
-  selector: 'product-properties',
-  templateUrl: './product-properties.component.html',
-  styleUrls: ['./product-properties.component.scss']
+  selector: 'product',
+  templateUrl: './product.component.html',
+  styleUrls: ['./product.component.scss']
 })
-export class ProductPropertiesComponent {
+export class ProductComponent {
   private notificationPopup!: ProductNotificationPopupComponent;
   private filtersPopup!: FiltersPopupComponent;
   private keywordsPopup!: KeywordsPopupComponent;
@@ -38,6 +38,7 @@ export class ProductPropertiesComponent {
   private shippingPopup!: ShippingPopupComponent;
   private recurringPopup!: RecurringPopupComponent;
   private hoplinkPopup!: HoplinkPopupComponent;
+  private mediaSelectorPopup!: MediaSelectorPopupComponent;
 
   public viewRef!: ViewRef;
   public vendorPopup!: VendorPopupComponent;
@@ -58,11 +59,22 @@ export class ProductPropertiesComponent {
   public selectedMedia!: ProductMedia;
   public MediaType = MediaType;
   public productMediaSpacing: number = 57;
-  private mediaSelectorPopup!: MediaSelectorPopupComponent;
+  public shippingPopupOpen!: boolean;
+  public pricePopupOpen!: boolean;
+  public recurringPopupOpen!: boolean;
+  public hoplinkPopupOpen!: boolean;
 
+
+  @ViewChild('priceEditButton') priceEditButton!: ElementRef<HTMLElement>;
+  @ViewChild('shippingPlusButton') shippingPlusButton!: ElementRef<HTMLElement>;
+  @ViewChild('shippingEditButton') shippingEditButton!: ElementRef<HTMLElement>;
+  @ViewChild('recurringPlusButton') recurringPlusButton!: ElementRef<HTMLElement>;
+  @ViewChild('recurringEditButton') recurringEditButton!: ElementRef<HTMLElement>;
+  @ViewChild('hoplinkPlusButton') hoplinkPlusButton!: ElementRef<HTMLElement>;
+  @ViewChild('hoplinkEditButton') hoplinkEditButton!: ElementRef<HTMLElement>;
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
-  @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
+  @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopupContainer!: ViewContainerRef;
   @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;
   @ViewChild('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: ViewContainerRef;
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
@@ -77,7 +89,6 @@ export class ProductPropertiesComponent {
 
 
   constructor(private lazyLoadingService: LazyLoadingService, private dataService: DataService, private productService: ProductService) { }
-
 
   ngOnInit() {
     if (this.product && this.product.media && this.product.media.length > 0) {
@@ -105,20 +116,20 @@ export class ProductPropertiesComponent {
     // If the popup is already open
     if (this.notificationPopupContainer.length > 0) {
       // And it's being opened again from the notification list
-      if(notificationItem) {
+      if (notificationItem) {
         // Keep it open and select the notification type in the dropdown that's the same as
         // notification type of the notification that was just selected in the notification list
         this.notificationPopup.selectNotificationType(notificationItem, true);
 
         // But if the circle button is being clicked
-      }else {
+      } else {
         // Just close the popup
         this.notificationPopup.close();
       }
       return;
     }
 
-    
+
 
     this.lazyLoadingService.load(async () => {
       const { ProductNotificationPopupComponent } = await import('../notifications/product-notification-popup/product-notification-popup.component');
@@ -189,7 +200,7 @@ export class ProductPropertiesComponent {
       .then((filtersPopup: FiltersPopupComponent) => {
         this.filtersPopup = filtersPopup;
         filtersPopup.productId = this.product.id;
-        filtersPopup.productIndex = this.productService.productComponents.indexOf(this);
+        filtersPopup.productIndex = this.productService.products.indexOf(this);
       });
   }
 
@@ -217,7 +228,7 @@ export class ProductPropertiesComponent {
       .then((keywordsPopup: KeywordsPopupComponent) => {
         this.keywordsPopup = keywordsPopup;
         keywordsPopup.productId = this.product.id;
-        keywordsPopup.productIndex = this.productService.productComponents.indexOf(this);
+        keywordsPopup.productIndex = this.productService.products.indexOf(this);
       });
   }
 
@@ -244,15 +255,16 @@ export class ProductPropertiesComponent {
       .then((productGroupsPopup: ProductGroupsPopupComponent) => {
         this.productGroupsPopup = productGroupsPopup;
         productGroupsPopup.productId = this.product.id;
-        productGroupsPopup.productIndex = this.productService.productComponents.indexOf(this);
+        productGroupsPopup.productIndex = this.productService.products.indexOf(this);
       });
   }
 
 
 
   openPricePopup() {
-    if (this.editPricePopup.length > 0) {
+    if (this.pricePopupOpen) {
       this.pricePopup.close();
+      this.priceEditButton.nativeElement.blur();
       return;
     }
 
@@ -265,6 +277,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None, this.editPricePopup)
       .then((pricePopup: PricePopupComponent) => {
+        this.pricePopupOpen = true;
         this.pricePopup = pricePopup;
         pricePopup.price = this.product.minPrice;
 
@@ -277,13 +290,21 @@ export class ProductPropertiesComponent {
             maxPrice: 0
           }).subscribe();
         }
+
+        const onPricePopupCloseListener = this.pricePopup.onClose.subscribe(() => {
+          onPricePopupCloseListener.unsubscribe();
+          this.pricePopupOpen = false;
+          this.priceEditButton.nativeElement.blur();
+        });
       });
   }
 
 
   openShippingPopup(arrowPosition: PopupArrowPosition) {
-    if (this.addShippingPopup.length > 0 || this.editShippingPopup.length > 0) {
+    if (this.shippingPopupOpen) {
       this.shippingPopup.close();
+      if (this.shippingPlusButton) this.shippingPlusButton.nativeElement.blur();
+      if (this.shippingEditButton) this.shippingEditButton.nativeElement.blur();
       return;
     }
 
@@ -294,18 +315,23 @@ export class ProductPropertiesComponent {
         component: ShippingPopupComponent,
         module: ShippingPopupModule
       }
-    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addShippingPopup : this.editShippingPopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addShippingPopupContainer : this.editShippingPopup)
       .then((shippingPopup: ShippingPopupComponent) => {
+        this.shippingPopupOpen = true;
         this.shippingPopup = shippingPopup;
         shippingPopup.arrowPosition = arrowPosition;
         shippingPopup.shipping = arrowPosition == PopupArrowPosition.TopLeft ? ShippingType.FreeShipping : this.product.shippingType;
         shippingPopup.callback = (shippingType: ShippingType) => {
           this.product.shippingType = shippingType;
-
-          // Update the database
           this.updateShipping();
-
         }
+
+        const onShippingPopupCloseListener = this.shippingPopup.onClose.subscribe(() => {
+          onShippingPopupCloseListener.unsubscribe();
+          this.shippingPopupOpen = false;
+          if (this.shippingPlusButton) this.shippingPlusButton.nativeElement.blur();
+          if (this.shippingEditButton) this.shippingEditButton.nativeElement.blur();
+        });
       });
   }
 
@@ -319,8 +345,10 @@ export class ProductPropertiesComponent {
 
 
   openRecurringPopup(arrowPosition: PopupArrowPosition) {
-    if (this.addRecurringPopup.length > 0 || this.editRecurringPopup.length > 0) {
+    if (this.recurringPopupOpen) {
       this.recurringPopup.close();
+      if (this.recurringPlusButton) this.recurringPlusButton.nativeElement.blur();
+      if (this.recurringEditButton) this.recurringEditButton.nativeElement.blur();
       return;
     }
 
@@ -333,6 +361,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addRecurringPopup : this.editRecurringPopup)
       .then((recurringPopup: RecurringPopupComponent) => {
+        this.recurringPopupOpen = true;
         this.recurringPopup = recurringPopup;
         recurringPopup.arrowPosition = arrowPosition;
 
@@ -353,6 +382,13 @@ export class ProductPropertiesComponent {
             this.updateRecurringPayment();
           }
         }
+
+        const onRecurringPopupCloseListener = this.recurringPopup.onClose.subscribe(() => {
+          onRecurringPopupCloseListener.unsubscribe();
+          this.recurringPopupOpen = false;
+          if (this.recurringPlusButton) this.recurringPlusButton.nativeElement.blur();
+          if (this.recurringEditButton) this.recurringEditButton.nativeElement.blur();
+        });
       });
   }
 
@@ -377,8 +413,10 @@ export class ProductPropertiesComponent {
 
 
   openHoplinkPopup(arrowPosition: PopupArrowPosition) {
-    if (this.addHoplinkPopup.length > 0 || this.editHoplinkPopup.length > 0) {
+    if (this.hoplinkPopupOpen) {
       this.hoplinkPopup.close();
+      if (this.hoplinkPlusButton) this.hoplinkPlusButton.nativeElement.blur();
+      if (this.hoplinkEditButton) this.hoplinkEditButton.nativeElement.blur();
       return;
     }
 
@@ -391,6 +429,7 @@ export class ProductPropertiesComponent {
       }
     }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addHoplinkPopup : this.editHoplinkPopup)
       .then((hoplinkPopup: HoplinkPopupComponent) => {
+        this.hoplinkPopupOpen = true;
         this.hoplinkPopup = hoplinkPopup;
         hoplinkPopup.arrowPosition = arrowPosition;
         hoplinkPopup.hoplink = this.product.hoplink;
@@ -402,6 +441,14 @@ export class ProductPropertiesComponent {
             hoplink: this.product.hoplink
           }).subscribe();
         }
+
+
+        const onHoplinkPopupCloseListener = this.hoplinkPopup.onClose.subscribe(() => {
+          onHoplinkPopupCloseListener.unsubscribe();
+          this.hoplinkPopupOpen = false;
+          if (this.hoplinkPlusButton) this.hoplinkPlusButton.nativeElement.blur();
+          if (this.hoplinkEditButton) this.hoplinkEditButton.nativeElement.blur();
+        });
       });
   }
 
@@ -504,7 +551,7 @@ export class ProductPropertiesComponent {
         mediaBrowser.callback = (callbackMedia: Image | Video) => {
           // If we have new media
           if (newMedia) {
-            const mediaContainerElement = document.getElementById('media-container') as HTMLElement;
+            const mediaListItemElement = document.getElementById('media-list-item') as HTMLElement;
 
             // Create new product media
             this.selectedMedia = new ProductMedia();
@@ -514,7 +561,7 @@ export class ProductPropertiesComponent {
             this.product.media.push(this.selectedMedia);
 
             // Scroll down to the new product media
-            window.setTimeout(() => mediaContainerElement.scrollTo(0, mediaContainerElement.scrollHeight));
+            window.setTimeout(() => mediaListItemElement.scrollTo(0, mediaListItemElement.scrollHeight));
           }
 
           // Assign the properties

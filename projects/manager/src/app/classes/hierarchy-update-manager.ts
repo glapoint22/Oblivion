@@ -596,7 +596,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // Other Products
         if (this.otherProductArray) {
-            this.productService.productComponents.forEach(x => {
+            this.productService.products.forEach(x => {
 
                 // Add Other
                 if (update.type == ListUpdateType.Add) {

@@ -21,3 +21,12 @@ button {
         opacity: 0.3;
     }
 }
+
+i {
+    outline: none;
+
+    &:focus {
+        color: #dadada;
+        transform: scale(1.2);
+    }
+}

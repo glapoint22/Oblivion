@@ -199,10 +199,15 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.listOptions.menu!.menuOptions[7].isDisabled = false;
             this.listOptions.menu!.menuOptions[7].name = 'Move ' + this.grandchildType;
 
+            // As long as we're not right-clicking on the list item
             if (!hierarchyUpdate.rightClick) {
-                const selectedProduct = this.productService.productComponents.find(x => x.product.id == hierarchyUpdate.selectedItems![0].id);
+                // See if the product we just selected in the list has already been opened
+                const openedProduct = this.productService.products.find(x => x.product.id == hierarchyUpdate.selectedItems![0].id);
 
-                if (!selectedProduct || (selectedProduct && selectedProduct.zIndex != this.productService.zIndex)) {
+                // If the product we just selected in the list has (NOT) yet been opened
+                // Or if the product has already been opened, but its tab is (NOT) currently selected
+                if (!openedProduct || (openedProduct && openedProduct.zIndex != this.productService.zIndex)) {
+                    // This is an output that notifies the (Niches Side Menu) that it can close
                     this.onProductSelect.emit();
                     this.productService.openProduct(hierarchyUpdate.selectedItems![0].id!);
                 }
@@ -239,9 +244,18 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.searchOptions.menu!.menuOptions[5].isDisabled = false;
             this.searchOptions.menu!.menuOptions[5].name = 'Move ' + this.grandchildType;
 
+            // As long as we're not right-clicking on the list item
             if (!searchUpdate.rightClick) {
-                this.onProductSelect.emit();
-                this.productService.goToProduct(searchUpdate.selectedItems![0].id!);
+                // See if the product we just selected in the list has already been opened
+                const openedProduct = this.productService.products.find(x => x.product.id == searchUpdate.selectedItems![0].id);
+
+                // If the product we just selected in the list has (NOT) yet been opened
+                // Or if the product has already been opened, but its tab is (NOT) currently selected
+                if (!openedProduct || (openedProduct && openedProduct.zIndex != this.productService.zIndex)) {
+                    // This is an output that notifies the (Niches Side Menu) that it can close
+                    this.onProductSelect.emit();
+                    this.productService.openProduct(searchUpdate.selectedItems![0].id!);
+                }
             }
         }
     }
@@ -257,12 +271,12 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             const indexOfHierarchyItemParent = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
             // ********* Commented Out Data Service *********
-            // this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
-            //     id: this.thisArray[indexOfHierarchyItemParent].id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = this.nicheAddId;//id;
-            // })
+            this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
+                id: this.thisArray[indexOfHierarchyItemParent].id,
+                name: hierarchyUpdate.name
+            }).subscribe((id: number) => {
+                this.thisArray[hierarchyUpdate.index!].id = id;
+            })
         }
         super.onItemAdd(hierarchyUpdate);
     }

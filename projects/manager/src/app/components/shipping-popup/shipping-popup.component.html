@@ -1,4 +1,4 @@
-<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()">
 
     <!-- Arrow Left -->
     <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft || arrowPosition == PopupArrowPosition.BottomLeft" class="popup-arrow-container" [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopLeft ? '13px' : '133px'}">
@@ -9,42 +9,42 @@
 
     <div class="popup-base">
 
-        <label class="radio" style="display: block;">
+        <label class="radio" style="display: block; width: fit-content;">
             <div>Free Shipping</div>
             <input type="radio" name="shipping" [checked]="shipping == shippingType.FreeShipping"
                 (change)="shipping = shippingType.FreeShipping">
-            <span class="checkmark" tabindex="-1"></span>
+            <span #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
-        <label class="radio" style="display: block;">
+        <label class="radio" style="display: block; width: fit-content;">
             <div>Free US Shipping</div>
             <input type="radio" name="shipping" [checked]="shipping == shippingType.FreeUsShipping"
                 (change)="shipping = shippingType.FreeUsShipping">
-            <span class="checkmark" tabindex="-1"></span>
+            <span #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
-        <label class="radio" style="display: block;">
+        <label class="radio" style="display: block; width: fit-content;">
             <div>Plus Shipping</div>
             <input type="radio" name="shipping" [checked]="shipping == shippingType.PlusShipping"
                 (change)="shipping = shippingType.PlusShipping">
-            <span class="checkmark" tabindex="-1"></span>
+            <span #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
-        <label class="radio" style="display: block;">
+        <label class="radio" style="display: block; width: fit-content;">
             <div>Just Pay Shipping</div>
             <input type="radio" name="shipping" [checked]="shipping == shippingType.JustPayShipping"
                 (change)="shipping = shippingType.JustPayShipping">
-            <span class="checkmark" tabindex="-1"></span>
+            <span #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
         <!-- Buttons -->
         <div class="popup-button-container">
-            <button class="dark-button" (click)="close()">Close</button>
-            <button class="gold-button" (click)="onSubmitClick()">Submit</button>
+            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #tabElement class="gold-button" (click)="onSubmitClick()">Submit</button>
         </div>
     </div>
 

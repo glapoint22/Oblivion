@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductPropertiesComponent } from './product-properties.component';
+import { ProductComponent } from './product.component';
 import { PricePointsComponent } from '../price-points/price-points.component';
 import { ProductDescriptionComponent } from '../product-description/product-description.component';
 import { TextToolbarPopupComponent } from '../text-toolbar-popup/text-toolbar-popup.component';
@@ -15,7 +15,7 @@ import { DropdownModule } from '../dropdown/dropdown.module';
 
 @NgModule({
   declarations: [
-    ProductPropertiesComponent,
+    ProductComponent,
     PricePointsComponent,
     ProductDescriptionComponent,
     TextToolbarPopupComponent,
@@ -31,7 +31,7 @@ import { DropdownModule } from '../dropdown/dropdown.module';
     DropdownModule
   ],
   exports:[
-    ProductPropertiesComponent
+    ProductComponent
   ]
 })
-export class ProductPropertiesModule { }
+export class ProductModule { }

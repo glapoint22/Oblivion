@@ -9,12 +9,12 @@ import { MultiColumnListComponent } from "../components/lists/multi-column-list/
 import { CaseType, ListUpdateType } from "./enums";
 import { SearchResultItem } from "./search-result-item";
 import { ListUpdate } from "./list-update";
-import { ProductPropertiesComponent } from "../components/product-properties/product-properties.component";
+import { ProductComponent } from "../components/product/product.component";
 
 @Directive()
 export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
-    public secondOtherProductArray: keyof ProductPropertiesComponent = 'selectedKeywordArray';
-    public secondOtherProductSearchArray: keyof ProductPropertiesComponent = 'selectedKeywordSearchArray';
+    public secondOtherProductArray: keyof ProductComponent = 'selectedKeywordArray';
+    public secondOtherProductSearchArray: keyof ProductComponent = 'selectedKeywordSearchArray';
 
 
     // Decorators
@@ -58,7 +58,7 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         super.updateOtherItems(update);
 
         // Products
-        this.productService.productComponents.forEach(x => {
+        this.productService.products.forEach(x => {
 
             // Add Other
             if (update.type == ListUpdateType.Add) {

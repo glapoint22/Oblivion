@@ -358,7 +358,7 @@ export class VendorFormComponent extends LazyLoad {
 
       // If this form was opened from the forms menu and on the rare occasion a product happens to be
       // open that belongs to the current vendor and that product also happens to have its vendor popup open
-      this.productService.productComponents.forEach(x => {
+      this.productService.products.forEach(x => {
         if (x.vendorPopupContainer.length > 0 && x.vendorPopup.product.vendor.id == this.vendor.id) {
           // Update the vendor that's displayed in the vendor popup of that product
           x.vendorPopup.product.vendor = this.vendor;

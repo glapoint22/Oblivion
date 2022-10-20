@@ -4,7 +4,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
 import { ListComponent } from "../components/lists/list/list.component";
-import { ProductPropertiesComponent } from "../components/product-properties/product-properties.component";
+import { ProductComponent } from "../components/product/product.component";
 import { ProductService } from "../services/product/product.service";
 import { ListUpdateType, MenuOptionType } from "./enums";
 import { ListItem } from "./list-item";
@@ -40,9 +40,9 @@ export class ListUpdateManager {
     public listOptions: ListOptions = new ListOptions();
     public searchOptions: ListOptions = new ListOptions();
     public get itemType(): string { return this._itemType; }
-    public otherProductArray!: keyof ProductPropertiesComponent;
+    public otherProductArray!: keyof ProductComponent;
     public get listUpdate(): ListUpdate { return this._listUpdate; }
-    public otherProductSearchArray!: keyof ProductPropertiesComponent;
+    public otherProductSearchArray!: keyof ProductComponent;
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
     public set itemType(v: string) { this._itemType = v; this.addIconButtonTitle = 'Add ' + v; }
@@ -176,6 +176,7 @@ export class ListUpdateManager {
                     // Then select that item
                     this.listComponent.listManager.setItemSelection(selectedItem);
                     this.listComponent.listManager.setButtonsState();
+                    selectedItem.htmlItem!.nativeElement.focus();
                 }
 
                 // If it's not set to select the last selected item
@@ -524,7 +525,7 @@ export class ListUpdateManager {
 
         // Other Products
         if (this.otherProductArray) {
-            this.productService.productComponents.forEach(x => {
+            this.productService.products.forEach(x => {
 
                 // Add Other
                 if (update.type == ListUpdateType.Add) {

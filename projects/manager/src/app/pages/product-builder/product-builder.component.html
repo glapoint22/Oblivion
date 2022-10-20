@@ -4,16 +4,16 @@
     <div #tabsContainer class="tabs-container">
         
         <!-- Tab -->
-        <ng-container *ngFor="let productComponent of productService.productComponents; let i = index">
+        <ng-container *ngFor="let product of productService.products; let i = index">
             <!-- Unselected Tab -->
-            <div *ngIf="productComponent != productService.selectedProduct"
+            <div *ngIf="product != productService.selectedProduct"
                  class="tab"
                  (contextmenu)="$event.preventDefault()"
                  (mousedown)="onTabMouseDown($event, i)"
-                 [title]="productComponent.product.name">
+                 [title]="product.product.name">
 
                 <div class="padding-left"></div>
-                <div class="tab-label" [style.width.px]="getTabLabelWidth(tabsContainer)">{{productComponent.product.name}}</div>
+                <div class="tab-label" [style.width.px]="getTabLabelWidth(tabsContainer)">{{product.product.name}}</div>
                 <div class="x"
                      (mousedown)="$event.stopPropagation(); productService.productTabContextMenu ? productService.productTabContextMenu.close() : null"
                      (click)="closeProduct(i)">x</div>
@@ -21,15 +21,15 @@
             </div>
             
             <!-- Selected Tab -->
-            <div *ngIf="productComponent == productService.selectedProduct"
+            <div *ngIf="product == productService.selectedProduct"
                  class="selected-tab"
                  (contextmenu)="$event.preventDefault()"
                  [style.zIndex]="this.productService.zIndex + 1"
                  (mousedown)="onTabMouseDown($event, i)"
-                 [title]="productComponent.product.name">
+                 [title]="product.product.name">
 
                 <div class="padding-left"></div>
-                <div class="tab-label" [style.width.px]="getTabLabelWidth(tabsContainer)">{{productComponent.product.name}}</div> 
+                <div class="tab-label" [style.width.px]="getTabLabelWidth(tabsContainer)">{{product.product.name}}</div> 
                 <div class="x"
                      (mousedown)="$event.stopPropagation(); productService.productTabContextMenu ? productService.productTabContextMenu.close() : null"
                      (click)="closeProduct(i)">x</div>

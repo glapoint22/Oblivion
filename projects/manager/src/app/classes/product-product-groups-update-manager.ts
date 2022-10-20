@@ -27,8 +27,8 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
         this.otherArray = this.productService.formProductGroupArray;
         this.otherSearchArray = this.productService.formProductGroupSearchArray;
         this.searchInputName = 'productProductGroupsSearchInput' + this.productId;
-        this.thisArray = this.productService.productComponents[this.productIndex].productProductGroupArray;
-        this.thisSearchArray = this.productService.productComponents[this.productIndex].productProductGroupSearchArray;
+        this.thisArray = this.productService.products[this.productIndex].productProductGroupArray;
+        this.thisSearchArray = this.productService.products[this.productIndex].productProductGroupSearchArray;
     }
 
 
