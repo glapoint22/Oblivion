@@ -4,17 +4,22 @@
     <!-- Overflow -->
     <div class="price-point-overflow" [ngStyle]="{'justify-content': product.pricePoints.length < 5 ? 'center' : 'flex-start', 'margin-bottom': product.pricePoints.length <= 5 ? '0' : '20px'}">
 
+
+        <!-- Empty Plus Button Container -->
+        <ng-container *ngIf="product.pricePoints.length < 4">
+            <div class="empty-plus-button-container"></div>
+        </ng-container>
+        
+
         <!-- Price Point Container -->
         <div *ngFor="let pricePoint of product.pricePoints; let i = index" class="price-point-container" style="position: relative;">
 
 
-            <!-- Delete Price Point Button -->
-            <div class="delete-price-point-button-container"
-                 (click)="deletePricePoint(i, pricePoint.id)">
-                <i class="fas fa-trash-alt"
-                   tabindex="0"
-                   (keydown.enter)="deletePricePoint(i, pricePoint.id)"></i>
-            </div>
+
+            <icon-button [icon]="'fas fa-trash-alt'"
+                         [title]="'Remove Price Point'"
+                         (onClick)="deletePricePoint(i, pricePoint.id)">
+            </icon-button>
             
 
             <!-- Base -->
@@ -23,31 +28,29 @@
 
 
                 <!-- Header -->
-                <div class="header">
-                    <div class="header-container">
-                        <div class="header-label">Header:</div>
-                        <div #header
-                            tabindex="0"
-                            class="header-field"
-                            contenteditable="true"
-                            (focus)="selectRange(header)"
-                            (blur)="onHeaderBlur(pricePoint, header)"
-                            (keydown.escape)="onHeaderEscape(pricePoint, header)"
-                            (keydown.enter)="header.blur()"
-                            (paste)="onPaste($event, header)">
-                                {{pricePoint.header}}
-                        </div>
+                <div class="property-container">
+                    <div class="label">Header:</div>
+                    <div #header
+                        tabindex="0"
+                        class="header-dashed-container"
+                        contenteditable="true"
+                        (focus)="selectRange(header)"
+                        (blur)="onHeaderBlur(pricePoint, header)"
+                        (keydown.escape)="onHeaderEscape(pricePoint, header)"
+                        (keydown.enter)="header.blur()"
+                        (paste)="onPaste($event, header)">
+                            {{pricePoint.header}}
                     </div>
                 </div>
     
     
     
                 <!-- quantity -->
-                <div class="quantity-container">
-                    <div class="label-only">Quantity:</div>
+                <div class="property-container">
+                    <div class="label">Quantity:</div>
                     <div #quantity
                          tabindex="0"
-                         class="quantity-field"
+                         class="quantity-dashed-container"
                          contenteditable="true"
                          (focus)="selectRange(quantity)"
                          (blur)="onQuantityBlur(pricePoint, quantity)"
@@ -61,35 +64,29 @@
     
     
                 <!-- Image -->
-                <div class="image-container" [tabindex]="!pricePoint.image.src ? '0' : '-1'" (keydown.enter)="!pricePoint.image.src ? openMediaBrowser(pricePoint) : null">
+                <div class="image-property-container">
                     <div class="label-container">
-                        <div class="label-with-buttons">Image:</div>
+                        <div class="label">Image:</div>
     
-                        <div class="buttons-container">
-                            <!-- Delete -->
-                            <i *ngIf="pricePoint.image.src" #imageDeleteButton
-                               tabindex="0"
-                               class="fas fa-trash-alt"
-                               (click)="onImageDelete(pricePoint)"
-                               (keydown.escape)="imageDeleteButton.blur()"
-                               (keydown.enter)="onImageDelete(pricePoint)" title="Delete Image">
-                            </i>
+                        <div class="icon-button-container">
 
-                            <!-- Media Browser -->
-                            <i #imageEditButton
-                               tabindex="0"
-                               class="fa-solid fa-image image-icon"
-                               (click)="openMediaBrowser(pricePoint)"
-                               (keydown.escape)="imageEditButton.blur()"
-                               (keydown.enter)="openMediaBrowser(pricePoint)" title="Media Browser">
-                            </i>
+                            <icon-button [icon]="'fa-solid fa-image image-icon'"
+                                         [title]="'Media Browser'"
+                                         (onClick)="openMediaBrowser(pricePoint)">
+                            </icon-button>
+
+                            <icon-button *ngIf="pricePoint.image.src"
+                                         [icon]="'fas fa-trash-alt'"
+                                         [title]="'Remove Image'"
+                                         (onClick)="onImageDelete(pricePoint)">
+                            </icon-button>
                         </div>
                     </div>
                     
                     <div class="image-field" [title]="pricePoint.image.src ? pricePoint.image.name : ''"
                          (click)="openMediaBrowser(pricePoint)">
 
-                        <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image" style="font-size: 60px; color: #3c3c3c;"></i>
+                        <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image"></i>
                         <img *ngIf="pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
                     </div>
                 </div>
@@ -101,11 +98,11 @@
                     <div class="units-container">
 
                         <!-- Unit Price -->
-                        <div class="unit-price-container">
-                            <div class="label-only">Unit Price:</div>
+                        <div class="unit-price-property-container">
+                            <div class="label">Unit Price:</div>
                             <div #unitPrice
                                  tabindex="0"
-                                 class="unit-price-field"
+                                 class="unit-price-dashed-container"
                                  contenteditable="true"
                                  (focus)="onUnitPriceFocus(unitPrice)"
                                  (input)="onUnitPriceInput(unitPrice)"
@@ -118,11 +115,11 @@
                         </div>
         
                         <!-- Unit -->
-                        <div class="unit-container">
-                            <div class="label-only">Unit:</div>
+                        <div class="unit-property-container">
+                            <div class="label">Unit:</div>
                             <div #unit
                                  tabindex="0"
-                                 class="unit-field"
+                                 class="unit-dashed-container"
                                  contenteditable="true"
                                  (focus)="selectRange(unit)"
                                  (blur)="onUnitBlur(pricePoint, unit)"
@@ -142,9 +139,9 @@
                     <div class="prices-container">
 
                         <!-- Strikethrough Price -->
-                        <div class="strikethrough-price-container">
-                            <div class="label-only">Strikethrough Price:</div>
-                            <div class="strikethrough-price-field">
+                        <div class="property-container">
+                            <div class="label">Strikethrough Price:</div>
+                            <div class="strikethrough-price-dashed-container">
                                 <div #strikethroughPrice
                                      tabindex="0"
                                      class="strikethrough-price"
@@ -161,11 +158,11 @@
                         </div>
         
                         <!-- Price -->
-                        <div class="price-container">
-                            <div class="label-only">Price:</div>
+                        <div class="price-property-container">
+                            <div class="label">Price:</div>
                             <div #price
                                  tabindex="0"
-                                 class="price-field"
+                                 class="price-dashed-container"
                                  contenteditable="true"
                                  (focus)="onPriceFocus(price)"
                                  (input)="onPriceInput(price)"
@@ -182,139 +179,122 @@
         
         
                     <!-- Shipping -->
-                    <div class="shipping-container">
+                    <div class="property-container-2">
                         <div class="label-container">
-                            <div class="label-with-buttons">Shipping:</div>
-                            <div *ngIf="pricePoint.shippingType != shippingType.None" class="buttons-container">
-
-                                <!-- Edit -->
+                            <div class="label">Shipping:</div>
+                            <div *ngIf="pricePoint.shippingType != shippingType.None" class="icon-button-container">
                                 <i #shippingEditButton
                                    tabindex="0"
+                                   title="Edit Shipping"
                                    class="fas fa-pencil-alt"
+                                   [ngClass]="{'edit-button-focus': shippingPopupOpen[i]}"
                                    (click)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)"
-                                   (keydown.escape)="shippingEditButton.blur()"
+                                   (mousedown)="shippingPopupOpen[i] ? $event.stopPropagation() : null;"
                                    (keydown.enter)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
                                 </i>
-
-                                <!-- Delete -->
-                                <i #shippingDeleteButton
-                                   tabindex="0"
-                                   class="fas fa-trash-alt"
-                                   (click)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)"
-                                   (keydown.escape)="shippingDeleteButton.blur()"
-                                   (keydown.enter)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)">
-                                </i>
+                                <icon-button [icon]="'fas fa-trash-alt'"
+                                             [title]="'Remove Shipping'"
+                                             (onClick)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)">
+                                </icon-button>
                             </div>
-                        </div>
-                        
-                        <div class="add-button-field" style="min-height: 40px;">
-
-                            <!-- Add -->
-                            <div *ngIf="pricePoint.shippingType == shippingType.None"
-                                 #shippingAddButton
-                                 tabindex="0"
-                                 class="add-button"
-                                 (click)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)"
-                                 (keydown.escape)="shippingAddButton.blur()"
-                                 (keydown.enter)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-
-                            <div style="position: absolute; z-index: 100; left: 33px; top: -127px;">
-                                <ng-template #addShippingPopup></ng-template>
-                            </div>
-
-                            <div style="position: absolute; z-index: 100; left: -65px; top: -160px;">
+                            <div class="edit-popup-container-2">
                                 <ng-template #editShippingPopup></ng-template>
                             </div>
-
-                            <shipping *ngIf="pricePoint.shippingType != shippingType.None" [shippingType]="pricePoint.shippingType"></shipping>
+                        </div>
+                        <div class="shipping-dashed-container">
+                            <div *ngIf="pricePoint.shippingType == shippingType.None" class="plus-button-container">
+                                <i #shippingPlusButton
+                                   tabindex="0"
+                                   title="Add Shipping"
+                                   class="fa-regular fa-circle-xmark"
+                                   [ngClass]="{'plus-button-focus': shippingPopupOpen[i]}"
+                                   (click)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)"
+                                   (mousedown)="shippingPopupOpen[i] ? $event.stopPropagation() : null;"
+                                   (keydown.enter)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
+                                </i>
+                            </div>
+                            <div *ngIf="pricePoint.shippingType != shippingType.None" class="shipping-container">
+                                <shipping [shippingType]="pricePoint.shippingType"></shipping>
+                            </div>
+                            <div class="add-popup-container">
+                                <ng-template #addShippingPopup></ng-template>
+                            </div>
                         </div>
                     </div>
-        
-        
-                    <!-- Recurring -->
-                    <div class="recurring-container">
-                        <div class="label-container">
-                            <div class="label-with-buttons">Recurring:</div>
-                            <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="buttons-container">
 
-                                <!-- Edit -->
+
+                    <!-- Recurring -->
+                    <div class="property-container-2">
+                        <div class="label-container">
+                            <div class="label">Recurring Payment:</div>
+                            <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="icon-button-container">
                                 <i #recurringEditButton
                                    tabindex="0"
+                                   title="Edit Recurring Payment"
                                    class="fas fa-pencil-alt"
+                                   [ngClass]="{'edit-button-focus': recurringPopupOpen[i]}"
                                    (click)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)"
-                                   (keydown.escape)="recurringEditButton.blur()"
+                                   (mousedown)="recurringPopupOpen[i] ? $event.stopPropagation() : null;"
                                    (keydown.enter)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
                                 </i>
-
-                                <!-- Delete -->
-                                <i #recurringDeleteButton
-                                   tabindex="0"
-                                   class="fas fa-trash-alt"
-                                   (click)="removeRecurringPayment(pricePoint)"
-                                   (keydown.escape)="recurringDeleteButton.blur()"
-                                   (keydown.enter)="removeRecurringPayment(pricePoint)">
-                                </i>
+                                <icon-button [icon]="'fas fa-trash-alt'"
+                                             [title]="'Remove Shipping'"
+                                             (onClick)="removeRecurringPayment(pricePoint)">
+                                </icon-button>
                             </div>
-                        </div>
-                        
-                        <div class="add-button-field">
-
-                            <!-- Add -->
-                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0"
-                                 #recurringAddButton
-                                 tabindex="0"
-                                 class="add-button"
-                                 (click)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)"
-                                 (keydown.escape)="recurringAddButton.blur()"
-                                 (keydown.enter)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-
-                            <div style="position: absolute; z-index: 100; left: 33px; top: -319px;">
-                                <ng-template #addRecurringPopup></ng-template>
-                            </div>
-
-                            <div style="position: absolute; z-index: 100; left: -65px; top: -356px;">
+                            <div class="recurring-edit-popup-container">
                                 <ng-template #editRecurringPopup></ng-template>
                             </div>
-
-                            <recurring-payment *ngIf="pricePoint.recurringPayment.recurringPrice > 0" [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
+                        </div>
+                        <div class="recurring-dashed-container">
+                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="plus-button-container">
+                                <i #recurringPlusButton
+                                   tabindex="0"
+                                   title="Add Recurring Payment"
+                                   class="fa-regular fa-circle-xmark"
+                                   [ngClass]="{'plus-button-focus': recurringPopupOpen[i]}"
+                                   (click)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)"
+                                   (mousedown)="recurringPopupOpen[i] ? $event.stopPropagation() : null;"
+                                   (keydown.enter)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
+                                </i>
+                            </div>
+                            <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="recurring-container">
+                                <recurring-payment [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
+                            </div>
+                            <div class="add-popup-container">
+                                <ng-template #addRecurringPopup></ng-template>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-        <div *ngIf="product.pricePoints.length < 5" class="add-button-container">
-            <div #pricePointAddButton
-                 tabindex="0"
-                 class="add-button-lg"
-                 (click)="addPricePoint(true)"
-                 (keydown.escape)="pricePointAddButton.blur()"
-                 (keydown.enter)="addPricePoint(true)">
-                <div></div>
-                <div></div>
-                <div></div>
+        <ng-container *ngIf="product.pricePoints.length < 4">
+            <div class="lg-plus-button-container">
+                <i #pricePointPlusButton
+                   tabindex="0"
+                   title="Add Price Point"
+                   (click)="addPricePoint(true)"
+                   class="fa-regular fa-circle-xmark"
+                   (keydown.enter)="addPricePoint(true)"
+                   (keydown.escape)="pricePointPlusButton.blur()">
+                </i>
             </div>
+        </ng-container>
+    </div>
+
+
+    <ng-container *ngIf="product.pricePoints.length >= 4">
+        <div class="lg-plus-button-container-2">
+            <i #pricePointPlusButton
+               tabindex="0"
+               title="Add Price Point"
+               (click)="addPricePoint(true)"
+               class="fa-regular fa-circle-xmark"
+               (keydown.enter)="addPricePoint(true)"
+               (keydown.escape)="pricePointPlusButton.blur()">
+            </i>
         </div>
-    </div>
-            
-    <div *ngIf="product.pricePoints.length >= 5"
-         #pricePointAddButton
-         tabindex="0"
-         class="add-button-lg"
-         (click)="addPricePoint(true)"
-         (keydown.escape)="pricePointAddButton.blur()"
-         (keydown.enter)="addPricePoint(true)">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
+    </ng-container>
 </div>

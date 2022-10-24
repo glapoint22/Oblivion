@@ -86,7 +86,14 @@ export class RecurringPopupComponent extends LazyLoad {
     // This will set the trial period based on which date was picked using the trial bill date input
     if (date2 > date1) {
       const diffTime = Math.abs(date2 - date1);
-      diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+
+      // ******** NOTE *********
+      // Code was changed from this:
+      // diffDays = diffTime / (1000 * 60 * 60 * 24);
+      // to:
+      diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+      // Before Math.round was added, sometimes it would return a value with a decimal point
     }
 
     this.recurringPayment.trialPeriod = diffDays;

@@ -211,7 +211,7 @@
                                    class="fas fa-pencil-alt"
                                    [ngClass]="{'edit-button-focus': shippingPopupOpen}"
                                    (click)="openShippingPopup(PopupArrowPosition.TopRight)"
-                                   (mousedown)="$event.stopPropagation()"
+                                   (mousedown)="shippingPopupOpen ? $event.stopPropagation() : null"
                                    (keydown.enter)="openShippingPopup(PopupArrowPosition.TopRight)">
                                 </i>
                                 <icon-button [icon]="'fas fa-trash-alt'"
@@ -231,14 +231,14 @@
                                    class="fa-regular fa-circle-xmark"
                                    [ngClass]="{'plus-button-focus': shippingPopupOpen}"
                                    (click)="openShippingPopup(PopupArrowPosition.TopLeft)"
-                                   (mousedown)="$event.stopPropagation()"
+                                   (mousedown)="shippingPopupOpen ? $event.stopPropagation() : null"
                                    (keydown.enter)="openShippingPopup(PopupArrowPosition.TopLeft)">
                                 </i>
                             </div>
                             <div *ngIf="product.shippingType != shippingType.None" class="shipping-container">
                                 <shipping [shippingType]="product.shippingType"></shipping>
                             </div>
-                            <div class="add-shipping-popup-container">
+                            <div class="add-popup-container">
                                 <ng-template #addShippingPopup></ng-template>
                             </div>
                         </div>
@@ -258,7 +258,7 @@
                                    class="fas fa-pencil-alt"
                                    [ngClass]="{'edit-button-focus': recurringPopupOpen}"
                                    (click)="openRecurringPopup(PopupArrowPosition.TopRight)"
-                                   (mousedown)="$event.stopPropagation()"
+                                   (mousedown)="recurringPopupOpen ? $event.stopPropagation() : null"
                                    (keydown.enter)="openRecurringPopup(PopupArrowPosition.TopRight)">
                                 </i>
                                 <icon-button [icon]="'fas fa-trash-alt'"
@@ -278,7 +278,7 @@
                                    class="fa-regular fa-circle-xmark"
                                    [ngClass]="{'plus-button-focus': recurringPopupOpen}"
                                    (click)="openRecurringPopup(PopupArrowPosition.TopLeft)"
-                                   (mousedown)="$event.stopPropagation()"
+                                   (mousedown)="recurringPopupOpen ? $event.stopPropagation() : null"
                                    (keydown.enter)="openRecurringPopup(PopupArrowPosition.TopLeft)">
                                 </i>
                             </div>
@@ -306,7 +306,7 @@
                                    class="fas fa-pencil-alt"
                                    [ngClass]="{'edit-button-focus': hoplinkPopupOpen}"
                                    (click)="openHoplinkPopup(PopupArrowPosition.TopRight)"
-                                   (mousedown)="$event.stopPropagation()"
+                                   (mousedown)="hoplinkPopupOpen ? $event.stopPropagation() : null"
                                    (keydown.enter)="openHoplinkPopup(PopupArrowPosition.TopRight)">
                                 </i>
                             </div>
@@ -322,7 +322,7 @@
                                    class="fa-regular fa-circle-xmark"
                                    [ngClass]="{'plus-button-focus': hoplinkPopupOpen}"
                                    (click)="openHoplinkPopup(PopupArrowPosition.TopLeft)"
-                                   (mousedown)="$event.stopPropagation()"
+                                   (mousedown)="hoplinkPopupOpen ? $event.stopPropagation() : null"
                                    (keydown.enter)="openHoplinkPopup(PopupArrowPosition.TopLeft)">
                                 </i>
                             </div>

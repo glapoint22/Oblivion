@@ -10,5 +10,6 @@ export class IconButtonComponent {
   @Input() title!: string;
   @Input() isDisabled!: boolean | undefined | null;
   @Input() fontSize!: string;
+  @Input() stopPropagation!: boolean;
   @Output() onClick: EventEmitter<void> = new EventEmitter();
 }

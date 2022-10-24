@@ -254,7 +254,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                 if (!openedProduct || (openedProduct && openedProduct.zIndex != this.productService.zIndex)) {
                     // This is an output that notifies the (Niches Side Menu) that it can close
                     this.onProductSelect.emit();
-                    this.productService.openProduct(searchUpdate.selectedItems![0].id!);
+                    this.productService.goToProduct(searchUpdate.selectedItems![0].id!);
                 }
             }
         }
