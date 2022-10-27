@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
 import { Subject } from 'rxjs';
+import { PopupArrowPosition } from '../../classes/enums';
 
 @Component({
   selector: 'price-popup',
@@ -9,6 +10,8 @@ import { Subject } from 'rxjs';
 })
 export class PricePopupComponent extends LazyLoad {
   @ViewChild('priceInput') priceInput!: ElementRef<HTMLInputElement>;
+  public arrowPosition!: PopupArrowPosition;
+  public PopupArrowPosition = PopupArrowPosition;
   public price!: number;
   public callback!: Function;
   public top!: number;
@@ -19,7 +22,7 @@ export class PricePopupComponent extends LazyLoad {
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
-    this.priceInput.nativeElement.value = this.price.toFixed(2);
+    if(this.price) this.priceInput.nativeElement.value = this.price.toFixed(2);
     window.addEventListener('mousedown', this.mousedown);
     this.setFocus(0);
   }

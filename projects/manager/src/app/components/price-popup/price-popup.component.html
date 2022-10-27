@@ -2,6 +2,13 @@
     [style.top.px]="top ? top : null" [style.left.px]="left ? left : null" [ngStyle]="{'position': top && left ? 'absolute' : null}">
 
 
+    <!-- Arrow Left -->
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft || arrowPosition == PopupArrowPosition.BottomLeft" class="popup-arrow-container">
+        <div class="popup-arrow-left-Border"></div>
+        <div class="popup-arrow-left-background"></div>
+    </div>
+
+
     <div class="popup-base">
 
         <!-- Price -->
@@ -18,7 +25,7 @@
 
 
     <!-- Arrow Right -->
-    <div class="popup-arrow-container">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopRight || arrowPosition == PopupArrowPosition.BottomRight" class="popup-arrow-container">
         <div class="popup-arrow-right-Border"></div>
         <div class="popup-arrow-right-background"></div>
     </div>

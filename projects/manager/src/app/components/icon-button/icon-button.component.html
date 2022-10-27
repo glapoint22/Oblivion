@@ -1,8 +1,15 @@
-<button class="icon-button"
-        tabindex="-1"
+<button tabindex="-1"
         [title]="title ? title : ''"
-        (mousedown)="stopPropagation ? $event.stopPropagation() : null"
+        [disabled]="isDisabled"
         (click)="!isDisabled ? onClick.next() : null"
-        [disabled]="isDisabled">
-    <i #iconButton style="pointer-events: none;" [class]="icon" [style.fontSize.px]="!fontSize ? 13 : fontSize" [tabindex]="0" (keydown.escape)="iconButton.blur()"></i>
+        (mousedown)="popupOpen ? $event.stopPropagation() : null">
+
+    <i #iconButton
+       [tabindex]="0"
+       [class]="icon"
+       style="pointer-events: none;"
+       (keydown.escape)="iconButton.blur()"
+       [ngClass]="{'remain-in-focus': popupOpen}"
+       [style.fontSize.px]="!fontSize ? 13 : fontSize">
+    </i>
 </button>

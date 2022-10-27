@@ -31,10 +31,6 @@ export class PricePointsComponent {
   @ViewChildren('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: QueryList<ViewContainerRef>;
   @ViewChildren('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: QueryList<ViewContainerRef>;
-  @ViewChildren('shippingPlusButton') shippingPlusButton!: QueryList<ElementRef<HTMLElement>>;
-  @ViewChildren('shippingEditButton') shippingEditButton!: QueryList<ElementRef<HTMLElement>>;
-  @ViewChildren('recurringPlusButton') recurringPlusButton!: QueryList<ElementRef<HTMLElement>>;
-  @ViewChildren('recurringEditButton') recurringEditButton!: QueryList<ElementRef<HTMLElement>>;
 
 
 
@@ -78,14 +74,7 @@ export class PricePointsComponent {
 
 
 
-  deletePricePoint(pricePointIndex: number, pricePointId: number) {
-    this.product.pricePoints.splice(pricePointIndex, 1);
-    this.updateMinMaxPrice();
-
-    this.dataService.delete('api/Products/PricePoint', {
-      pricePointId: pricePointId
-    }).subscribe();
-  }
+  
 
 
   onPaste(e: ClipboardEvent, htmlElement: HTMLElement, isPrice?: boolean) {
@@ -310,27 +299,17 @@ export class PricePointsComponent {
 
 
   updateMinMaxPrice() {
-    let minPrice: number = 0;
-    let maxPrice: number = 0;
-
     if (this.product.pricePoints.length > 0) {
-      minPrice = Math.min(...this.product.pricePoints.map(x => parseFloat(x.price ? x.price : '0')));
-      maxPrice = Math.max(...this.product.pricePoints.map(x => parseFloat(x.price ? x.price : '0')));
+      const minPrice = Math.min(...this.product.pricePoints.map(x => parseFloat(x.price ? x.price : '0')));
+      const maxPrice = Math.max(...this.product.pricePoints.map(x => parseFloat(x.price ? x.price : '0')));
 
       this.product.minPrice = minPrice;
       this.product.maxPrice = maxPrice == minPrice ? null! : maxPrice;
 
     } else {
-      this.product.minPrice = minPrice;
-      this.product.maxPrice = maxPrice;
+      this.product.minPrice = null!;
+      this.product.maxPrice = null!;
     }
-
-
-    // this.dataService.put('api/Products/MinMaxPrice', {
-    //   productId: this.product.id,
-    //   minPrice: minPrice,
-    //   maxPrice: maxPrice == minPrice ? 0 : maxPrice
-    // }).subscribe();
   }
 
 
@@ -368,8 +347,6 @@ export class PricePointsComponent {
   openShippingPopup(arrowPosition: PopupArrowPosition, pricePointIndex: number, pricePoint: PricePoint) {
     if (this.shippingPopupOpen[pricePointIndex]) {
       this.shippingPopup[pricePointIndex].close();
-      if (this.shippingPlusButton.get(pricePointIndex)) this.shippingPlusButton.get(pricePointIndex)!.nativeElement.blur();
-      if (this.shippingEditButton.get(pricePointIndex)) this.shippingEditButton.get(pricePointIndex)!.nativeElement.blur();
       return;
     }
 
@@ -396,8 +373,6 @@ export class PricePointsComponent {
         const onShippingPopupCloseListener = this.shippingPopup[pricePointIndex].onClose.subscribe(() => {
           onShippingPopupCloseListener.unsubscribe();
           this.shippingPopupOpen[pricePointIndex] = false;
-          if (this.shippingPlusButton.get(pricePointIndex)) this.shippingPlusButton.get(pricePointIndex)!.nativeElement.blur();
-          if (this.shippingEditButton.get(pricePointIndex)) this.shippingEditButton.get(pricePointIndex)!.nativeElement.blur();
         });
       });
   }
@@ -409,8 +384,6 @@ export class PricePointsComponent {
   openRecurringPopup(arrowPosition: PopupArrowPosition, pricePointIndex: number, pricePoint: PricePoint) {
     if (this.recurringPopupOpen[pricePointIndex]) {
       this.recurringPopup[pricePointIndex].close();
-      if (this.recurringPlusButton.get(pricePointIndex)) this.recurringPlusButton.get(pricePointIndex)!.nativeElement.blur();
-      if (this.recurringEditButton.get(pricePointIndex)) this.recurringEditButton.get(pricePointIndex)!.nativeElement.blur();
       return;
     }
 
@@ -450,8 +423,6 @@ export class PricePointsComponent {
         const onRecurringPopupCloseListener = this.recurringPopup[pricePointIndex].onClose.subscribe(() => {
           onRecurringPopupCloseListener.unsubscribe();
           this.recurringPopupOpen[pricePointIndex] = false;
-          if (this.recurringPlusButton.get(pricePointIndex)) this.recurringPlusButton.get(pricePointIndex)!.nativeElement.blur();
-          if (this.recurringEditButton.get(pricePointIndex)) this.recurringEditButton.get(pricePointIndex)!.nativeElement.blur();
         });
       });
   }
@@ -464,5 +435,15 @@ export class PricePointsComponent {
     pricePoint.recurringPayment.timeFrameBetweenRebill = 0;
     pricePoint.recurringPayment.trialPeriod = 0;
     this.updatePricePoint(pricePoint);
+  }
+
+
+  deletePricePoint(pricePointIndex: number, pricePointId: number) {
+    this.product.pricePoints.splice(pricePointIndex, 1);
+    this.updateMinMaxPrice();
+
+    this.dataService.delete('api/Products/PricePoint', {
+      pricePointId: pricePointId
+    }).subscribe();
   }
 }

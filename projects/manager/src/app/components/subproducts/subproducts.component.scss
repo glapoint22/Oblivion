@@ -1,5 +1,5 @@
 .background {
-    padding: 40px;
+    padding: 20px;
 }
 
 .subproduct-container {
@@ -10,7 +10,6 @@
 .delete-icon-container {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 4px;
 }
 
 .dashed-border {
@@ -24,52 +23,110 @@
     padding: 40px;
 }
 
-.image {
-    width: 220px;
+.image-container {
+    margin-right: 25px;
 }
 
-.icon-container {
+// .icon-container {
+//     display: flex;
+//     justify-content: space-between;
+//     width: 200px;
+//     height: 22px;
+// }
+
+
+
+.label-and-icon-buttons-container {
     display: flex;
     justify-content: space-between;
-    width: 200px;
-    height: 22px;
+    align-items: flex-end;
 }
+
+
+
+// .label {
+//     color: #505050;
+//     font-size: 12px;
+//     line-height: 22px;
+//     flex: 1;
+// }
+
+
 
 .label {
     color: #505050;
     font-size: 12px;
-    line-height: 22px;
+    margin-bottom: 4px;
+    user-select: none;
     flex: 1;
 }
 
+
+
 .icon {
-    color: #646464;
+    color: #828282;
     cursor: pointer;
 
     &:hover {
-        color: #a7a7a7;
+        color: #b4b4b4;
+    }
+
+    &:active {
+        color: #dadada;;
+    }
+
+    &:focus-visible {
+        color: #dadada;
+        transform: scale(1.2);
     }
 }
 
-.image-container {
-    width: 200px;
-    height: 200px;
+// .image-container {
+//     width: 200px;
+//     height: 200px;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     font-size: 100px;
+//     color: #3c3c3c;
+//     cursor: pointer;
+// }
+
+
+.image-dashed-container {
     display: flex;
+    width: 220px;
+    height: 220px;
+    border: 1px dashed #505050;
+    outline: none;
     justify-content: center;
     align-items: center;
-    font-size: 100px;
-    color: #3c3c3c;
+    padding: 10px 0;
     cursor: pointer;
+
+    .fa-image {
+        font-size: 60px;
+        color: #3c3c3c;
+    }
+
+    &:hover {
+        .fa-image {
+            color: lighten(#3c3c3c, 6);
+        }
+    }
 }
 
-.image-icon-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
+
+
+
+// .image-icon-container {
+//     width: 100%;
+//     height: 100%;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     cursor: pointer;
+// }
 
 .name-description-container {
     width: 727px;

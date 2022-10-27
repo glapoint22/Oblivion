@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
-import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, QueryType } from '../../classes/enums';
+import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, PopupArrowPosition, QueryType } from '../../classes/enums';
 import { Item } from '../../classes/item';
 import { QueryElement } from '../../classes/query-element';
 import { QueryRow } from '../../classes/query-row';
@@ -277,7 +277,7 @@ export class QueryRowComponent implements OnChanges {
     }, SpinnerAction.None)
       .then((pricePopup: PricePopupComponent) => {
         const elementRect = element.getBoundingClientRect();
-
+        pricePopup.arrowPosition = PopupArrowPosition.TopRight;
         pricePopup.price = this.queryRow.price!;
         pricePopup.top = elementRect.top + elementRect.height - 38;
         pricePopup.left = elementRect.left - 292;

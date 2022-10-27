@@ -63,16 +63,11 @@ export class ProductComponent {
   public pricePopupOpen!: boolean;
   public recurringPopupOpen!: boolean;
   public hoplinkPopupOpen!: boolean;
+  public mediaSelectorPopupOpen!: boolean;
 
 
-  @ViewChild('priceEditButton') priceEditButton!: ElementRef<HTMLElement>;
-  @ViewChild('shippingPlusButton') shippingPlusButton!: ElementRef<HTMLElement>;
-  @ViewChild('shippingEditButton') shippingEditButton!: ElementRef<HTMLElement>;
-  @ViewChild('recurringPlusButton') recurringPlusButton!: ElementRef<HTMLElement>;
-  @ViewChild('recurringEditButton') recurringEditButton!: ElementRef<HTMLElement>;
-  @ViewChild('hoplinkPlusButton') hoplinkPlusButton!: ElementRef<HTMLElement>;
-  @ViewChild('hoplinkEditButton') hoplinkEditButton!: ElementRef<HTMLElement>;
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
+  @ViewChild('addPricePopup', { read: ViewContainerRef }) addPricePopup!: ViewContainerRef;
   @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopupContainer!: ViewContainerRef;
   @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;
@@ -261,10 +256,9 @@ export class ProductComponent {
 
 
 
-  openPricePopup() {
+  openPricePopup(arrowPosition: PopupArrowPosition) {
     if (this.pricePopupOpen) {
       this.pricePopup.close();
-      this.priceEditButton.nativeElement.blur();
       return;
     }
 
@@ -275,26 +269,37 @@ export class ProductComponent {
         component: PricePopupComponent,
         module: PricePopupModule
       }
-    }, SpinnerAction.None, this.editPricePopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addPricePopup : this.editPricePopup)
       .then((pricePopup: PricePopupComponent) => {
         this.pricePopupOpen = true;
         this.pricePopup = pricePopup;
+        pricePopup.arrowPosition = arrowPosition;
         pricePopup.price = this.product.minPrice;
 
         pricePopup.callback = (price: number) => {
-          this.product.minPrice = price;
 
-          this.dataService.put('api/Products/MinMaxPrice', {
-            productId: this.product.id,
-            minPrice: price,
-            maxPrice: 0
-          }).subscribe();
+          // If a price is being added
+          if (this.product.minPrice == null) {
+
+            this.dataService.post('api/Products/Price', {
+              productId: this.product.id,
+              price: price
+            }).subscribe();
+
+            // If a price is being updated
+          } else {
+
+            this.dataService.put('api/Products/Price', {
+              productId: this.product.id,
+              price: price
+            }).subscribe();
+          }
+          this.product.minPrice = price;
         }
 
         const onPricePopupCloseListener = this.pricePopup.onClose.subscribe(() => {
           onPricePopupCloseListener.unsubscribe();
           this.pricePopupOpen = false;
-          this.priceEditButton.nativeElement.blur();
         });
       });
   }
@@ -303,8 +308,6 @@ export class ProductComponent {
   openShippingPopup(arrowPosition: PopupArrowPosition) {
     if (this.shippingPopupOpen) {
       this.shippingPopup.close();
-      if (this.shippingPlusButton) this.shippingPlusButton.nativeElement.blur();
-      if (this.shippingEditButton) this.shippingEditButton.nativeElement.blur();
       return;
     }
 
@@ -329,8 +332,6 @@ export class ProductComponent {
         const onShippingPopupCloseListener = this.shippingPopup.onClose.subscribe(() => {
           onShippingPopupCloseListener.unsubscribe();
           this.shippingPopupOpen = false;
-          if (this.shippingPlusButton) this.shippingPlusButton.nativeElement.blur();
-          if (this.shippingEditButton) this.shippingEditButton.nativeElement.blur();
         });
       });
   }
@@ -347,8 +348,6 @@ export class ProductComponent {
   openRecurringPopup(arrowPosition: PopupArrowPosition) {
     if (this.recurringPopupOpen) {
       this.recurringPopup.close();
-      if (this.recurringPlusButton) this.recurringPlusButton.nativeElement.blur();
-      if (this.recurringEditButton) this.recurringEditButton.nativeElement.blur();
       return;
     }
 
@@ -386,8 +385,6 @@ export class ProductComponent {
         const onRecurringPopupCloseListener = this.recurringPopup.onClose.subscribe(() => {
           onRecurringPopupCloseListener.unsubscribe();
           this.recurringPopupOpen = false;
-          if (this.recurringPlusButton) this.recurringPlusButton.nativeElement.blur();
-          if (this.recurringEditButton) this.recurringEditButton.nativeElement.blur();
         });
       });
   }
@@ -415,8 +412,6 @@ export class ProductComponent {
   openHoplinkPopup(arrowPosition: PopupArrowPosition) {
     if (this.hoplinkPopupOpen) {
       this.hoplinkPopup.close();
-      if (this.hoplinkPlusButton) this.hoplinkPlusButton.nativeElement.blur();
-      if (this.hoplinkEditButton) this.hoplinkEditButton.nativeElement.blur();
       return;
     }
 
@@ -446,22 +441,26 @@ export class ProductComponent {
         const onHoplinkPopupCloseListener = this.hoplinkPopup.onClose.subscribe(() => {
           onHoplinkPopupCloseListener.unsubscribe();
           this.hoplinkPopupOpen = false;
-          if (this.hoplinkPlusButton) this.hoplinkPlusButton.nativeElement.blur();
-          if (this.hoplinkEditButton) this.hoplinkEditButton.nativeElement.blur();
         });
       });
   }
 
 
-  addPricePoints() {
+  addPricePoint() {
+    // If the product currently has a single price
+    if (this.product.minPrice != null) {
+      // Remove that single price from the database
+      this.dataService.delete('api/Products/Price', { productId: this.product.id }).subscribe();
+    }
+
+    // Add a price point to the product
     this.product.pricePoints.push(new PricePoint());
 
+    // Wait a frame so that the pricepoints component can be referenced
     window.setTimeout(() => {
-
-      if (this.product.minPrice > 0) {
-        this.pricePoints.updateMinMaxPrice();
-      }
-
+      // Create the price point range
+      this.pricePoints.updateMinMaxPrice();
+      // Add the price point to the database
       this.pricePoints.addPricePoint();
     })
   }
@@ -648,9 +647,19 @@ export class ProductComponent {
 
 
 
+
+
+
+
+
+
+
+
+
+
   // --------------------------------------------------- Open Media Selector Popup ---------------------------------------------------
   openMediaSelectorPopup() {
-    if (this.mediaSelectorPopupContainer.length > 0) {
+    if (this.mediaSelectorPopupOpen) {
       this.mediaSelectorPopup.close();
       return;
     }
@@ -664,12 +673,18 @@ export class ProductComponent {
       }
     }, SpinnerAction.None, this.mediaSelectorPopupContainer)
       .then((mediaSelectorPopup: MediaSelectorPopupComponent) => {
+        this.mediaSelectorPopupOpen = true;
         this.mediaSelectorPopup = mediaSelectorPopup;
 
         mediaSelectorPopup.callback = (mediaType: MediaType) => {
           this.openMediaBrowser(mediaType);
           mediaSelectorPopup.close();
         }
+
+        const onMediaSelectorPopupCloseListener = this.mediaSelectorPopup.onClose.subscribe(() => {
+          onMediaSelectorPopupCloseListener.unsubscribe();
+          this.mediaSelectorPopupOpen = false;
+        });
       });
   }
 

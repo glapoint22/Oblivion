@@ -3,38 +3,38 @@
 
         <!-- Delete -->
         <div class="delete-icon-container">
-            <i class="fas fa-trash-alt icon"
-                [title]="'Delete ' + (subproductType == SubproductType.Component ? 'component': 'bonus')"
-                (click)="deleteSubproduct(i, subproduct.id)"></i>
+            <icon-button [icon]="'fas fa-trash-alt'"
+                         [title]="'Delete ' + (subproductType == SubproductType.Component ? 'component': 'bonus')"
+                         (onClick)="deleteSubproduct(i, subproduct.id)">
+            </icon-button>
         </div>
+
 
         <!-- Content -->
         <div class="dashed-border content-container">
 
-
             <!-- Image -->
-            <div class="image">
-                <div class="icon-container">
+            <div class="image-container">
+                <div class="label-and-icon-buttons-container">
                     <div class="label">Image:</div>
 
                     <!-- Remove Image -->
-                    <icon-button *ngIf="subproduct.image && subproduct.image.src" [icon]="'fas fa-trash-alt'"
-                        [title]="'Remove Image'" (click)="removeImage(subproduct)">
+                    <icon-button *ngIf="subproduct.image && subproduct.image.src"
+                                 [title]="'Remove Image'"
+                                 [icon]="'fas fa-trash-alt'"
+                                 (click)="removeImage(subproduct)">
                     </icon-button>
 
                     <!-- Media Browser -->
-                    <icon-button [icon]="'fa-solid fa-image'" [title]="'Media Browser'"
-                        (click)="openMediaBrowser(subproduct)">
+                    <icon-button [title]="'Media Browser'"
+                                 [icon]="'fa-solid fa-image'"
+                                 (click)="openMediaBrowser(subproduct)">
                     </icon-button>
                 </div>
 
 
-                <div class="dashed-border image-container" (click)="openMediaBrowser(subproduct)">
-
-                    <div *ngIf="!subproduct.image || !subproduct.image.src" class="image-icon-container">
-                        <i class="fa-solid fa-image" tabindex="0"></i>
-                    </div>
-
+                <div class="image-dashed-container" [title]="subproduct.image.name ? subproduct.image.name : ''" (click)="openMediaBrowser(subproduct)">
+                    <i *ngIf="!subproduct.image || !subproduct.image.src" class="fa-solid fa-image"></i>
                     <img *ngIf="subproduct.image && subproduct.image.src" [src]="'images/' + subproduct.image.src">
                 </div>
             </div>
@@ -68,7 +68,7 @@
 
             <!-- Value -->
             <div *ngIf="subproductType == SubproductType.Bonus" class="value-container">
-                <div class="icon-container" style="width: 100px;">
+                <div class="label-and-icon-buttons-container" style="width: 100px;">
                     <div class="label">Value:</div>
                     <div style="position: relative;">
                         <ng-container *ngIf="subproduct.value && subproduct.value > 0">

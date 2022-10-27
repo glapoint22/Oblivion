@@ -65,7 +65,7 @@
     
                 <!-- Image -->
                 <div class="image-property-container">
-                    <div class="label-container">
+                    <div class="label-and-icon-buttons-container">
                         <div class="label">Image:</div>
     
                         <div class="icon-button-container">
@@ -83,9 +83,7 @@
                         </div>
                     </div>
                     
-                    <div class="image-field" [title]="pricePoint.image.src ? pricePoint.image.name : ''"
-                         (click)="openMediaBrowser(pricePoint)">
-
+                    <div class="image-dashed-container" [title]="pricePoint.image.src ? pricePoint.image.name : ''" (click)="openMediaBrowser(pricePoint)">
                         <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image"></i>
                         <img *ngIf="pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
                     </div>
@@ -180,38 +178,32 @@
         
                     <!-- Shipping -->
                     <div class="property-container-2">
-                        <div class="label-container">
+                        <div class="label-and-icon-buttons-container">
                             <div class="label">Shipping:</div>
                             <div *ngIf="pricePoint.shippingType != shippingType.None" class="icon-button-container">
-                                <i #shippingEditButton
-                                   tabindex="0"
-                                   title="Edit Shipping"
-                                   class="fas fa-pencil-alt"
-                                   [ngClass]="{'edit-button-focus': shippingPopupOpen[i]}"
-                                   (click)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)"
-                                   (mousedown)="shippingPopupOpen[i] ? $event.stopPropagation() : null;"
-                                   (keydown.enter)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
-                                </i>
+                                <icon-button [icon]="'fas fa-pencil-alt'"
+                                             [title]="'Edit Shipping'"
+                                             [popupOpen]="shippingPopupOpen[i]"
+                                             (onClick)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
+                                </icon-button>
                                 <icon-button [icon]="'fas fa-trash-alt'"
                                              [title]="'Remove Shipping'"
                                              (onClick)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)">
                                 </icon-button>
                             </div>
-                            <div class="edit-popup-container-2">
+                            <div class="edit-popup-container">
                                 <ng-template #editShippingPopup></ng-template>
                             </div>
                         </div>
                         <div class="shipping-dashed-container">
                             <div *ngIf="pricePoint.shippingType == shippingType.None" class="plus-button-container">
-                                <i #shippingPlusButton
-                                   tabindex="0"
-                                   title="Add Shipping"
-                                   class="fa-regular fa-circle-xmark"
-                                   [ngClass]="{'plus-button-focus': shippingPopupOpen[i]}"
-                                   (click)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)"
-                                   (mousedown)="shippingPopupOpen[i] ? $event.stopPropagation() : null;"
-                                   (keydown.enter)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
-                                </i>
+                                <icon-button style="transform: rotate(45deg)"
+                                             [icon]="'fa-regular fa-circle-xmark'"
+                                             [title]="'Add Shipping'"
+                                             [fontSize]="'18'"
+                                             [popupOpen]="shippingPopupOpen[i]"
+                                             (onClick)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
+                                </icon-button>
                             </div>
                             <div *ngIf="pricePoint.shippingType != shippingType.None" class="shipping-container">
                                 <shipping [shippingType]="pricePoint.shippingType"></shipping>
@@ -225,18 +217,14 @@
 
                     <!-- Recurring -->
                     <div class="property-container-2">
-                        <div class="label-container">
+                        <div class="label-and-icon-buttons-container">
                             <div class="label">Recurring Payment:</div>
                             <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="icon-button-container">
-                                <i #recurringEditButton
-                                   tabindex="0"
-                                   title="Edit Recurring Payment"
-                                   class="fas fa-pencil-alt"
-                                   [ngClass]="{'edit-button-focus': recurringPopupOpen[i]}"
-                                   (click)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)"
-                                   (mousedown)="recurringPopupOpen[i] ? $event.stopPropagation() : null;"
-                                   (keydown.enter)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
-                                </i>
+                                <icon-button [icon]="'fas fa-pencil-alt'"
+                                             [title]="'Edit Recurring Payment'"
+                                             [popupOpen]="recurringPopupOpen[i]"
+                                             (onClick)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
+                                </icon-button>
                                 <icon-button [icon]="'fas fa-trash-alt'"
                                              [title]="'Remove Shipping'"
                                              (onClick)="removeRecurringPayment(pricePoint)">
@@ -248,15 +236,13 @@
                         </div>
                         <div class="recurring-dashed-container">
                             <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="plus-button-container">
-                                <i #recurringPlusButton
-                                   tabindex="0"
-                                   title="Add Recurring Payment"
-                                   class="fa-regular fa-circle-xmark"
-                                   [ngClass]="{'plus-button-focus': recurringPopupOpen[i]}"
-                                   (click)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)"
-                                   (mousedown)="recurringPopupOpen[i] ? $event.stopPropagation() : null;"
-                                   (keydown.enter)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
-                                </i>
+                                <icon-button style="transform: rotate(45deg)"
+                                             [icon]="'fa-regular fa-circle-xmark'"
+                                             [title]="'Add Recurring Payment'"
+                                             [fontSize]="'18'"
+                                             [popupOpen]="recurringPopupOpen[i]"
+                                             (onClick)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
+                                </icon-button>
                             </div>
                             <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="recurring-container">
                                 <recurring-payment [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
@@ -272,14 +258,12 @@
 
         <ng-container *ngIf="product.pricePoints.length < 4">
             <div class="lg-plus-button-container">
-                <i #pricePointPlusButton
-                   tabindex="0"
-                   title="Add Price Point"
-                   (click)="addPricePoint(true)"
-                   class="fa-regular fa-circle-xmark"
-                   (keydown.enter)="addPricePoint(true)"
-                   (keydown.escape)="pricePointPlusButton.blur()">
-                </i>
+                <icon-button style="transform: rotate(45deg)"
+                             [icon]="'fa-regular fa-circle-xmark'"
+                             [title]="'Add Price Point'"
+                             [fontSize]="'25'"
+                             (onClick)="addPricePoint(true)">
+                </icon-button>
             </div>
         </ng-container>
     </div>
@@ -287,14 +271,12 @@
 
     <ng-container *ngIf="product.pricePoints.length >= 4">
         <div class="lg-plus-button-container-2">
-            <i #pricePointPlusButton
-               tabindex="0"
-               title="Add Price Point"
-               (click)="addPricePoint(true)"
-               class="fa-regular fa-circle-xmark"
-               (keydown.enter)="addPricePoint(true)"
-               (keydown.escape)="pricePointPlusButton.blur()">
-            </i>
+            <icon-button style="transform: rotate(45deg)"
+                         [icon]="'fa-regular fa-circle-xmark'"
+                         [title]="'Add Price Point'"
+                         [fontSize]="'25'"
+                         (onClick)="addPricePoint(true)">
+            </icon-button>
         </div>
     </ng-container>
 </div>

@@ -168,11 +168,10 @@
 
 .image-property-container {
     margin-top: 14px;
-    outline: none;
 }
 
 
-.image-field {
+.image-dashed-container {
     display: flex;
     width: 272px;
     border: 1px dashed #505050;
@@ -267,7 +266,7 @@
 
 
 
-.edit-popup-container-2 {
+.edit-popup-container {
     position: absolute;
     right: 45px;
     top: -137px;
@@ -292,14 +291,52 @@
 
 
 
-.shipping-container {
-    margin: 10px 7px 0;
+
+
+
+.plus-button-container {
+    display: flex;
+    margin-top: -1px;
 }
 
 
-.recurring-container {
-    margin: 9px 4px 7px;
+
+
+
+
+.lg-plus-button-container {
+    display: flex;
+    align-items: center;
+    margin-top: 36px;
+    margin-left: -24px;
 }
+
+
+
+.empty-plus-button-container {
+    @extend .lg-plus-button-container;
+    width: 25px;
+}
+
+
+
+
+
+
+
+.lg-plus-button-container-2 {
+    display: flex;
+    margin: 0 -35px 0 9px;
+}
+
+
+
+
+
+
+
+
+
 
 
 .add-popup-container {
@@ -311,28 +348,32 @@
 
 
 
-
-.plus-button-container {
-    display: flex;
-    width: 34px;
-    height: 34px;
-    justify-content: center;
-    align-items: center;
+.icon-button-container {
+    margin-top: -6px;
 }
 
 
-// .add-button-field {
-//     position: relative;
-//     display: flex;
-//     width: 272px;
-//     border: 1px dashed #505050;
-//     align-items: center;
-//     padding: 5px;
-// }
+
+.shipping-container {
+    margin: 10px 7px 0;
+}
 
 
 
-.label-container {
+.recurring-container {
+    margin: 9px 4px 7px;
+}
+
+
+
+
+
+
+
+
+
+
+.label-and-icon-buttons-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -345,14 +386,7 @@
     font-size: 12px;
     margin-bottom: 4px;
     user-select: none;
-}
-
-
-
-
-
-.icon-button-container {
-    margin: -7px 0 0;
+    flex: 1;
 }
 
 
@@ -360,135 +394,57 @@
 
 
 
-.fa-pencil-alt {
-    color: #9e9e9e;
-    cursor: pointer;
-    outline: none;
-
-    &:hover:not(.edit-button-focus) {
-        color: #dadada;
-    }
-
-    &:focus-visible {
-        color: #dadada;
-        transform: scale(1.2);
-    }
-}
-
-
-.fa-trash-alt {
-    color: #9e9e9e;
-    cursor: pointer;
-    outline: none;
-
-    &:hover {
-        color: #dadada;
-    }
-
-    &:focus-visible {
-        color: #dadada;
-        transform: scale(1.2);
-    }
-}
-
-
-
-.edit-button-focus {
-    color: #dadada;
-    transform: scale(1.2);
-}
-
-
-
-
-
-.fa-trash-alt {
-    margin-left: 10px;
-    cursor: pointer;
-    outline: none;
-
-    &:hover {
-        color: #dadada;
-    }
-
-    &:focus-visible {
-        color: #dadada;
-    }
-}
-
-
-
-
-
-.lg-plus-button-container {
-    display: flex;
-    align-items: center;
-    margin-top: 36px;
-
-    .fa-circle-xmark {
-        color: #aaaaaa;
-        margin-left: -15px;
-        font-size: 25px;
-
-        &:hover {
-            color: #dadada;
-        }
-
-        &:focus {
-            color: #dadada;
-        }
-    }
-}
-
-
-.lg-plus-button-container-2 {
-
-
-    .fa-circle-xmark {
-        color: #aaaaaa;
-        margin: 0 -40px 0 15px;
-        font-size: 25px;
-
-        &:hover {
-            color: #dadada;
-        }
-
-        &:focus {
-            color: #dadada;
-        }
-    }
-}
-
-
-.empty-plus-button-container {
-    @extend .lg-plus-button-container;
-    width: 10px;
-}
 
 
 
 
 
 
-.fa-circle-xmark {
-    color: #808080;
-    font-size: 18px;
-    transform: rotate(45deg);
-    outline: none;
-    cursor: pointer;
+// .fa-pencil-alt {
+//     color: #828282;
+//     cursor: pointer;
+//     outline: none;
 
-    &:hover:not(.plus-button-focus) {
-        color: lighten(#808080, 15);
-    }
+//     &:hover:not(.edit-button-focus) {
+//         color: #b4b4b4;
+//     }
 
-    &:focus {
-        color: #dadada;
-        transform: rotate(45deg) scale(1.15);
-    }
-}
+//     &:active {
+//         color: #dadada;;
+//     }
+
+//     &:focus-visible {
+//         color: #dadada;
+//         transform: scale(1.2);
+//     }
+// }
 
 
-.plus-button-focus {
-    color: #dadada;
-    transform: rotate(45deg) scale(1.15);
-}
+
+
+
+
+// .edit-button-focus {
+//     color: #dadada;
+//     transform: scale(1.2);
+// }
+
+
+
+
+// .fa-circle-xmark {
+//     color: #808080;
+//     font-size: 18px;
+//     transform: rotate(45deg);
+//     outline: none;
+//     cursor: pointer;
+
+//     &:hover:not(.plus-button-focus) {
+//         color: lighten(#808080, 15);
+//     }
+
+//     &:focus {
+//         color: #dadada;
+//         transform: rotate(45deg) scale(1.15);
+//     }
+// }
