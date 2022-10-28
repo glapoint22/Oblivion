@@ -1,9 +1,8 @@
-import { Component, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Subproduct } from 'common';
 import { TitleCase } from 'text-box';
 import { SubproductType } from '../../classes/enums';
 import { MediaBrowserComponent } from '../media-browser/media-browser.component';
-import { ValuePopupComponent } from '../value-popup/value-popup.component';
 
 @Component({
   selector: 'subproducts',
@@ -11,13 +10,18 @@ import { ValuePopupComponent } from '../value-popup/value-popup.component';
   styleUrls: ['./subproducts.component.scss']
 })
 export class SubproductsComponent {
+  private titleCase: TitleCase = new TitleCase();
+  public titleCaseOff: Array<boolean> = new Array<boolean>();
+
+
+  public SubproductType = SubproductType;
+
   @Input() subproducts!: Array<Subproduct>;
   @Input() subproductType!: SubproductType;
   @Input() productId!: number;
-  @ViewChildren('editValuePopupContainer', { read: ViewContainerRef }) editValuePopupContainers!: QueryList<ViewContainerRef>;
-  @ViewChildren('addValuePopupContainer', { read: ViewContainerRef }) addValuePopupContainers!: QueryList<ViewContainerRef>;
-  public SubproductType = SubproductType;
-  private titleCase: TitleCase = new TitleCase();
+
+
+
 
 
 
@@ -64,29 +68,8 @@ export class SubproductsComponent {
 
 
 
-  
 
 
-
-  // --------------------------------------------------- Open Value Popup ---------------------------------------------------
-  public async openValuePopup(subproduct: Subproduct, index: number, add?: boolean): Promise<void> {
-    this.lazyLoadingService.load(async () => {
-      const { ValuePopupComponent } = await import('../value-popup/value-popup.component');
-      const { ValuePopupModule } = await import('../value-popup/value-popup.module');
-      return {
-        component: ValuePopupComponent,
-        module: ValuePopupModule
-      }
-    }, SpinnerAction.None, add ? this.addValuePopupContainers.toArray()[index] : this.editValuePopupContainers.toArray()[index])
-      .then((valuePopup: ValuePopupComponent) => {
-        valuePopup.value = subproduct.value;
-
-        valuePopup.callback = (newValue: number) => {
-          subproduct.value = newValue;
-          this.updateValue(subproduct.id, newValue);
-        }
-      });
-  }
 
 
 
@@ -107,10 +90,12 @@ export class SubproductsComponent {
 
 
   // --------------------------------------------------------- Update Value ----------------------------------------------------
-  updateValue(subproductId: number, value: number): void {
+  updateValue(subproduct: Subproduct): void {
+
+
     this.dataService.put('api/Products/Subproduct/Value', {
-      SubproductId: subproductId,
-      Value: value
+      SubproductId: subproduct.id,
+      Value: subproduct.value && isNaN(subproduct.value) ? subproduct.value : 0
     }).subscribe();
   }
 
@@ -118,20 +103,14 @@ export class SubproductsComponent {
 
 
 
-
-
-  // ---------------------------------------------------------- On Name Change --------------------------------------------------
-  onNameChange(input: HTMLInputElement, subproduct: Subproduct): void {
-    const selectionStart = input.selectionStart;
-
-    subproduct.name = input.value = this.titleCase.getCase(input.value);
-    input.setSelectionRange(selectionStart, selectionStart);
-
+  updateName(subproduct: Subproduct) {
     this.dataService.put('api/Products/Subproduct/Name', {
       id: subproduct.id,
-      name: subproduct.name
+      name: subproduct.name && subproduct.name.length > 0 ? subproduct.name : null,
     }).subscribe();
   }
+
+
 
 
 
@@ -163,5 +142,90 @@ export class SubproductsComponent {
     this.dataService.delete('api/Products/Subproduct', {
       id: id
     }).subscribe();
+  }
+
+
+
+
+
+
+
+
+  selectRange(htmlElement: HTMLElement) {
+    window.setTimeout(() => {
+      let range = document.createRange();
+      range.selectNodeContents(htmlElement);
+      let sel = window.getSelection();
+      sel!.removeAllRanges();
+      sel!.addRange(range);
+    })
+  }
+
+
+
+  onNameBlur(subproduct: Subproduct, htmlElement: HTMLElement, titleCaseOff: boolean) {
+    window.getSelection()!.removeAllRanges();
+
+    if (!(subproduct.name == null && htmlElement.innerText.length == 0) && subproduct.name != htmlElement.innerText) {
+      subproduct.name = htmlElement.innerText = !titleCaseOff ? this.titleCase.getCase(htmlElement.innerText) : htmlElement.innerText;
+      this.updateName(subproduct);
+    }
+  }
+
+
+  onNameEscape(subproduct: Subproduct, htmlElement: HTMLElement) {
+    htmlElement.innerText = subproduct.name ? subproduct.name : '';
+    htmlElement.blur();
+  }
+
+
+
+
+
+
+
+
+  onValueBlur(subproduct: Subproduct, htmlElement: HTMLElement) {
+    window.getSelection()!.removeAllRanges();
+
+    if (!(subproduct.value == null && htmlElement.innerText.length == 0) && subproduct.value != parseInt(htmlElement.innerText)) {
+      subproduct.value = parseInt(htmlElement.innerText);
+      this.updateValue(subproduct);
+    }
+  }
+
+
+  onValueEscape(subproduct: Subproduct, htmlElement: HTMLElement) {
+    htmlElement.innerText = subproduct.value ? subproduct.value.toString() : '';
+    htmlElement.blur();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  onPaste(e: ClipboardEvent, htmlElement: HTMLElement, isPrice?: boolean) {
+    e.preventDefault();
+    const clipboardData = e.clipboardData!.getData('text/plain');
+    if (clipboardData) {
+      htmlElement.innerText = clipboardData;
+    }
+
+    if (isPrice) !(/^[0-9.]*$/i).test(htmlElement.innerText) ? htmlElement.innerText = htmlElement.innerText.replace(/[^0-9.]/ig, '') : null;
+
+    // Place cursor at the end of the text
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(htmlElement);
+    range.collapse(false);
+    sel!.removeAllRanges();
+    sel!.addRange(range);
   }
 }

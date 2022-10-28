@@ -1,4 +1,4 @@
-<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()">
     <div class="popup-base">
 
         <!-- Value -->

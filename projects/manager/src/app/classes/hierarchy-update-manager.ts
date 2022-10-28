@@ -231,7 +231,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // Add child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            const indexOfHierarchyItemParent = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
+            const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
             // ********* Commented Out Data Service *********
             // this.dataService.post<number>('api/' + this.childDataServicePath, {
@@ -264,7 +264,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
                 // Child Item
             } else {
-                const indexOfThisParent = this.getIndexOfHierarchyItemParent(thisHierarchyItem, this.thisArray);
+                const indexOfThisParent = this.productService.getIndexOfHierarchyItemParent(thisHierarchyItem, this.thisArray);
                 const indexOfOtherParent = otherArray.findIndex(x => x.id == this.thisArray[indexOfThisParent].id && x.name == this.thisArray[indexOfThisParent].name && x.hierarchyGroupID == 0);
                 const indexDiff = thisIndex - indexOfThisParent; // The difference between this array's new item index and this array's parent index
 
@@ -331,7 +331,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             // Other hierarchy from this hierarchy
             if (typeof type == 'number' && update.name) {
                 editedItem.name = update.name;
-                this.sort(editedItem, otherArray);
+                this.productService.sort(editedItem, otherArray);
             }
 
             // Other search from this hierarchy
@@ -347,7 +347,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             // Other hierarchy from this search and this hierarchy from this search
             if (typeof type == 'number' && !update.name) {
                 editedItem.name = (update as MultiColumnListUpdate).values![0].name;
-                this.sort(editedItem, otherArray);
+                this.productService.sort(editedItem, otherArray);
             }
         }
     }
@@ -390,7 +390,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
             const childItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
-            const indexOfParentItem = this.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
+            const indexOfParentItem = this.productService.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
             this.listOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
         }
     }
@@ -640,76 +640,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         }
     }
 
-
-
-    // ========================================================================( SORT )======================================================================= \\
-
-    sort(hierarchyItem: HierarchyItem, array: Array<HierarchyItem>) {
-        let parentHierarchyIndex: number = -1;
-        let tempArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-        let newHierarchyGroup: Array<HierarchyItem> = new Array<HierarchyItem>();
-
-        // If the selected hierarchy item belongs to the top level group
-        if (hierarchyItem.hierarchyGroupID == 0) {
-            // Copy all the hierarchy items from that group to the temp array
-            tempArray = (array as Array<HierarchyItem>).filter(x => x.hierarchyGroupID == 0);
-
-            // If the selected hierarchy item belongs to any other group
-        } else {
-
-            // First get the parent of the selected hierarchy item
-            parentHierarchyIndex = this.getIndexOfHierarchyItemParent(hierarchyItem, array);
-
-            // Then copy all the children belonging to that hierarchy parent to the temp array
-            for (let i = parentHierarchyIndex + 1; i < array.length; i++) {
-                if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID) break;
-                if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID! + 1) {
-                    tempArray.push(array[i] as HierarchyItem)
-                }
-            }
-        }
-
-        // Sort the temp array
-        tempArray.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
-
-        // Loop through all the hierarchy items in the temp array
-        tempArray.forEach(x => {
-            // Get the index of that same hierarchy item from the source list
-            let index = array.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID);
-
-            // Copy the hierarchy item and all its children
-            for (let i = index; i < array.length; i++) {
-                if (i != index && array[i].hierarchyGroupID! <= array[index].hierarchyGroupID!) break;
-
-                // And add them to the new hierarchy group
-                newHierarchyGroup.push(array[i] as HierarchyItem);
-            }
-        })
-
-        // Remove the old hierarchy group from the source
-        array.splice(parentHierarchyIndex + 1, newHierarchyGroup.length);
-        // Add the new hierarchy group to the source
-        array.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
-    }
-
-
-
-    // ========================================================( GET INDEX OF HIERARCHY ITEM PARENT )========================================================= \\
-
-    getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem, array: Array<HierarchyItem>): number {
-        let parentHierarchyIndex!: number;
-        const hierarchyItemIndex = array.indexOf(hierarchyItem);
-
-        for (let i = hierarchyItemIndex; i >= 0; i--) {
-            if (array[i].hierarchyGroupID! < array[hierarchyItemIndex].hierarchyGroupID!) {
-                parentHierarchyIndex = i;
-                break;
-            }
-        }
-        return parentHierarchyIndex;
-    }
-
-
+    
 
     // ===================================================================( HAS CHILDREN )==================================================================== \\
 
@@ -782,7 +713,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         // If we're verifying a child item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
             const childItem = this.thisArray.find(x => x.id == hierarchyUpdate.id && x.hierarchyGroupID == 1);
-            const indexOfParentItem = this.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
+            const indexOfParentItem = this.productService.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
 
             // Loop through each child item of the parent item and check for a duplicate
             for (let i = indexOfParentItem + 1; i < this.thisArray.length; i++) {

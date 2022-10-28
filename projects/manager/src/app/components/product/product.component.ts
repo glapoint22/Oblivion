@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
 import { HierarchyItem } from '../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../classes/multi-column-item';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction, Subproduct, Video } from 'common';
@@ -23,6 +23,7 @@ import { ProductMedia } from '../../classes/product-media';
 import { MediaSelectorPopupComponent } from '../media-selector-popup/media-selector-popup.component';
 import { ProductNotificationPopupComponent } from '../notifications/product-notification-popup/product-notification-popup.component';
 import { NotificationItem } from '../../classes/notifications/notification-item';
+import { TitleCase } from 'text-box';
 
 @Component({
   selector: 'product',
@@ -39,7 +40,10 @@ export class ProductComponent {
   private recurringPopup!: RecurringPopupComponent;
   private hoplinkPopup!: HoplinkPopupComponent;
   private mediaSelectorPopup!: MediaSelectorPopupComponent;
+  private titleCase: TitleCase = new TitleCase();
 
+
+  public titleCaseOff!: boolean;
   public viewRef!: ViewRef;
   public vendorPopup!: VendorPopupComponent;
   public zIndex!: number;
@@ -253,6 +257,81 @@ export class ProductComponent {
         productGroupsPopup.productIndex = this.productService.products.indexOf(this);
       });
   }
+
+
+
+
+  onPaste(e: ClipboardEvent, htmlElement: HTMLElement, isPrice?: boolean) {
+    e.preventDefault();
+    const clipboardData = e.clipboardData!.getData('text/plain');
+    if (clipboardData) {
+      htmlElement.innerText = clipboardData;
+    }
+
+    if (isPrice) !(/^[0-9.]*$/i).test(htmlElement.innerText) ? htmlElement.innerText = htmlElement.innerText.replace(/[^0-9.]/ig, '') : null;
+
+    // Place cursor at the end of the text
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(htmlElement);
+    range.collapse(false);
+    sel!.removeAllRanges();
+    sel!.addRange(range);
+  }
+
+
+
+
+
+  selectRange(htmlElement: HTMLElement) {
+    window.setTimeout(() => {
+      let range = document.createRange();
+      range.selectNodeContents(htmlElement);
+      let sel = window.getSelection();
+      sel!.removeAllRanges();
+      sel!.addRange(range);
+    })
+  }
+
+
+
+  onNameBlur(product: Product, htmlElement: HTMLElement, titleCaseOff: boolean) {
+    window.getSelection()!.removeAllRanges();
+
+    if (!(product.name == null && htmlElement.innerText.length == 0) && product.name != htmlElement.innerText) {
+      product.name = htmlElement.innerText = !titleCaseOff ? this.titleCase.getCase(htmlElement.innerText) : htmlElement.innerText;
+      this.updateName(product);
+    }
+  }
+
+
+  onNameEscape(product: Product, htmlElement: HTMLElement) {
+    htmlElement.innerText = product.name ? product.name : '';
+    htmlElement.blur();
+  }
+
+
+
+  updateName(product: Product) {
+    const listItem = this.productService.sideMenuNicheArray.find(x => x.id == product.id && x.hierarchyGroupID == 2);
+    listItem!.name = product.name;
+
+    this.productService.sort(listItem!, this.productService.sideMenuNicheArray);
+
+
+    this.dataService.put('api/Products', {
+      id: product.id,
+      name: product.name
+    }).subscribe();
+  }
+
+
+
+
+
+
+
+
 
 
 

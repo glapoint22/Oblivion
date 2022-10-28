@@ -66,7 +66,7 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
     // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
 
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
-        const index = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
+        const index = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
         const groupId = this.thisArray[index].id;
 
         this.dataService.put('api/' + this.childDataServicePath, {

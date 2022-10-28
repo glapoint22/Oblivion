@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'value-popup',
@@ -10,6 +11,19 @@ export class ValuePopupComponent extends LazyLoad {
   @ViewChild('valueInput') valueInput!: ElementRef<HTMLInputElement>;
   public value!: number;
   public callback!: Function;
+  public onClose: Subject<void> = new Subject<void>();
+
+
+
+  ngOnInit() {
+    super.ngOnInit();
+    window.addEventListener('mousedown', this.mousedown);
+  }
+
+
+  mousedown = () => {
+    this.close();
+  }
 
 
   // --------------------------------------------------- Ng After View Init ---------------------------------------------------
@@ -51,5 +65,17 @@ export class ValuePopupComponent extends LazyLoad {
   onSubmit() {
     this.callback(this.value);
     this.close();
+  }
+
+
+
+  close(): void {
+    super.close();
+    this.onClose.next();
+  }
+
+
+  ngOnDestroy() {
+    window.removeEventListener('mousedown', this.mousedown);
   }
 }

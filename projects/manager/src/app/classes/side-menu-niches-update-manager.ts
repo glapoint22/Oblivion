@@ -209,6 +209,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                 if (!openedProduct || (openedProduct && openedProduct.zIndex != this.productService.zIndex)) {
                     // This is an output that notifies the (Niches Side Menu) that it can close
                     this.onProductSelect.emit();
+                    // Open the product
                     this.productService.openProduct(hierarchyUpdate.selectedItems![0].id!);
                 }
             }
@@ -254,6 +255,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                 if (!openedProduct || (openedProduct && openedProduct.zIndex != this.productService.zIndex)) {
                     // This is an output that notifies the (Niches Side Menu) that it can close
                     this.onProductSelect.emit();
+                    // Open the product
                     this.productService.goToProduct(searchUpdate.selectedItems![0].id!);
                 }
             }
@@ -268,7 +270,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         this.nicheAddId++;
         // Add grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
-            const indexOfHierarchyItemParent = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
+            const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
             // ********* Commented Out Data Service *********
             this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
@@ -288,11 +290,21 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     onItemEdit(hierarchyUpdate: HierarchyUpdate) {
         // Edit grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
+            // Check to see if a tab happens to be open for this product that's being edited
+            const product = this.productService.products.find(x => x.product.id == hierarchyUpdate.id);
+            //If a tab is open for this product that's being edited
+            if (product) {
+                // Update the name of the product (name on the tab and name on the form)
+                product!.product.name = hierarchyUpdate.name!
+                this.onProductSelect.emit();
+            }
+
+
             // ********* Commented Out Data Service *********
-            // this.dataService.put('api/' + this.grandchildDataServicePath, {
-            //     id: hierarchyUpdate.id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe();
+            this.dataService.put('api/' + this.grandchildDataServicePath, {
+                id: hierarchyUpdate.id,
+                name: hierarchyUpdate.name
+            }).subscribe();
         }
         super.onItemEdit(hierarchyUpdate);
     }
@@ -321,14 +333,14 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         // If we're deleting a child item
         if (deletedItem.hierarchyGroupID == 1) {
             const childItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 1);
-            const indexOfParentItem = this.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
+            const indexOfParentItem = this.productService.getIndexOfHierarchyItemParent(childItem!, this.thisArray);
             this.listOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.name!, this.itemType, this.thisArray[indexOfParentItem].name!);
         }
 
         // If we're deleting a grandchild item
         if (deletedItem.hierarchyGroupID == 2) {
             const grandchildItem = this.thisArray.find(x => x.id == deletedItem.id && x.hierarchyGroupID == 2);
-            const indexOfChildItem = this.getIndexOfHierarchyItemParent(grandchildItem!, this.thisArray);
+            const indexOfChildItem = this.productService.getIndexOfHierarchyItemParent(grandchildItem!, this.thisArray);
             this.listOptions.deletePrompt!.message = this.deletePromptChildMessage(this.grandchildType, deletedItem.name!, this.childType, this.thisArray[indexOfChildItem].name!);
         }
     }
@@ -521,7 +533,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                     const itemToBeMovedType = this.listComponent.listManager.selectedItem.hierarchyGroupID == 1 ? this.childType : this.grandchildType;
                     const destinationItemType = this.listComponent.listManager.selectedItem.hierarchyGroupID == 1 ? this.itemType : this.childType;
                     const itemToBeMoved = this.listComponent.listManager.selectedItem;
-                    const index = this.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisArray);
+                    const index = this.productService.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisArray);
                     const fromItem = this.thisArray[index];
                     const path = this.listComponent.listManager.selectedItem.hierarchyGroupID == 1 ? 'api/' + this.dataServicePath : 'api/' + this.childDataServicePath + '/All';
                     this.setMoveForm(moveForm, itemToBeMovedType, destinationItemType, itemToBeMoved, fromItem, path);

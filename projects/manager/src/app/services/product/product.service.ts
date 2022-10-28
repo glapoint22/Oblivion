@@ -63,8 +63,21 @@ export class ProductService {
           productComponent.zIndex = this.zIndex;
           this.selectedProduct = productComponent;
           this.onProductOpen.next(productComponent);
-
           this.onProductLoad.next();
+
+          // If the product's name happened to be renamed in the hierarchy list, then we need to check to see if its name
+          // was updated in the database first before it was retrieved
+          const productListItem = this.sideMenuNicheArray.find(x => x.id == productId && x.hierarchyGroupID == 2);
+
+          if (productListItem) {
+            // If the product's name from the database is NOT the same as the product's name in the hierarchy list
+            // then that means the product was retrieved from the database before its name got updated
+            if (product.name != productListItem) {
+              // Update the name of the product (name on the tab and name on the form) 
+              this.products[this.products.length - 1].product.name = productListItem.name!;
+            }
+          }
+
         })
 
       // If the product is already open
@@ -256,5 +269,79 @@ export class ProductService {
       }
       if (this.sideMenuNicheArray[i].hierarchyGroupID! <= this.sideMenuNicheArray[index].hierarchyGroupID!) break;
     }
+  }
+
+
+
+
+
+
+  sort(hierarchyItem: HierarchyItem, array: Array<HierarchyItem>) {
+    let parentHierarchyIndex: number = -1;
+    let tempArray: Array<HierarchyItem> = new Array<HierarchyItem>();
+    let newHierarchyGroup: Array<HierarchyItem> = new Array<HierarchyItem>();
+
+    // If the selected hierarchy item belongs to the top level group
+    if (hierarchyItem.hierarchyGroupID == 0) {
+        // Copy all the hierarchy items from that group to the temp array
+        tempArray = (array as Array<HierarchyItem>).filter(x => x.hierarchyGroupID == 0);
+
+        // If the selected hierarchy item belongs to any other group
+    } else {
+
+        // First get the parent of the selected hierarchy item
+        parentHierarchyIndex = this.getIndexOfHierarchyItemParent(hierarchyItem, array);
+
+        // Then copy all the children belonging to that hierarchy parent to the temp array
+        for (let i = parentHierarchyIndex + 1; i < array.length; i++) {
+            if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID) break;
+            if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID! + 1) {
+                tempArray.push(array[i] as HierarchyItem)
+            }
+        }
+    }
+
+    // Sort the temp array
+    tempArray.sort((a, b) => (a.name! > b.name!) ? 1 : -1);
+
+    // Loop through all the hierarchy items in the temp array
+    tempArray.forEach(x => {
+        // Get the index of that same hierarchy item from the source list
+        let index = array.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID);
+
+        // Copy the hierarchy item and all its children
+        for (let i = index; i < array.length; i++) {
+            if (i != index && array[i].hierarchyGroupID! <= array[index].hierarchyGroupID!) break;
+
+            // And add them to the new hierarchy group
+            newHierarchyGroup.push(array[i] as HierarchyItem);
+        }
+    })
+
+    // Remove the old hierarchy group from the source
+    array.splice(parentHierarchyIndex + 1, newHierarchyGroup.length);
+    // Add the new hierarchy group to the source
+    array.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
+}
+
+
+
+
+
+
+
+
+
+  getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem, array: Array<HierarchyItem>): number {
+    let parentHierarchyIndex!: number;
+    const hierarchyItemIndex = array.indexOf(hierarchyItem);
+
+    for (let i = hierarchyItemIndex; i >= 0; i--) {
+      if (array[i].hierarchyGroupID! < array[hierarchyItemIndex].hierarchyGroupID!) {
+        parentHierarchyIndex = i;
+        break;
+      }
+    }
+    return parentHierarchyIndex;
   }
 }

@@ -22,8 +22,8 @@
             </icon-button>
             
 
-            <!-- Base -->
-            <div class="base">
+            <!-- Border -->
+            <div class="border dashed-border">
 
 
 
@@ -32,7 +32,7 @@
                     <div class="label">Header:</div>
                     <div #header
                         tabindex="0"
-                        class="header-dashed-container"
+                        class="header-container dashed-border"
                         contenteditable="true"
                         (focus)="selectRange(header)"
                         (blur)="onHeaderBlur(pricePoint, header)"
@@ -50,7 +50,7 @@
                     <div class="label">Quantity:</div>
                     <div #quantity
                          tabindex="0"
-                         class="quantity-dashed-container"
+                         class="quantity-container dashed-border"
                          contenteditable="true"
                          (focus)="selectRange(quantity)"
                          (blur)="onQuantityBlur(pricePoint, quantity)"
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     
-                    <div class="image-dashed-container" [title]="pricePoint.image.src ? pricePoint.image.name : ''" (click)="openMediaBrowser(pricePoint)">
+                    <div class="image-container dashed-border" [title]="pricePoint.image.src ? pricePoint.image.name : ''" (click)="openMediaBrowser(pricePoint)">
                         <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image"></i>
                         <img *ngIf="pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
                     </div>
@@ -100,7 +100,7 @@
                             <div class="label">Unit Price:</div>
                             <div #unitPrice
                                  tabindex="0"
-                                 class="unit-price-dashed-container"
+                                 class="unit-price-container dashed-border"
                                  contenteditable="true"
                                  (focus)="onUnitPriceFocus(unitPrice)"
                                  (input)="onUnitPriceInput(unitPrice)"
@@ -117,7 +117,7 @@
                             <div class="label">Unit:</div>
                             <div #unit
                                  tabindex="0"
-                                 class="unit-dashed-container"
+                                 class="unit-container dashed-border"
                                  contenteditable="true"
                                  (focus)="selectRange(unit)"
                                  (blur)="onUnitBlur(pricePoint, unit)"
@@ -139,7 +139,7 @@
                         <!-- Strikethrough Price -->
                         <div class="property-container">
                             <div class="label">Strikethrough Price:</div>
-                            <div class="strikethrough-price-dashed-container">
+                            <div class="strikethrough-price-container dashed-border">
                                 <div #strikethroughPrice
                                      tabindex="0"
                                      class="strikethrough-price"
@@ -160,7 +160,7 @@
                             <div class="label">Price:</div>
                             <div #price
                                  tabindex="0"
-                                 class="price-dashed-container"
+                                 class="price-container dashed-border"
                                  contenteditable="true"
                                  (focus)="onPriceFocus(price)"
                                  (input)="onPriceInput(price)"
@@ -195,7 +195,7 @@
                                 <ng-template #editShippingPopup></ng-template>
                             </div>
                         </div>
-                        <div class="shipping-dashed-container">
+                        <div class="shipping-dashed-container dashed-border">
                             <div *ngIf="pricePoint.shippingType == shippingType.None" class="plus-button-container">
                                 <icon-button style="transform: rotate(45deg)"
                                              [icon]="'fa-regular fa-circle-xmark'"
@@ -234,7 +234,7 @@
                                 <ng-template #editRecurringPopup></ng-template>
                             </div>
                         </div>
-                        <div class="recurring-dashed-container">
+                        <div class="recurring-dashed-container dashed-border">
                             <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="plus-button-container">
                                 <icon-button style="transform: rotate(45deg)"
                                              [icon]="'fa-regular fa-circle-xmark'"

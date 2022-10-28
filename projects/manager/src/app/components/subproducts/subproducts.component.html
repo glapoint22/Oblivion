@@ -11,110 +11,125 @@
 
 
         <!-- Content -->
-        <div class="dashed-border content-container">
+        <div class="border dashed-border">
 
             <!-- Image -->
-            <div class="image-container">
+            <div class="left-container">
                 <div class="label-and-icon-buttons-container">
                     <div class="label">Image:</div>
 
-                    <!-- Remove Image -->
-                    <icon-button *ngIf="subproduct.image && subproduct.image.src"
-                                 [title]="'Remove Image'"
-                                 [icon]="'fas fa-trash-alt'"
-                                 (click)="removeImage(subproduct)">
-                    </icon-button>
+                    <div class="icon-button-container">
 
-                    <!-- Media Browser -->
-                    <icon-button [title]="'Media Browser'"
-                                 [icon]="'fa-solid fa-image'"
-                                 (click)="openMediaBrowser(subproduct)">
-                    </icon-button>
+
+                    
+                        <icon-button [title]="'Media Browser'"
+                                     [icon]="'fa-solid fa-image'"
+                                     (click)="openMediaBrowser(subproduct)">
+                        </icon-button>
+                        <icon-button *ngIf="subproduct.image && subproduct.image.src"
+                                     [title]="'Remove Image'"
+                                     [icon]="'fas fa-trash-alt'"
+                                     (click)="removeImage(subproduct)">
+                        </icon-button>
+                    </div>
+                    
                 </div>
 
 
-                <div class="image-dashed-container" [title]="subproduct.image.name ? subproduct.image.name : ''" (click)="openMediaBrowser(subproduct)">
+                <div class="image-container dashed-border"
+                     [title]="subproduct.image.name ? subproduct.image.name : ''"
+                     (click)="openMediaBrowser(subproduct)">
                     <i *ngIf="!subproduct.image || !subproduct.image.src" class="fa-solid fa-image"></i>
                     <img *ngIf="subproduct.image && subproduct.image.src" [src]="'images/' + subproduct.image.src">
                 </div>
             </div>
 
+            
+            <div class="center-container">
 
-            <!-- Name & Description -->
-            <div class="name-description-container">
-                <!-- Name -->
-                <div class="label">Name:</div>
-                <div class="dashed-border name-container">
-
-                    <input #nameInput [value]="subproduct.name ? subproduct.name : ''" style="font-size: 30px;
-                    color: white;
-                    font-weight: bold; background: none; border: none; min-height: 40px;"
-                        (input)="onNameChange(nameInput, subproduct)">
+                <div class="title-case-icon-button-container">
+                    <icon-button [title]="!titleCaseOff[i] ? 'Turn Off Title Case' : 'Turn On Title Case'"
+                                 [icon]="!titleCaseOff[i] ? 'fa-solid fa-text-slash' : 'fa-solid fa-t'"
+                                 (click)="titleCaseOff[i] = !titleCaseOff[i]">
+                    </icon-button>
                 </div>
+                
+
+                <!-- Name -->
+                <div class="property-container">
+                    <div class="label">Name:</div>
+                    <div #name
+                        tabindex="0"
+                        class="name-container dashed-border"
+                        contenteditable="true"
+                        (focus)="selectRange(name)"
+                        (blur)="onNameBlur(subproduct, name, titleCaseOff[i])"
+                        (keydown.escape)="onNameEscape(subproduct, name)"
+                        (keydown.enter)="name.blur()"
+                        (paste)="onPaste($event, name)">
+                            {{subproduct.name}}
+                    </div>
+                </div>
+
+
+
 
 
                 <!-- Description -->
-                <div style="margin-top: 79px;">
+                <div class="description-property-container">
                     <div class="label">Description:</div>
-                    <div class="description-container">
-                        <product-description [product]="subproduct" [apiUrl]="'Subproduct/Description'">
-                        </product-description>
+                    <div class="description-container dashed-border">
+                        <product-description [product]="subproduct" [apiUrl]="'Subproduct/Description'"></product-description>
                     </div>
                 </div>
-
             </div>
 
 
+
+
+
+
+
+
+            
 
             <!-- Value -->
-            <div *ngIf="subproductType == SubproductType.Bonus" class="value-container">
-                <div class="label-and-icon-buttons-container" style="width: 100px;">
+            <ng-container *ngIf="subproductType == SubproductType.Bonus">
+                <div class="value-property-container">
                     <div class="label">Value:</div>
-                    <div style="position: relative;">
-                        <ng-container *ngIf="subproduct.value && subproduct.value > 0">
-                            <i class="fas fa-pencil-alt icon" title="Edit value"
-                                (click)="openValuePopup(subproduct, i)"></i>
-
-                            <i class="fas fa-trash-alt icon" style="margin-left: 10px;" title="Delete value"
-                                (click)="subproduct.value = 0; updateValue(subproduct.id, 0)"></i>
-                        </ng-container>
-
-
-
-                        <div style="position: absolute; left: -300px; top: -12px; z-index: 100;">
-                            <ng-template #editValuePopupContainer></ng-template>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="value" style="position: relative;">
-                    <i *ngIf="!subproduct.value || subproduct.value == 0" class="fa-solid fa-plus"
-                        (click)="openValuePopup(subproduct, i, true)" title="Add value"></i>
-
-                    <div class="value-star-container" *ngIf="subproduct.value && subproduct.value > 0">
-
-
-                        <img src="assets/value-star.png">
-
-                        <div class="value-text-container">
-                            <div class="value-amount-text">${{subproduct.value}}</div>
-                            <div class="value-text">Value</div>
-                        </div>
-                    </div>
-
-                    <div style="position: absolute;left: -254px;top: 34px;z-index: 100;">
-                        <ng-template #addValuePopupContainer></ng-template>
+                    <div #value
+                        tabindex="0"
+                        class="value-container dashed-border"
+                        contenteditable="true"
+                        (focus)="selectRange(value)"
+                        (blur)="onValueBlur(subproduct, value)"
+                        (keydown.escape)="onValueEscape(subproduct, value)"
+                        (keydown.enter)="value.blur()"
+                        (paste)="onPaste($event, value)">
+                            {{subproduct.value > 0 ? subproduct.value : ''}}
                     </div>
                 </div>
-            </div>
+            </ng-container>
+            
+
+
+
+            
+            
+
+
+
         </div>
     </div>
 </div>
 
 
-<!-- Add Subproduct -->
-<div class="add-subproduct" [title]="'Add ' + (subproductType == SubproductType.Component ? 'component': 'bonus')"
-    (click)="addSubproduct()">
-    <i class="fa-solid fa-plus"></i>
+
+<div class="plus-button-container">
+    <icon-button style="transform: rotate(45deg)"
+                 [icon]="'fa-regular fa-circle-xmark'"
+                 [title]="'Add ' + (subproductType == SubproductType.Component ? 'component': 'bonus')"
+                 [fontSize]="'25'"
+                 (onClick)="addSubproduct()">
+    </icon-button>
 </div>

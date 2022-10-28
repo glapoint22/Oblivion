@@ -152,7 +152,7 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         let keywordGroupId = null;
 
         if (deletedItem.hierarchyGroupID == 1) {
-            const parentIndex = this.getIndexOfHierarchyItemParent(this.thisArray[deletedItem.index!], this.thisArray);
+            const parentIndex = this.productService.getIndexOfHierarchyItemParent(this.thisArray[deletedItem.index!], this.thisArray);
             keywordGroupId = this.thisArray[parentIndex].id;
         }
         return {

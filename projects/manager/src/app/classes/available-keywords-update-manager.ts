@@ -130,7 +130,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
         super.onItemAdd(hierarchyUpdate);
 
         if(hierarchyUpdate.hierarchyGroupID == 1) {
-            const parentIndex = this.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
+            const parentIndex = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
             this.thisArray[hierarchyUpdate.index!].opacity = this.thisArray[parentIndex].opacity;
         }
     }
@@ -153,7 +153,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
         this.productService.products[this.productIndex].selectedKeywordArray.push(keywordGroup);
-        this.sort(keywordGroup, this.productService.products[this.productIndex].selectedKeywordArray);
+        this.productService.sort(keywordGroup, this.productService.products[this.productIndex].selectedKeywordArray);
     }
 
 
@@ -185,7 +185,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
             // If a keyword is selected
         } else {
-            const parentIndex = this.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisArray);
+            const parentIndex = this.productService.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisArray);
             const parent = this.thisArray[parentIndex];
             const childId = this.listComponent.listManager.selectedItem.id;
             keywordGroup.id = parent.id;

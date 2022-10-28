@@ -147,11 +147,10 @@
 }
 
 
-.media-list-dashed-container {
+.media-list-container {
     width: 68px;
     height: 524px;
     padding: 8px;
-    border: 1px dashed #3d3d3d;
 }
 
 
@@ -215,11 +214,10 @@
 }
 
 
-.media-display-dashed-container {
+.media-display-container {
     display: flex;
     width: 524px;
     height: 524px;
-    border: 1px dashed #3d3d3d;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -265,8 +263,17 @@
 
 
 .top-right-container {
+    position: relative;
     width: 877px;
     margin-top: 12px;
+}
+
+
+
+.title-case-icon-button-container {
+    position: absolute;
+    top: -6px;
+    right: 1px;
 }
 
 
@@ -348,10 +355,9 @@
 }
 
 
-.description-dashed-container {
+.description-container {
     position: relative;
     padding: 7px 10px;
-    border: 1px dashed #3d3d3d;
 }
 
 
@@ -376,7 +382,7 @@
 }
 
 
-.dashed-container {
+.dashed-border {
     min-height: 36px;
     border: 1px dashed #3d3d3d;
 }
@@ -387,6 +393,39 @@
     margin-top: 38px;
 }
 
+
+
+
+
+.name-property-container {
+    &:hover {
+        .label {
+            color: #858585;
+        }
+
+        div:nth-child(2) {
+            border-color: #8f8f8f;
+        }
+    }
+
+    &:focus-within {
+        .label {
+            color: #858585;
+        }
+
+        div:nth-child(2) {
+            border-color: #8f8f8f;
+        }
+    }
+}
+
+
+
+
+.description-property-container {
+    @extend .name-property-container;
+    @extend .property-container;
+}
 
 
 
