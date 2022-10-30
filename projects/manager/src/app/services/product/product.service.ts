@@ -8,7 +8,6 @@ import { MultiColumnItem } from '../../classes/multi-column-item';
 import { NicheHierarchy } from '../../classes/niche-hierarchy';
 import { NotificationItem } from '../../classes/notifications/notification-item';
 import { Product } from '../../classes/product';
-import { ProductMedia } from '../../classes/product-media';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
 import { ProductFormComponent } from '../../components/product/product-form/product-form.component';
 
@@ -36,7 +35,7 @@ export class ProductService {
   public products: Array<ProductFormComponent> = new Array<ProductFormComponent>();
   public onProductSelect: Subject<void> = new Subject<void>();
 
-  public selectedProductMedia!: ProductMedia;
+  
 
 
   constructor(private resolver: ComponentFactoryResolver, private dataService: DataService) { }

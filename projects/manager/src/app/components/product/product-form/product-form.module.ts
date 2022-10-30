@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductFormComponent } from './product-form.component';
-import { PricePointsComponent } from '../price-points/price-points.component';
+import { PricePointsComponent } from '../product-price-points/price-points/price-points.component';
 import { DescriptionComponent } from '../product-description/description/description.component';
 import { TextToolbarPopupComponent } from '../../text-toolbar-popup/text-toolbar-popup.component';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +18,7 @@ import { ProductHoplinkComponent } from '../product-hoplink/product-hoplink.comp
 import { ProductDescriptionComponent } from '../product-description/product-description.component';
 import { ProductMediaListComponent } from '../product-media/product-media-list/product-media-list.component';
 import { ProductMediaDisplayComponent } from '../product-media/product-media-display/product-media-display.component';
+import { ProductPricePointsComponent } from '../product-price-points/product-price-points.component';
 
 
 
@@ -33,6 +34,7 @@ import { ProductMediaDisplayComponent } from '../product-media/product-media-dis
     ProductHoplinkComponent,
     ProductDescriptionComponent,
     DescriptionComponent,
+    ProductPricePointsComponent,
     PricePointsComponent,
     TextToolbarPopupComponent,
     SubproductsComponent

@@ -1,10 +1,10 @@
 import { Component, ElementRef, Input, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, PricePoint, RecurringPayment, Shipping, ShippingType, SpinnerAction } from 'common';
-import { PopupArrowPosition } from '../../../classes/enums';
-import { Product } from '../../../classes/product';
-import { MediaBrowserComponent } from '../../media-browser/media-browser.component';
-import { RecurringPopupComponent } from '../../recurring-popup/recurring-popup.component';
-import { ShippingPopupComponent } from '../../shipping-popup/shipping-popup.component';
+import { PopupArrowPosition } from '../../../../classes/enums';
+import { Product } from '../../../../classes/product';
+import { MediaBrowserComponent } from '../../../media-browser/media-browser.component';
+import { RecurringPopupComponent } from '../../../recurring-popup/recurring-popup.component';
+import { ShippingPopupComponent } from '../../../shipping-popup/shipping-popup.component';
 
 @Component({
   selector: 'price-points',
@@ -136,8 +136,8 @@ export class PricePointsComponent {
 
   openMediaBrowser(pricePoint: PricePoint): void {
     this.lazyLoadingService.load(async () => {
-      const { MediaBrowserComponent } = await import('../../media-browser/media-browser.component');
-      const { MediaBrowserModule } = await import('../../media-browser/media-browser.module');
+      const { MediaBrowserComponent } = await import('../../../media-browser/media-browser.component');
+      const { MediaBrowserModule } = await import('../../../media-browser/media-browser.module');
       return {
         component: MediaBrowserComponent,
         module: MediaBrowserModule
@@ -353,8 +353,8 @@ export class PricePointsComponent {
 
 
     this.lazyLoadingService.load(async () => {
-      const { ShippingPopupComponent } = await import('../../shipping-popup/shipping-popup.component');
-      const { ShippingPopupModule } = await import('../../shipping-popup/shipping-popup.module');
+      const { ShippingPopupComponent } = await import('../../../shipping-popup/shipping-popup.component');
+      const { ShippingPopupModule } = await import('../../../shipping-popup/shipping-popup.module');
       return {
         component: ShippingPopupComponent,
         module: ShippingPopupModule
@@ -389,8 +389,8 @@ export class PricePointsComponent {
 
 
     this.lazyLoadingService.load(async () => {
-      const { RecurringPopupComponent } = await import('../../recurring-popup/recurring-popup.component');
-      const { RecurringPopupModule } = await import('../../recurring-popup/recurring-popup.module');
+      const { RecurringPopupComponent } = await import('../../../recurring-popup/recurring-popup.component');
+      const { RecurringPopupModule } = await import('../../../recurring-popup/recurring-popup.module');
       return {
         component: RecurringPopupComponent,
         module: RecurringPopupModule

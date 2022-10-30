@@ -1,13 +1,12 @@
 import { Component, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
 import { HierarchyItem } from '../../../classes/hierarchy-item';
 import { MultiColumnItem } from '../../../classes/multi-column-item';
-import { DataService, LazyLoadingService, PricePoint, Shipping, SpinnerAction, Subproduct } from 'common';
+import { DataService, LazyLoadingService, Shipping, SpinnerAction, Subproduct } from 'common';
 import { PopupArrowPosition, SubproductType } from '../../../classes/enums';
 import { Product } from '../../../classes/product';
 import { ProductService } from '../../../services/product/product.service';
 import { FiltersPopupComponent } from '../../filters-popup/filters-popup.component';
 import { KeywordsPopupComponent } from '../../keywords-popup/keywords-popup.component';
-import { PricePointsComponent } from '../price-points/price-points.component';
 import { ProductGroupsPopupComponent } from '../../product-groups-popup/product-groups-popup.component';
 import { VendorPopupComponent } from '../../vendor-popup/vendor-popup.component';
 import { CheckboxMultiColumnItem } from '../../../classes/checkbox-multi-column-item';
@@ -16,6 +15,7 @@ import { KeywordCheckboxItem } from '../../../classes/keyword-checkbox-item';
 import { KeywordCheckboxMultiColumnItem } from '../../../classes/keyword-checkbox-multi-column-item';
 import { ProductNotificationPopupComponent } from '../../notifications/product-notification-popup/product-notification-popup.component';
 import { NotificationItem } from '../../../classes/notifications/notification-item';
+import { ProductMedia } from '../../../classes/product-media';
 
 @Component({
   templateUrl: './product-form.component.html',
@@ -28,7 +28,7 @@ export class ProductFormComponent {
   private productGroupsPopup!: ProductGroupsPopupComponent;
   
   
-  
+  public selectedProductMedia!: ProductMedia;
   
   
   
@@ -61,7 +61,7 @@ export class ProductFormComponent {
   
 
 
-  @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
+  
   
   
   
@@ -262,24 +262,7 @@ export class ProductFormComponent {
   
 
 
-  addPricePoint() {
-    // If the product currently has a single price
-    if (this.product.minPrice != null) {
-      // Remove that single price from the database
-      this.dataService.delete('api/Products/Price', { productId: this.product.id }).subscribe();
-    }
-
-    // Add a price point to the product
-    this.product.pricePoints.push(new PricePoint());
-
-    // Wait a frame so that the pricepoints component can be referenced
-    window.setTimeout(() => {
-      // Create the price point range
-      this.pricePoints.updateMinMaxPrice();
-      // Add the price point to the database
-      this.pricePoints.addPricePoint();
-    })
-  }
+  
 
 
   addSubproduct(type: SubproductType) {

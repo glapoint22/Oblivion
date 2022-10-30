@@ -15,6 +15,7 @@ export class ProductMediaDisplayComponent extends MediaComponent{
   private mediaSelectorPopup!: MediaSelectorPopupComponent;
   public mediaSelectorPopupOpen!: boolean;
   public MediaType = MediaType;
+
   @ViewChild('mediaSelectorPopupContainer', { read: ViewContainerRef }) mediaSelectorPopupContainer!: ViewContainerRef;
 
 
@@ -29,8 +30,8 @@ export class ProductMediaDisplayComponent extends MediaComponent{
       super.ngOnInit();
 
 
-      if (this.productService.selectedProductMedia.type == MediaType.Video) {
-        this.setVideo(this.productService.selectedProductMedia);
+      if (this.productForm.selectedProductMedia.type == MediaType.Video) {
+        this.setVideo(this.productForm.selectedProductMedia);
       }
     }
   }
@@ -55,13 +56,13 @@ export class ProductMediaDisplayComponent extends MediaComponent{
         if (mediaType == undefined) {
 
           // Selected media is image
-          if (this.productService.selectedProductMedia.type == MediaType.Image) {
+          if (this.productForm.selectedProductMedia.type == MediaType.Image) {
             mediaType = MediaType.Image;
             media = new Image();
-            media.id = this.productService.selectedProductMedia.id;
-            media.name = this.productService.selectedProductMedia.name;
-            media.src = this.productService.selectedProductMedia.imageMd;
-            media.thumbnail = this.productService.selectedProductMedia.thumbnail;
+            media.id = this.productForm.selectedProductMedia.id;
+            media.name = this.productForm.selectedProductMedia.name;
+            media.src = this.productForm.selectedProductMedia.imageMd;
+            media.thumbnail = this.productForm.selectedProductMedia.thumbnail;
             media.imageSizeType = ImageSizeType.Medium;
           }
 
@@ -70,11 +71,11 @@ export class ProductMediaDisplayComponent extends MediaComponent{
             mediaType = MediaType.Video;
             media = new Video({
               video: {
-                id: this.productService.selectedProductMedia.id,
-                name: this.productService.selectedProductMedia.name,
-                thumbnail: this.productService.selectedProductMedia.thumbnail,
-                videoType: this.productService.selectedProductMedia.videoType,
-                videoId: this.productService.selectedProductMedia.videoId
+                id: this.productForm.selectedProductMedia.id,
+                name: this.productForm.selectedProductMedia.name,
+                thumbnail: this.productForm.selectedProductMedia.thumbnail,
+                videoType: this.productForm.selectedProductMedia.videoType,
+                videoId: this.productForm.selectedProductMedia.videoId
               }
             });
           }
@@ -99,24 +100,24 @@ export class ProductMediaDisplayComponent extends MediaComponent{
             const mediaListItemElement = document.getElementById('media-list-item') as HTMLElement;
 
             // Create new product media
-            this.productService.selectedProductMedia = new ProductMedia();
-            this.productService.selectedProductMedia.type = !mediaType ? MediaType.Image : mediaType;
-            this.productService.selectedProductMedia.index = this.product.media.length;
-            this.productService.selectedProductMedia.top = this.productService.selectedProductMedia.index * this.productMediaSpacing;
-            this.product.media.push(this.productService.selectedProductMedia);
+            this.productForm.selectedProductMedia = new ProductMedia();
+            this.productForm.selectedProductMedia.type = !mediaType ? MediaType.Image : mediaType;
+            this.productForm.selectedProductMedia.index = this.product.media.length;
+            this.productForm.selectedProductMedia.top = this.productForm.selectedProductMedia.index * this.productMediaSpacing;
+            this.product.media.push(this.productForm.selectedProductMedia);
 
             // Scroll down to the new product media
             window.setTimeout(() => mediaListItemElement.scrollTo(0, mediaListItemElement.scrollHeight));
           }
 
           // Assign the properties
-          this.productService.selectedProductMedia.name = callbackMedia.name;
-          this.productService.selectedProductMedia.id = callbackMedia.id;
-          this.productService.selectedProductMedia.thumbnail = callbackMedia.thumbnail;
+          this.productForm.selectedProductMedia.name = callbackMedia.name;
+          this.productForm.selectedProductMedia.id = callbackMedia.id;
+          this.productForm.selectedProductMedia.thumbnail = callbackMedia.thumbnail;
 
           // Image
-          if (this.productService.selectedProductMedia.type == MediaType.Image) {
-            this.productService.selectedProductMedia.imageMd = callbackMedia.src;
+          if (this.productForm.selectedProductMedia.type == MediaType.Image) {
+            this.productForm.selectedProductMedia.imageMd = callbackMedia.src;
           }
 
           // Video
@@ -124,21 +125,20 @@ export class ProductMediaDisplayComponent extends MediaComponent{
             const video = callbackMedia as Video;
 
             // Assign the video properties
-            this.productService.selectedProductMedia.videoType = video.videoType;
-            this.productService.selectedProductMedia.videoId = video.videoId;
+            this.productForm.selectedProductMedia.videoType = video.videoType;
+            this.productForm.selectedProductMedia.videoId = video.videoId;
 
             // Set the iframe with the video
-            this.setVideo(this.productService.selectedProductMedia);
+            this.setVideo(this.productForm.selectedProductMedia);
           }
-
 
           // Update the database
           this.dataService.put<number>('api/Products/Media', {
             productId: this.product.id,
-            productMediaId: this.productService.selectedProductMedia.productMediaId,
-            mediaId: this.productService.selectedProductMedia.id
+            productMediaId: this.productForm.selectedProductMedia.productMediaId,
+            mediaId: this.productForm.selectedProductMedia.id
           }).subscribe((productMediaId: number) => {
-            this.productService.selectedProductMedia.productMediaId = productMediaId;
+            this.productForm.selectedProductMedia.productMediaId = productMediaId;
           });
         }
       });
@@ -151,10 +151,10 @@ export class ProductMediaDisplayComponent extends MediaComponent{
   // --------------------------------------------------- Remove Product Media ---------------------------------------------------
   public removeProductMedia() {
     // Remove the image
-    this.dataService.delete('api/Products/Media', { id: this.productService.selectedProductMedia.productMediaId })
+    this.dataService.delete('api/Products/Media', { id: this.productForm.selectedProductMedia.productMediaId })
       .subscribe(() => {
-        let arrayIndex = this.product.media.findIndex(x => this.productService.selectedProductMedia == x);
-        let index = this.productService.selectedProductMedia.index + 1;
+        let arrayIndex = this.product.media.findIndex(x => this.productForm.selectedProductMedia == x);
+        let index = this.productForm.selectedProductMedia.index + 1;
         let selectedProductMedia!: ProductMedia;
 
         this.product.media.splice(arrayIndex, 1);
@@ -173,17 +173,17 @@ export class ProductMediaDisplayComponent extends MediaComponent{
         } while (selectedProductMedia);
 
         // Get the next selected media
-        if (this.productService.selectedProductMedia.index == this.product.media.length) {
-          selectedProductMedia = this.product.media.find(x => x.index == this.productService.selectedProductMedia.index - 1)!;
+        if (this.productForm.selectedProductMedia.index == this.product.media.length) {
+          selectedProductMedia = this.product.media.find(x => x.index == this.productForm.selectedProductMedia.index - 1)!;
         } else {
-          selectedProductMedia = this.product.media.find(x => x.index == this.productService.selectedProductMedia.index)!;
+          selectedProductMedia = this.product.media.find(x => x.index == this.productForm.selectedProductMedia.index)!;
         }
 
         // Select the media
         if (selectedProductMedia) {
           this.onMediaSelect(selectedProductMedia);
         } else {
-          this.productService.selectedProductMedia = null!;
+          this.productForm.selectedProductMedia = null!;
         }
 
         // Update the indices
@@ -234,16 +234,4 @@ export class ProductMediaDisplayComponent extends MediaComponent{
         });
       });
   }
-
-
-
-
-
-
-  
-
-
-
-
-  
 }

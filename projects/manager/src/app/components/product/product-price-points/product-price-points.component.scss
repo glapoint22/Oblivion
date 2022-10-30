@@ -1,0 +1,25 @@
+.property-container {
+    position: relative;
+    margin-top: 38px;
+}
+
+
+.label {
+    color: #505050;
+    font-size: 12px;
+    margin-bottom: 4px;
+    user-select: none;
+    flex: 1;
+}
+
+
+.dashed-border {
+    min-height: 36px;
+    border: 1px dashed #3d3d3d;
+}
+
+
+.plus-button-container {
+    display: flex;
+    margin-top: -1px;
+}

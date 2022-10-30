@@ -1,0 +1,14 @@
+<div class="property-container">
+    <div class="label">Price Points:</div>
+    <div class="dashed-border">
+        <div *ngIf="product.pricePoints.length == 0" class="plus-button-container">
+            <icon-button style="transform: rotate(45deg)"
+                         [icon]="'fa-regular fa-circle-xmark'"
+                         [title]="'Add Hoplink'"
+                         [fontSize]="'18'"
+                         (onClick)="addPricePoint()">
+            </icon-button>
+        </div>
+        <price-points *ngIf="product.pricePoints.length > 0" #pricePoints [product]="product"></price-points>
+    </div>
+</div>

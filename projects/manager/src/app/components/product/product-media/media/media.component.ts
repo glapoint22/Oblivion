@@ -3,6 +3,7 @@ import { DataService, MediaType, Video } from 'common';
 import { Product } from 'projects/manager/src/app/classes/product';
 import { ProductMedia } from 'projects/manager/src/app/classes/product-media';
 import { ProductService } from 'projects/manager/src/app/services/product/product.service';
+import { ProductFormComponent } from '../../product-form/product-form.component';
 
 @Component({
   template: '',
@@ -11,6 +12,7 @@ import { ProductService } from 'projects/manager/src/app/services/product/produc
 export class MediaComponent implements OnInit {
   public productMediaSpacing: number = 57;
   @Input() product!: Product;
+  @Input() productForm!: ProductFormComponent;
 
   constructor(public dataService: DataService, public productService: ProductService) { }
 
@@ -18,7 +20,7 @@ export class MediaComponent implements OnInit {
 
 
   ngOnInit() {
-      this.productService.selectedProductMedia = this.product.media[0];
+      this.productForm.selectedProductMedia = this.product.media[0];
   }
 
 
@@ -46,7 +48,7 @@ export class MediaComponent implements OnInit {
   onMediaSelect(productMedia: ProductMedia) {
     productMedia.transition = 'all 0ms ease 0s';
     if (productMedia.type == MediaType.Video) this.setVideo(productMedia);
-    this.productService.selectedProductMedia = productMedia;
+    this.productForm.selectedProductMedia = productMedia;
   }
 
 
