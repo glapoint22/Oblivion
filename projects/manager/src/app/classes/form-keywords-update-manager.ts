@@ -9,12 +9,12 @@ import { MultiColumnListComponent } from "../components/lists/multi-column-list/
 import { CaseType, ListUpdateType } from "./enums";
 import { SearchResultItem } from "./search-result-item";
 import { ListUpdate } from "./list-update";
-import { ProductComponent } from "../components/product/product.component";
+import { ProductFormComponent } from "../components/product/product-form/product-form.component";
 
 @Directive()
 export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
-    public secondOtherProductArray: keyof ProductComponent = 'selectedKeywordArray';
-    public secondOtherProductSearchArray: keyof ProductComponent = 'selectedKeywordSearchArray';
+    public secondOtherProductArray: keyof ProductFormComponent = 'selectedKeywordArray';
+    public secondOtherProductSearchArray: keyof ProductFormComponent = 'selectedKeywordSearchArray';
 
 
     // Decorators

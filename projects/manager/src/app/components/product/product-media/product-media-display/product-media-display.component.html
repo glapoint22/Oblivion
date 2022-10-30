@@ -1,0 +1,43 @@
+<div class="media-container">
+    <div class="label-and-icon-buttons-container">
+        <div class="label">{{!productService.selectedProductMedia || productService.selectedProductMedia.type == MediaType.Image ? 'Image' : 'Video'}}</div>
+        <div class="icon-button-container">
+            <icon-button [icon]="!productService.selectedProductMedia || productService.selectedProductMedia.type == MediaType.Image ? 'fa-solid fa-image' : 'fa-solid fa-film'"
+                         [title]="'Media Browser'"
+                         (onClick)="openMediaBrowser(!productService.selectedProductMedia ? MediaType.Image : undefined)">
+            </icon-button>
+            <icon-button *ngIf="product.media && product.media.length > 0"
+                         [icon]="'fas fa-plus-circle'"
+                         [title]="'Add Image or Video'"
+                         [popupOpen]="mediaSelectorPopupOpen"
+                         (onClick)="openMediaSelectorPopup()">
+            </icon-button>
+            <icon-button *ngIf="productService.selectedProductMedia"
+                         [icon]="'fas fa-trash-alt'"
+                         [title]="!productService.selectedProductMedia || productService.selectedProductMedia.type == MediaType.Image ? 'Remove Image' : 'Remove Video'"
+                         (onClick)="removeProductMedia()">
+            </icon-button>
+            <div class="media-selector-popup-container">
+                <ng-template #mediaSelectorPopupContainer></ng-template>
+            </div>
+        </div>
+    </div>
+    <div class="media-display-container dashed-border"
+        (click)="openMediaBrowser(!productService.selectedProductMedia ? MediaType.Image : undefined)">
+
+        <div *ngIf="!productService.selectedProductMedia" class="image-icon-container">
+            <i class="fa-solid fa-image"
+               tabindex="0"
+               title="Media Browser">
+            </i>
+        </div>
+        <img *ngIf="productService.selectedProductMedia && productService.selectedProductMedia.type == MediaType.Image"
+             [src]="'images/' + productService.selectedProductMedia.imageMd"
+             [title]="productService.selectedProductMedia.name">
+
+        <div *ngIf="productService.selectedProductMedia && productService.selectedProductMedia.type == MediaType.Video"
+             class="iframe-container" >
+            <iframe id="video-iframe" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>

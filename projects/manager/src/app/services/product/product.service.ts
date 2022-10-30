@@ -8,8 +8,9 @@ import { MultiColumnItem } from '../../classes/multi-column-item';
 import { NicheHierarchy } from '../../classes/niche-hierarchy';
 import { NotificationItem } from '../../classes/notifications/notification-item';
 import { Product } from '../../classes/product';
+import { ProductMedia } from '../../classes/product-media';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
-import { ProductComponent } from '../../components/product/product.component';
+import { ProductFormComponent } from '../../components/product/product-form/product-form.component';
 
 @Injectable({
   providedIn: 'root'
@@ -19,11 +20,11 @@ export class ProductService {
   private subNicheId!: number;
   private productId!: number;
   private onProductLoad: Subject<void> = new Subject<void>();
-  private onProductOpen: Subject<ProductComponent> = new Subject<ProductComponent>();
+  private onProductOpen: Subject<ProductFormComponent> = new Subject<ProductFormComponent>();
 
   public productTabContextMenu!: ContextMenuComponent;
   public zIndex: number = 0;
-  public selectedProduct!: ProductComponent;
+  public selectedProduct!: ProductFormComponent;
   public productsContainer!: ViewContainerRef;
   public sideMenuNicheArray: Array<HierarchyItem> = new Array<HierarchyItem>();
   public formFilterArray: Array<HierarchyItem> = new Array<HierarchyItem>();
@@ -32,10 +33,10 @@ export class ProductService {
   public formKeywordSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
   public formProductGroupArray: Array<ListItem> = new Array<ListItem>();
   public formProductGroupSearchArray: Array<ListItem> = new Array<ListItem>();
-  public products: Array<ProductComponent> = new Array<ProductComponent>();
+  public products: Array<ProductFormComponent> = new Array<ProductFormComponent>();
   public onProductSelect: Subject<void> = new Subject<void>();
 
-
+  public selectedProductMedia!: ProductMedia;
 
 
   constructor(private resolver: ComponentFactoryResolver, private dataService: DataService) { }
@@ -53,9 +54,9 @@ export class ProductService {
         .subscribe((product: Product) => {
           this.nicheId = product.niche.id!;
           this.subNicheId = product.subNiche.id!;
-          const productComponentFactory: ComponentFactory<ProductComponent> = this.resolver.resolveComponentFactory(ProductComponent);
+          const productComponentFactory: ComponentFactory<ProductFormComponent> = this.resolver.resolveComponentFactory(ProductFormComponent);
           const productComponentRef = this.productsContainer.createComponent(productComponentFactory);
-          const productComponent: ProductComponent = productComponentRef.instance;
+          const productComponent: ProductFormComponent = productComponentRef.instance;
           productComponentRef.instance.viewRef = productComponentRef.hostView;
 
           this.products.push(productComponent);
@@ -94,7 +95,7 @@ export class ProductService {
 
 
   openNotificationProduct(productId: number, notificationItem: NotificationItem) {
-    const onProductOpenListener = this.onProductOpen.subscribe((notificationProduct: ProductComponent) => {
+    const onProductOpenListener = this.onProductOpen.subscribe((notificationProduct: ProductFormComponent) => {
       onProductOpenListener.unsubscribe();
       window.setTimeout(() => {
         notificationProduct.openNotificationPopup(notificationItem);

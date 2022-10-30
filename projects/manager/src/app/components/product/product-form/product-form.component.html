@@ -1,0 +1,154 @@
+<!-- Product Form -->
+<div class="product-form" [style.z-index]="zIndex">
+
+    <!-- Circle Buttons -->
+    <div class="circle-button-container-border" (contextmenu)="$event.preventDefault()">
+        <div class="circle-button-container">
+
+            <!-- Notification -->
+            <div *ngIf="this.product.notificationItems.length > 0"
+                 title="Notification"
+                 class="circle-button"
+                 (click)="openNotificationPopup()"
+                 [ngClass]="{'circle-button-clicked': notificationPopupContainer ? notificationPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-bell"></i>
+            </div>
+
+            <!-- Vendor -->
+            <div title="Vendor"
+                 class="circle-button"
+                 (click)="openVendorPopup()"
+                 [ngClass]="{'circle-button-clicked': vendorPopupContainer ? vendorPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-store"></i>
+            </div>
+
+            <!-- Filters -->
+            <div title="Filters"
+                 class="circle-button"
+                 (click)="openFiltersPopup()"
+                 [ngClass]="{'circle-button-clicked': filtersPopupContainer ? filtersPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-filter"></i>
+            </div>
+
+            <!-- Keywords -->
+            <div title="Keywords"
+                 class="circle-button"
+                 (click)="openKeywordsPopup()"
+                 [ngClass]="{'circle-button-clicked': keywordsPopupContainer ? keywordsPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-key"></i>
+            </div>
+
+            <!-- Product Groups -->
+            <div title="Product Groups"
+                 class="circle-button"
+                 (click)="openProductGroupsPopup()"
+                 [ngClass]="{'circle-button-clicked': productGroupsPopupContainer ? productGroupsPopupContainer.length > 0 : false}">
+                 <i class="fa-solid fa-layer-group"></i>
+            </div>
+
+            <!-- Circle Button Popup Container -->
+            <div class="circle-button-popup-container">
+                <ng-template #notificationPopup></ng-template>
+                <ng-template #vendorPopup></ng-template>
+                <ng-template #filtersPopup></ng-template>
+                <ng-template #keywordsPopup></ng-template>
+                <ng-template #productGroupsPopup></ng-template>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Breadcrumbs -->
+    <div class="breadcrumb-base">
+        <div class="drop-shadow"></div>
+        <div class="breadcrumb-container">
+            <div class="breadcrumb">{{product.niche.name}}</div>
+            <div class="breadcrumb-arrow"></div>
+            <div class="breadcrumb">{{product.subNiche.name}}</div>
+            <div class="breadcrumb-arrow"></div>
+            <div class="breadcrumb-product">{{product.name}}</div>
+        </div>
+    </div>
+
+
+    <!-- Product -->
+    <div class="product-container">
+        <div class="product">
+            <div class="flex-container">
+                <product-media-list [product]="product"></product-media-list>
+                <product-media-display [product]="product"></product-media-display>
+
+                <div class="top-right-container">
+                    <product-name [product]="product"></product-name>
+                    <product-price [product]="product"></product-price>
+                    <product-shipping [product]="product"></product-shipping>
+                    <product-recurring-payment [product]="product"></product-recurring-payment>
+                    <product-hoplink [product]="product"></product-hoplink>
+                    <product-description [product]="product"></product-description>
+                </div>
+            </div>
+
+
+
+
+            <!-- Price Points -->
+            <div class="property-container">
+                <div class="label">Price Points:</div>
+                <div class="dashed-border">
+                    <div *ngIf="product.pricePoints.length == 0" class="plus-button-container">
+                        <icon-button style="transform: rotate(45deg)"
+                                     [icon]="'fa-regular fa-circle-xmark'"
+                                     [title]="'Add Hoplink'"
+                                     [fontSize]="'18'"
+                                     (onClick)="addPricePoint()">
+                        </icon-button>
+                    </div>
+                    <price-points *ngIf="product.pricePoints.length > 0" #pricePoints [product]="product"></price-points>
+                </div>
+            </div>
+
+
+            <div *ngIf="product.pricePoints.length > 0 || (product.components && product.components.length > 0)" style="height: 80px;"></div>
+
+            <!-- Components -->
+            <div class="property-container">
+                <div class="label">Components:</div>
+                <div class="dashed-border">
+                    <div *ngIf="!product.components || product.components.length == 0" class="plus-button-container">
+                        <icon-button style="transform: rotate(45deg)"
+                                     [icon]="'fa-regular fa-circle-xmark'"
+                                     [title]="'Add Component'"
+                                     [fontSize]="'18'"
+                                     (onClick)="addSubproduct(subproductType.Component)">
+                        </icon-button>
+                    </div>
+                    <subproducts *ngIf="product.components && product.components.length > 0"
+                        [subproducts]="product.components" [subproductType]="subproductType.Component"
+                        [productId]="product.id"></subproducts>
+                </div>
+            </div>
+
+
+            <div *ngIf="(product.components && product.components.length > 0) || (product.bonuses && product.bonuses.length > 0)" style="height: 80px;"></div>
+
+
+            <!-- Bonuses -->
+            <div class="property-container">
+                <div class="label">Bonuses:</div>
+                <div class="dashed-border">
+                    <div *ngIf="!product.bonuses || product.bonuses.length == 0" class="plus-button-container">
+                        <icon-button style="transform: rotate(45deg)"
+                                     [icon]="'fa-regular fa-circle-xmark'"
+                                     [title]="'Add Bonus'"
+                                     [fontSize]="'18'"
+                                     (onClick)="addSubproduct(subproductType.Bonus)">
+                        </icon-button>
+                    </div>
+                    <subproducts *ngIf="product.bonuses && product.bonuses.length > 0" [subproducts]="product.bonuses"
+                        [subproductType]="subproductType.Bonus" [productId]="product.id">
+                    </subproducts>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

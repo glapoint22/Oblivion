@@ -1,0 +1,36 @@
+<div class="property-container">
+    <div class="label-and-icon-buttons-container">
+        <div class="label">Price:</div>
+        <div *ngIf="product.minPrice != null && product.pricePoints.length == 0" class="icon-button-container">
+            <icon-button [icon]="'fas fa-pencil-alt'"
+                         [title]="'Edit Price'"
+                         [popupOpen]="pricePopupOpen"
+                         (onClick)="openPricePopup(PopupArrowPosition.TopRight)">
+            </icon-button>
+        </div>
+        <div class="edit-popup-container-1">
+            <ng-template #editPricePopup></ng-template>
+        </div>
+    </div>
+    <div class="dashed-border">
+        <div *ngIf="product.minPrice == null" class="plus-button-container">
+            <icon-button style="transform: rotate(45deg)"
+                         [icon]="'fa-regular fa-circle-xmark'"
+                         [title]="'Add Price'"
+                         [fontSize]="'18'"
+                         [popupOpen]="pricePopupOpen"
+                         (onClick)="openPricePopup(PopupArrowPosition.TopLeft)">
+            </icon-button>
+        </div>
+        <div *ngIf="product.minPrice != null" class="price-container">
+            <ng-container *ngIf="product.pricePoints.length == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+            <ng-container *ngIf="product.pricePoints.length > 0">
+                {{product.minPrice | currency:'USD'}} -
+                {{product.pricePoints.length > 1 ? (product.maxPrice | currency:'USD') : ''}}
+            </ng-container>
+        </div>
+        <div class="add-popup-container">
+            <ng-template #addPricePopup></ng-template>
+        </div>
+    </div>
+</div>

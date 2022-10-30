@@ -4,7 +4,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { DataService } from "common";
 import { debounceTime, fromEvent, Subject, Subscription } from "rxjs";
 import { ListComponent } from "../components/lists/list/list.component";
-import { ProductComponent } from "../components/product/product.component";
+import { ProductFormComponent } from "../components/product/product-form/product-form.component";
 import { ProductService } from "../services/product/product.service";
 import { ListUpdateType, MenuOptionType } from "./enums";
 import { ListItem } from "./list-item";
@@ -40,9 +40,9 @@ export class ListUpdateManager {
     public listOptions: ListOptions = new ListOptions();
     public searchOptions: ListOptions = new ListOptions();
     public get itemType(): string { return this._itemType; }
-    public otherProductArray!: keyof ProductComponent;
+    public otherProductArray!: keyof ProductFormComponent;
     public get listUpdate(): ListUpdate { return this._listUpdate; }
-    public otherProductSearchArray!: keyof ProductComponent;
+    public otherProductSearchArray!: keyof ProductFormComponent;
     public get searchUpdate(): ListUpdate { return this._searchListUpdate; }
     public set listUpdate(listUpdate: ListUpdate) { this.onListUpdate(listUpdate); }
     public set itemType(v: string) { this._itemType = v; this.addIconButtonTitle = 'Add ' + v; }

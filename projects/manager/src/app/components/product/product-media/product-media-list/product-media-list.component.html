@@ -1,0 +1,17 @@
+<div class="media-container">
+    <div class="label">Media:</div>
+    <div class="media-list-container dashed-border">
+        <div id="media-list-item" class="media-list-item">
+            <div *ngFor="let mediaListItem of product.media"
+                 [title]="mediaListItem.name"
+                 class="media-thumbnail-container"
+                 [style.top.px]="mediaListItem.top"
+                 [style.transition]="mediaListItem.transition"
+                 [style.zIndex]="mediaListItem == productService.selectedProductMedia ? '100': '1'"
+                 (mousedown)="onMediaSelect(mediaListItem); onMousedown($event)"
+                 [ngClass]="{'selected-media-list-item': mediaListItem == productService.selectedProductMedia && product.media.length > 1}">
+                 <img [src]="'images/' + mediaListItem.thumbnail" draggable="false">
+            </div>
+        </div>
+    </div>
+</div>

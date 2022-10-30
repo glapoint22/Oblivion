@@ -1,0 +1,52 @@
+.title-case-icon-button-container {
+    position: absolute;
+    top: -6px;
+    right: 1px;
+}
+
+
+.name-property-container {
+    &:hover {
+        .label {
+            color: #858585;
+        }
+
+        div:nth-child(2) {
+            border-color: #8f8f8f;
+        }
+    }
+
+    &:focus-within {
+        .label {
+            color: #858585;
+        }
+
+        div:nth-child(2) {
+            border-color: #8f8f8f;
+        }
+    }
+}
+
+
+.label {
+    color: #505050;
+    font-size: 12px;
+    margin-bottom: 4px;
+    user-select: none;
+    flex: 1;
+}
+
+
+.name-container {
+    font-size: 30px;
+    color: white;
+    font-weight: bold;
+    outline: none;
+    padding: 7px 0 5px 10px;
+}
+
+
+.dashed-border {
+    min-height: 36px;
+    border: 1px dashed #3d3d3d;
+}

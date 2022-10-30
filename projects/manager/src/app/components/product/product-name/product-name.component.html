@@ -1,0 +1,20 @@
+<div class="title-case-icon-button-container">
+    <icon-button [title]="!titleCaseOff ? 'Turn Off Title Case' : 'Turn On Title Case'"
+                 [icon]="!titleCaseOff ? 'fa-solid fa-text-slash' : 'fa-solid fa-t'"
+                 (click)="titleCaseOff = !titleCaseOff">
+    </icon-button>
+</div>
+<div class="name-property-container">
+    <div class="label">Name:</div>
+    <div #name
+        tabindex="0"
+        class="name-container dashed-border"
+        contenteditable="true"
+        (focus)="selectRange(name)"
+        (blur)="onNameBlur(product, name, titleCaseOff)"
+        (keydown.escape)="onNameEscape(product, name)"
+        (keydown.enter)="name.blur()"
+        (paste)="onPaste($event, name)">
+            {{product.name}}
+    </div>
+</div>

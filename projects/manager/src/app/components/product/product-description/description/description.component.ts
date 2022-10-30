@@ -2,14 +2,14 @@ import { ApplicationRef, Component, ElementRef, Input, ViewChild } from '@angula
 import { DataService, IProduct } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { TextBoxData, TextBoxDev } from 'text-box';
-import { WidgetService } from '../../services/widget/widget.service';
+import { WidgetService } from '../../../../services/widget/widget.service';
 
 @Component({
-  selector: 'product-description',
-  templateUrl: './product-description.component.html',
-  styleUrls: ['./product-description.component.scss']
+  selector: 'description',
+  templateUrl: './description.component.html',
+  styleUrls: ['./description.component.scss']
 })
-export class ProductDescriptionComponent {
+export class DescriptionComponent {
   @Input() product!: IProduct;
   @Input() apiUrl!: string;
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
