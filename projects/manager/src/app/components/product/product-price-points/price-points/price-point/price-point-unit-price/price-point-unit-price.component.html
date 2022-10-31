@@ -1,0 +1,15 @@
+<div class="unit-price-property-container property-container">
+    <div class="label">Unit Price:</div>
+    <div #unitPrice
+         tabindex="0"
+         class="unit-price-container container dashed-border"
+         contenteditable="true"
+         (focus)="onUnitPriceFocus(unitPrice)"
+         (input)="onUnitPriceInput(unitPrice)"
+         (blur)="onUnitPriceBlur(pricePoint, unitPrice)"
+         (keydown.escape)="onUnitPriceEscape(pricePoint, unitPrice)"
+         (keydown.enter)="unitPrice.blur()"
+         (paste)="onPaste($event, unitPrice, true)">
+            {{isWholeNumber(pricePoint.unitPrice) ?  (pricePoint.unitPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.unitPrice | currency:'USD':'symbol':'0.2-2')}}
+    </div>
+</div>

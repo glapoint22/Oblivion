@@ -1,0 +1,24 @@
+<div class="image-property-container">
+    <div class="label-and-icon-buttons-container">
+        <div class="label">Image:</div>
+
+        <div class="icon-button-container">
+
+            <icon-button [icon]="'fa-solid fa-image image-icon'"
+                         [title]="'Media Browser'"
+                         (onClick)="openMediaBrowser(pricePoint)">
+            </icon-button>
+
+            <icon-button *ngIf="pricePoint.image.src"
+                         [icon]="'fas fa-trash-alt'"
+                         [title]="'Remove Image'"
+                         (onClick)="onImageDelete(pricePoint)">
+            </icon-button>
+        </div>
+    </div>
+    
+    <div class="image-container dashed-border" [title]="pricePoint.image.src ? pricePoint.image.name : ''" (click)="openMediaBrowser(pricePoint)">
+        <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image"></i>
+        <img *ngIf="pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
+    </div>
+</div>

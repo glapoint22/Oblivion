@@ -1,0 +1,25 @@
+.image-property-container {
+    margin-top: 14px;
+}
+
+
+.image-container {
+    display: flex;
+    width: 272px;
+    outline: none;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+
+    .fa-image {
+        font-size: 60px;
+        color: #3c3c3c;
+    }
+
+    &:hover {
+        .fa-image {
+            color: lighten(#3c3c3c, 6);
+        }
+    }
+}

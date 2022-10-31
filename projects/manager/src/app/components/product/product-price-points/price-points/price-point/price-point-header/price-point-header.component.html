@@ -1,0 +1,14 @@
+<div class="property-container">
+    <div class="label">Header:</div>
+    <div #header
+         tabindex="0"
+         class="header-container container dashed-border"
+         contenteditable="true"
+         (focus)="selectRange(header)"
+         (blur)="onHeaderBlur(pricePoint, header)"
+         (keydown.escape)="onHeaderEscape(pricePoint, header)"
+         (keydown.enter)="header.blur()"
+         (paste)="onPaste($event, header)">
+            {{pricePoint.header}}
+    </div>
+</div>

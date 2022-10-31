@@ -1,0 +1,14 @@
+<div class="unit-property-container property-container">
+    <div class="label">Unit:</div>
+    <div #unit
+         tabindex="0"
+         class="unit-container container dashed-border"
+         contenteditable="true"
+         (focus)="selectRange(unit)"
+         (blur)="onUnitBlur(pricePoint, unit)"
+         (keydown.escape)="onUnitEscape(pricePoint, unit)"
+         (keydown.enter)="unit.blur()"
+         (paste)="onPaste($event, unit)">
+            {{pricePoint.unit}}
+    </div>
+</div>

@@ -19,6 +19,15 @@ import { ProductDescriptionComponent } from '../product-description/product-desc
 import { ProductMediaListComponent } from '../product-media/product-media-list/product-media-list.component';
 import { ProductMediaDisplayComponent } from '../product-media/product-media-display/product-media-display.component';
 import { ProductPricePointsComponent } from '../product-price-points/product-price-points.component';
+import { PricePointHeaderComponent } from '../product-price-points/price-points/price-point/price-point-header/price-point-header.component';
+import { PricePointQuantityComponent } from '../product-price-points/price-points/price-point/price-point-quantity/price-point-quantity.component';
+import { PricePointImageComponent } from '../product-price-points/price-points/price-point/price-point-image/price-point-image.component';
+import { PricePointUnitPriceComponent } from '../product-price-points/price-points/price-point/price-point-unit-price/price-point-unit-price.component';
+import { PricePointUnitComponent } from '../product-price-points/price-points/price-point/price-point-unit/price-point-unit.component';
+import { PricePointStrikethroughPriceComponent } from '../product-price-points/price-points/price-point/price-point-strikethrough-price/price-point-strikethrough-price.component';
+import { PricePointPriceComponent } from '../product-price-points/price-points/price-point/price-point-price/price-point-price.component';
+import { PricePointShippingComponent } from '../product-price-points/price-points/price-point/price-point-shipping/price-point-shipping.component';
+import { PricePointRecurringPaymentComponent } from '../product-price-points/price-points/price-point/price-point-recurring-payment/price-point-recurring-payment.component';
 
 
 
@@ -34,9 +43,18 @@ import { ProductPricePointsComponent } from '../product-price-points/product-pri
     ProductHoplinkComponent,
     ProductDescriptionComponent,
     DescriptionComponent,
+    TextToolbarPopupComponent,
     ProductPricePointsComponent,
     PricePointsComponent,
-    TextToolbarPopupComponent,
+    PricePointHeaderComponent,
+    PricePointQuantityComponent,
+    PricePointImageComponent,
+    PricePointUnitPriceComponent,
+    PricePointUnitComponent,
+    PricePointStrikethroughPriceComponent,
+    PricePointPriceComponent,
+    PricePointShippingComponent,
+    PricePointRecurringPaymentComponent,
     SubproductsComponent
   ],
   imports: [

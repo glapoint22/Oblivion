@@ -1,0 +1,36 @@
+<div class="property-container-2">
+    <div class="label-and-icon-buttons-container">
+        <div class="label">Shipping:</div>
+        <div *ngIf="pricePoint.shippingType != ShippingType.None" class="icon-button-container">
+            <icon-button [icon]="'fas fa-pencil-alt'"
+                         [title]="'Edit Shipping'"
+                         [popupOpen]="shippingPopupOpen"
+                         (onClick)="openShippingPopup(pricePoint, PopupArrowPosition.BottomRight)">
+            </icon-button>
+            <icon-button [icon]="'fas fa-trash-alt'"
+                         [title]="'Remove Shipping'"
+                         (onClick)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)">
+            </icon-button>
+        </div>
+        <div class="edit-popup-container">
+            <ng-template #editShippingPopup></ng-template>
+        </div>
+    </div>
+    <div class="shipping-dashed-container container dashed-border">
+        <div *ngIf="pricePoint.shippingType == ShippingType.None" class="plus-button-container">
+            <icon-button style="transform: rotate(45deg)"
+                         [icon]="'fa-regular fa-circle-xmark'"
+                         [title]="'Add Shipping'"
+                         [fontSize]="'18'"
+                         [popupOpen]="shippingPopupOpen"
+                         (onClick)="openShippingPopup(pricePoint, PopupArrowPosition.BottomLeft)">
+            </icon-button>
+        </div>
+        <div *ngIf="pricePoint.shippingType != ShippingType.None" class="shipping-container">
+            <shipping [shippingType]="pricePoint.shippingType"></shipping>
+        </div>
+        <div class="add-popup-container">
+            <ng-template #addShippingPopup></ng-template>
+        </div>
+    </div>
+</div>

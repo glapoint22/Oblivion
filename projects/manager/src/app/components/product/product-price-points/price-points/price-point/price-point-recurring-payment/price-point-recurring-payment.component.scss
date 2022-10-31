@@ -1,0 +1,22 @@
+.recurring-edit-popup-container {
+    position: absolute;
+    right: 45px;
+    top: -329px;
+    z-index: 100;
+}
+
+
+.recurring-dashed-container {
+    font-weight: normal;
+    text-align: left;
+
+    white-space: normal;
+    .add-popup-container {
+        top: -302px;
+    }
+}
+
+
+.recurring-container {
+    margin: 9px 4px 7px;
+}

@@ -1,257 +1,35 @@
-<!-- Background -->
 <div class="background">
 
-    <!-- Overflow -->
     <div class="price-point-overflow" [ngStyle]="{'justify-content': product.pricePoints.length < 5 ? 'center' : 'flex-start', 'margin-bottom': product.pricePoints.length <= 5 ? '0' : '20px'}">
 
+        <div *ngIf="product.pricePoints.length < 4" class="empty-plus-button-container"></div>
 
-        <!-- Empty Plus Button Container -->
-        <ng-container *ngIf="product.pricePoints.length < 4">
-            <div class="empty-plus-button-container"></div>
-        </ng-container>
-        
-
-        <!-- Price Point Container -->
-        <div *ngFor="let pricePoint of product.pricePoints; let i = index" class="price-point-container" style="position: relative;">
-
-
+        <div *ngFor="let pricePoint of product.pricePoints; let i = index" class="price-point-container">
 
             <icon-button [icon]="'fas fa-trash-alt'"
                          [title]="'Remove Price Point'"
                          (onClick)="deletePricePoint(i, pricePoint.id)">
             </icon-button>
             
-
-            <!-- Border -->
             <div class="border dashed-border">
-
-
-
-                <!-- Header -->
-                <div class="property-container">
-                    <div class="label">Header:</div>
-                    <div #header
-                        tabindex="0"
-                        class="header-container dashed-border"
-                        contenteditable="true"
-                        (focus)="selectRange(header)"
-                        (blur)="onHeaderBlur(pricePoint, header)"
-                        (keydown.escape)="onHeaderEscape(pricePoint, header)"
-                        (keydown.enter)="header.blur()"
-                        (paste)="onPaste($event, header)">
-                            {{pricePoint.header}}
-                    </div>
-                </div>
+                <price-point-header #header [pricePoint]="pricePoint"></price-point-header>
+                <price-point-quantity [pricePoint]="pricePoint"></price-point-quantity>
+                <price-point-image [pricePoint]="pricePoint"></price-point-image>
     
-    
-    
-                <!-- quantity -->
-                <div class="property-container">
-                    <div class="label">Quantity:</div>
-                    <div #quantity
-                         tabindex="0"
-                         class="quantity-container dashed-border"
-                         contenteditable="true"
-                         (focus)="selectRange(quantity)"
-                         (blur)="onQuantityBlur(pricePoint, quantity)"
-                         (keydown.escape)="onQuantityEscape(pricePoint, quantity)"
-                         (keydown.enter)="quantity.blur()"
-                         (paste)="onPaste($event, quantity)">
-                            {{pricePoint.quantity}}
-                    </div>
-                </div>
-    
-    
-    
-                <!-- Image -->
-                <div class="image-property-container">
-                    <div class="label-and-icon-buttons-container">
-                        <div class="label">Image:</div>
-    
-                        <div class="icon-button-container">
-
-                            <icon-button [icon]="'fa-solid fa-image image-icon'"
-                                         [title]="'Media Browser'"
-                                         (onClick)="openMediaBrowser(pricePoint)">
-                            </icon-button>
-
-                            <icon-button *ngIf="pricePoint.image.src"
-                                         [icon]="'fas fa-trash-alt'"
-                                         [title]="'Remove Image'"
-                                         (onClick)="onImageDelete(pricePoint)">
-                            </icon-button>
-                        </div>
-                    </div>
-                    
-                    <div class="image-container dashed-border" [title]="pricePoint.image.src ? pricePoint.image.name : ''" (click)="openMediaBrowser(pricePoint)">
-                        <i *ngIf="!pricePoint.image.src" class="fa-solid fa-image"></i>
-                        <img *ngIf="pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
-                    </div>
-                </div>
-                
     
                 <div class="space-between-container">
-    
-                    <!-- Units -->
                     <div class="units-container">
-
-                        <!-- Unit Price -->
-                        <div class="unit-price-property-container">
-                            <div class="label">Unit Price:</div>
-                            <div #unitPrice
-                                 tabindex="0"
-                                 class="unit-price-container dashed-border"
-                                 contenteditable="true"
-                                 (focus)="onUnitPriceFocus(unitPrice)"
-                                 (input)="onUnitPriceInput(unitPrice)"
-                                 (blur)="onUnitPriceBlur(pricePoint, unitPrice)"
-                                 (keydown.escape)="onUnitPriceEscape(pricePoint, unitPrice)"
-                                 (keydown.enter)="unitPrice.blur()"
-                                 (paste)="onPaste($event, unitPrice, true)">
-                                    {{isWholeNumber(pricePoint.unitPrice) ?  (pricePoint.unitPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.unitPrice | currency:'USD':'symbol':'0.2-2')}}
-                            </div>
-                        </div>
-        
-                        <!-- Unit -->
-                        <div class="unit-property-container">
-                            <div class="label">Unit:</div>
-                            <div #unit
-                                 tabindex="0"
-                                 class="unit-container dashed-border"
-                                 contenteditable="true"
-                                 (focus)="selectRange(unit)"
-                                 (blur)="onUnitBlur(pricePoint, unit)"
-                                 (keydown.escape)="onUnitEscape(pricePoint, unit)"
-                                 (keydown.enter)="unit.blur()"
-                                 (paste)="onPaste($event, unit)">
-                                    {{pricePoint.unit}}
-                            </div>
-                        </div>
+                        <price-point-unit-price [pricePoint]="pricePoint"></price-point-unit-price>
+                        <price-point-unit [pricePoint]="pricePoint"></price-point-unit>
                     </div>
         
-        
-        
-        
-                    
-                    <!-- Prices -->
                     <div class="prices-container">
-
-                        <!-- Strikethrough Price -->
-                        <div class="property-container">
-                            <div class="label">Strikethrough Price:</div>
-                            <div class="strikethrough-price-container dashed-border">
-                                <div #strikethroughPrice
-                                     tabindex="0"
-                                     class="strikethrough-price"
-                                     contenteditable="true"
-                                     (focus)="onStrikethroughPriceFocus(strikethroughPrice)"
-                                     (input)="onStrikethroughPriceInput(strikethroughPrice)"
-                                     (blur)="onStrikethroughPriceBlur(pricePoint, strikethroughPrice)"
-                                     (keydown.escape)="onStrikethroughPriceEscape(pricePoint, strikethroughPrice)"
-                                     (keydown.enter)="strikethroughPrice.blur()"
-                                     (paste)="onPaste($event, strikethroughPrice, true)">
-                                        {{isWholeNumber(pricePoint.strikethroughPrice) ? (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.2-2')}}
-                                </div>
-                            </div>
-                        </div>
-        
-                        <!-- Price -->
-                        <div class="price-property-container">
-                            <div class="label">Price:</div>
-                            <div #price
-                                 tabindex="0"
-                                 class="price-container dashed-border"
-                                 contenteditable="true"
-                                 (focus)="onPriceFocus(price)"
-                                 (input)="onPriceInput(price)"
-                                 (blur)="onPriceBlur(pricePoint, price)"
-                                 (keydown.escape)="onPriceEscape(pricePoint, price)"
-                                 (keydown.enter)="price.blur()"
-                                 (paste)="onPaste($event, price, true)">
-                                    {{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}
-                            </div>
-                        </div>
+                        <price-point-strikethrough-price [pricePoint]="pricePoint"></price-point-strikethrough-price>
+                        <price-point-price [pricePoint]="pricePoint" (onUpdateMinMaxPrice)="updateMinMaxPrice()"></price-point-price>
                     </div>
                     
-                    
-        
-        
-                    <!-- Shipping -->
-                    <div class="property-container-2">
-                        <div class="label-and-icon-buttons-container">
-                            <div class="label">Shipping:</div>
-                            <div *ngIf="pricePoint.shippingType != shippingType.None" class="icon-button-container">
-                                <icon-button [icon]="'fas fa-pencil-alt'"
-                                             [title]="'Edit Shipping'"
-                                             [popupOpen]="shippingPopupOpen[i]"
-                                             (onClick)="openShippingPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
-                                </icon-button>
-                                <icon-button [icon]="'fas fa-trash-alt'"
-                                             [title]="'Remove Shipping'"
-                                             (onClick)="pricePoint.shippingType = 0; updatePricePoint(pricePoint)">
-                                </icon-button>
-                            </div>
-                            <div class="edit-popup-container">
-                                <ng-template #editShippingPopup></ng-template>
-                            </div>
-                        </div>
-                        <div class="shipping-dashed-container dashed-border">
-                            <div *ngIf="pricePoint.shippingType == shippingType.None" class="plus-button-container">
-                                <icon-button style="transform: rotate(45deg)"
-                                             [icon]="'fa-regular fa-circle-xmark'"
-                                             [title]="'Add Shipping'"
-                                             [fontSize]="'18'"
-                                             [popupOpen]="shippingPopupOpen[i]"
-                                             (onClick)="openShippingPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
-                                </icon-button>
-                            </div>
-                            <div *ngIf="pricePoint.shippingType != shippingType.None" class="shipping-container">
-                                <shipping [shippingType]="pricePoint.shippingType"></shipping>
-                            </div>
-                            <div class="add-popup-container">
-                                <ng-template #addShippingPopup></ng-template>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- Recurring -->
-                    <div class="property-container-2">
-                        <div class="label-and-icon-buttons-container">
-                            <div class="label">Recurring Payment:</div>
-                            <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="icon-button-container">
-                                <icon-button [icon]="'fas fa-pencil-alt'"
-                                             [title]="'Edit Recurring Payment'"
-                                             [popupOpen]="recurringPopupOpen[i]"
-                                             (onClick)="openRecurringPopup(PopupArrowPosition.BottomRight, i, pricePoint)">
-                                </icon-button>
-                                <icon-button [icon]="'fas fa-trash-alt'"
-                                             [title]="'Remove Shipping'"
-                                             (onClick)="removeRecurringPayment(pricePoint)">
-                                </icon-button>
-                            </div>
-                            <div class="recurring-edit-popup-container">
-                                <ng-template #editRecurringPopup></ng-template>
-                            </div>
-                        </div>
-                        <div class="recurring-dashed-container dashed-border">
-                            <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="plus-button-container">
-                                <icon-button style="transform: rotate(45deg)"
-                                             [icon]="'fa-regular fa-circle-xmark'"
-                                             [title]="'Add Recurring Payment'"
-                                             [fontSize]="'18'"
-                                             [popupOpen]="recurringPopupOpen[i]"
-                                             (onClick)="openRecurringPopup(PopupArrowPosition.BottomLeft, i, pricePoint)">
-                                </icon-button>
-                            </div>
-                            <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="recurring-container">
-                                <recurring-payment [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
-                            </div>
-                            <div class="add-popup-container">
-                                <ng-template #addRecurringPopup></ng-template>
-                            </div>
-                        </div>
-                    </div>
+                    <price-point-shipping [pricePoint]="pricePoint"></price-point-shipping>
+                    <price-point-recurring-payment [pricePoint]="pricePoint"></price-point-recurring-payment>
                 </div>
             </div>
         </div>
@@ -267,7 +45,6 @@
             </div>
         </ng-container>
     </div>
-
 
     <ng-container *ngIf="product.pricePoints.length >= 4">
         <div class="lg-plus-button-container-2">

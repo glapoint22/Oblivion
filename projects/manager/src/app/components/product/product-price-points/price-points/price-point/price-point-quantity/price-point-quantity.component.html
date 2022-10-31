@@ -1,0 +1,14 @@
+<div class="property-container">
+    <div class="label">Quantity:</div>
+    <div #quantity
+         tabindex="0"
+         class="quantity-container container dashed-border"
+         contenteditable="true"
+         (focus)="selectRange(quantity)"
+         (blur)="onQuantityBlur(pricePoint, quantity)"
+         (keydown.escape)="onQuantityEscape(pricePoint, quantity)"
+         (keydown.enter)="quantity.blur()"
+         (paste)="onPaste($event, quantity)">
+            {{pricePoint.quantity}}
+    </div>
+</div>

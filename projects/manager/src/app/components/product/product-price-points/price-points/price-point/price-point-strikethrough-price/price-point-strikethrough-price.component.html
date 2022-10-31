@@ -1,0 +1,17 @@
+<div class="property-container">
+    <div class="label">Strikethrough Price:</div>
+    <div class="strikethrough-price-container container dashed-border">
+        <div #strikethroughPrice
+             tabindex="0"
+             class="strikethrough-price"
+             contenteditable="true"
+             (focus)="onStrikethroughPriceFocus(strikethroughPrice)"
+             (input)="onStrikethroughPriceInput(strikethroughPrice)"
+             (blur)="onStrikethroughPriceBlur(pricePoint, strikethroughPrice)"
+             (keydown.escape)="onStrikethroughPriceEscape(pricePoint, strikethroughPrice)"
+             (keydown.enter)="strikethroughPrice.blur()"
+             (paste)="onPaste($event, strikethroughPrice, true)">
+                {{isWholeNumber(pricePoint.strikethroughPrice) ? (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.2-2')}}
+        </div>
+    </div>
+</div>
