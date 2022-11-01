@@ -1,0 +1,11 @@
+<div class="circle-button-container">
+    <circle-button [icon]="'fa-solid fa-store'"
+                   [title]="'Vendor'"
+                   [popupOpen]="vendorPopupOpen"
+                   (onClick)="openVendorPopup()">
+    </circle-button>
+
+    <div class="circle-button-popup-container">
+        <ng-template #vendorPopupContainer></ng-template>
+    </div>
+</div>   

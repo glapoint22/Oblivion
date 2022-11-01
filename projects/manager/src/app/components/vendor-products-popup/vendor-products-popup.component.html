@@ -1,7 +1,7 @@
-<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="!imageListComponent.listManager.selectedItem && !imageListComponent.listManager.contextMenuOpen ? $event.stopPropagation() : null">
     <div class="popup-base">
         <div class="modal-list-container">
-            <image-list #listComponent
+            <image-list #imageListComponent
                         [sourceList]="products"
                         [options]="listOptions"
                         (onListUpdate)="onListUpdate($event)">

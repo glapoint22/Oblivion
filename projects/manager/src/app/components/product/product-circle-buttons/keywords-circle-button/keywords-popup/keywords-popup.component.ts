@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { LazyLoad } from 'common';
-import { AvailableKeywordsComponent } from '../available-keywords/available-keywords.component';
-import { SelectedKeywordsComponent } from '../selected-keywords/selected-keywords.component';
+import { Subject } from 'rxjs';
+import { AvailableKeywordsComponent } from '../../../../available-keywords/available-keywords.component';
+import { SelectedKeywordsComponent } from '../../../../selected-keywords/selected-keywords.component';
 
 @Component({
   selector: 'app-keywords-popup',
@@ -11,8 +12,20 @@ import { SelectedKeywordsComponent } from '../selected-keywords/selected-keyword
 export class KeywordsPopupComponent extends LazyLoad {
   public productId!: number;
   public productIndex!: number;
+  public onClose: Subject<void> = new Subject<void>();
   @ViewChild('availableKeywords') availableKeywords!: AvailableKeywordsComponent;
   @ViewChild('selectedKeywords') selectedKeywords!: SelectedKeywordsComponent;
+
+
+  ngOnInit() {
+    super.ngOnInit();
+    window.addEventListener('mousedown', this.mousedown);
+  }
+
+
+  mousedown = () => {
+    this.close();
+  }
   
 
   ngAfterViewInit() {
@@ -28,5 +41,16 @@ export class KeywordsPopupComponent extends LazyLoad {
 
   onEscape(): void {
     this.availableKeywords.onEscape();
+  }
+
+
+  close(): void {
+    super.close();
+    this.onClose.next();
+  }
+
+
+  ngOnDestroy() {
+    window.removeEventListener('mousedown', this.mousedown);
   }
 }

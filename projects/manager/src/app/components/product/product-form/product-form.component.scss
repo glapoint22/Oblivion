@@ -4,7 +4,7 @@
     width: 100%;
 }
 
-.circle-button-container-border {
+.product-form-header-border {
     height: 42px;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
@@ -13,8 +13,7 @@
 }
 
 
-.circle-button-container {
-    position: relative;
+.product-form-header-container {
     height: 100%;
     display: flex;
     align-items: center;
@@ -25,47 +24,7 @@
 }
 
 
-.circle-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid #5e5e5e;
-    background: #3c3c3c;
-    margin: 0 10px;
-    cursor: pointer;
-    color: #9e9e9e;
 
-    &:hover:not(.circle-button-clicked) {
-        border-color: lighten(#5e5e5e, 10);
-        background: lighten(#3c3c3c, 7);
-
-        i {
-            color: lighten(#9e9e9e, 10);
-        }
-    }
-}
-
-
-.circle-button-clicked {
-    border-color: #a8a8a8;
-    background: #5a5a5a;
-
-    i {
-        color: #e8e8e8;
-    }
-}
-
-
-
-.circle-button-popup-container {
-    position: absolute;
-    right: 5px;
-    top: 40px;
-    z-index: 100;
-}
 
 
 

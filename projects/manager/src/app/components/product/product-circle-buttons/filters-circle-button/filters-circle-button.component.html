@@ -1,0 +1,11 @@
+<div class="circle-button-container">
+    <circle-button [icon]="'fa-solid fa-filter'"
+                   [title]="'Filters'"
+                   [popupOpen]="filtersPopupOpen"
+                   (onClick)="openFiltersPopup()">
+    </circle-button>
+
+    <div class="circle-button-popup-container">
+        <ng-template #filtersPopupContainer></ng-template>
+    </div>
+</div>   

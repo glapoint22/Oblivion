@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { Product } from '../../classes/product';
-import { Vendor } from '../../classes/vendor';
-import { VendorFormComponent } from '../vendor-form/vendor-form.component';
+import { Subject } from 'rxjs';
+import { Product } from '../../../../../classes/product';
+import { Vendor } from '../../../../../classes/vendor';
+import { SearchComponent } from '../../../../search/search.component';
+import { VendorFormComponent } from '../../../../vendor-form/vendor-form.component';
 
 @Component({
   selector: 'app-vendor-popup',
@@ -11,6 +13,9 @@ import { VendorFormComponent } from '../vendor-form/vendor-form.component';
 })
 export class VendorPopupComponent extends LazyLoad {
   public product!: Product;
+  public onClose: Subject<void> = new Subject<void>();
+
+  @ViewChild('search') search!: SearchComponent;
 
   constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService) {
     super(lazyLoadingService);
@@ -28,6 +33,17 @@ export class VendorPopupComponent extends LazyLoad {
   // }
 
 
+  ngOnInit() {
+    super.ngOnInit();
+    window.addEventListener('mousedown', this.mousedown);
+  }
+
+
+  mousedown = () => {
+    this.close();
+  }
+
+
   onVendorSelect(vendor: Vendor) {
     this.product.vendor = vendor;
 
@@ -41,8 +57,8 @@ export class VendorPopupComponent extends LazyLoad {
 
   openVendorForm() {
     this.lazyLoadingService.load(async () => {
-      const { VendorFormComponent } = await import('../vendor-form/vendor-form.component');
-      const { VendorFormModule } = await import('../vendor-form/vendor-form.module');
+      const { VendorFormComponent } = await import('../../../../vendor-form/vendor-form.component');
+      const { VendorFormModule } = await import('../../../../vendor-form/vendor-form.module');
       return {
         component: VendorFormComponent,
         module: VendorFormModule
@@ -51,5 +67,21 @@ export class VendorPopupComponent extends LazyLoad {
       .then((vendorForm: VendorFormComponent) => {
         vendorForm.product = this.product;
       });
+  }
+
+
+  onEscape(): void {
+    if(this.search.dropdownList == null) super.onEscape();
+  }
+
+
+  close(): void {
+    super.close();
+    this.onClose.next();
+  }
+
+
+  ngOnDestroy() {
+    window.removeEventListener('mousedown', this.mousedown);
   }
 }

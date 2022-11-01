@@ -1,0 +1,16 @@
+<div class="property-container">
+    <div class="label">Bonuses:</div>
+    <div class="dashed-border">
+        <div *ngIf="!product.bonuses || product.bonuses.length == 0" class="plus-button-container">
+            <icon-button style="transform: rotate(45deg)"
+                         [icon]="'fa-regular fa-circle-xmark'"
+                         [title]="'Add Bonus'"
+                         [fontSize]="'18'"
+                         (onClick)="addSubproduct(subproductType.Bonus)">
+            </icon-button>
+        </div>
+        <subproducts *ngIf="product.bonuses && product.bonuses.length > 0" [subproducts]="product.bonuses"
+            [subproductType]="subproductType.Bonus" [productId]="product.id">
+        </subproducts>
+    </div>
+</div>

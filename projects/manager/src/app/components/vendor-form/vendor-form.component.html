@@ -27,6 +27,7 @@
                 <icon-button [icon]="'fa-solid fa-table-list'"
                              [title]="'View Vendor\'s Products'"
                              [isDisabled]="iconButtonsDisabled"
+                             [popupOpen]="vendorProductsPopupOpen"
                              (onClick)="openVendorProductsPopup()">
                 </icon-button>
 
@@ -62,7 +63,7 @@
                 <div class="label" [ngStyle]="{'opacity': fieldsDisabled ? '0.3' : '1'}">Company Name:</div>
                 <input #tabElement
                        #companyName
-                       [value]="vendor ? vendor.name : ''"
+                       [value]="vendor && vendor.name ? vendor.name : ''"
                        [disabled]="fieldsDisabled ? true : false"
                        (input)="onInput(companyName.value, vendor.name!)">
 
@@ -71,7 +72,7 @@
                 <div class="label" [ngStyle]="{'opacity': fieldsDisabled ? '0.3' : '1'}">Contact:</div>
                 <input #contact
                        #tabElement
-                       [value]="vendor ? vendor.primaryEmail : ''"
+                       [value]="vendor && vendor.primaryEmail ? vendor.primaryEmail : ''"
                        [disabled]="fieldsDisabled ? true : false"
                        (input)="onInput(contact.value, vendor.primaryEmail!)">
 
@@ -81,7 +82,7 @@
                 <input #firstName
                        #tabElement
                        [disabled]="fieldsDisabled ? true : false"
-                       [value]="vendor ? vendor.primaryFirstName : ''"
+                       [value]="vendor && vendor.primaryFirstName ? vendor.primaryFirstName : ''"
                        (input)="onInput(firstName.value, vendor.primaryFirstName!)">
 
 
@@ -90,7 +91,7 @@
                 <input #lastName
                        #tabElement
                        [disabled]="fieldsDisabled ? true : false"
-                       [value]="vendor ? vendor.primaryLastName : ''"
+                       [value]="vendor && vendor.primaryLastName ? vendor.primaryLastName : ''"
                        (input)="onInput(lastName.value, vendor.primaryLastName!)">
             </div>
         </div>

@@ -10,6 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { LazyLoadingService, DataService } from 'common';
 import { NotificationService } from '../../../services/notification/notification.service';
 import { ProductService } from '../../../services/product/product.service';
+import { Subject } from 'rxjs';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
@@ -18,8 +19,9 @@ import { ProductService } from '../../../services/product/product.service';
 export class ProductNotificationPopupComponent extends NotificationPopupComponent {
   public fromProduct!: boolean;
   public notificationItems!: Array<NotificationItem>;
-  public notificationItemDropdownList: Array<KeyValue<string, number>> = [];
+  public onPopupClose: Subject<void> = new Subject<void>();
   public selectedNotificationItem!: KeyValue<string, number>;
+  public notificationItemDropdownList: Array<KeyValue<string, number>> = [];
 
 
   // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -197,6 +199,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
     this.secondaryButtonDisabledPath = 'api/Notifications/DisableProduct';
     this.secondaryButtonDisabledParameters = { productId: this.notificationItem.productId };
     super.onClose(employees, restore);
+    this.onPopupClose.next();
   }
 
 

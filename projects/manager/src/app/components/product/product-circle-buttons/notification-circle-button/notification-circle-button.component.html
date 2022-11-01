@@ -1,0 +1,11 @@
+<div class="circle-button-container">
+    <circle-button [icon]="'fa-solid fa-bell'"
+                   [title]="'Notification'"
+                   [popupOpen]="notificationPopupOpen"
+                   (onClick)="openNotificationPopup()">
+    </circle-button>
+
+    <div class="circle-button-popup-container">
+        <ng-template #notificationPopupContainer></ng-template>
+    </div>
+</div>   

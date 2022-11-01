@@ -97,7 +97,8 @@ export class ProductService {
     const onProductOpenListener = this.onProductOpen.subscribe((notificationProduct: ProductFormComponent) => {
       onProductOpenListener.unsubscribe();
       window.setTimeout(() => {
-        notificationProduct.openNotificationPopup(notificationItem);
+        // notificationProduct.openNotificationPopup(notificationItem);
+        notificationProduct.circleButtons.notificationCircleButton.openNotificationPopup(notificationItem);
       })
     });
 

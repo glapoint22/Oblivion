@@ -1,0 +1,11 @@
+<div class="circle-button-container">
+    <circle-button [icon]="'fa-solid fa-key'"
+                   [title]="'Keywords'"
+                   [popupOpen]="keywordsPopupOpen"
+                   (onClick)="openKeywordsPopup()">
+    </circle-button>
+
+    <div class="circle-button-popup-container">
+        <ng-template #keywordsPopupContainer></ng-template>
+    </div>
+</div>   

@@ -1,0 +1,11 @@
+<div #circleButton
+     tabindex="0"
+     [title]="title"
+     class="circle-button"
+     (click)="onClick.next()"
+     (keydown.escape)="circleButton.blur()"
+     (keydown.enter)="onClick.next()"
+     [ngClass]="{'remain-in-focus': popupOpen}"
+     (mousedown)="popupOpen ? $event.stopPropagation() : null">
+    <i [class]="icon"></i>
+</div>

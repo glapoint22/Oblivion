@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductGroupsPopupComponent } from './product-groups-popup.component';
-import { ProductProductGroupsModule } from '../product-product-groups/product-product-groups.module';
+import { ProductProductGroupsModule } from '../../../../product-product-groups/product-product-groups.module';
 
 
 

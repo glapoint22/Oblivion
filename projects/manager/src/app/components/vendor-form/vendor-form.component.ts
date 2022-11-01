@@ -21,6 +21,7 @@ export class VendorFormComponent extends LazyLoad {
   public product!: Product;
   public fieldsDisabled!: boolean;
   public iconButtonsDisabled!: boolean;
+  public vendorProductsPopupOpen!: boolean;
   public submitButtonDisabled: boolean = true;
   public searchTabElement!: ElementRef<HTMLElement>;
 
@@ -80,7 +81,7 @@ export class VendorFormComponent extends LazyLoad {
 
 
   openVendorProductsPopup() {
-    if (this.vendorProductsPopupContainer.length > 0) {
+    if (this.vendorProductsPopupOpen) {
       this.vendorProductsPopup.close();
       return;
     }
@@ -94,11 +95,17 @@ export class VendorFormComponent extends LazyLoad {
       }
     }, SpinnerAction.None, this.vendorProductsPopupContainer)
       .then((vendorProductsPopup: VendorProductsPopupComponent) => {
+        this.vendorProductsPopupOpen = true;
         this.vendorProductsPopup = vendorProductsPopup;
         vendorProductsPopup.vendorId = this.vendor.id!;
         vendorProductsPopup.onGoToProductClick.subscribe(() => {
           this.close();
         })
+
+        const onVendorProductsPopupCloseListener = this.vendorProductsPopup.onClose.subscribe(() => {
+          onVendorProductsPopupCloseListener.unsubscribe();
+          this.vendorProductsPopupOpen = false;
+        });
       });
   }
 
@@ -356,15 +363,6 @@ export class VendorFormComponent extends LazyLoad {
       this.close();
       this.updateVendorProperties();
 
-      // If this form was opened from the forms menu and on the rare occasion a product happens to be
-      // open that belongs to the current vendor and that product also happens to have its vendor popup open
-      this.productService.products.forEach(x => {
-        if (x.vendorPopupContainer.length > 0 && x.vendorPopup.product.vendor.id == this.vendor.id) {
-          // Update the vendor that's displayed in the vendor popup of that product
-          x.vendorPopup.product.vendor = this.vendor;
-        }
-      })
-
       // Update the vendor in the database
       this.dataService.put('api/Vendors', this.vendor).subscribe();
     }
@@ -374,6 +372,11 @@ export class VendorFormComponent extends LazyLoad {
     if (document.activeElement != this.closeButton.nativeElement) {
       if (!this.submitButtonDisabled) this.onSubmit();
     }
+  }
+
+
+  onEscape(): void {
+    if(!this.vendorProductsPopupOpen) super.onEscape();
   }
 
 
