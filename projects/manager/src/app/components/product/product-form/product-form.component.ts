@@ -19,12 +19,12 @@ export class ProductFormComponent {
   public product: Product = new Product();
   public selectedProductMedia!: ProductMedia;
   public productFilterArray: Array<CheckboxItem> = new Array<CheckboxItem>();
-  public productFilterSearchArray: Array<CheckboxMultiColumnItem> = new Array<CheckboxMultiColumnItem>();
   public availableKeywordArray: Array<HierarchyItem> = new Array<HierarchyItem>();
-  public availableKeywordSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
-  public selectedKeywordArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
-  public selectedKeywordSearchArray: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
   public productProductGroupArray: Array<CheckboxItem> = new Array<CheckboxItem>();
   public productProductGroupSearchArray: Array<CheckboxItem> = new Array<CheckboxItem>();
+  public availableKeywordSearchArray: Array<MultiColumnItem> = new Array<MultiColumnItem>();
+  public selectedKeywordArray: Array<KeywordCheckboxItem> = new Array<KeywordCheckboxItem>();
+  public productFilterSearchArray: Array<CheckboxMultiColumnItem> = new Array<CheckboxMultiColumnItem>();
+  public selectedKeywordSearchArray: Array<KeywordCheckboxMultiColumnItem> = new Array<KeywordCheckboxMultiColumnItem>();
   @ViewChild('circleButtons') circleButtons!: ProductCircleButtonsComponent;
 }

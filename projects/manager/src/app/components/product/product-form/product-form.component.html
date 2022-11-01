@@ -9,20 +9,9 @@
         </div>
     </div>
 
-    
     <!-- Breadcrumbs -->
-    <div class="breadcrumb-base">
-        <div class="drop-shadow"></div>
-        <div class="breadcrumb-container">
-            <div class="breadcrumb">{{product.niche.name}}</div>
-            <div class="breadcrumb-arrow"></div>
-            <div class="breadcrumb">{{product.subNiche.name}}</div>
-            <div class="breadcrumb-arrow"></div>
-            <div class="breadcrumb-product">{{product.name}}</div>
-        </div>
-    </div>
-
-
+    <product-breadcrumbs [product]="product"></product-breadcrumbs>
+    
     <!-- Product -->
     <div class="product-container">
         <div class="product">
@@ -42,9 +31,9 @@
 
 
             <product-price-points [product]="product"></product-price-points>
-            <div *ngIf="product.pricePoints.length > 0 || (product.components && product.components.length > 0)" style="height: 80px;"></div>
+            <div *ngIf="product.pricePoints.length > 0 || (product.components && product.components.length > 0)" class="separator"></div>
             <product-components [product]="product"></product-components>
-            <div *ngIf="(product.components && product.components.length > 0) || (product.bonuses && product.bonuses.length > 0)" style="height: 80px;"></div>
+            <div *ngIf="(product.components && product.components.length > 0) || (product.bonuses && product.bonuses.length > 0)" class="separator"></div>
             <product-bonuses [product]="product"></product-bonuses>
         </div>
     </div>

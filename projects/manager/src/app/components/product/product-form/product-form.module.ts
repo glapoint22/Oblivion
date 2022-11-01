@@ -37,6 +37,7 @@ import { KeywordsCircleButtonComponent } from '../product-circle-buttons/keyword
 import { FiltersCircleButtonComponent } from '../product-circle-buttons/filters-circle-button/filters-circle-button.component';
 import { VendorCircleButtonComponent } from '../product-circle-buttons/vendor-circle-button/vendor-circle-button.component';
 import { NotificationCircleButtonComponent } from '../product-circle-buttons/notification-circle-button/notification-circle-button.component';
+import { ProductBreadcrumbsComponent } from '../product-breadcrumbs/product-breadcrumbs.component';
 
 
 
@@ -50,6 +51,7 @@ import { NotificationCircleButtonComponent } from '../product-circle-buttons/not
     FiltersCircleButtonComponent,
     KeywordsCircleButtonComponent,
     ProductGroupsCircleButtonComponent,
+    ProductBreadcrumbsComponent,
     ProductMediaListComponent,
     ProductMediaDisplayComponent,
     ProductNameComponent,
