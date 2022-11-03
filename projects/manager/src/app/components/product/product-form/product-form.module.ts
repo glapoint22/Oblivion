@@ -6,7 +6,7 @@ import { RecurringPaymentModule, ShippingModule } from 'common';
 import { ColorSwatchModule } from '../../color-swatch/color-swatch.module';
 import { DropdownModule } from '../../dropdown/dropdown.module';
 import { IconButtonModule } from '../../icon-button/icon-button.module';
-import { SubproductsComponent } from '../../subproducts/subproducts.component';
+import { SubproductsComponent } from '../subproducts/subproducts.component';
 import { TextToolbarPopupComponent } from '../../text-toolbar-popup/text-toolbar-popup.component';
 import { ProductBonusesComponent } from '../product-bonuses/product-bonuses.component';
 import { ProductCircleButtonsComponent } from '../product-circle-buttons/product-circle-buttons.component';

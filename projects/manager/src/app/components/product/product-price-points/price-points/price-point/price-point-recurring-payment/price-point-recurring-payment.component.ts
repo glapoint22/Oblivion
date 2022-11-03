@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { PricePoint, RecurringPayment, SpinnerAction } from 'common';
 import { PopupArrowPosition } from 'projects/manager/src/app/classes/enums';
 import { RecurringPopupComponent } from 'projects/manager/src/app/components/recurring-popup/recurring-popup.component';
@@ -16,7 +16,6 @@ export class PricePointRecurringPaymentComponent extends PricePointComponent {
   public recurringPopupOpen!: boolean;
 
 
-  @Input() pricePoint!: PricePoint;
   @ViewChild('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: ViewContainerRef;
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   

@@ -1,7 +1,7 @@
-<div class="property-container-2">
-    <div class="label-and-icon-buttons-container">
-        <div class="label">Recurring Payment:</div>
-        <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="icon-button-container">
+<div class="price-point-property-container">
+    <div class="product-label-and-icon-buttons-container">
+        <div class="product-property-label">Recurring Payment:</div>
+        <div *ngIf="pricePoint.recurringPayment.recurringPrice > 0" class="product-property-icon-button-container">
             <icon-button [icon]="'fas fa-pencil-alt'"
                          [title]="'Edit Recurring Payment'"
                          [popupOpen]="recurringPopupOpen"
@@ -16,8 +16,8 @@
             <ng-template #editRecurringPopup></ng-template>
         </div>
     </div>
-    <div class="recurring-dashed-container container dashed-border">
-        <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="plus-button-container">
+    <div class="recurring-dashed-container price-point-dashed-container product-dashed-border-bright">
+        <div *ngIf="pricePoint.recurringPayment.recurringPrice == 0" class="product-property-plus-button-container">
             <icon-button style="transform: rotate(45deg)"
                          [icon]="'fa-regular fa-circle-xmark'"
                          [title]="'Add Recurring Payment'"

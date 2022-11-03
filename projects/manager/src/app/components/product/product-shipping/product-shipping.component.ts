@@ -1,30 +1,20 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { SpinnerAction, ShippingType, DataService, LazyLoadingService } from 'common';
+import { Component } from '@angular/core';
+import { SpinnerAction, ShippingType } from 'common';
 import { PopupArrowPosition } from '../../../classes/enums';
-import { Product } from '../../../classes/product';
 import { ShippingPopupComponent } from '../../shipping-popup/shipping-popup.component';
+import { ProductComponent } from '../product.component';
 
 @Component({
   selector: 'product-shipping',
   templateUrl: './product-shipping.component.html',
-  styleUrls: ['./product-shipping.component.scss']
+  styleUrls: ['../product.component.scss', './product-shipping.component.scss']
 })
-export class ProductShippingComponent {
+export class ProductShippingComponent extends ProductComponent {
   private shippingPopup!: ShippingPopupComponent;
-
   public shippingType = ShippingType;
-  public shippingPopupOpen!: boolean;
-  public PopupArrowPosition = PopupArrowPosition;
 
-  @Input() product!: Product;
-  @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopupContainer!: ViewContainerRef;
-  @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;
-
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
-
- 
   openShippingPopup(arrowPosition: PopupArrowPosition) {
-    if (this.shippingPopupOpen) {
+    if (this.popupOpen) {
       this.shippingPopup.close();
       return;
     }
@@ -36,9 +26,9 @@ export class ProductShippingComponent {
         component: ShippingPopupComponent,
         module: ShippingPopupModule
       }
-    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addShippingPopupContainer : this.editShippingPopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addPopupContainer : this.editPopupContainer)
       .then((shippingPopup: ShippingPopupComponent) => {
-        this.shippingPopupOpen = true;
+        this.popupOpen = true;
         this.shippingPopup = shippingPopup;
         shippingPopup.arrowPosition = arrowPosition;
         shippingPopup.shipping = arrowPosition == PopupArrowPosition.TopLeft ? ShippingType.FreeShipping : this.product.shippingType;
@@ -49,7 +39,7 @@ export class ProductShippingComponent {
 
         const onShippingPopupCloseListener = this.shippingPopup.onClose.subscribe(() => {
           onShippingPopupCloseListener.unsubscribe();
-          this.shippingPopupOpen = false;
+          this.popupOpen = false;
         });
       });
   }

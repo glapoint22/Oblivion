@@ -1,7 +1,7 @@
-<div class="property-container-2">
-    <div class="label-and-icon-buttons-container">
-        <div class="label">Shipping:</div>
-        <div *ngIf="pricePoint.shippingType != ShippingType.None" class="icon-button-container">
+<div class="price-point-property-container">
+    <div class="product-label-and-icon-buttons-container">
+        <div class="product-property-label">Shipping:</div>
+        <div *ngIf="pricePoint.shippingType != ShippingType.None" class="product-property-icon-button-container">
             <icon-button [icon]="'fas fa-pencil-alt'"
                          [title]="'Edit Shipping'"
                          [popupOpen]="shippingPopupOpen"
@@ -16,8 +16,8 @@
             <ng-template #editShippingPopup></ng-template>
         </div>
     </div>
-    <div class="shipping-dashed-container container dashed-border">
-        <div *ngIf="pricePoint.shippingType == ShippingType.None" class="plus-button-container">
+    <div class="shipping-dashed-container price-point-dashed-container product-dashed-border-bright">
+        <div *ngIf="pricePoint.shippingType == ShippingType.None" class="product-property-plus-button-container">
             <icon-button style="transform: rotate(45deg)"
                          [icon]="'fa-regular fa-circle-xmark'"
                          [title]="'Add Shipping'"

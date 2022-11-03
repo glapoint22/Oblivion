@@ -1,28 +1,19 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { SpinnerAction, RecurringPayment, DataService, LazyLoadingService } from 'common';
+import { Component } from '@angular/core';
+import { SpinnerAction, RecurringPayment } from 'common';
 import { PopupArrowPosition } from '../../../classes/enums';
-import { Product } from '../../../classes/product';
 import { RecurringPopupComponent } from '../../recurring-popup/recurring-popup.component';
+import { ProductComponent } from '../product.component';
 
 @Component({
   selector: 'product-recurring-payment',
   templateUrl: './product-recurring-payment.component.html',
-  styleUrls: ['./product-recurring-payment.component.scss']
+  styleUrls: ['../product.component.scss', './product-recurring-payment.component.scss']
 })
-export class ProductRecurringPaymentComponent {
+export class ProductRecurringPaymentComponent extends ProductComponent {
   private recurringPopup!: RecurringPopupComponent;
 
-  public recurringPopupOpen!: boolean;
-  public PopupArrowPosition = PopupArrowPosition;
-
-  @Input() product!: Product;
-  @ViewChild('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: ViewContainerRef;
-  @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
-
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
-
   openRecurringPopup(arrowPosition: PopupArrowPosition) {
-    if (this.recurringPopupOpen) {
+    if (this.popupOpen) {
       this.recurringPopup.close();
       return;
     }
@@ -34,9 +25,9 @@ export class ProductRecurringPaymentComponent {
         component: RecurringPopupComponent,
         module: RecurringPopupModule
       }
-    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addRecurringPopup : this.editRecurringPopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addPopupContainer : this.editPopupContainer)
       .then((recurringPopup: RecurringPopupComponent) => {
-        this.recurringPopupOpen = true;
+        this.popupOpen = true;
         this.recurringPopup = recurringPopup;
         recurringPopup.arrowPosition = arrowPosition;
 
@@ -60,7 +51,7 @@ export class ProductRecurringPaymentComponent {
 
         const onRecurringPopupCloseListener = this.recurringPopup.onClose.subscribe(() => {
           onRecurringPopupCloseListener.unsubscribe();
-          this.recurringPopupOpen = false;
+          this.popupOpen = false;
         });
       });
   }
@@ -80,7 +71,6 @@ export class ProductRecurringPaymentComponent {
     this.product.recurringPayment.subscriptionDuration = 0;
     this.product.recurringPayment.timeFrameBetweenRebill = 0;
     this.product.recurringPayment.trialPeriod = 0;
-
     this.updateRecurringPayment();
   }
 }

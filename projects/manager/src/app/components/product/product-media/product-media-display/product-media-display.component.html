@@ -1,7 +1,7 @@
 <div class="media-container">
-    <div class="label-and-icon-buttons-container">
-        <div class="label">{{!productForm.selectedProductMedia || productForm.selectedProductMedia.type == MediaType.Image ? 'Image' : 'Video'}}</div>
-        <div class="icon-button-container">
+    <div class="product-label-and-icon-buttons-container">
+        <div class="product-property-label">{{!productForm.selectedProductMedia || productForm.selectedProductMedia.type == MediaType.Image ? 'Image' : 'Video'}}</div>
+        <div class="product-property-icon-button-container">
             <icon-button [icon]="!productForm.selectedProductMedia || productForm.selectedProductMedia.type == MediaType.Image ? 'fa-solid fa-image' : 'fa-solid fa-film'"
                          [title]="'Media Browser'"
                          (onClick)="openMediaBrowser(!productForm.selectedProductMedia ? MediaType.Image : undefined)">
@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    <div class="media-display-container dashed-border"
+    <div class="media-display-container product-dashed-border"
         (click)="openMediaBrowser(!productForm.selectedProductMedia ? MediaType.Image : undefined)">
 
         <div *ngIf="!productForm.selectedProductMedia" class="image-icon-container">

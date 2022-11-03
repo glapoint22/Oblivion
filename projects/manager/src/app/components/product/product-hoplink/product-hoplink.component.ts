@@ -1,30 +1,19 @@
-import { Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { Component} from '@angular/core';
+import { SpinnerAction } from 'common';
 import { PopupArrowPosition } from '../../../classes/enums';
-import { Product } from '../../../classes/product';
 import { HoplinkPopupComponent } from '../../hoplink-popup/hoplink-popup.component';
+import { ProductComponent } from '../product.component';
 
 @Component({
   selector: 'product-hoplink',
   templateUrl: './product-hoplink.component.html',
-  styleUrls: ['./product-hoplink.component.scss']
+  styleUrls: ['../product.component.scss', './product-hoplink.component.scss']
 })
-export class ProductHoplinkComponent {
+export class ProductHoplinkComponent extends ProductComponent {
   private hoplinkPopup!: HoplinkPopupComponent;
 
-  public hoplinkPopupOpen!: boolean;
-  public PopupArrowPosition = PopupArrowPosition;
-
-
-  @Input() product!: Product;
-  @ViewChild('addHoplinkPopup', { read: ViewContainerRef }) addHoplinkPopup!: ViewContainerRef;
-  @ViewChild('editHoplinkPopup', { read: ViewContainerRef }) editHoplinkPopup!: ViewContainerRef;
-
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
-
- 
   openHoplinkPopup(arrowPosition: PopupArrowPosition) {
-    if (this.hoplinkPopupOpen) {
+    if (this.popupOpen) {
       this.hoplinkPopup.close();
       return;
     }
@@ -36,9 +25,9 @@ export class ProductHoplinkComponent {
         component: HoplinkPopupComponent,
         module: HoplinkPopupModule
       }
-    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addHoplinkPopup : this.editHoplinkPopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addPopupContainer : this.editPopupContainer)
       .then((hoplinkPopup: HoplinkPopupComponent) => {
-        this.hoplinkPopupOpen = true;
+        this.popupOpen = true;
         this.hoplinkPopup = hoplinkPopup;
         hoplinkPopup.arrowPosition = arrowPosition;
         hoplinkPopup.hoplink = this.product.hoplink;
@@ -51,10 +40,9 @@ export class ProductHoplinkComponent {
           }).subscribe();
         }
 
-
         const onHoplinkPopupCloseListener = this.hoplinkPopup.onClose.subscribe(() => {
           onHoplinkPopupCloseListener.unsubscribe();
-          this.hoplinkPopupOpen = false;
+          this.popupOpen = false;
         });
       });
   }

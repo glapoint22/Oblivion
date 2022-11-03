@@ -1,13 +1,13 @@
-<div class="price-property-container property-container">
-    <div class="label">Price:</div>
+<div class="price-property-container product-property-hover-container">
+    <div class="product-property-label">Price:</div>
     <div #price
          tabindex="0"
-         class="price-container container dashed-border"
+         class="price-container price-point-dashed-container product-dashed-border-bright"
          contenteditable="true"
-         (focus)="onPriceFocus(price)"
-         (input)="onPriceInput(price)"
-         (blur)="onPriceBlur(pricePoint, price)"
-         (keydown.escape)="onPriceEscape(pricePoint, price)"
+         (focus)="onFocus(price)"
+         (input)="onInput(price)"
+         (blur)="onBlur(pricePoint, 'price', price, true)"
+         (keydown.escape)="onEscape(pricePoint, 'price', price)"
          (keydown.enter)="price.blur()"
          (paste)="onPaste($event, price, true)">
             {{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}

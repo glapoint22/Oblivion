@@ -17,8 +17,6 @@ export class MediaComponent implements OnInit {
   constructor(public dataService: DataService, public productService: ProductService) { }
 
 
-
-
   ngOnInit() {
       this.productForm.selectedProductMedia = this.product.media[0];
   }

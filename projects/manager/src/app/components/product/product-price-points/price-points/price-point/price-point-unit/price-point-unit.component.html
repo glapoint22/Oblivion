@@ -1,12 +1,12 @@
-<div class="unit-property-container property-container">
-    <div class="label">Unit:</div>
+<div class="unit-property-container product-property-hover-container">
+    <div class="product-property-label">Unit:</div>
     <div #unit
          tabindex="0"
-         class="unit-container container dashed-border"
+         class="unit-container price-point-dashed-container product-dashed-border-bright"
          contenteditable="true"
          (focus)="selectRange(unit)"
-         (blur)="onUnitBlur(pricePoint, unit)"
-         (keydown.escape)="onUnitEscape(pricePoint, unit)"
+         (blur)="onBlur(pricePoint, 'unit', unit)"
+         (keydown.escape)="onEscape(pricePoint, 'unit', unit)"
          (keydown.enter)="unit.blur()"
          (paste)="onPaste($event, unit)">
             {{pricePoint.unit}}

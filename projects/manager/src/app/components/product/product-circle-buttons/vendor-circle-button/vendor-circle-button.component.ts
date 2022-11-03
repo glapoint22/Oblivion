@@ -6,7 +6,7 @@ import { VendorPopupComponent } from './vendor-popup/vendor-popup.component';
 @Component({
   selector: 'vendor-circle-button',
   templateUrl: './vendor-circle-button.component.html',
-  styleUrls: ['./vendor-circle-button.component.scss']
+  styleUrls: ['../product-circle-buttons.component.scss', './vendor-circle-button.component.scss']
 })
 export class VendorCircleButtonComponent {
   public vendorPopup!: VendorPopupComponent;

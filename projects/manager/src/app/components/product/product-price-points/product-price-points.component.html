@@ -1,7 +1,7 @@
-<div class="property-container">
-    <div class="label">Price Points:</div>
-    <div class="dashed-border">
-        <div *ngIf="product.pricePoints.length == 0" class="plus-button-container">
+<div class="product-property-container">
+    <div class="product-property-label">Price Points:</div>
+    <div class="product-dashed-border min-height">
+        <div *ngIf="product.pricePoints.length == 0" class="product-property-plus-button-container">
             <icon-button style="transform: rotate(45deg)"
                          [icon]="'fa-regular fa-circle-xmark'"
                          [title]="'Add Hoplink'"

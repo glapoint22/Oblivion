@@ -44,10 +44,6 @@
 
 
 
-.dashed-border {
-    border: 1px dashed #505050;
-}
-
 .space-between-container {
     display: flex;
     height: 100%;
@@ -66,6 +62,7 @@
 
 .prices-container {
     display: flex;
+    margin-top: 14px;
 }
 
 

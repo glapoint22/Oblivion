@@ -1,35 +1,19 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { Component } from '@angular/core';
+import { SpinnerAction } from 'common';
 import { PopupArrowPosition } from '../../../classes/enums';
-import { Product } from '../../../classes/product';
 import { PricePopupComponent } from '../../price-popup/price-popup.component';
+import { ProductComponent } from '../product.component';
 
 @Component({
   selector: 'product-price',
   templateUrl: './product-price.component.html',
-  styleUrls: ['./product-price.component.scss']
+  styleUrls: ['../product.component.scss', './product-price.component.scss']
 })
-export class ProductPriceComponent {
-  // Private
+export class ProductPriceComponent extends ProductComponent {
   private pricePopup!: PricePopupComponent;
 
-  // Public
-  public pricePopupOpen!: boolean;
-  public PopupArrowPosition = PopupArrowPosition;
-
-  // Decorators
-  @Input() product!: Product;
-  @ViewChild('addPricePopup', { read: ViewContainerRef }) addPricePopup!: ViewContainerRef;
-  @ViewChild('editPricePopup', { read: ViewContainerRef }) editPricePopup!: ViewContainerRef;
-
-  // Constructor
-  constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
-
-  
-
-
   openPricePopup(arrowPosition: PopupArrowPosition) {
-    if (this.pricePopupOpen) {
+    if (this.popupOpen) {
       this.pricePopup.close();
       return;
     }
@@ -41,9 +25,9 @@ export class ProductPriceComponent {
         component: PricePopupComponent,
         module: PricePopupModule
       }
-    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addPricePopup : this.editPricePopup)
+    }, SpinnerAction.None, arrowPosition == PopupArrowPosition.TopLeft ? this.addPopupContainer : this.editPopupContainer)
       .then((pricePopup: PricePopupComponent) => {
-        this.pricePopupOpen = true;
+        this.popupOpen = true;
         this.pricePopup = pricePopup;
         pricePopup.arrowPosition = arrowPosition;
         pricePopup.price = this.product.minPrice;
@@ -71,7 +55,7 @@ export class ProductPriceComponent {
 
         const onPricePopupCloseListener = this.pricePopup.onClose.subscribe(() => {
           onPricePopupCloseListener.unsubscribe();
-          this.pricePopupOpen = false;
+          this.popupOpen = false;
         });
       });
   }

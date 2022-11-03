@@ -11,14 +11,14 @@
 
 
         <!-- Content -->
-        <div class="border dashed-border">
+        <div class="border product-dashed-border-bright">
 
             <!-- Image -->
             <div class="left-container">
-                <div class="label-and-icon-buttons-container">
+                <div class="product-label-and-icon-buttons-container">
                     <div class="label">Image:</div>
 
-                    <div class="icon-button-container">
+                    <div class="product-property-icon-button-container">
 
 
                     
@@ -36,7 +36,7 @@
                 </div>
 
 
-                <div class="image-container dashed-border"
+                <div class="image-container product-dashed-border-bright"
                      [title]="subproduct.image.name ? subproduct.image.name : ''"
                      (click)="openMediaBrowser(subproduct)">
                     <i *ngIf="!subproduct.image || !subproduct.image.src" class="fa-solid fa-image"></i>
@@ -47,7 +47,7 @@
             
             <div class="center-container">
 
-                <div class="title-case-icon-button-container">
+                <div class="product-property-title-case-icon-button-container">
                     <icon-button [title]="!titleCaseOff[i] ? 'Turn Off Title Case' : 'Turn On Title Case'"
                                  [icon]="!titleCaseOff[i] ? 'fa-solid fa-text-slash' : 'fa-solid fa-t'"
                                  (click)="titleCaseOff[i] = !titleCaseOff[i]">
@@ -56,11 +56,11 @@
                 
 
                 <!-- Name -->
-                <div class="property-container">
+                <div class="product-property-hover-container">
                     <div class="label">Name:</div>
                     <div #name
                         tabindex="0"
-                        class="name-container dashed-border"
+                        class="name-container product-dashed-border-bright"
                         contenteditable="true"
                         (focus)="selectRange(name)"
                         (blur)="onNameBlur(subproduct, name, titleCaseOff[i])"
@@ -76,9 +76,9 @@
 
 
                 <!-- Description -->
-                <div class="description-property-container">
+                <div class="description-property-container product-property-hover-container">
                     <div class="label">Description:</div>
-                    <div class="description-container dashed-border">
+                    <div class="description-container product-dashed-border-bright">
                         <description [product]="subproduct" [apiUrl]="'Subproduct/Description'"></description>
                     </div>
                 </div>
@@ -95,11 +95,11 @@
 
             <!-- Value -->
             <ng-container *ngIf="subproductType == SubproductType.Bonus">
-                <div class="value-property-container">
+                <div class="value-property-container product-property-hover-container">
                     <div class="label">Value:</div>
                     <div #value
                         tabindex="0"
-                        class="value-container dashed-border"
+                        class="value-container product-dashed-border-bright"
                         contenteditable="true"
                         (focus)="selectRange(value)"
                         (blur)="onValueBlur(subproduct, value)"

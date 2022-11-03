@@ -1,38 +1,15 @@
-.property-container {
+.margin-top {
     margin-top: 14px;
-
-    &:hover {
-        .label {
-            color: #858585;
-        }
-
-        div:nth-child(2) {
-            border-color: #8f8f8f;
-        }
-    }
-
-    &:focus-within {
-        .label {
-            color: #858585;
-        }
-
-        div:nth-child(2) {
-            border-color: #8f8f8f;
-        }
-    }
 }
 
 
-.label {
-    color: #505050;
-    font-size: 12px;
-    margin-bottom: 4px;
-    user-select: none;
-    flex: 1;
+.price-point-property-container {
+    position: relative;
+    margin-top: 18px;
 }
 
 
-.container {
+.price-point-dashed-container {
     width: 272px;
     min-height: 36px;
     font-weight: bold;
@@ -40,35 +17,6 @@
     outline: none;
     overflow: hidden;
     white-space: nowrap;
-}
-
-
-.dashed-border {
-    border: 1px dashed #505050;
-}
-
-
-.label-and-icon-buttons-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-
-.icon-button-container {
-    margin-top: -6px;
-}
-
-
-.property-container-2 {
-    position: relative;
-    margin-top: 18px;
-}
-
-
-.plus-button-container {
-    display: flex;
-    margin-top: -1px;
 }
 
 

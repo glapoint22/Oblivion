@@ -6,7 +6,7 @@ import { PricePointsComponent } from './price-points/price-points.component';
 @Component({
   selector: 'product-price-points',
   templateUrl: './product-price-points.component.html',
-  styleUrls: ['./product-price-points.component.scss']
+  styleUrls: ['../product.component.scss', './product-price-points.component.scss']
 })
 export class ProductPricePointsComponent {
   @Input() product!: Product;

@@ -1,12 +1,12 @@
-<div class="property-container">
-    <div class="label">Header:</div>
+<div class="product-property-hover-container margin-top">
+    <div class="product-property-label">Header:</div>
     <div #header
          tabindex="0"
-         class="header-container container dashed-border"
+         class="header-container price-point-dashed-container product-dashed-border-bright"
          contenteditable="true"
          (focus)="selectRange(header)"
-         (blur)="onHeaderBlur(pricePoint, header)"
-         (keydown.escape)="onHeaderEscape(pricePoint, header)"
+         (blur)="onBlur(pricePoint, 'header', header)"
+         (keydown.escape)="onEscape(pricePoint, 'header', header)"
          (keydown.enter)="header.blur()"
          (paste)="onPaste($event, header)">
             {{pricePoint.header}}

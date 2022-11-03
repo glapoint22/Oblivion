@@ -7,7 +7,7 @@ import { FiltersPopupComponent } from './filters-popup/filters-popup.component';
 @Component({
   selector: 'filters-circle-button',
   templateUrl: './filters-circle-button.component.html',
-  styleUrls: ['./filters-circle-button.component.scss']
+  styleUrls: ['../product-circle-buttons.component.scss', './filters-circle-button.component.scss']
 })
 export class FiltersCircleButtonComponent  {
   private filtersPopup!: FiltersPopupComponent;

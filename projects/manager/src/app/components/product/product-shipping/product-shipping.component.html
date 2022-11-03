@@ -1,10 +1,10 @@
-<div class="property-container">
-    <div class="label-and-icon-buttons-container">
-        <div class="label">Shipping:</div>
-        <div *ngIf="product.shippingType != shippingType.None" class="icon-button-container">
+<div class="product-property-container">
+    <div class="product-label-and-icon-buttons-container">
+        <div class="product-property-label">Shipping:</div>
+        <div *ngIf="product.shippingType != shippingType.None" class="product-property-icon-button-container">
             <icon-button [icon]="'fas fa-pencil-alt'"
                          [title]="'Edit Shipping'"
-                         [popupOpen]="shippingPopupOpen"
+                         [popupOpen]="popupOpen"
                          (onClick)="openShippingPopup(PopupArrowPosition.TopRight)">
             </icon-button>
             <icon-button [icon]="'fas fa-trash-alt'"
@@ -12,25 +12,25 @@
                          (onClick)="product.shippingType = 0; updateShipping()">
             </icon-button>
         </div>
-        <div class="edit-popup-container-2">
-            <ng-template #editShippingPopup></ng-template>
+        <div class="product-property-edit-popup-container-2">
+            <ng-template #editPopupContainer></ng-template>
         </div>
     </div>
-    <div class="dashed-border">
-        <div *ngIf="product.shippingType == shippingType.None" class="plus-button-container">
+    <div class="product-dashed-border min-height">
+        <div *ngIf="product.shippingType == shippingType.None" class="product-property-plus-button-container">
             <icon-button style="transform: rotate(45deg)"
                          [icon]="'fa-regular fa-circle-xmark'"
                          [title]="'Add Shipping'"
                          [fontSize]="'18'"
-                         [popupOpen]="shippingPopupOpen"
+                         [popupOpen]="popupOpen"
                          (onClick)="openShippingPopup(PopupArrowPosition.TopLeft)">
             </icon-button>
         </div>
         <div *ngIf="product.shippingType != shippingType.None" class="shipping-container">
             <shipping [shippingType]="product.shippingType"></shipping>
         </div>
-        <div class="add-popup-container">
-            <ng-template #addShippingPopup></ng-template>
+        <div class="product-property-add-popup-container">
+            <ng-template #addPopupContainer></ng-template>
         </div>
     </div>
 </div>

@@ -7,7 +7,7 @@ import { ProductGroupsPopupComponent } from './product-groups-popup/product-grou
 @Component({
   selector: 'product-groups-circle-button',
   templateUrl: './product-groups-circle-button.component.html',
-  styleUrls: ['./product-groups-circle-button.component.scss']
+  styleUrls: ['../product-circle-buttons.component.scss', './product-groups-circle-button.component.scss']
 })
 export class ProductGroupsCircleButtonComponent {
   private productGroupsPopup!: ProductGroupsPopupComponent;

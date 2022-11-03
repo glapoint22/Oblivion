@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { PricePoint, Shipping, ShippingType, SpinnerAction } from 'common';
 import { PopupArrowPosition } from 'projects/manager/src/app/classes/enums';
 import { ShippingPopupComponent } from 'projects/manager/src/app/components/shipping-popup/shipping-popup.component';
@@ -17,7 +17,6 @@ export class PricePointShippingComponent extends PricePointComponent {
   public shippingPopupOpen!: boolean;
   
 
-  @Input() pricePoint!: PricePoint;
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
   @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;
   

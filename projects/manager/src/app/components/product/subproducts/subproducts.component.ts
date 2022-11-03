@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { DataService, Image, ImageSizeType, LazyLoadingService, MediaType, SpinnerAction, Subproduct } from 'common';
 import { TitleCase } from 'text-box';
-import { SubproductType } from '../../classes/enums';
-import { MediaBrowserComponent } from '../media-browser/media-browser.component';
+import { SubproductType } from '../../../classes/enums';
+import { MediaBrowserComponent } from '../../media-browser/media-browser.component';
 
 @Component({
   selector: 'subproducts',
@@ -32,8 +32,8 @@ export class SubproductsComponent {
   // --------------------------------------------------- Open Media Browser ---------------------------------------------------
   public async openMediaBrowser(subproduct: Subproduct): Promise<void> {
     this.lazyLoadingService.load(async () => {
-      const { MediaBrowserComponent } = await import('../media-browser/media-browser.component');
-      const { MediaBrowserModule } = await import('../media-browser/media-browser.module');
+      const { MediaBrowserComponent } = await import('../../media-browser/media-browser.component');
+      const { MediaBrowserModule } = await import('../../media-browser/media-browser.module');
       return {
         component: MediaBrowserComponent,
         module: MediaBrowserModule

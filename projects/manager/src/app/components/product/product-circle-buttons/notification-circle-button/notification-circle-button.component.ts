@@ -7,7 +7,7 @@ import { ProductNotificationPopupComponent } from './../../../notifications/prod
 @Component({
   selector: 'notification-circle-button',
   templateUrl: './notification-circle-button.component.html',
-  styleUrls: ['./notification-circle-button.component.scss']
+  styleUrls: ['../product-circle-buttons.component.scss', './notification-circle-button.component.scss']
 })
 export class NotificationCircleButtonComponent {
   private notificationPopup!: ProductNotificationPopupComponent;

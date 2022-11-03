@@ -1,7 +1,7 @@
-<div class="property-container">
-    <div class="label">Components:</div>
-    <div class="dashed-border">
-        <div *ngIf="!product.components || product.components.length == 0" class="plus-button-container">
+<div class="product-property-container">
+    <div class="product-property-label">Components:</div>
+    <div class="product-dashed-border min-height">
+        <div *ngIf="!product.components || product.components.length == 0" class="product-property-plus-button-container">
             <icon-button style="transform: rotate(45deg)"
                          [icon]="'fa-regular fa-circle-xmark'"
                          [title]="'Add Component'"

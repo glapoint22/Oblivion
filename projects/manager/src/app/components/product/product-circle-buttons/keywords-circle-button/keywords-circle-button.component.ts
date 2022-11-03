@@ -7,7 +7,7 @@ import { KeywordsPopupComponent } from './keywords-popup/keywords-popup.componen
 @Component({
   selector: 'keywords-circle-button',
   templateUrl: './keywords-circle-button.component.html',
-  styleUrls: ['./keywords-circle-button.component.scss']
+  styleUrls: ['../product-circle-buttons.component.scss', './keywords-circle-button.component.scss']
 })
 export class KeywordsCircleButtonComponent {
   private keywordsPopup!: KeywordsPopupComponent;

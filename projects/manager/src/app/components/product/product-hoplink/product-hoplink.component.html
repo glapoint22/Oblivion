@@ -1,32 +1,32 @@
-<div class="property-container">
-    <div class="label-and-icon-buttons-container">
-        <div class="label">Hoplink:</div>
-        <div *ngIf="product.hoplink" class="icon-button-container">
+<div class="product-property-container">
+    <div class="product-label-and-icon-buttons-container">
+        <div class="product-property-label">Hoplink:</div>
+        <div *ngIf="product.hoplink" class="product-property-icon-button-container">
             <icon-button [icon]="'fas fa-pencil-alt'"
                          [title]="'Edit Hoplink'"
-                         [popupOpen]="hoplinkPopupOpen"
+                         [popupOpen]="popupOpen"
                          (onClick)="openHoplinkPopup(PopupArrowPosition.TopRight)">
             </icon-button>
         </div>
-        <div class="edit-popup-container-1">
-            <ng-template #editHoplinkPopup></ng-template>
+        <div class="product-property-edit-popup-container-1">
+            <ng-template #editPopupContainer></ng-template>
         </div>
     </div>
-    <div class="dashed-border">
-        <div *ngIf="!product.hoplink" class="plus-button-container">
+    <div class="product-dashed-border min-height">
+        <div *ngIf="!product.hoplink" class="product-property-plus-button-container">
             <icon-button style="transform: rotate(45deg)"
                          [icon]="'fa-regular fa-circle-xmark'"
                          [title]="'Add Hoplink'"
                          [fontSize]="'18'"
-                         [popupOpen]="hoplinkPopupOpen"
+                         [popupOpen]="popupOpen"
                          (onClick)="openHoplinkPopup(PopupArrowPosition.TopLeft)">
             </icon-button>
         </div>
         <div *ngIf="product.hoplink" class="hoplink-container">
             <a [href]="product.hoplink" class="hoplink" target="_blank">{{product.hoplink}}</a>
         </div>
-        <div class="add-popup-container">
-            <ng-template #addHoplinkPopup></ng-template>
+        <div class="product-property-add-popup-container">
+            <ng-template #addPopupContainer></ng-template>
         </div>
     </div>
 </div>

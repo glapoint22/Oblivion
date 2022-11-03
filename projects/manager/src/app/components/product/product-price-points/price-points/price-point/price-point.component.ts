@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DataService, LazyLoadingService, PricePoint } from 'common';
 import { PopupArrowPosition } from 'projects/manager/src/app/classes/enums';
 
@@ -8,6 +8,7 @@ import { PopupArrowPosition } from 'projects/manager/src/app/classes/enums';
 })
 export class PricePointComponent {
   public PopupArrowPosition = PopupArrowPosition;
+  @Input() pricePoint!: PricePoint;
 
   constructor(public dataService: DataService, public lazyLoadingService: LazyLoadingService) { }
 
@@ -74,5 +75,48 @@ export class PricePointComponent {
   }
 
 
-  
+
+
+  onFocus(htmlElement: HTMLElement) {
+    this.selectRange(htmlElement);
+
+    if (htmlElement.innerText.length > 0) {
+      htmlElement.innerText = htmlElement.innerText.substring(1);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+  onInput(htmlElement: HTMLElement) {
+    !(/^[0-9.]*$/i).test(htmlElement.innerText) ? htmlElement.innerText = htmlElement.innerText.replace(/[^0-9.]/ig, '') : null;
+  }
+
+
+
+
+  onBlur(pricePoint: PricePoint, property: keyof PricePoint, htmlElement: HTMLElement, isPrice?: boolean) {
+    window.getSelection()!.removeAllRanges();
+
+    if (!(pricePoint[property] == null && htmlElement.innerText.length == 0) && pricePoint[property] != htmlElement.innerText) {
+      (pricePoint[property] as string) = htmlElement.innerText;
+      this.updatePricePoint(pricePoint);
+    }
+
+    if (isPrice && htmlElement.innerText.length > 0) this.isWholeNumber(htmlElement.innerText) ? this.convertToCurrency(htmlElement, 0) : this.convertToCurrency(htmlElement, 2);
+  }
+
+
+
+  onEscape(pricePoint: PricePoint, property: keyof PricePoint, htmlElement: HTMLElement) {
+    htmlElement.innerText = pricePoint[property] ? (pricePoint[property] as string) : '';
+    htmlElement.blur();
+  }
 }

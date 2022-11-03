@@ -1,45 +1,4 @@
-.description-property-container {
-    position: relative;
-    margin-top: 38px;
-
-    &:hover {
-        .label {
-            color: #858585;
-        }
-
-        div:nth-child(2) {
-            border-color: #8f8f8f;
-        }
-    }
-
-    &:focus-within {
-        .label {
-            color: #858585;
-        }
-
-        div:nth-child(2) {
-            border-color: #8f8f8f;
-        }
-    }
-}
-
-
-.label {
-    color: #505050;
-    font-size: 12px;
-    margin-bottom: 4px;
-    user-select: none;
-    flex: 1;
-}
-
-
 .description-container {
     position: relative;
     padding: 7px 10px;
-}
-
-
-.dashed-border {
-    min-height: 36px;
-    border: 1px dashed #3d3d3d;
 }

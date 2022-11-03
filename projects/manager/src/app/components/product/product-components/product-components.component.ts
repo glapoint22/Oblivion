@@ -6,7 +6,7 @@ import { Product } from '../../../classes/product';
 @Component({
   selector: 'product-components',
   templateUrl: './product-components.component.html',
-  styleUrls: ['./product-components.component.scss']
+  styleUrls: ['../product.component.scss', './product-components.component.scss']
 })
 export class ProductComponentsComponent {
   public subproductType = SubproductType;
