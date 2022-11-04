@@ -17,6 +17,9 @@ export class VendorCircleButtonComponent {
 
   constructor(private lazyLoadingService: LazyLoadingService) {}
   
+
+  // ================================================================( OPEN VENDOR POPUP )================================================================== \\
+  
   openVendorPopup() {
     if (this.vendorPopupOpen) {
       this.vendorPopup.close();

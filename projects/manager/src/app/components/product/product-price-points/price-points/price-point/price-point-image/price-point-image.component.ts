@@ -11,6 +11,7 @@ import { PricePointComponent } from '../price-point.component';
 export class PricePointImageComponent extends PricePointComponent {
 
 
+  // ================================================================( OPEN MEDIA BROWSER )================================================================= \\
   
   openMediaBrowser(pricePoint: PricePoint): void {
     this.lazyLoadingService.load(async () => {
@@ -39,6 +40,9 @@ export class PricePointImageComponent extends PricePointComponent {
       });
   }
 
+
+
+  // =================================================================( ON IMAGE DELETE )=================================================================== \\
 
   onImageDelete(pricePoint: PricePoint) {
     // Delay just in case the image is being deleted by the [Enter] key.

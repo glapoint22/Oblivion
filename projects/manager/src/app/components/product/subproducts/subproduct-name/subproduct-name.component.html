@@ -1,0 +1,22 @@
+<div class="product-property-title-case-icon-button-container">
+    <icon-button [title]="!titleCaseOff ? 'Turn Off Title Case' : 'Turn On Title Case'"
+                 [icon]="!titleCaseOff ? 'fa-solid fa-text-slash' : 'fa-solid fa-t'"
+                 (click)="titleCaseOff = !titleCaseOff">
+    </icon-button>
+</div>
+
+
+<div class="product-property-hover-container">
+    <div class="product-property-label">Name:</div>
+    <div #name
+        tabindex="0"
+        class="name-container product-property-input-container product-dashed-border-bright"
+        contenteditable="true"
+        (focus)="selectRange(name)"
+        (blur)="onNameBlur(subproduct, name)"
+        (keydown.escape)="onNameEscape(subproduct, name)"
+        (keydown.enter)="name.blur()"
+        (paste)="onPaste($event, name)">
+            {{subproduct.name}}
+    </div>
+</div>

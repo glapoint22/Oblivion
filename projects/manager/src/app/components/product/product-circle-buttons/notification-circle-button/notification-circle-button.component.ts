@@ -18,6 +18,9 @@ export class NotificationCircleButtonComponent {
 
   constructor(private lazyLoadingService: LazyLoadingService) {}
   
+
+  // ==============================================================( OPEN NOTIFICATION POPUP )============================================================== \\
+
   openNotificationPopup(notificationItem?: NotificationItem) {
     // If the popup is already open
     if (this.notificationPopupOpen) {
@@ -35,7 +38,6 @@ export class NotificationCircleButtonComponent {
       return;
     }
 
-
     this.lazyLoadingService.load(async () => {
       const { ProductNotificationPopupComponent } = await import('./../../../notifications/product-notification-popup/product-notification-popup.component');
       const { ProductNotificationPopupModule } = await import('./../../../notifications/product-notification-popup/product-notification-popup.module');
@@ -51,7 +53,6 @@ export class NotificationCircleButtonComponent {
         // If this popup is being opened from the notification list
         if (notificationItem) notificationPopup.notificationItem = notificationItem!;
         notificationPopup.notificationItems = this.product.notificationItems;
-
 
         const onNotificationPopupCloseListener = this.notificationPopup.onPopupClose.subscribe(() => {
           onNotificationPopupCloseListener.unsubscribe();

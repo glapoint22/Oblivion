@@ -1,0 +1,21 @@
+.image-container {
+    display: flex;
+    width: 220px;
+    height: 220px;
+    outline: none;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+
+    .fa-image {
+        font-size: 60px;
+        color: #3c3c3c;
+    }
+
+    &:hover {
+        .fa-image {
+            color: lighten(#3c3c3c, 6);
+        }
+    }
+}

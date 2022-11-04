@@ -14,6 +14,7 @@ export class PricePointsComponent {
   constructor(private dataService: DataService) { }
 
 
+  // =================================================================( ADD PRICE POINT )=================================================================== \\
 
   addPricePoint(pushNewPricePoint?: boolean) {
     if (pushNewPricePoint) this.product.pricePoints.push(new PricePoint());
@@ -32,8 +33,7 @@ export class PricePointsComponent {
 
 
 
-  
-  
+  // ===============================================================( UPDATE MIN MAX PRICE )================================================================ \\
 
   updateMinMaxPrice() {
     if (this.product.pricePoints.length > 0) {
@@ -49,11 +49,9 @@ export class PricePointsComponent {
     }
   }
 
-
- 
-
   
 
+  // ================================================================( DELETE PRICE POINT )================================================================= \\
 
   deletePricePoint(pricePointIndex: number, pricePointId: number) {
     this.product.pricePoints.splice(pricePointIndex, 1);

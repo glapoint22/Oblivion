@@ -9,10 +9,11 @@ import { MediaComponent } from '../media/media.component';
 export class ProductMediaListComponent extends MediaComponent {
   
 
+  // ====================================================================( NG ON INIT )===================================================================== \\
+
   ngOnInit(): void {
     if (this.product && this.product.media && this.product.media.length > 0) {
       super.ngOnInit();
-
 
       for (let i = 0; i < this.product.media.length; i++) {
         const productMedia = this.product.media[i];
@@ -21,7 +22,10 @@ export class ProductMediaListComponent extends MediaComponent {
     }
   }
 
-  // --------------------------------------------------- On Mousedown ---------------------------------------------------
+
+
+  // ===================================================================( ON MOUSEDOWN )==================================================================== \\
+
   onMousedown(mousedownEvent: MouseEvent) {
     const mediaContainerElement = (mousedownEvent.target as HTMLElement).parentElement?.parentElement!;
     const mediaContainerElementScrollHeight = mediaContainerElement.scrollHeight;
@@ -60,7 +64,6 @@ export class ProductMediaListComponent extends MediaComponent {
         mediaContainerElement?.scrollTo(0, mediaContainerElement.scrollTop + mousemoveEvent.movementY)
       }
     }
-
 
     const onMouseup = () => {
       document.removeEventListener('mousemove', onMousemove);

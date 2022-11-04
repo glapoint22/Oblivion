@@ -15,20 +15,17 @@ export class PricePointRecurringPaymentComponent extends PricePointComponent {
   public recurringPayment = RecurringPayment;
   public recurringPopupOpen!: boolean;
 
-
   @ViewChild('addRecurringPopup', { read: ViewContainerRef }) addRecurringPopup!: ViewContainerRef;
   @ViewChild('editRecurringPopup', { read: ViewContainerRef }) editRecurringPopup!: ViewContainerRef;
   
 
+  // ===============================================================( OPEN RECURRING POPUP )================================================================ \\
 
-
-  
   openRecurringPopup(pricePoint: PricePoint, arrowPosition: PopupArrowPosition) {
     if (this.recurringPopupOpen) {
       this.recurringPopup.close();
       return;
     }
-
 
     this.lazyLoadingService.load(async () => {
       const { RecurringPopupComponent } = await import('../../../../../recurring-popup/recurring-popup.component');
@@ -69,6 +66,9 @@ export class PricePointRecurringPaymentComponent extends PricePointComponent {
       });
   }
 
+
+
+  // =============================================================( REMOVE RECURRING PAYMENT )============================================================== \\
 
   removeRecurringPayment(pricePoint: PricePoint) {
     pricePoint.recurringPayment.rebillFrequency = 0;

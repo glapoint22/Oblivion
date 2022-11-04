@@ -18,17 +18,17 @@ export class ProductMediaDisplayComponent extends MediaComponent{
 
   @ViewChild('mediaSelectorPopupContainer', { read: ViewContainerRef }) mediaSelectorPopupContainer!: ViewContainerRef;
 
-
   constructor(dataService: DataService, productService: ProductService, private lazyLoadingService: LazyLoadingService) {
     super(dataService, productService);
    }
 
 
 
+   // ====================================================================( NG ON INIT )===================================================================== \\
+   
    ngOnInit(): void {
     if (this.product && this.product.media && this.product.media.length > 0) {
       super.ngOnInit();
-
 
       if (this.productForm.selectedProductMedia.type == MediaType.Video) {
         this.setVideo(this.productForm.selectedProductMedia);
@@ -37,7 +37,9 @@ export class ProductMediaDisplayComponent extends MediaComponent{
   }
 
 
-  // --------------------------------------------------- Open Media Browser ---------------------------------------------------
+
+  // ================================================================( OPEN MEDIA BROWSER )================================================================= \\
+
   public async openMediaBrowser(mediaType?: MediaType): Promise<void> {
     this.lazyLoadingService.load(async () => {
       const { MediaBrowserComponent } = await import('../../../media-browser/media-browser.component');
@@ -146,9 +148,8 @@ export class ProductMediaDisplayComponent extends MediaComponent{
 
 
 
+  // ===============================================================( REMOVE PRODUCT MEDIA )================================================================ \\
 
-
-  // --------------------------------------------------- Remove Product Media ---------------------------------------------------
   public removeProductMedia() {
     // Remove the image
     this.dataService.delete('api/Products/Media', { id: this.productForm.selectedProductMedia.productMediaId })
@@ -196,15 +197,8 @@ export class ProductMediaDisplayComponent extends MediaComponent{
 
 
 
+  // ============================================================( OPEN MEDIA SELECTOR POPUP )============================================================== \\
 
-
-
-
-
-
-
-
-  // --------------------------------------------------- Open Media Selector Popup ---------------------------------------------------
   openMediaSelectorPopup() {
     if (this.mediaSelectorPopupOpen) {
       this.mediaSelectorPopup.close();

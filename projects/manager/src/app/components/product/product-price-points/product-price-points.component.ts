@@ -12,9 +12,10 @@ export class ProductPricePointsComponent {
   @Input() product!: Product;
   @ViewChild('pricePoints') pricePoints!: PricePointsComponent;
 
-
   constructor(private dataService: DataService) { }
   
+
+  // ==================================================================( ADD PRICE POINT )================================================================== \\
 
   addPricePoint() {
     // If the product currently has a single price

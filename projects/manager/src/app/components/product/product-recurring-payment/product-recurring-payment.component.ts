@@ -12,6 +12,9 @@ import { ProductComponent } from '../product.component';
 export class ProductRecurringPaymentComponent extends ProductComponent {
   private recurringPopup!: RecurringPopupComponent;
 
+
+  // ===============================================================( OPEN RECURRING POPUP )================================================================ \\
+
   openRecurringPopup(arrowPosition: PopupArrowPosition) {
     if (this.popupOpen) {
       this.recurringPopup.close();
@@ -57,6 +60,9 @@ export class ProductRecurringPaymentComponent extends ProductComponent {
   }
 
 
+
+  // =============================================================( UPDATE RECURRING PAYMENT )============================================================== \\
+
   updateRecurringPayment() {
     this.dataService.put('api/Products/RecurringPayment', {
       id: this.product.id,
@@ -64,6 +70,9 @@ export class ProductRecurringPaymentComponent extends ProductComponent {
     }).subscribe();
   }
 
+
+
+  // =============================================================( REMOVE RECURRING PAYMENT )============================================================== \\
 
   removeRecurringPayment() {
     this.product.recurringPayment.rebillFrequency = 0;

@@ -38,6 +38,10 @@ import { FiltersCircleButtonComponent } from '../product-circle-buttons/filters-
 import { VendorCircleButtonComponent } from '../product-circle-buttons/vendor-circle-button/vendor-circle-button.component';
 import { NotificationCircleButtonComponent } from '../product-circle-buttons/notification-circle-button/notification-circle-button.component';
 import { ProductBreadcrumbsComponent } from '../product-breadcrumbs/product-breadcrumbs.component';
+import { SubproductImageComponent } from '../subproducts/subproduct-image/subproduct-image.component';
+import { SubproductNameComponent } from '../subproducts/subproduct-name/subproduct-name.component';
+import { SubproductDescriptionComponent } from '../subproducts/subproduct-description/subproduct-description.component';
+import { SubproductValueComponent } from '../subproducts/subproduct-value/subproduct-value.component';
 
 
 
@@ -75,7 +79,11 @@ import { ProductBreadcrumbsComponent } from '../product-breadcrumbs/product-brea
     PricePointRecurringPaymentComponent,
     ProductComponentsComponent,
     ProductBonusesComponent,
-    SubproductsComponent
+    SubproductsComponent,
+    SubproductImageComponent,
+    SubproductNameComponent,
+    SubproductDescriptionComponent,
+    SubproductValueComponent
   ],
   imports: [
     CommonModule,

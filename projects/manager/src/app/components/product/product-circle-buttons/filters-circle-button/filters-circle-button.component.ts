@@ -18,6 +18,9 @@ export class FiltersCircleButtonComponent  {
 
   constructor(private lazyLoadingService: LazyLoadingService, private productService: ProductService) {}
   
+
+  // ================================================================( OPEN FILTERS POPUP )================================================================= \\
+
   openFiltersPopup() {
     if (this.filtersPopupOpen) {
       this.filtersPopup.close();

@@ -11,10 +11,10 @@ import { Product } from '../../../classes/product';
 export class ProductBonusesComponent  {
   public subproductType = SubproductType;
   @Input() product!: Product;
-
-
   constructor(private dataService: DataService) { }
 
+
+  // ==================================================================( ADD SUBPRODUCT )=================================================================== \\
   
   addSubproduct(type: SubproductType) {
     let subproduct: Subproduct;
@@ -28,8 +28,6 @@ export class ProductBonusesComponent  {
       this.product.bonuses.push(new Subproduct());
       subproduct = this.product.bonuses[0];
     }
-
-
 
     this.dataService.post<number>('api/Products/Subproduct', {
       productId: this.product.id,

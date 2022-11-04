@@ -16,18 +16,16 @@ export class ProductNameComponent {
   @Input() product!: Product;
 
   constructor(private dataService: DataService, private productService: ProductService) { }
-
  
 
+  // =====================================================================( ON PASTE )====================================================================== \\
 
-  onPaste(e: ClipboardEvent, htmlElement: HTMLElement, isPrice?: boolean) {
+  onPaste(e: ClipboardEvent, htmlElement: HTMLElement) {
     e.preventDefault();
     const clipboardData = e.clipboardData!.getData('text/plain');
     if (clipboardData) {
       htmlElement.innerText = clipboardData;
     }
-
-    if (isPrice) !(/^[0-9.]*$/i).test(htmlElement.innerText) ? htmlElement.innerText = htmlElement.innerText.replace(/[^0-9.]/ig, '') : null;
 
     // Place cursor at the end of the text
     const range = document.createRange();
@@ -40,7 +38,7 @@ export class ProductNameComponent {
 
 
 
-
+  // ===================================================================( SELECT RANGE )==================================================================== \\
 
   selectRange(htmlElement: HTMLElement) {
     window.setTimeout(() => {
@@ -54,6 +52,8 @@ export class ProductNameComponent {
 
 
 
+  // ===================================================================( ON NAME BLUR )==================================================================== \\
+
   onNameBlur(product: Product, htmlElement: HTMLElement, titleCaseOff: boolean) {
     window.getSelection()!.removeAllRanges();
 
@@ -64,6 +64,9 @@ export class ProductNameComponent {
   }
 
 
+
+  // ==================================================================( ON NAME ESCAPE )=================================================================== \\
+
   onNameEscape(product: Product, htmlElement: HTMLElement) {
     htmlElement.innerText = product.name ? product.name : '';
     htmlElement.blur();
@@ -71,12 +74,13 @@ export class ProductNameComponent {
 
 
 
+  // ===================================================================( UPDATE NAME )====================================================================== \\
+
   updateName(product: Product) {
     const listItem = this.productService.sideMenuNicheArray.find(x => x.id == product.id && x.hierarchyGroupID == 2);
     listItem!.name = product.name;
 
     this.productService.sort(listItem!, this.productService.sideMenuNicheArray);
-
 
     this.dataService.put('api/Products', {
       id: product.id,

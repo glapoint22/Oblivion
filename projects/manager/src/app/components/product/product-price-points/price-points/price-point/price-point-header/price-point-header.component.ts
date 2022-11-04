@@ -11,6 +11,8 @@ export class PricePointHeaderComponent extends PricePointComponent {
   @ViewChild('header') header!: ElementRef<HTMLElement>;
 
 
+  // ================================================================( NG AFTER VIEW INIT )================================================================= \\
+
   ngAfterViewInit() {
     window.setTimeout(()=> {
       if(this.newPricePoint) this.header.nativeElement.focus();

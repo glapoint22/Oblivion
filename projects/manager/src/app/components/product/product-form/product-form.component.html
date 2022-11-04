@@ -29,7 +29,6 @@
                 </div>
             </div>
 
-
             <product-price-points [product]="product"></product-price-points>
             <div *ngIf="product.pricePoints.length > 0 || (product.components && product.components.length > 0)" class="separator"></div>
             <product-components [product]="product"></product-components>

@@ -12,6 +12,9 @@ import { ProductComponent } from '../product.component';
 export class ProductPriceComponent extends ProductComponent {
   private pricePopup!: PricePopupComponent;
 
+
+  // =================================================================( OPEN PRICE POPUP )================================================================== \\
+
   openPricePopup(arrowPosition: PopupArrowPosition) {
     if (this.popupOpen) {
       this.pricePopup.close();

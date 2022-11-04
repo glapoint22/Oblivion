@@ -17,13 +17,16 @@ export class MediaComponent implements OnInit {
   constructor(public dataService: DataService, public productService: ProductService) { }
 
 
+  // ====================================================================( NG ON INIT )===================================================================== \\
+  
   ngOnInit() {
       this.productForm.selectedProductMedia = this.product.media[0];
   }
 
 
 
-  // --------------------------------------------------- Set Video ---------------------------------------------------
+  // ====================================================================( SET VIDEO )====================================================================== \\
+
   setVideo(productMedia: ProductMedia) {
     window.setTimeout(() => {
       const iframe = document.getElementById('video-iframe') as HTMLIFrameElement;
@@ -42,7 +45,9 @@ export class MediaComponent implements OnInit {
   }
 
 
-  // --------------------------------------------------- On Media Select ---------------------------------------------------
+
+  // =================================================================( ON MEDIA SELECT )=================================================================== \\
+
   onMediaSelect(productMedia: ProductMedia) {
     productMedia.transition = 'all 0ms ease 0s';
     if (productMedia.type == MediaType.Video) this.setVideo(productMedia);
@@ -51,7 +56,7 @@ export class MediaComponent implements OnInit {
 
 
 
-
+  // ==================================================================( UPDATE INDICES )=================================================================== \\
 
   updateIndices() {
     this.dataService.put('api/Products/Media/Indices', {

@@ -18,6 +18,9 @@ export class ProductGroupsCircleButtonComponent {
 
   constructor(private lazyLoadingService: LazyLoadingService, private productService: ProductService) {}
 
+
+  // ============================================================( OPEN PRODUCT GROUPS POPUP )============================================================== \\
+
   openProductGroupsPopup() {
     if (this.productGroupsPopupOpen) {
       this.productGroupsPopup.close();

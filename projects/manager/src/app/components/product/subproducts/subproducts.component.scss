@@ -1,176 +1,45 @@
 .background {
-    padding: 15px 0 10px;
+    padding-top: 26px;
+
+    &:first-child {
+        padding-top: 15px;
+    }
 }
+
 
 .subproduct-container {
     margin: auto;
     width: fit-content;
 }
 
+
 .delete-icon-container {
     display: flex;
     justify-content: flex-end;
 }
+
 
 .border {
     display: flex;
     padding: 20px;
 }
 
-.left-container {
+
+.image-container {
     margin-right: 25px;
 }
 
 
-
-
-
-.center-container {
+.name-and-description-container {
     position: relative;
     width: 727px;
     margin-right: 25px;
 }
 
 
-
-.right-container {
-    position: relative;
-    width: 100px;
-}
-
-
-
-
-.edit-popup-container {
-    position: absolute;
-    left: -240px;
-    top: -20px;
-    z-index: 100;
-}
-
-
-
-
-.label {
-    color: #505050;
-    font-size: 12px;
-    margin-bottom: 4px;
-    user-select: none;
-    flex: 1;
-}
-
-
-
-.icon {
-    color: #828282;
-    cursor: pointer;
-
-    &:hover {
-        color: #b4b4b4;
-    }
-
-    &:active {
-        color: #dadada;
-        ;
-    }
-
-    &:focus-visible {
-        color: #dadada;
-        transform: scale(1.2);
-    }
-}
-
-
-.image-container {
-    display: flex;
-    width: 220px;
-    height: 220px;
-    outline: none;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 0;
-    cursor: pointer;
-
-    .fa-image {
-        font-size: 60px;
-        color: #3c3c3c;
-    }
-
-    &:hover {
-        .fa-image {
-            color: lighten(#3c3c3c, 6);
-        }
-    }
-}
-
-
-
-
-
-
-.value-property-container {
-    height: 60px;
-}
-
-
-
-
-.container {
-    width: 272px;
-    min-height: 36px;
-    font-weight: bold;
-    text-align: center;
-    outline: none;
-    overflow: hidden;
-    white-space: nowrap;
-
-}
-
-
-.name-container {
-    @extend .container;
-    width: 100%;
-    height: 42px;
-    color: white;
-    font-size: 30px;
-    line-height: 30px;
-    text-align: left;
-    padding: 6px 0 5px 9px;
-}
-
-
-.value-container {
-    @extend .container;
-    width: 42px;
-    height: 42px;
-    color: #ffba00;
-    font-size: 20px;
-    line-height: 30px;
-    text-align: center;
-    padding-top: 5px;
-}
-
-
-
-.description-property-container {
-    margin-top: 40px;
-}
-
-
-
-
-
-
 .plus-button-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 15px;
-}
-
-
-
-.description-container {
-    min-height: 32px;
-    padding: 5px;
-    position: relative;
+    margin-top: 1px;
+    margin-bottom: 11px;
 }

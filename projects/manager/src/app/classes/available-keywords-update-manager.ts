@@ -23,7 +23,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
     // ====================================================================( NG ON INIT )===================================================================== \\
-
+    
     ngOnInit() {
         super.ngOnInit();
         this.otherArray = this.productService.formKeywordArray;

@@ -1,0 +1,15 @@
+<div class="value-property-container product-property-hover-container">
+    <div class="product-property-label">Value:</div>
+    <div #value
+        tabindex="0"
+        class="value-container product-property-input-container product-dashed-border-bright"
+        contenteditable="true"
+        (focus)="selectRange(value)"
+        (input)="onValueInput(value)"
+        (blur)="onValueBlur(subproduct, value)"
+        (keydown.escape)="onValueEscape(subproduct, value)"
+        (keydown.enter)="value.blur()"
+        (paste)="onPaste($event, value)">
+            {{subproduct.value > 0 ? subproduct.value : ''}}
+    </div>
+</div>

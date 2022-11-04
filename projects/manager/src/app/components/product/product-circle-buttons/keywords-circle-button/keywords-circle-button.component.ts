@@ -18,6 +18,9 @@ export class KeywordsCircleButtonComponent {
 
   constructor(private lazyLoadingService: LazyLoadingService, private productService: ProductService) {}
   
+
+  // ================================================================( OPEN KEYWORDS POPUP )================================================================ \\
+
   openKeywordsPopup() {
     if (this.keywordsPopupOpen) {
       this.keywordsPopup.close();

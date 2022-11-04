@@ -1,7 +1,6 @@
 <div class="background" *ngFor="let subproduct of subproducts; let i = index">
     <div class="subproduct-container">
 
-        <!-- Delete -->
         <div class="delete-icon-container">
             <icon-button [icon]="'fas fa-trash-alt'"
                          [title]="'Delete ' + (subproductType == SubproductType.Component ? 'component': 'bonus')"
@@ -9,121 +8,22 @@
             </icon-button>
         </div>
 
-
-        <!-- Content -->
         <div class="border product-dashed-border-bright">
-
-            <!-- Image -->
-            <div class="left-container">
-                <div class="product-label-and-icon-buttons-container">
-                    <div class="label">Image:</div>
-
-                    <div class="product-property-icon-button-container">
-
-
-                    
-                        <icon-button [title]="'Media Browser'"
-                                     [icon]="'fa-solid fa-image'"
-                                     (click)="openMediaBrowser(subproduct)">
-                        </icon-button>
-                        <icon-button *ngIf="subproduct.image && subproduct.image.src"
-                                     [title]="'Remove Image'"
-                                     [icon]="'fas fa-trash-alt'"
-                                     (click)="removeImage(subproduct)">
-                        </icon-button>
-                    </div>
-                    
-                </div>
-
-
-                <div class="image-container product-dashed-border-bright"
-                     [title]="subproduct.image.name ? subproduct.image.name : ''"
-                     (click)="openMediaBrowser(subproduct)">
-                    <i *ngIf="!subproduct.image || !subproduct.image.src" class="fa-solid fa-image"></i>
-                    <img *ngIf="subproduct.image && subproduct.image.src" [src]="'images/' + subproduct.image.src">
-                </div>
+            <div class="image-container">
+                <subproduct-image [subproduct]="subproduct"></subproduct-image>
+            </div>
+            
+            <div class="name-and-description-container">
+                <subproduct-name [subproduct]="subproduct"></subproduct-name>
+                <subproduct-description [subproduct]="subproduct"></subproduct-description>
             </div>
 
-            
-            <div class="center-container">
-
-                <div class="product-property-title-case-icon-button-container">
-                    <icon-button [title]="!titleCaseOff[i] ? 'Turn Off Title Case' : 'Turn On Title Case'"
-                                 [icon]="!titleCaseOff[i] ? 'fa-solid fa-text-slash' : 'fa-solid fa-t'"
-                                 (click)="titleCaseOff[i] = !titleCaseOff[i]">
-                    </icon-button>
-                </div>
-                
-
-                <!-- Name -->
-                <div class="product-property-hover-container">
-                    <div class="label">Name:</div>
-                    <div #name
-                        tabindex="0"
-                        class="name-container product-dashed-border-bright"
-                        contenteditable="true"
-                        (focus)="selectRange(name)"
-                        (blur)="onNameBlur(subproduct, name, titleCaseOff[i])"
-                        (keydown.escape)="onNameEscape(subproduct, name)"
-                        (keydown.enter)="name.blur()"
-                        (paste)="onPaste($event, name)">
-                            {{subproduct.name}}
-                    </div>
-                </div>
-
-
-
-
-
-                <!-- Description -->
-                <div class="description-property-container product-property-hover-container">
-                    <div class="label">Description:</div>
-                    <div class="description-container product-dashed-border-bright">
-                        <description [product]="subproduct" [apiUrl]="'Subproduct/Description'"></description>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-
-
-
-            
-
-            <!-- Value -->
             <ng-container *ngIf="subproductType == SubproductType.Bonus">
-                <div class="value-property-container product-property-hover-container">
-                    <div class="label">Value:</div>
-                    <div #value
-                        tabindex="0"
-                        class="value-container product-dashed-border-bright"
-                        contenteditable="true"
-                        (focus)="selectRange(value)"
-                        (blur)="onValueBlur(subproduct, value)"
-                        (keydown.escape)="onValueEscape(subproduct, value)"
-                        (keydown.enter)="value.blur()"
-                        (paste)="onPaste($event, value)">
-                            {{subproduct.value > 0 ? subproduct.value : ''}}
-                    </div>
-                </div>
+                <subproduct-value [subproduct]="subproduct"></subproduct-value>
             </ng-container>
-            
-
-
-
-            
-            
-
-
-
         </div>
     </div>
 </div>
-
-
 
 <div class="plus-button-container">
     <icon-button style="transform: rotate(45deg)"

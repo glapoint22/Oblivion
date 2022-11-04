@@ -13,6 +13,9 @@ export class ProductShippingComponent extends ProductComponent {
   private shippingPopup!: ShippingPopupComponent;
   public shippingType = ShippingType;
 
+
+  // ===============================================================( OPEN SHIPPING POPUP )================================================================= \\
+
   openShippingPopup(arrowPosition: PopupArrowPosition) {
     if (this.popupOpen) {
       this.shippingPopup.close();
@@ -44,6 +47,9 @@ export class ProductShippingComponent extends ProductComponent {
       });
   }
 
+  
+
+  // =================================================================( UPDATE SHIPPING )=================================================================== \\
 
   updateShipping() {
     this.dataService.put('api/Products/Shipping', {

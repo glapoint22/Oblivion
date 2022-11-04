@@ -12,6 +12,9 @@ import { ProductComponent } from '../product.component';
 export class ProductHoplinkComponent extends ProductComponent {
   private hoplinkPopup!: HoplinkPopupComponent;
 
+
+  // ================================================================( OPEN HOPLINK POPUP )================================================================= \\
+
   openHoplinkPopup(arrowPosition: PopupArrowPosition) {
     if (this.popupOpen) {
       this.hoplinkPopup.close();

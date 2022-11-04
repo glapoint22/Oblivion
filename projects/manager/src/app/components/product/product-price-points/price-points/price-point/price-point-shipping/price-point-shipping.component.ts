@@ -11,15 +11,15 @@ import { PricePointComponent } from '../price-point.component';
 })
 export class PricePointShippingComponent extends PricePointComponent {
   private shippingPopup!: ShippingPopupComponent;
-
   public shipping = Shipping;
   public ShippingType = ShippingType;
   public shippingPopupOpen!: boolean;
   
-
   @ViewChild('addShippingPopup', { read: ViewContainerRef }) addShippingPopup!: ViewContainerRef;
   @ViewChild('editShippingPopup', { read: ViewContainerRef }) editShippingPopup!: ViewContainerRef;
   
+  
+  // ===============================================================( OPEN SHIPPING POPUP )================================================================= \\
 
   openShippingPopup(pricePoint: PricePoint, arrowPosition: PopupArrowPosition) {
     if (this.shippingPopupOpen) {

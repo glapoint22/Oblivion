@@ -1,0 +1,21 @@
+<div class="product-label-and-icon-buttons-container">
+    <div class="product-property-label">Image:</div>
+
+    <div class="product-property-icon-button-container">
+        <icon-button [title]="'Media Browser'"
+                     [icon]="'fa-solid fa-image'"
+                     (click)="openMediaBrowser(subproduct)">
+        </icon-button>
+        <icon-button *ngIf="subproduct.image && subproduct.image.src"
+                     [title]="'Remove Image'"
+                     [icon]="'fas fa-trash-alt'"
+                     (click)="removeImage(subproduct)">
+        </icon-button>
+    </div>
+</div>
+<div class="image-container product-dashed-border-bright"
+        [title]="subproduct.image.name ? subproduct.image.name : ''"
+        (click)="openMediaBrowser(subproduct)">
+    <i *ngIf="!subproduct.image || !subproduct.image.src" class="fa-solid fa-image"></i>
+    <img *ngIf="subproduct.image && subproduct.image.src" [src]="'images/' + subproduct.image.src">
+</div>
