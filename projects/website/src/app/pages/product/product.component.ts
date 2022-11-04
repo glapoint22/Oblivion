@@ -42,7 +42,7 @@ export class ProductComponent implements OnInit {
 
 
   async onWriteReviewClick() {
-    if (this.accountService.customer) {
+    if (this.accountService.user) {
       this.lazyLoadingService.load(async () => {
         const { WriteReviewFormComponent } = await import('../../components/write-review-form/write-review-form.component');
         const { WriteReviewFormModule } = await import('../../components/write-review-form/write-review-form.module');

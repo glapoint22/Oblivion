@@ -26,7 +26,7 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      email: new FormControl(this.accountService.customer?.email, {
+      email: new FormControl(this.accountService.user?.email, {
         validators: [
           Validators.required,
           Validators.email

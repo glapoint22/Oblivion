@@ -22,7 +22,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
-      firstName: new FormControl(this.accountService.customer?.firstName, {
+      firstName: new FormControl(this.accountService.user?.firstName, {
         validators: [
           Validators.required,
           this.invalidNameValidator(),
@@ -30,7 +30,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
         ],
         updateOn: 'submit'
       }),
-      lastName: new FormControl(this.accountService.customer?.lastName, {
+      lastName: new FormControl(this.accountService.user?.lastName, {
         validators: [
           Validators.required,
           this.invalidNameValidator(),
@@ -59,7 +59,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
           spinnerAction: SpinnerAction.Start
         }
       ).subscribe(() => {
-        this.accountService.setCustomer();
+        this.accountService.setUser();
         this.openSuccessPrompt();
       });
     }

@@ -27,9 +27,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.lazyLoadingService.container = this.container;
-    this.accountService.setCustomer();
+    this.accountService.setUser();
 
-    if (this.accountService.customer) {
+    if (this.accountService.user) {
       this.accountService.refresh();
       this.accountService.startRefreshTokenTimer();
     }

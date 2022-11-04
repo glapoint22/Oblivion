@@ -51,17 +51,17 @@ export class ContactUsFormComponent extends Validation implements OnInit {
     super.ngAfterViewInit();
 
     // If the user is logged in
-    if (this.accountService.customer) {
+    if (this.accountService.user) {
       // Set focus to the message field
       this.setFocus(2);
 
       // Populate the name field with the user's name
       this.name.nativeElement.disabled = true;
-      this.name.nativeElement.value = this.accountService.customer.firstName + ' ' + this.accountService.customer.lastName;
+      this.name.nativeElement.value = this.accountService.user.firstName + ' ' + this.accountService.user.lastName;
 
       // Populate the email field with the user's email
       this.email.nativeElement.disabled = true;
-      this.email.nativeElement.value = this.accountService.customer.email;
+      this.email.nativeElement.value = this.accountService.user.email;
 
       // If the user is NOT logged in
     } else {
@@ -74,19 +74,19 @@ export class ContactUsFormComponent extends Validation implements OnInit {
   
   onSubmit() {
     // If the user is (NOT) logged in and as long as the form is valid
-    if ((!this.accountService.customer && this.form.valid) ||
+    if ((!this.accountService.user && this.form.valid) ||
       // Or if the user (IS) logged in and as long as the message field is valid
-      (this.accountService.customer && !this.form.controls.message.errors)) {
+      (this.accountService.user && !this.form.controls.message.errors)) {
 
       // Post the message
       this.dataService.post('api/Notifications/Message', {
         type: NotificationType.Message,
-        nonAccountName: !this.accountService.customer ? this.form.get('name')?.value.trim() : null,
-        nonAccountEmail: !this.accountService.customer ? this.form.get('email')?.value.trim() : null,
-        email: this.accountService.customer ? this.email.nativeElement.value : null,
+        nonAccountName: !this.accountService.user ? this.form.get('name')?.value.trim() : null,
+        nonAccountEmail: !this.accountService.user ? this.form.get('email')?.value.trim() : null,
+        email: this.accountService.user ? this.email.nativeElement.value : null,
         text: this.form.get('message')?.value.trim()
       }, {
-        authorization: this.accountService.customer ? true : false,
+        authorization: this.accountService.user ? true : false,
         spinnerAction: SpinnerAction.Start
       }).subscribe(() => {
         this.openSuccessPrompt();

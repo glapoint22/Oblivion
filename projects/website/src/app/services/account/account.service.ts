@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService, DataService } from 'common';
 import { Observable, Subject, Subscriber, Subscription } from 'rxjs';
-import { Customer } from '../../classes/customer';
+import { User } from '../../classes/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-  public customer: Customer | undefined;
+  public user: User | undefined;
   public refreshTokenSet!: boolean;
   private waitForRefreshToken = new Subject<void>();
   private interval!: number;
@@ -24,13 +24,13 @@ export class AccountService {
       private route: ActivatedRoute
     ) { }
 
-  public setCustomer() {
-    let customerCookie = this.cookieService.getCookie('customer');
+  public setUser() {
+    let userCookie = this.cookieService.getCookie('user');
 
-    if (customerCookie) {
-      customerCookie = decodeURIComponent(customerCookie);
-      const customerProperties = customerCookie.split(',');
-      this.customer = new Customer(customerProperties[0], customerProperties[1], customerProperties[2], customerProperties[3], customerProperties[4], customerProperties[5] == 'True');
+    if (userCookie) {
+      userCookie = decodeURIComponent(userCookie);
+      const userProperties = userCookie.split(',');
+      this.user = new User(userProperties[0], userProperties[1], userProperties[2], userProperties[3], userProperties[4], userProperties[5] == 'True');
     }
   }
 
@@ -38,7 +38,7 @@ export class AccountService {
   public logIn() {
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
 
-    this.setCustomer();
+    this.setUser();
     this.refreshTokenSet = true;
     this.startRefreshTokenTimer();
 
@@ -59,7 +59,7 @@ export class AccountService {
     // If not in the middle of refreshing, log out
     if (!this.refreshing) {
       this.dataService.get('api/Account/LogOut').subscribe(()=> {
-        this.customer = undefined;
+        this.user = undefined;
       });
       this.router.navigate(['/log-in']);
     } else {

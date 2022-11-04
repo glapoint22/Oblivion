@@ -1,6 +1,6 @@
 import { Image } from "common";
 
-export class Customer {
+export class User {
     public profileImage: Image = new Image();
     public hasProfileImage!: boolean;
 

@@ -85,14 +85,14 @@
 
     <!-- Right Container -->
     <div class="right-container">
-        <ng-container *ngIf="!accountService.customer || !accountService.customer.firstName">
+        <ng-container *ngIf="!accountService.user || !accountService.user.firstName">
             <a tabindex="6" id="about1" class="links" routerLink="/about">About</a>
             <a tabindex="7" id="orderSupport1" class="links" href="https://www.clkbank.com/" target="_blank">Order Support</a>
             <button tabindex="8" class="login-button" (click)="onLoginClick()">Log In</button>
             <button tabindex="9" class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
         </ng-container>
 
-        <ng-container *ngIf="accountService.customer && accountService.customer.firstName">
+        <ng-container *ngIf="accountService.user && accountService.user.firstName">
             <a tabindex="6" id="about2" class="links" routerLink="/about">About</a>
             <a tabindex="7" id="orderSupport2" class="links" href="https://www.clkbank.com/" target="_blank">Order Support</a>
             <a tabindex="8" id="orders" class="links" routerLink="/account/orders">Orders</a>
@@ -101,9 +101,9 @@
             <!-- Account profile pic -->
             <div tabindex="10" class="profile-pic-container" (blur)="accountMenuPopupComponent ? accountMenuPopupComponent.close() : null" (keydown.enter)="onProfilePicClick()">
                 <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                <img [src]="accountService.customer.profileImage.src" class="profile-pic"
-                    [title]="accountService.customer.profileImage.name"
-                    [alt]="accountService.customer.profileImage.name" (click)="onProfilePicClick()">
+                <img [src]="accountService.user.profileImage.src" class="profile-pic"
+                    [title]="accountService.user.profileImage.name"
+                    [alt]="accountService.user.profileImage.name" (click)="onProfilePicClick()">
 
 
                 <!-- Account Menu Popup -->

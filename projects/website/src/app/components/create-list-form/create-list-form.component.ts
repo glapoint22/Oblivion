@@ -55,7 +55,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
           this.form.get('listName')?.value,
           this.form.get('description')?.value,
           list.collaborateId,
-          this.accountService.customer?.profileImage
+          this.accountService.user?.profileImage
         ));
         this.close();
       });

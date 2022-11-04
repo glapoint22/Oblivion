@@ -47,6 +47,8 @@ export class Validation extends LazyLoad {
         messages.push('Password is incorrect');
       } else if (error == 'noEmail') {
         messages.push('The email you entered is not associated with any Niche Shack account. Please provide a different email address.');
+      }else if (error == 'noMatch') {
+        messages.push('Your password and email do not match.');
       }
     });
 
@@ -81,15 +83,6 @@ export class Validation extends LazyLoad {
   };
 
 
-  validateEmailAsync(apiUrl: string): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors> => {
-      return this.dataService.get(apiUrl,
-        [{ key: 'email', value: control.value }], {
-        spinnerAction: SpinnerAction.Start,
-        endSpinnerWhen: (result: any) => result && result.duplicateEmail
-      });
-    };
-  }
 
 
   validatePasswordAsync(apiUrl: string): AsyncValidatorFn {

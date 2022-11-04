@@ -135,7 +135,7 @@ export class ReviewsComponent implements OnInit {
 
 
   async onReportReviewClick(reviewId: number) {
-    if (this.accountService.customer) {
+    if (this.accountService.user) {
       this.lazyLoadingService.load(async () => {
         const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
         const { ReportReviewFormModule } = await import('../../components/report-review-form/report-review-form.module');

@@ -26,7 +26,7 @@ export class DeleteAccountFormComponent extends Validation implements OnInit {
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.email = this.accountService.customer?.email!;
+    this.email = this.accountService.user?.email!;
 
     this.form = new FormGroup({
       otp: new FormControl('', {

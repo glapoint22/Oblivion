@@ -14,7 +14,7 @@
             <div class="section">
                 <div class="property">
                     <div>Name:</div>
-                    <div>{{accountService.customer?.firstName + ' ' + accountService.customer?.lastName}}</div>
+                    <div>{{accountService.user?.firstName + ' ' + accountService.user?.lastName}}</div>
                 </div>
 
                 <div class="icon-container" title="Change Name" (click)="onChangeNameClick()">
@@ -28,7 +28,7 @@
             <div class="section">
                 <div class="property">
                     <div>Email:</div>
-                    <div>{{accountService.customer?.email}}</div>
+                    <div>{{accountService.user?.email}}</div>
                 </div>
 
                 <div class="icon-container" title="Change Email" (click)="onChangeEmailClick()">
@@ -43,8 +43,8 @@
             <div class="section" style="margin-bottom: 8px;">
                 <div class="property">
                     <div>Password:</div>
-                    <div *ngIf="!this.accountService.customer?.externalLoginProvider || accountService.customer?.hasPassword">******</div>
-                    <div *ngIf="this.accountService.customer?.externalLoginProvider && !accountService.customer?.hasPassword" style="font-style: italic; font-size: 12px;">(No Password)</div>
+                    <div *ngIf="!this.accountService.user?.externalLoginProvider || accountService.user?.hasPassword">******</div>
+                    <div *ngIf="this.accountService.user?.externalLoginProvider && !accountService.user?.hasPassword" style="font-style: italic; font-size: 12px;">(No Password)</div>
                 </div>
 
                 <div class="icon-container" title="Change Password" (click)="onChangePasswordClick()">
@@ -61,9 +61,9 @@
                     <div style="margin-bottom: 10px;">Profile Picture:</div>
                     <div>
                         <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                        <img [src]="accountService.customer?.profileImage?.src" class="profile-pic"
-                            [title]="accountService.customer?.profileImage?.name"
-                            [alt]="accountService.customer?.profileImage?.name">
+                        <img [src]="accountService.user?.profileImage?.src" class="profile-pic"
+                            [title]="accountService.user?.profileImage?.name"
+                            [alt]="accountService.user?.profileImage?.name">
                     </div>
                 </div>
 

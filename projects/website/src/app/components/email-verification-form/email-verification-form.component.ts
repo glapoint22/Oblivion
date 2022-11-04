@@ -52,7 +52,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
             spinnerAction: SpinnerAction.Start
           }
         ).subscribe(() => {
-          this.accountService.setCustomer();
+          this.accountService.setUser();
           this.OpenSuccessPrompt();
         });
       }

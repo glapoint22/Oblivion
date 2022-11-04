@@ -1,7 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
-import { Observable, tap } from 'rxjs';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { DataService, LazyLoadingService, SpinnerAction, SpinnerService } from 'common';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -20,7 +20,8 @@ export class ActivateAccountFormComponent extends Validation {
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-  ) { super(dataService, lazyLoadingService) }
+      private spinnerService: SpinnerService
+    ) { super(dataService, lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -28,7 +29,6 @@ export class ActivateAccountFormComponent extends Validation {
     this.form = new FormGroup({
       otp: new FormControl('', {
         validators: Validators.required,
-        asyncValidators: this.validateOneTimePassword(),
         updateOn: 'submit'
       })
     });
@@ -39,10 +39,17 @@ export class ActivateAccountFormComponent extends Validation {
           email: this.email,
           oneTimePassword: this.form.get('otp')?.value,
         }, { spinnerAction: SpinnerAction.Start })
-          .subscribe(() => {
-            this.accountService.logIn();
-            this.OpenSuccessPrompt();
-          });
+          .subscribe({
+            complete: () => {
+              this.accountService.logIn();
+              this.OpenSuccessPrompt();
+            },
+            error: (error: HttpErrorResponse) => {
+              if (error.status < 500) {
+                this.form.controls.otp.setErrors({ incorrectOneTimePassword: true });
+              }
+            }
+          })
       }
     });
   }
@@ -75,20 +82,6 @@ export class ActivateAccountFormComponent extends Validation {
       successPrompt.message = 'Your account has been successfully Activated.';
     });
   }
-
-  validateOneTimePassword(): AsyncValidatorFn {
-    return (): Observable<ValidationErrors> => {
-      return this.dataService.post('api/Account/ValidateActivateAccountOneTimePassword', {
-        email: this.email,
-        oneTimePassword: this.form.get('otp')?.value,
-      }, {
-        spinnerAction: SpinnerAction.Start,
-        endSpinnerWhen: (result: any) => result && result.incorrectOneTimePassword
-      });
-    }
-  }
-
-
 
 
 
