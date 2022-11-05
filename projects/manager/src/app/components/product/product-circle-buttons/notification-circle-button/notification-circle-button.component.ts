@@ -33,7 +33,7 @@ export class NotificationCircleButtonComponent {
         // But if the circle button is being clicked
       } else {
         // Just close the popup
-        this.notificationPopup.close();
+        this.notificationPopup.onEscape();
       }
       return;
     }

@@ -1,4 +1,4 @@
-<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()" (contextmenu)="$event.preventDefault()">
 
     <div class="modal-base">
 

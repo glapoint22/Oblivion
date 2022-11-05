@@ -50,6 +50,7 @@ export class ProductBuilderComponent {
       // If we are right clicking on the tab
     } else {
 
+      this.productService.rightClickOnProductTab = true;
       // Open the context menu
       this.openContextMenu(e, tabIndex);
     }
@@ -82,6 +83,7 @@ export class ProductBuilderComponent {
       }
     }, SpinnerAction.None).then((contextMenu: ContextMenuComponent) => {
       this.productService.productTabContextMenu = contextMenu;
+      this.productService.rightClickOnProductTab = false;
       contextMenu.xPos = e.clientX + 5;
       contextMenu.yPos = e.clientY + 5;
       contextMenu.options = this.getContextMenuOptions(tabIndex);

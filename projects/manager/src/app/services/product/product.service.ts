@@ -21,6 +21,7 @@ export class ProductService {
   private onProductLoad: Subject<void> = new Subject<void>();
   private onProductOpen: Subject<ProductFormComponent> = new Subject<ProductFormComponent>();
 
+  public rightClickOnProductTab!: boolean;
   public productTabContextMenu!: ContextMenuComponent;
   public zIndex: number = 0;
   public selectedProduct!: ProductFormComponent;
@@ -35,77 +36,10 @@ export class ProductService {
   public products: Array<ProductFormComponent> = new Array<ProductFormComponent>();
   public onProductSelect: Subject<void> = new Subject<void>();
 
-  
-
-
   constructor(private resolver: ComponentFactoryResolver, private dataService: DataService) { }
 
 
-  openProduct(productId: number) {
-    this.productId = productId;
-    this.zIndex++;
-    const openedProduct = this.products.find(x => x.product.id == productId);
-
-    // If the product has NOT been opened yet
-    if (!openedProduct) {
-
-      this.dataService.get<Product>('api/Products/Product', [{ key: 'productId', value: productId }])
-        .subscribe((product: Product) => {
-          this.nicheId = product.niche.id!;
-          this.subNicheId = product.subNiche.id!;
-          const productComponentFactory: ComponentFactory<ProductFormComponent> = this.resolver.resolveComponentFactory(ProductFormComponent);
-          const productComponentRef = this.productsContainer.createComponent(productComponentFactory);
-          const productComponent: ProductFormComponent = productComponentRef.instance;
-          productComponentRef.instance.viewRef = productComponentRef.hostView;
-
-          this.products.push(productComponent);
-          productComponent.product = product;
-          productComponent.zIndex = this.zIndex;
-          this.selectedProduct = productComponent;
-          this.onProductOpen.next(productComponent);
-          this.onProductLoad.next();
-
-          // If the product's name happened to be renamed in the hierarchy list, then we need to check to see if its name
-          // was updated in the database first before it was retrieved
-          const productListItem = this.sideMenuNicheArray.find(x => x.id == productId && x.hierarchyGroupID == 2);
-
-          if (productListItem) {
-            // If the product's name from the database is NOT the same as the product's name in the hierarchy list
-            // then that means the product was retrieved from the database before its name got updated
-            if (product.name != productListItem) {
-              // Update the name of the product (name on the tab and name on the form) 
-              this.products[this.products.length - 1].product.name = productListItem.name!;
-            }
-          }
-
-        })
-
-      // If the product is already open
-    } else {
-      this.nicheId = openedProduct.product.niche.id!;
-      this.subNicheId = openedProduct.product.subNiche.id!;
-      openedProduct.zIndex = this.zIndex;
-      this.selectedProduct = openedProduct;
-      this.onProductLoad.next();
-      this.onProductOpen.next(openedProduct);
-    }
-  }
-
-
-
-  openNotificationProduct(productId: number, notificationItem: NotificationItem) {
-    const onProductOpenListener = this.onProductOpen.subscribe((notificationProduct: ProductFormComponent) => {
-      onProductOpenListener.unsubscribe();
-      window.setTimeout(() => {
-        // notificationProduct.openNotificationPopup(notificationItem);
-        notificationProduct.circleButtons.notificationCircleButton.openNotificationPopup(notificationItem);
-      })
-    });
-
-    this.goToProduct(productId);
-  }
-
-
+  // ===================================================================( GO TO PRODUCT )=================================================================== \\
 
   goToProduct(productId: number) {
     const onProductLoadListener = this.onProductLoad.subscribe(() => {
@@ -143,7 +77,72 @@ export class ProductService {
 
 
 
+  // ===================================================================( OPEN PRODUCT )==================================================================== \\
 
+  openProduct(productId: number) {
+    this.productId = productId;
+    this.zIndex++;
+    const openedProduct = this.products.find(x => x.product.id == productId);
+
+    // If the product has NOT been opened yet
+    if (!openedProduct) {
+
+      this.dataService.get<Product>('api/Products/Product', [{ key: 'productId', value: productId }])
+        .subscribe((product: Product) => {
+          this.nicheId = product.niche.id!;
+          this.subNicheId = product.subNiche.id!;
+          const productComponentFactory: ComponentFactory<ProductFormComponent> = this.resolver.resolveComponentFactory(ProductFormComponent);
+          const productComponentRef = this.productsContainer.createComponent(productComponentFactory);
+          const productComponent: ProductFormComponent = productComponentRef.instance;
+          productComponentRef.instance.viewRef = productComponentRef.hostView;
+
+          this.products.push(productComponent);
+          productComponent.product = product;
+          productComponent.zIndex = this.zIndex;
+          this.selectedProduct = productComponent;
+          this.onProductOpen.next(productComponent);
+          this.onProductLoad.next();
+
+          // If the product's name happened to be renamed in the hierarchy list, then we need to check to see if its name
+          // was updated in the database first before it was retrieved
+          const productListItem = this.sideMenuNicheArray.find(x => x.id == productId && x.hierarchyGroupID == 2);
+
+          if (productListItem) {
+            // If the product's name from the database is NOT the same as the product's name in the hierarchy list
+            // then that means the product was retrieved from the database before its name got updated
+            if (product.name != productListItem) {
+              // Update the name of the product (name on the tab and name on the form) 
+              this.products[this.products.length - 1].product.name = productListItem.name!;
+            }
+          }
+        })
+
+      // If the product is already open
+    } else {
+      this.nicheId = openedProduct.product.niche.id!;
+      this.subNicheId = openedProduct.product.subNiche.id!;
+      openedProduct.zIndex = this.zIndex;
+      this.selectedProduct = openedProduct;
+      this.onProductLoad.next();
+      this.onProductOpen.next(openedProduct);
+    }
+  }
+
+
+
+  // ============================================================( OPEN NOTIFICATION PRODUCT )============================================================== \\
+
+  openNotificationProduct(productId: number, notificationItem: NotificationItem) {
+    const onProductOpenListener = this.onProductOpen.subscribe((notificationProduct: ProductFormComponent) => {
+      onProductOpenListener.unsubscribe();
+      notificationProduct.openNotificationPopup(notificationItem);
+    });
+    this.goToProduct(productId);
+  }
+
+
+
+  // ============================================================( SHOW PRODUCT IN HIERARCHY )============================================================== \\
 
   showProductInHierarchy(productId: number) {
     // Then check to see if an item was selected before the niches side menu was last closed
@@ -162,6 +161,7 @@ export class ProductService {
 
 
 
+  // ===================================================================( SET HIEARCHY )==================================================================== \\
 
   setHierarchy(parentIndex: number, childId: number, childHierarchyGroupID: number, childrenNotLoaded: Function, childrenNotLoadedParameters: Array<any>, childrenLoaded: Function, childrenLoadedParameters: Array<any>, func3: Function, func3Parameters: Array<any>) {
 
@@ -188,9 +188,7 @@ export class ProductService {
 
 
 
-
-
-
+  // ===========================================================( LOAD SUB NICHES AND PRODUCTS )============================================================ \\
 
   loadSubNichesAndProducts(nicheIndex: number) {
     // Load all the subNiches of the Niche as well as all the products of the subNiche that the product belongs to
@@ -209,11 +207,13 @@ export class ProductService {
         for (let i = nicheHierarchy.products.length - 1; i >= 0; i--) {
           this.sideMenuNicheArray.splice(subNicheIndex + 1, 0, this.getHierarchyItem(nicheHierarchy.products[i], 2));
         }
-
         this.onProductSelect.next();
       })
   }
 
+
+
+  // ==================================================================( LOAD PRODUCTS )==================================================================== \\
 
   loadProducts(subNicheIndex: number) {
     // Load the products
@@ -227,6 +227,8 @@ export class ProductService {
   }
 
 
+
+  // ================================================================( GET HIERARCHY ITEM )================================================================= \\
 
   getHierarchyItem(hierarchyItem: HierarchyItem, hierarchyGroupID: number): HierarchyItem {
     return {
@@ -243,6 +245,8 @@ export class ProductService {
 
 
 
+  // ==================================================================( SET SUB NICHE )==================================================================== \\
+
   setSubNiche(nicheIndex: number) {
     if (nicheIndex) this.unhide(nicheIndex);
 
@@ -253,6 +257,7 @@ export class ProductService {
 
 
 
+  // ==================================================================( SELECT PRODUCT )=================================================================== \\
 
   selectProduct(subNicheIndex: number) {
     if (subNicheIndex) this.unhide(subNicheIndex);
@@ -262,6 +267,8 @@ export class ProductService {
   }
 
 
+
+  // ======================================================================( UNHIDE )======================================================================= \\
 
   unhide(index: number) {
     for (let i = index + 1; i < this.sideMenuNicheArray.length; i++) {
@@ -274,8 +281,7 @@ export class ProductService {
 
 
 
-
-
+  // =======================================================================( SORT )======================================================================== \\
 
   sort(hierarchyItem: HierarchyItem, array: Array<HierarchyItem>) {
     let parentHierarchyIndex: number = -1;
@@ -284,22 +290,22 @@ export class ProductService {
 
     // If the selected hierarchy item belongs to the top level group
     if (hierarchyItem.hierarchyGroupID == 0) {
-        // Copy all the hierarchy items from that group to the temp array
-        tempArray = (array as Array<HierarchyItem>).filter(x => x.hierarchyGroupID == 0);
+      // Copy all the hierarchy items from that group to the temp array
+      tempArray = (array as Array<HierarchyItem>).filter(x => x.hierarchyGroupID == 0);
 
-        // If the selected hierarchy item belongs to any other group
+      // If the selected hierarchy item belongs to any other group
     } else {
 
-        // First get the parent of the selected hierarchy item
-        parentHierarchyIndex = this.getIndexOfHierarchyItemParent(hierarchyItem, array);
+      // First get the parent of the selected hierarchy item
+      parentHierarchyIndex = this.getIndexOfHierarchyItemParent(hierarchyItem, array);
 
-        // Then copy all the children belonging to that hierarchy parent to the temp array
-        for (let i = parentHierarchyIndex + 1; i < array.length; i++) {
-            if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID) break;
-            if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID! + 1) {
-                tempArray.push(array[i] as HierarchyItem)
-            }
+      // Then copy all the children belonging to that hierarchy parent to the temp array
+      for (let i = parentHierarchyIndex + 1; i < array.length; i++) {
+        if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID) break;
+        if (array[i].hierarchyGroupID == array[parentHierarchyIndex].hierarchyGroupID! + 1) {
+          tempArray.push(array[i] as HierarchyItem)
         }
+      }
     }
 
     // Sort the temp array
@@ -307,31 +313,27 @@ export class ProductService {
 
     // Loop through all the hierarchy items in the temp array
     tempArray.forEach(x => {
-        // Get the index of that same hierarchy item from the source list
-        let index = array.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID);
+      // Get the index of that same hierarchy item from the source list
+      let index = array.findIndex(y => y.id == x.id && y.name == x.name && y.hierarchyGroupID == x.hierarchyGroupID);
 
-        // Copy the hierarchy item and all its children
-        for (let i = index; i < array.length; i++) {
-            if (i != index && array[i].hierarchyGroupID! <= array[index].hierarchyGroupID!) break;
+      // Copy the hierarchy item and all its children
+      for (let i = index; i < array.length; i++) {
+        if (i != index && array[i].hierarchyGroupID! <= array[index].hierarchyGroupID!) break;
 
-            // And add them to the new hierarchy group
-            newHierarchyGroup.push(array[i] as HierarchyItem);
-        }
+        // And add them to the new hierarchy group
+        newHierarchyGroup.push(array[i] as HierarchyItem);
+      }
     })
 
     // Remove the old hierarchy group from the source
     array.splice(parentHierarchyIndex + 1, newHierarchyGroup.length);
     // Add the new hierarchy group to the source
     array.splice(parentHierarchyIndex + 1, 0, ...newHierarchyGroup);
-}
+  }
 
 
 
-
-
-
-
-
+  // ========================================================( GET INDEX OF HIERARCHY ITEM PARENT )========================================================= \\
 
   getIndexOfHierarchyItemParent(hierarchyItem: HierarchyItem, array: Array<HierarchyItem>): number {
     let parentHierarchyIndex!: number;

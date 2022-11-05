@@ -41,11 +41,20 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
     this.initialize();
     super.ngOnInit();
     this.getProductNotification();
+    window.addEventListener('mousedown', this.mousedown);
 
 
     this.onNotificationLoad.subscribe(() => {
       if (this.notification.employeeNotes.length == 0) this.notification.employeeNotes.push(new NotificationEmployee());
     });
+  }
+
+
+
+  // =====================================================================( MOUSEDOWN )===================================================================== \\
+
+  mousedown = () => {
+    this.onEscape();
   }
 
 
@@ -182,7 +191,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.productService.productTabContextMenu) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
       if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded) && !this.secondaryButtonDisabled) {
         this.close();
       } else {
@@ -199,6 +208,14 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
     this.secondaryButtonDisabledPath = 'api/Notifications/DisableProduct';
     this.secondaryButtonDisabledParameters = { productId: this.notificationItem.productId };
     super.onClose(employees, restore);
+  }
+
+
+
+  // ======================================================================( CLOSE )======================================================================== \\
+
+  close(): void {
+    super.close();
     this.onPopupClose.next();
   }
 
@@ -215,5 +232,6 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
         this.notificationItems[index].isNew = this.notificationItem.isNew;
       }
     }
+    window.removeEventListener('mousedown', this.mousedown);
   }
 }
