@@ -370,7 +370,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
     formData.append('percentTop', this.circle.percentTop.toString());
     formData.append('percentBottom', this.circle.percentBottom.toString());
 
-    this.dataService.post('api/Account/ChangeProfilePicture', formData, {
+    this.dataService.post('api/Account/ChangeProfileImage', formData, {
       authorization: true,
       spinnerAction: SpinnerAction.Start
     }).subscribe(() => {
@@ -393,8 +393,8 @@ export class ProfilePictureFormComponent extends LazyLoad {
       }
     }, SpinnerAction.End)
       .then((successPrompt: SuccessPromptComponent) => {
-        successPrompt.header = 'Successful Profile Picture Change';
-        successPrompt.message = 'Your profile picture has been successfully changed.';
+        successPrompt.header = 'Successful Profile Image Change';
+        successPrompt.message = 'Your profile image has been successfully changed.';
       });
   }
 

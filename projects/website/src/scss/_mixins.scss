@@ -8,6 +8,7 @@
     border: none;
     cursor: pointer;
     font-size: 14px;
+
     &:disabled {
         cursor: default;
     }
@@ -16,13 +17,13 @@
 
 
 @mixin gold-button ($width, $height, $radius) {
-    
+
     color: black;
     font-weight: bold;
 
     @include button($width, $height, $radius);
     background: linear-gradient(map-get($gold-gradient-map, light), map-get($gold-gradient-map, dark));
-    
+
 
     &:hover {
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 6), lighten(map-get($gold-gradient-map, dark), 6));
@@ -33,7 +34,7 @@
         color: rgba(0, 0, 0, 0.5);
     }
 
-    &:active {
+    &:active:not(:disabled) {
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
     }
 

@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DataService, LazyLoadingService, SpinnerAction, SpinnerService } from 'common';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { ActivateAccountFormComponent } from '../../components/activate-account-form/activate-account-form.component';
 
@@ -20,7 +20,6 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
       private router: Router,
-      private spinnerService: SpinnerService
     ) { super(dataService, lazyLoadingService) }
 
 

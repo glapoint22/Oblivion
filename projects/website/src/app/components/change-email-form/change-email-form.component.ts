@@ -1,7 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
-import { Observable, of, switchMap } from 'rxjs';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { EmailVerificationFormComponent } from '../email-verification-form/email-verification-form.component';
@@ -31,9 +31,31 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
           Validators.required,
           Validators.email
         ],
-        asyncValidators: this.checkDuplicateEmail(),
-        updateOn: 'submit',
+        updateOn: 'submit'
       })
+    });
+
+    this.form.statusChanges.subscribe((status: string) => {
+      if (status == 'VALID') {
+        this.dataService.get('api/Account/CreateChangeEmailOTP', [{
+          key: 'email',
+          value: this.form.get('email')?.value
+        }], {
+          spinnerAction: SpinnerAction.Start,
+          authorization: true
+        })
+          .subscribe({
+            complete: () => {
+              this.fade();
+              this.openEmailverificationForm();
+            },
+            error: (error: HttpErrorResponse) => {
+              if (error.status == 409) {
+                this.form.controls.email.setErrors({ duplicateEmail: true });
+              }
+            }
+          });
+      }
     });
   }
 
@@ -62,35 +84,5 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
       .then((emailVerificationForm: EmailVerificationFormComponent) => {
         emailVerificationForm.email = this.form.get('email')?.value;
       });
-  }
-
-
-  checkDuplicateEmail(): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors> => {
-      if (control.pristine) return of();
-
-      return this.dataService.get('api/Account/CreateChangeEmailOTP',
-        [
-          {
-            key: 'email',
-            value: this.form.get('email')?.value
-          }
-        ],
-        {
-          authorization: true,
-          spinnerAction: SpinnerAction.Start,
-          endSpinnerWhen: (result: any) => result && result.duplicateEmail
-        })
-        .pipe(switchMap((result: any) => {
-          // If it's not a duplicate email, open the email verification form
-          if (!result) {
-            this.fade();
-            this.openEmailverificationForm();
-            return of();
-          } else {
-            return of(result);
-          }
-        }));
-    };
   }
 }

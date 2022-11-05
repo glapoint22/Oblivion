@@ -47,7 +47,7 @@ export class Validation extends LazyLoad {
         messages.push('Password is incorrect');
       } else if (error == 'noEmail') {
         messages.push('The email you entered is not associated with any Niche Shack account. Please provide a different email address.');
-      }else if (error == 'noMatch') {
+      } else if (error == 'noMatch') {
         messages.push('Your password and email do not match.');
       }
     });

@@ -21,7 +21,7 @@ export class DeleteAccountPromptComponent extends LazyLoad {
 
 
   onDeleteClick() {
-    this.dataService.post('api/Account/CreateDeleteAccountOTP', {}, {
+    this.dataService.get('api/Account/CreateDeleteAccountOTP', [], {
       authorization: true,
       spinnerAction: SpinnerAction.Start
     })

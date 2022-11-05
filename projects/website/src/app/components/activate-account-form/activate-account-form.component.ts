@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService, LazyLoadingService, SpinnerAction, SpinnerService } from 'common';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -20,7 +20,6 @@ export class ActivateAccountFormComponent extends Validation {
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-      private spinnerService: SpinnerService
     ) { super(dataService, lazyLoadingService) }
 
 
