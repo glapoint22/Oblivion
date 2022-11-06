@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService, LazyLoadingService } from 'common';
 import { List } from '../../classes/list';
-import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
 import { ListsComponent } from '../lists/lists.component';
 
 @Component({
@@ -17,8 +16,7 @@ export class SharedListComponent extends ListsComponent implements OnInit {
     dataService: DataService,
     route: ActivatedRoute,
     router: Router,
-    listIdResolver: ListIdResolver
-  ) { super(lazyLoadingService, dataService, route, router, listIdResolver) }
+  ) { super(lazyLoadingService, dataService, route, router) }
 
   ngOnInit() {
     this.route.parent?.data.subscribe(data => {

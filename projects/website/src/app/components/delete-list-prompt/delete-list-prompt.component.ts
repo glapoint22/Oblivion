@@ -25,7 +25,7 @@ export class DeleteListPromptComponent extends LazyLoad {
 
 
   onDeleteClick() {
-    this.dataService.delete('api/Lists', { listId: this.list.id }, {
+    this.dataService.delete('api/Lists/DeleteList', { listId: this.list.id }, {
       authorization: true,
       spinnerAction: SpinnerAction.StartEnd
     })

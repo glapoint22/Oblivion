@@ -26,8 +26,8 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
     'Share List',
     'Edit List',
     'Invite Collaborators',
+    'Manage Collaborators',
     'Delete List',
-    'Move Item',
     'Remove Item'
   ];
 
@@ -40,7 +40,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.dataService.get<Array<Collaborator>>('api/Lists/Collaborators', [{ key: 'listId', value: this.list.id }], {
+    this.dataService.get<Array<Collaborator>>('api/Lists/GetCollaborators', [{ key: 'listId', value: this.list.id }], {
       authorization: true,
       spinnerAction: SpinnerAction.End
     })
@@ -129,7 +129,10 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   onApplyClick() {
-    this.dataService.put('api/Lists/UpdateCollaborators', this.updatedCollaborators, { authorization: true })
+    this.dataService.put('api/Lists/UpdateCollaborators', {
+      updatedCollaborators: this.updatedCollaborators,
+      listId: this.list.id
+    }, { authorization: true })
       .subscribe(() => {
         this.list.collaboratorCount = this.collaborators.length;
         this.close();

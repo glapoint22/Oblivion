@@ -1,4 +1,5 @@
 import { Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   Router, Resolve,
@@ -6,7 +7,7 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import { DataService } from 'common';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { SharedList } from '../../classes/shared-list';
 
 @Injectable({
@@ -17,16 +18,26 @@ export class SharedListResolver implements Resolve<SharedList> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<SharedList> {
 
-    return this.dataService.get<SharedList>('api/Lists/SharedList',
+    return this.dataService.get<SharedList>('api/Lists/GetSharedList',
       [
         { key: 'listId', value: route.paramMap.get('listId') },
         { key: 'sort', value: route.queryParamMap.get('sort') ? route.queryParamMap.get('sort') : '' }
       ])
-      .pipe(tap((sharedList: SharedList) => {
-        if (!sharedList) {
-          this.router.navigate(['**'], { skipLocationChange: true });
-          this.location.replaceState(state.url);
-        }
-      }));
+      .pipe(
+        catchError(this.handleError(state))
+      );
+  }
+
+
+
+  handleError(state: RouterStateSnapshot) {
+    return (error: HttpErrorResponse) => {
+      if (error.status == 404) {
+        this.router.navigate(['**'], { skipLocationChange: true });
+        this.location.replaceState(state.url);
+      }
+
+      return throwError(() => error);
+    }
   }
 }

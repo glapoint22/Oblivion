@@ -83,13 +83,13 @@
 
                                 <div class="item-actions-button-container">
                                     <dropdown-button
-                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.moveItem"
+                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canRemoveFromList"
                                         style="flex: 1;" [listItems]="moveToList"
                                         (onSelectedListItem)="onMoveItem($event, product)">
                                     </dropdown-button>
 
                                     <button
-                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.removeItem"
+                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canRemoveFromList"
                                         style="flex: 1; max-width: inherit; margin-left: 10px;" class="dark-button"
                                         (click)="onRemoveItemClick(product)">Remove</button>
                                 </div>
@@ -110,7 +110,7 @@
                             </div>
 
                             <div style="color: #ffba00;">
-                                To add items to this list, click on the “Add to List” button on any item’s detalis page
+                                To add items to this list, click on the “Add to List” button on any product page
                             </div>
                         </div>
                     </div>

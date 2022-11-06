@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { List } from '../../classes/list';
@@ -8,14 +8,13 @@ import { CreateListFormComponent } from '../../components/create-list-form/creat
 import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-side-menu.component';
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
-import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
 
 @Component({
   selector: 'lists',
   templateUrl: './lists.component.html',
   styleUrls: ['./lists.component.scss']
 })
-export class ListsComponent implements OnInit, OnDestroy {
+export class ListsComponent implements OnInit {
   public lists!: Array<List>;
   public selectedList!: List;
   public products!: Array<ListProduct> | undefined;
@@ -34,8 +33,7 @@ export class ListsComponent implements OnInit, OnDestroy {
     private lazyLoadingService: LazyLoadingService,
     public dataService: DataService,
     public route: ActivatedRoute,
-    private router: Router,
-    private listIdResolver: ListIdResolver
+    private router: Router
   ) { }
 
 
@@ -156,9 +154,9 @@ export class ListsComponent implements OnInit, OnDestroy {
         moveItemPrompt.toList = toListKeyValue;
         moveItemPrompt.onMove.subscribe(() => {
           this.products?.splice(this.products.indexOf(product), 1);
-          this.selectedList.totalItems--;
+          this.selectedList.totalProducts--;
           const toList = this.lists.find(x => x.id == toListKeyValue.value) as List;
-          toList.totalItems++;
+          toList.totalProducts++;
         });
       });
   }
@@ -188,10 +186,5 @@ export class ListsComponent implements OnInit, OnDestroy {
 
   onProductClick(product: ListProduct) {
     this.router.navigate([product.urlName, product.urlId]);
-  }
-
-
-  ngOnDestroy(): void {
-    this.listIdResolver.lists = null;
   }
 }

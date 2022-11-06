@@ -43,7 +43,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.post<List>('api/Lists',
+      this.dataService.post<List>('api/Lists/CreateList',
         {
           name: this.form.get('listName')?.value,
           description: this.form.get('description')?.value
