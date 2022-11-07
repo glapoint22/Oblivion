@@ -1,4 +1,5 @@
 import { KeyValue } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { List } from '../../classes/list';
@@ -30,22 +31,21 @@ export class MoveItemPromptComponent extends LazyLoad {
 
 
   onMoveClick() {
-    this.dataService.put<boolean>('api/lists/product', {
-      ProductId: this.product.id,
-      CollaboratorId: this.product.collaborator.id,
-      FromListId: this.fromList.id,
-      ToListId: this.toList.value
+    this.dataService.put<boolean>('api/lists/MoveProduct', {
+      productId: this.product.id,
+      sourceListId: this.fromList.id,
+      destinationListId: this.toList.value
     }, {
       authorization: true,
-      spinnerAction: SpinnerAction.Start,
-      endSpinnerWhen: (isDuplicate: any) => !isDuplicate
+      spinnerAction: SpinnerAction.StartEnd
     })
-      .subscribe((isDuplicate: boolean) => {
-        if (!isDuplicate) {
+      .subscribe({
+        complete: () => {
           this.close();
           this.onMove.emit();
-        } else {
-          this.openDuplicateItemPrompt();
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status == 409) this.openDuplicateItemPrompt();
         }
       });
   }

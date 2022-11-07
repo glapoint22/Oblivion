@@ -71,7 +71,7 @@ const routes: Routes = [
   {
     path: 'shared-list/:listId',
     loadChildren: () => import('./pages/shared-list/shared-list.module').then(m => m.SharedListModule),
-    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    // runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     resolve: {
       sharedList: SharedListResolver
     }

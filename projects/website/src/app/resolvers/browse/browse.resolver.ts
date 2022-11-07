@@ -24,7 +24,7 @@ export class BrowseResolver implements Resolve<PageContent | GridData> {
     ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PageContent | GridData> {
-    const id = route.queryParamMap.has('nicheId') ? route.queryParamMap.get('nicheId') : route.queryParamMap.get('categoryId');
+    const id = route.queryParamMap.has('subnicheId') ? route.queryParamMap.get('subnicheId') : route.queryParamMap.get('nicheId');
     const queryParams = new QueryParams();
 
     queryParams.set(route.queryParamMap);

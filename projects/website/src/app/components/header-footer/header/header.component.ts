@@ -3,7 +3,7 @@ import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/cor
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
-import { delay } from 'rxjs';
+import { debounceTime, delay, fromEvent, merge, Observable, of, switchMap } from 'rxjs';
 import { Niche } from '../../../classes/niche';
 import { Suggestion } from '../../../classes/suggestion';
 import { AccountService } from '../../../services/account/account.service';
@@ -22,7 +22,7 @@ export class HeaderComponent {
   @ViewChild('nicheMenuPopupContainer', { read: ViewContainerRef }) nicheMenuPopupContainer!: ViewContainerRef;
   @ViewChild('sideMenuContainer', { read: ViewContainerRef }) sideMenuContainer!: ViewContainerRef;
   @ViewChild('arrow') arrow!: ElementRef<HTMLElement>;
-  @ViewChild('input', { static: false }) searchInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   public selectedNiche!: Niche;
   public nicheMenuPopup!: NicheMenuPopupComponent;
   public accountMenuPopupComponent!: AccountMenuPopupComponent;
@@ -30,7 +30,7 @@ export class HeaderComponent {
   public suggestionIndex: number = -1;
   public suggestions: Array<Suggestion> = [];
   public suggestionListMousedown: boolean = false;
-  private searchwords!: string;
+  private searchTerm!: string;
 
   constructor(
     private lazyLoadingService: LazyLoadingService,
@@ -46,19 +46,91 @@ export class HeaderComponent {
 
 
   ngAfterViewInit() {
-
     const nicheId = this.route.snapshot.queryParamMap.get('nicheId') as string;
     if (nicheId) {
       this.nicheService.getNiches()
         .pipe(delay(1))
         .subscribe((niches: Array<Niche>) => {
-          this.selectedNiche = niches.find(x => x.urlId == nicheId) as Niche;
+          this.selectedNiche = niches.find(x => x.id == nicheId) as Niche;
         });
     }
 
     this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
       this.searchInput.nativeElement.value = queryParams.get('search') as string;
     });
+
+
+    const inputEvent = fromEvent(this.searchInput.nativeElement, 'input');
+    const mousedownEvent = fromEvent(this.searchInput.nativeElement, 'mousedown');
+    const bothEvents = merge(inputEvent, mousedownEvent);
+
+    bothEvents
+      .pipe<Event, Array<Suggestion>>(
+        debounceTime(100),
+        switchMap<Event, Observable<Array<Suggestion>>>(input => {
+          this.searchTerm = (input.target as HTMLInputElement).value;
+
+          if (this.searchTerm == '') {
+            this.suggestions = [];
+            return of(this.suggestions);
+          }
+
+
+          let parameters: Array<KeyValue<string, string>>;
+
+          if (this.selectedNiche && this.selectedNiche.id != 'all') {
+            parameters = [
+              {
+                key: 'searchTerm',
+                value: this.searchTerm.toLowerCase()
+              },
+              {
+                key: 'nicheId',
+                value: this.selectedNiche.id
+              }
+            ]
+          } else {
+            parameters = [{ key: 'searchTerm', value: this.searchTerm.toLowerCase() }];
+          }
+
+
+          return this.dataService.get<Array<Suggestion>>('api/Products/GetSearchSuggestions', parameters)
+        })
+      )
+      .subscribe((suggestions: Array<Suggestion>) => {
+        this.suggestions = [];
+        this.suggestionIndex = -1;
+
+        if (suggestions) {
+          let suggestionsCount: number;
+
+          if (window.innerHeight > 800) {
+            suggestionsCount = suggestions.length;
+          } else if (window.innerHeight > 600) {
+            suggestionsCount = Math.min(8, suggestions.length);
+          } else if (window.innerHeight > 400) {
+            suggestionsCount = Math.min(6, suggestions.length);
+          } else {
+            suggestionsCount = Math.min(4, suggestions.length);
+          }
+
+
+          for (let i = 0; i < suggestionsCount; i++) {
+            let suggestion: Suggestion = suggestions[i];
+
+            // Escape the special characters
+            let searchWords = this.searchTerm.replace(/[+*?^$\.\[\]{}()|/]/g, x => '\\' + x);
+
+            let html: string = suggestion.name.replace(new RegExp("\\b" + searchWords.trim(), "i"), '<span style="font-weight: 900;">' + searchWords.trim().toLowerCase() + '</span>');
+
+            this.suggestions.push({
+              name: suggestion.name,
+              niche: suggestion.niche,
+              html: this.sanitizer.bypassSecurityTrustHtml(html)
+            });
+          }
+        }
+      });
   }
 
 
@@ -160,75 +232,14 @@ export class HeaderComponent {
         .then((sideMenu: SideMenuComponent) => {
           this.sideMenu = sideMenu;
         });
-    } 
-  }
-
-
-
-
-
-  getSuggestions() {
-    this.searchwords = this.searchInput.nativeElement.value;
-
-
-    if (this.searchwords) {
-      let parameters: Array<KeyValue<string, string>>;
-
-      if (this.selectedNiche && this.selectedNiche.urlId != 'all') {
-        parameters = [
-          {
-            key: 'searchWords',
-            value: this.searchwords.toLowerCase()
-          },
-          {
-            key: 'nicheId',
-            value: this.selectedNiche.urlId
-          }
-        ]
-      } else {
-        parameters = [{ key: 'searchWords', value: this.searchwords.toLowerCase() }];
-      }
-
-
-      this.dataService.get<Array<Suggestion>>('api/Products/GetSuggestions', parameters)
-        .subscribe((suggestions: Array<Suggestion>) => {
-          this.suggestions = [];
-          this.suggestionIndex = -1;
-
-          if (suggestions) {
-            let suggestionsCount: number;
-
-            if (window.innerHeight > 800) {
-              suggestionsCount = suggestions.length;
-            } else if (window.innerHeight > 600) {
-              suggestionsCount = Math.min(8, suggestions.length);
-            } else if (window.innerHeight > 400) {
-              suggestionsCount = Math.min(6, suggestions.length);
-            } else {
-              suggestionsCount = Math.min(4, suggestions.length);
-            }
-
-
-            for (let i = 0; i < suggestionsCount; i++) {
-              let suggestion: Suggestion = suggestions[i];
-
-              // Escape the special characters
-              let searchWords = this.searchwords.replace(/[+*?^$\.\[\]{}()|/]/g, x => '\\' + x);
-
-              let html: string = suggestion.name.replace(new RegExp("\\b" + searchWords.trim(), "i"), '<span style="font-weight: 900;">' + searchWords.trim().toLowerCase() + '</span>');
-
-              this.suggestions.push({
-                name: suggestion.name,
-                niche: suggestion.niche,
-                html: this.sanitizer.bypassSecurityTrustHtml(html)
-              });
-            }
-          }
-        });
-    } else {
-      this.suggestions = [];
     }
   }
+
+
+
+
+
+  
 
 
   hideSuggestionList() {
@@ -248,10 +259,10 @@ export class HeaderComponent {
 
 
 
-    if ((this.selectedNiche && this.selectedNiche.urlId != 'all') || niche) {
+    if ((this.selectedNiche && this.selectedNiche.id != 'all') || niche) {
       queryParams = {
         'search': searchword,
-        'nicheId': (this.selectedNiche && this.selectedNiche.urlId) || (niche && niche.urlId),
+        'nicheId': (this.selectedNiche && this.selectedNiche.id) || (niche && niche.id),
         'nicheName': (this.selectedNiche && this.selectedNiche.urlName) || (niche && niche.urlName)
       }
     } else {
@@ -272,7 +283,7 @@ export class HeaderComponent {
 
     // Display the search words if the suggestionIndex is outside the bounds
     if (this.suggestions.length == 0 || this.suggestionIndex == -1 || this.suggestionIndex == this.suggestions.length) {
-      input.value = this.searchwords;
+      input.value = this.searchTerm;
       return;
     }
 

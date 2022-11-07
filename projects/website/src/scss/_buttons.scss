@@ -8,7 +8,7 @@
     border: 1px solid $border-color;
     color: $font-color;
 
-    &:hover {
+    &:hover:not(:disabled) {
         background: lighten($background-color, 6);
         border-color: lighten($border-color, 6);
         color: lighten($font-color, 6);
@@ -20,13 +20,13 @@
         color: darken($font-color, 30);
     }
 
-    &:active {
+    &:active:not(:disabled) {
         background: lighten($background-color, 10);
         border-color: lighten($border-color, 10);
         color: lighten($font-color, 10);
     }
 
-    &:focus {
+    &:focus:not(:disabled) {
         outline: 1px solid #808080;
         outline-offset: 2px;
     }

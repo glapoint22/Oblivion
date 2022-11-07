@@ -11,21 +11,22 @@ import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate
   templateUrl: './add-to-list-form.component.html',
   styleUrls: ['./add-to-list-form.component.scss']
 })
-export class AddToListFormComponent extends LazyLoad implements OnInit {
+export class AddToListFormComponent extends LazyLoad {
   public lists!: Array<KeyValue<string, string>>;
   public product!: SummaryProduct;
+  public productImage!: string;
   public selectedList!: KeyValue<string, string>;
 
   constructor
     (
       lazyLoadingService: LazyLoadingService,
       private dataService: DataService,
-  ) { super(lazyLoadingService) }
+    ) { super(lazyLoadingService) }
 
 
-  ngOnInit() {
-    super.ngOnInit();
-    this.dataService.get<Array<KeyValue<string, string>>>('api/Lists/DropdownLists', undefined, {
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    this.dataService.get<Array<KeyValue<string, string>>>('api/Lists/GetDropdownLists', undefined, {
       authorization: true,
       spinnerAction: SpinnerAction.StartEnd
     })
@@ -39,14 +40,9 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
           if (this.lists.length == 1) this.base.nativeElement.focus();
 
           if (this.lists.length > 1) {
-            // Wait while the lists are being created in the view
-            window.setTimeout(() => {
-              // The tabElements array was already populated in ngAfterViewInit but the lists probably weren't available
-              // at that time, so we're updating tabElements again so that the lists can be in the array
-              this.tabElements = this.HTMLElements.toArray();
-              // Set focus to the first list
-              this.setFocus(0);
-            }, 100);
+            this.tabElements = this.HTMLElements.toArray();
+            // Set focus to the first list
+            this.setFocus(0);
           }
           // If there are NO lists
         } else {
@@ -136,6 +132,7 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
           this.selectedList = this.lists[this.lists.length - 1];
         });
         createListForm.product = this.product;
+        createListForm.productImage = this.productImage;
         createListForm.fromAddToListForm = true;
       });
   }

@@ -13,6 +13,7 @@ import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.com
 })
 export class CreateListFormComponent extends Validation implements OnInit {
   public product!: SummaryProduct;
+  public productImage!: string;
   public fromAddToListForm!: boolean
   @Output() onListCreated: EventEmitter<List> = new EventEmitter();
 
@@ -77,6 +78,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
     }, SpinnerAction.StartEnd)
       .then((addToListForm: AddToListFormComponent) => {
         addToListForm.product = this.product;
+        addToListForm.productImage = this.productImage;
       });
   }
 

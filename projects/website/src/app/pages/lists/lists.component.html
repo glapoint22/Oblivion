@@ -55,9 +55,14 @@
                                 <div class="item-info-container">
                                     <div class="item-title">{{product.name}}</div>
                                     <stars-summary [product]="product"></stars-summary>
-                                    <div class="item-price">{{product.maxPrice ? product.minPrice + ' - ' +
-                                        product.maxPrice
-                                        : product.minPrice | currency:'USD'}}</div>
+
+                                        <div class="item-price">
+                                            <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+                                            <ng-container *ngIf="product.maxPrice > 0">
+                                                {{product.minPrice | currency:'USD'}} -
+                                                {{product.maxPrice | currency:'USD'}}
+                                            </ng-container>
+                                        </div>
                                 </div>
 
                             </div>
@@ -68,22 +73,22 @@
 
                             <!-- Item Actions -->
                             <div class="item-actions">
-                                <div class="profile-img-container" [title]="product.collaborator.image.name">
+                                <div class="profile-img-container" [title]="product.collaborator.profileImage.name">
                                     <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-                                    <img [src]="product.collaborator.image.src ? 'images/' + product.collaborator.image.src : 'assets/no-account-pic.png'"
-                                        [alt]="product.collaborator.image.name" class="profile-pic">
+                                    <img [src]="product.collaborator.profileImage.src ? 'images/' + product.collaborator.profileImage.src : 'assets/no-account-pic.png'"
+                                        [alt]="product.collaborator.profileImage.name" class="profile-pic">
                                 </div>
 
 
                                 <div class="date">
-                                    Added {{product.dateAdded}}
+                                    Added {{getDate(product.dateAdded) | date}}
                                 </div>
 
                                 <div class="added-text">Added by {{product.collaborator.name}}</div>
 
                                 <div class="item-actions-button-container">
                                     <dropdown-button
-                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canRemoveFromList"
+                                        [disabled]="moveToList.length == 0"
                                         style="flex: 1;" [listItems]="moveToList"
                                         (onSelectedListItem)="onMoveItem($event, product)">
                                     </dropdown-button>

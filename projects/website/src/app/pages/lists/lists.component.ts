@@ -1,4 +1,4 @@
-import { KeyValue } from '@angular/common';
+import { KeyValue, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
@@ -33,7 +33,8 @@ export class ListsComponent implements OnInit {
     private lazyLoadingService: LazyLoadingService,
     public dataService: DataService,
     public route: ActivatedRoute,
-    private router: Router
+    public router: Router,
+    private location: Location
   ) { }
 
 
@@ -124,7 +125,7 @@ export class ListsComponent implements OnInit {
           this.selectedList = list;
           this.populateMoveToList();
           this.products = [];
-          this.router.navigateByUrl('/account/lists/' + list.id);
+          this.location.replaceState('/account/lists/' + list.id);
         });
       });
   }
@@ -133,7 +134,11 @@ export class ListsComponent implements OnInit {
   populateMoveToList() {
     this.moveToList = [];
     this.lists.forEach(x => {
-      if (x != this.selectedList) this.moveToList.push({ key: x.name, value: x.id });
+      if (x != this.selectedList &&
+        (this.selectedList.isOwner || this.selectedList.listPermissions.canRemoveFromList) &&
+        (x.isOwner || x.listPermissions.canAddToList)) {
+        this.moveToList.push({ key: x.name, value: x.id });
+      }
     })
   }
 
@@ -165,9 +170,30 @@ export class ListsComponent implements OnInit {
   onListClick(list: List) {
     if (list == this.selectedList) return;
     this.selectedList = list;
-    this.router.navigate(['account/lists', list.id]);
-    this.populateMoveToList();
-    this.products = undefined;
+
+
+    // This will clear any query params
+    this.router.navigate([], {
+      queryParams: { sort: null },
+      queryParamsHandling: 'merge'
+    });
+
+    window.setTimeout(() => {
+      this.location.replaceState('/account/lists/' + list.id);
+      this.dataService.get<Array<ListProduct>>('api/Lists/GetListProducts', [
+        {
+          key: 'listId',
+          value: list.id
+        }
+      ], {
+        authorization: true,
+        spinnerAction: SpinnerAction.StartEnd
+      })
+        .subscribe((products: Array<ListProduct>) => {
+          this.populateMoveToList();
+          this.products = products;
+        });
+    });
   }
 
 
@@ -176,6 +202,25 @@ export class ListsComponent implements OnInit {
       queryParams: { sort: value },
       queryParamsHandling: 'merge'
     });
+
+    window.setTimeout(() => {
+      this.dataService.get<Array<ListProduct>>('api/Lists/GetListProducts', [
+        {
+          key: 'listId',
+          value: this.selectedList.id
+        },
+        {
+          key: 'sort',
+          value: value
+        }
+      ], {
+        authorization: true,
+        spinnerAction: SpinnerAction.StartEnd
+      }).subscribe((products: Array<ListProduct>) => {
+        this.products = products;
+      });
+    });
+
   }
 
 
@@ -186,5 +231,10 @@ export class ListsComponent implements OnInit {
 
   onProductClick(product: ListProduct) {
     this.router.navigate([product.urlName, product.urlId]);
+  }
+
+
+  getDate(date: string) {
+    return new Date(date + 'Z');
   }
 }

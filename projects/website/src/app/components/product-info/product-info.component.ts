@@ -64,6 +64,7 @@ export class ProductInfoComponent implements OnChanges {
       }, SpinnerAction.Start)
         .then((addToListForm: AddToListFormComponent) => {
           addToListForm.product = this.product;
+          addToListForm.productImage = this.product.media[0].imageMd;
         });
 
     } else {
