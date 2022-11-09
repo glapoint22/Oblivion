@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { DataService, LazyLoadingService, RadioButtonLazyLoad, SpinnerAction, SummaryProduct } from 'common';
 import { List } from '../../classes/list';
 import { AddToListPromptComponent } from '../../components/add-to-list-prompt/add-to-list-prompt.component';
 import { CreateListFormComponent } from '../create-list-form/create-list-form.component';
@@ -11,7 +11,7 @@ import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate
   templateUrl: './add-to-list-form.component.html',
   styleUrls: ['./add-to-list-form.component.scss']
 })
-export class AddToListFormComponent extends LazyLoad implements OnInit {
+export class AddToListFormComponent extends RadioButtonLazyLoad implements OnInit {
   public lists!: Array<KeyValue<string, string>>;
   public product!: SummaryProduct;
   public selectedList!: KeyValue<string, string>;
@@ -141,35 +141,35 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
   }
 
 
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
+  // onSpace(e: KeyboardEvent): void {
+  //   e.preventDefault();
 
-    if (this.tabElements) {
-      for (let i = 0; i < this.tabElements.length; i++) {
-        if (this.tabElements[i].nativeElement == document.activeElement) {
-          if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
-            this.selectedList = this.lists[i];
-          }
-        }
-      }
-    }
-  }
+  //   if (this.tabElements) {
+  //     for (let i = 0; i < this.tabElements.length; i++) {
+  //       if (this.tabElements[i].nativeElement == document.activeElement) {
+  //         if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
+  //           this.selectedList = this.lists[i];
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
 
   onEnter(e: KeyboardEvent): void {
     if (this.tabElements) {
-      for (let i = 0; i < this.tabElements.length; i++) {
-        if (this.tabElements[i].nativeElement == document.activeElement) {
-          if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
-            if (this.selectedList != this.lists[i]) {
-              this.selectedList = this.lists[i];
-            } else {
-              this.onSubmit();
-            }
-          }
-          return;
-        }
-      }
+      // for (let i = 0; i < this.tabElements.length; i++) {
+      //   if (this.tabElements[i].nativeElement == document.activeElement) {
+      //     if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
+      //       if (this.selectedList != this.lists[i]) {
+      //         this.selectedList = this.lists[i];
+      //       } else {
+      //         this.onSubmit();
+      //       }
+      //     }
+      //     return;
+      //   }
+      // }
 
       if (this.tabElements[this.tabElements.length - 1].nativeElement != document.activeElement &&
         this.tabElements[this.tabElements.length - 2].nativeElement != document.activeElement &&
@@ -178,5 +178,10 @@ export class AddToListFormComponent extends LazyLoad implements OnInit {
         this.onSubmit();
       }
     }
+  }
+
+
+  onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
+    this.selectedList = this.lists[this.tabElements.indexOf(radioButton)];
   }
 }

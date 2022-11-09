@@ -17,7 +17,7 @@
                     <label class="radio" style="display: block;">
                         <div>{{filter.key}}</div>
                         <input type="radio" name="order-filter" [checked]="filter == selectedFilter" (change)="onFilterChange.emit(filter)">
-                        <span class="checkmark"></span>
+                        <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
                     </label>
                 </ng-container>
             </div>
@@ -33,7 +33,7 @@
                     <label class="radio" style="display: block;">
                         <div>{{sort.key}}</div>
                         <input type="radio" name="sort" [checked]="sort == selectedSort" (change)="onSortChange.emit(sort)">
-                        <span class="checkmark"></span>
+                        <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
                     </label>
                 </ng-container>
             </div>

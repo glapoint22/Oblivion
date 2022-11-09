@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { LazyLoad, ShippingType } from 'common';
+import { Component, ElementRef } from '@angular/core';
+import { RadioButtonLazyLoad, ShippingType } from 'common';
 import { Subject } from 'rxjs';
 import { PopupArrowPosition } from '../../classes/enums';
 
@@ -8,16 +8,20 @@ import { PopupArrowPosition } from '../../classes/enums';
   templateUrl: './shipping-popup.component.html',
   styleUrls: ['./shipping-popup.component.scss']
 })
-export class ShippingPopupComponent extends LazyLoad {
+export class ShippingPopupComponent extends RadioButtonLazyLoad {
+  private initialShippingType!: ShippingType;
+
   public arrowPosition!: PopupArrowPosition;
   public PopupArrowPosition = PopupArrowPosition;
   public shipping!: ShippingType;
-  public shippingType = ShippingType;
+  public ShippingType = ShippingType;
   public callback!: Function;
   public onClose: Subject<void> = new Subject<void>();
+  public submitButtonDisabled: boolean = true;
 
   ngOnInit() {
     super.ngOnInit();
+    this.initialShippingType = this.shipping;
     window.addEventListener('mousedown', this.mousedown);
   }
 
@@ -39,5 +43,11 @@ export class ShippingPopupComponent extends LazyLoad {
 
   ngOnDestroy() {
     window.removeEventListener('mousedown', this.mousedown);
+  }
+
+
+  onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
+    this.shipping = this.tabElements.indexOf(radioButton) + 1;
+    this.submitButtonDisabled = this.shipping == this.initialShippingType;
   }
 }

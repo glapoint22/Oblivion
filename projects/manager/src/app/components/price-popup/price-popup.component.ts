@@ -39,11 +39,11 @@ export class PricePopupComponent extends LazyLoad {
 
     // Disable the submit button if:
     this.submitButtonDisabled = 
-    // the price in the input field is no different than the initial price
+    // the price in the input field is (NOT) different than the initial price
     !(parseFloat(this.priceInput.nativeElement.value) != this.price &&
     // the input field is empty
     this.priceInput.nativeElement.value.length > 0 &&
-    // the value in the input field is NOT a number
+    // or the value in the input field is (NOT) a number
     !isNaN(parseFloat(this.priceInput.nativeElement.value)));
   }
 

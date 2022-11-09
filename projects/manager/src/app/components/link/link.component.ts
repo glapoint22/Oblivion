@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { LazyLoad, Link, LinkType } from 'common';
+import { Link, LinkType, RadioButtonLazyLoad } from 'common';
 import { Item } from '../../classes/item';
 import { LinkItem } from '../../classes/link-item';
 import { SearchComponent } from '../search/search.component';
@@ -9,7 +9,7 @@ import { SearchComponent } from '../search/search.component';
   templateUrl: './link.component.html',
   styleUrls: ['./link.component.scss']
 })
-export class LinkComponent extends LazyLoad {
+export class LinkComponent extends RadioButtonLazyLoad {
   @ViewChild('linkInput') linkInput!: ElementRef<HTMLInputElement>;
   @ViewChild('search') search!: SearchComponent;
   public link!: Link;
@@ -139,5 +139,32 @@ export class LinkComponent extends LazyLoad {
   @HostListener('window:mousedown')
   onWindowMousedown() {
     this.close();
+  }
+
+
+  onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
+    switch (this.tabElements.indexOf(radioButton)) {
+      case 0:
+        this.setLinkType(LinkType.None);
+        this.isApplyButtonDisabled = false;
+        break;
+
+      case 1:
+        this.setLinkType(LinkType.Page);
+        this.search ? this.search.clear() : null;
+        this.isApplyButtonDisabled = true
+        break;
+
+      case 2:
+        this.setLinkType(LinkType.Product);
+        this.search ? this.search.clear() : null;
+        this.isApplyButtonDisabled = true
+        break;
+
+      case 3:
+        this.setLinkType(LinkType.WebAddress);
+        this.isApplyButtonDisabled = true
+        break;
+    }
   }
 }

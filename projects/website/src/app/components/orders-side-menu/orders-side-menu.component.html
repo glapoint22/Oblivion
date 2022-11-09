@@ -15,7 +15,7 @@
                     <label class="radio" style="display: block;">
                         <div>{{filter.key}}</div>
                         <input type="radio" name="order-filter" [checked]="filter == selectedFilter" (change)="onApply.emit(filter)">
-                        <span class="checkmark"></span>
+                        <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
                     </label>
                 </ng-container>
             </div>

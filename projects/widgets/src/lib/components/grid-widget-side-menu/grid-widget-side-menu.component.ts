@@ -1,14 +1,14 @@
 import { KeyValue } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Filters, LazyLoad, LazyLoadingService } from 'common';
+import { Filters, LazyLoadingService, RadioButtonLazyLoad } from 'common';
 
 @Component({
   selector: 'grid-widget-side-menu',
   templateUrl: './grid-widget-side-menu.component.html',
   styleUrls: ['./grid-widget-side-menu.component.scss']
 })
-export class GridWidgetSideMenuComponent extends LazyLoad implements OnInit {
+export class GridWidgetSideMenuComponent extends RadioButtonLazyLoad implements OnInit {
   public sortOptions!: Array<KeyValue<string, string>>;
   public filters!: Filters;
 
@@ -38,5 +38,10 @@ export class GridWidgetSideMenuComponent extends LazyLoad implements OnInit {
   setSortOption() {
     const index = Math.max(0, this.sortOptions.findIndex(x => x.value == this.route.snapshot.queryParams['sort']));
     return this.sortOptions[index];
+  }
+
+
+  onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
+    this.onSortChange(this.sortOptions[this.tabElements.indexOf(radioButton)]);
   }
 }

@@ -39,7 +39,7 @@ export class PricePointShippingComponent extends PricePointComponent {
         this.shippingPopupOpen = true;
         this.shippingPopup = shippingPopup;
         shippingPopup.arrowPosition = arrowPosition;
-        shippingPopup.shipping = arrowPosition == PopupArrowPosition.BottomLeft ? ShippingType.FreeShipping : pricePoint.shippingType;
+        shippingPopup.shipping = arrowPosition == PopupArrowPosition.BottomLeft ? ShippingType.None : pricePoint.shippingType;
         shippingPopup.callback = (shippingType: ShippingType) => {
           pricePoint.shippingType = shippingType;
           this.updatePricePoint(pricePoint);

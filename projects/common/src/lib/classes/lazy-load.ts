@@ -10,11 +10,11 @@ export class LazyLoad implements AfterViewInit {
     public container!: ViewContainerRef;
     public setTimeOut!: number;
     public shiftKeyDown!: boolean;
-    // public tabIndex!: number | null;
     public tabElements!: Array<ElementRef<HTMLElement>>;
     public onTabElementsLoaded = new Subject<void>();
     @ViewChild('base') base!: ElementRef<HTMLElement>;
     @ViewChildren('tabElement') HTMLElements!: QueryList<ElementRef<HTMLElement>>;
+
 
     constructor(public lazyLoadingService: LazyLoadingService) { }
 
@@ -106,58 +106,89 @@ export class LazyLoad implements AfterViewInit {
     }
 
 
+
+
     onTab(direction: number): void {
         if (this.tabElements) {
+            // Check to see if any tab element has focus
+            let tabIndex = this.tabElements.findIndex(x => x.nativeElement == document.activeElement);
 
-            // Initialize tabIndex to null
-            let tabIndex = null;
+            // If a tab element has focus
+            if (tabIndex != -1) {
+                // Increment or decrement by one (depending on direction)
+                tabIndex = tabIndex + (1 * direction);
+                // Make sure we stay in bounds
+                if (tabIndex > this.tabElements.length - 1) tabIndex = 0;
+                if (tabIndex < 0) tabIndex = this.tabElements.length - 1;
+                // Set focus to the next tab element in the list
+                this.getNextTabElement(tabIndex, direction);
 
-            // Loop through all the tab elements
-            for (let i = 0; i < this.tabElements.length; i++) {
-
-                // Check to see which tab element has the focus
-                if (this.tabElements[i].nativeElement == document.activeElement) {
-
-                    // Get the index value of the focused tab element
-                    // then increment or decrement by one (depending on direction)
-                    tabIndex = i + (1 * direction);
-
-                    // Set the tab loop
-                    if (tabIndex > this.tabElements.length - 1) tabIndex = 0;
-                    if (tabIndex < 0) tabIndex = this.tabElements.length - 1;
-
-                    this.checkIfDisabled(tabIndex, direction);
-                    break;
-                }
+                // If a tab element does (NOT) have focus yet
+            } else {
+                // Set focus to the first tab element in the list
+                this.getNextTabElement(0, direction);
             }
-
-            // If tabIndex is not defined that means the first tab element has not been set the focus yet
-            if (!tabIndex) this.checkIfDisabled(0, direction);
         }
     }
 
 
 
-    checkIfDisabled(tabIndex: number, direction: number): void {
+
+
+
+
+
+    getNextTabElement(tabIndex: number, direction: number): void {
         // If the current tab element is either a button or an input and it is disabled 
-        if ((this.tabElements[tabIndex!].nativeElement instanceof HTMLButtonElement && (this.tabElements[tabIndex!].nativeElement as HTMLButtonElement).disabled) ||
-            (this.tabElements[tabIndex!].nativeElement instanceof HTMLInputElement && (this.tabElements[tabIndex!].nativeElement as HTMLInputElement).disabled)) {
+        if ((this.tabElements[tabIndex].nativeElement instanceof HTMLButtonElement && (this.tabElements[tabIndex].nativeElement as HTMLButtonElement).disabled) ||
+            (this.tabElements[tabIndex].nativeElement instanceof HTMLInputElement && (this.tabElements[tabIndex].nativeElement as HTMLInputElement).disabled)) {
 
             // Increment or decrement by one (depending on direction)
             tabIndex = tabIndex! + (1 * direction);
             if (tabIndex > this.tabElements.length - 1) tabIndex = 0;
             if (tabIndex < 0) tabIndex = this.tabElements.length - 1;
 
-            // And check to see if that tab element is disabled
-            this.checkIfDisabled(tabIndex, direction);
+            // And check to see if this next tab element is also disabled
+            this.getNextTabElement(tabIndex, direction);
 
             // If the current tab element is NOT disabled
         } else {
-
-            // Then set focus to that tab element
-            this.setFocus(tabIndex);
+            this.setFocusToTabElement(tabIndex, direction)
         }
     }
+
+
+    setFocusToTabElement(tabIndex: number, direction?: number) {
+        this.setFocus(tabIndex);
+    }
+
+
+
+
+
+
+
+
+
+    checkForRadioButtonFocus(direction?: number) {
+
+    }
+
+
+
+    onRadioButtonArrow(direction: number) {
+
+    }
+
+
+
+    onRadioButtonSpacebar() {
+
+    }
+
+
+
+
 
 
 
@@ -197,6 +228,7 @@ export class LazyLoad implements AfterViewInit {
         }
 
         if (e.key === ' ') {
+            e.preventDefault();
             this.onSpace(e);
         }
 
@@ -209,12 +241,17 @@ export class LazyLoad implements AfterViewInit {
         }
 
         if (e.key === 'ArrowUp') {
+            e.preventDefault();
             this.onArrowUp(e);
         }
 
         if (e.key === 'ArrowDown') {
+            e.preventDefault();
             this.onArrowDown(e);
         }
+
+
+
     }
 
 

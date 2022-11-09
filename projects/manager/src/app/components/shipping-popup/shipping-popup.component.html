@@ -11,40 +11,40 @@
 
         <label class="radio" style="display: block; width: fit-content;">
             <div>Free Shipping</div>
-            <input type="radio" name="shipping" [checked]="shipping == shippingType.FreeShipping"
-                (change)="shipping = shippingType.FreeShipping">
-            <span #tabElement class="checkmark" tabindex="-1"></span>
+            <input type="radio" name="shipping" [checked]="shipping == ShippingType.FreeShipping"
+                (change)="onRadioButtonChange(tabElements[0])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
         <label class="radio" style="display: block; width: fit-content;">
             <div>Free US Shipping</div>
-            <input type="radio" name="shipping" [checked]="shipping == shippingType.FreeUsShipping"
-                (change)="shipping = shippingType.FreeUsShipping">
-            <span #tabElement class="checkmark" tabindex="-1"></span>
+            <input type="radio" name="shipping" [checked]="shipping == ShippingType.FreeUsShipping"
+                (change)="onRadioButtonChange(tabElements[1])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
         <label class="radio" style="display: block; width: fit-content;">
             <div>Plus Shipping</div>
-            <input type="radio" name="shipping" [checked]="shipping == shippingType.PlusShipping"
-                (change)="shipping = shippingType.PlusShipping">
-            <span #tabElement class="checkmark" tabindex="-1"></span>
+            <input type="radio" name="shipping" [checked]="shipping == ShippingType.PlusShipping"
+                (change)="onRadioButtonChange(tabElements[2])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
         <label class="radio" style="display: block; width: fit-content;">
             <div>Just Pay Shipping</div>
-            <input type="radio" name="shipping" [checked]="shipping == shippingType.JustPayShipping"
-                (change)="shipping = shippingType.JustPayShipping">
-            <span #tabElement class="checkmark" tabindex="-1"></span>
+            <input type="radio" name="shipping" [checked]="shipping == ShippingType.JustPayShipping"
+                (change)="onRadioButtonChange(tabElements[3])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
         <!-- Buttons -->
         <div class="popup-button-container">
             <button #tabElement class="dark-button" (click)="close()">Close</button>
-            <button #tabElement class="gold-button" (click)="onSubmitClick()">Submit</button>
+            <button #tabElement class="gold-button" (click)="onSubmitClick()" [disabled]="submitButtonDisabled">Submit</button>
         </div>
     </div>
 

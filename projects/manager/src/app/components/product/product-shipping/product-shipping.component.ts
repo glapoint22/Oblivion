@@ -34,7 +34,7 @@ export class ProductShippingComponent extends ProductComponent {
         this.popupOpen = true;
         this.shippingPopup = shippingPopup;
         shippingPopup.arrowPosition = arrowPosition;
-        shippingPopup.shipping = arrowPosition == PopupArrowPosition.TopLeft ? ShippingType.FreeShipping : this.product.shippingType;
+        shippingPopup.shipping = arrowPosition == PopupArrowPosition.TopLeft ? ShippingType.None : this.product.shippingType;
         shippingPopup.callback = (shippingType: ShippingType) => {
           this.product.shippingType = shippingType;
           this.updateShipping();

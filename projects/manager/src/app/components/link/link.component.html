@@ -14,9 +14,9 @@
         <label class="radio">
             <div>None</div>
             <input type="radio" name="link-option" [checked]="link.linkType == linkType.None"
-                (change)="setLinkType(linkType.None); isApplyButtonDisabled = false" (keydown.enter)="setLink()">
+                (change)="onRadioButtonChange(tabElements[0])" (keydown.enter)="setLink()">
 
-            <span class="checkmark"></span>
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
@@ -24,8 +24,8 @@
         <label class="radio">
             <div>Page</div>
             <input type="radio" name="link-option" [checked]="link.linkType == linkType.Page"
-                (change)="setLinkType(linkType.Page); search ? search.clear() : null; isApplyButtonDisabled = true">
-            <span class="checkmark"></span>
+                (change)="onRadioButtonChange(tabElements[1])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
@@ -33,8 +33,8 @@
         <label class="radio">
             <div>Product</div>
             <input type="radio" name="link-option" [checked]="link.linkType == linkType.Product"
-                (change)="setLinkType(linkType.Product); search ? search.clear() : null; isApplyButtonDisabled = true">
-            <span class="checkmark"></span>
+                (change)="onRadioButtonChange(tabElements[2])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
@@ -42,8 +42,8 @@
         <label class="radio">
             <div>Web Address</div>
             <input type="radio" name="link-option" [checked]="link.linkType == linkType.WebAddress"
-                (change)="setLinkType(linkType.WebAddress); isApplyButtonDisabled = true">
-            <span class="checkmark"></span>
+                (change)="onRadioButtonChange(tabElements[3])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
         <div style="width: 100%;">
@@ -65,8 +65,8 @@
 
         <!-- Buttons -->
         <div class="buttons-container">
-            <button class="dark-button" (click)="close()">Close</button>
-            <button class="gold-button" [disabled]="isApplyButtonDisabled" (click)="setLink()">Submit</button>
+            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #tabElement class="gold-button" [disabled]="isApplyButtonDisabled" (click)="setLink()">Submit</button>
         </div>
     </div>
 </div>

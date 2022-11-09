@@ -32,8 +32,8 @@
                     <div class="img-container">
 
                         <div class="media-backdrop">
-                            <img [src]="'images/' + product.image.src" [title]="product.name"
-                                [alt]="product.name">
+                            <!-- <img [src]="'images/' + product.image.src" [title]="product.name"
+                                [alt]="product.name"> -->
                         </div>
 
 
@@ -74,9 +74,8 @@
                             <ng-container *ngFor="let list of lists">
                                 <label class="radio" style="display: block;">
                                     <div>{{list.key}}</div>
-                                    <input type="radio" name="list" [checked]="list == selectedList"
-                                        (change)="selectedList = list; tabElement.focus()">
-                                    <span #tabElement class="checkmark" tabindex="-1"></span>
+                                    <input type="radio" name="list" [checked]="list == selectedList" (change)="selectedList = list;">
+                                    <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
                                 </label>
                             </ng-container>
                         </div>

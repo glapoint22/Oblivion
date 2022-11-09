@@ -151,8 +151,6 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-
     if (this.tabElements) {
       if (this.tabElements[6].nativeElement == document.activeElement) {
         this.isPersistent = !this.isPersistent;

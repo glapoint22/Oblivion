@@ -15,9 +15,8 @@
                 <div style="padding: 10px;">
                     <label class="radio" style="display: block;" *ngFor="let sortOption of sortOptions">
                         <div>{{sortOption.key}}</div>
-                        <input type="radio" name="sort" [checked]="sortOption == setSortOption()"
-                            (change)="onSortChange(sortOption)">
-                        <span class="checkmark"></span>
+                        <input type="radio" name="sort" [checked]="sortOption == setSortOption()" (change)="onSortChange(sortOption)">
+                        <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
                     </label>
                 </div>
             </filter-container>

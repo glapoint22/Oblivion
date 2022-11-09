@@ -27,6 +27,7 @@ export * from './lib/classes/subproduct';
 export * from './lib/classes/shipping';
 export * from './lib/classes/i-product';
 export * from './lib/classes/image-size';
+export * from './lib/classes/radio-button-lazy-load';
 
 // Components
 export * from './lib/components/dropdown/dropdown.component';

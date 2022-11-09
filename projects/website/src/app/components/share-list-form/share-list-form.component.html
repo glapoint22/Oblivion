@@ -32,8 +32,8 @@
 
                         <label class="radio">
                             <div>Click one of the options on the right to share this list.</div>
-                            <input type="radio" name="share-list" checked="checked" (change)="shareRadioButton.focus(); linkCopied = false">
-                            <span #tabElement #shareRadioButton class="checkmark" tabindex="-1"></span>
+                            <input type="radio" name="share-list" checked="checked" (change)="linkCopied = false">
+                            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
                         </label>
 
                         <div class="horizontal-line"></div>
@@ -43,8 +43,8 @@
                         <label class="radio">
                             <div>Click one of the options on the right to invite people to collaborate on this list.
                             </div>
-                            <input id="collaborate" type="radio" name="share-list" (change)="inviteRadioButton.focus(); linkCopied = false">
-                            <span #tabElement #inviteRadioButton class="checkmark" tabindex="-1"></span>
+                            <input id="collaborate" type="radio" name="share-list" (change)="linkCopied = false">
+                            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
                         </label>
 
                     </div>

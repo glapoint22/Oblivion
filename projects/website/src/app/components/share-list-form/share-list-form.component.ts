@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { LazyLoad, LazyLoadingService } from 'common';
+import { Component, ElementRef } from '@angular/core';
+import { LazyLoadingService, RadioButtonLazyLoad } from 'common';
 import { ShareListType } from '../../classes/enums';
 import { List } from '../../classes/list';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
@@ -9,7 +9,7 @@ import { SocialMediaService } from '../../services/social-media/social-media.ser
   templateUrl: './share-list-form.component.html',
   styleUrls: ['./share-list-form.component.scss']
 })
-export class ShareListFormComponent extends LazyLoad {
+export class ShareListFormComponent extends RadioButtonLazyLoad {
   public shareListType!: ShareListType;
   public ShareListType = ShareListType;
   public list!: List;
@@ -69,23 +69,23 @@ export class ShareListFormComponent extends LazyLoad {
 
 
 
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
+  // onSpace(e: KeyboardEvent): void {
+  //   e.preventDefault();
 
-    if (this.tabElements) {
-      if (this.shareListType == ShareListType.Both) {
-        if (this.tabElements[0].nativeElement == document.activeElement) (this.tabElements[0].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
-        if (this.tabElements[1].nativeElement == document.activeElement) (this.tabElements[1].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
-      }
-    }
-  }
+  //   if (this.tabElements) {
+  //     if (this.shareListType == ShareListType.Both) {
+  //       if (this.tabElements[0].nativeElement == document.activeElement) (this.tabElements[0].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
+  //       if (this.tabElements[1].nativeElement == document.activeElement) (this.tabElements[1].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
+  //     }
+  //   }
+  // }
 
 
   onEnter(e: KeyboardEvent): void {
     if (this.tabElements) {
       if (this.shareListType == ShareListType.Both) {
-        if (this.tabElements[0].nativeElement == document.activeElement) (this.tabElements[0].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
-        if (this.tabElements[1].nativeElement == document.activeElement) (this.tabElements[1].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
+        // if (this.tabElements[0].nativeElement == document.activeElement) (this.tabElements[0].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
+        // if (this.tabElements[1].nativeElement == document.activeElement) (this.tabElements[1].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
         if (this.tabElements[2].nativeElement == document.activeElement) this.onShareClick('Facebook');
         if (this.tabElements[3].nativeElement == document.activeElement) this.onShareClick('Twitter');
         if (this.tabElements[4].nativeElement == document.activeElement) this.onShareClick('Link');
@@ -97,5 +97,10 @@ export class ShareListFormComponent extends LazyLoad {
         if (this.tabElements[2].nativeElement == document.activeElement) this.onShareClick('Link');
       }
     }
+  }
+
+
+  onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
+    this.linkCopied = false;
   }
 }
