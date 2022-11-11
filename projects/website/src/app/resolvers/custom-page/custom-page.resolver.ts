@@ -1,4 +1,5 @@
 import { Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   Router, Resolve,
@@ -6,7 +7,7 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import { DataService } from 'common';
-import { Observable, of } from 'rxjs';
+import { catchError, Observable, of, throwError } from 'rxjs';
 import { PageContent } from 'widgets';
 
 @Injectable({
@@ -22,8 +23,7 @@ export class CustomPageResolver implements Resolve<PageContent> {
     ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PageContent> {
-    const id = route.queryParamMap.get('id');
-    const pageType = route.queryParamMap.get('pageType');
+    const id = route.paramMap.get('id');
 
     // Return the page
     if (id) {
@@ -32,18 +32,23 @@ export class CustomPageResolver implements Resolve<PageContent> {
           key: 'id',
           value: id
         }
-      ])
-    } else if (pageType) {
-      return this.dataService.get<PageContent>('api/Pages/PageType', [
-        {
-          key: 'pageType',
-          value: pageType
-        }
-      ])
+      ]).pipe(
+        catchError<PageContent, Observable<PageContent>>(this.handleError(state))
+      );
     } else {
       this.router.navigate(['**'], { skipLocationChange: true });
       this.location.replaceState(state.url);
       return of();
+    }
+  }
+
+  handleError(state: RouterStateSnapshot) {
+    return (error: HttpErrorResponse) => {
+      if (error.status == 404) {
+        this.router.navigate(['**'], { skipLocationChange: true });
+        this.location.replaceState(state.url);
+      }
+      return throwError(() => error);
     }
   }
 }
