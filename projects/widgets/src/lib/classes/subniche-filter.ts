@@ -1,6 +1,6 @@
 export class SubnicheFilter {
-    urlId!: string;
+    id!: string;
     name!: string;
     urlName!: string;
-    visible!: boolean;
+    visible: boolean = true;
 }

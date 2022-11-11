@@ -6,7 +6,7 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
   styleUrls: ['./filter-container.component.scss']
 })
 export class FilterContainerComponent {
-  @Input() caption!: string;
+  @Input() name!: string;
   @ViewChild('content') content!: ElementRef;
   public expanded: boolean = true;
   public contentMaxHeight!: number | null;

@@ -14,16 +14,16 @@
 
             <button type="submit" class="gold-round-button-sm">Go</button>
         </div>
-        <div *ngIf="showClearPrice" class="clear-price" (click)="clearPrice()">Clear Price Range</div>
+        <div *ngIf="showClearPrice" class="clear-price" (click)="clearPrice(true)">Clear Price Range</div>
     </form>
 
 
     <div class="horizontal-line"></div>
 
-    <div *ngFor="let option of filter.options; trackBy:trackPriceFilterOption">
-        <label class="checkbox">
+    <div *ngFor="let option of filter.options; trackBy:trackPriceFilterOption" class="option">
+        <label class="radio">
             <div>{{option.label}}</div>
-            <input #checkbox type="checkbox" (change)="onFilterClick(option.min + '-' + option.max)"
+            <input #checkbox type="radio" name="price-option" (change)="onFilterClick(option.min + '-' + option.max)"
                 [value]="option.min + '-' + option.max">
             <span class="checkmark"></span>
         </label>

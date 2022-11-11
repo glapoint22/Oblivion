@@ -1,5 +1,5 @@
+import { SummaryProduct } from "common";
 import { Filters } from "./filters";
-import { SummaryProduct } from "./summary-product";
 
 export class GridData {
     public products!: Array<SummaryProduct>;

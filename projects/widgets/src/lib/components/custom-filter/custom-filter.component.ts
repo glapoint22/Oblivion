@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { QueryFilter } from 'common';
 import { Filter } from '../../classes/filter';
+import { QueryFilter } from '../../classes/query-filter';
 
 @Component({
   selector: 'custom-filter',

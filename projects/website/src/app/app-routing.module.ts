@@ -28,7 +28,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule),
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     resolve: {
-      searchData: SearchResolver
+      pageContent: SearchResolver
     }
   },
   {

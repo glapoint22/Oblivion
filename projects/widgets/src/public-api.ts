@@ -13,8 +13,10 @@ export * from './lib/classes/container-widget-data';
 export * from './lib/classes/corners';
 export * from './lib/classes/enableable';
 export * from './lib/classes/filter';
+export * from './lib/classes/filters';
 export * from './lib/classes/filter-param';
 export * from './lib/classes/grid-widget-data';
+export * from './lib/classes/grid-data';
 export * from './lib/classes/horizontal-alignment';
 export * from './lib/classes/horizontal-alignment-value';
 export * from './lib/classes/image-widget-data';
@@ -23,7 +25,6 @@ export * from './lib/classes/padding';
 export * from './lib/classes/padding-value';
 export * from './lib/classes/page-content';
 export * from './lib/classes/product-slider-widget-data';
-export * from './lib/classes/query-params';
 export * from './lib/classes/row';
 export * from './lib/classes/shadow';
 export * from './lib/classes/text-widget-data';
@@ -35,6 +36,14 @@ export * from './lib/classes/widget-data';
 export * from './lib/classes/widget-enums';
 export * from './lib/classes/breakpoint';
 export * from './lib/classes/breakpoint-value';
+export * from './lib/classes/niche-filter';
+export * from './lib/classes/niche-filters';
+export * from './lib/classes/price-filter';
+export * from './lib/classes/price-filter-option';
+export * from './lib/classes/query-filter';
+export * from './lib/classes/query-filter-option';
+export * from './lib/classes/subniche-filter';
+export * from './lib/classes/subniche-filters';
 
 
 // Components
@@ -72,3 +81,6 @@ export * from './lib/components/video-widget/video-widget.component';
 // Directives
 export * from './lib/directives/carousel/carousel.directive';
 export * from './lib/directives/carousel/carousel.module';
+
+// Services
+export * from './lib/services/grid-widget/grid-widget.service';

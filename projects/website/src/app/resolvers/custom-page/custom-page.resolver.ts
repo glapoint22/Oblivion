@@ -6,8 +6,8 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import { DataService } from 'common';
-import { Observable, tap } from 'rxjs';
-import { PageContent, QueryParams } from 'widgets';
+import { Observable, of } from 'rxjs';
+import { PageContent } from 'widgets';
 
 @Injectable({
   providedIn: 'root'
@@ -22,17 +22,28 @@ export class CustomPageResolver implements Resolve<PageContent> {
     ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PageContent> {
-    const queryParams = new QueryParams();
-
-    queryParams.set(route.paramMap);
+    const id = route.queryParamMap.get('id');
+    const pageType = route.queryParamMap.get('pageType');
 
     // Return the page
-    return this.dataService.post<PageContent>('api/Pages', queryParams)
-      .pipe(tap((pageContent: PageContent) => {
-        if (!pageContent) {
-          this.router.navigate(['**'], { skipLocationChange: true });
-          this.location.replaceState(state.url);
+    if (id) {
+      return this.dataService.get<PageContent>('api/Pages/PageId', [
+        {
+          key: 'id',
+          value: id
         }
-      }));
+      ])
+    } else if (pageType) {
+      return this.dataService.get<PageContent>('api/Pages/PageType', [
+        {
+          key: 'pageType',
+          value: pageType
+        }
+      ])
+    } else {
+      this.router.navigate(['**'], { skipLocationChange: true });
+      this.location.replaceState(state.url);
+      return of();
+    }
   }
 }

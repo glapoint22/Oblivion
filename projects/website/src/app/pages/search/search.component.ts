@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GridWidgetService } from 'common';
-import { PageContent } from 'widgets';
+import { GridWidgetService, PageContent } from 'widgets';
 import { SearchResolver } from '../../resolvers/search/search.resolver';
 
 @Component({
@@ -21,15 +20,13 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.parent?.data.subscribe(data => {
-      if (data.searchData.pageContent) {
-        this.pageContent = data.searchData.pageContent;
+      if (data.pageContent.rows) {
+        this.pageContent = data.pageContent;
       } else {
-        this.gridWidgetService.gridData.next(data.searchData.gridData);
+        this.gridWidgetService.gridData.next(data.pageContent);
       }
     });
   }
-
-
 
   ngOnDestroy(): void {
     this.searchResolver.currentSearch = null;

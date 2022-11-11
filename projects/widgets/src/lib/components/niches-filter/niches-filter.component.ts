@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { NicheFilter, NichesFilter, SubnicheFilter, SubnichesFilter } from 'common';
+import { ActivatedRoute, Params } from '@angular/router';
+import { NicheFilter } from '../../classes/niche-filter';
+import { NicheFilters } from '../../classes/niche-filters';
+import { SubnicheFilter } from '../../classes/subniche-filter';
+import { SubnicheFilters } from '../../classes/subniche-filters';
 
 @Component({
   selector: 'niches-filter',
@@ -8,33 +11,40 @@ import { NicheFilter, NichesFilter, SubnicheFilter, SubnichesFilter } from 'comm
   styleUrls: ['./niches-filter.component.scss']
 })
 export class NichesFilterComponent {
-  @Input() niches!: NichesFilter;
+  @Input() nicheFilters!: NicheFilters;
   public seeAllNiches!: boolean;
   public pathname!: string;
+  public queryParams!: Params;
 
   constructor(public route: ActivatedRoute) { }
 
-  
 
   ngOnInit() {
     this.pathname = document.location.pathname;
   }
 
   ngOnChanges() {
-    if (this.niches.hidden) {
-      this.niches.hidden.forEach((niche: NicheFilter) => {
+    if (this.nicheFilters.hidden) {
+      this.nicheFilters.hidden.forEach((niche: NicheFilter) => {
         niche.visible = this.seeAllNiches;
       });
     }
   }
 
+  
+  onSubnicheClick() {
+    this.queryParams = this.route.snapshot.queryParams;
+  }
+  
+
 
   getNicheQueryParams(niche: NicheFilter) {
     return {
       search: this.route.snapshot.queryParams.search,
-      categoryName: niche.urlName,
-      categoryId: niche.urlId,
-      sort: this.route.snapshot.queryParams.sort
+      nicheName: niche.urlName,
+      nicheId: niche.id,
+      sort: this.route.snapshot.queryParams.sort,
+      filters: this.route.snapshot.queryParams.filters
     }
   }
 
@@ -42,14 +52,15 @@ export class NichesFilterComponent {
   getSubnicheQueryParams(subniche: SubnicheFilter) {
     return {
       search: this.route.snapshot.queryParams.search,
-      nicheName: subniche.urlName,
-      nicheId: subniche.urlId,
-      sort: this.route.snapshot.queryParams.sort
+      subnicheName: subniche.urlName,
+      subnicheId: subniche.id,
+      sort: this.route.snapshot.queryParams.sort,
+      filters: this.route.snapshot.queryParams.filters
     }
   }
 
 
-  seeAllFewerSubniches(subniches: SubnichesFilter) {
+  seeAllFewerSubniches(subniches: SubnicheFilters) {
     if (!subniches.showHidden) subniches.showHidden = true;
 
     window.setTimeout(() => {
@@ -64,7 +75,7 @@ export class NichesFilterComponent {
     if (!this.seeAllNiches) this.seeAllNiches = true;
 
     window.setTimeout(() => {
-      this.niches.hidden.forEach(niche => {
+      this.nicheFilters.hidden.forEach(niche => {
         niche.visible = !niche.visible;
       });
     });
@@ -73,24 +84,24 @@ export class NichesFilterComponent {
 
 
   nichesTransitionend(niche: NicheFilter) {
-    if (this.niches.hidden[this.niches.hidden.length - 1] == niche && !niche.visible) {
+    if (this.nicheFilters.hidden[this.nicheFilters.hidden.length - 1] == niche && !niche.visible) {
       this.seeAllNiches = false;
     }
   }
 
 
-  subnichesTransitionend(subniche: SubnicheFilter, subniches: SubnichesFilter) {
+  subnichesTransitionend(subniche: SubnicheFilter, subniches: SubnicheFilters) {
     if (subniches.hidden[subniches.hidden.length - 1] == subniche && !subniche.visible) {
       subniches.showHidden = false;
     }
   }
 
   trackNiche(index: number, niche: NicheFilter) {
-    return niche.urlId;
+    return niche.id;
   }
 
 
   trackSubniche(index: number, subniche: SubnicheFilter) {
-    return subniche.urlId;
+    return subniche.id;
   }
 }

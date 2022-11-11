@@ -1,11 +1,13 @@
 import { KeyValue } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GridData, GridWidgetService, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
+import { LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
+import { GridData } from '../../classes/grid-data';
 import { GridWidgetData } from '../../classes/grid-widget-data';
 import { Widget } from '../../classes/widget';
 import { WidgetType } from '../../classes/widget-enums';
 import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
+import { GridWidgetService } from '../../services/grid-widget/grid-widget.service';
 
 @Component({
   selector: 'grid-widget',
@@ -78,7 +80,13 @@ export class GridWidgetComponent extends Widget {
   // -------------------------------------------------------------- Clear Filters ------------------------------------------------------------------
   clearFilters() {
     this.router.navigate([], {
-      queryParams: { filters: null },
+      queryParams: {
+        filters: null,
+        nicheId: null,
+        nicheName: null,
+        subnicheId: null,
+        subnicheName: null
+      },
       queryParamsHandling: 'merge'
     });
   }
@@ -157,7 +165,7 @@ export class GridWidgetComponent extends Widget {
   getData(): GridWidgetData {
     const gridWidgetData = super.getData() as GridWidgetData;
 
-    
+
 
     return gridWidgetData;
   }

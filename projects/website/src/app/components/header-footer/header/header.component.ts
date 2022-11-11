@@ -262,8 +262,10 @@ export class HeaderComponent {
     if ((this.selectedNiche && this.selectedNiche.id != 'all') || niche) {
       queryParams = {
         'search': searchword,
-        'nicheId': (this.selectedNiche && this.selectedNiche.id) || (niche && niche.id),
-        'nicheName': (this.selectedNiche && this.selectedNiche.urlName) || (niche && niche.urlName)
+        // 'nicheId': (this.selectedNiche && this.selectedNiche.id) || (niche && niche.id),
+        // 'nicheName': (this.selectedNiche && this.selectedNiche.urlName) || (niche && niche.urlName)
+        'nicheId': niche && niche.id ? niche.id : this.selectedNiche.id,
+        'nicheName': niche && niche.urlName ? niche.urlName : this.selectedNiche.urlName
       }
     } else {
       queryParams = { 'search': searchword }
