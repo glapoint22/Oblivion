@@ -95,10 +95,10 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
   }
 
 
-  onSubNicheClick(niche: Niche) {
+  onSubNicheClick(subniche: Niche) {
     this.close();
     this.router.navigate(['/browse'], {
-      queryParams: { nicheName: niche.urlName, nicheId: niche.id }
+      queryParams: { subnicheName: subniche.urlName, subnicheId: subniche.id }
     });
   }
 

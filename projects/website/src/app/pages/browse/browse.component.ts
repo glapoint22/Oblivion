@@ -20,10 +20,10 @@ export class BrowseComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.parent?.data.subscribe(data => {
-      if (data.browseData.pageContent) {
-        this.pageContent = data.browseData.pageContent;
+      if (data.browseData.rows) {
+        this.pageContent = data.browseData;
       } else {
-        this.gridWidgetService.gridData.next(data.browseData.gridData);
+        this.gridWidgetService.gridData.next(data.browseData);
       }
     });
   }

@@ -12,9 +12,9 @@
                         results
                     </div>
 
-                    <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParams.filters ||
+                    <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParamMap.has('search') && (route.snapshot.queryParams.filters ||
                         route.snapshot.queryParams.nicheId ||
-                        route.snapshot.queryParams.subnicheId" (click)="clearFilters()">Clear Filters</button>
+                        route.snapshot.queryParams.subnicheId)" (click)="clearFilters()">Clear Filters</button>
                 </div>
 
                 <!-- Sort Options -->

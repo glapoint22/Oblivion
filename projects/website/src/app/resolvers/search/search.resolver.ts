@@ -1,4 +1,4 @@
-import { Location } from '@angular/common';
+import { KeyValue, Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import {
   Resolve,
@@ -25,71 +25,43 @@ export class SearchResolver implements Resolve<PageContent | GridData> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PageContent | GridData> {
     const search = route.queryParamMap.get('search');
-    const nicheId = route.queryParamMap.get('nicheId');
-    const subnicheId = route.queryParamMap.get('subnicheId');
-    const filters = route.queryParamMap.get('filters');
-    const sortBy = route.queryParamMap.get('sort');
-    const page = route.queryParamMap.get('page');
+
+    let params: Array<KeyValue<any, any>> = [
+      {
+        key: 'searchTerm',
+        value: search
+      },
+      {
+        key: 'nicheId',
+        value: route.queryParamMap.has('nicheId') ? route.queryParamMap.get('nicheId') : ''
+      },
+      {
+        key: 'subnicheId',
+        value: route.queryParamMap.has('subnicheId') ? route.queryParamMap.get('subnicheId') : ''
+      },
+      {
+        key: 'filters',
+        value: route.queryParamMap.has('filters') ? route.queryParamMap.get('filters') : ''
+      },
+      {
+        key: 'sortBy',
+        value: route.queryParamMap.has('sort') ? route.queryParamMap.get('sort') : ''
+      },
+      {
+        key: 'page',
+        value: route.queryParamMap.has('page') ? route.queryParamMap.get('page') : 1
+      }
+    ]
 
     if (search && search != this.currentSearch) {
       this.currentSearch = search;
 
       // Return the page
-      return this.dataService.get('api/Pages/GetSearchPage', [
-        {
-          key: 'searchTerm',
-          value: search
-        },
-        {
-          key: 'nicheId',
-          value: nicheId ? nicheId : ''
-        },
-        {
-          key: 'subnicheId',
-          value: subnicheId ? subnicheId : ''
-        },
-        {
-          key: 'filters',
-          value: filters ? filters : ''
-        },
-        {
-          key: 'sortBy',
-          value: sortBy ? sortBy : ''
-        },
-        {
-          key: 'page',
-          value: page ? page : 1
-        }
-      ]);
+      return this.dataService.get('api/Pages/GetSearchPage', params);
     } else if (search) {
 
       // Return the grid data
-      return this.dataService.get('api/Pages/GetGridData', [
-        {
-          key: 'searchTerm',
-          value: search
-        },
-        {
-          key: 'nicheId',
-          value: nicheId ? nicheId : ''
-        },
-        {
-          key: 'subnicheId',
-          value: subnicheId ? subnicheId : ''
-        },
-        {
-          key: 'filters',
-          value: filters ? filters : ''
-        },
-        {
-          key: 'sortBy',
-          value: sortBy ? sortBy : ''
-        },
-        {
-          key: 'page',
-          value: page ? page : 1
-        }
-      ]);
+      return this.dataService.get('api/Pages/GetGridData', params);
     } else {
       this.router.navigate(['**'], { skipLocationChange: true });
       this.location.replaceState(state.url);

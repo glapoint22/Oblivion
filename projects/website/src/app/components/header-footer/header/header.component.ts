@@ -47,6 +47,13 @@ export class HeaderComponent {
 
   ngAfterViewInit() {
     const nicheId = this.route.snapshot.queryParamMap.get('nicheId') as string;
+
+    this.selectedNiche = {
+      id: 'all',
+      name: 'All Niches',
+      urlName: ''
+    }
+
     if (nicheId) {
       this.nicheService.getNiches()
         .pipe(delay(1))
@@ -239,7 +246,7 @@ export class HeaderComponent {
 
 
 
-  
+
 
 
   hideSuggestionList() {
@@ -252,25 +259,24 @@ export class HeaderComponent {
   }
 
 
-  search(searchword: string, niche?: Niche) {
+  search(searchTerm: string, niche?: Niche) {
     let queryParams: Params;
 
-    if (searchword == '') return;
+    if (searchTerm == '') return;
 
-
-
-    if ((this.selectedNiche && this.selectedNiche.id != 'all') || niche) {
-      queryParams = {
-        'search': searchword,
-        // 'nicheId': (this.selectedNiche && this.selectedNiche.id) || (niche && niche.id),
-        // 'nicheName': (this.selectedNiche && this.selectedNiche.urlName) || (niche && niche.urlName)
-        'nicheId': niche && niche.id ? niche.id : this.selectedNiche.id,
-        'nicheName': niche && niche.urlName ? niche.urlName : this.selectedNiche.urlName
-      }
-    } else {
-      queryParams = { 'search': searchword }
+    if (niche) {
+      this.selectedNiche = niche;
     }
 
+    if (this.selectedNiche.id == 'all') {
+      queryParams = { search: searchTerm };
+    } else {
+      queryParams = {
+        search: searchTerm,
+        nicheId: this.selectedNiche.id,
+        nicheName: this.selectedNiche.urlName
+      }
+    }
 
 
     this.router.navigate(['/search'], {

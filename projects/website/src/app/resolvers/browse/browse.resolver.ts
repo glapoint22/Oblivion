@@ -5,7 +5,7 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import { catchError, Observable, of, throwError } from 'rxjs';
-import { Location } from '@angular/common';
+import { KeyValue, Location } from '@angular/common';
 import { DataService } from 'common';
 import { GridData, PageContent } from 'widgets';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -26,66 +26,43 @@ export class BrowseResolver implements Resolve<PageContent | GridData> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<PageContent | GridData> {
     const id = route.queryParamMap.has('subnicheId') ? route.queryParamMap.get('subnicheId') : route.queryParamMap.get('nicheId');
-    const nicheId = route.queryParamMap.get('nicheId');
-    const subnicheId = route.queryParamMap.get('subnicheId');
-    const filters = route.queryParamMap.get('filters');
-    const sortBy = route.queryParamMap.get('sortBy');
-    const page = route.queryParamMap.get('page');
+    
+    let params: Array<KeyValue<any, any>> = [
+      {
+        key: 'nicheId',
+        value: route.queryParamMap.has('nicheId') ? route.queryParamMap.get('nicheId') : ''
+      },
+      {
+        key: 'subnicheId',
+        value: route.queryParamMap.has('subnicheId') ? route.queryParamMap.get('subnicheId') : ''
+      },
+      {
+        key: 'filters',
+        value: route.queryParamMap.has('filters') ? route.queryParamMap.get('filters') : ''
+      },
+      {
+        key: 'sortBy',
+        value: route.queryParamMap.has('sort') ? route.queryParamMap.get('sort') : ''
+      },
+      {
+        key: 'page',
+        value: route.queryParamMap.has('page') ? route.queryParamMap.get('page') : 1
+      }
+    ]
+
 
     if (id && id != this.currentId) {
       this.currentId = id;
 
       // Return the page
-      return this.dataService.get<PageContent | GridData>('api/Pages/GetBrowsePage', [
-        {
-          key: 'nicheId',
-          value: nicheId
-        },
-        {
-          key: 'subnicheId',
-          value: subnicheId
-        },
-        {
-          key: 'filters',
-          value: filters
-        },
-        {
-          key: 'sortBy',
-          value: sortBy
-        },
-        {
-          key: 'page',
-          value: page
-        }
-      ])
+      return this.dataService.get<PageContent | GridData>('api/Pages/GetBrowsePage', params)
         .pipe(
           catchError<PageContent | GridData, Observable<PageContent | GridData>>(this.handleError(state))
         );
     } else if (id && id == this.currentId) {
 
       // Return the grid data
-      return this.dataService.get<PageContent | GridData>('api/Pages/GetGridData', [
-        {
-          key: 'nicheId',
-          value: nicheId
-        },
-        {
-          key: 'subnicheId',
-          value: subnicheId
-        },
-        {
-          key: 'filters',
-          value: filters
-        },
-        {
-          key: 'sortBy',
-          value: sortBy
-        },
-        {
-          key: 'page',
-          value: page
-        }
-      ])
+      return this.dataService.get<PageContent | GridData>('api/Pages/GetGridData', params)
         .pipe(
           catchError<PageContent | GridData, Observable<PageContent | GridData>>(this.handleError(state))
         );
