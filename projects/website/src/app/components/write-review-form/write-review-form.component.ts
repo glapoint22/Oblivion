@@ -53,7 +53,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
       // Replace every new line with a <BR> tag
       review = review.replace(/[\r\n]/g, '<br>');
 
-      this.dataService.post('api/ProductReviews', {
+      this.dataService.post('api/ProductReviews/PostReview', {
         productId: this.productId,
         rating: this.form.get('rating')?.value,
         title: this.form.get('title')?.value,

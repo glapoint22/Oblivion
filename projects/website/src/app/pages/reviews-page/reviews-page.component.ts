@@ -41,7 +41,7 @@ export class ReviewsPageComponent implements OnInit {
       }, SpinnerAction.StartEnd)
         .then((writeReviewForm: WriteReviewFormComponent) => {
           writeReviewForm.productId = this.product.id;
-          writeReviewForm.productImage = this.product.media[0].src;
+          writeReviewForm.productImage = this.product.media[0].imageMd;
           writeReviewForm.productName = this.product.name;
         });
     } else {

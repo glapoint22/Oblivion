@@ -47,7 +47,7 @@ export class ReviewSummaryComponent implements OnChanges {
   }
 
   setRoute(filterValue: string) {
-    this.router.navigate([this.product.urlName, this.product.urlId, 'reviews'], {
+    this.router.navigate([this.product.urlName, this.product.id, 'reviews'], {
       queryParams: { filter: filterValue, page: null },
       queryParamsHandling: 'merge'
     });
