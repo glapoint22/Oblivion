@@ -6,6 +6,6 @@ export class QueriedOrderProduct {
     public image!: Image;
     public hoplink!: string;
     public orderNumber!: string;
-    public urlId!: string;
+    public productId!: string;
     public urlName!: string;
 }
