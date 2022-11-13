@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { AccountService } from '../../services/account/account.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -71,7 +71,7 @@ export class ContactUsFormComponent extends Validation implements OnInit {
     }
   }
 
-  
+
   onSubmit() {
     // If the user is (NOT) logged in and as long as the form is valid
     if ((!this.accountService.user && this.form.valid) ||
@@ -79,19 +79,37 @@ export class ContactUsFormComponent extends Validation implements OnInit {
       (this.accountService.user && !this.form.controls.message.errors)) {
 
       // Post the message
-      this.dataService.post('api/Notifications/Message', {
-        type: NotificationType.Message,
-        nonAccountName: !this.accountService.user ? this.form.get('name')?.value.trim() : null,
-        nonAccountEmail: !this.accountService.user ? this.form.get('email')?.value.trim() : null,
-        email: this.accountService.user ? this.email.nativeElement.value : null,
-        text: this.form.get('message')?.value.trim()
-      }, {
-        authorization: this.accountService.user ? true : false,
-        spinnerAction: SpinnerAction.Start
-      }).subscribe(() => {
-        this.openSuccessPrompt();
-      });
+      if (this.accountService.user) {
+        this.postMessage();
+      } else {
+        this.postNonAccountMessage();
+      }
     }
+  }
+
+
+  postNonAccountMessage() {
+    this.dataService.post('api/Notifications/PostNonAccountMessage', {
+      name: this.form.get('name')?.value.trim(),
+      email: this.form.get('email')?.value.trim(),
+      text: this.form.get('message')?.value.trim()
+    }, {
+      spinnerAction: SpinnerAction.Start
+    }).subscribe(() => {
+      this.openSuccessPrompt();
+    });
+  }
+
+
+  postMessage() {
+    this.dataService.post('api/Notifications/PostMessage', {
+      text: this.form.get('message')?.value.trim()
+    }, {
+      authorization: true,
+      spinnerAction: SpinnerAction.Start
+    }).subscribe(() => {
+      this.openSuccessPrompt();
+    });
   }
 
 

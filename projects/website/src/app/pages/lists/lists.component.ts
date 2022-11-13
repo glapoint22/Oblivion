@@ -230,7 +230,7 @@ export class ListsComponent implements OnInit {
 
 
   onProductClick(product: ListProduct) {
-    this.router.navigate([product.urlName, product.urlId]);
+    this.router.navigate([product.urlName, product.id]);
   }
 
 

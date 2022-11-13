@@ -55,19 +55,19 @@
 
 
 
-            <!-- Profile Picture -->
+            <!-- Profile Image -->
             <div class="section" style="padding-bottom: 9px;">
                 <div class="property">
-                    <div style="margin-bottom: 10px;">Profile Picture:</div>
+                    <div style="margin-bottom: 10px;">Profile Image:</div>
                     <div>
                         <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                        <img [src]="accountService.user?.profileImage?.src" class="profile-pic"
+                        <img [src]="accountService.user?.profileImage?.src ? 'images/' + accountService.user?.profileImage?.src : 'assets/no-account-pic.png'" class="profile-pic"
                             [title]="accountService.user?.profileImage?.name"
                             [alt]="accountService.user?.profileImage?.name">
                     </div>
                 </div>
 
-                <div class="icon-container" title="Change Profile Picture" (click)="onChangeProfilePictureClick(fileInput)">
+                <div class="icon-container" title="Change Profile Image" (click)="onChangeProfilePictureClick(fileInput)">
                     <div class="pencil-icon"></div>
                 </div>
             </div>

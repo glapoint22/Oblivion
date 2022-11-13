@@ -10,7 +10,7 @@ export class Order {
     public discount!: number;
     public tax!: number;
     public total!: number;
-    public productId!: number;
+    public productId!: string;
     public hoplink!: string;
     public products!: Array<OrderProduct>;
 }

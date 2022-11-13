@@ -8,7 +8,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./report-review-form.component.scss']
 })
 export class ReportReviewFormComponent extends LazyLoad {
-  public productId!: number;
+  public productId!: string;
   public reviewId!: number;
   public comments!: string;
 
@@ -26,10 +26,9 @@ export class ReportReviewFormComponent extends LazyLoad {
 
 
   onSubmit() {
-    this.dataService.post('api/Notifications/Post', {
+    this.dataService.post('api/Notifications/PostReviewComplaintNotification', {
       productId: this.productId,
       reviewId: this.reviewId,
-      type: NotificationType.Review,
       text: this.comments != null && this.comments.trim().length > 0 ? this.comments.trim() : null
     }, {
       authorization: true,

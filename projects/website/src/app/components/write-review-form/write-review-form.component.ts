@@ -10,7 +10,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./write-review-form.component.scss']
 })
 export class WriteReviewFormComponent extends Validation implements OnInit {
-  public productId!: number;
+  public productId!: string;
   public productImage!: string;
   public productName!: string;
 
