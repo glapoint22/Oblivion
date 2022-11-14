@@ -2,7 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { DropdownType, LazyLoad } from 'common';
 import { Subject } from 'rxjs';
-import { Item } from '../classes/item';
+import { Item } from '../../../../../manager/src/app/classes/item';
 
 @Component({
   selector: 'dropdown-list',

@@ -1,21 +1,26 @@
-<div #tabElement class="dropdown-container" tabindex="0" (focus)="onDropdownFocus()" (blur)="onDropdownBlur()">
+<!-- Base -->
+<button #base
+        #tabElement
+        tabindex="0"
+        (blur)="onBlur()"
+        (focus)="onFocus()"
+        (click)="openDropdownList()"
+        (mousedown)="dropdownList ? $event.stopPropagation() : null"
+        [ngClass]="{'button-base': dropdownType == DropdownType.Button,
+                    'website-base': dropdownType == DropdownType.Website,
+                    'manager-base': dropdownType == DropdownType.Manager,
+                    'manager-list-open': dropdownList && dropdownType == DropdownType.Manager,
+                    'website-button-base': dropdownType == DropdownType.Website || dropdownType == DropdownType.Button,
+                    'website-manager-base': dropdownType == DropdownType.Website || dropdownType == DropdownType.Manager,
+                    'website-button-list-open': dropdownList && (dropdownType == DropdownType.Website || dropdownType == DropdownType.Button)}">
 
-    <div class="dropdown-base" (click)="showDropdownList = !showDropdownList">
-
-        <div *ngIf="selectedListItem" class="dropdown-text">
-            {{selectedListItem.key}}
-        </div>
-
-        <div class="dropdown-arrow"></div>
+     <!-- Text -->
+    <div class="base-text"
+         [ngStyle]="{'button-base-text': dropdownType == DropdownType.Button,
+                     'website-manager-base-text': dropdownType == DropdownType.Website || dropdownType == DropdownType.Manager}">
+        {{!disabled && selectedListItem ? selectedListItem.key: ''}}
     </div>
 
-
-    <div class="list" *ngIf="showDropdownList">
-        <div class="list-item" *ngFor="let listItem of listItems" (click)="onListItemClick(listItem)"
-            [ngClass]="{'selected-list-item': listItem == selectedListItem}">
-            <div class="dropdown-text">
-                {{listItem.key}}
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Arrow -->
+    <i class="fa-solid fa-angle-down" [ngStyle]="{'transform': dropdownList ? 'rotate(180deg)' : null}"></i>
+</button>

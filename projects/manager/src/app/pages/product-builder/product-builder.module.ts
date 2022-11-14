@@ -4,7 +4,6 @@ import { ProductBuilderRoutingModule } from './product-builder-routing.module';
 import { ProductBuilderComponent } from './product-builder.component';
 import { NichesSideMenuModule } from '../../components/niches-side-menu/niches-side-menu.module';
 import { ProductFormModule } from '../../components/product/product-form/product-form.module';
-import { DropdownModule } from '../../dropdown/dropdown.module';
 
 
 @NgModule({
@@ -15,8 +14,7 @@ import { DropdownModule } from '../../dropdown/dropdown.module';
     CommonModule,
     ProductBuilderRoutingModule,
     NichesSideMenuModule,
-    ProductFormModule,
-    DropdownModule
+    ProductFormModule
   ]
 })
 export class ProductBuilderModule { }

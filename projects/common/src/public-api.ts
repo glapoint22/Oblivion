@@ -30,8 +30,8 @@ export * from './lib/classes/image-size';
 export * from './lib/classes/radio-button-lazy-load';
 
 // Components
-export * from './lib/components/dropdown/dropdown.component';
-export * from './lib/components/dropdown/dropdown.module';
+export * from './lib/components/temp/dropdown/dropdown.component';
+export * from './lib/components/temp/dropdown/dropdown.module';
 export * from './lib/components/paginator/paginator.component';
 export * from './lib/components/paginator/paginator.module';
 export * from './lib/components/review-summary/review-summary.component';

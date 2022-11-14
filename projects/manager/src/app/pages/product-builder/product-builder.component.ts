@@ -1,4 +1,3 @@
-import { KeyValue } from '@angular/common';
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../classes/enums';
@@ -12,24 +11,6 @@ import { ProductService } from '../../services/product/product.service';
 })
 export class ProductBuilderComponent {
   @ViewChild('productsContainer', { read: ViewContainerRef }) productsContainer!: ViewContainerRef;
-
-  public list: Array<KeyValue<any, any>> = [
-    { key: 'Trumpy', value: 45 },
-    { key: 'Kari Lake', value: 48 },
-    { key: 'Alita', value: 99 },
-    { key: 'Musky', value: 1 },
-    { key: 'Tyrion', value: 48 },
-    { key: 'Daenerys', value: 48 },
-    { key: 'Jon Snow', value: 48 },
-    { key: 'Cersei', value: 48 },
-    { key: 'Sansa', value: 48 },
-    { key: 'Arya', value: 48 },
-    { key: 'Jaime Lannister', value: 48 },
-    { key: 'Jack ONeill', value: 48 },
-    { key: 'Tealc', value: 48 },
-    { key: 'Daniel Jackson', value: 48 },
-    { key: 'Samantha Carter', value: 48 }    
-  ];
 
 
   // ===================================================================( CONSTRUCTOR )===================================================================== \\
