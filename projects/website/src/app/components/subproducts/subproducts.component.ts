@@ -15,7 +15,7 @@ export class SubproductsComponent {
     const textBoxData: Array<TextBoxData> = JSON.parse(description);
     const textBox = new TextBox(rootElement);
     
-    // textBox.load(textBoxData);
-    // textBox.render();
+    textBox.load(textBoxData);
+    textBox.render();
   }
 }

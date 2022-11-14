@@ -29,15 +29,18 @@ export class ListResolver implements Resolve<ListPageData> {
     ], { authorization: true })
       .pipe(
         tap((listPageData: ListPageData) => {
-          listPageData.selectedList = listId ? listPageData.lists.find(x => x.id == listId)! : listPageData.lists[0];
+          if (listPageData) {
+            listPageData.selectedList = listId ? listPageData.lists.find(x => x.id == listId)! : listPageData.lists[0];
 
-          // If we don't have a list id, add the selected list id to the url
-          if (!listId) {
-            window.setTimeout(() => {
-              let url = state.url + '/' + listPageData.selectedList.id;
-              this.location.replaceState(url);
-            });
+            // If we don't have a list id, add the selected list id to the url
+            if (!listId) {
+              window.setTimeout(() => {
+                let url = state.url + '/' + listPageData.selectedList.id;
+                this.location.replaceState(url);
+              });
+            }
           }
+
         }),
         catchError(this.handleError(state))
       );

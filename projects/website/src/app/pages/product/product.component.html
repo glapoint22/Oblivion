@@ -23,18 +23,18 @@
 
 
     <!-- Price Points -->
-    <price-points [pricePoints]="product.pricePoints" [hoplink]="product.hoplink" [clientWidth]="clientWidth">
+    <price-points [pricePoints]="pricePoints" [hoplink]="product.hoplink" [clientWidth]="clientWidth">
     </price-points>
 
 
     <!-- Sub products -->
-    <subproducts [components]="product.components" [bonuses]="product.bonuses"></subproducts>
+    <subproducts [components]="components" [bonuses]="bonuses"></subproducts>
 
 
     <!-- Related Products -->
-    <div *ngIf="product.relatedProducts && product.relatedProducts.products && product.relatedProducts.products.length > 0"
+    <div *ngIf="relatedProducts"
         class="related-products-background">
-        <product-slider-widget [products]="product.relatedProducts.products" [text]="product.relatedProducts.caption"
+        <product-slider-widget [products]="relatedProducts.products" [text]="relatedProducts.caption"
             [clientWidth]="clientWidth">
         </product-slider-widget>
     </div>
