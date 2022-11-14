@@ -1,3 +1,4 @@
+import { KeyValue } from '@angular/common';
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../classes/enums';
@@ -12,15 +13,33 @@ import { ProductService } from '../../services/product/product.service';
 export class ProductBuilderComponent {
   @ViewChild('productsContainer', { read: ViewContainerRef }) productsContainer!: ViewContainerRef;
 
+  public list: Array<KeyValue<any, any>> = [
+    { key: 'Trumpy', value: 45 },
+    { key: 'Kari Lake', value: 48 },
+    { key: 'Alita', value: 99 },
+    { key: 'Musky', value: 1 },
+    { key: 'Tyrion', value: 48 },
+    { key: 'Daenerys', value: 48 },
+    { key: 'Jon Snow', value: 48 },
+    { key: 'Cersei', value: 48 },
+    { key: 'Sansa', value: 48 },
+    { key: 'Arya', value: 48 },
+    { key: 'Jaime Lannister', value: 48 },
+    { key: 'Jack ONeill', value: 48 },
+    { key: 'Tealc', value: 48 },
+    { key: 'Daniel Jackson', value: 48 },
+    { key: 'Samantha Carter', value: 48 }    
+  ];
+
 
   // ===================================================================( CONSTRUCTOR )===================================================================== \\
-  
+
   constructor(public productService: ProductService, private lazyLoadingService: LazyLoadingService) { }
 
 
 
   // ================================================================( NG AFTER VIEW INIT )================================================================= \\
-  
+
   ngAfterViewInit() {
     this.productService.productsContainer = this.productsContainer;
   }
@@ -28,7 +47,7 @@ export class ProductBuilderComponent {
 
 
   // ================================================================( GET TAB LABEL WIDTH )================================================================ \\
-  
+
   getTabLabelWidth(tabsContainer: HTMLElement) {
     const leftPadding = 10;
     const x = 16;
@@ -40,7 +59,7 @@ export class ProductBuilderComponent {
 
 
   // =================================================================( ON TAB MOUSE DOWN )================================================================= \\
-  
+
   onTabMouseDown(e: MouseEvent, tabIndex: number) {
     // As long as we're not right clicking on the tab
     if (e.button != 2) {
@@ -59,7 +78,7 @@ export class ProductBuilderComponent {
 
 
   // ===================================================================( SHOW PRODUCT )==================================================================== \\
-  
+
   showProduct(tabIndex: number) {
     // As long as we're NOT selecting a tab that is already selected
     if (this.productService.products[tabIndex] != this.productService.selectedProduct) {
@@ -71,7 +90,7 @@ export class ProductBuilderComponent {
 
 
   // =================================================================( OPEN CONTEXT MENU )================================================================= \\
-  
+
   openContextMenu(e: MouseEvent, tabIndex: number) {
     this.lazyLoadingService.load(async () => {
       const { ContextMenuComponent } = await import('../../components/context-menu/context-menu.component');
@@ -98,7 +117,7 @@ export class ProductBuilderComponent {
 
 
   // =============================================================( GET CONTEXT MENU OPTIONS )============================================================== \\
-  
+
   getContextMenuOptions(tabIndex: number) {
     return [
       {
@@ -138,7 +157,7 @@ export class ProductBuilderComponent {
 
 
   // ===================================================================( CLOSE PRODUCT )=================================================================== \\
-  
+
   closeProduct(tabIndex: number) {
     // If we're closing a selected tab
     if (this.productService.products[tabIndex] == this.productService.selectedProduct) {
@@ -166,7 +185,7 @@ export class ProductBuilderComponent {
 
 
   // ===================================================================( CLOSE OTHERS )==================================================================== \\
-  
+
   closeOthers(tabIndex: number) {
     var index = 0;
     const product = this.productService.products[tabIndex];
@@ -189,7 +208,7 @@ export class ProductBuilderComponent {
 
 
   // =====================================================================( CLOSE ALL )===================================================================== \\
-  
+
   closeAll() {
     // Loop until all products are closed
     while (this.productService.products.length > 0) {
@@ -202,7 +221,7 @@ export class ProductBuilderComponent {
 
 
   // =================================================================( CLOSE TO THE RIGHT )================================================================ \\
-  
+
   closeToTheRight(tabIndex: number) {
     var index = 0;
 
@@ -229,7 +248,7 @@ export class ProductBuilderComponent {
 
 
   // ==================================================================( REMOVE PRODUCT )=================================================================== \\
-  
+
   removeProduct(index: number) {
     const productIndex = this.productService.productsContainer.indexOf(this.productService.products[index].viewRef);
     this.productService.productsContainer.remove(productIndex);

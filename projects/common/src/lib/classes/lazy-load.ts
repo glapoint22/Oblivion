@@ -228,7 +228,6 @@ export class LazyLoad implements AfterViewInit {
         }
 
         if (e.key === ' ') {
-            e.preventDefault();
             this.onSpace(e);
         }
 

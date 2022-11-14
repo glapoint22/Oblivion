@@ -1,0 +1,92 @@
+.list {
+    position: absolute;
+    max-height: 220px;
+    overflow: auto;
+    z-index: 1000;
+}
+
+
+
+.website-button-list {
+    background: rgba(22, 22, 22, 0.95);
+    outline: 1px solid #424242;
+    border-radius: 4px;
+    border: 2px solid rgba(22, 22, 22, 0.95);
+    border-right: none;
+}
+
+
+.manager-list {
+    background: #262626;
+    outline: 1px solid #606060;
+    border-radius: 2px;
+}
+
+
+.item {
+    height: 22px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    padding: 0 5px;
+    height: 22px;
+    line-height: 22px;
+    color: #b4b4b4;
+    cursor: pointer;
+}
+
+
+.website-button-item {
+    margin: 0 2px 0 0;
+
+    &:hover:not(.selected-list-item):not(.website-button-selected-list-item) {
+        background: rgba(255, 255, 255, 0.06);;
+        color: lighten(#b4b4b4, 20);
+    }
+}
+
+
+.manager-item {
+    &:hover:not(.selected-list-item):not(.manager-selected-list-item) {
+        background: rgba(255, 187, 0, 0.08);
+        color: #dddddd;
+    }
+}
+
+
+
+
+.selected-list-item {
+    color: white;
+    cursor: default;
+}
+
+
+
+.website-button-selected-list-item {
+    outline: none;
+    background: rgba(255, 0, 217, 0.35);
+}
+
+
+.manager-selected-list-item {
+    background: rgba(255, 187, 0, 0.1);
+    outline: 1px solid rgba(255, 187, 0, 0.85);
+    outline-offset: -1px;
+}
+
+
+.hide {
+    transition: opacity 1ms;
+}
+
+
+.no-results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    color: #838383;
+}

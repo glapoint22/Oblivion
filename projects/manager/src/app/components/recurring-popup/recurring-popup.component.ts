@@ -1,8 +1,9 @@
 import { KeyValue } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LazyLoad, RebillFrequency, RecurringPayment } from 'common';
 import { Subject } from 'rxjs';
 import { PopupArrowPosition } from '../../classes/enums';
+import { DropdownComponent } from '../dropdown/dropdown.component';
 
 @Component({
   selector: 'recurring-popup',
@@ -10,6 +11,7 @@ import { PopupArrowPosition } from '../../classes/enums';
   styleUrls: ['./recurring-popup.component.scss']
 })
 export class RecurringPopupComponent extends LazyLoad {
+  public datePickerOpen!: boolean;
   public arrowPosition!: PopupArrowPosition;
   public PopupArrowPosition = PopupArrowPosition;
   public recurringPayment: RecurringPayment = new RecurringPayment();
@@ -20,6 +22,10 @@ export class RecurringPopupComponent extends LazyLoad {
   public rebillFrequency = RebillFrequency;
   public callback!: Function;
   public onClose: Subject<void> = new Subject<void>();
+  public rebillFrequencyDropdownTabElement!: ElementRef<HTMLElement>;
+  public timeBetweenEachRebillDropdownTabElement!: ElementRef<HTMLElement>;
+  @ViewChild('rebillFrequencyDropdown') rebillFrequencyDropdown!: DropdownComponent;
+  @ViewChild('timeBetweenEachRebillDropdown') timeBetweenEachRebillDropdown!: DropdownComponent;
 
   // ---------------------------------------------------------------------- Ng On Init --------------------------------------------------
   public ngOnInit(): void {
@@ -46,13 +52,39 @@ export class RecurringPopupComponent extends LazyLoad {
 
     // Set the selected time frame between rebill
     this.selectedTimeFrameBetweenRebill = this.timeFrameBetweenRebillList.find(x => x.value == this.recurringPayment.timeFrameBetweenRebill)!;
+
+
+
+  }
+
+
+
+
+
+
+  showDatePicker(dateInput: any) {
+    if (!this.datePickerOpen) {
+      this.datePickerOpen = true;
+      dateInput.showPicker();
+    } else {
+      this.datePickerOpen = false;
+    }
+  }
+
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.tabElements.splice(3, 0, this.rebillFrequencyDropdownTabElement);
+    this.tabElements.splice(4, 0, this.timeBetweenEachRebillDropdownTabElement);
   }
 
 
 
   // ------------------------------------------------------------------ Mouse Down ----------------------------------------------
   mousedown = () => {
-    this.close();
+    if (!this.datePickerOpen && !this.rebillFrequencyDropdown.dropdownList && !this.timeBetweenEachRebillDropdown.dropdownList) this.close();
+
+    if (this.datePickerOpen) this.datePickerOpen = false;
   }
 
 
@@ -72,14 +104,13 @@ export class RecurringPopupComponent extends LazyLoad {
 
 
 
-
-
-
   // ------------------------------------------------------------------ On Trial Period Change ----------------------------------------------
   public onTrialPeriodChange(dateInput: HTMLInputElement): void {
     let diffDays: number = 0;
     let date1: any = new Date(new Date().toDateString());
     let date2: any = new Date(1970, 0, 1);
+
+    this.datePickerOpen = false;
 
     date2.setMilliseconds(Date.parse(dateInput.value));
 
@@ -194,6 +225,12 @@ export class RecurringPopupComponent extends LazyLoad {
   public onSubmitClick(): void {
     this.callback(this.recurringPayment);
     this.close();
+  }
+
+
+
+  onEscape(): void {
+    if (!this.rebillFrequencyDropdown.dropdownList && !this.timeBetweenEachRebillDropdown.dropdownList) super.onEscape();
   }
 
 

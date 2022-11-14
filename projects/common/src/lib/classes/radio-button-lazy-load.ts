@@ -142,6 +142,7 @@ export class RadioButtonLazyLoad extends LazyLoad {
 
 
     onSpace(e: KeyboardEvent): void {
+        e.preventDefault();
         if (!this.radioButtonGroup) {
             super.onSpace(e);
 

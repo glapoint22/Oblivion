@@ -9,25 +9,26 @@
     color: $font-color;
 
     &:hover {
-        background: lighten($background-color, 6);
-        border-color: lighten($border-color, 6);
-        color: lighten($font-color, 6);
+        background: lighten($background-color, 4);
+        border-color: lighten($border-color, 7);
+        color: lighten($font-color, 20);
     }
 
     &:disabled {
-        background: darken($background-color, 4);
-        border-color: darken($border-color, 4);
-        color: darken($font-color, 30);
+        // background: darken($background-color, 4);
+        // border-color: darken($border-color, 4);
+        // color: darken($font-color, 30);
+        opacity: 0.3;
     }
 
     &:active {
-        background: lighten($background-color, 10);
-        border-color: lighten($border-color, 10);
-        color: lighten($font-color, 10);
+        background: lighten($background-color, 6);
+        border-color: lighten($border-color, 9);
+        color: lighten($font-color, 22);
     }
 
     &:focus {
-        outline: 1px solid #808080;
+        outline: 1px solid #a08534;
         outline-offset: 2px;
     }
 }

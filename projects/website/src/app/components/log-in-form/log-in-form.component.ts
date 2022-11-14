@@ -14,7 +14,7 @@ import { ExternalLoginProvidersComponent } from '../external-login-providers/ext
 export class LogInFormComponent extends Validation implements OnInit {
   public isPersistent: boolean = true;
   public checkbox!: HTMLInputElement;
-  public externalLoginProviders!: Array<ElementRef<HTMLElement>>
+  public externalLoginProviders!: Array<ElementRef<HTMLElement>>;
   @ViewChild('externalLoginProvidersComponent') externalLoginProvidersComponent!: ExternalLoginProvidersComponent;
   public notMatchError!: boolean;
 

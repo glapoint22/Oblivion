@@ -45,15 +45,15 @@
     outline: none;
 
     &:hover:not(:disabled):not(:active) {
-        background: lighten(#353535, 2);
-        border-color: lighten(#4e4e4e, 6);
-        color: lighten(#c0c0c0, 10);
+        background: lighten(#353535, 4);
+        border-color: lighten(#4e4e4e, 7);
+        color: lighten(#c0c0c0, 20);
     }
 
     &:active {
         background: lighten(#353535, 6);
-        border-color: lighten(#4e4e4e, 10);
-        color: lighten(#c0c0c0, 14);
+        border-color: lighten(#4e4e4e, 9);
+        color: lighten(#c0c0c0, 22);
     }
     
     &:disabled {
@@ -64,6 +64,6 @@
     }
 
     &:focus-visible {
-        border-color: #816f3b;
+        border-color: #a08534;
     }
 }

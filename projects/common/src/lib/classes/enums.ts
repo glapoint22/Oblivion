@@ -90,3 +90,11 @@ export enum NotificationType {
     MissingProductOther,
     Error
 }
+
+
+
+export enum DropdownType {
+    Website,
+    Manager,
+    Button
+}

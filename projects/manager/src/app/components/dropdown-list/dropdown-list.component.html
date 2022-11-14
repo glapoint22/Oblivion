@@ -1,10 +1,16 @@
 <div id="dropdownList" #listElement class="hide list" [ngClass]="{'show': show}" (transitionend)="onHide()"
-    [style.top.px]="top" [style.left.px]="left" [style.minWidth.px]="width" (mousedown)="$event.stopPropagation()">
+    [style.top.px]="top" [style.left.px]="left" [style.minWidth.px]="width" [style.height.px]="height != null ? height : null" (mousedown)="$event.stopPropagation()"
+    
+    [ngStyle]="{'box-shadow': top > baseTop ? '0 7px 8px 6px rgba(0, 0, 0, 0.25)' : '0 -7px 8px 6px rgba(0, 0, 0, 0.25)'}"
+    
+    (wheel)="onMouseWheel($event)"
+
+    (scroll)="onScroll()">
 
     <!-- List -->
     <ng-container *ngIf="list && list.length > 0">
-        <div *ngFor="let item of list; let i = index" class="item" (click)="onItemSelect($event)"
-            (mousemove)="itemIndex = i" [ngClass]="{'highlight': i == itemIndex, 'selected-list-item': item == selectedListItem}">
+        <div #listItem *ngFor="let item of list; let i = index" class="item" (click)="onItemSelect(i, $event)"
+            [ngClass]="{'selected-list-item': item == selectedListItem}" tabindex="-1">
             {{getText(item)}}
         </div>
     </ng-container>

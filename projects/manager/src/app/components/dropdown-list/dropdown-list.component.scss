@@ -2,10 +2,10 @@
     position: absolute;
     max-height: 220px;
     background: #262626;
-    outline: 1px solid #444444;
+    outline: 1px solid #606060;
     overflow: auto;
-    box-shadow: 4px 4px 8px 2px rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    border-radius: 2px;
 }
 
 .item {
@@ -20,12 +20,18 @@
     line-height: 22px;
     color: #b4b4b4;
     cursor: pointer;
+
+
+    &:hover {
+        background: rgba(255, 187, 0, 0.08);
+        color: #dddddd;
+    }
 }
 
-.highlight {
-    background: rgba(255, 187, 0, 0.08);
-    color: #dddddd;
-}
+// .highlight {
+//     background: rgba(255, 187, 0, 0.08);
+//     color: #dddddd;
+// }
 
 .no-results {
     display: flex;
@@ -41,6 +47,7 @@
 
 .selected-list-item {
     background: rgba(255, 187, 0, 0.1);
-    border: 1px solid rgba(255, 187, 0, 0.85);
+    outline: 1px solid rgba(255, 187, 0, 0.85);
+    outline-offset: -1px;
     color: white;
 }

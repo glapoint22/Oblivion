@@ -1,0 +1,112 @@
+button {
+    display: flex;
+    width: 100%;
+    padding: 0 5px;
+    user-select: none;
+    border-radius: 4px;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+
+    &:focus-visible:not(.website-button-list-open):not(.manager-list-open) {
+        outline: 1px solid #a08534;
+        outline-offset: 2px;
+    }
+
+    
+    &:disabled {
+        opacity: 0.3;
+        cursor: default;
+    }
+}
+
+
+.website-base {
+    color: #b0b0b0;
+}
+
+
+.button-base {
+    color: #dadada;
+    height: 30px;
+}
+
+
+.website-button-base {
+    background: #282828;
+    border: 1px solid #3d3d3d;
+
+    &:hover:not(:disabled):not(:focus-visible):not(.website-button-list-open) {
+        background: lighten(#282828, 4);
+        border-color: lighten(#3d3d3d, 7);
+        color: lighten(#b0b0b0, 20);
+    }
+
+
+    &:focus-visible:not(.website-button-list-open) {
+        background: lighten(#282828, 4);
+        border-color: lighten(#3d3d3d, 7);
+        color: lighten(#b0b0b0, 20);
+    }
+}
+
+
+.manager-base {
+    background: #333333;
+    border: 1px solid #4e4e4e;
+    color: #aaaaaa;
+
+    &:hover:not(:disabled):not(:focus-visible):not(.manager-list-open) {
+        background: lighten(#333333, 4);
+        border-color: lighten(#4e4e4e, 7);
+        color: lighten(#aaaaaa, 20);
+    }
+
+
+    &:focus-visible:not(.manager-list-open) {
+        background: lighten(#333333, 4);
+        border-color: lighten(#4e4e4e, 7);
+        color: lighten(#aaaaaa, 20);
+    }
+}
+
+
+.website-manager-base {
+    height: 24px;
+}   
+
+
+.base-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.website-manager-base-text {
+    font-size: 13px;
+}
+
+
+.button-base-text {
+    font-size: 14px;
+}
+
+
+.website-button-list-open {
+    background: lighten(#282828, 4);
+    border-color: lighten(#3d3d3d, 7);
+    color: lighten(#b0b0b0, 20);
+}
+
+
+.manager-list-open {
+    background: lighten(#333333, 4);
+    border-color: lighten(#4e4e4e, 7);
+    color: lighten(#aaaaaa, 20);
+}
+
+
+.fa-angle-down {
+    margin-top: 1px;
+}
