@@ -11,8 +11,10 @@
      [style.height.px]="height != null ? height : null"
      [ngStyle]="{'box-shadow': top > baseTop ? '0 7px 8px 6px rgba(0, 0, 0, 0.25)' : '0 -7px 8px 6px rgba(0, 0, 0, 0.25)'}"
      [ngClass]="{'show': show,
+                 'button-list': dropdownType == DropdownType.Button,
                  'manager-list': dropdownType == DropdownType.Manager,
-                 'website-button-list': dropdownType == DropdownType.Website || dropdownType == DropdownType.Button}">
+                 'website-button-list': dropdownType == DropdownType.Website || dropdownType == DropdownType.Button,
+                 'website-manager-list': dropdownType == DropdownType.Website || dropdownType == DropdownType.Manager}">
 
      <!-- List Items-->
     <ng-container *ngIf="list && list.length > 0">
@@ -21,13 +23,12 @@
              tabindex="-1"
              (click)="onItemSelect(i, $event)"
              *ngFor="let item of list; let i = index"
+             [title]="dropdownType == DropdownType.Button ? getText(item) : ''"
              [ngClass]="{'selected-list-item': item == selectedListItem,
-                         'website-button-selected-list-item': item == selectedListItem && (dropdownType == DropdownType.Website || dropdownType == DropdownType.Button),
-
-                         'manager-selected-list-item': item == selectedListItem && dropdownType == DropdownType.Manager,
-
                          'manager-item': dropdownType == DropdownType.Manager,
-                         'website-button-item': dropdownType == DropdownType.Website || dropdownType == DropdownType.Button}">
+                         'manager-selected-list-item': item == selectedListItem && dropdownType == DropdownType.Manager,
+                         'website-button-item': dropdownType == DropdownType.Website || dropdownType == DropdownType.Button,
+                         'website-button-selected-list-item': item == selectedListItem && (dropdownType == DropdownType.Website || dropdownType == DropdownType.Button)}">
             {{getText(item)}}
         </div>
     </ng-container>

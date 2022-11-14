@@ -1,6 +1,5 @@
 .list {
     position: absolute;
-    max-height: 220px;
     overflow: auto;
     z-index: 1000;
 }
@@ -13,6 +12,16 @@
     border-radius: 4px;
     border: 2px solid rgba(22, 22, 22, 0.95);
     border-right: none;
+}
+
+
+.website-manager-list {
+    max-height: 220px;
+}
+
+
+.button-list {
+    max-height: 110px;
 }
 
 
