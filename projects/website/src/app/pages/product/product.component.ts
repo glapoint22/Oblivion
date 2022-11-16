@@ -35,6 +35,7 @@ export class ProductComponent implements OnInit {
       this.product = data.product;
       this.socialMediaService.addMetaTags(this.product.name, this.product.description, this.product.media[0].src);
 
+      // This will get the rest of the product properties
       this.dataService.get('api/Products/GetProperties', [{ key: 'productId', value: this.product.id }])
         .subscribe((properties: any) => {
           this.pricePoints = properties.pricePoints;
