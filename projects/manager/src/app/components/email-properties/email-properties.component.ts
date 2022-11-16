@@ -1,5 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { ApplicationRef, Component, OnInit } from '@angular/core';
+import { DropdownType } from 'common';
 import { EmailType } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -10,6 +11,7 @@ import { WidgetService } from '../../services/widget/widget.service';
 })
 export class EmailPropertiesComponent implements OnInit {
   public emailTypes: Array<KeyValue<string, number>> = [];
+  public DropdownType = DropdownType;
 
   constructor(public widgetService: WidgetService, private appRef: ApplicationRef) { }
 

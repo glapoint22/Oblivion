@@ -18,9 +18,9 @@
     <div class="base-text"
          [ngStyle]="{'button-base-text': dropdownType == DropdownType.Button,
                      'website-manager-base-text': dropdownType == DropdownType.Website || dropdownType == DropdownType.Manager}">
-        {{!disabled && selectedListItem ? selectedListItem.key: ''}}
+        {{dropdownType == DropdownType.Button ? 'Move' : !disabled && selectedListItem ? selectedListItem.key: ''}}
     </div>
 
     <!-- Arrow -->
-    <i class="fa-solid fa-angle-down" [ngStyle]="{'transform': dropdownList ? 'rotate(180deg)' : null}"></i>
+    <div class="dropdown-arrow" [ngStyle]="{'transform': dropdownList ? 'rotate(180deg)' : null}"></div>
 </button>

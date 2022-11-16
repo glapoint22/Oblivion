@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataService, LazyLoadingService } from 'common';
+import { DataService, DropdownType, LazyLoadingService } from 'common';
 import { List } from '../../classes/list';
 import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
 import { ListsComponent } from '../lists/lists.component';
@@ -11,6 +11,7 @@ import { ListsComponent } from '../lists/lists.component';
   styleUrls: ['../lists/lists.component.scss']
 })
 export class SharedListComponent extends ListsComponent implements OnInit {
+  public DropdownType = DropdownType;
 
   constructor(
     lazyLoadingService: LazyLoadingService,
@@ -24,6 +25,8 @@ export class SharedListComponent extends ListsComponent implements OnInit {
     this.route.parent?.data.subscribe(data => {
       this.products = data.sharedList.products;
       this.selectedList = new List(data.sharedList.id, data.sharedList.name);
+
+      console.log('hello')
     });
   }
 }

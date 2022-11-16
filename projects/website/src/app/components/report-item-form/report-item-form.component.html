@@ -21,17 +21,26 @@
             <!-- Drop Shadow -->
             <div class="drop-shadow"></div>
 
-
             <div class="content">
 
                 <!-- Where is the issue -->
                 <div class="label">Where is the issue?</div>
-                <dropdown #whereDropdown [listItems]="listItems" (onSelectedListItem)="type = $event.value[0].value; setWhatDropdownSelectedListItem()" (onGetTabElement)="whereTabElement = $event"></dropdown>
+                <dropdown #whereDropdown
+                          [list]="listItems"
+                          [dropdownType]="DropdownType.Website"
+                          (onGetTabElement)="whereTabElement = $event"
+                          (onChange)="notificationType = $event.value[0].value; setWhatDropdownSelectedListItem()">
+                </dropdown>
 
 
                 <!-- What is the issue -->
                 <div class="label" style="margin-top: 22px;">What is the issue?</div>
-                <dropdown #whatDropdown [listItems]="whereDropdown.selectedListItem.value" (onSelectedListItem)="type = $event.value" (onGetTabElement)="whatTabElement = $event"></dropdown>
+                <dropdown #whatDropdown
+                          [dropdownType]="DropdownType.Website"
+                          (onGetTabElement)="whatTabElement = $event"
+                          (onChange)="notificationType = $event.value"
+                          [list]="whereDropdown.selectedListItem.value">
+                </dropdown>
 
 
 

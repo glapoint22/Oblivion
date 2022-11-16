@@ -18,7 +18,7 @@
 
             <div class="inputs-container">
                 <!-- Dropdown -->
-                <dropdown [listItems]="breakpointService.viewPortDimensions"
+                <dropdown [dropdownType]="DropdownType.Manager" [list]="breakpointService.viewPortDimensions"
                     (onChange)="breakpointService.selectedViewPortDimension = $event; breakpointService.setCurrentBreakpoint(breakpointService.selectedViewPortDimension.value.width)"
                     style="width: 185px;"></dropdown>
 

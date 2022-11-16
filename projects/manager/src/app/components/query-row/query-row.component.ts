@@ -1,13 +1,11 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
-import { LazyLoadingService, SpinnerAction } from 'common';
+import { DropdownListComponent, DropdownListModule, DropdownType, LazyLoadingService, ListItem, SpinnerAction } from 'common';
 import { AutoQueryType, ComparisonOperatorType, LogicalOperatorType, PopupArrowPosition, QueryType } from '../../classes/enums';
 import { Item } from '../../classes/item';
 import { QueryElement } from '../../classes/query-element';
 import { QueryRow } from '../../classes/query-row';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
-import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 import { PricePopupComponent } from '../price-popup/price-popup.component';
 
 @Component({
@@ -195,7 +193,7 @@ export class QueryRowComponent implements OnChanges {
 
       // Keyword Group
       case QueryType.KeywordGroup:
-        this.openDropdownList(valueButton, this.queryBuilderService.keywordGroupsList, (item: Item) => {
+        this.openDropdownList(valueButton, this.queryBuilderService.keywordGroupsList, (item: ListItem) => {
           this.queryRow.item = item;
           this.queryBuilderService.onChange();
         });
@@ -237,10 +235,10 @@ export class QueryRowComponent implements OnChanges {
 
 
   // -------------------------------------------------------------- load Dropdown List -------------------------------------------------------------
-  openDropdownList<T extends Item | KeyValue<any, any>>(element: HTMLElement, list: Array<T>, callback: Function) {
+  openDropdownList<T extends ListItem | KeyValue<any, any>>(element: HTMLElement, list: Array<T>, callback: Function) {
     this.lazyLoadingService.load<DropdownListComponent<T>, DropdownListModule>(async () => {
-      const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
-      const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
+      const { DropdownListComponent } = await import('common');
+      const { DropdownListModule } = await import('common');
       return {
         component: DropdownListComponent,
         module: DropdownListModule
@@ -248,7 +246,7 @@ export class QueryRowComponent implements OnChanges {
     }, SpinnerAction.None)
       .then((dropdownList: DropdownListComponent<T>) => {
         const elementRect = element.getBoundingClientRect();
-
+        dropdownList.dropdownType = DropdownType.Manager;
         dropdownList.list = list;
         dropdownList.top = elementRect.top + elementRect.height;
         dropdownList.left = elementRect.left;

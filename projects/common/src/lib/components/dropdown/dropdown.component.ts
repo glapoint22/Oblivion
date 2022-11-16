@@ -1,6 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { DropdownType, LazyLoadingService, SpinnerAction } from 'common';
+import { DropdownType, SpinnerAction } from '../../classes/enums';
+import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
 import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 
@@ -95,7 +96,7 @@ export class DropdownComponent {
 
         if (this.list) {
           const rect = this.base.nativeElement.getBoundingClientRect();
-          const dropdownListHeight = this.list.length >= 10 ? 222 : this.list.length * 22;
+          const dropdownListHeight = this.list.length >= 10 ? 222 : (this.list.length * 22) + 2;
 
           // If the list is going beyond the bottom of the screen
           if (window.innerHeight < rect.top + rect.height + dropdownListHeight) {
@@ -111,9 +112,9 @@ export class DropdownComponent {
             } else {
 
               // If the bottom of the list was to be moved above the dropdown base and it makes the top of the list go beyond the top of the screen
-              if (rect.top - dropdownListHeight + 2 < 0) {
+              if (rect.top - dropdownListHeight < 0) {
                 // Keep the list under the dropdown base
-                dropdownList.top = rect.top + rect.height;
+                dropdownList.top = (rect.top + window.scrollY) + rect.height;
                 // But shorten the height of the list so it doesn't go beyond the bottom of the screen
                 dropdownList.height = window.innerHeight - (rect.top + rect.height);
 
@@ -121,11 +122,11 @@ export class DropdownComponent {
               } else {
 
                 // Move the list above the dropdown base
-                dropdownList.top = rect.top - dropdownListHeight + 2;
+                dropdownList.top = (rect.top + window.scrollY) - dropdownListHeight + 2 - (this.dropdownType == DropdownType.Manager ? 0 : 4);
               }
             }
           } else {
-            dropdownList.top = rect.top + rect.height;
+            dropdownList.top = (rect.top + window.scrollY) + rect.height;
           }
 
           this.dropdownList = dropdownList;
@@ -133,7 +134,7 @@ export class DropdownComponent {
           dropdownList.left = rect.left + 1;
           dropdownList.width = rect.width - 2;
           dropdownList.selectedListItem = this.selectedListItem;
-          dropdownList.baseTop = rect.top;
+          dropdownList.baseTop = rect.top + window.scrollY;
           dropdownList.dropdownType = this.dropdownType;
 
           dropdownList.callback = (item: KeyValue<any, any>) => {

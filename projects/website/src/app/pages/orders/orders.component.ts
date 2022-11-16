@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LazyLoadingService, SpinnerAction } from 'common';
+import { DropdownType, LazyLoadingService, SpinnerAction } from 'common';
 import { Order } from '../../classes/order';
 import { OrderProduct } from '../../classes/order-product';
 import { QueriedOrderProduct } from '../../classes/queried-order-product';
@@ -21,6 +21,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   public products!: Array<QueriedOrderProduct>;
   public isSearch!: boolean;
   public searchTerm!: string;
+  public DropdownType = DropdownType;
 
   constructor
     (

@@ -18,8 +18,11 @@
 
                 <!-- Sort Options -->
                 <div class="dropdown-container">
-                    <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event)"
-                        [selectedListItem]="setSortOption()"></dropdown>
+                    <dropdown [list]="sortOptions"
+                              (onChange)="onSortChange($event)"
+                              [selectedListItem]="setSortOption()"
+                              [dropdownType]="DropdownType.Website">
+                    </dropdown>
                 </div>
 
 

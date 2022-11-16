@@ -107,6 +107,22 @@ button {
 }
 
 
-.fa-angle-down {
-    margin-top: 1px;
+
+@font-face {
+    font-family: 'dropdown-arrow';
+    src: url('../../../../assets/fonts/dropdown-arrow.ttf');
+}
+
+
+.dropdown-arrow
+{
+    font-family: 'dropdown-arrow';
+    font-size: 12px;
+    color: #b0b0b0;
+    margin-top: 2px;
+    
+
+    &::before {
+    content: "\e25";
+    }
 }

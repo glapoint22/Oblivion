@@ -1,11 +1,9 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, Image, ImageSize, ImageSizeType, LazyLoad, LazyLoadingService, Media, MediaType, SpinnerAction, Video } from 'common';
+import { DataService, DropdownListComponent, DropdownListModule, DropdownType, Image, ImageSize, ImageSizeType, LazyLoad, LazyLoadingService, ListItem, Media, MediaType, SpinnerAction, Video } from 'common';
 import { debounceTime, fromEvent, map, of, switchMap } from 'rxjs';
 import { MediaBrowserMode, MediaBrowserView } from '../../classes/enums';
 import { Item } from '../../classes/item';
-import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
-import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 import { PromptComponent } from '../prompt/prompt.component';
 
 @Component({
@@ -37,7 +35,7 @@ export class MediaBrowserComponent extends LazyLoad {
   public showCancelButton!: boolean;
   public hasMultiImages!: boolean;
   private productName!: string;
-  private dropdownList!: DropdownListComponent<Item>;
+  private dropdownList!: DropdownListComponent<ListItem>;
   public invalidVideoLink!: boolean;
 
 
@@ -557,19 +555,20 @@ export class MediaBrowserComponent extends LazyLoad {
       return;
     }
 
-    this.lazyLoadingService.load<DropdownListComponent<Item>, DropdownListModule>(async () => {
-      const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
-      const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
+    this.lazyLoadingService.load<DropdownListComponent<ListItem>, DropdownListModule>(async () => {
+      const { DropdownListComponent } = await import('common');
+      const { DropdownListModule } = await import('common');
       return {
         component: DropdownListComponent,
         module: DropdownListModule
       }
     }, SpinnerAction.None)
-      .then((dropdownList: DropdownListComponent<Item>) => {
+      .then((dropdownList: DropdownListComponent<ListItem>) => {
         const rect = this.submitButton.nativeElement.getBoundingClientRect();
         const imageSizes = this.selectedMedia.getImageSizes();
 
         this.dropdownList = dropdownList;
+        dropdownList.dropdownType = DropdownType.Manager;
         dropdownList.top = rect.top + rect.height;
         dropdownList.left = rect.left;
         dropdownList.list = [];

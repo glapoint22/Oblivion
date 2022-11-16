@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DataService, DropdownComponent, LazyLoad, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
+import { DataService, DropdownComponent, DropdownType, LazyLoad, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -8,10 +8,11 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./report-item-form.component.scss']
 })
 export class ReportItemFormComponent extends LazyLoad {
+  public DropdownType = DropdownType;
   public isFromRedirect!: boolean;
   public productId!: number;
   public comments!: string;
-  public type: number = NotificationType.ProductNameDoesNotMatchWithProductDescription;
+  public notificationType: number = NotificationType.ProductNameDoesNotMatchWithProductDescription;
   public whereTabElement!: ElementRef<HTMLElement>;
   public whatTabElement!: ElementRef<HTMLElement>;
   @ViewChild('whereDropdown') whereDropdown!: DropdownComponent;
@@ -144,7 +145,7 @@ export class ReportItemFormComponent extends LazyLoad {
 
   setWhatDropdownSelectedListItem() {
     window.setTimeout(() => {
-      this.whatDropdown.selectedListItem = this.whatDropdown.listItems[0];
+      this.whatDropdown.selectedListItem = this.whatDropdown.list[0];
     })
   }
 
@@ -160,10 +161,8 @@ export class ReportItemFormComponent extends LazyLoad {
 
 
   onSubmit() {
-
-
     this.dataService.post('api/Notifications/Post', {
-      type: this.type,
+      type: this.notificationType,
       productId: this.productId,
       text: this.comments != null && this.comments.trim().length > 0 ? this.comments.trim() : null
     }, {
@@ -195,7 +194,7 @@ export class ReportItemFormComponent extends LazyLoad {
 
 
   onEscape(): void {
-    if (!this.whereDropdown.showDropdownList && !this.whatDropdown.showDropdownList) {
+    if (!this.whereDropdown.dropdownList && !this.whatDropdown.dropdownList) {
       this.close();
     }
   }

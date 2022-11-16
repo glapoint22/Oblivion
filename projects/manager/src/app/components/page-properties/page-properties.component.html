@@ -3,7 +3,7 @@
     <div class="label" style="margin-right: 15px;">Page Type:</div>
     <div style="width: 100%;">
         <!-- Dropdown -->
-        <dropdown [listItems]="pageTypes" [selectedListItem]="selectedPageType" (onChange)="selectedPageType = $event">
+        <dropdown [dropdownType]="DropdownType.Manager" [list]="pageTypes" [selectedListItem]="selectedPageType" (onChange)="selectedPageType = $event">
         </dropdown>
     </div>
 </div>

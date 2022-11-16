@@ -1,7 +1,0 @@
-<button #base #tabElement (click)="loadDropdownList()" (mousedown)="dropdownList ? $event.stopPropagation() : null" (focus)="onFocus()" (blur)="onBlur()" [disabled]="disabled"
-    [ngClass]="{'list-open': dropdownList}" tabindex="0">
-    <div class="dropdown-text">
-        {{!disabled ? selectedListItem.key: ''}}
-    </div>
-    <i class="fa-solid fa-angle-down"></i>
-</button>

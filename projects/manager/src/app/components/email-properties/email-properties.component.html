@@ -1,7 +1,7 @@
 <!-- Email Type -->
 <div class="property">
     <div class="label">Email Type:</div>
-    <dropdown [listItems]="emailTypes" [selectedListItem]="getSelectedEmailType()" (onChange)="onEmailTypeChange($event)"></dropdown>
+    <dropdown [dropdownType]="DropdownType.Manager" [list]="emailTypes" [selectedListItem]="getSelectedEmailType()" (onChange)="onEmailTypeChange($event)"></dropdown>
 </div>
 
 

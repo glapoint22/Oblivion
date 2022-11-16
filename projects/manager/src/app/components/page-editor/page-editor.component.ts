@@ -1,4 +1,5 @@
 import { Compiler, Component, ComponentFactoryResolver, Injector, ViewContainerRef } from '@angular/core';
+import { DropdownType } from 'common';
 import { Editor } from '../../classes/editor';
 import { BuilderType } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
@@ -13,6 +14,7 @@ import { WidgetService } from '../../services/widget/widget.service';
 export class PageEditorComponent extends Editor {
   public widgetCursors = WidgetCursor.getWidgetCursors(BuilderType.Page);
   public showResizeCover!: boolean;
+  public DropdownType = DropdownType;
 
   constructor
     (

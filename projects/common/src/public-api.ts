@@ -28,10 +28,24 @@ export * from './lib/classes/shipping';
 export * from './lib/classes/i-product';
 export * from './lib/classes/image-size';
 export * from './lib/classes/radio-button-lazy-load';
+export * from './lib/classes/list-item';
 
 // Components
-export * from './lib/components/temp/dropdown/dropdown.component';
-export * from './lib/components/temp/dropdown/dropdown.module';
+export * from './lib/components/dropdown/dropdown.component';
+export * from './lib/components/dropdown/dropdown.module';
+
+
+
+export * from './lib/components/dropdown-list/dropdown-list.component';
+export * from './lib/components/dropdown-list/dropdown-list.module';
+
+
+
+// export * from './lib/components/temp/dropdown/dropdown.component';
+// export * from './lib/components/temp/dropdown/dropdown.module';
+
+
+
 export * from './lib/components/paginator/paginator.component';
 export * from './lib/components/paginator/paginator.module';
 export * from './lib/components/review-summary/review-summary.component';

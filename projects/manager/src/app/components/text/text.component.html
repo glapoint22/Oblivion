@@ -5,7 +5,7 @@
     <!-- Font -->
     <div class="property">
         <div class="label">Font:</div>
-        <dropdown [listItems]="textBox.fontFamily.options" [selectedListItem]="textBox.fontFamily.selectedOption"
+        <dropdown [dropdownType]="DropdownType.Manager" [list]="textBox.fontFamily.options" [selectedListItem]="textBox.fontFamily.selectedOption"
             (onChange)="textBox.fontFamily.selectedOption = $event; textBox.fontFamily.setStyle(); textBox.setText()">
         </dropdown>
     </div>
@@ -15,7 +15,7 @@
     <!-- Font Size -->
     <div class="property">
         <div class="label">Font Size:</div>
-        <dropdown [listItems]="textBox.fontSize.options" [selectedListItem]="textBox.fontSize.selectedOption"
+        <dropdown [dropdownType]="DropdownType.Manager" [list]="textBox.fontSize.options" [selectedListItem]="textBox.fontSize.selectedOption"
             (onChange)="textBox.fontSize.selectedOption = $event; textBox.fontSize.setStyle(); textBox.setText()">
         </dropdown>
     </div>

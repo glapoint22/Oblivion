@@ -19,8 +19,10 @@
                     <div class="top-container-right">
                         <div class="list-title">{{selectedList.name}}</div>
                         <div *ngIf="products && products.length > 0" class="dropdown-container">
-                            <dropdown [listItems]="sortOptions" (onSelectedListItem)="onSortChange($event.value)"
-                                [selectedListItem]="setSelectedSortOption()">
+                            <dropdown [list]="sortOptions"
+                                      [dropdownType]="DropdownType.Website"
+                                      (onChange)="onSortChange($event.value)"
+                                      [selectedListItem]="setSelectedSortOption()">
                             </dropdown>
                         </div>
 
@@ -82,12 +84,13 @@
                                 <div class="added-text">Added by {{product.collaborator.name}}</div>
 
                                 <div class="item-actions-button-container">
-                                    <dropdown-button
-                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.moveItem"
-                                        style="flex: 1;" [listItems]="moveToList"
-                                        (onSelectedListItem)="onMoveItem($event, product)">
-                                    </dropdown-button>
-
+                                    <dropdown style="flex: 1;"
+                                              [list]="moveToList"
+                                              [dropdownType]="DropdownType.Button"
+                                              (onChange)="onMoveItem($event, product)"
+                                              [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.moveItem">
+                                    </dropdown> 
+                                    
                                     <button
                                         [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.removeItem"
                                         style="flex: 1; max-width: inherit; margin-left: 10px;" class="dark-button"

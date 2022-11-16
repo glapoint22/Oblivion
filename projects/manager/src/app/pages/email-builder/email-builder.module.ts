@@ -9,7 +9,6 @@ import { PropertiesModule } from '../../components/properties/properties.module'
 import { IconButtonModule } from '../../components/icon-button/icon-button.module';
 import { SearchModule } from '../../components/search/search.module';
 import { EmailPropertiesComponent } from '../../components/email-properties/email-properties.component';
-import { DropdownModule } from '../../components/dropdown/dropdown.module';
 import { EmailRowPropertiesComponent } from '../../components/email-row-properties/email-row-properties.component';
 import { PaddingComponent } from '../../components/padding/padding.component';
 import { PanelModule } from '../../components/panel/panel.module';
@@ -19,6 +18,7 @@ import { HorizontalAlignmentComponent } from '../../components/horizontal-alignm
 import { EmailWidgetPropertiesComponent } from '../../components/email-widget-properties/email-widget-properties.component';
 import { EmailButtonWidgetPropertiesComponent } from '../../components/email-button-widget-properties/email-button-widget-properties.component';
 import { EmailTextWidgetPropertiesComponent } from '../../components/email-text-widget-properties/email-text-widget-properties.component';
+import { DropdownModule } from 'common';
 
 
 @NgModule({

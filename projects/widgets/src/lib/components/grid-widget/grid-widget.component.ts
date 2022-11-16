@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GridData, GridWidgetService, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
+import { DropdownType, GridData, GridWidgetService, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
 import { GridWidgetData } from '../../classes/grid-widget-data';
 import { Widget } from '../../classes/widget';
 import { WidgetType } from '../../classes/widget-enums';
@@ -14,6 +14,7 @@ import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-m
 })
 export class GridWidgetComponent extends Widget {
   public gridData!: GridData;
+  public DropdownType = DropdownType;
   public sortOptions: Array<KeyValue<string, string>> = [
     {
       key: 'Price: Low to High',

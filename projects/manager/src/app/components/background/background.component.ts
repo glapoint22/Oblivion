@@ -1,5 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DropdownType } from 'common';
 import { Background } from 'widgets';
 
 @Component({
@@ -14,6 +15,7 @@ export class BackgroundComponent implements OnInit {
   public repeatOptions!: Array<KeyValue<string, string>>;
   public positionOptions!: Array<KeyValue<string, string>>;
   public attachmentOptions!: Array<KeyValue<string, string>>;
+  public DropdownType = DropdownType;
 
   ngOnInit() {
     // Position options

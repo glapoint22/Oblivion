@@ -1,9 +1,8 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { LazyLoad, RebillFrequency, RecurringPayment } from 'common';
+import { DropdownComponent, DropdownType, LazyLoad, RebillFrequency, RecurringPayment } from 'common';
 import { Subject } from 'rxjs';
 import { PopupArrowPosition } from '../../classes/enums';
-import { DropdownComponent } from '../dropdown/dropdown.component';
 
 @Component({
   selector: 'recurring-popup',
@@ -24,6 +23,7 @@ export class RecurringPopupComponent extends LazyLoad {
   public onClose: Subject<void> = new Subject<void>();
   public rebillFrequencyDropdownTabElement!: ElementRef<HTMLElement>;
   public timeBetweenEachRebillDropdownTabElement!: ElementRef<HTMLElement>;
+  public DropdownType = DropdownType;
   @ViewChild('rebillFrequencyDropdown') rebillFrequencyDropdown!: DropdownComponent;
   @ViewChild('timeBetweenEachRebillDropdown') timeBetweenEachRebillDropdown!: DropdownComponent;
 

@@ -1,9 +1,8 @@
 import { KeyValue } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { DataService } from 'common';
+import { DataService, ListItem } from 'common';
 import { forkJoin, Subject } from 'rxjs';
 import { QueryType, ComparisonOperatorType, AutoQueryType, LogicalOperatorType, QueryElementType } from '../../classes/enums';
-import { Item } from '../../classes/item';
 import { QueryElement } from '../../classes/query-element';
 import { InputService } from '../input/input.service';
 import { WidgetService } from '../widget/widget.service';
@@ -13,10 +12,10 @@ import { WidgetService } from '../widget/widget.service';
 })
 export class QueryBuilderService {
   public selectedQueryElements: Array<QueryElement> = [];
-  public categoriesList!: Array<Item>;
-  public nichesList!: Array<Item>;
-  public keywordGroupsList!: Array<Item>;
-  public productGroupsList!: Array<Item>;
+  public categoriesList!: Array<ListItem>;
+  public nichesList!: Array<ListItem>;
+  public keywordGroupsList!: Array<ListItem>;
+  public productGroupsList!: Array<ListItem>;
   public listsDownloadComplete!: boolean;
   public change$: Subject<void> = new Subject<void>()
   public queryTypeList: Array<KeyValue<string, QueryType>> = [

@@ -1,4 +1,4 @@
-<div class="hide notification-popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="!contextMenu && profilePopupContainer.length == 0 ? $event.stopPropagation() : null">
+<div class="hide notification-popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="!contextMenu && profilePopupContainer.length == 0 && !notificationItemsDropdown.dropdownList ? $event.stopPropagation() : null">
 
     <div class="notification-popup-arrow-container" [ngClass]="{'product-notification-popup-arrow-container': fromProduct}">
         <div class="notification-popup-arrow-up-Border"></div>
@@ -32,7 +32,9 @@
 
 
         <div *ngIf="notificationItems && notificationItems.length > 1" class="dropdown-container">
-            <dropdown [listItems]="notificationItemDropdownList"
+            <dropdown #notificationItemsDropdown
+                      [list]="notificationItemDropdownList"
+                      [dropdownType]="DropdownType.Manager"
                       [selectedListItem]="selectedNotificationItem"
                       (onChange)="selectedNotificationItem = $event; getProductNotification(notificationItems[selectedNotificationItem.value])">
             </dropdown>

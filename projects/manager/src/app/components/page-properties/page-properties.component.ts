@@ -1,5 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { ApplicationRef, Component, OnInit } from '@angular/core';
+import { DropdownType } from 'common';
 import { PageType } from 'widgets';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -11,6 +12,7 @@ import { WidgetService } from '../../services/widget/widget.service';
 export class PagePropertiesComponent implements OnInit {
   public pageTypes: Array<KeyValue<string, number>> = new Array<KeyValue<string, number>>();
   public pageType = PageType;
+  public DropdownType = DropdownType;
 
 
   private _selectedPageType!: KeyValue<string, number>;

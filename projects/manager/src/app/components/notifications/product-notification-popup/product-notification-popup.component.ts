@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MenuOptionType } from '../../../classes/enums';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { MenuOption } from '../../../classes/menu-option';
@@ -7,7 +7,7 @@ import { NotificationItem } from '../../../classes/notifications/notification-it
 import { KeyValue } from '@angular/common';
 import { ProductNotification } from '../../../classes/notifications/product-notification';
 import { DomSanitizer } from '@angular/platform-browser';
-import { LazyLoadingService, DataService } from 'common';
+import { LazyLoadingService, DataService, DropdownType, DropdownComponent } from 'common';
 import { NotificationService } from '../../../services/notification/notification.service';
 import { ProductService } from '../../../services/product/product.service';
 import { Subject } from 'rxjs';
@@ -18,10 +18,12 @@ import { Subject } from 'rxjs';
 })
 export class ProductNotificationPopupComponent extends NotificationPopupComponent {
   public fromProduct!: boolean;
+  public DropdownType = DropdownType;
   public notificationItems!: Array<NotificationItem>;
   public onPopupClose: Subject<void> = new Subject<void>();
   public selectedNotificationItem!: KeyValue<string, number>;
   public notificationItemDropdownList: Array<KeyValue<string, number>> = [];
+  @ViewChild('notificationItemsDropdown') notificationItemsDropdown!: DropdownComponent;
 
 
   // ====================================================================( CONSTRUCTOR )==================================================================== \\
@@ -42,7 +44,6 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
     super.ngOnInit();
     this.getProductNotification();
     window.addEventListener('mousedown', this.mousedown);
-
 
     this.onNotificationLoad.subscribe(() => {
       if (this.notification.employeeNotes.length == 0) this.notification.employeeNotes.push(new NotificationEmployee());
@@ -191,7 +192,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.notificationItemsDropdown.dropdownList && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
       if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded) && !this.secondaryButtonDisabled) {
         this.close();
       } else {

@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, DropdownType, LazyLoadingService, SpinnerAction } from 'common';
 import { List } from '../../classes/list';
 import { ListProduct } from '../../classes/list-product';
 import { CreateListFormComponent } from '../../components/create-list-form/create-list-form.component';
@@ -19,6 +19,7 @@ export class ListsComponent implements OnInit, OnDestroy {
   public lists!: Array<List>;
   public selectedList!: List;
   public products!: Array<ListProduct> | undefined;
+  public DropdownType = DropdownType;
 
   public sortOptions: Array<KeyValue<string, string>> = [
     { key: 'Sort by Date Added', value: 'date' },
@@ -52,6 +53,9 @@ export class ListsComponent implements OnInit, OnDestroy {
         this.lists = [];
       }
     });
+
+
+    
   }
 
 

@@ -33,8 +33,11 @@
                         <div class="orders-placed-text">
                             {{orders.length}} order{{orders.length == 0 || orders.length > 1 ? 's' : ''}} placed in
                         </div>
-                        <dropdown style="width: 186px;" [listItems]="filters" [selectedListItem]="selectedFilter"
-                            (onSelectedListItem)="onFilterChange($event)">
+                        <dropdown [list]="filters"
+                                  style="width: 186px;"
+                                  (onChange)="onFilterChange($event)"
+                                  [selectedListItem]="selectedFilter"
+                                  [dropdownType]="DropdownType.Website">
                         </dropdown>
                     </div>
 

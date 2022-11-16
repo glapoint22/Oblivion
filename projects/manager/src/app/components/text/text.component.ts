@@ -1,5 +1,5 @@
 import { ApplicationRef, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { Color, LazyLoadingService, LinkType, SpinnerAction } from 'common';
+import { Color, DropdownType, LazyLoadingService, LinkType, SpinnerAction } from 'common';
 import { TextBoxDev } from 'text-box';
 import { LinkComponent } from '../link/link.component';
 import { TextWidgetDevComponent } from '../text-widget-dev/text-widget-dev.component';
@@ -13,6 +13,7 @@ export class TextComponent {
   @Input() textWidget!: TextWidgetDevComponent;
   @Output() onChange: EventEmitter<void> = new EventEmitter();
   public textBox!: TextBoxDev;
+  public DropdownType = DropdownType;
 
   constructor(private lazyLoadingService: LazyLoadingService, public appRef: ApplicationRef) { }
 

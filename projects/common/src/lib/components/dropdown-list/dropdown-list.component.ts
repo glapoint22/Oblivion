@@ -1,15 +1,16 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { DropdownType, LazyLoad } from 'common';
 import { Subject } from 'rxjs';
-import { Item } from '../../../../../manager/src/app/classes/item';
+import { DropdownType } from '../../classes/enums';
+import { LazyLoad } from '../../classes/lazy-load';
+import { ListItem } from '../../classes/list-item';
 
 @Component({
   selector: 'dropdown-list',
   templateUrl: './dropdown-list.component.html',
   styleUrls: ['./dropdown-list.component.scss']
 })
-export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends LazyLoad {
+export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> extends LazyLoad {
   private indexOfSelectedListItem: number = 0;
 
   public list!: Array<T>;
@@ -23,10 +24,15 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
   public DropdownType = DropdownType;
   public dropdownType!: DropdownType;
   public onClose: Subject<void> = new Subject<void>();
-  public selectedListItem!: Item | KeyValue<any, any>;
+  public selectedListItem!: ListItem | KeyValue<any, any>;
 
   @ViewChild('listElement') listElement!: ElementRef<HTMLElement>;
   @ViewChildren('listItem') listItems!: QueryList<ElementRef<HTMLElement>>;
+
+
+  ngOnInit(): void {
+    this.addEventListeners();
+  }
 
 
   ngAfterViewInit() {
@@ -35,6 +41,7 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
     this.listItems.get(this.indexOfSelectedListItem)?.nativeElement.focus();
     window.addEventListener('mousedown', this.mousedown);
     window.addEventListener('wheel', this.windowMouseWheel);
+    window.addEventListener('blur', this.windowBlur);
   }
 
 
@@ -44,6 +51,11 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
 
 
   windowMouseWheel = () => {
+    this.close();
+  }
+
+
+  windowBlur = () => {
     this.close();
   }
 
@@ -59,7 +71,7 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
 
 
   getText(listItem: T) {
-    return (listItem as KeyValue<any, any>).key || (listItem as Item).name;
+    return (listItem as KeyValue<any, any>).key || (listItem as ListItem).name;
   }
 
 
@@ -121,7 +133,7 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
 
 
   close(): void {
-    super.close();
+    this.fade();
     this.onClose.next();
   }
 
@@ -131,5 +143,6 @@ export class DropdownListComponent<T extends Item | KeyValue<any, any>> extends 
   ngOnDestroy() {
     window.removeEventListener('mousedown', this.mousedown);
     window.removeEventListener('wheel', this.windowMouseWheel);
+    window.removeEventListener('blur', this.windowBlur);
   }
 }

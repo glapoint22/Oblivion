@@ -14,7 +14,7 @@
             <!-- Position -->
             <div class="property">
                 <div class="label">Position</div>
-                <dropdown [listItems]="background.image.positionOptions" [selectedListItem]="background.image.position"
+                <dropdown [dropdownType]="DropdownType.Manager" [list]="background.image.positionOptions" [selectedListItem]="background.image.position"
                     (onChange)="background.image.position = $event; onChange.emit()"></dropdown>
             </div>
 
@@ -24,7 +24,7 @@
             <!-- Repeat -->
             <div class="property">
                 <div class="label">Repeat</div>
-                <dropdown [listItems]="background.image.repeatOptions" [selectedListItem]="background.image.repeat"
+                <dropdown [dropdownType]="DropdownType.Manager" [list]="background.image.repeatOptions" [selectedListItem]="background.image.repeat"
                     (onChange)="background.image.repeat = $event; onChange.emit()"></dropdown>
             </div>
 
@@ -35,7 +35,7 @@
             <!-- Attachment -->
             <div class="property">
                 <div class="label">Attachment</div>
-                <dropdown [listItems]="background.image.attachmentOptions" [selectedListItem]="background.image.attachment"
+                <dropdown [dropdownType]="DropdownType.Manager" [list]="background.image.attachmentOptions" [selectedListItem]="background.image.attachment"
                     (onChange)="background.image.attachment = $event; onChange.emit()"></dropdown>
             </div>
         </div>

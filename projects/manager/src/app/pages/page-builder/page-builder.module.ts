@@ -32,11 +32,11 @@ import { ColorSwatchModule } from '../../components/color-swatch/color-swatch.mo
 import { CounterModule } from '../../components/counter/counter.module';
 import { ImageBoxModule } from '../../components/image-box/image-box.module';
 import { VideoPropertiesEditorComponent } from '../../components/video-properties-editor/video-properties-editor.component';
-import { DropdownModule } from '../../components/dropdown/dropdown.module';
 import { QueryBuilderComponent } from '../../components/query-builder/query-builder.component';
 import { QueryComponent } from '../../components/query/query.component';
 import { QueryRowComponent } from '../../components/query-row/query-row.component';
 import { QueryGroupComponent } from '../../components/query-group/query-group.component';
+import { DropdownModule } from 'common';
 
 
 @NgModule({

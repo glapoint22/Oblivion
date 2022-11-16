@@ -8,14 +8,14 @@
     <!-- Font -->
     <div class="property">
         <div class="label">Font:</div>
-        <dropdown [listItems]="caption.fontOptions" [selectedListItem]="caption.font"
+        <dropdown [dropdownType]="DropdownType.Manager" [list]="caption.fontOptions" [selectedListItem]="caption.font"
             (onChange)="caption.font = $event; onChange.emit()"></dropdown>
     </div>
 
     <!-- Font Size -->
     <div class="property">
         <div class="label">Font Size:</div>
-        <dropdown [listItems]="caption.fontSizes" [selectedListItem]="caption.fontSize"
+        <dropdown [dropdownType]="DropdownType.Manager" [list]="caption.fontSizes" [selectedListItem]="caption.fontSize"
             (onChange)="caption.fontSize = $event; onChange.emit()"></dropdown>
     </div>
 

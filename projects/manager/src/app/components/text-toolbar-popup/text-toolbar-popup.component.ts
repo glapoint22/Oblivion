@@ -1,10 +1,8 @@
 import { ApplicationRef, Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { Color, LazyLoadingService, LinkType, SpinnerAction } from 'common';
+import { Color, DropdownListComponent, DropdownListModule, DropdownType, LazyLoadingService, LinkType, ListItem, SpinnerAction } from 'common';
 import { TextBoxDev } from 'text-box';
 import { Item } from '../../classes/item';
 import { ColorSwatchComponent } from '../color-swatch/color-swatch.component';
-import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
-import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 import { LinkComponent } from '../link/link.component';
 
 @Component({
@@ -13,6 +11,7 @@ import { LinkComponent } from '../link/link.component';
   styleUrls: ['./text-toolbar-popup.component.scss']
 })
 export class TextToolbarPopupComponent {
+  public DropdownType = DropdownType;
   @Input() textBox!: TextBoxDev;
   @ViewChild('caseDropdownListContainer', { read: ViewContainerRef }) caseDropdownListContainer!: ViewContainerRef;
   @ViewChild('linkContainer', { read: ViewContainerRef }) linkContainer!: ViewContainerRef;
@@ -95,16 +94,16 @@ export class TextToolbarPopupComponent {
       return;
     }
 
-    this.lazyLoadingService.load<DropdownListComponent<Item>, DropdownListModule>(async () => {
-      const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
-      const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
+    this.lazyLoadingService.load<DropdownListComponent<ListItem>, DropdownListModule>(async () => {
+      const { DropdownListComponent } = await import('common');
+      const { DropdownListModule } = await import('common');
       return {
         component: DropdownListComponent,
         module: DropdownListModule
       }
     }, SpinnerAction.None, this.caseDropdownListContainer)
-      .then((dropdownList: DropdownListComponent<Item>) => {
-
+      .then((dropdownList: DropdownListComponent<ListItem>) => {
+        dropdownList.dropdownType = DropdownType.Manager;
         dropdownList.list = [
           {
             id: 0,

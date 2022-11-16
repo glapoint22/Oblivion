@@ -1,9 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, DropdownListComponent, DropdownListModule, DropdownType, LazyLoadingService, ListItem, SpinnerAction } from 'common';
 import { debounceTime, fromEvent, merge, of, switchMap } from 'rxjs';
 import { Item } from '../../classes/item';
-import { DropdownListComponent } from '../dropdown-list/dropdown-list.component';
-import { DropdownListModule } from '../dropdown-list/dropdown-list.module';
 
 @Component({
   selector: 'search',
@@ -19,7 +17,7 @@ export class SearchComponent {
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('tabElement') tabElement!: ElementRef<HTMLElement>;
   @Output() onGetTabElement: EventEmitter<ElementRef<HTMLElement>> = new EventEmitter();
-  public dropdownList!: DropdownListComponent<Item>;
+  public dropdownList!: DropdownListComponent<ListItem>;
 
   constructor(private dataService: DataService, private lazyLoadingService: LazyLoadingService) { }
 
@@ -45,9 +43,9 @@ export class SearchComponent {
 
             return of(null);
           }
-          return this.dataService.get<Array<Item>>('api/' + this.apiUrl, [{ key: 'searchTerm', value: searchTerm }])
+          return this.dataService.get<Array<ListItem>>('api/' + this.apiUrl, [{ key: 'searchTerm', value: searchTerm }])
         })
-      ).subscribe((results: Array<Item> | null) => {
+      ).subscribe((results: Array<ListItem> | null) => {
         if (results) {
           // See if dropdown list is already loaded
           if (!document.getElementById('dropdownList')) {
@@ -65,18 +63,18 @@ export class SearchComponent {
 
 
   // ------------------------------------------------------------------------ Load Dropdown List ----------------------------------------------------------
-  async loadDropdownList(results: Array<Item>) {
-    this.lazyLoadingService.load<DropdownListComponent<Item>, DropdownListModule>(async () => {
-      const { DropdownListComponent } = await import('../dropdown-list/dropdown-list.component');
-      const { DropdownListModule } = await import('../dropdown-list/dropdown-list.module');
+  async loadDropdownList(results: Array<ListItem>) {
+    this.lazyLoadingService.load<DropdownListComponent<ListItem>, DropdownListModule>(async () => {
+      const { DropdownListComponent } = await import('common');
+      const { DropdownListModule } = await import('common');
       return {
         component: DropdownListComponent,
         module: DropdownListModule
       }
     }, SpinnerAction.None)
-      .then((dropdownList: DropdownListComponent<Item>) => {
+      .then((dropdownList: DropdownListComponent<ListItem>) => {
         const rect = this.searchContainer.nativeElement.getBoundingClientRect();
-
+        dropdownList.dropdownType = DropdownType.Manager;
         this.dropdownList = dropdownList;
         this.dropdownList.list = results;
         this.dropdownList.top = rect.top + rect.height;
@@ -96,10 +94,10 @@ export class SearchComponent {
           this.searchInput.nativeElement.value = text;
         }
 
-        // On Close
-        this.dropdownList.onClose = () => {
-          this.dropdownList = null!;
-        }
+        const dropdownCloseListener = this.dropdownList.onClose.subscribe(() => {
+          dropdownCloseListener.unsubscribe();
+            this.dropdownList = null!;
+        });
       });
   }
 

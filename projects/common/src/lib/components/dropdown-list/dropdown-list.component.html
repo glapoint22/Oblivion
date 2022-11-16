@@ -1,6 +1,6 @@
 <!-- List -->
 <div #listElement
-     class="hide list"
+     class="list hide"
      [style.top.px]="top"
      (scroll)="onScroll()"
      [style.left.px]="left"
@@ -9,7 +9,9 @@
      (wheel)="onMouseWheel($event)"
      (mousedown)="$event.stopPropagation()"
      [style.height.px]="height != null ? height : null"
-     [ngStyle]="{'box-shadow': top > baseTop ? '0 7px 8px 6px rgba(0, 0, 0, 0.25)' : '0 -7px 8px 6px rgba(0, 0, 0, 0.25)'}"
+     [ngStyle]="{'width': dropdownType == DropdownType.Button ? '100%' : null,
+                 'max-width': dropdownType == DropdownType.Button ? width + 'px' : null,
+                 'box-shadow': top > baseTop ? '0 7px 8px 6px rgba(0, 0, 0, 0.25)' : '0 -7px 8px 6px rgba(0, 0, 0, 0.25)'}"
      [ngClass]="{'show': show,
                  'button-list': dropdownType == DropdownType.Button,
                  'manager-list': dropdownType == DropdownType.Manager,

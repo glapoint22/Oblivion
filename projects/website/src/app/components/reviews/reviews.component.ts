@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { DataService, LazyLoadingService, ReviewFilter, SpinnerAction, SummaryProduct } from 'common';
+import { DataService, DropdownType, LazyLoadingService, ReviewFilter, SpinnerAction, SummaryProduct } from 'common';
 import { Subscription } from 'rxjs';
 import { Review } from '../../classes/review';
 import { ReportReviewFormComponent } from '../../components/report-review-form/report-review-form.component';
@@ -25,6 +25,7 @@ export class ReviewsComponent implements OnInit {
   public currentPage!: number;
   public pageCount!: number;
   public showing!: string;
+  public DropdownType = DropdownType;
   public reviewFilterDropdownList: Array<KeyValue<string, string>> =
     [
       {
@@ -179,21 +180,32 @@ export class ReviewsComponent implements OnInit {
     this.router.navigate(['reviews'], { relativeTo: this.route });
   }
 
+
+
+
   onReviewFilterChange(reviewFilter: KeyValue<string, string>) {
-    this.router.navigate([], {
-      queryParams: { filter: reviewFilter.value, page: null },
-      queryParamsHandling: 'merge',
-      fragment: 'reviews-top'
-    });
+    if (reviewFilter != this.selectedFilter) {
+      this.selectedFilter = reviewFilter;
+      this.router.navigate([], {
+        queryParams: { filter: reviewFilter.value, page: null },
+        queryParamsHandling: 'merge',
+        fragment: 'reviews-top'
+      });
+    }
   }
 
 
+
+
   onSortChange(sortFilter: KeyValue<string, string>) {
-    this.router.navigate([], {
-      queryParams: { sort: sortFilter.value, page: null },
-      queryParamsHandling: 'merge',
-      fragment: 'reviews-top'
-    });
+    if(sortFilter != this.selectedSort) {
+      this.selectedSort = sortFilter;
+      this.router.navigate([], {
+        queryParams: { sort: sortFilter.value, page: null },
+        queryParamsHandling: 'merge',
+        fragment: 'reviews-top'
+      });
+    }
   }
 
 
