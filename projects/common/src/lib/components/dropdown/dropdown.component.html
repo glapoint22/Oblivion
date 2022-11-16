@@ -4,6 +4,7 @@
         tabindex="0"
         (blur)="onBlur()"
         (focus)="onFocus()"
+        [disabled]="disabled"
         (click)="openDropdownList()"
         (mousedown)="dropdownList ? $event.stopPropagation() : null"
         [ngClass]="{'button-base': dropdownType == DropdownType.Button,

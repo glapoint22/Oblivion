@@ -14,6 +14,7 @@ export class RecurringPopupComponent extends LazyLoad {
   public arrowPosition!: PopupArrowPosition;
   public PopupArrowPosition = PopupArrowPosition;
   public recurringPayment: RecurringPayment = new RecurringPayment();
+  public initialRecurringPayment: RecurringPayment = new RecurringPayment();
   public rebillFrequencyList: Array<KeyValue<string, number>> = [];
   public selectedRebillFrequency!: KeyValue<string, number>;
   public timeFrameBetweenRebillList: Array<KeyValue<string, number>> = [];
@@ -24,6 +25,7 @@ export class RecurringPopupComponent extends LazyLoad {
   public rebillFrequencyDropdownTabElement!: ElementRef<HTMLElement>;
   public timeBetweenEachRebillDropdownTabElement!: ElementRef<HTMLElement>;
   public DropdownType = DropdownType;
+  public submitButtonDisabled: boolean = true;
   @ViewChild('rebillFrequencyDropdown') rebillFrequencyDropdown!: DropdownComponent;
   @ViewChild('timeBetweenEachRebillDropdown') timeBetweenEachRebillDropdown!: DropdownComponent;
 
@@ -55,6 +57,11 @@ export class RecurringPopupComponent extends LazyLoad {
 
 
 
+    this.initialRecurringPayment.recurringPrice = this.recurringPayment.recurringPrice;
+    this.initialRecurringPayment.rebillFrequency = this.recurringPayment.rebillFrequency;
+    this.initialRecurringPayment.subscriptionDuration = this.recurringPayment.subscriptionDuration;
+    this.initialRecurringPayment.timeFrameBetweenRebill = this.recurringPayment.timeFrameBetweenRebill;
+    this.initialRecurringPayment.trialPeriod = this.recurringPayment.trialPeriod;
   }
 
 
@@ -128,6 +135,8 @@ export class RecurringPopupComponent extends LazyLoad {
     }
 
     this.recurringPayment.trialPeriod = diffDays;
+
+    this.onFieldChange();
   }
 
 
@@ -196,6 +205,8 @@ export class RecurringPopupComponent extends LazyLoad {
       this.selectedTimeFrameBetweenRebill = this.timeFrameBetweenRebillList[0];
       this.recurringPayment.timeFrameBetweenRebill = this.selectedTimeFrameBetweenRebill.value;
     }
+
+    this.onFieldChange();
   }
 
 
@@ -203,8 +214,10 @@ export class RecurringPopupComponent extends LazyLoad {
 
 
   // -------------------------------------------------------------- On Recurring Price Change -----------------------------------------------
-  onRecurringPriceChange(value: string) {
-    this.recurringPayment.recurringPrice = parseFloat(value);
+  onRecurringPriceChange(recurringPriceInput: HTMLInputElement) {
+    !(/^[0-9.]*$/i).test(recurringPriceInput.value) ? recurringPriceInput.value = recurringPriceInput.value.replace(/[^0-9.]/ig, '') : null;
+    this.recurringPayment.recurringPrice = parseFloat(recurringPriceInput.value);
+    this.onFieldChange();
   }
 
 
@@ -214,15 +227,32 @@ export class RecurringPopupComponent extends LazyLoad {
 
 
   // ------------------------------------------------------------- On Subscription Duration Change -------------------------------------------
-  onSubscriptionDurationChange(value: string) {
-    this.recurringPayment.subscriptionDuration = parseInt(value);
+  onSubscriptionDurationChange(subscriptionDurationInput: HTMLInputElement) {
+    !(/^[0-9]*$/i).test(subscriptionDurationInput.value) ? subscriptionDurationInput.value = subscriptionDurationInput.value.replace(/[^0-9]/ig, '') : null;
+    this.recurringPayment.subscriptionDuration = parseInt(subscriptionDurationInput.value);
+    this.onFieldChange();
+  }
+
+
+
+
+  onFieldChange() {
+    if(this.recurringPayment.recurringPrice != this.initialRecurringPayment.recurringPrice ||
+    this.recurringPayment.rebillFrequency != this.initialRecurringPayment.rebillFrequency ||
+    this.recurringPayment.subscriptionDuration !=  this.initialRecurringPayment.subscriptionDuration ||
+    this.recurringPayment.timeFrameBetweenRebill != this.initialRecurringPayment.timeFrameBetweenRebill ||
+    this.recurringPayment.trialPeriod != this.initialRecurringPayment.trialPeriod) {
+      this.submitButtonDisabled = false;
+    }else {
+      this.submitButtonDisabled = true;
+    }
   }
 
 
 
 
   // ------------------------------------------------------------------- On Submit Click --------------------------------------------------
-  public onSubmitClick(): void {
+  onSubmitClick(): void {
     this.callback(this.recurringPayment);
     this.close();
   }

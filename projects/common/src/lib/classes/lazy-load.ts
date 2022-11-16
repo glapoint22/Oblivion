@@ -170,22 +170,6 @@ export class LazyLoad implements AfterViewInit {
 
 
 
-    checkForRadioButtonFocus(direction?: number) {
-
-    }
-
-
-
-    onRadioButtonArrow(direction: number) {
-
-    }
-
-
-
-    onRadioButtonSpacebar() {
-
-    }
-
 
 
 

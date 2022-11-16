@@ -14,13 +14,13 @@
         <!-- Recurring Price -->
         <div class="popup-label">Recurring Price:</div>
         <input #recurringPrice #tabElement [value]="recurringPayment.recurringPrice"
-            (input)="onRecurringPriceChange(recurringPrice.value)">
+            (input)="onRecurringPriceChange(recurringPrice)">
 
 
         <!-- Subscription Duration -->
         <div class="popup-label">Subscription Duration:</div>
         <input #subscriptionDuration #tabElement [value]="recurringPayment.subscriptionDuration"
-            (input)="onSubscriptionDurationChange(subscriptionDuration.value)">
+            (input)="onSubscriptionDurationChange(subscriptionDuration)">
 
 
         <!-- Trial Period -->
@@ -62,7 +62,7 @@
 
         <div style="height: 24px; margin-top: 5px; margin-bottom: 15px;">
             <dropdown #timeBetweenEachRebillDropdown [dropdownType]="DropdownType.Manager" [list]="timeFrameBetweenRebillList" [selectedListItem]="selectedTimeFrameBetweenRebill"
-                (onChange)="selectedTimeFrameBetweenRebill = $event; recurringPayment.timeFrameBetweenRebill = selectedTimeFrameBetweenRebill.value"
+                (onChange)="selectedTimeFrameBetweenRebill = $event; recurringPayment.timeFrameBetweenRebill = selectedTimeFrameBetweenRebill.value; onFieldChange()"
                 [disabled]="timeFrameBetweenRebillList == undefined || timeFrameBetweenRebillList.length == 0"
                 (onGetTabElement)="timeBetweenEachRebillDropdownTabElement = $event">
             </dropdown>
@@ -73,7 +73,7 @@
         <!-- Buttons -->
         <div class="popup-button-container">
             <button #tabElement class="dark-button" (click)="close()">Close</button>
-            <button #tabElement class="gold-button" (click)="onSubmitClick()">Submit</button>
+            <button #tabElement class="gold-button" (click)="onSubmitClick()" [disabled]="submitButtonDisabled">Submit</button>
         </div>
     </div>
 
