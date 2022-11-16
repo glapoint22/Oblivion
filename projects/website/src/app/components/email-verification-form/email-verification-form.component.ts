@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
@@ -19,7 +20,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-  ) { super(dataService, lazyLoadingService) }
+    ) { super(dataService, lazyLoadingService) }
 
 
   ngOnInit(): void {
@@ -27,7 +28,6 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
     this.form = new FormGroup({
       otp: new FormControl('', {
         validators: Validators.required,
-        asyncValidators: this.validateOneTimePasswordAsync('api/Account/ValidateEmailChangeOneTimePassword'),
         updateOn: 'submit'
       }),
       password: new FormControl('', {
@@ -35,7 +35,6 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
           Validators.required,
           this.invalidPasswordValidator()
         ],
-        asyncValidators: this.validatePasswordAsync('api/Account/ValidatePassword'),
         updateOn: 'submit'
       })
     });
@@ -43,7 +42,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
     this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
         this.dataService.put('api/Account/ChangeEmail', {
-          email: this.email,
+          newEmail: this.email,
           password: this.form.get('password')?.value,
           oneTimePassword: this.form.get('otp')?.value
         },
@@ -51,9 +50,18 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
             authorization: true,
             spinnerAction: SpinnerAction.Start
           }
-        ).subscribe(() => {
-          this.accountService.setCustomer();
-          this.OpenSuccessPrompt();
+        ).subscribe({
+          complete: () => {
+            this.accountService.setUser();
+            this.OpenSuccessPrompt();
+          },
+          error: (error: HttpErrorResponse) => {
+            if (error.status == 401) {
+              this.form.controls.password.setErrors({ incorrectPassword: true });
+            } else if (error.status == 409) {
+              this.form.controls.otp.setErrors({ incorrectOneTimePassword: true });
+            }
+          }
         });
       }
     });

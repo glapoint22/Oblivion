@@ -364,17 +364,17 @@ export class ProfilePictureFormComponent extends LazyLoad {
   onSubmit() {
     const formData = new FormData()
     formData.append('newImage', this.imageFile);
-    formData.append('currentImage', !this.accountService.customer?.hasProfileImage ? '' : this.accountService.customer?.profileImage.src.substring(this.accountService.customer?.profileImage.src.indexOf("/") + 1));
+    formData.append('currentImage', !this.accountService.user?.hasProfileImage ? '' : this.accountService.user?.profileImage.src.substring(this.accountService.user?.profileImage.src.indexOf("/") + 1));
     formData.append('percentLeft', this.circle.percentLeft.toString());
     formData.append('percentRight', this.circle.percentRight.toString());
     formData.append('percentTop', this.circle.percentTop.toString());
     formData.append('percentBottom', this.circle.percentBottom.toString());
 
-    this.dataService.post('api/Account/ChangeProfilePicture', formData, {
+    this.dataService.post('api/Account/ChangeProfileImage', formData, {
       authorization: true,
       spinnerAction: SpinnerAction.Start
     }).subscribe(() => {
-      this.accountService.setCustomer();
+      this.accountService.setUser();
       this.OpenSuccessPrompt();
     })
   }
@@ -393,8 +393,8 @@ export class ProfilePictureFormComponent extends LazyLoad {
       }
     }, SpinnerAction.End)
       .then((successPrompt: SuccessPromptComponent) => {
-        successPrompt.header = 'Successful Profile Picture Change';
-        successPrompt.message = 'Your profile picture has been successfully changed.';
+        successPrompt.header = 'Successful Profile Image Change';
+        successPrompt.message = 'Your profile image has been successfully changed.';
       });
   }
 

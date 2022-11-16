@@ -1,9 +1,9 @@
 export class ListPermissions {
-    public addToList!: boolean;
-    public shareList!: boolean;
-    public editList!: boolean;
-    public inviteCollaborators!: boolean;
-    public deleteList!: boolean;
-    public moveItem!: boolean;
-    public removeItem!: boolean;
+    public canAddToList!: boolean;
+    public canShareList!: boolean;
+    public canEditList!: boolean;
+    public canInviteCollaborators!: boolean;
+    public canManageCollaborators!: boolean;
+    public canDeleteList!: boolean;
+    public canRemoveFromList!: boolean;
 }

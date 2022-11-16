@@ -1,9 +1,9 @@
-import { NichesFilter } from "./niches-filter";
+import { NicheFilters } from "./niche-filters";
 import { PriceFilter } from "./price-filter";
 import { QueryFilter } from "./query-filter";
 
 export class Filters {
-    nichesFilter!: NichesFilter;
+    nicheFilters!: NicheFilters;
     priceFilter!: PriceFilter;
     ratingFilter!: QueryFilter;
     customFilters!: Array<QueryFilter>;

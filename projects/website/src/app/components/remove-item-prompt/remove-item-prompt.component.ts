@@ -27,9 +27,8 @@ export class RemoveItemPromptComponent extends LazyLoad {
 
 
   onRemoveClick() {
-    this.dataService.delete('api/Lists/Product', {
+    this.dataService.delete('api/Lists/RemoveProduct', {
       productId: this.product.id,
-      collaboratorId: this.product.collaborator.id,
       listId: this.list.id
     }, { authorization: true }).subscribe(() => {
       this.onRemove.emit();

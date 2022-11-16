@@ -66,11 +66,11 @@ export class ListsMenuComponent {
       }
     }, SpinnerAction.StartEnd)
       .then((shareListForm: ShareListFormComponent) => {
-        if (this.selectedList.isOwner || (this.selectedList.listPermissions.shareList && this.selectedList.listPermissions.inviteCollaborators)) {
+        if (this.selectedList.isOwner || (this.selectedList.listPermissions.canShareList && this.selectedList.listPermissions.canInviteCollaborators)) {
           shareListForm.shareListType = ShareListType.Both;
-        } else if (this.selectedList.listPermissions.shareList) {
+        } else if (this.selectedList.listPermissions.canShareList) {
           shareListForm.shareListType = ShareListType.Share;
-        } else if (this.selectedList.listPermissions.inviteCollaborators) {
+        } else if (this.selectedList.listPermissions.canInviteCollaborators) {
           shareListForm.shareListType = ShareListType.Collaborate;
         }
 

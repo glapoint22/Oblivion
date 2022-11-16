@@ -57,9 +57,14 @@
                                 <div class="item-info-container">
                                     <div class="item-title">{{product.name}}</div>
                                     <stars-summary [product]="product"></stars-summary>
-                                    <div class="item-price">{{product.maxPrice ? product.minPrice + ' - ' +
-                                        product.maxPrice
-                                        : product.minPrice | currency:'USD'}}</div>
+
+                                        <div class="item-price">
+                                            <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+                                            <ng-container *ngIf="product.maxPrice > 0">
+                                                {{product.minPrice | currency:'USD'}} -
+                                                {{product.maxPrice | currency:'USD'}}
+                                            </ng-container>
+                                        </div>
                                 </div>
 
                             </div>
@@ -70,15 +75,15 @@
 
                             <!-- Item Actions -->
                             <div class="item-actions">
-                                <div class="profile-img-container" [title]="product.collaborator.image.name">
+                                <div class="profile-img-container" [title]="product.collaborator.profileImage.name">
                                     <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-                                    <img [src]="product.collaborator.image.src ? 'images/' + product.collaborator.image.src : 'assets/no-account-pic.png'"
-                                        [alt]="product.collaborator.image.name" class="profile-pic">
+                                    <img [src]="product.collaborator.profileImage.src ? 'images/' + product.collaborator.profileImage.src : 'assets/no-account-pic.png'"
+                                        [alt]="product.collaborator.profileImage.name" class="profile-pic">
                                 </div>
 
 
                                 <div class="date">
-                                    Added {{product.dateAdded}}
+                                    Added {{getDate(product.dateAdded) | date}}
                                 </div>
 
                                 <div class="added-text">Added by {{product.collaborator.name}}</div>
@@ -88,11 +93,11 @@
                                               [list]="moveToList"
                                               [dropdownType]="DropdownType.Button"
                                               (onChange)="onMoveItem($event, product)"
-                                              [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.moveItem">
+                                              [disabled]="moveToList.length == 0">
                                     </dropdown> 
                                     
                                     <button
-                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.removeItem"
+                                        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canRemoveFromList"
                                         style="flex: 1; max-width: inherit; margin-left: 10px;" class="dark-button"
                                         (click)="onRemoveItemClick(product)">Remove</button>
                                 </div>
@@ -113,7 +118,7 @@
                             </div>
 
                             <div style="color: #ffba00;">
-                                To add items to this list, click on the “Add to List” button on any item’s detalis page
+                                To add items to this list, click on the “Add to List” button on any product page
                             </div>
                         </div>
                     </div>

@@ -1,29 +1,29 @@
 <div class="list-menu-bar">
     <button (click)="onEditListClick()"
-        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.editList">Edit</button>
+        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canEditList">Edit</button>
     <button (click)="onDeleteListClick()"
-        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.deleteList">Delete</button>
+        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canDeleteList">Delete</button>
     <button (click)="onShareListClick()"
-        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.shareList">Share</button>
+        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canShareList && !selectedList.listPermissions?.canInviteCollaborators">Share</button>
     <button (click)="onManageCollaboratorsClick()"
-        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.inviteCollaborators">Collaborators</button>
+        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canManageCollaborators">Collaborators</button>
 </div>
 
 
 <div *ngFor="let list of lists" class="list-info" [ngClass]="{'selected-list': selectedList == list}"
     (click)="selectedList = list; onListClick.emit(list)">
 
-    <div style="margin-right: 10px;" [title]="list.profilePic?.name">
+    <div style="margin-right: 10px;" [title]="list.ownerProfileImage?.name">
         <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
-        <img [src]="list.profilePic?.src" [alt]="list.profilePic?.name" class="profile-pic">
+        <img [src]="list.ownerProfileImage?.src ? 'images/' + list.ownerProfileImage?.src : 'assets/no-account-pic.png'" [alt]="list.ownerProfileImage?.name" class="profile-pic">
     </div>
 
     <div>
         <div class="list-title">{{list.name}}</div>
         <div class="owner">Owner: {{list.ownerName}}</div>
         <div class="description">{{list.description}}</div>
-        <div class="item-count">{{list.totalItems}} Item{{list.totalItems == 0 ||
-            list.totalItems > 1 ? 's' : ''}}
+        <div class="item-count">{{list.totalProducts}} Item{{list.totalProducts == 0 ||
+            list.totalProducts > 1 ? 's' : ''}}
         </div>
     </div>
 

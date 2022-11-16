@@ -4,7 +4,8 @@
     <div class="left-container">
 
         <!-- Side Menu -->
-        <div tabindex="1" (keydown.enter)="onHamburgerButtonClick()" (blur)="sideMenu ? sideMenu.close() : null" class="hamburger-button-container">
+        <div tabindex="1" (keydown.enter)="onHamburgerButtonClick()" (blur)="sideMenu ? sideMenu.close() : null"
+            class="hamburger-button-container">
             <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
             <ng-template #sideMenuContainer></ng-template>
         </div>
@@ -19,7 +20,8 @@
     <!-- Center Container -->
     <div class="center-container">
 
-        <div tabindex="3" (keydown.enter)="onNichesButtonClick()" (blur)="nicheMenuPopup ? nicheMenuPopup.close() : null" class="niches-button-container">
+        <div tabindex="3" (keydown.enter)="onNichesButtonClick()"
+            (blur)="nicheMenuPopup ? nicheMenuPopup.close() : null" class="niches-button-container">
 
             <div class="niches-button" (click)="onNichesButtonClick()"
                 [style.borderBottomLeftRadius.px]="suggestions && suggestions.length > 0 ? 0 : 18">
@@ -40,11 +42,11 @@
 
 
         <!-- Search Input -->
-        <input #input tabindex="4" (blur)="hideSuggestionList()"
-            [placeholder]="'Search in ' + (selectedNiche ? selectedNiche.name: 'All Niches')" (input)="getSuggestions()"
-            (keydown.enter)="search(input.value)" (mousedown)="getSuggestions()" (keydown.escape)="suggestions = []"
-            (keydown.arrowUp)="onArrowPress(-1, input); $event.preventDefault()"
-            (keydown.arrowDown)="onArrowPress(1, input); $event.preventDefault()">
+        <input #searchInput tabindex="4" (blur)="hideSuggestionList()"
+            [placeholder]="'Search in ' + (selectedNiche ? selectedNiche.name: 'All Niches')"
+            (keydown.enter)="search(searchInput.value)" (keydown.escape)="suggestions = []"
+            (keydown.arrowUp)="onArrowPress(-1, searchInput); $event.preventDefault()"
+            (keydown.arrowDown)="onArrowPress(1, searchInput); $event.preventDefault()">
 
         <div *ngIf="suggestions && suggestions.length > 0" class="suggestion-list"
             (mousedown)="suggestionListMousedown = true">
@@ -75,7 +77,7 @@
 
 
         <!-- Search Button -->
-        <button class="search-button" (click)="search(input.value)"
+        <button class="search-button" (click)="search(searchInput.value)"
             [style.borderBottomRightRadius.px]="suggestions && suggestions.length > 0 ? 0 : 18" tabindex="5">
             <div class="search-icon"></div>
         </button>
@@ -85,25 +87,29 @@
 
     <!-- Right Container -->
     <div class="right-container">
-        <ng-container *ngIf="!accountService.customer || !accountService.customer.firstName">
+        <ng-container *ngIf="!accountService.user || !accountService.user.firstName">
             <a tabindex="6" id="about1" class="links" routerLink="/about">About</a>
-            <a tabindex="7" id="orderSupport1" class="links" href="https://www.clkbank.com/" target="_blank">Order Support</a>
+            <a tabindex="7" id="orderSupport1" class="links" href="https://www.clkbank.com/" target="_blank">Order
+                Support</a>
             <button tabindex="8" class="login-button" (click)="onLoginClick()">Log In</button>
             <button tabindex="9" class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
         </ng-container>
 
-        <ng-container *ngIf="accountService.customer && accountService.customer.firstName">
+        <ng-container *ngIf="accountService.user && accountService.user.firstName">
             <a tabindex="6" id="about2" class="links" routerLink="/about">About</a>
-            <a tabindex="7" id="orderSupport2" class="links" href="https://www.clkbank.com/" target="_blank">Order Support</a>
+            <a tabindex="7" id="orderSupport2" class="links" href="https://www.clkbank.com/" target="_blank">Order
+                Support</a>
             <a tabindex="8" id="orders" class="links" routerLink="/account/orders">Orders</a>
             <a tabindex="9" id="lists" class="links" routerLink="/account/lists">Lists</a>
 
             <!-- Account profile pic -->
-            <div tabindex="10" class="profile-pic-container" (blur)="accountMenuPopupComponent ? accountMenuPopupComponent.close() : null" (keydown.enter)="onProfilePicClick()">
+            <div tabindex="10" class="profile-pic-container"
+                (blur)="accountMenuPopupComponent ? accountMenuPopupComponent.close() : null"
+                (keydown.enter)="onProfilePicClick()">
                 <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                <img [src]="accountService.customer.profileImage.src" class="profile-pic"
-                    [title]="accountService.customer.profileImage.name"
-                    [alt]="accountService.customer.profileImage.name" (click)="onProfilePicClick()">
+                <img [src]="accountService.user.profileImage.src ? 'images/' + accountService.user.profileImage.src : 'assets/no-account-pic.png'"
+                    class="profile-pic" [title]="accountService.user.profileImage.name"
+                    [alt]="accountService.user.profileImage.name" (click)="onProfilePicClick()">
 
 
                 <!-- Account Menu Popup -->

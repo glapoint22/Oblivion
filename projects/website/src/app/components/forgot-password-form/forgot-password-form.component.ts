@@ -1,9 +1,10 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
-import { ResetPasswordOneTimePasswordFormComponent } from '../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.component';
+import { ResetPasswordFormComponent } from '../reset-password-form/reset-password-form.component';
 
 @Component({
   selector: 'forgot-password-form',
@@ -31,7 +32,6 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
           Validators.required,
           Validators.email
         ],
-        asyncValidators: this.checkEmailAsync('api/Account/CheckEmail'),
         updateOn: 'submit'
       })
     });
@@ -41,9 +41,16 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
         this.dataService.get('api/Account/ForgotPassword', [{
           key: 'email',
           value: this.form.get('email')?.value
-        }], { spinnerAction: SpinnerAction.Start }).subscribe(() => {
-          this.fade();
-          this.openResetPasswordOneTimePasswordForm(this.form.get('email')?.value);
+        }], { spinnerAction: SpinnerAction.Start }).subscribe({
+          complete: () => {
+            this.fade();
+            this.openResetPasswordOneTimePasswordForm(this.form.get('email')?.value);
+          },
+          error: (error: HttpErrorResponse) => {
+            if (error.status == 409) {
+              this.form.controls.email.setErrors({ noEmail: true });
+            }
+          }
         });
       }
     });
@@ -76,16 +83,16 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
     this.fade();
 
     this.lazyLoadingService.load(async () => {
-      const { ResetPasswordOneTimePasswordFormComponent } = await import('../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.component');
-      const { ResetPasswordOneTimePasswordFormModule } = await import('../../components/reset-password-one-time-password-form/reset-password-one-time-password-form.module');
+      const { ResetPasswordFormComponent } = await import('../reset-password-form/reset-password-form.component');
+      const { ResetPasswordFormModule } = await import('../reset-password-form/reset-password-form.module');
 
       return {
-        component: ResetPasswordOneTimePasswordFormComponent,
-        module: ResetPasswordOneTimePasswordFormModule
+        component: ResetPasswordFormComponent,
+        module: ResetPasswordFormModule
       }
     }, SpinnerAction.End)
-      .then((emailSentPrompt: ResetPasswordOneTimePasswordFormComponent) => {
-        emailSentPrompt.email = email;
+      .then((resetPasswordForm: ResetPasswordFormComponent) => {
+        resetPasswordForm.email = email;
       });
   }
 

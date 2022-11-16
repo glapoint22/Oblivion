@@ -1,6 +1,5 @@
 export class Niche {
-    public id!: number;
+    public id!: string;
     public name!: string;
-    public urlId!: string;
     public urlName!: string;
 }

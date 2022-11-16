@@ -51,7 +51,7 @@
 
             <div class="review-info">
                 <div class="name-date">{{review.userName}}</div>
-                <div class="name-date">{{review.date}}</div>
+                <div class="name-date">{{getDate(review.date) | date}}</div>
 
                 <div class="review-text" [innerHtml]="review.text"></div>
                 <div class="review-rating">

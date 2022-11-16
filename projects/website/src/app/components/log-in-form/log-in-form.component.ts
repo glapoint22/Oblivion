@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
@@ -16,7 +17,6 @@ export class LogInFormComponent extends Validation implements OnInit {
   public checkbox!: HTMLInputElement;
   public externalLoginProviders!: Array<ElementRef<HTMLElement>>;
   @ViewChild('externalLoginProvidersComponent') externalLoginProvidersComponent!: ExternalLoginProvidersComponent;
-  public notMatchError!: boolean;
 
   constructor(
     dataService: DataService,
@@ -62,7 +62,6 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   onSubmit() {
-    this.notMatchError = false;
     if (this.form.valid) {
 
       this.dataService.post('api/Account/LogIn', {
@@ -71,17 +70,19 @@ export class LogInFormComponent extends Validation implements OnInit {
         isPersistent: this.isPersistent
       }, {
         spinnerAction: SpinnerAction.StartEnd
-      }).subscribe((error: any) => {
-        if (!error) {
-          this.setLogIn();
-        } else {
-          if (error.notEmailPasswordMatch) {
-            this.notMatchError = true;
-          } else {
-            this.openAccountNotActivatedForm();
+      })
+        .subscribe({
+          complete: () => {
+            this.setLogIn();
+          },
+          error: (error: HttpErrorResponse) => {
+            if (error.status == 401) {
+              this.form.controls.email.setErrors({ noMatch: true });
+            } else if (error.status == 409) {
+              this.openAccountNotActivatedForm();
+            }
           }
-        }
-      });
+        });
     }
 
   }

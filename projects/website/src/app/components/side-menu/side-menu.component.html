@@ -11,7 +11,7 @@
 
             <ng-container *ngIf="!subNiches">
                 <!-- Account -->
-                <div *ngIf="accountService.customer" class="account-container">
+                <div *ngIf="accountService.user" class="account-container">
 
                     <div class="menu-section-name">
                         Account
@@ -23,7 +23,7 @@
 
 
                 <!-- Sign Up -->
-                <div *ngIf="!accountService.customer" class="sign-up-container">
+                <div *ngIf="!accountService.user" class="sign-up-container">
 
                     <div class="gold-round-button-sm" (click)="onLogInLinkClick()">Log In</div>
                     <div class="sign-up-text">Not a member yet? <span class="purple-text"
@@ -62,7 +62,7 @@
                 <ng-container *ngFor="let niche of subNiches; let i = index">
                     <a #listItem [id]="i + 1" class="list-item"
                         [ngClass]="{'focused-list-item': listItem.id == focusedSubListItemId}" routerLink="/browse"
-                        [queryParams]="{nicheName: niche.urlName, nicheId: niche.urlId}"
+                        [queryParams]="{nicheName: niche.urlName, nicheId: niche.id}"
                         (mousedown)="$event.preventDefault()" (click)="onSubNicheClick(niche)">{{niche.name}}</a>
                 </ng-container>
             </ng-container>

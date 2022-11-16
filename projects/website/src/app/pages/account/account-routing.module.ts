@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { ListResolver } from '../../resolvers/list/list.resolver';
 import { EmailPreferencesResolver } from '../../resolvers/email-preferences/email-preferences.resolver';
 import { AccountComponent } from './account.component';
-import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
 import { OrdersResolver } from '../../resolvers/orders/orders.resolver';
 
 const routes: Routes = [
@@ -32,9 +31,8 @@ const routes: Routes = [
   {
     path: 'lists/:listId',
     loadChildren: () => import('../../pages/lists/lists.module').then(m => m.ListsModule),
-    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     resolve: {
-      listData: ListIdResolver,
+      listData: ListResolver,
     }
   },
   {

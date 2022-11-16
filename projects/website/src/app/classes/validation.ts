@@ -1,7 +1,6 @@
 import { Directive } from "@angular/core";
-import { AbstractControl, AsyncValidatorFn, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from "common";
-import { Observable } from "rxjs";
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { DataService, LazyLoad, LazyLoadingService } from "common";
 
 @Directive()
 export class Validation extends LazyLoad {
@@ -47,6 +46,8 @@ export class Validation extends LazyLoad {
         messages.push('Password is incorrect');
       } else if (error == 'noEmail') {
         messages.push('The email you entered is not associated with any Niche Shack account. Please provide a different email address.');
+      } else if (error == 'noMatch') {
+        messages.push('Your password and email do not match.');
       }
     });
 
@@ -79,50 +80,4 @@ export class Validation extends LazyLoad {
 
     return newPassword && confirmPassword && newPassword.value != confirmPassword.value ? { noPasswordMatch: true } : null;
   };
-
-
-  validateEmailAsync(apiUrl: string): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors> => {
-      return this.dataService.get(apiUrl,
-        [{ key: 'email', value: control.value }], {
-        spinnerAction: SpinnerAction.Start,
-        endSpinnerWhen: (result: any) => result && result.duplicateEmail
-      });
-    };
-  }
-
-
-  validatePasswordAsync(apiUrl: string): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors> => {
-      return this.dataService.get(apiUrl,
-        [{ key: 'password', value: control.value }], {
-        spinnerAction: SpinnerAction.Start,
-        authorization: true,
-        endSpinnerWhen: (result: any) => result && result.incorrectPassword
-      });
-    };
-  }
-
-
-  validateOneTimePasswordAsync(apiUrl: string): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors> => {
-      return this.dataService.get(apiUrl,
-        [{ key: 'oneTimePassword', value: control.value }], {
-        spinnerAction: SpinnerAction.Start,
-        endSpinnerWhen: (result: any) => result && result.incorrectOneTimePassword,
-        authorization: true
-      });
-    };
-  }
-
-
-  checkEmailAsync(apiUrl: string): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors> => {
-      return this.dataService.get(apiUrl,
-        [{ key: 'email', value: control.value }], {
-        spinnerAction: SpinnerAction.Start,
-        endSpinnerWhen: (result: any) => result && result.noEmail
-      });
-    };
-  }
 }

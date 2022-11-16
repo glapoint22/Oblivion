@@ -50,6 +50,8 @@ input[type=text] {
     }
 }
 
-.checkbox:last-child {
-    margin-bottom: 0;
+.option:last-child {
+    .checkbox {
+        margin-bottom: 0;
+    }
 }

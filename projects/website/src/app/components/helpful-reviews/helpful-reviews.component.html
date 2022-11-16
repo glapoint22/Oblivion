@@ -34,14 +34,13 @@
 
                     <div class="name-date">
                         <div>{{helpfulReviews.positiveReview.userName}}</div>
-                        <div>{{helpfulReviews.positiveReview.date}}</div>
+                        <div>{{getDate(helpfulReviews.positiveReview.date) | date}}</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="review-text">
-            {{helpfulReviews.positiveReview.text}}
+        <div class="review-text" [innerHtml]="helpfulReviews.positiveReview.text">
         </div>
     </div>
 
@@ -81,15 +80,13 @@
 
                     <div class="name-date">
                         <div>{{helpfulReviews.negativeReview.userName}}</div>
-                        <div>{{helpfulReviews.negativeReview.date}}</div>
+                        <div>{{getDate(helpfulReviews.negativeReview.date) | date}}</div>
 
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="review-text">
-            {{helpfulReviews.negativeReview.text}}
-        </div>
+        <div class="review-text" [innerHtml]="helpfulReviews.negativeReview.text"></div>
     </div>
 </div>

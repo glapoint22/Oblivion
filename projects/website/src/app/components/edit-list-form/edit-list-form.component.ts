@@ -42,15 +42,15 @@ export class EditListFormComponent extends Validation implements OnInit {
     if (this.form.valid) {
 
       // Update the list name and description in the database
-      this.dataService.put<List>('api/Lists', {
+      this.dataService.put<List>('api/Lists/EditList', {
         id: this.list.id,
         name: this.form.get('listName')?.value,
         description: this.form.get('description')?.value
-      }, { authorization: true }).subscribe((list: List) => {
+      }, { authorization: true }).subscribe(() => {
 
         // Assign the name and description to the list
-        this.list.name = list.name;
-        this.list.description = list.description;
+        this.list.name = this.form.get('listName')?.value;
+        this.list.description = this.form.get('description')?.value;
         this.close();
       });
     }

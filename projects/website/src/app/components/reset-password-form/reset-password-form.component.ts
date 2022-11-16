@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
@@ -11,7 +12,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 })
 export class ResetPasswordFormComponent extends Validation {
   public email!: string;
-  public oneTimePassword!: string;
+  public emailResent!: boolean;
 
   constructor
     (
@@ -22,6 +23,11 @@ export class ResetPasswordFormComponent extends Validation {
   ngOnInit(): void {
     super.ngOnInit();
     this.form = new FormGroup({
+      otp: new FormControl('', {
+        validators: Validators.required,
+        updateOn: 'submit'
+      }),
+
       newPassword: new FormControl('', {
         validators: [
           Validators.required,
@@ -51,15 +57,32 @@ export class ResetPasswordFormComponent extends Validation {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.post<boolean>('api/Account/ResetPassword', {
+      this.dataService.post('api/Account/ResetPassword', {
         email: this.email,
-        password: this.form.get('newPassword')?.value,
-        oneTimePassword: this.oneTimePassword
+        newPassword: this.form.get('newPassword')?.value,
+        oneTimePassword: this.form.get('otp')?.value
       }, { spinnerAction: SpinnerAction.Start })
-        .subscribe(() => {
-          this.OpenSuccessPrompt();
+        .subscribe({
+          complete: () => {
+            this.OpenSuccessPrompt();
+          },
+          error: (error: HttpErrorResponse) => {
+            if (error.status == 409) {
+              this.form.controls.otp.setErrors({ incorrectOneTimePassword: true });
+            }
+          }
         });
     }
+  }
+
+
+  onResendEmailClick() {
+    this.dataService.get('api/Account/ForgotPassword', [{
+      key: 'email',
+      value: this.email
+    }]).subscribe(() => {
+      this.emailResent = true;
+    });
   }
 
 

@@ -1,7 +1,8 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Filters, QueryFilter } from 'common';
 import { FilterParam } from '../../classes/filter-param';
+import { Filters } from '../../classes/filters';
+import { QueryFilter } from '../../classes/query-filter';
 
 @Component({
   selector: 'filters-panel',

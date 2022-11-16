@@ -10,7 +10,7 @@ import { DataService } from 'common';
 export class CollaborateListComponent implements OnInit {
   public listName!: string;
   public ownerName!: string;
-  public profilePic!: string;
+  public profileImage!: string;
   public listId!: string;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) { }
@@ -20,13 +20,13 @@ export class CollaborateListComponent implements OnInit {
 
     this.listName = listInfo.listName;
     this.ownerName = listInfo.ownerName;
-    this.profilePic = listInfo.profilePic;
+    this.profileImage = listInfo.profileImage;
     this.listId = listInfo.listId;
   }
 
 
   onAcceptClick() {
-    this.dataService.put('api/Lists/Collaborator', { name: this.route.snapshot.params.collaborateListId }, { authorization: true })
+    this.dataService.post('api/Lists/AddCollaborator', { collaborateId: this.route.snapshot.params.collaborateListId }, { authorization: true })
       .subscribe(() => {
         this.router.navigate(['account', 'lists', this.listId]);
       });

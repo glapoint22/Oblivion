@@ -14,9 +14,14 @@ export class HelpfulReviewsComponent implements OnInit {
   constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.dataService.get<HelpfulReviews>('api/ProductReviews/PositiveNegativeReviews', [{ key: 'productId', value: this.route.snapshot.paramMap.get('id') }])
+    this.dataService.get<HelpfulReviews>('api/ProductReviews/GetPositiveNegativeReviews', [{ key: 'productId', value: this.route.snapshot.paramMap.get('id') }])
       .subscribe((helpfulReviews: HelpfulReviews) => {
         this.helpfulReviews = helpfulReviews;
       });
+  }
+
+
+  getDate(date: string) {
+    return new Date(date + 'Z');
   }
 }

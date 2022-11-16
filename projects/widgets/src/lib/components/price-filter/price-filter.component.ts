@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { PriceFilter, PriceFilterOption } from 'common';
 import { Filter } from '../../classes/filter';
+import { PriceFilter } from '../../classes/price-filter';
+import { PriceFilterOption } from '../../classes/price-filter-option';
 
 @Component({
   selector: 'price-filter',
@@ -33,6 +34,7 @@ export class PriceFilterComponent extends Filter<PriceFilter> {
 
   onSubmit() {
     if (this.priceForm.valid) {
+      this.clearPrice(false);
       const option = this.min + '-' + this.max;
       const filterParam = this.filterParams.find(x => x.caption == 'Price Range');
 
@@ -55,14 +57,19 @@ export class PriceFilterComponent extends Filter<PriceFilter> {
     }
   }
 
+  onFilterClick(value: string) {
+    this.clearPrice(true);
+    super.onFilterClick(value);
+  }
 
-  clearPrice() {
-    const index = this.filterParams.findIndex(x => x.caption == 'Price Range');
+
+  clearPrice(clearPriceForm: boolean) {
+    const index = this.filterParams.findIndex(x => x.caption == 'Price' || x.caption == 'Price Range');
 
     // This will clear the min and max fields and update the url
     if (index != -1) {
       this.filterParams.splice(index, 1);
-      this.resetPriceForm();
+      if (clearPriceForm) this.resetPriceForm();
       const filterString = this.buildFilterString();
       this.updateUrl(filterString);
     }

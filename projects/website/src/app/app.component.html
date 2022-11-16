@@ -2,6 +2,4 @@
 <div *ngIf="lazyLoadingService.showBackdrop" class="hide back-drop" [ngClass]="{'show': lazyLoadingService.backdropFadeIn}"
     (transitionend)="!lazyLoadingService.backdropFadeIn ? lazyLoadingService.showBackdrop = false : null"></div>
 
-
-
 <spinner></spinner>

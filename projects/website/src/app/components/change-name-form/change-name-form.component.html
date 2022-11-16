@@ -52,8 +52,8 @@
                 <!-- Button Container -->
                 <div class="button-container">
                     <button #tabElement type="button" class="dark-button" (click)="close()">Cancel</button>
-                    <button #tabElement type="submit" class="gold-rect-button" [disabled]="firstNameInput.value == accountService.customer?.firstName
-                    && lastNameInput.value == accountService.customer?.lastName">Submit</button>
+                    <button #tabElement type="submit" class="gold-rect-button" [disabled]="firstNameInput.value == accountService.user?.firstName
+                    && lastNameInput.value == accountService.user?.lastName">Submit</button>
                 </div>
             </form>
         </div>

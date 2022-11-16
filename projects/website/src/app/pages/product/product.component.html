@@ -3,14 +3,14 @@
     <!-- Breadcrumb -->
     <div class="breadcrumb">
 
-        <!-- Category -->
-        <a routerLink="/browse"
-            [queryParams]="{categoryName: product.breadcrumb[0].urlName, categoryId: product.breadcrumb[0].urlId}">{{product.breadcrumb[0].name}}</a>
-        <div></div>
-
         <!-- Niche -->
         <a routerLink="/browse"
-            [queryParams]="{nicheName: product.breadcrumb[1].urlName, nicheId: product.breadcrumb[1].urlId}">{{product.breadcrumb[1].name}}</a>
+            [queryParams]="{nicheName: product.breadcrumb[0].urlName, nicheId: product.breadcrumb[0].id}">{{product.breadcrumb[0].name}}</a>
+        <div></div>
+
+        <!-- Subniche -->
+        <a routerLink="/browse"
+            [queryParams]="{subnicheName: product.breadcrumb[1].urlName, subnicheId: product.breadcrumb[1].id}">{{product.breadcrumb[1].name}}</a>
 
         <div></div>
 
@@ -23,18 +23,18 @@
 
 
     <!-- Price Points -->
-    <price-points [pricePoints]="product.pricePoints" [hoplink]="product.hoplink" [clientWidth]="clientWidth">
+    <price-points [pricePoints]="pricePoints" [hoplink]="product.hoplink" [clientWidth]="clientWidth">
     </price-points>
 
 
     <!-- Sub products -->
-    <subproducts [components]="product.components" [bonuses]="product.bonuses"></subproducts>
+    <subproducts [components]="components" [bonuses]="bonuses"></subproducts>
 
 
     <!-- Related Products -->
-    <div *ngIf="product.relatedProducts && product.relatedProducts.products && product.relatedProducts.products.length > 0"
+    <div *ngIf="relatedProducts"
         class="related-products-background">
-        <product-slider-widget [products]="product.relatedProducts.products" [text]="product.relatedProducts.caption"
+        <product-slider-widget [products]="relatedProducts.products" [text]="relatedProducts.caption"
             [clientWidth]="clientWidth">
         </product-slider-widget>
     </div>

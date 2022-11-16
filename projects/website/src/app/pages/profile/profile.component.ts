@@ -47,7 +47,7 @@ export class ProfileComponent {
 
   async onChangePasswordClick() {
     // If user is changing their password
-    if (!this.accountService.customer?.externalLoginProvider || this.accountService.customer.hasPassword) {
+    if (!this.accountService.user?.externalLoginProvider || this.accountService.user.hasPassword) {
       this.lazyLoadingService.load(async () => {
         const { ChangePasswordFormComponent } = await import('../../components/change-password-form/change-password-form.component');
         const { ChangePasswordFormModule } = await import('../../components/change-password-form/change-password-form.module');
@@ -70,8 +70,8 @@ export class ProfileComponent {
         }
       }, SpinnerAction.StartEnd)
         .then((createPasswordForm: CreatePasswordFormComponent) => {
-          createPasswordForm.email = this.accountService.customer?.email!;
-          createPasswordForm.externalLoginProvider = this.accountService.customer?.externalLoginProvider as string;
+          createPasswordForm.email = this.accountService.user?.email!;
+          createPasswordForm.externalLoginProvider = this.accountService.user?.externalLoginProvider as string;
         });
     }
   }

@@ -1,5 +1,5 @@
-import { KeyValue } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { KeyValue, Location } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService, DropdownType, LazyLoadingService, SpinnerAction } from 'common';
 import { List } from '../../classes/list';
@@ -8,14 +8,13 @@ import { CreateListFormComponent } from '../../components/create-list-form/creat
 import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-side-menu.component';
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
-import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
 
 @Component({
   selector: 'lists',
   templateUrl: './lists.component.html',
   styleUrls: ['./lists.component.scss']
 })
-export class ListsComponent implements OnInit, OnDestroy {
+export class ListsComponent implements OnInit {
   public lists!: Array<List>;
   public selectedList!: List;
   public products!: Array<ListProduct> | undefined;
@@ -35,8 +34,8 @@ export class ListsComponent implements OnInit, OnDestroy {
     private lazyLoadingService: LazyLoadingService,
     public dataService: DataService,
     public route: ActivatedRoute,
-    private router: Router,
-    private listIdResolver: ListIdResolver
+    public router: Router,
+    private location: Location
   ) { }
 
 
@@ -130,7 +129,7 @@ export class ListsComponent implements OnInit, OnDestroy {
           this.selectedList = list;
           this.populateMoveToList();
           this.products = [];
-          this.router.navigateByUrl('/account/lists/' + list.id);
+          this.location.replaceState('/account/lists/' + list.id);
         });
       });
   }
@@ -139,7 +138,11 @@ export class ListsComponent implements OnInit, OnDestroy {
   populateMoveToList() {
     this.moveToList = [];
     this.lists.forEach(x => {
-      if (x != this.selectedList) this.moveToList.push({ key: x.name, value: x.id });
+      if (x != this.selectedList &&
+        (this.selectedList.isOwner || this.selectedList.listPermissions.canRemoveFromList) &&
+        (x.isOwner || x.listPermissions.canAddToList)) {
+        this.moveToList.push({ key: x.name, value: x.id });
+      }
     })
   }
 
@@ -160,9 +163,9 @@ export class ListsComponent implements OnInit, OnDestroy {
         moveItemPrompt.toList = toListKeyValue;
         moveItemPrompt.onMove.subscribe(() => {
           this.products?.splice(this.products.indexOf(product), 1);
-          this.selectedList.totalItems--;
+          this.selectedList.totalProducts--;
           const toList = this.lists.find(x => x.id == toListKeyValue.value) as List;
-          toList.totalItems++;
+          toList.totalProducts++;
         });
       });
   }
@@ -171,9 +174,30 @@ export class ListsComponent implements OnInit, OnDestroy {
   onListClick(list: List) {
     if (list == this.selectedList) return;
     this.selectedList = list;
-    this.router.navigate(['account/lists', list.id]);
-    this.populateMoveToList();
-    this.products = undefined;
+
+
+    // This will clear any query params
+    this.router.navigate([], {
+      queryParams: { sort: null },
+      queryParamsHandling: 'merge'
+    });
+
+    window.setTimeout(() => {
+      this.location.replaceState('/account/lists/' + list.id);
+      this.dataService.get<Array<ListProduct>>('api/Lists/GetListProducts', [
+        {
+          key: 'listId',
+          value: list.id
+        }
+      ], {
+        authorization: true,
+        spinnerAction: SpinnerAction.StartEnd
+      })
+        .subscribe((products: Array<ListProduct>) => {
+          this.populateMoveToList();
+          this.products = products;
+        });
+    });
   }
 
 
@@ -182,6 +206,25 @@ export class ListsComponent implements OnInit, OnDestroy {
       queryParams: { sort: value },
       queryParamsHandling: 'merge'
     });
+
+    window.setTimeout(() => {
+      this.dataService.get<Array<ListProduct>>('api/Lists/GetListProducts', [
+        {
+          key: 'listId',
+          value: this.selectedList.id
+        },
+        {
+          key: 'sort',
+          value: value
+        }
+      ], {
+        authorization: true,
+        spinnerAction: SpinnerAction.StartEnd
+      }).subscribe((products: Array<ListProduct>) => {
+        this.products = products;
+      });
+    });
+
   }
 
 
@@ -191,11 +234,11 @@ export class ListsComponent implements OnInit, OnDestroy {
 
 
   onProductClick(product: ListProduct) {
-    this.router.navigate([product.urlName, product.urlId]);
+    this.router.navigate([product.urlName, product.id]);
   }
 
 
-  ngOnDestroy(): void {
-    this.listIdResolver.lists = null;
+  getDate(date: string) {
+    return new Date(date + 'Z');
   }
 }

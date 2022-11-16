@@ -75,8 +75,8 @@
 
                         <label class="checkbox">
                             <input #profilePicChangeInput type="checkbox"
-                                (change)="preferences.profilePicChange = profilePicChangeInput.checked; setAllChecked()"
-                                [checked]="preferences?.profilePicChange">
+                                (change)="preferences.profileImageChange = profilePicChangeInput.checked; setAllChecked()"
+                                [checked]="preferences?.profileImageChange">
                             <span class="checkmark"></span>
                         </label>
                     </div>
@@ -109,7 +109,7 @@
 
                     <!-- Remove Collaborator -->
                     <div class="preference">
-                        Notify me when a list owner has removed me from their list
+                        Notify me when a I have been removed from a list
 
                         <label class="checkbox">
                             <input #removedCollaboratorInput type="checkbox"
@@ -153,30 +153,16 @@
 
 
 
-                    <!-- Moved List Item -->
-                    <div class="preference">
-                        Notify me when a collaborator has moved an item from one list to another
-
-                        <label class="checkbox">
-                            <input #movedListItemInput type="checkbox"
-                                (change)="preferences.movedListItem = movedListItemInput.checked; setAllChecked()"
-                                [checked]="preferences?.movedListItem">
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
-
-
-
 
 
                     <!-- List Name Change -->
                     <div class="preference">
-                        Notify me when a list owner renames a list I'm a collaborator of
+                        Notify me when a collaborator renames a list I'm collaborating on
 
                         <label class="checkbox">
                             <input #listNameChangeInput type="checkbox"
-                                (change)="preferences.listNameChange = listNameChangeInput.checked; setAllChecked()"
-                                [checked]="preferences?.listNameChange">
+                                (change)="preferences.editedList = listNameChangeInput.checked; setAllChecked()"
+                                [checked]="preferences?.editedList">
                             <span class="checkmark"></span>
                         </label>
                     </div>
@@ -186,7 +172,7 @@
 
                     <!-- Deleted List -->
                     <div class="preference">
-                        Notify me when a list owner deletes a list I'm a collaborator of
+                        Notify me when a collaborator deletes a list I'm collaborating on
 
                         <label class="checkbox">
                             <input #deletedListInput type="checkbox"

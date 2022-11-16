@@ -10,7 +10,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class ReportItemFormComponent extends LazyLoad {
   public DropdownType = DropdownType;
   public isFromRedirect!: boolean;
-  public productId!: number;
+  public productId!: string;
   public comments!: string;
   public notificationType: number = NotificationType.ProductNameDoesNotMatchWithProductDescription;
   public whereTabElement!: ElementRef<HTMLElement>;
@@ -161,7 +161,7 @@ export class ReportItemFormComponent extends LazyLoad {
 
 
   onSubmit() {
-    this.dataService.post('api/Notifications/Post', {
+    this.dataService.post('api/Notifications/PostProductNotification', {
       type: this.notificationType,
       productId: this.productId,
       text: this.comments != null && this.comments.trim().length > 0 ? this.comments.trim() : null

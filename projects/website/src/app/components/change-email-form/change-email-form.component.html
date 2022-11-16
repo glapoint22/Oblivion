@@ -45,9 +45,9 @@
                 </ng-container>
 
                 <!-- Button Container -->
-                <div class="button-container">
+                <div class="button-container" style="margin-top: 10px;">
                     <button #tabElement type="button" class="dark-button" (click)="close()">Cancel</button>
-                    <button #tabElement type="submit" class="gold-rect-button" [disabled]="emailInput.value == accountService.customer?.email">Submit</button>
+                    <button #tabElement type="submit" class="gold-rect-button" [disabled]="emailInput.value == accountService.user?.email">Submit</button>
                 </div>
             </form>
         </div>

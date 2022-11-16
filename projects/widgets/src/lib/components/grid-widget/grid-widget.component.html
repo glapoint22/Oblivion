@@ -12,8 +12,9 @@
                         results
                     </div>
 
-                    <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParams.filters"
-                        (click)="clearFilters()">Clear Filters</button>
+                    <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParamMap.has('search') && (route.snapshot.queryParams.filters ||
+                        route.snapshot.queryParams.nicheId ||
+                        route.snapshot.queryParams.subnicheId)" (click)="clearFilters()">Clear Filters</button>
                 </div>
 
                 <!-- Sort Options -->
@@ -59,7 +60,7 @@
                 <a routerLink="/home" title="Niche Shack Homepage">
                     <img src="assets/logo.png">
                 </a>
-        
+
                 <div class="gold-text">Sorry...</div>
                 <div class="white-text">We couldn't find a match for "{{route.snapshot.queryParams.search}}"</div>
                 <ul>

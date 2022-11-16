@@ -6,6 +6,7 @@ import { Event, NavigationStart, Router } from '@angular/router';
 import { SpinnerAction } from '../../classes/enums';
 import { CookieService } from '../cookie/cookie.service';
 import { SpinnerService } from '../spinner/spinner.service';
+import { LazyLoadingService } from '../lazy-loading/lazy-loading.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class DataService {
       private http: HttpClient,
       private cookieService: CookieService,
       private spinnerService: SpinnerService,
-      private router: Router
+      private router: Router,
+      private lazyLoadingService: LazyLoadingService
     ) {
     // Router Events
     this.router.events
@@ -182,11 +184,11 @@ export class DataService {
     const duration = 1000;
 
     return (errors: Observable<HttpErrorResponse>) => errors
-      .pipe(mergeMap((error: any, i: number) => {
+      .pipe(mergeMap<HttpErrorResponse, any>((error: HttpErrorResponse, i: number) => {
         const retryAttempts = i + 1;
 
-        if (retryAttempts > maxRetryAttempts) {
-          return error;
+        if (error.status < 500 || retryAttempts > maxRetryAttempts) {
+          return throwError(() => error);
         } else {
           return timer(duration);
         }
@@ -200,9 +202,16 @@ export class DataService {
   // ------------------------------------------------------------Handle Error-----------------------------------------------------
   handleError() {
     return (error: HttpErrorResponse) => {
-      this.router.navigate(['error'], { skipLocationChange: true });
-      window.history.pushState('', '', this.url);
+      if (error.status >= 500) {
+        this.router.navigate(['error'], { skipLocationChange: true });
+        window.history.pushState('', '', this.url);
 
+        // Remove all lazy loading forms and backdrops
+        this.lazyLoadingService.backdropFadeIn = false;
+        this.lazyLoadingService.container.clear();
+      }
+
+      this.spinnerService.show = false;
       return throwError(() => error);
     }
   }

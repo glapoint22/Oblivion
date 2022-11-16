@@ -1,8 +1,9 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataService, DropdownType, LazyLoadingService } from 'common';
+import { DataService, DropdownType, LazyLoadingService, SpinnerAction } from 'common';
 import { List } from '../../classes/list';
-import { ListIdResolver } from '../../resolvers/list-id/list-id.resolver';
+import { ListProduct } from '../../classes/list-product';
 import { ListsComponent } from '../lists/lists.component';
 
 @Component({
@@ -17,16 +18,40 @@ export class SharedListComponent extends ListsComponent implements OnInit {
     lazyLoadingService: LazyLoadingService,
     dataService: DataService,
     route: ActivatedRoute,
-    router: Router,
-    listIdResolver: ListIdResolver
-  ) { super(lazyLoadingService, dataService, route, router, listIdResolver) }
+    public router: Router,
+    location: Location
+  ) { super(lazyLoadingService, dataService, route, router, location) }
 
   ngOnInit() {
     this.route.parent?.data.subscribe(data => {
       this.products = data.sharedList.products;
-      this.selectedList = new List(data.sharedList.id, data.sharedList.name);
-
-      console.log('hello')
+      this.selectedList = new List(data.sharedList.listId, data.sharedList.name);
     });
+  }
+
+
+  onSortChange(value: string) {
+    this.router.navigate([], {
+      queryParams: { sort: value },
+      queryParamsHandling: 'merge'
+    });
+
+    window.setTimeout(() => {
+      this.dataService.get<Array<ListProduct>>('api/Lists/GetSharedListProducts', [
+        {
+          key: 'listId',
+          value: this.selectedList.id
+        },
+        {
+          key: 'sort',
+          value: value
+        }
+      ], {
+        spinnerAction: SpinnerAction.StartEnd
+      }).subscribe((products: Array<ListProduct>) => {
+        this.products = products;
+      });
+    });
+
   }
 }

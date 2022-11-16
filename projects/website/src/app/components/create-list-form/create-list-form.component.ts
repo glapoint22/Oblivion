@@ -13,6 +13,7 @@ import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.com
 })
 export class CreateListFormComponent extends Validation implements OnInit {
   public product!: SummaryProduct;
+  public productImage!: string;
   public fromAddToListForm!: boolean
   @Output() onListCreated: EventEmitter<List> = new EventEmitter();
 
@@ -43,7 +44,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.post<List>('api/Lists',
+      this.dataService.post<List>('api/Lists/CreateList',
         {
           name: this.form.get('listName')?.value,
           description: this.form.get('description')?.value
@@ -55,7 +56,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
           this.form.get('listName')?.value,
           this.form.get('description')?.value,
           list.collaborateId,
-          this.accountService.customer?.profileImage
+          this.accountService.user?.profileImage
         ));
         this.close();
       });
@@ -77,6 +78,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
     }, SpinnerAction.StartEnd)
       .then((addToListForm: AddToListFormComponent) => {
         addToListForm.product = this.product;
+        addToListForm.productImage = this.productImage;
       });
   }
 

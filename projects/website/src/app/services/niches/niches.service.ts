@@ -9,10 +9,9 @@ import { Niche } from '../../classes/niche';
 export class NichesService {
   private niches!: Array<Niche>;
   public allNiche: Niche = {
-    id: 0,
+    id: 'all',
     name: 'All Niches',
-    urlName: '',
-    urlId: 'all'
+    urlName: ''
   }
 
   constructor(private dataService: DataService) { }
@@ -22,7 +21,7 @@ export class NichesService {
       return of(this.niches);
     }
 
-    return this.dataService.get<Array<Niche>>('api/Categories')
+    return this.dataService.get<Array<Niche>>('api/Niches/GetNiches')
       .pipe(tap(niches => {
         this.niches = niches;
         this.niches.unshift(this.allNiche);

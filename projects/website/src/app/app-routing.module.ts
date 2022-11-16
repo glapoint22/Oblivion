@@ -28,7 +28,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule),
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     resolve: {
-      searchData: SearchResolver
+      pageContent: SearchResolver
     }
   },
   {
@@ -71,7 +71,7 @@ const routes: Routes = [
   {
     path: 'shared-list/:listId',
     loadChildren: () => import('./pages/shared-list/shared-list.module').then(m => m.SharedListModule),
-    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    // runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     resolve: {
       sharedList: SharedListResolver
     }

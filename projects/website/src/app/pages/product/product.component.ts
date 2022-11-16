@@ -1,8 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, LazyLoadingService, PricePoint, SpinnerAction, Subproduct } from 'common';
 import { Subscription } from 'rxjs';
 import { DetailProduct } from '../../classes/detail-product';
+import { RelatedProducts } from '../../classes/related-products';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { AccountService } from '../../services/account/account.service';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
@@ -14,6 +15,10 @@ import { SocialMediaService } from '../../services/social-media/social-media.ser
 })
 export class ProductComponent implements OnInit {
   public product!: DetailProduct;
+  public pricePoints!: Array<PricePoint>;
+  public components!: Array<Subproduct>;
+  public bonuses!: Array<Subproduct>;
+  public relatedProducts!: RelatedProducts;
   public clientWidth!: number;
 
   constructor
@@ -21,13 +26,30 @@ export class ProductComponent implements OnInit {
       private route: ActivatedRoute,
       private lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
-      private socialMediaService: SocialMediaService
+      private socialMediaService: SocialMediaService,
+      private dataService: DataService
     ) { }
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.product = data.product;
       this.socialMediaService.addMetaTags(this.product.name, this.product.description, this.product.media[0].src);
+
+      // This will get the rest of the product properties
+      this.dataService.get('api/Products/GetProperties', [{ key: 'productId', value: this.product.id }])
+        .subscribe((properties: any) => {
+          this.pricePoints = properties.pricePoints;
+          this.components = properties.components;
+          this.bonuses = properties.bonuses;
+
+          if (properties.relatedProducts && properties.relatedProducts.length > 0) {
+            this.relatedProducts = {
+              caption: 'Similar items you might like',
+              products: properties.relatedProducts
+            }
+          }
+
+        });
     });
 
     this.onWindowResize();
@@ -42,7 +64,7 @@ export class ProductComponent implements OnInit {
 
 
   async onWriteReviewClick() {
-    if (this.accountService.customer) {
+    if (this.accountService.user) {
       this.lazyLoadingService.load(async () => {
         const { WriteReviewFormComponent } = await import('../../components/write-review-form/write-review-form.component');
         const { WriteReviewFormModule } = await import('../../components/write-review-form/write-review-form.module');
@@ -54,7 +76,7 @@ export class ProductComponent implements OnInit {
       }, SpinnerAction.StartEnd)
         .then((writeReviewForm: WriteReviewFormComponent) => {
           writeReviewForm.productId = this.product.id;
-          writeReviewForm.productImage = this.product.media[0].src;
+          writeReviewForm.productImage = this.product.media[0].imageMd;
           writeReviewForm.productName = this.product.name;
         });
     } else {

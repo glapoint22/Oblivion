@@ -1,21 +1,21 @@
-<filter-container [caption]="'Niches'">
-    <niches-filter [niches]="filters.nichesFilter"></niches-filter>
+<filter-container [name]="'Niches'">
+    <niches-filter [nicheFilters]="filters.nicheFilters"></niches-filter>
 </filter-container>
 
-<filter-container [caption]="filters.priceFilter.caption">
+<filter-container [name]="filters.priceFilter.caption">
     <price-filter [filter]="filters.priceFilter" [filterParams]="filterParams">
     </price-filter>
 </filter-container>
 
 <ng-container *ngIf="filters.ratingFilter.options.length > 0">
-    <filter-container [caption]="filters.ratingFilter.caption">
+    <filter-container [name]="filters.ratingFilter.caption">
         <rating-filter [filter]="filters.ratingFilter" [filterParams]="filterParams"></rating-filter>
     </filter-container>
 </ng-container>
 
 
 <div *ngFor="let filter of filters.customFilters; trackBy:trackFilter" class="custom-filter-container">
-    <filter-container [caption]="filter.caption">
+    <filter-container [name]="filter.caption">
         <custom-filter [filter]="filter" [filterParams]="filterParams">
         </custom-filter>
     </filter-container>

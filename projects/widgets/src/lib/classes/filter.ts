@@ -1,7 +1,9 @@
 import { Directive, ElementRef, Input, OnChanges, QueryList, ViewChildren } from "@angular/core";
 import { Params, Router } from "@angular/router";
-import { PriceFilter, QueryFilter, QueryFilterOption } from "common";
 import { FilterParam } from "./filter-param";
+import { PriceFilter } from "./price-filter";
+import { QueryFilter } from "./query-filter";
+import { QueryFilterOption } from "./query-filter-option";
 
 @Directive()
 export class Filter<T extends QueryFilter | PriceFilter> implements OnChanges {

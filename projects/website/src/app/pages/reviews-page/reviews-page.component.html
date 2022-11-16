@@ -1,17 +1,17 @@
 <header-footer>
     <div class="breadcrumb">
-        <!-- Category -->
-        <a routerLink="/browse"
-            [queryParams]="{categoryName: product.breadcrumb[0].urlName, categoryId: product.breadcrumb[0].urlId}">{{product.breadcrumb[0].name}}</a>
-        <div></div>
-
         <!-- Niche -->
         <a routerLink="/browse"
-            [queryParams]="{nicheName: product.breadcrumb[1].urlName, nicheId: product.breadcrumb[1].urlId}">{{product.breadcrumb[1].name}}</a>
+            [queryParams]="{nicheName: product.breadcrumb[0].urlName, nicheId: product.breadcrumb[0].id}">{{product.breadcrumb[0].name}}</a>
+        <div></div>
+
+        <!-- Subniche -->
+        <a routerLink="/browse"
+            [queryParams]="{subnicheName: product.breadcrumb[1].urlName, subnicheId: product.breadcrumb[1].id}">{{product.breadcrumb[1].name}}</a>
             
         <div></div>
 
-        <a [routerLink]="'/' + product.urlName + '/' + product.urlId">{{product.name}}</a>
+        <a [routerLink]="'/' + product.urlName + '/' + product.id">{{product.name}}</a>
         <div></div>
 
         <div>Reviews</div>
@@ -27,7 +27,7 @@
 
                 <div class="media-backdrop">
 
-                    <img [src]="'images/' + product.media[0].src" [title]="product.media[0].name"
+                    <img [src]="'images/' + product.media[0].imageMd" [title]="product.media[0].name"
                         [alt]="product.media[0].name">
                 </div>
 

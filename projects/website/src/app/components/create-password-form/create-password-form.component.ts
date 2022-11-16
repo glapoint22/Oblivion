@@ -60,7 +60,7 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
           authorization: true,
           spinnerAction: SpinnerAction.Start
         }).subscribe(() => {
-          this.accountService.setCustomer();
+          this.accountService.setUser();
           this.OpenSuccessPrompt();
         });
     }

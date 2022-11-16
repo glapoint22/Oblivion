@@ -2,7 +2,7 @@ import { Image } from "common";
 import { ListPermissions } from "./list-permissions";
 
 export class List {
-    public totalItems: number = 0;
+    public totalProducts: number = 0;
     public ownerName: string = 'You';
     public listPermissions: ListPermissions = new ListPermissions();
     public collaboratorCount: number = 0;
@@ -13,6 +13,6 @@ export class List {
         public name: string,
         public description?: string,
         public collaborateId?: string,
-        public profilePic?: Image
+        public ownerProfileImage?: Image
     ) { }
 }

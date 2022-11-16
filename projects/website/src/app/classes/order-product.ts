@@ -9,5 +9,5 @@ export class OrderProduct {
     public rebillAmount!: number;
     public paymentsRemaining!: number;
     public urlName!: string;
-    public urlId!: string;
+    public productId!: string;
 }

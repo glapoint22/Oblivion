@@ -81,7 +81,7 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
     this.focusedListItemId = nicheFocusId;
     this.index = parseInt(nicheFocusId);
 
-    this.dataService.get<Array<Niche>>('api/Niches', [{ key: 'id', value: niche.id }])
+    this.dataService.get<Array<Niche>>('api/Niches/GetSubniches', [{ key: 'nicheId', value: niche.id }])
       .subscribe((niches: Array<Niche>) => {
         this.subNiches = niches;
       });
@@ -95,10 +95,10 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
   }
 
 
-  onSubNicheClick(niche: Niche) {
+  onSubNicheClick(subniche: Niche) {
     this.close();
     this.router.navigate(['/browse'], {
-      queryParams: { nicheName: niche.urlName, nicheId: niche.urlId }
+      queryParams: { subnicheName: subniche.urlName, subnicheId: subniche.id }
     });
   }
 

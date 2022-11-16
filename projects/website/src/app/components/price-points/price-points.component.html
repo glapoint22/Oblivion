@@ -29,7 +29,7 @@
 
 
                             <!-- Image -->
-                            <img *ngIf="pricePoint.image.url" [src]="'images/' + pricePoint.image.url">
+                            <img *ngIf="pricePoint.image && pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
 
 
                             <!-- Space Between -->

@@ -56,7 +56,7 @@
                     <div class="label">Password:</div>
                     <div class="password-input-container">
                         <input #tabElement type="password" formControlName="password"
-                        [ngClass]="{'error-border': _form.submitted && (form.controls.password.errors || notMatchError)}"
+                        [ngClass]="{'error-border': _form.submitted && (form.controls.password.errors)}"
                             style="margin-bottom: 8px;">
 
 
@@ -71,15 +71,6 @@
                                 </li>
                             </ul>
                         </ng-container>
-
-                        <ng-container *ngIf="notMatchError">
-                            <ul style="margin-top: -2px;">
-                                <li>
-                                    Your password and email do not match. Please try again.
-                                </li>
-                            </ul>
-                        </ng-container>
-
                     </div>
 
                     <label class="checkbox">

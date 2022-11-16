@@ -27,7 +27,7 @@
         <div class="media-container">
             <div class="media-backdrop" [ngClass]="{'video-backdrop': selectedMedia.type == mediaType.Video}">
                 <img *ngFor="let media of product.media"
-                    [src]="'images/' + (selectedMedia.type == mediaType.Video ? media.thumbnail : media.imageMd)"
+                    [src]="'images/' + (selectedMedia.type == mediaType.Video ? selectedMedia.thumbnail : selectedMedia.imageMd)"
                     class="media" [ngClass]="{'selected-media': media == selectedMedia}"
                     [style.cursor]="selectedMedia.type == mediaType.Video ? 'pointer' : 'default'"
                     [style.width]="selectedMedia.type == mediaType.Video ? '100%': 'auto'"
@@ -49,17 +49,17 @@
                 <div class="product-title">{{product.name}}</div>
                 <div class="social-media-container">
                     <div title="Share on Facebook"
-                        (click)="socialMediaService.facebookShare('/' + product.urlName + '/' + product.urlId, product.name)">
+                        (click)="socialMediaService.facebookShare('/' + product.urlName + '/' + product.id, product.name)">
                         <img src="assets/facebook-share.png" alt="Share on Facebook">
                     </div>
 
                     <div title="Share on Twitter"
-                        (click)="socialMediaService.twitterShare('/' + product.urlName + '/' + product.urlId, product.name)">
+                        (click)="socialMediaService.twitterShare('/' + product.urlName + '/' + product.id, product.name)">
                         <img src="assets/twitter-share.png" alt="Share on Twitter">
                     </div>
 
                     <div title="Share on Pinterest"
-                        (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.urlId, product.media[0].src, product.name)">
+                        (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.id, product.media[0].src, product.name)">
                         <img src="assets/pinterest-share.png" alt="Share on Pinterest">
                     </div>
                 </div>

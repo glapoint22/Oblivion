@@ -157,7 +157,12 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
 
   onProductClick(product: OrderProduct | QueriedOrderProduct) {
-    this.router.navigate([product.urlName, product.urlId]);
+    this.router.navigate([product.urlName, product.productId]);
+  }
+
+
+  getDate(date: string) {
+    return new Date(date + 'Z');
   }
 
 

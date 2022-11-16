@@ -52,7 +52,7 @@ export class ProductInfoComponent implements OnChanges {
 
 
   async onAddToListClick() {
-    if (this.accountService.customer) {
+    if (this.accountService.user) {
       this.lazyLoadingService.load(async () => {
         const { AddToListFormComponent } = await import('../../components/add-to-list-form/add-to-list-form.component');
         const { AddToListFormModule } = await import('../../components/add-to-list-form/add-to-list-form.module');
@@ -64,6 +64,7 @@ export class ProductInfoComponent implements OnChanges {
       }, SpinnerAction.Start)
         .then((addToListForm: AddToListFormComponent) => {
           addToListForm.product = this.product;
+          addToListForm.productImage = this.product.media[0].imageMd;
         });
 
     } else {
@@ -75,7 +76,7 @@ export class ProductInfoComponent implements OnChanges {
 
 
   async onReportItemClick() {
-    if (this.accountService.customer) {
+    if (this.accountService.user) {
       this.lazyLoadingService.load(async () => {
         const { ReportItemFormComponent } = await import('../../components/report-item-form/report-item-form.component');
         const { ReportItemFormModule } = await import('../../components/report-item-form/report-item-form.module');

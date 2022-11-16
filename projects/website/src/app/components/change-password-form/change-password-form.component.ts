@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
@@ -41,7 +42,6 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
           Validators.required,
           this.invalidPasswordValidator()
         ],
-        asyncValidators: this.validatePasswordAsync('api/Account/ValidatePassword'),
         updateOn: 'submit'
       })
     }, { validators: this.matchPasswordValidator });
@@ -57,9 +57,16 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
             authorization: true,
             spinnerAction: SpinnerAction.Start
           })
-          .subscribe(() => {
-            this.fade();
-            this.OpenSuccessPrompt();
+          .subscribe({
+            complete: () => {
+              this.fade();
+              this.OpenSuccessPrompt();
+            },
+            error: (error: HttpErrorResponse) => {
+              if (error.status == 400) {
+                this.form.controls.currentPassword.setErrors({ incorrectPassword: true });
+              }
+            }
           });
       }
     });

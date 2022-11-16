@@ -101,11 +101,11 @@ export class ReviewsComponent implements OnInit {
 
 
 
-      this.dataService.get('api/ProductReviews/', [
-        { key: 'productId', value: this.product.urlId },
-        { key: 'page', value: currentPage },
+      this.dataService.get('api/ProductReviews/GetReviews', [
+        { key: 'productId', value: this.product.id },
         { key: 'sortBy', value: sort ? sort : '' },
-        { key: 'filterBy', value: filter ? filter : '' }
+        { key: 'filterBy', value: filter ? filter : '' },
+        { key: 'page', value: currentPage }
       ]).subscribe((reviews: any) => {
         this.reviews = reviews.reviews;
         this.pageCount = reviews.pageCount;
@@ -136,7 +136,7 @@ export class ReviewsComponent implements OnInit {
 
 
   async onReportReviewClick(reviewId: number) {
-    if (this.accountService.customer) {
+    if (this.accountService.user) {
       this.lazyLoadingService.load(async () => {
         const { ReportReviewFormComponent } = await import('../../components/report-review-form/report-review-form.component');
         const { ReportReviewFormModule } = await import('../../components/report-review-form/report-review-form.module');
@@ -164,7 +164,7 @@ export class ReviewsComponent implements OnInit {
 
   onRateReviewClick(review: Review, likes: number, dislikes: number) {
     this.dataService
-      .put('api/ProductReviews', {
+      .put('api/ProductReviews/RateReview', {
         reviewId: review.id,
         likes: likes,
         dislikes: dislikes
@@ -261,5 +261,10 @@ export class ReviewsComponent implements OnInit {
         });
 
       });
+  }
+
+
+  getDate(date: string) {
+    return new Date(date + 'Z');
   }
 }

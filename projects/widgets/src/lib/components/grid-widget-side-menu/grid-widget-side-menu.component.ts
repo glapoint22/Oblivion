@@ -1,7 +1,8 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Filters, LazyLoadingService, RadioButtonLazyLoad } from 'common';
+import { LazyLoadingService, RadioButtonLazyLoad } from 'common';
+import { Filters } from '../../classes/filters';
 
 @Component({
   selector: 'grid-widget-side-menu',

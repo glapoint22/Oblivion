@@ -40,7 +40,7 @@ export class OrdersResolver implements Resolve<any> {
       return of(this.filters);
     }
 
-    return this.dataService.get<Array<KeyValue<string, string>>>('api/ProductOrders/Filters', undefined, { authorization: true })
+    return this.dataService.get<Array<KeyValue<string, string>>>('api/ProductOrders/GetOrderFilters', undefined, { authorization: true })
       .pipe(tap((filters: Array<KeyValue<string, string>>) => this.filters = filters));
   }
 
@@ -61,6 +61,6 @@ export class OrdersResolver implements Resolve<any> {
     }
 
     // Get the orders
-    return this.dataService.get<ProductOrders>('api/ProductOrders', parameters, { authorization: true });
+    return this.dataService.get<ProductOrders>('api/ProductOrders/GetOrders', parameters, { authorization: true });
   }
 }

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -18,7 +19,7 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
     (
       dataService: DataService,
       lazyLoadingService: LazyLoadingService,
-      private router: Router
+      private router: Router,
     ) { super(dataService, lazyLoadingService) }
 
 
@@ -55,7 +56,6 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
           Validators.required,
           Validators.email
         ],
-        asyncValidators: this.validateEmailAsync('api/Account/ValidateEmail'),
         updateOn: 'submit'
       })
     });
@@ -69,10 +69,18 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
           password: this.form.get('password')?.value
         }, {
           spinnerAction: SpinnerAction.Start
-        }).subscribe(() => {
-          this.fade();
-          this.openAccountActivationForm();
-        });
+        })
+          .subscribe({
+            complete: () => {
+              this.fade();
+              this.openAccountActivationForm();
+            },
+            error: (error: HttpErrorResponse) => {
+              if (error.status < 500) {
+                this.form.controls.email.setErrors({ duplicateEmail: true });
+              }
+            }
+          });
       }
     });
   }
