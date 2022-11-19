@@ -1,7 +1,8 @@
 .label {
-    font-weight: bold;
-    color: #c0c0c0;
-    margin-bottom: 7px;
+    // font-weight: bold;
+    color: #636363;
+    margin-bottom: 5px;
+    font-size: 13px;
 }
 
 
@@ -35,7 +36,12 @@
 
 
 
+// ::selection {
+//     color: #ffffff;
+//     background: #670e5a;
+// }
+
 ::selection {
     color: #ffffff;
-    background: #670e5a;
+    background: rgba(255, 187, 0, 0.5);
 }

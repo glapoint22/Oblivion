@@ -78,19 +78,37 @@ a {
 
 
 .arrow-down {
-    @include arrow-down(10px, 6px, black );
+    @include arrow-down(10px, 6px, black);
     margin-top: 1px;
 
     margin-left: 7px;
 }
 
 
+.input-container {
+    width: 100%;
+    background: white;
+    display: flex;
+    align-items: center;
+    padding-bottom: 2px;
+}
+
+
 input {
     border: none;
     outline: 0;
-    padding-left: 5px;
     flex: auto;
     width: 100%;
+    height: 30px;
+    line-height: 30px;
+    padding: 4px 0 0 5px;
+}
+
+
+
+::selection {
+    color: #ffffff;
+    background: #a0a0a0;
 }
 
 
@@ -150,12 +168,22 @@ input {
 
 .profile-pic-container {
     outline: none;
-    &:focus {
-        img {
-            // outline: 1px solid red;
-            border: 1px solid white;
-            filter: brightness(120%);
+
+    &:focus-visible {
+        transform: scale(1.07);
+
+        .profile-pic {
+            filter: brightness(1.25);
         }
+    }
+}
+
+
+.remain-in-focus {
+    transform: scale(1.07);
+
+    .profile-pic {
+        filter: brightness(1.25);
     }
 }
 
@@ -171,7 +199,7 @@ input {
     width: 100%;
     max-width: 180px;
     right: -2px;
-    top: 61px;
+    top: 60px;
     pointer-events: none;
 }
 
@@ -181,7 +209,7 @@ input {
     width: 100%;
     max-width: fit-content;
 
-    &:focus {
+    &:focus-visible {
         .niches-button {
             outline: none;
             background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
@@ -190,7 +218,7 @@ input {
 }
 
 .niches-button {
-    @include gold-button(max-content, 36px, 0);
+    @include gold-button(290px, 36px, 0);
     border-top-left-radius: 18px;
     font-size: 13px;
     color: black;
@@ -201,8 +229,6 @@ input {
     justify-content: center;
     user-select: none;
     position: relative;
-
-    
 }
 
 
@@ -217,7 +243,8 @@ input {
     width: 100%;
     max-width: 300px;
     top: 25px;
-    left: 0; pointer-events: none;
+    left: 0;
+    pointer-events: none;
 }
 
 
@@ -236,7 +263,7 @@ input {
 .suggestion {
     height: 37px;
     cursor: pointer;
-    
+
     &:not(:last-child) .suggestion-text {
         border-bottom: 1px solid #dadada;
     }
@@ -305,11 +332,16 @@ input {
 
 
 @media(max-width: 1100px) {
-    #orders, #lists, #about1, #orderSupport1 {
+
+    #orders,
+    #lists,
+    #about1,
+    #orderSupport1 {
         display: none;
     }
 
-    .left-container, .right-container {
+    .left-container,
+    .right-container {
         width: 200px;
     }
 
@@ -326,7 +358,9 @@ input {
 }
 
 @media(max-width: 900px) {
-    #about2, #orderSupport2 {
+
+    #about2,
+    #orderSupport2 {
         display: none;
     }
 
@@ -395,14 +429,17 @@ input {
 
     ::-webkit-input-placeholder {
         color: transparent;
-      }
-      ::-moz-placeholder { 
+    }
+
+    ::-moz-placeholder {
         color: transparent;
-      }
-      :-ms-input-placeholder { 
+    }
+
+    :-ms-input-placeholder {
         color: transparent;
-      }
-      :-moz-placeholder { 
+    }
+
+    :-moz-placeholder {
         color: transparent;
-      }
+    }
 }

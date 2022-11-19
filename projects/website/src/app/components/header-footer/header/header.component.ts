@@ -18,19 +18,27 @@ import { SideMenuComponent } from '../../side-menu/side-menu.component';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  @ViewChild('accountMenuPopupContainer', { read: ViewContainerRef }) accountMenuPopupContainer!: ViewContainerRef;
-  @ViewChild('nicheMenuPopupContainer', { read: ViewContainerRef }) nicheMenuPopupContainer!: ViewContainerRef;
-  @ViewChild('sideMenuContainer', { read: ViewContainerRef }) sideMenuContainer!: ViewContainerRef;
-  @ViewChild('arrow') arrow!: ElementRef<HTMLElement>;
-  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  private searchTerm!: string;
+  private nicheMenuPopup!: NicheMenuPopupComponent;
+  private accountMenuPopup!: AccountMenuPopupComponent;
+
+
   public selectedNiche!: Niche;
-  public nicheMenuPopup!: NicheMenuPopupComponent;
-  public accountMenuPopupComponent!: AccountMenuPopupComponent;
   public sideMenu!: SideMenuComponent;
   public suggestionIndex: number = -1;
+  public nicheMenuPopupOpen!: boolean;
+  public accountMenuPopupOpen!: boolean;
   public suggestions: Array<Suggestion> = [];
   public suggestionListMousedown: boolean = false;
-  private searchTerm!: string;
+
+
+  @ViewChild('arrow') arrow!: ElementRef<HTMLElement>;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('sideMenuContainer', { read: ViewContainerRef }) sideMenuContainer!: ViewContainerRef;
+  @ViewChild('nicheMenuPopupContainer', { read: ViewContainerRef }) nicheMenuPopupContainer!: ViewContainerRef;
+  @ViewChild('accountMenuPopupContainer', { read: ViewContainerRef }) accountMenuPopupContainer!: ViewContainerRef;
+
+
 
   constructor(
     private lazyLoadingService: LazyLoadingService,
@@ -42,6 +50,15 @@ export class HeaderComponent {
     private nicheService: NichesService
   ) { }
 
+
+
+  async ngOnInit() {
+    this.nicheService.getNiches();
+    const { NicheMenuPopupComponent } = await import('../../niche-menu-popup/niche-menu-popup.component');
+    const { NicheMenuPopupModule } = await import('../../niche-menu-popup/niche-menu-popup.module');
+    const { AccountMenuPopupComponent } = await import('../../account-menu-popup/account-menu-popup.component');
+    const { AccountMenuPopupModule } = await import('../../account-menu-popup/account-menu-popup.module');
+  }
 
 
 
@@ -138,6 +155,9 @@ export class HeaderComponent {
           }
         }
       });
+
+
+
   }
 
 
@@ -170,55 +190,75 @@ export class HeaderComponent {
 
 
 
-  async onProfilePicClick(): Promise<void> {
-    if (this.accountMenuPopupContainer.length == 0) {
-      this.lazyLoadingService.load(async () => {
-        const { AccountMenuPopupComponent } = await import('../../account-menu-popup/account-menu-popup.component');
-        const { AccountMenuPopupModule } = await import('../../account-menu-popup/account-menu-popup.module');
 
-        return {
-          component: AccountMenuPopupComponent,
-          module: AccountMenuPopupModule
-        }
-      }, SpinnerAction.None, this.accountMenuPopupContainer)
-        .then((accountMenuPopup: AccountMenuPopupComponent) => {
-          this.accountMenuPopupComponent = accountMenuPopup;
-        });
-    }
-  }
-
-
-
-
-
-
-
-  async onNichesButtonClick() {
-    if (this.nicheMenuPopupContainer.length == 0) {
-      this.lazyLoadingService.load(async () => {
-        const { NicheMenuPopupComponent } = await import('../../niche-menu-popup/niche-menu-popup.component');
-        const { NicheMenuPopupModule } = await import('../../niche-menu-popup/niche-menu-popup.module');
-
-        return {
-          component: NicheMenuPopupComponent,
-          module: NicheMenuPopupModule
-        }
-      }, SpinnerAction.None, this.nicheMenuPopupContainer)
-        .then((nicheMenuPopup: NicheMenuPopupComponent) => {
-          this.nicheMenuPopup = nicheMenuPopup;
-          this.nicheMenuPopup.selectedNicheName = this.selectedNiche ? this.selectedNiche.name : 'All Niches';
-          this.nicheMenuPopup.arrow = this.arrow;
-
-          this.nicheMenuPopup.onNicheMenuItemClick
-            .subscribe((niche: Niche) => {
-              this.selectedNiche = niche;
-            });
-        });
-
-    } else {
+  onNichesButtonClick() {
+    if (this.nicheMenuPopupOpen) {
       this.nicheMenuPopup.close();
+      return;
     }
+
+    this.lazyLoadingService.load(async () => {
+      const { NicheMenuPopupComponent } = await import('../../niche-menu-popup/niche-menu-popup.component');
+      const { NicheMenuPopupModule } = await import('../../niche-menu-popup/niche-menu-popup.module');
+
+      return {
+        component: NicheMenuPopupComponent,
+        module: NicheMenuPopupModule
+      }
+    }, SpinnerAction.None, this.nicheMenuPopupContainer)
+      .then((nicheMenuPopup: NicheMenuPopupComponent) => {
+        this.nicheMenuPopupOpen = true;
+        this.nicheMenuPopup = nicheMenuPopup;
+        this.nicheMenuPopup.selectedNicheName = this.selectedNiche ? this.selectedNiche.name : 'All Niches';
+        this.nicheMenuPopup.arrow = this.arrow;
+
+        this.nicheMenuPopup.onNicheMenuItemClick
+          .subscribe((niche: Niche) => {
+            this.selectedNiche = niche;
+          });
+
+          const nicheMenuPopupCloseListener = this.nicheMenuPopup.onClose.subscribe(() => {
+            nicheMenuPopupCloseListener.unsubscribe();
+            this.nicheMenuPopupOpen = false;
+          });
+      });
   }
+
+
+
+  async onProfilePicClick(): Promise<void> {
+    if (this.accountMenuPopupOpen) {
+      this.accountMenuPopup.close();
+      return;
+    }
+
+    this.lazyLoadingService.load(async () => {
+      const { AccountMenuPopupComponent } = await import('../../account-menu-popup/account-menu-popup.component');
+      const { AccountMenuPopupModule } = await import('../../account-menu-popup/account-menu-popup.module');
+
+      return {
+        component: AccountMenuPopupComponent,
+        module: AccountMenuPopupModule
+      }
+    }, SpinnerAction.None, this.accountMenuPopupContainer)
+      .then((accountMenuPopup: AccountMenuPopupComponent) => {
+        this.accountMenuPopupOpen = true;
+        this.accountMenuPopup = accountMenuPopup;
+
+        const accountMenuPopupCloseListener = this.accountMenuPopup.onClose.subscribe(() => {
+          accountMenuPopupCloseListener.unsubscribe();
+          this.accountMenuPopupOpen = false;
+        });
+      });
+  }
+
+
+
+
+
+
+
+
 
 
 

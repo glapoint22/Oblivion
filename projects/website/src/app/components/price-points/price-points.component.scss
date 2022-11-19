@@ -125,6 +125,7 @@ $price-point-width: 330px;
 
 .slider-container {
     position: relative;
+    padding: 0 0;
 }
 
 .slider {
@@ -137,6 +138,7 @@ $price-point-width: 330px;
 .shipping-recurring-container {
     display: flex;
     flex-direction: column;
+    margin-bottom: 20px;
 }
 
 
@@ -237,18 +239,13 @@ $price-point-width: 330px;
 
     .price-point-base {
         width: 240px;
-    }
-
-    .price-point-base {
         margin: 0 0;
     }
 
-    img {
-        width: 240px;
-    }
+    
 
     .unit-price {
-        font-size: 60px;
+        font-size: 50px;
     }
 
     .gold-round-button-lg {

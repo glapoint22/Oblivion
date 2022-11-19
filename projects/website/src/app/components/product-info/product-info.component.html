@@ -127,55 +127,73 @@
 
     <!-- Mobile -->
     <div *ngIf="clientWidth < 1024" class="product-info-container-mobile">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div class="social-media-container">
-                <div title="Share on Facebook">
-                    <img src="assets/facebook-share.png" alt="Share on Facebook">
-                </div>
 
-                <div title="Share on Twitter">
-                    <img src="assets/twitter-share.png" alt="Share on Twitter">
-                </div>
 
-                <div title="Share on Pinterest">
-                    <img src="assets/pinterest-share.png" alt="Share on Pinterest">
+
+        <div style="width: fit-content; margin: auto; padding: 0 20px;">
+
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="social-media-container">
+                    <div title="Share on Facebook">
+                        <img src="assets/facebook-share.png" alt="Share on Facebook">
+                    </div>
+
+                    <div title="Share on Twitter">
+                        <img src="assets/twitter-share.png" alt="Share on Twitter">
+                    </div>
+
+                    <div title="Share on Pinterest">
+                        <img src="assets/pinterest-share.png" alt="Share on Pinterest">
+                    </div>
                 </div>
             </div>
-        </div>
 
 
 
-        <div class="product-title">{{product.name}}</div>
-        <div class="reviews">
-            {{product.totalReviews}}
-            Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
-        </div>
-        <stars-summary [product]="product"></stars-summary>
+            <div class="product-title">{{product.name}}</div>
+            <div class="reviews">
+                {{product.totalReviews}}
+                Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
+            </div>
+            <stars-summary [product]="product"></stars-summary>
 
-        <div class="price-container">
-            <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>
-            <ng-container *ngIf="product.maxPrice > 0">
-                {{product.minPrice | currency:'USD'}} -
-                {{product.maxPrice | currency:'USD'}}
-            </ng-container>
-        </div>
-
-
-        <div class="product-info-container">
-            <div class="product-info">
-                <shipping *ngIf="product.shippingType != shippingType.None" [shippingType]="product.shippingType">
-                </shipping>
+            <div class="price-container">
+                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+                <ng-container *ngIf="product.maxPrice > 0">
+                    {{product.minPrice | currency:'USD'}} -
+                    {{product.maxPrice | currency:'USD'}}
+                </ng-container>
             </div>
 
-            <div class="product-info">
-                <recurring-payment *ngIf="product.recurringPayment.recurringPrice > 0"
-                    [recurringPayment]="product.recurringPayment">
-                </recurring-payment>
+
+            <div class="product-info-container">
+                <div class="product-info">
+                    <shipping *ngIf="product.shippingType != shippingType.None" [shippingType]="product.shippingType">
+                    </shipping>
+                </div>
+
+                <div class="product-info">
+                    <recurring-payment *ngIf="product.recurringPayment.recurringPrice > 0"
+                        [recurringPayment]="product.recurringPayment">
+                    </recurring-payment>
+                </div>
             </div>
+
+            <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">
+                Visit offical website to buy
+            </button>
+
         </div>
 
-        <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to
-            buy</button>
+            
+
+
+
+
+
+
+
+
 
 
 

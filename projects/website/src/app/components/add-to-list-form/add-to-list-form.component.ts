@@ -16,6 +16,7 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
   public product!: SummaryProduct;
   public productImage!: string;
   public selectedList!: KeyValue<string, string>;
+  
 
   constructor
     (
@@ -25,7 +26,6 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
 
 
   ngAfterViewInit() {
-    super.ngAfterViewInit();
     this.dataService.get<Array<KeyValue<string, string>>>('api/Lists/GetDropdownLists', undefined, {
       authorization: true,
       spinnerAction: SpinnerAction.StartEnd
@@ -33,22 +33,38 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
       .subscribe((lists: Array<KeyValue<string, string>>) => {
         this.lists = lists;
 
-        // If there are lists available
-        if (this.lists.length > 0) {
-          this.selectedList = this.lists[0];
+        window.setTimeout(() => {
+          super.ngAfterViewInit();
 
-          if (this.lists.length == 1) this.base.nativeElement.focus();
-
-          if (this.lists.length > 1) {
-            this.tabElements = this.HTMLElements.toArray();
-            // Set focus to the first list
-            this.setFocus(0);
+          // If there are lists available
+          if (this.lists.length > 0) {
+            this.selectedList = this.lists[0];
           }
-          // If there are NO lists
-        } else {
-          this.base.nativeElement.focus();
-        }
+        })
       });
+
+
+      
+
+      
+  }
+
+
+
+  
+
+
+  onScroll(radioButtonsContainer: HTMLElement) {
+    radioButtonsContainer.scrollTop = Math.round(radioButtonsContainer.scrollTop / 25) * 25;
+  }
+
+
+  onMouseWheel(e: WheelEvent, radioButtonsContainer: HTMLElement) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
+    radioButtonsContainer.scrollTop += (delta * 50);
   }
 
 
@@ -138,36 +154,9 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
   }
 
 
-  // onSpace(e: KeyboardEvent): void {
-  //   e.preventDefault();
-
-  //   if (this.tabElements) {
-  //     for (let i = 0; i < this.tabElements.length; i++) {
-  //       if (this.tabElements[i].nativeElement == document.activeElement) {
-  //         if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
-  //           this.selectedList = this.lists[i];
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
 
   onEnter(e: KeyboardEvent): void {
     if (this.tabElements) {
-      // for (let i = 0; i < this.tabElements.length; i++) {
-      //   if (this.tabElements[i].nativeElement == document.activeElement) {
-      //     if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
-      //       if (this.selectedList != this.lists[i]) {
-      //         this.selectedList = this.lists[i];
-      //       } else {
-      //         this.onSubmit();
-      //       }
-      //     }
-      //     return;
-      //   }
-      // }
-
       if (this.tabElements[this.tabElements.length - 1].nativeElement != document.activeElement &&
         this.tabElements[this.tabElements.length - 2].nativeElement != document.activeElement &&
         this.tabElements[this.tabElements.length - 3].nativeElement != document.activeElement &&

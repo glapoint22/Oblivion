@@ -173,7 +173,7 @@
 
 .gold-round-button-sm {
     max-width: 200px;
-    margin: 0 0 10px;
+    margin: 0 0 15px;
 }
 
 
@@ -228,5 +228,12 @@
 
     .product-section {
         padding: 13px 10px;
+    }
+}
+
+
+@media(max-width: 250px) {
+    .gold-round-button-sm {
+        font-size: 13px;
     }
 }

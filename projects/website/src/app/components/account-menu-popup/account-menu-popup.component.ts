@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { LazyLoad, LazyLoadingService } from 'common';
+import { Subject } from 'rxjs';
 import { AccountListComponent } from '../account-list/account-list.component';
 
 @Component({
@@ -10,6 +11,7 @@ import { AccountListComponent } from '../account-list/account-list.component';
 })
 export class AccountMenuPopupComponent extends LazyLoad implements OnInit {
   private index: number = -1;
+  public onClose: Subject<void> = new Subject<void>();
   @ViewChild('accountList') accountList!: AccountListComponent;
 
   constructor(lazyLoadingService: LazyLoadingService, private router: Router) {
@@ -18,32 +20,42 @@ export class AccountMenuPopupComponent extends LazyLoad implements OnInit {
 
   ngOnInit(): void {
     this.addEventListeners();
+    window.addEventListener('mousedown', this.mousedown);
+    window.addEventListener('blur', this.windowBlur);
   }
 
 
-  onTab(direction: number): void {
-    // Niches
-    this.index = this.index + (1 * direction);
-    if (this.index > 5) this.index = 0;
-    if (this.index < 0) this.index = 5;
-    this.accountList.focusedListItemId = this.index.toString();
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    window.setTimeout(()=> {
+      this.base.nativeElement.focus();
+    })
+    
+  }
+
+
+  mousedown = () => {
+    this.close();
+  }
+
+
+  windowBlur = () => {
+    this.close();
   }
 
 
   onArrowDown(e: KeyboardEvent): void {
-    e.preventDefault();
 
     this.index = this.index + 1;
-    if (this.index > 5) this.index = 5;
+    if (this.index > 5) this.index = 0;
     this.accountList.focusedListItemId = this.index.toString();
   }
 
 
   onArrowUp(e: KeyboardEvent): void {
-    e.preventDefault();
 
     this.index = this.index - 1;
-    if (this.index < 0) this.index = 0;
+    if (this.index < 0) this.index = 5;
     this.accountList.focusedListItemId = this.index.toString();
   }
 
@@ -74,5 +86,17 @@ export class AccountMenuPopupComponent extends LazyLoad implements OnInit {
         this.accountList.onLogOutClick();
         break;
     }
+  }
+
+
+  close(): void {
+    super.close();
+    this.onClose.next();
+  }
+
+
+  ngOnDestroy() {
+    window.removeEventListener('mousedown', this.mousedown);
+    window.removeEventListener('blur', this.windowBlur);
   }
 }

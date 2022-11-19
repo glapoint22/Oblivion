@@ -1,4 +1,4 @@
-<div *ngIf="niches" class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div *ngIf="niches" class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()">
 
     <div #arrowContainer class="arrow-container" [style.left.px]="this.arrow.nativeElement.offsetLeft - 8">
 
@@ -7,9 +7,13 @@
     </div>
 
     <div class="popup-content">
-        <div id="nicheMenu" class="niche-menu">
-            <div [id]="niche.name" class="list-item" *ngFor="let niche of niches" (click)="onNicheClick(niche)"
-                [ngClass]="{'selected-list-item': niche.name == selectedNicheName}">
+        <div #nicheMenu class="niche-menu" (scroll)="onScroll()" (wheel)="onMouseWheel($event)">
+            <div tabindex="-1"
+                 [id]="niche.name"
+                 class="list-item"
+                 *ngFor="let niche of niches"
+                 (click)="onNicheClick(niche)"
+                 [ngClass]="{'selected-list-item': niche.name == selectedNicheName}">
                 {{niche.name}}
             </div>
         </div>

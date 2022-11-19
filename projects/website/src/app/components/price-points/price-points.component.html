@@ -54,15 +54,13 @@
                                     <div *ngIf="pricePoint.price" class="total-price">{{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}</div>
                                 </div>
 
-                                <!-- Gold Button -->
-                                <button class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">Visit
-                                    offical website to buy</button>
+                                
 
 
                                 <div *ngIf="pricePoint.shippingType != shippingType.None || pricePoint.recurringPayment.recurringPrice > 0" class="shipping-recurring-container">
 
                                     <!-- Shipping -->
-                                    <shipping *ngIf="pricePoint.shippingType != shippingType.None" style="margin-top: 20px;"
+                                    <shipping *ngIf="pricePoint.shippingType != shippingType.None"
                                         [shippingType]="pricePoint.shippingType"></shipping>
 
                                     <!-- Recurring Payment -->
@@ -70,6 +68,12 @@
                                         [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
 
                                 </div>
+
+
+                                <!-- Gold Button -->
+                                <button class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">Visit
+                                    offical website to buy</button>
+
                             </div>
                         </div>
                     </div>

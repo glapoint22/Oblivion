@@ -12,6 +12,8 @@ export class LazyLoad implements AfterViewInit {
     public shiftKeyDown!: boolean;
     public tabElements!: Array<ElementRef<HTMLElement>>;
     public onTabElementsLoaded = new Subject<void>();
+    public windowScrollY!: number;
+    public disableScrolling!: boolean;
     @ViewChild('base') base!: ElementRef<HTMLElement>;
     @ViewChildren('tabElement') HTMLElements!: QueryList<ElementRef<HTMLElement>>;
 
@@ -27,6 +29,7 @@ export class LazyLoad implements AfterViewInit {
 
     ngOnInit(): void {
         this.addEventListeners();
+        this.disableScrolling = true;
         if (!this.lazyLoadingService.showBackdrop) {
             this.lazyLoadingService.showBackdrop = true;
             window.setTimeout(() => {
@@ -45,6 +48,16 @@ export class LazyLoad implements AfterViewInit {
         if (this.HTMLElements.length > 0) {
             this.tabElements = this.HTMLElements.toArray();
         }
+
+        if (this.disableScrolling) {
+            this.windowScrollY = window.scrollY;
+            window.addEventListener('scroll', this.onWindowScroll);
+        }
+    }
+
+
+    onWindowScroll = () => {
+        window.scrollTo(0, this.windowScrollY);
     }
 
 
@@ -243,4 +256,10 @@ export class LazyLoad implements AfterViewInit {
             this.shiftKeyDown = false;
         }
     }
+
+
+
+    ngOnDestroy() {
+        window.removeEventListener('scroll', this.onWindowScroll);
+      }
 }

@@ -1,7 +1,7 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="backdrop" (click)="close()"></div>
+    <div class="backdrop" (click)="close()" (wheel)="$event.preventDefault()"></div>
 
 
     <!-- Container -->
@@ -20,6 +20,7 @@
 
             <!-- Drop Shadow -->
             <div class="drop-shadow"></div>
+            
 
             <!-- Content -->
             <div class="content">
@@ -70,7 +71,7 @@
 
                     <ng-container *ngIf="lists.length > 1">
                         <div class="label">Select Your List:</div>
-                        <div class="radio-buttons-container">
+                        <div #radioButtonsContainer class="radio-buttons-container" (scroll)="onScroll(radioButtonsContainer)" (wheel)="onMouseWheel($event, radioButtonsContainer)">
                             <ng-container *ngFor="let list of lists">
                                 <label class="radio" style="display: block;">
                                     <div>{{list.key}}</div>

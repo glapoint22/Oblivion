@@ -18,69 +18,73 @@
     </div>
 
 
-    <!-- Product Info -->
-    <product-info [product]="product" [clientWidth]="clientWidth"></product-info>
+
+    <div class="product-container">
+
+        <!-- Product Info -->
+        <product-info [product]="product" [clientWidth]="clientWidth"></product-info>
 
 
-    <!-- Price Points -->
-    <price-points [pricePoints]="pricePoints" [hoplink]="product.hoplink" [clientWidth]="clientWidth">
-    </price-points>
+        <!-- Price Points -->
+        <price-points [pricePoints]="pricePoints" [hoplink]="product.hoplink" [clientWidth]="clientWidth">
+        </price-points>
 
 
-    <!-- Sub products -->
-    <subproducts [components]="components" [bonuses]="bonuses"></subproducts>
+        <!-- Sub products -->
+        <subproducts [components]="components" [bonuses]="bonuses"></subproducts>
 
 
-    <!-- Related Products -->
-    <div *ngIf="relatedProducts"
-        class="related-products-background">
-        <product-slider-widget [products]="relatedProducts.products" [text]="relatedProducts.caption"
-            [clientWidth]="clientWidth">
-        </product-slider-widget>
-    </div>
-
-
-    <!-- Reviews -->
-    <div class="reviews-background">
-
-        <!-- Reviews Section -->
-        <div class="section-container">
-            <div class="section-background"></div>
-            <div class="section-text">Reviews</div>
+        <!-- Related Products -->
+        <div *ngIf="relatedProducts"
+            class="related-products-background">
+            <product-slider-widget [products]="relatedProducts.products" [text]="relatedProducts.caption"
+                [clientWidth]="clientWidth">
+            </product-slider-widget>
         </div>
 
 
-        <ng-container *ngIf="product.totalReviews > 0">
+        <!-- Reviews -->
+        <div class="reviews-background">
 
-            <!-- Review Summary -->
-            <div class="review-summary-container">
-                <review-summary [product]="product"></review-summary>
+            <!-- Reviews Section -->
+            <div class="section-container">
+                <div class="section-background"></div>
+                <div class="section-text">Reviews</div>
             </div>
 
 
-            <!-- Write reveiw button -->
-            <div class="write-review-button-container">
-                <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a Review</button>
-            </div>
+            <ng-container *ngIf="product.totalReviews > 0">
+
+                <!-- Review Summary -->
+                <div class="review-summary-container">
+                    <review-summary [product]="product"></review-summary>
+                </div>
 
 
-            <!-- Helpful reviews -->
-            <helpful-reviews></helpful-reviews>
-
-            <!-- Reviews -->
-            <reviews [product]="product"></reviews>
-        </ng-container>
+                <!-- Write reveiw button -->
+                <div class="write-review-button-container">
+                    <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a Review</button>
+                </div>
 
 
-        <!-- Be the first to write a review -->
-        <ng-container *ngIf="product.totalReviews == 0">
-            <div class="review-text">
-                Be the first to review this item!
-            </div>
+                <!-- Helpful reviews -->
+                <helpful-reviews></helpful-reviews>
 
-            <div class="write-review-button-container">
-                <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a Review</button>
-            </div>
-        </ng-container>
+                <!-- Reviews -->
+                <reviews [product]="product"></reviews>
+            </ng-container>
+
+
+            <!-- Be the first to write a review -->
+            <ng-container *ngIf="product.totalReviews == 0">
+                <div class="review-text">
+                    Be the first to review this item!
+                </div>
+
+                <div class="write-review-button-container">
+                    <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a Review</button>
+                </div>
+            </ng-container>
+        </div>
     </div>
 </header-footer>

@@ -27,7 +27,7 @@
         color: lighten($font-color, 22);
     }
 
-    &:focus {
+    &:focus-visible {
         outline: 1px solid #a08534;
         outline-offset: 2px;
     }

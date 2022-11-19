@@ -93,7 +93,7 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
     e.stopPropagation();
 
     const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
-    this.listElement.nativeElement.scrollTop += (delta * 22);
+    this.listElement.nativeElement.scrollTop += (delta * 44);
   }
 
 
@@ -105,8 +105,7 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
     // Increment or decrement the index (depending on direction)
     this.indexOfSelectedListItem = this.indexOfSelectedListItem + direction;
 
-    // If the index increments to the end of the list, then loop it back to the begining of the list 
-    // or if the index decrements to the begining of the list, then loop back to the end of the list
+    // If the index increments past the end of the list or decrements beyond the begining of the list, then loop back around
     if (this.indexOfSelectedListItem == (direction == 1 ? this.list.length : -1)) this.indexOfSelectedListItem = direction == 1 ? 0 : this.list.length - 1;
 
     // Select the next item in the list

@@ -19,21 +19,24 @@
 
     <!-- Center Container -->
     <div class="center-container">
+        
 
         <div tabindex="3" (keydown.enter)="onNichesButtonClick()"
-            (blur)="nicheMenuPopup ? nicheMenuPopup.close() : null" class="niches-button-container">
+             class="niches-button-container">
 
-            <div class="niches-button" (click)="onNichesButtonClick()"
+            <div class="niches-button" (click)="onNichesButtonClick()" [title]="selectedNiche ? selectedNiche.name : 'All Niches'" (mousedown)="$event.stopPropagation()"
                 [style.borderBottomLeftRadius.px]="suggestions && suggestions.length > 0 ? 0 : 18">
 
                 <div class="niches-button-text">
 
-                    {{selectedNiche ? selectedNiche.name: 'All Niches'}}
+                    {{selectedNiche ? selectedNiche.name : 'All Niches'}}
 
                 </div>
 
                 <div #arrow class="arrow-down"></div>
             </div>
+
+            
 
             <div class="niches-menu-popup-container">
                 <ng-template #nicheMenuPopupContainer></ng-template>
@@ -42,11 +45,17 @@
 
 
         <!-- Search Input -->
-        <input #searchInput tabindex="4" (blur)="hideSuggestionList()"
-            [placeholder]="'Search in ' + (selectedNiche ? selectedNiche.name: 'All Niches')"
-            (keydown.enter)="search(searchInput.value)" (keydown.escape)="suggestions = []"
-            (keydown.arrowUp)="onArrowPress(-1, searchInput); $event.preventDefault()"
-            (keydown.arrowDown)="onArrowPress(1, searchInput); $event.preventDefault()">
+        <div class="input-container">
+
+            <input #searchInput
+                   tabindex="4"
+                   (blur)="hideSuggestionList()"
+                   (keydown.escape)="suggestions = []"
+                   (keydown.enter)="search(searchInput.value)"
+                   (keydown.arrowUp)="onArrowPress(-1, searchInput); $event.preventDefault()"
+                   (keydown.arrowDown)="onArrowPress(1, searchInput); $event.preventDefault()"
+                   [placeholder]="'Search in ' + (selectedNiche ? selectedNiche.name: 'All Niches')">
+            </div>
 
         <div *ngIf="suggestions && suggestions.length > 0" class="suggestion-list"
             (mousedown)="suggestionListMousedown = true">
@@ -102,22 +111,31 @@
             <a tabindex="8" id="orders" class="links" routerLink="/account/orders">Orders</a>
             <a tabindex="9" id="lists" class="links" routerLink="/account/lists">Lists</a>
 
+
+                <!--(blur)="accountMenuPopupComponent ? accountMenuPopupComponent.close() : null"-->
+
             <!-- Account profile pic -->
-            <div tabindex="10" class="profile-pic-container"
-                (blur)="accountMenuPopupComponent ? accountMenuPopupComponent.close() : null"
-                (keydown.enter)="onProfilePicClick()">
+
+            <div tabindex="10"
+                 class="profile-pic-container"
+                 (click)="onProfilePicClick()"
+                 (mousedown)="$event.stopPropagation()"
+                 (keydown.enter)="onProfilePicClick()"
+                 [ngClass]="{'remain-in-focus': accountMenuPopupOpen}">
+
                 <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
-                <img [src]="accountService.user.profileImage.src ? 'images/' + accountService.user.profileImage.src : 'assets/no-account-pic.png'"
-                    class="profile-pic" [title]="accountService.user.profileImage.name"
-                    [alt]="accountService.user.profileImage.name" (click)="onProfilePicClick()">
-
-
-                <!-- Account Menu Popup -->
-                <div class="account-menu-popup-container">
-                    <ng-template #accountMenuPopupContainer></ng-template>
-                </div>
+                <img class="profile-pic"
+                     [alt]="accountService.user.profileImage.name"
+                     [title]="accountService.user.profileImage.name"
+                     [src]="accountService.user.profileImage.src ? 'images/' + accountService.user.profileImage.src : 'assets/no-account-pic.png'">
             </div>
         </ng-container>
+
+        
+        <!-- Account Menu Popup -->
+        <div class="account-menu-popup-container">
+            <ng-template #accountMenuPopupContainer></ng-template>
+        </div>
     </div>
 </div>
 

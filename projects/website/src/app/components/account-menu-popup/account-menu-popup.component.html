@@ -1,4 +1,4 @@
-<div class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()">
+<div #base class="popup hide" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()" tabindex="-1">
     <div class="popup-content">
         <account-list #accountList (onClose)="close()"></account-list>
     </div>

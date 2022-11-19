@@ -51,11 +51,11 @@
     line-height: 58px;
     padding: 0 10px;
 
-    // position: fixed;
-    // top: 79px;
-    // left: 0;
-    // right: 0;
-    // z-index: 50;
+    position: fixed;
+    top: 79px;
+    left: 0;
+    right: 0;
+    z-index: 50;
 
     a {
         color: $gold;
@@ -76,6 +76,13 @@
     div:last-child {
         display: inline-block;
         color: #b4b4b4;
+    }
+}
+
+
+@media(max-width: 800px) {
+    .breadcrumb {
+        top: 100px;
     }
 }
 
