@@ -18,7 +18,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   public isNew!: boolean;
   public notificationItem!: NotificationItem;
   public contextMenu!: ContextMenuComponent;
-  
+
   public newNoteAdded!: boolean;
   public employeeIndex!: number;
   public firstNote!: string;
@@ -27,7 +27,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   public employeeTextPath = 'api/Notifications/PostNote';
   public employeeTextParameters = {};
   public deletePromptTitle: string = 'Delete Notification';
-  
+
   public deletePromptMessage!: SafeHtml;
   public secondaryButtonPromptTitle!: string;
   public secondaryButtonPromptMessage!: SafeHtml;
@@ -35,7 +35,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   public secondaryButtonPrompt!: PromptComponent;
   public deletePrompt!: PromptComponent;
   public notification!: any;
-  
+
   public secondaryButtonDisabledPath!: string;
   public secondaryButtonDisabledParameters!: {};
   public onNotificationLoad: Subject<void> = new Subject<void>();
@@ -105,7 +105,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
 
 
   // =============================================================( GET CONTEXT MENU OPTIONS )============================================================== \\
-  
+
   getContextMenuOptions(): Array<MenuOption> {
     return [];
   }
@@ -125,24 +125,24 @@ export class NotificationPopupComponent extends NotificationFormComponent {
 
 
 
-  
+
 
 
 
   // ============================================================( IS EMPLOYEE NOTES WRITTEN )============================================================== \\
-  
+
   isEmployeeNotesWritten(employees: Array<NotificationEmployee>, newNoteAdded: boolean): boolean {
     // If notes were never written yet on this form and now
     // for the first time notes are finally being written
-    return (!employees[0].firstName && 
-      
-      
+    return (!employees[0].firstName &&
+
+
       employees[0].text != null &&
       // and not just empty spaces
       employees[0].text.trim().length > 0
-      
-      
-      ) ||
+
+
+    ) ||
 
       // Or if notes had already been previously written and the (Add Note) button was pressed
       (newNoteAdded &&
@@ -150,15 +150,15 @@ export class NotificationPopupComponent extends NotificationFormComponent {
         employees[employees.length - 1].text != null &&
         // and not just empty spaces
         employees[employees.length - 1].text.trim().length > 0
-        
-        
-        )
+
+
+      )
   }
 
 
 
   // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
-  
+
   saveEmployeeText() {
     this.dataService.post(this.employeeTextPath, this.employeeTextParameters).subscribe();
   }
@@ -197,7 +197,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   }
 
 
-  
+
   // =========================================================( SECONDARY BUTTON PROMPT FUNCTION )========================================================== \\
 
   secondaryButtonPromptFunction() {
@@ -205,7 +205,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   }
 
 
-  
+
 
 
 
@@ -255,7 +255,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   }
 
 
-  
+
   // =====================================================================( ON CLOSE )====================================================================== \\
 
   onClose(employees: Array<NotificationEmployee>, restore?: boolean): void {
@@ -301,6 +301,11 @@ export class NotificationPopupComponent extends NotificationFormComponent {
     super.close();
   }
 
+
+  // ====================================================================( GET DATE )======================================================================= \\
+  getDate(date: string) {
+    return new Date(date + 'Z');
+  }
 
 
   // ==================================================================( NG ON DESTROY )==================================================================== \\

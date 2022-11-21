@@ -24,7 +24,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
         if (x.employeeNotes.length == 0) x.employeeNotes.push(new NotificationEmployee());
       });
     });
-    this.getNotification<Array<UserAccountNotification>>('api/Notifications/' + (this.isUserName ? 'UserName' : 'UserImage'), [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
+    this.getNotification<Array<UserAccountNotification>>('api/Notifications/' + (this.isUserName ? 'GetUserNameNotification' : 'UserImage'), [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
   }
 
 

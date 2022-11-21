@@ -40,7 +40,7 @@
                     <div class="notification-profile-container">
                         <!-- Date -->
                         <div class="notification-date">
-                            {{notification[userIndex].date | date: 'MMM d, y, h:mm a'}}
+                            {{getDate(notification[userIndex].date) | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->

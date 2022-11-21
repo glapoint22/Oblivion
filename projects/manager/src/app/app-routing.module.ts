@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('../app/pages/product-builder/product-builder.module').then(m => m.ProductBuilderModule),
+    loadChildren: () => import('./pages/product-builder/product-builder.module').then(m => m.ProductBuilderModule),
     pathMatch: 'full'
   },
   {
@@ -13,11 +13,15 @@ const routes: Routes = [
   },
   {
     path: 'page-builder',
-    loadChildren: () => import('../app/pages/page-builder/page-builder.module').then(m => m.PageBuilderModule)
+    loadChildren: () => import('./pages/page-builder/page-builder.module').then(m => m.PageBuilderModule)
   },
   {
     path: 'email-builder',
-    loadChildren: () => import('../app/pages/email-builder/email-builder.module').then(m => m.EmailBuilderModule)
+    loadChildren: () => import('./pages/email-builder/email-builder.module').then(m => m.EmailBuilderModule)
+  },
+  {
+    path: 'log-in',
+    loadChildren: () => import('./pages/log-in/log-in.module').then(m => m.LogInModule)
   }
 ];
 

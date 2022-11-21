@@ -12,6 +12,7 @@ export class NotificationService {
   // Private
   private _notificationCount: number = 0;
   private getNotificationsTimer!: number;
+  private timeinMinutesToCheckFornewNotifications = 1;
 
   // Public
   public refreshNotificationsInProgress!: boolean;
@@ -31,23 +32,18 @@ export class NotificationService {
 
   constructor(private dataService: DataService) {
     this.getNewNotifications();
-    this.getArchiveNotifications();
+
+    this.getNotificationsTimer = window.setTimeout(() => {
+      this.getNewNotifications();
+    }, this.timeinMinutesToCheckFornewNotifications * 1000 * 60)
   }
 
 
   getNewNotifications() {
-    this.getNotificationCount();
-
-    this.getNotificationsTimer = window.setTimeout(() => {
-      this.getNewNotifications();
-    }, 50000)
-  }
-
-  getNotificationCount() {
     // Query the database to get a count of how many notifications are currently in the queue
-    this.dataService.get<NotificationQueue>('api/Notifications/Count', [{ key: 'currentCount', value: this.notificationCount }])
+    this.dataService.get<NotificationQueue>('api/Notifications/GetNewNotifications', [{ key: 'currentCount', value: this.notificationCount }])
       .subscribe((notificationQueue: NotificationQueue) => {
-        
+
         // If the number of notifications in the queue are different from the number of notifications we have in our list
         if (notificationQueue != null) {
           // Update the count of the list
@@ -64,6 +60,8 @@ export class NotificationService {
       });
   }
 
+  
+
 
   refreshNotifications() {
     this.refreshNotificationsInProgress = true;
@@ -72,8 +70,8 @@ export class NotificationService {
   }
 
 
-  getArchiveNotifications() {
-    this.dataService.get<Array<NotificationItem>>('api/Notifications', [{ key: 'isNew', value: false }])
+  getArchivedNotifications() {
+    this.dataService.get<Array<NotificationItem>>('api/Notifications/GetArchivedNotifications')
       .subscribe((notifications: Array<NotificationItem>) => {
         notifications.forEach(x => {
           x.name = x.notificationType == NotificationType.Message ? x.email : this.getNotificationName(x.notificationType);

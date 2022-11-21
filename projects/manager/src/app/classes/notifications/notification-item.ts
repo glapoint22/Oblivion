@@ -1,7 +1,7 @@
 import { ImageItem } from "../image-item";
 
 export class NotificationItem extends ImageItem {
-  notificationGroupId!: number;
+  notificationGroupId!: string;
   notificationType!: number;
   email!: string;
   productId!: number;
