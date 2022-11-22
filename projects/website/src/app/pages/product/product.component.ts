@@ -1,11 +1,10 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DataService, LazyLoadingService, PricePoint, SpinnerAction, Subproduct } from 'common';
+import { AccountService, DataService, LazyLoadingService, PricePoint, SpinnerAction, Subproduct } from 'common';
 import { Subscription } from 'rxjs';
 import { DetailProduct } from '../../classes/detail-product';
 import { RelatedProducts } from '../../classes/related-products';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
-import { AccountService } from '../../services/account/account.service';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({

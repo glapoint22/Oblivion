@@ -1,12 +1,11 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { LazyLoadingService, Media, MediaType, ShippingType, SpinnerAction } from 'common';
+import { AccountService, LazyLoadingService, Media, MediaType, ShippingType, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
 import { TextBox, TextBoxData } from 'text-box';
 import { DetailProduct } from '../../classes/detail-product';
 import { AddToListFormComponent } from '../../components/add-to-list-form/add-to-list-form.component';
 import { MediaPlayerComponent } from '../../components/media-player/media-player.component';
 import { ReportItemFormComponent } from '../../components/report-item-form/report-item-form.component';
-import { AccountService } from '../../services/account/account.service';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({

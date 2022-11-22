@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
-import { AccountService } from '../../services/account/account.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({

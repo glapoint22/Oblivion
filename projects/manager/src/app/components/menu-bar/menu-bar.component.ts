@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { LazyLoadingService, SpinnerAction } from 'common';
+import { AccountService, LazyLoadingService, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../classes/enums';
 import { MenuBarButton } from '../../classes/menu-bar-button';
 import { NichesSideMenuComponent } from '../niches-side-menu/niches-side-menu.component';
@@ -25,19 +25,29 @@ export class MenuBarComponent {
   public notificationCount!: number;
   public selectedMenuBarButton!: MenuBarButton;
   public nichesSideMenu!: NichesSideMenuComponent;
-  public menuBarButtons: Array<MenuBarButton> = this.getMenuBarButtons();
+  public menuBarButtons!: Array<MenuBarButton>;
 
-  // Decorators
   @ViewChild('notificationListPopupContainer', { read: ViewContainerRef }) notificationListPopupContainer!: ViewContainerRef;
   @ViewChild('notificationPopup', { read: ViewContainerRef }) notificationPopupContainer!: ViewContainerRef;
 
   // Constructor
-  constructor(public lazyLoadingService: LazyLoadingService, private router: Router, private notificationService: NotificationService, public productService: ProductService) { }
+  constructor(
+    public lazyLoadingService: LazyLoadingService,
+    private router: Router,
+    private notificationService: NotificationService,
+    public productService: ProductService,
+    public accountService: AccountService
+  ) { }
 
   ngOnInit() {
+    this.notificationService.getNewNotifications();
+
     this.notificationService.onNotificationCount.subscribe((notificationCount) => {
       this.notificationCount = notificationCount;
     });
+
+    // Create the menu bar buttons
+    this.menuBarButtons = this.createMenuBarButtons();
   }
 
 
@@ -47,7 +57,7 @@ export class MenuBarComponent {
 
 
 
-  getMenuBarButtons(): Array<MenuBarButton> {
+  createMenuBarButtons(): Array<MenuBarButton> {
     return [
 
       // Builders
@@ -169,22 +179,10 @@ export class MenuBarComponent {
         menuOptions: [
           {
             type: MenuOptionType.MenuItem,
-            name: 'Change Name'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Change Email'
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Change Password'
-          },
-          {
-            type: MenuOptionType.Divider
-          },
-          {
-            type: MenuOptionType.MenuItem,
-            name: 'Sign Out'
+            name: 'Log Out',
+            optionFunction: () => {
+              this.accountService.logOut();
+            }
           }
         ]
       }
@@ -203,6 +201,7 @@ export class MenuBarComponent {
 
   onMenuBarButtonDown(htmlMenuBarButton: HTMLElement, menuBarButton: MenuBarButton, e: MouseEvent) {
     if (!this.menuOpen) {
+
       // Delay in case some other component has a menu open (delaying will prevent stopPropagation from executing and close the menu from the other component first)
       window.setTimeout(() => {
         e.stopPropagation();

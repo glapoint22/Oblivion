@@ -1,5 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { AccountService, DataService } from 'common';
 
 @Component({
   selector: 'app-log-in',
@@ -8,14 +10,27 @@ import { NgForm } from '@angular/forms';
 })
 export class LogInComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dataService: DataService, private accountService: AccountService) { }
 
   ngOnInit(): void {
   }
 
   onSubmit(form: NgForm) {
     if(form.valid){
-      console.log('hello')
+      this.dataService.post('api/Account/LogIn', {
+        email: form.controls.email.value,
+        password: form.controls.password.value,
+      })
+        .subscribe({
+          complete: () => {
+            this.accountService.logIn();
+          },
+          error: (error: HttpErrorResponse) => {
+            if (error.status == 401) {
+              // this.form.controls.email.setErrors({ noMatch: true });
+            }
+          }
+        });
     }
     
   }

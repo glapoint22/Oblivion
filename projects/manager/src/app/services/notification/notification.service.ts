@@ -31,8 +31,6 @@ export class NotificationService {
 
 
   constructor(private dataService: DataService) {
-    this.getNewNotifications();
-
     this.getNotificationsTimer = window.setTimeout(() => {
       this.getNewNotifications();
     }, this.timeinMinutesToCheckFornewNotifications * 1000 * 60)
@@ -55,6 +53,8 @@ export class NotificationService {
             y.name = y.notificationType == NotificationType.Message ? y.email : this.getNotificationName(y.notificationType);
             this.newNotifications.push(y);
           })
+        } else{
+          this.onNotificationCount.next(this.notificationCount);
         }
         this.refreshNotificationsInProgress = false;
       });

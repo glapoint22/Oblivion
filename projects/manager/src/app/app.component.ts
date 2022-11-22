@@ -1,5 +1,5 @@
 import { Component, HostListener, ViewContainerRef } from '@angular/core';
-import { LazyLoadingService } from 'common';
+import { AccountService, LazyLoadingService } from 'common';
 import { InputService } from './services/input/input.service';
 
 @Component({
@@ -9,13 +9,24 @@ import { InputService } from './services/input/input.service';
 })
 export class AppComponent {
 
-  constructor(private container: ViewContainerRef, public lazyLoadingService: LazyLoadingService, private inputService: InputService) {
-    
+  constructor(
+    private container: ViewContainerRef,
+    public lazyLoadingService: LazyLoadingService,
+    private inputService: InputService,
+    private accountService: AccountService
+  ) {
   }
-  
+
 
   ngOnInit() {
     this.lazyLoadingService.container = this.container;
+
+    this.accountService.setUser();
+
+    if (this.accountService.user) {
+      this.accountService.refresh();
+      this.accountService.startRefreshTokenTimer();
+    }
   }
 
 

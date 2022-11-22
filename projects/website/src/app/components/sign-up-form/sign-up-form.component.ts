@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
-import { AccountService } from '../../services/account/account.service';
+import { AccountService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
 import { ExternalLoginProvidersComponent } from '../external-login-providers/external-login-providers.component';
 
 @Component({

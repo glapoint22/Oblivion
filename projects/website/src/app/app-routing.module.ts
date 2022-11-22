@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AccountGuard } from './guards/account/account.guard';
 import { SharedListResolver } from './resolvers/shared-list/shared-list.resolver';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { BrowseResolver } from './resolvers/browse/browse.resolver';
@@ -9,6 +8,7 @@ import { HomeResolver } from './resolvers/home/home.resolver';
 import { ProductResolver } from './resolvers/product/product.resolver';
 import { SearchResolver } from './resolvers/search/search.resolver';
 import { CustomPageResolver } from './resolvers/custom-page/custom-page.resolver';
+import { AccountGuard } from 'common';
 
 const routes: Routes = [
   {
