@@ -39,7 +39,9 @@ export class NotificationService {
 
   getNewNotifications() {
     // Query the database to get a count of how many notifications are currently in the queue
-    this.dataService.get<NotificationQueue>('api/Notifications/GetNewNotifications', [{ key: 'currentCount', value: this.notificationCount }])
+    this.dataService.get<NotificationQueue>('api/Notifications/GetNewNotifications', [{ key: 'currentCount', value: this.notificationCount }], {
+      authorization: true
+    })
       .subscribe((notificationQueue: NotificationQueue) => {
 
         // If the number of notifications in the queue are different from the number of notifications we have in our list
@@ -53,14 +55,14 @@ export class NotificationService {
             y.name = y.notificationType == NotificationType.Message ? y.email : this.getNotificationName(y.notificationType);
             this.newNotifications.push(y);
           })
-        } else{
+        } else {
           this.onNotificationCount.next(this.notificationCount);
         }
         this.refreshNotificationsInProgress = false;
       });
   }
 
-  
+
 
 
   refreshNotifications() {
@@ -71,7 +73,9 @@ export class NotificationService {
 
 
   getArchivedNotifications() {
-    this.dataService.get<Array<NotificationItem>>('api/Notifications/GetArchivedNotifications')
+    this.dataService.get<Array<NotificationItem>>('api/Notifications/GetArchivedNotifications', undefined, {
+      authorization: true
+    })
       .subscribe((notifications: Array<NotificationItem>) => {
         notifications.forEach(x => {
           x.name = x.notificationType == NotificationType.Message ? x.email : this.getNotificationName(x.notificationType);

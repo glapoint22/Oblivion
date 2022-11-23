@@ -62,13 +62,14 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   // =================================================================( GET NOTIFICATION )================================================================== \\
 
   getNotification<T>(notificationPath: string, notificationParameters: Array<KeyValue<any, any>>) {
-    this.dataService.get<T>(notificationPath, notificationParameters)
-      .subscribe((notification: T) => {
-        this.userIndex = 0;
-        this.employeeIndex = 0;
-        this.notification = notification;
-        this.onNotificationLoad.next();
-      });
+    this.dataService.get<T>(notificationPath, notificationParameters, {
+      authorization: true
+    }).subscribe((notification: T) => {
+      this.userIndex = 0;
+      this.employeeIndex = 0;
+      this.notification = notification;
+      this.onNotificationLoad.next();
+    });
   }
 
 
@@ -160,7 +161,9 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   // ================================================================( SAVE EMPLOYEE TEXT )================================================================= \\
 
   saveEmployeeText() {
-    this.dataService.post(this.employeeTextPath, this.employeeTextParameters).subscribe();
+    this.dataService.post(this.employeeTextPath, this.employeeTextParameters, {
+      authorization: true
+    }).subscribe();
   }
 
 
