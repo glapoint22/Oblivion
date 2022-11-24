@@ -24,7 +24,18 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
         if (x.employeeNotes.length == 0) x.employeeNotes.push(new NotificationEmployee());
       });
     });
-    this.getNotification<Array<UserAccountNotification>>('api/Notifications/' + (this.isUserName ? 'UserName' : 'UserImage'), [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
+
+    this.getNotification<Array<UserAccountNotification>>('api/Notifications/' + (this.isUserName ? 'GetUserNameNotification' : 'GetUserImageNotification'),
+      [
+        {
+          key: 'notificationGroupId',
+          value: this.notificationItem.notificationGroupId
+        },
+        {
+          key: 'isNew',
+          value: this.notificationItem.isNew
+        }
+      ]);
   }
 
 
@@ -148,21 +159,40 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     this.dataService.put('api/Notifications/Archive', {
       notificationGroupId: this.notificationItem.notificationGroupId,
       notificationId: this.notification[this.userIndex].notificationId
+    }, {
+      authorization: true
     }).subscribe();
 
     // Update the lists
     this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
 
-    // Add a non-compliant strike
-    this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrike', {
-      userId: this.notification[this.userIndex].userId,
-      userName: this.isUserName ? this.notification[this.userIndex].userName : null,
-      userImage: !this.isUserName ? this.notification[this.userIndex].userImage : null
-    }).subscribe((removalSuccessful: boolean) => {
-      if (removalSuccessful) {
-        this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
-      }
-    });
+    if (this.notification[this.userIndex].userName) {
+      // Add a non-compliant strike because of user name
+      this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserName', {
+        userId: this.notification[this.userIndex].userId,
+        userName: this.notification[this.userIndex].userName
+      }, {
+        authorization: true
+      }).subscribe((removalSuccessful: boolean) => {
+        if (removalSuccessful) {
+          this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+        }
+      });
+    }
+
+    // Add a non-compliant strike because of image
+    else {
+      this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserImage', {
+        userId: this.notification[this.userIndex].userId,
+        userImage: this.notification[this.userIndex].userImage
+      }, {
+        authorization: true
+      }).subscribe((removalSuccessful: boolean) => {
+        if (removalSuccessful) {
+          this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+        }
+      });
+    }
   }
 
 
@@ -179,9 +209,11 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
 
 
     // Update database
-    this.dataService.delete('api/Notifications', {
+    this.dataService.delete('api/Notifications/DeleteNotifications', {
       notificationGroupId: this.notificationItem.notificationGroupId,
       notificationIds: notificationIds
+    }, {
+      authorization: true
     }).subscribe();
   }
 

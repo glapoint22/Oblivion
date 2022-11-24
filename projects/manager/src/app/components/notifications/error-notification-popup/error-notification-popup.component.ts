@@ -18,11 +18,18 @@ export class ErrorNotificationPopupComponent extends NotificationPopupComponent 
 
   ngOnInit() {
     super.ngOnInit();
-    this.getNotification<ErrorNotification>('api/Notifications/Error', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
+    this.getNotification<ErrorNotification>('api/Notifications/GetErrorNotification', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
 
     this.onNotificationLoad.subscribe(() => {
       if (this.notification.employeeNotes.length == 0) this.notification.employeeNotes.push(new NotificationEmployee());
-      this.errorDetails = JSON.parse(this.notification.text);
+
+      let text = this.notification.text.replace(/"([^"]+)":/g, ($0: string, $1: string) => {
+        return ('"' + $1.toLowerCase() + '":');
+      });
+
+      this.errorDetails = JSON.parse(text);
+
+
     });
   }
 

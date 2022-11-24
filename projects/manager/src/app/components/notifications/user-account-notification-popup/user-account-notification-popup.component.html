@@ -40,7 +40,7 @@
                     <div class="notification-profile-container">
                         <!-- Date -->
                         <div class="notification-date">
-                            {{notification[userIndex].date | date: 'MMM d, y, h:mm a'}}
+                            {{getDate(notification[userIndex].date) | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->
@@ -99,7 +99,7 @@
                     <div *ngIf="notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].firstName" class="notification-profile-container">
                         <!-- Date -->
                         <div class="notification-date">
-                            {{notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].date | date: 'MMM d, y, h:mm a'}}
+                            {{getDate(notification[userIndex].employeeNotes[notification[userIndex].employeeIndex].date) | date: 'MMM d, y, h:mm a'}}
                         </div>
 
                         <!-- Image -->

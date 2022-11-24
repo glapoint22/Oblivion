@@ -37,6 +37,7 @@ import { QueryComponent } from '../../components/query/query.component';
 import { QueryRowComponent } from '../../components/query-row/query-row.component';
 import { QueryGroupComponent } from '../../components/query-group/query-group.component';
 import { DropdownModule } from 'common';
+import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import { DropdownModule } from 'common';
     ColorSwatchModule,
     CounterModule,
     ImageBoxModule,
-    DropdownModule
+    DropdownModule,
+    MenuBarModule
   ]
 })
 export class PageBuilderModule { }

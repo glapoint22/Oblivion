@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { mergeMap, Observable } from 'rxjs';
 import { AccountService } from '../../services/account/account.service';
-import { DataService } from 'common';
+import { DataService } from '../../services/data/data.service';
 
 @Injectable()
 export class ClientInterceptor implements HttpInterceptor {

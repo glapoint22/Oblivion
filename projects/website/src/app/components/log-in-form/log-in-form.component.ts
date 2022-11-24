@@ -1,9 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
-import { AccountService } from '../../services/account/account.service';
 import { AccountNotActivatedFormComponent } from '../account-not-activated-form/account-not-activated-form.component';
 import { ExternalLoginProvidersComponent } from '../external-login-providers/external-login-providers.component';
 

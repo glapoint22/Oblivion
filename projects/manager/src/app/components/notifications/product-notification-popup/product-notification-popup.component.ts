@@ -107,7 +107,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   getProductNotification(notificationItem?: NotificationItem) {
     // Update the notification item if the dropdown was selected
     if (notificationItem) this.notificationItem = notificationItem!;
-    this.getNotification<ProductNotification>('api/Notifications/Product', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
+    this.getNotification<ProductNotification>('api/Notifications/GetProductNotification', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
   }
 
 

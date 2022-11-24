@@ -38,22 +38,22 @@
                         <div class="notification-info-bar">
                             <!-- Date -->
                             <div class="notification-date">
-                                {{notification[userIndex].date | date: 'MMM d, y, h:mm a'}}
+                                {{getDate(notification[userIndex].date) | date: 'MMM d, y, h:mm a'}}
                             </div>
             
                             <!-- Image -->
-                            <div class="notification-profile-image-container" [ngClass]="{'no-profile-image': notification && notification[userIndex].nonAccountName}">
+                            <div class="notification-profile-image-container" [ngClass]="{'no-profile-image': notification[userIndex].nonAccountName}">
                                 
-                                <div class="notification-profile-popup-container" [ngStyle]="{'top': notification && notification[userIndex].nonAccountName ? '-106px' : '-110px'}">
+                                <div class="notification-profile-popup-container" [ngStyle]="{'top': notification[userIndex].nonAccountName ? '-106px' : '-110px'}">
                                     <ng-template #profilePopupContainerTemplate></ng-template>
                                 </div>
 
                                 <img style="cursor: pointer;"
-                                    [ngStyle]="{'border-radius': notification && notification[userIndex].nonAccountName ? 'none' : '50%'}"
+                                    [ngStyle]="{'border-radius': notification[userIndex].nonAccountName ? 'none' : '50%'}"
                                     (mousedown)="$event.stopPropagation()"
                                     (click)="openProfilePopup(notification[userIndex], profilePopupContainer)"
                                     [src]="notification[userIndex].nonAccountName ? 'assets/message-notification.png' : notification[userIndex].image ? 'images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
-                                    [title]="notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
+                                    [title]="notification[userIndex].nonAccountName ? notification[userIndex].nonAccountName : notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
                             </div>
                         </div>
                     
@@ -78,7 +78,7 @@
                                 
                                 <!-- Date -->
                                 <div class="notification-date">
-                                    {{notification[userIndex].employeeMessage.date | date: 'MMM d, y, h:mm a'}}
+                                    {{getDate(notification[userIndex].employeeMessage.date) | date: 'MMM d, y, h:mm a'}}
                                 </div>
 
                                 <!-- Image -->

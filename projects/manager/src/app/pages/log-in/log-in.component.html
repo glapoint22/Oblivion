@@ -1,0 +1,17 @@
+<form #ngForm="ngForm" class="border" (ngSubmit)="onSubmit(ngForm)">
+    <div style="padding: 20px;">
+        <!-- Email -->
+        <div class="label">Email:</div>
+        <input name="email" ngModel required #email="ngModel"
+            [style.borderColor]="ngForm.submitted && !email.valid ? 'red' : null">
+
+        <!-- Password -->
+        <div class="label">Password:</div>
+        <input type="password" name="password" required ngModel #password="ngModel"
+            [style.borderColor]="ngForm.submitted && !email.valid ? 'red' : null">
+
+
+        <!-- Button -->
+        <button type="submit" class="dark-button" style="margin-top: 10px;">Log In</button>
+    </div>
+</form>

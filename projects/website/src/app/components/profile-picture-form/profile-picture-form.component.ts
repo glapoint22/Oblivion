@@ -1,7 +1,6 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction, SpinnerService } from 'common';
+import { AccountService, DataService, LazyLoad, LazyLoadingService, SpinnerAction, SpinnerService } from 'common';
 import { CircleOverlay } from '../../classes/circle-overlay';
-import { AccountService } from '../../services/account/account.service';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({

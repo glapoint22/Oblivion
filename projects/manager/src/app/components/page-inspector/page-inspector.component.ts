@@ -12,9 +12,4 @@ export class PageInspectorComponent {
   public widgetInspectorView = WidgetInspectorView;
 
   constructor(public widgetService: WidgetService, private dataService: DataService) { }
-
-
-  clickMe() {
-    this.dataService.get('api/Products/SetData').subscribe();
-  }
 }

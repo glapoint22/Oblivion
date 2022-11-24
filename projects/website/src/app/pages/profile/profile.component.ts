@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { LazyLoadingService, SpinnerAction } from 'common';
+import { AccountService, LazyLoadingService, SpinnerAction } from 'common';
 import { CreatePasswordFormComponent } from '../../components/create-password-form/create-password-form.component';
 import { ProfilePictureFormComponent } from '../../components/profile-picture-form/profile-picture-form.component';
-import { AccountService } from '../../services/account/account.service';
 
 @Component({
   selector: 'profile',

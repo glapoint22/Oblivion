@@ -4,6 +4,7 @@ import { ProductBuilderRoutingModule } from './product-builder-routing.module';
 import { ProductBuilderComponent } from './product-builder.component';
 import { NichesSideMenuModule } from '../../components/niches-side-menu/niches-side-menu.module';
 import { ProductFormModule } from '../../components/product/product-form/product-form.module';
+import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { ProductFormModule } from '../../components/product/product-form/product
     CommonModule,
     ProductBuilderRoutingModule,
     NichesSideMenuModule,
-    ProductFormModule
+    ProductFormModule,
+    MenuBarModule
   ]
 })
 export class ProductBuilderModule { }

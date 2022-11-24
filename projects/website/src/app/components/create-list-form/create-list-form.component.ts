@@ -1,9 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
+import { AccountService, DataService, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
 import { List } from '../../classes/list';
 import { Validation } from '../../classes/validation';
-import { AccountService } from '../../services/account/account.service';
 import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
 
 @Component({

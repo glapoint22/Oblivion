@@ -1,9 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataService, LazyLoadingService, SpinnerAction } from 'common';
+import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
-import { AccountService } from '../../services/account/account.service';
 import { EmailVerificationFormComponent } from '../email-verification-form/email-verification-form.component';
 
 @Component({

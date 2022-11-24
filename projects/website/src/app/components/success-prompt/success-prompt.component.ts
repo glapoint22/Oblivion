@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { LazyLoad, LazyLoadingService } from 'common';
-import { AccountService } from '../../services/account/account.service';
+import { AccountService, LazyLoad, LazyLoadingService } from 'common';
 
 @Component({
   selector: 'success-prompt',

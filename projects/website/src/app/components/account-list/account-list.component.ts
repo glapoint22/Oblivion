@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { AccountService } from '../../services/account/account.service';
+import { AccountService } from 'common';
 
 @Component({
   selector: 'account-list',

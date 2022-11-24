@@ -7,10 +7,9 @@ import {
   Router,
   RouterStateSnapshot
 } from '@angular/router';
-import { DataService } from 'common';
+import { AccountService, DataService } from 'common';
 import { catchError, Observable, throwError } from 'rxjs';
 import { DetailProduct } from '../../classes/detail-product';
-import { AccountService } from '../../services/account/account.service';
 
 @Injectable({
   providedIn: 'root'
