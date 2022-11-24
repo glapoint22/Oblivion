@@ -16,7 +16,7 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
 
   ngOnInit() {
     super.ngOnInit();
-    this.getNotification<ReviewNotification>('api/Notifications/Review', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
+    this.getNotification<ReviewNotification>('api/Notifications/GetReviewComplaintNotification', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }]);
 
     this.onNotificationLoad.subscribe(() => {
       if (this.notification.employeeNotes.length == 0) this.notification.employeeNotes.push(new NotificationEmployee());

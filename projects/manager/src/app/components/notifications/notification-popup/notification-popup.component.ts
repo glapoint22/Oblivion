@@ -279,7 +279,9 @@ export class NotificationPopupComponent extends NotificationFormComponent {
       this.dataService.put('api/Notifications/Archive',
         {
           notificationGroupId: this.notificationItem.notificationGroupId
-        }).subscribe();
+        }, {
+        authorization: true
+      }).subscribe();
 
     } else if (restore) {
       this.isNew = true;
@@ -293,11 +295,15 @@ export class NotificationPopupComponent extends NotificationFormComponent {
         {
           notificationGroupId: this.notificationItem.notificationGroupId,
           restore: true
-        }).subscribe();
+        }, {
+        authorization: true
+      }).subscribe();
     }
 
     if (this.secondaryButtonDisabled) {
-      this.dataService.put(this.secondaryButtonDisabledPath, this.secondaryButtonDisabledParameters).subscribe();
+      this.dataService.put(this.secondaryButtonDisabledPath, this.secondaryButtonDisabledParameters, {
+        authorization: true
+      }).subscribe();
     }
 
     // Now close

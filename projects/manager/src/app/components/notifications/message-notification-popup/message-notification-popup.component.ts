@@ -19,7 +19,17 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   ngOnInit() {
     super.ngOnInit();
-    this.getNotification<Array<MessageNotification>>('api/Notifications/Message', [{ key: 'notificationGroupId', value: this.notificationItem.notificationGroupId }, { key: 'isNew', value: this.notificationItem.isNew }]);
+    this.getNotification<Array<MessageNotification>>('api/Notifications/GetMessageNotification',
+      [
+        {
+          key: 'notificationGroupId',
+          value: this.notificationItem.notificationGroupId
+        },
+        {
+          key: 'isNew',
+          value: this.notificationItem.isNew
+        }
+      ]);
     this.onNotificationLoad.subscribe(() => {
       (this.notification as Array<MessageNotification>).forEach(x => {
         if (x.employeeMessage == null) x.employeeMessage = new NotificationEmployee();
@@ -156,7 +166,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
     }
   }
 
-  
+
 
   // ======================================================================( ARCHIVE )====================================================================== \\
 
@@ -212,7 +222,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
     // Update the count for the notification bell
     this.notificationService.notificationCount += (destinationList == this.notificationService.archiveNotifications ? -destinationMessageCount : destinationMessageCount);
     // Update database
-    this.dataService.put('api/Notifications/Archive', dataServiceParameters).subscribe();
+    this.dataService.put('api/Notifications/Archive', dataServiceParameters, {
+      authorization: true
+    }).subscribe();
   }
 
 
