@@ -39,7 +39,7 @@
                     <!-- Password -->
                     <div class="label">Password:</div>
                     <div class="password-input-container">
-                        <input #tabElement type="password" formControlName="password"
+                        <input #tabElement type="password" formControlName="password" (keydown.space)="$event.stopPropagation()"
                             [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}"
                             style="margin-bottom: 8px;">
 
@@ -65,6 +65,7 @@
                         type="text"
                         formControlName="otp"
                         spellcheck="false"
+                        (keydown.space)="$event.stopPropagation()"
                         [ngClass]="{'error-border': _form.submitted && form.controls.otp.errors}">
 
                     <ng-container *ngIf="_form.submitted && form.controls.otp.errors">

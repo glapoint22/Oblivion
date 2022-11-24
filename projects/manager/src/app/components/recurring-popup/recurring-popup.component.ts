@@ -273,6 +273,7 @@ export class RecurringPopupComponent extends LazyLoad {
 
   // ------------------------------------------------------------------- NG On Destroy --------------------------------------------------
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
   }
 }

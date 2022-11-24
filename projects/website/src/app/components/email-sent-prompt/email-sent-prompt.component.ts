@@ -14,4 +14,9 @@ export class EmailSentPromptComponent extends LazyLoad {
     super.ngAfterViewInit();
     this.setFocus(0);
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

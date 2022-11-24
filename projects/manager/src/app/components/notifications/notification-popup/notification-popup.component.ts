@@ -306,6 +306,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   // ==================================================================( NG ON DESTROY )==================================================================== \\
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     // Update isNew property here so that the primary button isn't being seen changing to other button type as popup closes
     if (this.isNew != null) this.notificationItem.isNew = this.isNew;
   }

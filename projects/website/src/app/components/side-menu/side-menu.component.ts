@@ -37,11 +37,24 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
       .subscribe((niches: Array<Niche>) => {
         this.niches = niches;
       });
+
+    window.addEventListener('mousedown', this.mousedown);
+    window.addEventListener('blur', this.windowBlur);
   }
 
 
   ngAfterViewInit(): void {
     this.open();
+  }
+
+
+  mousedown = () => {
+    this.close();
+  }
+
+
+  windowBlur = () => {
+    this.close();
   }
 
 
@@ -206,5 +219,12 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
         this.onSubNicheClick(this.subNiches[this.subIndex - 1]);
       }
     }
+  }
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    window.removeEventListener('mousedown', this.mousedown);
+    window.removeEventListener('blur', this.windowBlur);
   }
 }

@@ -111,4 +111,9 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
   onSubmit() {
     this.emailResent = false;
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

@@ -130,4 +130,9 @@ export class ContactUsFormComponent extends Validation implements OnInit {
         successPrompt.message = 'Thank you for contacting Niche Shack.';
       });
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

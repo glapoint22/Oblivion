@@ -97,4 +97,9 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
         successPrompt.message = 'Your password has been successfully changed.';
       });
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

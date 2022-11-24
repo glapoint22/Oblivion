@@ -7,6 +7,7 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
   styleUrls: ['./spinner.component.scss']
 })
 export class SpinnerComponent implements OnInit {
+  private windowScrollY!: number;
   public showSpinner: boolean = false;
   public showComponent!: boolean;
 
@@ -22,12 +23,23 @@ export class SpinnerComponent implements OnInit {
             if (this.spinnerService.show)
               this.showSpinner = true;
           });
+
+          this.windowScrollY = window.scrollY;
+          window.addEventListener('scroll', this.onWindowScroll);
+
         } else {
           this.showSpinner = false;
           window.setTimeout(() => {
             this.showComponent = false;
+            window.removeEventListener('scroll', this.onWindowScroll);
           }, 500);
         }
       });
+
+
+  }
+
+  onWindowScroll = () => {
+    window.scrollTo(0, this.windowScrollY);
   }
 }

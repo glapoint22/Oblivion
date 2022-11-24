@@ -51,6 +51,7 @@ export class KeywordsPopupComponent extends LazyLoad {
 
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
   }
 }

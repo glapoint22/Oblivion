@@ -35,7 +35,6 @@ export class LazyLoad implements AfterViewInit {
             window.setTimeout(() => {
                 this.lazyLoadingService.backdropFadeIn = true;
             }, 50)
-
         }
     }
 
@@ -91,7 +90,6 @@ export class LazyLoad implements AfterViewInit {
 
     fade() {
         this.show = false;
-        this.removeEventListeners();
         window.clearTimeout(this.setTimeOut);
     }
 
@@ -108,14 +106,15 @@ export class LazyLoad implements AfterViewInit {
 
 
     addEventListeners() {
-        window.addEventListener("keydown", this.keyDown);
         window.addEventListener("keyup", this.keyUp);
+        window.addEventListener("keydown", this.keyDown);
     }
 
     removeEventListeners() {
         this.shiftKeyDown = false;
-        window.removeEventListener("keydown", this.keyDown);
         window.removeEventListener("keyup", this.keyUp);
+        window.removeEventListener("keydown", this.keyDown);
+        window.removeEventListener('scroll', this.onWindowScroll);
     }
 
 
@@ -260,6 +259,6 @@ export class LazyLoad implements AfterViewInit {
 
 
     ngOnDestroy() {
-        window.removeEventListener('scroll', this.onWindowScroll);
-      }
+        this.removeEventListeners();
+    }
 }

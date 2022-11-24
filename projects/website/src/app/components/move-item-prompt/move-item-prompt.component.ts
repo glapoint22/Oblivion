@@ -68,4 +68,9 @@ export class MoveItemPromptComponent extends LazyLoad {
         duplicateItemPrompt.product = this.product;
       });
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

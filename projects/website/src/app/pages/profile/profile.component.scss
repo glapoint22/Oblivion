@@ -1,5 +1,7 @@
 .page-content-container {
     position: relative;
+    top: 50px;
+    margin-bottom: 70px;
 }
 
 
@@ -18,6 +20,7 @@
 .property {
     width: 100%;
     max-width: 600px;
+
     div:first-child {
         color: #ffba0e;
         margin-bottom: 5px;
@@ -49,11 +52,11 @@
     src: url('../../../assets/fonts/pencil-icon.ttf');
 }
 
-.pencil-icon
-{
+.pencil-icon {
     font-family: 'pencil-icon';
     color: #dadada;
     font-size: 18px;
+
     &::before {
         content: "\e907";
     }

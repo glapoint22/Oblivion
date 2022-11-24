@@ -132,4 +132,9 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
       this.onLogInLinkClick();
     }
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

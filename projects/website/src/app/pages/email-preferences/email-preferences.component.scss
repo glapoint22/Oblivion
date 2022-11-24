@@ -1,5 +1,12 @@
 @import '../../../scss/variables.scss';
 
+
+.page-content-container {
+    position: relative;
+    top: 50px;
+    margin-bottom: 70px;
+}
+
 .preferences-container {
     width: 100%;
     max-width: 780px;

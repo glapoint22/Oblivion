@@ -44,4 +44,9 @@ export class DeleteAccountPromptComponent extends LazyLoad {
       }
     }, SpinnerAction.End);
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

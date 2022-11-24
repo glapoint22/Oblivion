@@ -41,13 +41,15 @@ export class ShippingPopupComponent extends RadioButtonLazyLoad {
   }
 
 
-  ngOnDestroy() {
-    window.removeEventListener('mousedown', this.mousedown);
-  }
-
-
   onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
     this.shipping = this.tabElements.indexOf(radioButton) + 1;
     this.submitButtonDisabled = this.shipping == this.initialShippingType;
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    window.removeEventListener('mousedown', this.mousedown);
   }
 }

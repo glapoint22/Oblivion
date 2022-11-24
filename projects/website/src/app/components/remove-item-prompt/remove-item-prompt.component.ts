@@ -35,4 +35,9 @@ export class RemoveItemPromptComponent extends LazyLoad {
       this.close();
     });
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

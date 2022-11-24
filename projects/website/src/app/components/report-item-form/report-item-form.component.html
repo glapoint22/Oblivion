@@ -48,7 +48,7 @@
 
                 <!-- Comments -->
                 <div class="label" style="margin-top: 22px;">Comments (optional):</div>
-                <textarea #tabElement (input)="comments = tabElement.value"></textarea>
+                <textarea #tabElement (input)="comments = tabElement.value" (keydown.space)="$event.stopPropagation()"></textarea>
 
                 <!-- Button Container -->
                 <div class="button-container">

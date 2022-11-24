@@ -65,7 +65,7 @@
 
                 <!-- Name -->
                 <div class="label"> Review Title:</div>
-                <input #tabElement type="text" formControlName="title"
+                <input #tabElement type="text" formControlName="title" (keydown.space)="$event.stopPropagation()"
                     [ngClass]="{'error-border': _form.submitted && form.controls.title.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.title.errors">
@@ -85,7 +85,7 @@
 
                 <!-- Comments -->
                 <div class="label">Write your review:</div>
-                <textarea #tabElement formControlName="review"
+                <textarea #tabElement formControlName="review" (keydown.space)="$event.stopPropagation()"
                     [ngClass]="{'error-border': _form.submitted && form.controls.review.errors}"></textarea>
 
                 <ng-container *ngIf="_form.submitted && form.controls.review.errors">

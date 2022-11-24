@@ -414,4 +414,9 @@ export class ProfilePictureFormComponent extends LazyLoad {
       if (this.tabElements[2].nativeElement == document.activeElement) this.onPlusButtonClick();
     }
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

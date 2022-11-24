@@ -35,9 +35,11 @@
 
     &:focus {
         outline: none;
-        border-color: white;
-        background: lighten(#181818, 4);
+        border-color: lighten($gold, 20);
+        background: lighten(#181818, 2);
         color: lighten(#dadada, 12);
+        transform: scale(1.05);
+
         & > .img-container {
             filter: brightness(130%);
         }

@@ -155,10 +155,29 @@ export class HeaderComponent {
           }
         }
       });
-
-
-
   }
+
+
+  
+
+  onHamburgerButtonClick() {
+    if (this.sideMenuContainer.length == 0) {
+      this.lazyLoadingService.load(async () => {
+        const { SideMenuComponent } = await import('../../side-menu/side-menu.component');
+        const { SideMenuModule } = await import('../../side-menu/side-menu.module');
+
+        return {
+          component: SideMenuComponent,
+          module: SideMenuModule
+        }
+      }, SpinnerAction.StartEnd, this.sideMenuContainer)
+        .then((sideMenu: SideMenuComponent) => {
+          this.sideMenu = sideMenu;
+        });
+    }
+  }
+
+
 
 
   async onSignUpClick(): Promise<void> {
@@ -265,22 +284,7 @@ export class HeaderComponent {
 
 
 
-  async onHamburgerButtonClick() {
-    if (this.sideMenuContainer.length == 0) {
-      this.lazyLoadingService.load(async () => {
-        const { SideMenuComponent } = await import('../../side-menu/side-menu.component');
-        const { SideMenuModule } = await import('../../side-menu/side-menu.module');
-
-        return {
-          component: SideMenuComponent,
-          module: SideMenuModule
-        }
-      }, SpinnerAction.StartEnd, this.sideMenuContainer)
-        .then((sideMenu: SideMenuComponent) => {
-          this.sideMenu = sideMenu;
-        });
-    }
-  }
+  
 
 
 

@@ -14,6 +14,10 @@
 
     &:hover {
         background: rgba(255, 255, 255, 0.08);
+
+        img {
+            filter: brightness(1.1);
+        }
     }
 }
 
@@ -22,6 +26,7 @@
     margin-bottom: 10px;
     width: 100%;
     max-width: 200px;
+
     img {
         width: 100%;
         height: 100%;

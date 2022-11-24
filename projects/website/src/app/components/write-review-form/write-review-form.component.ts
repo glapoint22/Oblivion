@@ -126,4 +126,9 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
     return message
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

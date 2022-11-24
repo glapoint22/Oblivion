@@ -280,6 +280,7 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
   }
 }

@@ -1,42 +1,38 @@
 <div class="header-container">
-
-    <!-- Left Container -->
     <div class="left-container">
 
-        <!-- Side Menu -->
-        <div tabindex="1" (keydown.enter)="onHamburgerButtonClick()" (blur)="sideMenu ? sideMenu.close() : null"
-            class="hamburger-button-container">
-            <div class="hamburger-button" (click)="onHamburgerButtonClick()"></div>
-            <ng-template #sideMenuContainer></ng-template>
-        </div>
+        <!-- Hamburger Button -->
+        <i tabindex="0"
+           class="hamburger-button"
+           (click)="onHamburgerButtonClick()"
+           (keydown.enter)="onHamburgerButtonClick()">
+        </i>
+        <ng-template #sideMenuContainer></ng-template>
 
-        <a routerLink="/home" title="Niche Shack Homepage" tabindex="2">
-            <img src="assets/logo.png">
+
+        <!-- Niche Shack Logo -->
+        <a routerLink="/home" title="Niche Shack Homepage" tabindex="0">
+            <img src="assets/niche-shack-logo-small.png">
+            <img src="assets/niche-shack-logo-scaled.png">
         </a>
     </div>
 
 
-
-    <!-- Center Container -->
     <div class="center-container">
         
+        <!-- Niches Button -->
+        <div class="niches-button-container"
+             (keydown.enter)="onNichesButtonClick()">
 
-        <div tabindex="3" (keydown.enter)="onNichesButtonClick()"
-             class="niches-button-container">
-
-            <div class="niches-button" (click)="onNichesButtonClick()" [title]="selectedNiche ? selectedNiche.name : 'All Niches'" (mousedown)="$event.stopPropagation()"
-                [style.borderBottomLeftRadius.px]="suggestions && suggestions.length > 0 ? 0 : 18">
-
-                <div class="niches-button-text">
-
-                    {{selectedNiche ? selectedNiche.name : 'All Niches'}}
-
-                </div>
-
-                <div #arrow class="arrow-down"></div>
+            <div tabindex="0"
+                 class="niches-button"
+                 (click)="onNichesButtonClick()"
+                 (mousedown)="$event.stopPropagation()"
+                 [title]="selectedNiche ? selectedNiche.name : 'All Niches'"
+                 [style.borderBottomLeftRadius.px]="suggestions && suggestions.length > 0 ? 0 : 18">
+                 <div class="niches-button-text">{{selectedNiche ? selectedNiche.name : 'All Niches'}}</div>
+                 <div #arrow class="arrow-down"></div>
             </div>
-
-            
 
             <div class="niches-menu-popup-container">
                 <ng-template #nicheMenuPopupContainer></ng-template>
@@ -46,48 +42,52 @@
 
         <!-- Search Input -->
         <div class="input-container">
-
             <input #searchInput
-                   tabindex="4"
+                   tabindex="0"
                    (blur)="hideSuggestionList()"
                    (keydown.escape)="suggestions = []"
                    (keydown.enter)="search(searchInput.value)"
                    (keydown.arrowUp)="onArrowPress(-1, searchInput); $event.preventDefault()"
                    (keydown.arrowDown)="onArrowPress(1, searchInput); $event.preventDefault()"
                    [placeholder]="'Search in ' + (selectedNiche ? selectedNiche.name: 'All Niches')">
-            </div>
+        </div>
 
-        <div *ngIf="suggestions && suggestions.length > 0" class="suggestion-list"
-            (mousedown)="suggestionListMousedown = true">
 
+        <!-- Suggestion List -->
+        <div *ngIf="suggestions && suggestions.length > 0"
+             class="suggestion-list"
+             (mousedown)="suggestionListMousedown = true">
 
             <!-- Suggestions -->
             <ng-container *ngFor="let suggestion of suggestions; let i = index">
 
                 <!-- Suggestion -->
-                <div *ngIf="!suggestion.niche" class="suggestion" (click)="search(suggestion.name)"
-                    (mouseover)="suggestionIndex = i" [ngClass]="{'highlight': i == suggestionIndex}">
-                    <div class="suggestion-text" [innerHTML]="suggestion.html"></div>
+                <div *ngIf="!suggestion.niche"
+                     class="suggestion"
+                     (click)="search(suggestion.name)"
+                     (mouseover)="suggestionIndex = i"
+                     [ngClass]="{'highlight': i == suggestionIndex}">
+                    <div class="suggestion-text"
+                         [innerHTML]="suggestion.html">
+                    </div>
                 </div>
 
-
                 <!-- Suggested Niche -->
-                <div *ngIf="suggestion.niche" class="suggestion niche-suggestion"
-                    (click)="search(suggestion.name, suggestion.niche)" (mouseover)="suggestionIndex = i"
-                    [ngClass]="{'highlight': i == suggestionIndex}">
-                    <div class="suggestion-text" style="padding-left: 30px;">
-                        in {{suggestion.niche.name}}
-                    </div>
-
+                <div *ngIf="suggestion.niche"
+                     (mouseover)="suggestionIndex = i"
+                     class="suggestion niche-suggestion"
+                     [ngClass]="{'highlight': i == suggestionIndex}"
+                     (click)="search(suggestion.name, suggestion.niche)">
+                    <div class="suggestion-text" style="padding-left: 30px;">in {{suggestion.niche.name}}</div>
                 </div>
             </ng-container>
         </div>
 
-
-
         <!-- Search Button -->
-        <button class="search-button" (click)="search(searchInput.value)"
-            [style.borderBottomRightRadius.px]="suggestions && suggestions.length > 0 ? 0 : 18" tabindex="5">
+        <button tabindex="0"
+                class="search-button"
+                (click)="search(searchInput.value)"
+                [style.borderBottomRightRadius.px]="suggestions && suggestions.length > 0 ? 0 : 18" >
             <div class="search-icon"></div>
         </button>
     </div>
@@ -97,26 +97,22 @@
     <!-- Right Container -->
     <div class="right-container">
         <ng-container *ngIf="!accountService.user || !accountService.user.firstName">
-            <a tabindex="6" id="about1" class="links" routerLink="/about">About</a>
-            <a tabindex="7" id="orderSupport1" class="links" href="https://www.clkbank.com/" target="_blank">Order
+            <a tabindex="0" id="about1" class="links" routerLink="/about">About</a>
+            <a tabindex="0" id="orderSupport1" class="links" href="https://www.clkbank.com/" target="_blank">Order
                 Support</a>
-            <button tabindex="8" class="login-button" (click)="onLoginClick()">Log In</button>
-            <button tabindex="9" class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
+            <button tabindex="0" class="login-button" (click)="onLoginClick()">Log In</button>
+            <button tabindex="0" class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
         </ng-container>
 
         <ng-container *ngIf="accountService.user && accountService.user.firstName">
-            <a tabindex="6" id="about2" class="links" routerLink="/about">About</a>
-            <a tabindex="7" id="orderSupport2" class="links" href="https://www.clkbank.com/" target="_blank">Order
+            <a tabindex="0" id="about2" class="links" routerLink="/about">About</a>
+            <a tabindex="0" id="orderSupport2" class="links" href="https://www.clkbank.com/" target="_blank">Order
                 Support</a>
-            <a tabindex="8" id="orders" class="links" routerLink="/account/orders">Orders</a>
-            <a tabindex="9" id="lists" class="links" routerLink="/account/lists">Lists</a>
+            <a tabindex="0" id="orders" class="links" routerLink="/account/orders">Orders</a>
+            <a tabindex="0" id="lists" class="links" routerLink="/account/lists">Lists</a>
 
 
-                <!--(blur)="accountMenuPopupComponent ? accountMenuPopupComponent.close() : null"-->
-
-            <!-- Account profile pic -->
-
-            <div tabindex="10"
+            <div tabindex="0"
                  class="profile-pic-container"
                  (click)="onProfilePicClick()"
                  (mousedown)="$event.stopPropagation()"

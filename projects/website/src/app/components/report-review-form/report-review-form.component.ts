@@ -57,4 +57,9 @@ export class ReportReviewFormComponent extends LazyLoad {
         successPrompt.message = 'Thank you for your feedback.';
       });
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

@@ -16,6 +16,7 @@
     z-index: 100;
 }
 
+
 .left-container {
     width: 369px;
     height: 45px;
@@ -23,48 +24,6 @@
     margin-right: 30px;
 }
 
-a {
-    &:focus {
-        outline: none;
-
-        img {
-            filter: brightness(120%);
-        }
-    }
-}
-
-
-
-.center-container {
-    width: 800px;
-    height: 36px;
-    display: flex;
-    position: relative;
-}
-
-
-.right-container {
-    width: 369px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-left: 20px;
-    flex-shrink: 0;
-}
-
-
-.hamburger-button-container {
-    position: relative;
-    pointer-events: none;
-    outline: none;
-
-    &:focus {
-        .hamburger-button {
-            color: lighten($gold, 40);
-        }
-    }
-}
 
 .hamburger-button {
     margin-right: 16px;
@@ -75,13 +34,91 @@ a {
 }
 
 
+a {
+    outline: none;
+    img:nth-child(1) {
+        opacity: 1;
+    }
+
+    img:nth-child(2) {
+        position: relative;
+        opacity: 0;
+        top: -50px;
+        left: -2px;
+        filter: brightness(1.2);
+    }
+
+    &:focus-visible {
+        img:nth-child(1) {
+            opacity: 0;;
+        }
+
+        img:nth-child(2) {
+            opacity: 1;
+        }
+
+        img {
+            content: url('../../../../assets/niche-shack-logo-scaled.png');
+        }
+    }
+}
+
+
+.center-container {
+    width: 800px;
+    height: 36px;
+    display: flex;
+    position: relative;
+}
+
+
+.niches-button-container {
+    width: 100%;
+    max-width: fit-content;
+}
+
+.niches-button {
+    @include gold-button(290px, 36px, 0);
+    border-top-left-radius: 18px;
+    font-size: 13px;
+    color: black;
+    font-weight: bold;
+    padding: 1px 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    position: relative;
+    
+    &:focus-visible {
+        outline: none;
+        transform: scale(1.05);
+        background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
+    }
+}
+
+
+.niches-button-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 
 .arrow-down {
     @include arrow-down(10px, 6px, black);
     margin-top: 1px;
-
     margin-left: 7px;
+}
+
+
+.niches-menu-popup-container {
+    position: absolute;
+    width: 100%;
+    max-width: 300px;
+    top: 25px;
+    left: 0;
+    pointer-events: none;
 }
 
 
@@ -91,6 +128,7 @@ a {
     display: flex;
     align-items: center;
     padding-bottom: 2px;
+    outline: none;
 }
 
 
@@ -105,12 +143,60 @@ input {
 }
 
 
-
 ::selection {
     color: #ffffff;
     background: #a0a0a0;
 }
 
+
+.suggestion-list {
+    z-index: 200;
+    position: absolute;
+    background: white;
+    left: 0;
+    right: 0;
+    top: 36px;
+    border-top: 1px solid #d8d8d8;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+
+.suggestion {
+    height: 37px;
+    cursor: pointer;
+
+    &:not(:last-child) .suggestion-text {
+        border-bottom: 1px solid #dadada;
+    }
+}
+
+
+.suggestion-text {
+    margin: 0 10px;
+    user-select: none;
+    height: 37px;
+    line-height: 37px;
+    padding-left: 10px;
+    box-sizing: border-box;
+}
+
+
+.niche-suggestion {
+    color: #8a0077;
+    font-size: 13px;
+    font-style: italic;
+}
+
+
+.highlight {
+    background: #dddddd;
+
+    &:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+}
 
 
 .search-button {
@@ -118,16 +204,24 @@ input {
     border-top-right-radius: 18px;
     border-bottom-right-radius: 18px;
 
-    &:focus {
+    &:focus-visible {
         outline: none;
+        transform: scale(1.08);
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
     }
 }
 
-.login-button {
-    @include gold-button(88px, 28px, 14px);
-    font-weight: bold;
+
+.right-container {
+    width: 369px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 20px;
+    flex-shrink: 0;
 }
+
 
 .links {
     color: #dadada;
@@ -145,23 +239,37 @@ input {
     }
 }
 
+
+.login-button {
+    @include gold-button(88px, 28px, 14px);
+
+    &:focus-visible {
+        outline: none;
+        transform: scale(1.08);
+        background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
+    }
+}
+
+
 .sign-up-button {
     width: 88px;
     height: 28px;
     border-radius: 14px;
-    border: 1px solid #dadada;
+    border: 2px solid #bdbdbd;
     background: none;
-    color: #dadada;
+    color: #dddddd;
+    outline: none;
     cursor: pointer;
 
     &:hover {
         color: white;
-        border-color: white;
+        border-color: lighten(#bdbdbd, 5);
     }
 
     &:focus-visible {
-        outline: 1px solid #dadada;
-        outline-offset: 2px;
+        transform: scale(1.08);
+        border-color: lighten(#bdbdbd, 10);
+        color: lighten(#dddddd, 10);
     }
 }
 
@@ -170,20 +278,11 @@ input {
     outline: none;
 
     &:focus-visible {
-        transform: scale(1.07);
+        transform: scale(1.1);
 
         .profile-pic {
             filter: brightness(1.25);
         }
-    }
-}
-
-
-.remain-in-focus {
-    transform: scale(1.07);
-
-    .profile-pic {
-        filter: brightness(1.25);
     }
 }
 
@@ -204,93 +303,12 @@ input {
 }
 
 
-.niches-button-container {
-    outline: none;
-    width: 100%;
-    max-width: fit-content;
+.remain-in-focus {
+    transform: scale(1.1);
 
-    &:focus-visible {
-        .niches-button {
-            outline: none;
-            background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
-        }
+    .profile-pic {
+        filter: brightness(1.25);
     }
-}
-
-.niches-button {
-    @include gold-button(290px, 36px, 0);
-    border-top-left-radius: 18px;
-    font-size: 13px;
-    color: black;
-    font-weight: bold;
-    padding: 1px 15px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    position: relative;
-}
-
-
-.niches-button-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.niches-menu-popup-container {
-    position: absolute;
-    width: 100%;
-    max-width: 300px;
-    top: 25px;
-    left: 0;
-    pointer-events: none;
-}
-
-
-.suggestion-list {
-    z-index: 200;
-    position: absolute;
-    background: white;
-    left: 0;
-    right: 0;
-    top: 36px;
-    border-top: 1px solid #d8d8d8;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-
-.suggestion {
-    height: 37px;
-    cursor: pointer;
-
-    &:not(:last-child) .suggestion-text {
-        border-bottom: 1px solid #dadada;
-    }
-}
-
-.highlight {
-    background: #dddddd;
-
-    &:last-child {
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 4px;
-    }
-}
-
-.suggestion-text {
-    margin: 0 10px;
-    user-select: none;
-    height: 37px;
-    line-height: 37px;
-    padding-left: 10px;
-    box-sizing: border-box;
-}
-
-.niche-suggestion {
-    color: #8a0077;
-    font-size: 13px;
-    font-style: italic;
 }
 
 

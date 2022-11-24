@@ -26,7 +26,7 @@
 
                 <!-- First Name -->
                 <div class="label"> First Name:</div>
-                <input #tabElement type="text" formControlName="firstName"
+                <input #tabElement type="text" formControlName="firstName" (keydown.space)="$event.stopPropagation()"
                     [ngClass]="{'error-border': _form.submitted && form.controls.firstName.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.firstName.errors">
@@ -39,7 +39,7 @@
 
                 <!-- Last Name -->
                 <div class="label">Last Name:</div>
-                <input #tabElement type="text" formControlName="lastName"
+                <input #tabElement type="text" formControlName="lastName" (keydown.space)="$event.stopPropagation()"
                     [ngClass]="{'error-border': _form.submitted && form.controls.lastName.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.lastName.errors">
@@ -54,7 +54,7 @@
 
                 <!-- Email -->
                 <div class="label">Email:</div>
-                <input #tabElement type="text" formControlName="email"
+                <input #tabElement type="text" formControlName="email" (keydown.space)="$event.stopPropagation()"
                     [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.email.errors">
@@ -68,7 +68,7 @@
                 <!-- Password -->
                 <div class="label">Password:</div>
                 <div class="password-input-container">
-                    <input #tabElement type="password" formControlName="password"
+                    <input #tabElement type="password" formControlName="password" (keydown.space)="$event.stopPropagation()"
                         [ngClass]="{'error-border': _form.submitted && form.controls.password.errors}">
 
 

@@ -135,4 +135,9 @@ export class MediaPlayerComponent extends LazyLoad {
         break;
     }
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

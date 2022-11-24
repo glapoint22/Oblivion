@@ -96,6 +96,7 @@ export class AccountMenuPopupComponent extends LazyLoad implements OnInit {
 
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
     window.removeEventListener('blur', this.windowBlur);
   }

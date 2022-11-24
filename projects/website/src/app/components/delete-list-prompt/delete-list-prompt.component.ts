@@ -34,4 +34,9 @@ export class DeleteListPromptComponent extends LazyLoad {
         this.close();
       });
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

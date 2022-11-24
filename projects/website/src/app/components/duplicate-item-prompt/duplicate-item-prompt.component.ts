@@ -36,6 +36,11 @@ export class DuplicateItemPromptComponent extends LazyLoad {
   }
 
 
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
+
+
   close() {
     if (!this.fromAddToListForm) {
       super.close();

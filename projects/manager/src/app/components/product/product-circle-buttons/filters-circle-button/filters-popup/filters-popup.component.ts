@@ -46,6 +46,7 @@ export class FiltersPopupComponent extends LazyLoad {
 
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
   }
  }

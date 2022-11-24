@@ -29,7 +29,7 @@
 
                 <!-- Email -->
                 <div class="label">Additional Comments (optional):</div>
-                <textarea #tabElement (input)="comments = tabElement.value"></textarea>
+                <textarea #tabElement (input)="comments = tabElement.value" (keydown.space)="$event.stopPropagation()"></textarea>
 
 
                 <!-- Button Container -->

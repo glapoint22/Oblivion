@@ -67,13 +67,22 @@
     font-family: 'hamburger-button';
     color: $gold;
     font-size: 22px;
+    outline: none;
     cursor: pointer;
+
     &::before {
         content: "\e29";
     }
 
     &:hover {
-        color: lighten($gold, 20);
+        color: lighten($gold, 25);
+    }
+
+    
+
+    &:focus-visible {
+        transform: scale(1.13);
+        color: lighten($gold, 25);
     }
 }
 

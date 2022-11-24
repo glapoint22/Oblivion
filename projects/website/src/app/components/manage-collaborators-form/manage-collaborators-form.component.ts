@@ -191,6 +191,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
     if (this.tabElements) {
       let checkboxIndex = -2;
 

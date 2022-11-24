@@ -5,7 +5,7 @@
 }
 
 .lines-container {
-    margin-bottom: 19px;
+    margin-bottom: 1px;
 }
 
 .forgot-password {
@@ -18,10 +18,13 @@
 }
 
 .log-in-first {
+    display: flex;
     color: $error-color;
     margin-bottom: 20px;
-    border: 1px solid $error-color;
+    border: 1px solid #8b201e;
     padding: 5px;
+    padding-left: 10px;
+    border-radius: 7px;
 }
 
 @media (max-width: 300px) {

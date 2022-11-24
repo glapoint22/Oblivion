@@ -1,4 +1,4 @@
-<div class="translate-start side-menu-container" [ngClass]="{'translate-end': show}" (transitionend)="onHide()">
+<div class="translate-start side-menu-container" [ngClass]="{'translate-end': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()">
 
     <div class="side-menu-bar">
         <div class="side-menu-x" (click)="close()">X</div>

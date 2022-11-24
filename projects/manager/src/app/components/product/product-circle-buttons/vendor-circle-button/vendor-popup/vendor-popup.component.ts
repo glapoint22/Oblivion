@@ -82,6 +82,7 @@ export class VendorPopupComponent extends LazyLoad {
 
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
   }
 }

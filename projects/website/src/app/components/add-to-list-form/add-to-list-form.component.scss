@@ -8,8 +8,8 @@
 .product-name {
     font-size: 13px;
     font-weight: bold;
-    color: #c0c0c0;
-    margin-bottom: 12px;
+    color: #dadada;
+    margin-bottom: 4px;
 }
 
 .media-backdrop {
@@ -20,8 +20,7 @@
 .img-container {
     width: 150px;
     height: 150px;
-    margin: auto;
-    margin-bottom: 22px;
+    margin: 22px auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,8 +78,8 @@ button {
 }
 
 .one-list {
-    font-weight: bold;
-    color: #dadada;
+    // font-weight: bold;
+    color: #9a9a9a;
     margin: auto;
     width: fit-content;
     margin-bottom: 6px;
@@ -89,6 +88,7 @@ button {
 .prompt-value {
     margin: auto;
     width: fit-content;
+    color: #dadada;
     // margin-bottom: 23px;
 }
 

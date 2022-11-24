@@ -37,7 +37,7 @@
                 <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
                     <!-- One-time Password -->
                     <div class="label">One-time Password:</div>
-                    <input #tabElement #otpInput type="text" formControlName="otp" spellcheck="false"
+                    <input #tabElement #otpInput type="text" formControlName="otp" spellcheck="false" (keydown.space)="$event.stopPropagation()"
                         [ngClass]="{'error-border': _form.submitted && form.controls.otp.errors}">
 
                     <ng-container *ngIf="_form.submitted && form.controls.otp.errors">

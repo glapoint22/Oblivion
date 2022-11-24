@@ -92,4 +92,9 @@ export class SignUpFormComponent extends LazyLoad implements OnInit {
       this.close();
     }
   }
+
+
+  onSpace(e: KeyboardEvent): void {
+    e.preventDefault();
+  }
 }

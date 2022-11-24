@@ -62,6 +62,7 @@ export class PricePopupComponent extends LazyLoad {
 
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
   }
 }

@@ -2,21 +2,21 @@
 
 .media-backdrop {
     position: relative;
-    background: linear-gradient(to bottom, rgb(255, 255, 255, 0.12), rgb(128, 128, 128, 0.01), rgb(0, 0, 0, 0.45));
+    // background: linear-gradient(to bottom, rgb(255, 255, 255, 0.12), rgb(128, 128, 128, 0.01), rgb(0, 0, 0, 0.45));
     
     width: 500px;
     height: 500px;
     flex-shrink: 0;
 
-    &::after {
-        content: "";
-        position: absolute;
-        top: 1px;
-        right: 1px;
-        bottom: 1px;
-        left: 1px;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.025));
-    }
+    // &::after {
+    //     content: "";
+    //     position: absolute;
+    //     top: 1px;
+    //     right: 1px;
+    //     bottom: 1px;
+    //     left: 1px;
+    //     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.025));
+    // }
 
 
     display: flex;
