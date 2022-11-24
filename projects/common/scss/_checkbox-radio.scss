@@ -62,8 +62,20 @@ $border: #505050;
 
 
     &:hover input ~ .checkmark {
-        background-color: lighten($background, 6);
-        border-color: lighten($border, 6);
+        background-color: lighten($background, 20);
+        border-color: lighten($border, 20);
+
+        &:after {
+            left: 4px;
+            top: -3px;
+            width: 5px;
+            height: 10px;
+            border: solid lighten(#ffba00, 20);
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
     }
 
     &:hover div {

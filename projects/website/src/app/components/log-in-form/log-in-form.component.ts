@@ -128,7 +128,6 @@ export class LogInFormComponent extends Validation implements OnInit {
         module: ForgotPasswordFormModule
       }
     }, SpinnerAction.StartEnd);
-
   }
 
 
@@ -176,6 +175,14 @@ export class LogInFormComponent extends Validation implements OnInit {
 
       if (this.tabElements[7].nativeElement == document.activeElement) this.onForgotPasswordLinkClick()
       if (this.tabElements[9].nativeElement == document.activeElement) this.onSignUpLinkClick();
+    }
+  }
+
+
+  close(): void {
+    super.close();
+    if(this.accountService.onRedirect.observed) {
+      this.accountService.redirectListener.unsubscribe();
     }
   }
 }

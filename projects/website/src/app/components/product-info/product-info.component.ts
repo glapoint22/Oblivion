@@ -126,14 +126,14 @@ export class ProductInfoComponent implements OnChanges {
       }
     }, SpinnerAction.StartEnd)
       .then(() => {
-        const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
+        this.accountService.redirectListener = this.accountService.onRedirect.subscribe(() => {
           if (isAddToList) {
             this.onAddToListClick();
           } else {
             this.onReportItemClick();
           }
 
-          subscription.unsubscribe();
+          this.accountService.redirectListener.unsubscribe();
         });
       });
   }
