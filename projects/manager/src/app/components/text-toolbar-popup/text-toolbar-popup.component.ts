@@ -124,7 +124,7 @@ export class TextToolbarPopupComponent {
         ]
 
 
-        dropdownList.callback = (item: Item) => {
+        dropdownList.onItemSelect = (item: Item) => {
           switch (item.id) {
             case 0:
               this.textBox.lowerCase.setStyle();

@@ -43,7 +43,10 @@ export class SearchComponent {
 
             return of(null);
           }
-          return this.dataService.get<Array<ListItem>>('api/' + this.apiUrl, [{ key: 'searchTerm', value: searchTerm }])
+          return this.dataService.get<Array<ListItem>>('api/' + this.apiUrl,
+            [{ key: 'searchTerm', value: searchTerm }], {
+            authorization: true
+          })
         })
       ).subscribe((results: Array<ListItem> | null) => {
         if (results) {
@@ -82,7 +85,7 @@ export class SearchComponent {
         this.dropdownList.width = rect.width;
 
         // Callback
-        this.dropdownList.callback = (item: Item) => {
+        this.dropdownList.onItemSubmit = (item: Item) => {
           this.searchInput.nativeElement.value = item.name!;
           this.dropdownList = null!;
           this.searchInput.nativeElement.focus();
@@ -96,7 +99,7 @@ export class SearchComponent {
 
         const dropdownCloseListener = this.dropdownList.onClose.subscribe(() => {
           dropdownCloseListener.unsubscribe();
-            this.dropdownList = null!;
+          this.dropdownList = null!;
         });
       });
   }

@@ -580,7 +580,7 @@ export class MediaBrowserComponent extends LazyLoad {
           })
         });
 
-        dropdownList.callback = (item: Item) => {
+        dropdownList.onItemSelect = (item: Item) => {
           const imageSize = imageSizes.find(x => x.imageSizeType == item.id)!;
 
           this.setSelectedImageSize(imageSize);

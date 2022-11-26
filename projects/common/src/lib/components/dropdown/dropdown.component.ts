@@ -137,7 +137,7 @@ export class DropdownComponent {
           dropdownList.baseTop = rect.top + window.scrollY;
           dropdownList.dropdownType = this.dropdownType;
 
-          dropdownList.callback = (item: KeyValue<any, any>) => {
+          dropdownList.onItemSelect = (item: KeyValue<any, any>) => {
             this.selectedListItem = item;
             this.onChange.emit(item);
           }

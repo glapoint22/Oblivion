@@ -256,7 +256,7 @@ export class QueryRowComponent implements OnChanges {
           element.firstElementChild!.innerHTML = text;
         }
 
-        dropdownList.callback = callback;
+        dropdownList.onItemSelect = callback;
       });
   }
 

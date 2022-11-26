@@ -1,5 +1,6 @@
 <!-- List -->
 <div #listElement
+     id="dropdownList"
      class="list hide"
      [style.top.px]="top"
      (scroll)="onScroll()"
@@ -23,7 +24,7 @@
         <div #listItem
              class="item"
              tabindex="-1"
-             (click)="onItemSelect(i, $event)"
+             (click)="submitItem(i, $event)"
              *ngFor="let item of list; let i = index"
              [title]="dropdownType == DropdownType.Button ? getText(item) : ''"
              [ngClass]="{'selected-list-item': item == selectedListItem,
