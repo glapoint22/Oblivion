@@ -20,11 +20,28 @@
 }
 
 .selected-list {
-    background: lighten(#202020, 7);
-    border-color: lighten(#303030, 16);
+    // background: lighten(#202020, 7);
+    background: rgba(255, 187, 0, 0.1);
+    // border-width: 2px;
+    // border-color: #ffba00;
+    border-color: rgba(255, 187, 0, 0.85);
     cursor: default;
 
-    
+    .list-title {
+        color: white;
+    }
+
+    .owner {
+        color: lighten($gold, 15);
+    }
+
+    .description {
+        color: lighten(#dadada, 20);
+    }
+
+    .item-count {
+        color: lighten(#b4b4b4, 20);
+    }
 }
 
 .list-title {

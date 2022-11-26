@@ -10,12 +10,13 @@ import { DataService } from '../data/data.service';
   providedIn: 'root'
 })
 export class AccountService {
+  private interval!: number;
   public user: User | undefined;
   public refreshTokenSet!: boolean;
   private waitForRefreshToken = new Subject<void>();
-  private interval!: number;
   public refreshing!: boolean;
   public onRedirect = new Subject<void>();
+  public redirectListener!: Subscription
 
   constructor
     (

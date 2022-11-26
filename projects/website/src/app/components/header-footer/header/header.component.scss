@@ -444,6 +444,11 @@ input {
         padding-left: 17px;
     }
 
+    .input-container {
+        border-top-left-radius: 18px;
+        border-bottom-left-radius: 18px;
+    }
+
 
     ::-webkit-input-placeholder {
         color: transparent;

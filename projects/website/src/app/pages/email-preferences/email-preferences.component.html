@@ -12,32 +12,33 @@
 
             <div class="preferences-container">
 
+                <div class="section">
+                    <label class="checkbox">
+                        <input type="checkbox" tabindex="-2"
+                            (change)="allChecked = !allChecked; toggleAllChecked()"
+                            [checked]="allChecked">
+                        <span class="checkmark" tabindex="0"></span>
+                    </label>
+                </div>
 
                 <!-- Account -->
                 <div class="section">
 
-
-
-                    <label class="checkbox" style="float: right;">
-                        <input type="checkbox"
-                            (change)="allChecked = !allChecked; toggleAllChecked()"
-                            [checked]="allChecked">
-                        <span class="checkmark"></span>
-                    </label>
-
-
                     <div class="heading">Account</div>
-
 
                     <!-- Name Change -->
                     <div class="preference">
-                        Notify me on a successful name change
+                        <div class="preference-text"
+                             (click)="nameChangeInput.checked = !nameChangeInput.checked; preferences.nameChange = nameChangeInput.checked; setAllChecked()">
+                            Notify me on a successful name change
+                        </div>
+                        
 
                         <label class="checkbox">
-                            <input #nameChangeInput type="checkbox"
+                            <input #nameChangeInput type="checkbox" tabindex="-2"
                                 (change)="preferences.nameChange = nameChangeInput.checked; setAllChecked()"
                                 [checked]="preferences?.nameChange">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
@@ -45,12 +46,15 @@
 
                     <!-- Email Change -->
                     <div class="preference">
-                        Notify me on a successful email change
+                        <div class="preference-text"
+                             (click)="emailChangeInput.checked = !emailChangeInput.checked; preferences.emailChange = emailChangeInput.checked; setAllChecked()">
+                            Notify me on a successful email change
+                        </div>
 
                         <label class="checkbox">
-                            <input #emailChangeInput type="checkbox" [checked]="preferences?.emailChange"
+                            <input #emailChangeInput type="checkbox" [checked]="preferences?.emailChange" tabindex="-2"
                                 (change)="preferences.emailChange = emailChangeInput.checked; setAllChecked()">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
@@ -58,26 +62,32 @@
 
                     <!-- Password Change -->
                     <div class="preference">
-                        Notify me on a successful password change
+                        <div class="preference-text"
+                             (click)="passwordChangeInput.checked = !passwordChangeInput.checked; preferences.passwordChange = passwordChangeInput.checked; setAllChecked()">
+                            Notify me on a successful password change
+                        </div>
 
                         <label class="checkbox">
-                            <input #passwordChangeInput type="checkbox"
+                            <input #passwordChangeInput type="checkbox" tabindex="-2"
                                 (change)="preferences.passwordChange = passwordChangeInput.checked; setAllChecked()"
                                 [checked]="preferences?.passwordChange">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
 
                     <!-- Profile Pic Change -->
                     <div class="preference">
-                        Notify me on a successful profile picture change
+                        <div class="preference-text"
+                             (click)="profilePicChangeInput.checked = !profilePicChangeInput.checked; preferences.profileImageChange = profilePicChangeInput.checked; setAllChecked()">
+                            Notify me on a successful profile picture change
+                        </div>
 
                         <label class="checkbox">
-                            <input #profilePicChangeInput type="checkbox"
+                            <input #profilePicChangeInput type="checkbox" tabindex="-2"
                                 (change)="preferences.profileImageChange = profilePicChangeInput.checked; setAllChecked()"
                                 [checked]="preferences?.profileImageChange">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
                 </div>
@@ -93,13 +103,16 @@
 
                     <!-- New Collaborator -->
                     <div class="preference">
-                        Notify me when a new collaborator has joined a list
+                        <div class="preference-text"
+                             (click)="newCollaboratorInput.checked = !newCollaboratorInput.checked; preferences.newCollaborator = newCollaboratorInput.checked; setAllChecked()">
+                            Notify me when a new collaborator has joined a list
+                        </div>
 
                         <label class="checkbox">
-                            <input #newCollaboratorInput type="checkbox"
+                            <input #newCollaboratorInput type="checkbox" tabindex="-2"
                                 (change)="preferences.newCollaborator = newCollaboratorInput.checked; setAllChecked()"
                                 [checked]="preferences?.newCollaborator">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
@@ -109,13 +122,16 @@
 
                     <!-- Remove Collaborator -->
                     <div class="preference">
-                        Notify me when a I have been removed from a list
+                        <div class="preference-text"
+                             (click)="removedCollaboratorInput.checked = !removedCollaboratorInput.checked; preferences.removedCollaborator = removedCollaboratorInput.checked; setAllChecked()">
+                            Notify me when a I have been removed from a list
+                        </div>
 
                         <label class="checkbox">
-                            <input #removedCollaboratorInput type="checkbox"
+                            <input #removedCollaboratorInput type="checkbox" tabindex="-2"
                                 (change)="preferences.removedCollaborator = removedCollaboratorInput.checked; setAllChecked()"
                                 [checked]="preferences?.removedCollaborator">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
@@ -124,13 +140,16 @@
 
                     <!-- Added List Item -->
                     <div class="preference">
-                        Notify me when a collaborator adds an item to a list
+                        <div class="preference-text"
+                             (click)="addedListItemInput.checked = !addedListItemInput.checked; preferences.addedListItem = addedListItemInput.checked; setAllChecked()">
+                            Notify me when a collaborator adds an item to a list
+                        </div>
 
                         <label class="checkbox">
-                            <input #addedListItemInput type="checkbox"
+                            <input #addedListItemInput type="checkbox" tabindex="-2"
                                 (change)="preferences.addedListItem = addedListItemInput.checked; setAllChecked()"
                                 [checked]="preferences?.addedListItem">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
@@ -139,13 +158,16 @@
 
                     <!-- Removed List Item -->
                     <div class="preference">
-                        Notify me when a collaborator removes an item from a list
+                        <div class="preference-text"
+                             (click)="removedListItemInput.checked = !removedListItemInput.checked; preferences.removedListItem = removedListItemInput.checked; setAllChecked()">
+                            Notify me when a collaborator removes an item from a list
+                        </div>
 
                         <label class="checkbox">
-                            <input #removedListItemInput type="checkbox"
+                            <input #removedListItemInput type="checkbox" tabindex="-2"
                                 (change)="preferences.removedListItem = removedListItemInput.checked; setAllChecked()"
                                 [checked]="preferences?.removedListItem">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
@@ -157,13 +179,16 @@
 
                     <!-- List Name Change -->
                     <div class="preference">
-                        Notify me when a collaborator renames a list I'm collaborating on
+                        <div class="preference-text"
+                             (click)="listNameChangeInput.checked = !listNameChangeInput.checked; preferences.editedList = listNameChangeInput.checked; setAllChecked()">
+                            Notify me when a collaborator renames a list I'm collaborating on
+                        </div>
 
                         <label class="checkbox">
-                            <input #listNameChangeInput type="checkbox"
+                            <input #listNameChangeInput type="checkbox" tabindex="-2"
                                 (change)="preferences.editedList = listNameChangeInput.checked; setAllChecked()"
                                 [checked]="preferences?.editedList">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
@@ -172,13 +197,16 @@
 
                     <!-- Deleted List -->
                     <div class="preference">
-                        Notify me when a collaborator deletes a list I'm collaborating on
+                        <div class="preference-text"
+                             (click)="deletedListInput.checked = !deletedListInput.checked; preferences.deletedList = deletedListInput.checked; setAllChecked()">
+                            Notify me when a collaborator deletes a list I'm collaborating on
+                        </div>
 
                         <label class="checkbox">
-                            <input #deletedListInput type="checkbox"
+                            <input #deletedListInput type="checkbox" tabindex="-2"
                                 (change)="preferences.deletedList = deletedListInput.checked; setAllChecked()"
                                 [checked]="preferences?.deletedList">
-                            <span class="checkmark"></span>
+                            <span class="checkmark" tabindex="0"></span>
                         </label>
                     </div>
 
@@ -193,12 +221,15 @@
 
                 <!-- Review -->
                 <div class="preference">
-                    Notify me when my product review is posted
+                    <div class="preference-text"
+                             (click)="reviewInput.checked = !reviewInput.checked; preferences.review = reviewInput.checked; setAllChecked()">
+                        Notify me when my product review is posted
+                    </div>
 
                     <label class="checkbox">
-                        <input #reviewInput type="checkbox" (change)="preferences.review = reviewInput.checked; setAllChecked()"
+                        <input #reviewInput type="checkbox" (change)="preferences.review = reviewInput.checked; setAllChecked()" tabindex="-2"
                             [checked]="preferences?.review">
-                        <span class="checkmark"></span>
+                        <span class="checkmark" tabindex="0"></span>
                     </label>
                 </div>
 
