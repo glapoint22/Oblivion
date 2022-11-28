@@ -112,9 +112,4 @@ export class DeleteAccountFormComponent extends Validation implements OnInit {
         successPrompt.message = 'Your account has been successfully deleted.';
       });
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

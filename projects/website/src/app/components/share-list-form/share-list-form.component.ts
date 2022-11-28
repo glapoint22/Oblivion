@@ -103,9 +103,4 @@ export class ShareListFormComponent extends RadioButtonLazyLoad {
   onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
     this.linkCopied = false;
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

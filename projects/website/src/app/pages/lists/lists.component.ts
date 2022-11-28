@@ -1,5 +1,5 @@
 import { KeyValue, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService, DropdownType, LazyLoadingService, SpinnerAction } from 'common';
 import { List } from '../../classes/list';
@@ -15,10 +15,15 @@ import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/r
   styleUrls: ['./lists.component.scss']
 })
 export class ListsComponent implements OnInit {
+  private listsSideMenu!: ListsSideMenuComponent;
+
   public lists!: Array<List>;
   public selectedList!: List;
   public products!: Array<ListProduct> | undefined;
   public DropdownType = DropdownType;
+  public window = window;
+  @ViewChild('purpleButton') purpleButton!: ElementRef<HTMLElement>;
+  @ViewChild('listMenuContainer') listMenuContainer!: ElementRef<HTMLElement>;
 
   public sortOptions: Array<KeyValue<string, string>> = [
     { key: 'Sort by Date Added', value: 'date' },
@@ -31,7 +36,7 @@ export class ListsComponent implements OnInit {
   public moveToList: Array<KeyValue<string, string>> = [];
 
   constructor(
-    private lazyLoadingService: LazyLoadingService,
+    public lazyLoadingService: LazyLoadingService,
     public dataService: DataService,
     public route: ActivatedRoute,
     public router: Router,
@@ -52,9 +57,11 @@ export class ListsComponent implements OnInit {
         this.lists = [];
       }
     });
+  }
 
 
-    
+  ngAfterViewInit() {
+    this.setPurpleButtonWidth();
   }
 
 
@@ -77,6 +84,7 @@ export class ListsComponent implements OnInit {
       }
     }, SpinnerAction.StartEnd)
       .then((listsSideMenu: ListsSideMenuComponent) => {
+        this.listsSideMenu = listsSideMenu;
         listsSideMenu.lists = this.lists;
         listsSideMenu.selectedList = this.selectedList;
 
@@ -130,6 +138,8 @@ export class ListsComponent implements OnInit {
           this.populateMoveToList();
           this.products = [];
           this.location.replaceState('/account/lists/' + list.id);
+          this.setPurpleButtonWidth();
+          if (this.listsSideMenu) this.listsSideMenu.setSelectedList(list);
         });
       });
   }
@@ -240,5 +250,14 @@ export class ListsComponent implements OnInit {
 
   getDate(date: string) {
     return new Date(date + 'Z');
+  }
+
+
+  setPurpleButtonWidth() {
+    window.setTimeout(() => {
+      if (this.purpleButton) {
+        this.purpleButton.nativeElement.style.maxWidth = this.listMenuContainer.nativeElement.scrollHeight > this.listMenuContainer.nativeElement.clientHeight ? '215px' : '230px';
+      }
+    })
   }
 }

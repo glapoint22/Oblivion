@@ -93,9 +93,4 @@ export class ActivateAccountFormComponent extends Validation {
       this.emailResent = true;
     });
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

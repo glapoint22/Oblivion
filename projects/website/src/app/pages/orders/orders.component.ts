@@ -27,7 +27,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     (
       private route: ActivatedRoute,
       private router: Router,
-      private lazyLoadingService: LazyLoadingService,
+      public lazyLoadingService: LazyLoadingService,
       private ordersResolver: OrdersResolver
     ) { }
 

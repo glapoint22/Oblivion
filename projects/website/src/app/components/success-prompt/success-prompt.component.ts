@@ -26,9 +26,4 @@ export class SuccessPromptComponent extends LazyLoad {
       super.close();
     }
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

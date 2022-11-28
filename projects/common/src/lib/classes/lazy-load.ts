@@ -12,7 +12,6 @@ export class LazyLoad implements AfterViewInit {
     public shiftKeyDown!: boolean;
     public tabElements!: Array<ElementRef<HTMLElement>>;
     public onTabElementsLoaded = new Subject<void>();
-    public windowScrollY!: number;
     public disableScrolling!: boolean;
     @ViewChild('base') base!: ElementRef<HTMLElement>;
     @ViewChildren('tabElement') HTMLElements!: QueryList<ElementRef<HTMLElement>>;
@@ -49,15 +48,34 @@ export class LazyLoad implements AfterViewInit {
         }
 
         if (this.disableScrolling) {
-            this.windowScrollY = window.scrollY;
-            window.addEventListener('scroll', this.onWindowScroll);
+            // If the window has overflow
+            if (window.innerHeight != document.body.clientHeight) {
+                const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+                document.body.style.overflow = "hidden";
+                document.body.style.paddingRight = scrollbarWidth + 'px';
+                this.lazyLoadingService.paddingRight = scrollbarWidth;
+
+                // If it's an IOS device
+                if (this.checkIos()) document.body.style.position = 'fixed';
+            }
+
         }
     }
 
 
-    onWindowScroll = () => {
-        window.scrollTo(0, this.windowScrollY);
+
+    private checkIos(): boolean {
+        return (
+            ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform) ||
+            (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+        );
     }
+
+
+
+
+
 
 
     setFocus(index: number) {
@@ -114,7 +132,6 @@ export class LazyLoad implements AfterViewInit {
         this.shiftKeyDown = false;
         window.removeEventListener("keyup", this.keyUp);
         window.removeEventListener("keydown", this.keyDown);
-        window.removeEventListener('scroll', this.onWindowScroll);
     }
 
 
@@ -260,5 +277,11 @@ export class LazyLoad implements AfterViewInit {
 
     ngOnDestroy() {
         this.removeEventListeners();
+        if (this.disableScrolling) {
+            document.body.style.overflow = "auto";
+            document.body.style.paddingRight = '0';
+            this.lazyLoadingService.paddingRight = 0;
+            if (this.checkIos()) document.body.style.position = 'static';
+        }
     }
 }

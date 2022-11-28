@@ -13,7 +13,7 @@ export class ProfileComponent {
   constructor
     (
       public accountService: AccountService,
-      private lazyLoadingService: LazyLoadingService
+      public lazyLoadingService: LazyLoadingService
     ) { }
 
 

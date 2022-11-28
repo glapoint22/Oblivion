@@ -1,29 +1,57 @@
 @import '../../../scss/variables';
 
-.list-info {
-    background: #202020;
-    border: 1px solid #303030;
+.owner-list {
+    background: #222222;
+    border: 1px solid #323232;
     display: flex;
     padding: 7px;
     margin-bottom: 14px;
     border-radius: 4px;
     position: relative;
+    outline: none;
+    cursor: pointer;
 
-    &:not(.selected-list) {
-        cursor: pointer;
+    &:last-child {
+        margin-bottom: 0;
     }
 
-    &:hover:not(.selected-list) {
-        background: lighten(#202020, 2);
-        border-color: lighten(#303030, 2);
+    &:hover:not(.selected-owner-list):not(.selected-collaborator-list) {
+        background: lighten(#222222, 2);
+        border-color: lighten(#323232, 2);
     }
 }
 
-.selected-list {
-    // background: lighten(#202020, 7);
-    background: rgba(255, 187, 0, 0.1);
-    // border-width: 2px;
-    // border-color: #ffba00;
+
+.collaborator-list {
+    background: #222222;
+    border: 1px solid #323232;
+    display: flex;
+    padding: 7px;
+    margin-bottom: 14px;
+    border-radius: 4px;
+    position: relative;
+    outline: none;
+    cursor: pointer;
+
+    .owner {
+        color: $purple-text;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &:hover:not(.selected-owner-list):not(.selected-collaborator-list) {
+        background: lighten(#222222, 2);
+        border-color: lighten(#323232, 2);
+    }
+}
+
+
+
+.selected-owner-list {
+    background: #322b18;
+    user-select: none;
     border-color: rgba(255, 187, 0, 0.85);
     cursor: default;
 
@@ -43,6 +71,32 @@
         color: lighten(#b4b4b4, 20);
     }
 }
+
+
+.selected-collaborator-list {
+    background: #331b2f;
+    user-select: none;
+    border-color: #8d1f7e;
+    cursor: default;
+
+    .list-title {
+        color: white;
+    }
+
+    .owner {
+        color: lighten($purple-text, 20);
+    }
+
+    .description {
+        color: lighten(#dadada, 20);
+    }
+
+    .item-count {
+        color: lighten(#b4b4b4, 20);
+    }
+}
+
+
 
 .list-title {
     font-size: 16px;
@@ -66,37 +120,4 @@
     color: #b4b4b4;
     font-style: italic;
     font-size: 13px;
-}
-
-.purple-button {
-    max-width: none;
-    height: 33px;
-    margin-bottom: 20px;
-}
-
-
-
-.list-menu-bar {
-    margin-bottom: 10px;
-    max-width: 240px;
-    display: flex;
-    align-items:flex-end;
-    justify-content: space-between;
-    
-    button {
-        background: none;
-        border: none;
-        color: #cacaca;
-        cursor: pointer;
-        text-decoration:underline;
-
-        &:hover {
-            color: white;
-        }
-
-        &:disabled {
-            color: #646464;
-            cursor: default;
-        }
-    }
 }

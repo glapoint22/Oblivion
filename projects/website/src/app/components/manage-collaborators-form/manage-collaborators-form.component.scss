@@ -1,16 +1,21 @@
+.list-border {
+    border: 1px solid #343434;
+}
+
 .list-container {
     background: #181818;
-    border: 1px solid #343434;
+    border: 2px solid rgba(22, 22, 22, 0.945);
+    border-right: none;
 }
 
 
 .list-item {
-    &:focus {
-        outline: 1px solid #808080;
-        outline-offset: -1px;
-    }
+    margin: 0 2px 0 0;
+}
 
-    padding-right: 1px;
+
+.selected-list-item {
+    margin: 0 2px 0 0;
 }
 
 
@@ -18,8 +23,59 @@
     display: flex;
     justify-content: right;
     align-items: center;
-    margin-bottom: 7px;
+    margin: 11px 0 7px;
 }
+
+
+.permissions-container {
+    position: relative;
+    margin-bottom: 22px;
+    padding: 0 0 2px 6px;
+    border: 1px solid #343434;
+}
+
+
+.permission {
+    display: flex;
+    width: 100%;
+    height: 23px;
+    color: #b4b4b4;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover {
+
+        .permission-text {
+            color: #e0e0e0;
+        }
+
+        input~.checkmark {
+            background-color: lighten(#282828, 10);
+            border-color: lighten(#505050, 20);
+
+            &:after {
+                left: 4px;
+                top: -3px;
+                width: 5px;
+                height: 10px;
+                border: solid lighten(#ffba00, 20);
+                border-width: 0 3px 3px 0;
+                -webkit-transform: rotate(45deg);
+                -ms-transform: rotate(45deg);
+                transform: rotate(45deg);
+            }
+        }
+    }
+}
+
+
+.permission-text {
+    width: 100%;
+    line-height: 23px;
+    // padding: 5px 10px 5px 0;
+    cursor: pointer;
+}
+
 
 .invite-collaborators {
     text-decoration: underline;

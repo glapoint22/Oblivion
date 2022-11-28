@@ -29,9 +29,4 @@ export class AddToListPromptComponent extends LazyLoad {
     this.router.navigate(['account', 'lists', this.list.value]);
     this.close();
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

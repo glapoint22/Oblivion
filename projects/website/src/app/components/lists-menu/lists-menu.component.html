@@ -1,17 +1,5 @@
-<div class="list-menu-bar">
-    <button (click)="onEditListClick()"
-        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canEditList">Edit</button>
-    <button (click)="onDeleteListClick()"
-        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canDeleteList">Delete</button>
-    <button (click)="onShareListClick()"
-        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canShareList && !selectedList.listPermissions?.canInviteCollaborators">Share</button>
-    <button (click)="onManageCollaboratorsClick()"
-        [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canManageCollaborators">Collaborators</button>
-</div>
-
-
-<div *ngFor="let list of lists" class="list-info" [ngClass]="{'selected-list': selectedList == list}"
-    (click)="selectedList = list; onListClick.emit(list)">
+<div #list *ngFor="let list of lists" [class]="list.isOwner ? 'owner-list' : 'collaborator-list'" [ngClass]="{'selected-owner-list': selectedList.isOwner && selectedList == list, 'selected-collaborator-list': !selectedList.isOwner && selectedList == list}"
+    (click)="selectedList = list; onListClick.emit(list)" tabindex="-1">
 
     <div style="margin-right: 10px;" [title]="list.ownerProfileImage?.name">
         <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
@@ -28,4 +16,3 @@
     </div>
 
 </div>
-<button class="purple-button" (click)="onCreateNewListClick.emit()">Create a new list</button>

@@ -102,9 +102,4 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
       this.onLogInLinkClick();
     }
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

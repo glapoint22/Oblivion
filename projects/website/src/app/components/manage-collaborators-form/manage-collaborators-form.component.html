@@ -1,11 +1,11 @@
 <div class="hide modal-container" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <!-- Backdrop -->
-    <div class="backdrop" (click)="close()" (wheel)="$event.preventDefault()"></div>
+    <div class="backdrop" (click)="close()"></div>
 
 
     <!-- Container -->
-    <div class="container" (wheel)="$event.preventDefault()">
+    <div class="container">
 
         <!-- Base -->
         <div #base class="base" tabindex="-1">
@@ -23,41 +23,86 @@
 
             <div class="content">
                 <div class="label">Collaborators:</div>
-                <div class="list-container" style="margin-bottom: 10px; height: 112px; overflow-y: auto;">
-                    <div id="collaborator" #tabElement *ngFor="let collaborator of collaborators" class="list-item"
-                        (click)="onCollaboratorClick(collaborator)"
-                        [ngClass]="{'selected-list-item': collaborator == selectedCollaborator}" tabindex="-1">
-                        {{collaborator.name}}
-                    </div>
+                <div class="list-border">
 
-                    <div *ngIf="list.collaboratorCount == 0" style="width: 100%;
-                    height: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center; font-size: 13px; flex-direction: column;
-                    ">
-                        <div style="color: #dadada; margin-bottom: 5px;">
-                            You have 0 collaborators
+                    <div #listContainer class="list-container"
+                        style="height: 112px; overflow-y: auto;" (scroll)="onScroll(listContainer)"
+                        (wheel)="onMouseWheel($event, listContainer)">
+                        <div #collaborator *ngFor="let collaborator of collaborators" class="list-item"
+                            (click)="onCollaboratorClick(collaborator)"
+                            [ngClass]="{'selected-list-item': collaborator == selectedCollaborator}" tabindex="-1">
+                            {{collaborator.name}}
                         </div>
-                        <div style="color: #ffba00; text-align: center; padding: 15px;">
-                            <span >Click </span><span id="hereLink" #tabElement tabindex="-1" class="invite-collaborators" (click)="openShareList()">here</span><span> to invite collaborators to your list</span>
-                        </div>
-                        
 
+                        <div *ngIf="list.collaboratorCount == 0" style="width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center; font-size: 13px; flex-direction: column;
+                        ">
+                            <div style="color: #dadada; margin-bottom: 5px;">
+                                You have 0 collaborators
+                            </div>
+                            <div style="color: #ffba00; text-align: center; padding: 15px;">
+                                <span>Click </span><span id="hereLink" #tabElement tabindex="-1"
+                                    class="invite-collaborators" (click)="openShareList()">here</span><span> to invite
+                                    collaborators to your list</span>
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
+
 
                 <div class="remove-button-container">
-                    <button id="removeButton" #tabElement class="dark-button" (click)="onRemoveClick()" [disabled]="collaborators && collaborators.length == 0">Remove</button>
+                    <button id="removeButton" #tabElement class="dark-button" (click)="onRemoveClick()"
+                        [disabled]="collaborators && collaborators.length == 0">Remove</button>
                 </div>
 
 
-                <div class="label">Permissions<span *ngIf="collaborators && collaborators.length > 0"> for </span>{{selectedCollaborator && collaborators.length > 0 ? selectedCollaborator.name : ''}}:</div>
-                <div class="list-container" style="margin-bottom: 22px; position: relative; padding-bottom: 3px;">
+                <div class="label">Permissions<span *ngIf="collaborators && collaborators.length > 0"> for
+                    </span>{{selectedCollaborator && collaborators.length > 0 ? selectedCollaborator.name : ''}}:</div>
+                
+                
+                
+                <div class="permissions-container">
 
-                    
 
-                    <div class="list-item" style="justify-content: space-between; cursor: default;">
+
+                    <div class="permission">
+                        <div class="permission-text"
+                             (click)="fullControlInput.checked = !fullControlInput.checked; allChecked = !allChecked; toggleAllChecked(); fullControl.focus()">
+                             Full Control
+                        </div>
+                        
+                        <label class="checkbox">
+                            <input #fullControlInput
+                                   type="checkbox"
+                                   [checked]="allChecked"
+                                   (change)="allChecked = !allChecked; toggleAllChecked(); fullControl.focus()">
+                            <span #tabElement #fullControl class="checkmark" tabindex="-1" (keydown.space)="fullControlInput.checked = !fullControlInput.checked; allChecked = !allChecked; toggleAllChecked(); fullControl.focus()"></span>
+                        </label>
+                    </div>
+
+
+                    <div *ngFor="let permission of permissions; let i = index" class="permission">
+                        <div class="permission-text"
+                             (click)="permissionInputs.get(i)!.nativeElement.checked = !permissionInputs.get(i)!.nativeElement.checked; onPermissionChange(permissionInput.checked, i); tabElement.focus()">
+                             {{permission}}
+                        </div>
+                        
+                        <label class="checkbox">
+                            <input #permissionInput
+                                   type="checkbox"
+                                   (change)="onPermissionChange(permissionInput.checked, i); tabElement.focus()">
+                            <span #tabElement class="checkmark" tabindex="-1" (keydown.space)="permissionInputs.get(i)!.nativeElement.checked = !permissionInputs.get(i)!.nativeElement.checked; onPermissionChange(permissionInput.checked, i); tabElement.focus()"></span>
+                        </label>
+                    </div>
+
+
+
+                    <!-- <div style="justify-content: space-between; cursor: default;">
                         Full Control
                         <label class="checkbox">
                             <input type="checkbox" [checked]="allChecked"
@@ -67,7 +112,7 @@
                     </div>
 
 
-                    <div class="list-item" style="justify-content: space-between; cursor: default;"
+                    <div style="justify-content: space-between; cursor: default;"
                         *ngFor="let permission of permissions; let i = index">
                         {{permission}}
                         <label class="checkbox">
@@ -75,16 +120,22 @@
                                 (change)="onPermissionChange(permissionInputs.checked, i); tabElement.focus()">
                             <span #tabElement class="checkmark" tabindex="-1"></span>
                         </label>
-                    </div>
+                    </div> -->
 
-                    <div *ngIf="collaborators && collaborators.length == 0" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: rgba(24, 24, 24, 0.75);"></div>
+
+
+
+                    <div *ngIf="collaborators && collaborators.length == 0"
+                        style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: rgba(24, 24, 24, 0.75);">
+                    </div>
                 </div>
 
 
                 <!-- Button Container -->
                 <div class="button-container">
                     <button id="cancelButton" #tabElement class="dark-button" (click)="close()">Cancel</button>
-                    <button #tabElement class="gold-rect-button" (click)="onApplyClick()" [disabled]="!hasChange">Apply</button>
+                    <button #tabElement class="gold-rect-button" (click)="onApplyClick()"
+                        [disabled]="!hasChange">Apply</button>
                 </div>
             </div>
         </div>

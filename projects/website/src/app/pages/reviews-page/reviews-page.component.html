@@ -1,5 +1,5 @@
 <header-footer>
-    <div class="breadcrumb">
+    <div class="breadcrumb" [style.paddingRight.px]="lazyLoadingService.paddingRight + 10">
         <!-- Niche -->
         <a routerLink="/browse"
             [queryParams]="{nicheName: product.breadcrumb[0].urlName, nicheId: product.breadcrumb[0].id}">{{product.breadcrumb[0].name}}</a>

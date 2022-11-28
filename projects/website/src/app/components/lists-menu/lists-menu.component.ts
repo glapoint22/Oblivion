@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, QueryList, SimpleChanges, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { ShareListType } from '../../classes/enums';
 import { List } from '../../classes/list';
@@ -15,9 +15,10 @@ import { ShareListFormComponent } from '../../components/share-list-form/share-l
 })
 export class ListsMenuComponent {
   @Output() onListClick: EventEmitter<List> = new EventEmitter();
-  @Output() onCreateNewListClick: EventEmitter<void> = new EventEmitter();
+  @Output() onDeleteList: EventEmitter<void> = new EventEmitter();
   @Input() lists!: Array<List>;
   @Input() selectedList!: List;
+  @ViewChildren('list') HtmlLists!: QueryList<ElementRef<HTMLElement>>;
   @ViewChild('listSettingsPopupContainer', { read: ViewContainerRef }) listSettingsPopupContainer!: ViewContainerRef;
 
   constructor
@@ -25,6 +26,24 @@ export class ListsMenuComponent {
       private lazyLoadingService: LazyLoadingService,
       private location: Location
     ) { }
+
+
+  ngAfterViewInit() {
+    const indexOfSelectedList = this.lists.indexOf(this.selectedList);
+    this.HtmlLists.get(indexOfSelectedList)?.nativeElement.focus();
+  }
+
+
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!changes['selectedList'].isFirstChange()) {
+      window.setTimeout(() => {
+        const indexOfSelectedList = this.lists.indexOf(this.selectedList);
+        this.HtmlLists.get(indexOfSelectedList)?.nativeElement.focus();
+      })
+    }
+  }
+
 
 
   async onEditListClick() {
@@ -118,6 +137,7 @@ export class ListsMenuComponent {
           } else {
             this.location.replaceState("account/lists");
           }
+          this.onDeleteList.emit();
         });
       });
   }

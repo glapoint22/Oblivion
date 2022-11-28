@@ -198,9 +198,4 @@ export class ReportItemFormComponent extends LazyLoad {
       this.close();
     }
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

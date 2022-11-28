@@ -55,9 +55,4 @@ export class EditListFormComponent extends Validation implements OnInit {
       });
     }
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

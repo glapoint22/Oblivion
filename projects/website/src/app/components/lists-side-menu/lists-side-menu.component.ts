@@ -15,5 +15,12 @@ export class ListsSideMenuComponent extends LazyLoad implements OnInit {
 
   ngOnInit(): void {
     this.addEventListeners();
+    this.disableScrolling = true;
+  }
+
+  setSelectedList(list: List) {
+    if (list == this.selectedList) return;
+    this.selectedList = list;
+    this.onListClick.emit(list);
   }
 }

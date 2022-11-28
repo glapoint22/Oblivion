@@ -7,17 +7,23 @@
 
     <div class="side-menu-content-container">
 
+        <div class="list-menu-bar">
+            <button (click)="listMenu.onEditListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canEditList">Edit</button>
+            <button (click)="listMenu.onDeleteListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canDeleteList">Delete</button>
+            <button (click)="listMenu.onShareListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canShareList && !selectedList.listPermissions?.canInviteCollaborators">Share</button>
+            <button (click)="listMenu.onManageCollaboratorsClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canManageCollaborators">Collaborators</button>
+        </div>
+
         <!-- Content -->
         <div class="side-menu-content">
 
-            <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick.emit($event)"
-                (onCreateNewListClick)="onCreateNewListClick.emit()"></lists-menu>
+            <lists-menu #listMenu [lists]="lists" [selectedList]="selectedList" (onListClick)="setSelectedList($event)"></lists-menu>
 
         </div>
     </div>
 
     <!-- Bottom Fixed container -->
     <div class="bottom-fixed-container">
-        <button class="gold-round-button-lg" (click)="close()">View Results</button>
+        <button class="purple-button" (click)="onCreateNewListClick.emit()">Create a new list</button>
     </div>
 </div>

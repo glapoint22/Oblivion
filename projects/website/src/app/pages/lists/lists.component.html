@@ -1,5 +1,5 @@
 <header-footer>
-    <div class="breadcrumb">
+    <div class="breadcrumb" [style.paddingRight.px]="lazyLoadingService.paddingRight + 10">
         <a routerLink="/account">Your Account</a>
         <div></div>
 
@@ -35,8 +35,22 @@
                 <!-- Bottom Container -->
                 <div class="bottom-container">
                     <div class="bottom-container-left">
-                        <lists-menu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick($event)"
-                            (onCreateNewListClick)="onCreateNewListClick()"></lists-menu>
+
+                        <div class="list-menu-bar">
+                            <button (click)="listMenu.onEditListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canEditList">Edit</button>
+                            <button (click)="listMenu.onDeleteListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canDeleteList">Delete</button>
+                            <button (click)="listMenu.onShareListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canShareList && !selectedList.listPermissions?.canInviteCollaborators">Share</button>
+                            <button (click)="listMenu.onManageCollaboratorsClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canManageCollaborators">Collaborators</button>
+                        </div>
+
+                        <div #listMenuContainer class="list-menu-container" [style.maxHeight.px]="window.innerHeight - 293 - 83">
+                            <lists-menu #listMenu [lists]="lists" [selectedList]="selectedList" (onListClick)="onListClick($event)" (onDeleteList)="setPurpleButtonWidth()"></lists-menu>
+                        </div>
+
+                            
+
+                        <button #purpleButton class="purple-button" (click)="onCreateNewListClick()">Create a new list</button>
+                        
                     </div>
 
 
@@ -111,14 +125,15 @@
                         </div>
 
                         <div style="width: 100%; text-align: center;" *ngIf="products && products.length == 0">
-                            <div class="horizontal-line"></div>
-                            <div class="no-items">
 
-                                0 items in this list
-                            </div>
+                            <div style="border: 1px solid #303030; border-radius: 4px; padding: 24px;">
+                                <div class="no-items">
+                                    0 items in this list
+                                </div>
 
-                            <div style="color: #ffba00;">
-                                To add items to this list, click on the “Add to List” button on any product page
+                                <div style="color: #ffba00;">
+                                    To add items to this list, click on the “Add to List” button on any product page
+                                </div>
                             </div>
                         </div>
                     </div>

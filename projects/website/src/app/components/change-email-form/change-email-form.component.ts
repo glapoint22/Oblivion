@@ -84,9 +84,4 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
         emailVerificationForm.email = this.form.get('email')?.value;
       });
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }
