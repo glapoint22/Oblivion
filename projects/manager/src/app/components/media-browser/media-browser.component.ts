@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, DropdownListComponent, DropdownListModule, DropdownType, Image, ImageSize, ImageSizeType, LazyLoad, LazyLoadingService, ListItem, Media, MediaType, SpinnerAction, Video } from 'common';
@@ -60,14 +61,16 @@ export class MediaBrowserComponent extends LazyLoad {
           if (value == '') return of(null);
           return this.dataService.get<Array<Media>>('api/Media/Search', [
             {
-              key: 'type',
+              key: 'mediaType',
               value: this.mediaType
             },
             {
-              key: 'searchWords',
+              key: 'searchTerm',
               value: value
             }
-          ]);
+          ], {
+            authorization: true
+          });
         })
       ).subscribe((media: Array<Media> | null) => {
         this.media = [];
@@ -266,7 +269,9 @@ export class MediaBrowserComponent extends LazyLoad {
     formData.append('name', this.displayImage.name);
     formData.append('imageSize', this.imageSizeType.toString());
 
-    this.dataService.post<Media>('api/Media/Image', formData)
+    this.dataService.post<Media>('api/Media/Image', formData, {
+      authorization: true
+    })
       .subscribe((media: Media) => {
         const newImage = new Image();
 
@@ -284,30 +289,26 @@ export class MediaBrowserComponent extends LazyLoad {
 
   // ------------------------------------------------------------------Update Image----------------------------------------------------
   public updateImage(): void {
+    const formData = new FormData()
+
+    formData.append('id', this.displayImage.id.toString());
+
     if (this.imageFile) {
-      const formData = new FormData()
-
       formData.append('image', this.imageFile);
-      formData.append('id', this.displayImage.id.toString());
       formData.append('imageSize', this.imageSizeType.toString());
-
-      this.dataService.post<Image>('api/Media/UpdateImage', formData)
-        .subscribe((image: Image) => {
-          this.currentImage.src = image.src;
-          if (this.displayImage.name == this.currentImage.name) {
-            this.close();
-          }
-        });
     }
 
-    if (this.displayImage.name != this.currentImage.name) {
-      this.dataService.put('api/Media/Name', { id: this.displayImage.id, name: this.displayImage.name })
-        .subscribe(() => {
-          this.currentImage.name = this.displayImage.name;
-          this.close();
-        });
-    }
+    formData.append('name', this.displayImage.name);
 
+    this.dataService.post<Image>('api/Media/UpdateImage', formData, {
+      authorization: true
+    })
+      .subscribe((image: Image) => {
+        if (image.src) this.currentImage.src = image.src;
+
+        this.currentImage.name = this.displayImage.name;
+        this.close();
+      });
   }
 
 
@@ -494,13 +495,13 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
   // -------------------------------------------------------------------- Add Image Size -------------------------------------------------------
-  addImageSize(image: Image, src: string) {
-    this.dataService.get<Image>('api/Media/Image',
-      [
-        { key: 'imageId', value: this.selectedMedia.id },
-        { key: 'imageSizeType', value: this.imageSizeType },
-        { key: 'src', value: src }
-      ]).subscribe((img: Image) => {
+  addImageSize(image: Image, imageSrc: string) {
+    this.dataService.post<Image>('api/Media/AddImageSize',
+      {
+        imageId: this.selectedMedia.id,
+        imageSizeType: this.imageSizeType,
+        imageSrc: imageSrc
+      }).subscribe((img: Image) => {
         image.src = img.src;
         this.callback(image);
         this.close();
@@ -580,7 +581,7 @@ export class MediaBrowserComponent extends LazyLoad {
           })
         });
 
-        dropdownList.onItemSelect = (item: Item) => {
+        dropdownList.onItemSubmit = (item: Item) => {
           const imageSize = imageSizes.find(x => x.imageSizeType == item.id)!;
 
           this.setSelectedImageSize(imageSize);
@@ -622,31 +623,68 @@ export class MediaBrowserComponent extends LazyLoad {
 
   // -------------------------------------------------------------------Save Video-------------------------------------------------------
   public saveVideo(): void {
-    this.dataService.post<Video>('api/Media/Video', this.displayVideo)
-      .subscribe((video: Video) => {
-        if (video) {
-          this.displayVideo.id = video.id;
-          this.displayVideo.thumbnail = video.thumbnail;
+    this.dataService.post<Video>('api/Media/Video', this.displayVideo, {
+      authorization: true
+    }).subscribe({
+      next: (video: Video) => {
+        this.displayVideo.id = video.id;
+        this.displayVideo.thumbnail = video.thumbnail;
 
-          this.callback(this.displayVideo);
+        this.callback(this.displayVideo);
+        this.close();
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status == 409) {
+          this.showVideoErrorPrompt();
+        }
+      }
+    });
+  }
+
+
+
+
+
+
+
+  // ------------------------------------------------------------------Update Video----------------------------------------------------
+  public updateVideo(): void {
+    let video!: Video;
+
+    if (this.displayVideo.src != this.currentVideo.src) {
+      video = new Video({ url: this.displayVideo.src });
+
+      if (!video.src) {
+        this.invalidVideoLink = true;
+        return;
+      }
+    }
+
+    this.dataService.put<Video>('api/Media/UpdateVideo', {
+      id: this.currentVideo.id,
+      videoId: video?.videoId,
+      videoType: video?.videoType,
+      name: this.displayVideo.name
+    }, {
+      authorization: true
+    })
+      .subscribe({
+        next: (updatedVideo: Video) => {
+          if (video) {
+            this.currentVideo.videoId = video.videoId;
+            this.currentVideo.videoType = video.videoType;
+            this.currentVideo.src = video.src;
+          }
+
+          this.currentVideo.thumbnail = updatedVideo.thumbnail;
+          this.currentVideo.name = this.displayVideo.name
+          this.callback(this.currentVideo);
           this.close();
-
-        } else {
-          this.lazyLoadingService.load(async () => {
-            const { PromptComponent } = await import('../prompt/prompt.component');
-            const { PromptModule } = await import('../prompt/prompt.module');
-
-            return {
-              component: PromptComponent,
-              module: PromptModule
-            }
-          }, SpinnerAction.None)
-            .then((prompt: PromptComponent) => {
-              prompt.title = 'Error';
-              prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-                '<h2 style="text-align: center">Sorry!</h2> <div>There was a problem when trying to save the video. Check that the url is correct and try again.</div>');
-              prompt.primaryButton.name = 'Ok';
-            });
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status == 409) {
+            this.showVideoErrorPrompt();
+          }
         }
       });
   }
@@ -654,38 +692,25 @@ export class MediaBrowserComponent extends LazyLoad {
 
 
 
-  // ------------------------------------------------------------------Update Video----------------------------------------------------
-  public updateVideo(): void {
-    if (this.displayVideo.src != this.currentVideo.src) {
-      const video = new Video({ url: this.displayVideo.src });
 
-      if (video.src) {
-        this.currentVideo.videoId = video.videoId;
 
-        this.dataService.put<Video>('api/Media/UpdateVideo', this.currentVideo)
-          .subscribe((updatedVideo: Video) => {
-            this.currentVideo.thumbnail = updatedVideo.thumbnail;
-            this.currentVideo.src = video.src;
-            this.callback(this.currentVideo);
-            if (this.displayVideo.name == this.currentVideo.name) {
-              this.close();
-            }
+  // ------------------------------------------------------------------Show Video Error Prompt----------------------------------------------------
+  private showVideoErrorPrompt() {
+    this.lazyLoadingService.load(async () => {
+      const { PromptComponent } = await import('../prompt/prompt.component');
+      const { PromptModule } = await import('../prompt/prompt.module');
 
-          });
-      } else {
-        this.invalidVideoLink = true;
+      return {
+        component: PromptComponent,
+        module: PromptModule
       }
-    }
-
-
-    if (this.displayVideo.name != this.currentVideo.name) {
-      this.dataService.put('api/Media/Name', { id: this.displayVideo.id, name: this.displayVideo.name })
-        .subscribe(() => {
-          this.currentVideo.name = this.displayVideo.name;
-          this.close();
-        });
-    }
-
+    }, SpinnerAction.None)
+      .then((prompt: PromptComponent) => {
+        prompt.title = 'Error';
+        prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+          '<h2 style="text-align: center">Sorry!</h2> <div>There was a problem when trying to retrieve the thumbnail. Check that the url is correct and try again.</div>');
+        prompt.primaryButton.name = 'Ok';
+      });
   }
 
 
@@ -764,7 +789,7 @@ export class MediaBrowserComponent extends LazyLoad {
 
   // ------------------------------------------------------------------- Delete Media ------------------------------------------------------
   deleteMedia() {
-    let id!: number;
+    let id!: string;
 
     if (this.selectedMedia) {
       id = this.selectedMedia.id;
@@ -774,7 +799,9 @@ export class MediaBrowserComponent extends LazyLoad {
       id = this.currentVideo.id;
     }
 
-    this.dataService.delete('api/Media', { id: id }).subscribe(() => {
+    this.dataService.delete('api/Media', { id: id }, {
+      authorization: true
+    }).subscribe(() => {
       if (this.mediaType == MediaType.Image) {
         if (this.currentImage) {
           this.view = MediaBrowserView.ImagePreview;
@@ -807,6 +834,7 @@ export class MediaBrowserComponent extends LazyLoad {
       this.showCancelButton = false;
       this.selectedMedia = null!;
       this.submitButtonDisabled = true;
+      this.close();
     });
   }
 }

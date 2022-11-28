@@ -86,7 +86,10 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
 
   submitItem(itemIndex: number, event?: Event) {
     if (event) event.stopPropagation();
-    this.onItemSubmit(this.list[itemIndex]);
+
+    if (this.onItemSubmit) {
+      this.onItemSubmit(this.list[itemIndex]);
+    }
     this.close();
   }
 
@@ -147,6 +150,7 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
 
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
     window.removeEventListener('wheel', this.windowMouseWheel);
     window.removeEventListener('blur', this.windowBlur);

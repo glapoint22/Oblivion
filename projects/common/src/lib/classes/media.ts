@@ -2,7 +2,7 @@ import { ImageSizeType, MediaType, VideoType } from "./enums";
 import { ImageSize } from "./image-size";
 
 export class Media {
-  public id!: number;
+  public id!: string;
   public type!: MediaType;
   public name!: string;
   public src!: string;

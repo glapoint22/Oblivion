@@ -1,11 +1,14 @@
 const PROXY_CONFIG = [
     {
         context: [
-            "/images"
+            "/website-images"
         ],
         target: "http://localhost:2112/",
         secure: false,
-        changeOrigin: false
+        changeOrigin: false,
+        "pathRewrite": {
+            "^/website-images": "/images"
+          }
     },
     {
         context: [
