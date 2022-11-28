@@ -1,14 +1,11 @@
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DataService, Image, LazyLoadingService, Link, LinkType, SpinnerAction, Video } from 'common';
+import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { debounceTime, Subject } from 'rxjs';
-import { Background, BackgroundImage, Caption, ColumnSpan, PageComponent, PageContent, PageType } from 'widgets';
+import { PageComponent, PageContent, PageType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
 import { BuilderType, WidgetInspectorView } from '../../classes/enums';
 import { PageData } from '../../classes/page-data';
-import { Query } from '../../classes/query';
-import { QueryElement } from '../../classes/query-element';
-import { QueryRow } from '../../classes/query-row';
 import { WidgetService } from '../../services/widget/widget.service';
 import { ContainerDevComponent } from '../container-dev/container-dev.component';
 import { PromptComponent } from '../prompt/prompt.component';
@@ -58,6 +55,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
           name: this.name,
           pageType: this.pageType,
           content: this.widgetService.stringify(this.pageContent)
+        }, {
+          authorization: true
         }).subscribe();
       });
   }
@@ -80,7 +79,10 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public getData(pageId: number): void {
     this.clear();
 
-    this.dataService.get<PageData>(this.apiUrl, [{ key: 'id', value: pageId }])
+    this.dataService.get<PageData>(this.apiUrl, [{ key: 'id', value: pageId }],
+      {
+        authorization: true
+      })
       .subscribe((pageData: PageData) => {
         this.setData(pageData);
       });
@@ -135,6 +137,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
       name: this.name,
       pageType: this.pageType,
       content: this.pageContent.toString()
+    }, {
+      authorization: true
     }).subscribe((pageId: number) => {
       this.id = pageId;
     });
@@ -199,7 +203,9 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   private deletePage(): void {
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.None;
 
-    this.dataService.delete(this.apiUrl, { pageId: this.id })
+    this.dataService.delete(this.apiUrl, { pageId: this.id }, {
+      authorization: true
+    })
       .subscribe(() => {
         this.clear();
       });
@@ -233,6 +239,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
     this.dataService.post<number>(this.apiUrl + '/Duplicate', {
       id: this.id
+    }, {
+      authorization: true
     }).subscribe((pageId: number) => {
       this.getData(pageId);
     });

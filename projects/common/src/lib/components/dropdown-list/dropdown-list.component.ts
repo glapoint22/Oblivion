@@ -19,7 +19,8 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
   public width!: number;
   public height!: number;
   public baseTop!: number;
-  public callback!: Function;
+  public onItemSelect!: Function;
+  public onItemSubmit!: Function;
   public onArrowSelect!: Function;
   public DropdownType = DropdownType;
   public dropdownType!: DropdownType;
@@ -37,8 +38,11 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-    if (this.selectedListItem) this.indexOfSelectedListItem = this.list.indexOf(this.selectedListItem as T);
-    this.listItems.get(this.indexOfSelectedListItem)?.nativeElement.focus();
+    if (this.selectedListItem) {
+      this.indexOfSelectedListItem = this.list.indexOf(this.selectedListItem as T);
+      this.listItems.get(this.indexOfSelectedListItem)?.nativeElement.focus();
+    }
+
     window.addEventListener('mousedown', this.mousedown);
     window.addEventListener('wheel', this.windowMouseWheel);
     window.addEventListener('blur', this.windowBlur);
@@ -80,9 +84,12 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
   }
 
 
-  onItemSelect(itemIndex: number, event?: Event) {
+  submitItem(itemIndex: number, event?: Event) {
     if (event) event.stopPropagation();
-    this.callback(this.list[itemIndex]);
+
+    if (this.onItemSubmit) {
+      this.onItemSubmit(this.list[itemIndex]);
+    }
     this.close();
   }
 
@@ -114,7 +121,10 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
     // Set focus to the selected list item. This is so the scrollbar can scroll to it (if scrollbar exists)
     this.listItems.get(this.indexOfSelectedListItem)?.nativeElement.focus();
 
-    this.callback(this.list[this.indexOfSelectedListItem]);
+    if (this.onItemSelect) {
+      this.onItemSelect(this.list[this.indexOfSelectedListItem]);
+    }
+
 
     // Call the onArrowSelect function (if defined)
     if (this.onArrowSelect) this.onArrowSelect(this.getText(this.list[this.indexOfSelectedListItem]));
@@ -127,7 +137,7 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
   onEnter(e: KeyboardEvent): void {
     this.close();
     if (!this.list || this.list.length == 0 || this.indexOfSelectedListItem == -1) return;
-    this.onItemSelect(this.indexOfSelectedListItem, e);
+    this.submitItem(this.indexOfSelectedListItem, e);
   }
 
 
@@ -140,6 +150,7 @@ export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> exte
 
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
     window.removeEventListener('wheel', this.windowMouseWheel);
     window.removeEventListener('blur', this.windowBlur);

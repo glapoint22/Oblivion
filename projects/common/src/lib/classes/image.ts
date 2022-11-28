@@ -1,7 +1,7 @@
 import { ImageSizeType } from "./enums";
 
 export class Image {
-    public id!: number;
+    public id!: string;
     public name!: string;
     public src!: string;
     public thumbnail!: string;

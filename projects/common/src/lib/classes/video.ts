@@ -1,7 +1,7 @@
 import { VideoType } from "./enums";
 
 export class Video {
-    public id!: number;
+    public id!: string;
     public name!: string;
     public thumbnail!: string;
     public src!: string;
@@ -12,7 +12,7 @@ export class Video {
     constructor(options?: {
         url?: string,
         video?: {
-            id: number,
+            id: string,
             name: string,
             thumbnail: string,
             videoType: VideoType,

@@ -121,7 +121,7 @@ export class PricePointComponent {
       id: pricePoint.id,
       header: pricePoint.header && pricePoint.header.length > 0 ? pricePoint.header : null,
       quantity: pricePoint.quantity && pricePoint.quantity.length > 0 ? pricePoint.quantity : null,
-      imageId: pricePoint.image.id > 0 ? pricePoint.image.id : null,
+      imageId: pricePoint.image.id ? pricePoint.image.id : null,
       unitPrice: pricePoint.unitPrice && pricePoint.unitPrice.length > 0 ? pricePoint.unitPrice : null,
       unit: pricePoint.unit && pricePoint.unit.length > 0 ? pricePoint.unit : null,
       strikethroughPrice: pricePoint.strikethroughPrice && pricePoint.strikethroughPrice.length > 0 ? pricePoint.strikethroughPrice : null,
