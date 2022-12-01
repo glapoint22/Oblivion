@@ -1,7 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { DataService, ListItem } from 'common';
-import { forkJoin, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { QueryType, ComparisonOperatorType, AutoQueryType, LogicalOperatorType, QueryElementType } from '../../classes/enums';
 import { QueryElement } from '../../classes/query-element';
 import { InputService } from '../input/input.service';
@@ -12,8 +12,8 @@ import { WidgetService } from '../widget/widget.service';
 })
 export class QueryBuilderService {
   public selectedQueryElements: Array<QueryElement> = [];
-  public categoriesList!: Array<ListItem>;
   public nichesList!: Array<ListItem>;
+  public subnichesList!: Array<ListItem>;
   public keywordGroupsList!: Array<ListItem>;
   public productGroupsList!: Array<ListItem>;
   public listsDownloadComplete!: boolean;
@@ -24,12 +24,12 @@ export class QueryBuilderService {
       value: QueryType.None
     },
     {
-      key: 'Category',
-      value: QueryType.Category
-    },
-    {
       key: 'Niche',
       value: QueryType.Niche
+    },
+    {
+      key: 'Subniche',
+      value: QueryType.Subniche
     },
     {
       key: 'Product Group',
@@ -228,17 +228,14 @@ export class QueryBuilderService {
   public getQueryLists(): void {
     if (this.listsDownloadComplete) return;
 
-    const categories$ = this.dataService.get('api/Categories');
-    const niches$ = this.dataService.get('api/Niches');
-    const KeywordGroups$ = this.dataService.get('api/Keywords');
-    const subgroups$ = this.dataService.get('api/Subgroups');
-
-    forkJoin([categories$, niches$, KeywordGroups$, subgroups$])
-      .subscribe((results: Array<any>) => {
-        this.categoriesList = results[0];
-        this.nichesList = results[1];
-        this.keywordGroupsList = results[2];
-        this.productGroupsList = results[3];
+    this.dataService.get('api/QueryBuilder/GetQueryLists', undefined, {
+      authorization: true
+    })
+      .subscribe((results: any) => {
+        this.nichesList = results.niches;
+        this.subnichesList = results.subniches;
+        this.keywordGroupsList = results.keywordGroups;
+        this.productGroupsList = results.productGroups;
         this.listsDownloadComplete = true;
       });
   }

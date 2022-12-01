@@ -87,9 +87,9 @@ export class LinkComponent extends RadioButtonLazyLoad {
   // -------------------------------------------------------------------------Set Api Url-------------------------------------------------------
   public setApiUrl() {
     if (this.currentLinkType == LinkType.Page) {
-      this.apiUrl = 'Pages/Link';
+      this.apiUrl = 'Pages/LinkSearch';
     } else if (this.currentLinkType == LinkType.Product) {
-      this.apiUrl = 'Products/Link';
+      this.apiUrl = 'Products/LinkSearch';
     }
   }
 
