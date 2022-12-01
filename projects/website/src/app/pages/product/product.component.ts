@@ -23,7 +23,7 @@ export class ProductComponent implements OnInit {
   constructor
     (
       private route: ActivatedRoute,
-      private lazyLoadingService: LazyLoadingService,
+      public lazyLoadingService: LazyLoadingService,
       private accountService: AccountService,
       private socialMediaService: SocialMediaService,
       private dataService: DataService

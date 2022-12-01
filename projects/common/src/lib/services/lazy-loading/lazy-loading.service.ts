@@ -12,6 +12,7 @@ export class LazyLoadingService {
   public container!: ViewContainerRef;
   public showBackdrop!: boolean;
   public backdropFadeIn!: boolean;
+  public paddingRight: number = 0;
 
   constructor
     (

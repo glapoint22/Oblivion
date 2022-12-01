@@ -82,9 +82,4 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
         successPrompt.message = 'Your name has been successfully changed.';
       });
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

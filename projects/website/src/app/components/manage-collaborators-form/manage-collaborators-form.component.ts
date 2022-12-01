@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
+import { DataService, LazyLoad, LazyLoadingService, SpinnerAction, Image } from 'common';
 import { Collaborator } from '../../classes/collaborator';
 import { ShareListType } from '../../classes/enums';
 import { List } from '../../classes/list';
@@ -12,14 +12,15 @@ import { ShareListFormComponent } from '../share-list-form/share-list-form.compo
   styleUrls: ['./manage-collaborators-form.component.scss']
 })
 export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit {
-  @ViewChildren('permissionInputs') permissionInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  private indexOfSelectedCollaborator: number = 0;
   private selectedCollaboratorPermissionKeys!: Array<keyof ListPermissions>;
+  private initialCollaborators: Array<InitialCollaborator> = new Array<InitialCollaborator>();
+
   public list!: List;
   public allChecked!: boolean;
   public collaborators!: Array<Collaborator>;
   public updatedCollaborators: Array<Collaborator> = [];
   public selectedCollaborator!: Collaborator;
-  public permissionCheckboxes!: Array<ElementRef<HTMLInputElement>>;
   public hasChange!: boolean;
   public permissions: Array<string> = [
     'Add to List',
@@ -28,8 +29,13 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
     'Invite Collaborators',
     'Manage Collaborators',
     'Delete List',
-    'Remove Item'
+    'Remove List Item'
   ];
+
+
+  @ViewChildren('collaborator') collaboratorItems!: QueryList<ElementRef<HTMLElement>>;
+  @ViewChildren('permissionInput') permissionInputs!: QueryList<ElementRef<HTMLInputElement>>;
+
 
   constructor
     (
@@ -40,6 +46,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
   ngOnInit(): void {
     super.ngOnInit();
+
     this.dataService.get<Array<Collaborator>>('api/Lists/GetCollaborators', [{ key: 'listId', value: this.list.id }], {
       authorization: true,
       spinnerAction: SpinnerAction.End
@@ -47,20 +54,20 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
       .subscribe((collaborators: Array<Collaborator>) => {
         this.collaborators = collaborators;
 
+        this.collaborators.forEach((x, i) => {
+          this.initialCollaborators.push(new InitialCollaborator());
+
+          Object.values(x.listPermissions).forEach(y => {
+            this.initialCollaborators[i].initialPermissions.push(y);
+          })
+        })
+
         // If there are collaborators
         if (collaborators.length > 0) {
           this.selectedCollaborator = this.collaborators[0];
           this.selectedCollaboratorPermissionKeys = Object.keys(this.selectedCollaborator.listPermissions) as Array<keyof ListPermissions>;
           this.setPermissions();
           this.setAllChecked();
-
-          // Wait while the collaborators are being created in the view
-          window.setTimeout(() => {
-            // The tabElements array was already populated in ngAfterViewInit but the collaborators probably weren't available
-            // at that time, so we're updating tabElements again so that the collaborators can be in the array
-            this.tabElements = this.HTMLElements.toArray();
-            this.setFocus(0);
-          }, 100);
 
           // If there are no collaborators
         } else {
@@ -78,11 +85,6 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   }
 
 
-  ngAfterViewInit() {
-    super.ngAfterViewInit();
-    this.permissionCheckboxes = this.permissionInputs.toArray();
-  }
-
   setAllChecked() {
     this.allChecked = !(Object.values(this.selectedCollaborator.listPermissions).some(x => x == false));
   }
@@ -97,7 +99,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
   setPermissions() {
     this.selectedCollaboratorPermissionKeys.forEach((permission: keyof ListPermissions, i: number) => {
-      this.permissionCheckboxes[i].nativeElement.checked = this.selectedCollaborator.listPermissions[permission];
+      this.permissionInputs.get(i)!.nativeElement.checked = this.selectedCollaborator.listPermissions[permission];
     });
   }
 
@@ -114,10 +116,16 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   onPermissionChange(value: boolean, i: number) {
+    this.hasChange = false;
     this.selectedCollaborator.listPermissions[this.selectedCollaboratorPermissionKeys[i]] = value;
     this.setAllChecked();
-    this.hasChange = true;
     this.addToUpdatedCollaborators();
+
+    this.collaborators.forEach((x, i) => {
+      Object.values(x.listPermissions).forEach((y, j) => {
+        if (y != this.initialCollaborators[i].initialPermissions[j]) this.hasChange = true;
+      })
+    })
   }
 
 
@@ -152,7 +160,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
     if (this.collaborators.length > 0) {
       this.onCollaboratorClick(this.collaborators[0]);
     } else {
-      this.permissionCheckboxes.forEach(x => x.nativeElement.checked = false);
+      this.permissionInputs.forEach(x => x.nativeElement.checked = false);
       this.allChecked = false;
     }
     this.hasChange = true;
@@ -190,47 +198,32 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   }
 
 
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-    if (this.tabElements) {
-      let checkboxIndex = -2;
+  onArrowDown(e: KeyboardEvent): void {
+    this.onArrow(1);
+  }
 
-      // Loop through all the tab elements
-      for (let i = 0; i < this.tabElements.length; i++) {
 
-        // Check to see if any of the tab elements have the focus
-        if (this.tabElements[i].nativeElement == document.activeElement) {
-
-          // If a collaborator has the focus
-          if (this.tabElements[i].nativeElement.id == "collaborator") {
-            this.onCollaboratorClick(this.collaborators[i]);
-          }
-        }
+  onArrowUp(e: KeyboardEvent): void {
+    this.onArrow(-1);
+  }
 
 
 
-        // If the tab element is a checkbox
-        if (this.tabElements[i].nativeElement.previousElementSibling instanceof HTMLInputElement) {
-          // increment the checkbox indexes
-          checkboxIndex++;
+  onArrow(direction: number) {
+    // Increment or decrement the index (depending on direction)
+    this.indexOfSelectedCollaborator = this.indexOfSelectedCollaborator + direction;
 
-          // Check to see if any of the checkboxes have the focus
-          if (this.tabElements[i].nativeElement == document.activeElement) {
+    // If the index increments past the end of the list or decrements beyond the begining of the list, then loop back around
+    if (this.indexOfSelectedCollaborator == (direction == 1 ? this.collaborators.length : -1)) this.indexOfSelectedCollaborator = direction == 1 ? 0 : this.collaborators.length - 1;
 
-            // If the Full Controll checkbox has the focus
-            if (checkboxIndex == -1) {
-              this.allChecked = !this.allChecked;
-              this.toggleAllChecked();
+    // Select the next item in the list
+    this.selectedCollaborator = this.collaborators[this.indexOfSelectedCollaborator];
 
-              // If any of the other checkboxes have the focus
-            } else {
-              (this.tabElements[i].nativeElement.previousElementSibling as HTMLInputElement).checked = !(this.tabElements[i].nativeElement.previousElementSibling as HTMLInputElement).checked;
-              this.onPermissionChange((this.tabElements[i].nativeElement.previousElementSibling as HTMLInputElement).checked, checkboxIndex);
-            }
-          }
-        }
-      }
-    }
+    // Set focus to the selected list item. This is so the scrollbar can scroll to it (if scrollbar exists)
+    this.collaboratorItems.get(this.indexOfSelectedCollaborator)?.nativeElement.focus();
+
+    // Call the onArrowSelect function (if defined)
+    this.onCollaboratorClick(this.selectedCollaborator);
   }
 
 
@@ -248,4 +241,23 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
       }
     }
   }
+
+
+  onScroll(listContainer: HTMLElement) {
+    listContainer.scrollTop = Math.round(listContainer.scrollTop / 22) * 22;
+  }
+
+
+  onMouseWheel(e: WheelEvent, listContainer: HTMLElement) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
+    listContainer.scrollTop += (delta * 44);
+  }
+}
+
+
+export class InitialCollaborator {
+  initialPermissions: Array<boolean> = new Array<boolean>();
 }

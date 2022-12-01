@@ -18,7 +18,7 @@ export class ReviewsPageComponent implements OnInit {
     (
       private route: ActivatedRoute,
       private accountService: AccountService,
-      private lazyLoadingService: LazyLoadingService
+      public lazyLoadingService: LazyLoadingService
     ) { }
 
   ngOnInit(): void {

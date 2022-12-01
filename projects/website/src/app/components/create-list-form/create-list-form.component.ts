@@ -82,11 +82,6 @@ export class CreateListFormComponent extends Validation implements OnInit {
   }
 
 
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
-
-
   close() {
     if (!this.fromAddToListForm) {
       super.close();

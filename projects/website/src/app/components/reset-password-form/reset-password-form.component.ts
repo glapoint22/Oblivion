@@ -103,9 +103,4 @@ export class ResetPasswordFormComponent extends Validation {
         successPromptComponent.message = 'Your password has been successfully reset.';
       });
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

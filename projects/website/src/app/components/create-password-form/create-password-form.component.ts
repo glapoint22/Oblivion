@@ -83,10 +83,4 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
         successPrompt.message = 'Your password has been successfully created.';
       });
   }
-
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

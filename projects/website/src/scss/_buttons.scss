@@ -8,20 +8,17 @@
     border: 1px solid $border-color;
     color: $font-color;
 
-    &:hover {
+    &:hover:not(:disabled) {
         background: lighten($background-color, 4);
         border-color: lighten($border-color, 7);
         color: lighten($font-color, 20);
     }
 
     &:disabled {
-        // background: darken($background-color, 4);
-        // border-color: darken($border-color, 4);
-        // color: darken($font-color, 30);
         opacity: 0.3;
     }
 
-    &:active {
+    &:active:not(:disabled) {
         background: lighten($background-color, 6);
         border-color: lighten($border-color, 9);
         color: lighten($font-color, 22);

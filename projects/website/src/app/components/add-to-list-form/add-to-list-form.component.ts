@@ -170,9 +170,4 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
   onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
     this.selectedList = this.lists[this.tabElements.indexOf(radioButton)];
   }
-
-
-  onSpace(e: KeyboardEvent): void {
-    e.preventDefault();
-  }
 }

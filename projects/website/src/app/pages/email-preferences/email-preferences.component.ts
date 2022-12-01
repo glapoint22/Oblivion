@@ -17,7 +17,7 @@ export class EmailPreferencesComponent implements OnInit {
   constructor
     (
       private dataService: DataService,
-      private lazyLoadingService: LazyLoadingService,
+      public lazyLoadingService: LazyLoadingService,
       private route: ActivatedRoute
     ) { }
 

@@ -1,5 +1,5 @@
 <header-footer>
-    <div class="breadcrumb">
+    <div class="breadcrumb" [style.paddingRight.px]="lazyLoadingService.paddingRight + 10">
 
         <ng-container *ngIf="!isSearch">
             <a routerLink="/account">Your Account</a>

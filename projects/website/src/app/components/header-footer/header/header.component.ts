@@ -40,7 +40,7 @@ export class HeaderComponent {
 
 
   constructor(
-    private lazyLoadingService: LazyLoadingService,
+    public lazyLoadingService: LazyLoadingService,
     public accountService: AccountService,
     private sanitizer: DomSanitizer,
     private dataService: DataService,
