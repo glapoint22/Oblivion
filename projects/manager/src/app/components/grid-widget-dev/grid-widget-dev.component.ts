@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LazyLoadingService } from 'common';
-import { GridWidgetComponent } from 'widgets';
+import { GridWidgetComponent, GridWidgetData } from 'widgets';
 import { WidgetInspectorView } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
 
@@ -20,4 +20,7 @@ export class GridWidgetDevComponent extends GridWidgetComponent {
     public widgetService: WidgetService
   ) { super(route, router, lazyLoadingService, null!) }
 
+
+  // -------------------------------------------------------------- Set Widget ------------------------------------------------------------------
+  setWidget(gridWidgetData: GridWidgetData): void { }
 }
