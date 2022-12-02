@@ -1,8 +1,9 @@
-import { Component, ElementRef } from '@angular/core';
-import { LazyLoadingService, RadioButtonLazyLoad } from 'common';
+import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { LazyLoadingService, RadioButtonLazyLoad, SpinnerAction } from 'common';
 import { ShareListType } from '../../classes/enums';
 import { List } from '../../classes/list';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
+import { CopiedPopupComponent } from '../copied-popup/copied-popup.component';
 
 @Component({
   selector: 'share-list-form',
@@ -14,6 +15,7 @@ export class ShareListFormComponent extends RadioButtonLazyLoad {
   public ShareListType = ShareListType;
   public list!: List;
   public linkCopied!: boolean;
+  @ViewChild('copiedPopupContainer', { read: ViewContainerRef }) copiedPopupContainer!: ViewContainerRef;
 
   constructor
     (
@@ -64,28 +66,38 @@ export class ShareListFormComponent extends RadioButtonLazyLoad {
         copyText.select();
         navigator.clipboard.writeText(copyText.value);
         this.linkCopied = true;
+        this.openLinkCopiedPopup();
     }
   }
 
 
 
-  // onSpace(e: KeyboardEvent): void {
-  //   e.preventDefault();
 
-  //   if (this.tabElements) {
-  //     if (this.shareListType == ShareListType.Both) {
-  //       if (this.tabElements[0].nativeElement == document.activeElement) (this.tabElements[0].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
-  //       if (this.tabElements[1].nativeElement == document.activeElement) (this.tabElements[1].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
-  //     }
-  //   }
-  // }
+  openLinkCopiedPopup() {
+    this.lazyLoadingService.load(async () => {
+      const { CopiedPopupComponent } = await import('../copied-popup/copied-popup.component');
+      const { CopiedPopupModule } = await import('../copied-popup/copied-popup.module');
+
+      return {
+        component: CopiedPopupComponent,
+        module: CopiedPopupModule
+      }
+    }, SpinnerAction.None, this.copiedPopupContainer).then((copiedPopup: CopiedPopupComponent)=> {
+      copiedPopup.onClose.subscribe(()=> {
+        this.linkCopied = false;
+      })
+    })
+  }
+
+
+
+
+
 
 
   onEnter(e: KeyboardEvent): void {
     if (this.tabElements) {
       if (this.shareListType == ShareListType.Both) {
-        // if (this.tabElements[0].nativeElement == document.activeElement) (this.tabElements[0].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
-        // if (this.tabElements[1].nativeElement == document.activeElement) (this.tabElements[1].nativeElement.previousElementSibling as HTMLInputElement).checked = true;
         if (this.tabElements[2].nativeElement == document.activeElement) this.onShareClick('Facebook');
         if (this.tabElements[3].nativeElement == document.activeElement) this.onShareClick('Twitter');
         if (this.tabElements[4].nativeElement == document.activeElement) this.onShareClick('Link');

@@ -21,71 +21,156 @@
             <div class="drop-shadow"></div>
 
             <!-- Content -->
-            <div [style]="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate ? 'overflow-y: visible;' : 'overflow-y: auto;'"
-                class="content">
-
+            <div class="content"
+                 [style]="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate ? 'overflow-y: visible;' : 'overflow-y: auto;'">
                 <div *ngIf="shareListType == ShareListType.Both" class="content-container">
-
                     <div class="options-container">
-
                         <div class="option-heading">Share List With Others</div>
 
+
+                        <!-- Share Radio Button -->
                         <label class="radio">
                             <div>Click one of the options on the right to share this list.</div>
-                            <input type="radio" name="share-list" checked="checked" (change)="linkCopied = false">
-                            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
+                            <input type="radio"
+                                   name="share-list"
+                                   checked="checked"
+                                   (change)="linkCopied = false">
+                            <span #tabElement
+                                  tabindex="-1"
+                                  id="radioButton"
+                                  class="checkmark">
+                            </span>
                         </label>
-
                         <div class="horizontal-line"></div>
-
                         <div class="option-heading">Invite Collaborators</div>
 
+
+                        <!-- Invite Radio Button -->
                         <label class="radio">
-                            <div>Click one of the options on the right to invite people to collaborate on this list.
-                            </div>
-                            <input id="collaborate" type="radio" name="share-list" (change)="linkCopied = false">
-                            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
+                            <div>Click one of the options on the right to invite people to collaborate on this list.</div>
+                            <input type="radio"
+                                   id="collaborate"
+                                   name="share-list"
+                                   (change)="linkCopied = false">
+                            <span #tabElement
+                                  tabindex="-1"
+                                  id="radioButton"
+                                  class="checkmark">
+                            </span>
                         </label>
-
                     </div>
-
                     <div class="vertical-line"></div>
-
                     <div class="vertical-share-container">
-                        <img #tabElement tabindex="-1" src="assets/facebook-share.png"
-                            title="Share your list on Facebook" alt="Share your list on Facebook"
-                            (click)="onShareClick('Facebook')">
-                        <img #tabElement tabindex="-1" src="assets/twitter-share.png" title="Share your list on Twitter"
-                            alt="Share your list on Twitter" (click)="onShareClick('Twitter')">
-                        <img #tabElement tabindex="-1" src="assets/link.png" title="Share your list with this link"
-                            alt="Share your list with this link" (click)="onShareClick('Link')">
-                        <div *ngIf="linkCopied" class="link-copied" style="bottom: 0;">Link Copied!</div>
+
+                        <!-- Facebook Share -->
+                        <div #tabElement
+                             tabindex="-1"
+                             class="share-icon-container"
+                             (click)="onShareClick('Facebook')"
+                             title="Share your list on Facebook">
+                            <img src="assets/facebook-share.png" alt="Share your list on Facebook">
+                            <img src="assets/facebook-share-scaled.png" alt="Share your list on Facebook">
+                        </div>
+
+                        <!-- Twitter Share -->
+                        <div #tabElement
+                             tabindex="-1"
+                             class="share-icon-container"
+                             (click)="onShareClick('Twitter')"
+                             title="Share your list on Twitter">
+                            <img src="assets/twitter-share.png" alt="Share your list on Twitter">
+                            <img src="assets/twitter-share-scaled.png" alt="Share your list on Twitter">
+                        </div>
+
+
+                        <!-- Link Share -->
+                        <div #link
+                             #tabElement
+                             tabindex="-1"
+                             class="share-icon-container link-icon-container"
+                             (click)="!linkCopied ? onShareClick('Link') : null"
+                             [title]="!linkCopied ? 'Share your list with this link' : ''"
+                             [ngClass]="{'hidden-link-icon-container': linkCopied}">
+                            <img src="assets/link.png" alt="Share your list with this link">
+                            <img src="assets/link-scaled.png" alt="Share your list with this link">
+                        </div>
+
+                        <!-- Copied Checkmark -->
+                        <img class="copied-checkmark"
+                             src="assets/checkmark.png"
+                             [style.top.px]="link.offsetTop"
+                             [style.left.px]="link.offsetLeft"
+                             alt="Share your list with this link"
+                             [ngClass]="{'visible-copied-checkmark': linkCopied}">
+
+                        <!-- Copied Popup Container -->
+                        <div class="copied-popup-container"
+                             [style.top.px]="link.offsetTop - 48"
+                             [style.left.px]="link.offsetLeft - 20">
+                            <ng-template #copiedPopupContainer></ng-template>
+                        </div>
                     </div>
                 </div>
 
 
-                <div *ngIf="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate"
-                    class="content-container">
-
+                <div class="content-container"
+                     *ngIf="shareListType == ShareListType.Share || shareListType == ShareListType.Collaborate">
                     <div style="max-width: 100%;" class="options-container">
-
-                        <div class="option-heading">{{shareListType == ShareListType.Share ? 'Share List With Others' :
-                            'Invite Collaborators'}}</div>
+                        <div class="option-heading">{{shareListType == ShareListType.Share ? 'Share List With Others' : 'Invite Collaborators'}}</div>
 
                         <div class="option-description">{{shareListType == ShareListType.Share ? 'Click one of the
-                            options below to share this list.' : 'Click one of the options below to invite people to
+                            options below to share this list with others.' : 'Click one of the options below to invite people to
                             collaborate on this list.'}}</div>
 
                         <div class="horizontal-share-container">
-                            <img #tabElement tabindex="-1" src="assets/facebook-share.png"
-                                title="Share your list on Facebook" alt="Share your list on Facebook"
-                                (click)="onShareClick('Facebook')">
-                            <img #tabElement tabindex="-1" src="assets/twitter-share.png"
-                                title="Share your list on Twitter" alt="Share your list on Twitter"
-                                (click)="onShareClick('Twitter')">
-                            <img #tabElement tabindex="-1" src="assets/link.png" title="Share your list with this link"
-                                alt="Share your list with this link" (click)="onShareClick('Link')">
-                            <div *ngIf="linkCopied" class="link-copied" style="bottom: -10px; right: 0;">Link Copied!</div>
+
+                            <!-- Facebook Share -->
+                            <div #tabElement
+                                 tabindex="-1"
+                                 class="share-icon-container"
+                                 (click)="onShareClick('Facebook')"
+                                 title="Share your list on Facebook">
+                                <img src="assets/facebook-share.png" alt="Share your list on Facebook">
+                                <img src="assets/facebook-share-scaled.png" alt="Share your list on Facebook">
+                            </div>
+
+                            <!-- Twitter Share -->
+                            <div #tabElement
+                                 tabindex="-1"
+                                 class="share-icon-container"
+                                 (click)="onShareClick('Twitter')"
+                                 title="Share your list on Twitter">
+                                <img src="assets/twitter-share.png" alt="Share your list on Twitter">
+                                <img src="assets/twitter-share-scaled.png" alt="Share your list on Twitter">
+                            </div>
+
+
+                            <!-- Link Share -->
+                            <div #link
+                                 #tabElement
+                                 tabindex="-1"
+                                 class="share-icon-container link-icon-container"
+                                 (click)="!linkCopied ? onShareClick('Link') : null"
+                                 [title]="!linkCopied ? 'Share your list with this link' : ''"
+                                 [ngClass]="{'hidden-link-icon-container': linkCopied}">
+                                <img src="assets/link.png" alt="Share your list with this link">
+                                <img src="assets/link-scaled.png" alt="Share your list with this link">
+                            </div>
+
+                            <!-- Copied Checkmark -->
+                            <img class="copied-checkmark"
+                                 src="assets/checkmark.png"
+                                 [style.top.px]="link.offsetTop"
+                                 [style.left.px]="link.offsetLeft"
+                                 alt="Share your list with this link"
+                                 [ngClass]="{'visible-copied-checkmark': linkCopied}">
+
+                            <!-- Copied Popup Container -->
+                            <div class="copied-popup-container"
+                                 [style.top.px]="link.offsetTop - 48"
+                                 [style.left.px]="link.offsetLeft - 20">
+                                <ng-template #copiedPopupContainer></ng-template>
+                            </div>
                         </div>
                     </div>
                 </div>

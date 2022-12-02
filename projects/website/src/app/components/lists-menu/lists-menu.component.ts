@@ -28,20 +28,13 @@ export class ListsMenuComponent {
     ) { }
 
 
-  ngAfterViewInit() {
-    const indexOfSelectedList = this.lists.indexOf(this.selectedList);
-    this.HtmlLists.get(indexOfSelectedList)?.nativeElement.focus();
-  }
 
 
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (!changes['selectedList'].isFirstChange()) {
-      window.setTimeout(() => {
-        const indexOfSelectedList = this.lists.indexOf(this.selectedList);
-        this.HtmlLists.get(indexOfSelectedList)?.nativeElement.focus();
-      })
-    }
+  ngOnChanges() {
+    window.setTimeout(() => {
+      const indexOfSelectedList = this.lists.indexOf(this.selectedList);
+      this.HtmlLists.get(indexOfSelectedList)?.nativeElement.focus();
+    })
   }
 
 
