@@ -30,7 +30,7 @@
             <div *ngIf="queryRow.item" class="text" [title]="getItemName()">{{getItemName()}}</div>
 
             <!-- Integer -->
-            <div *ngIf="queryRow.integer != undefined">{{queryRow.integer}}</div>
+            <div *ngIf="queryRow.intValue != undefined">{{queryRow.intValue}}</div>
 
             <!-- Price -->
             <div *ngIf="queryRow.price != undefined">{{queryRow.price | currency:'USD'}}</div>

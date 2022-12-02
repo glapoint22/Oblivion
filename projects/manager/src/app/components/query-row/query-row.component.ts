@@ -76,18 +76,18 @@ export class QueryRowComponent implements OnChanges {
 
       this.queryRow.comparisonOperatorType = ComparisonOperatorType.Equal;
 
-      // Category
+      // Niche
       switch (queryType) {
-        case QueryType.Category:
-          this.queryRow.item = this.queryBuilderService.categoriesList[0];
-          break;
-
-        // Niche
         case QueryType.Niche:
           this.queryRow.item = this.queryBuilderService.nichesList[0];
           break;
 
-        // Subgroup
+        // Subniche
+        case QueryType.Subniche:
+          this.queryRow.item = this.queryBuilderService.subnichesList[0];
+          break;
+
+        // Product Group
         case QueryType.ProductGroup:
           this.queryRow.item = this.queryBuilderService.productGroupsList[0];
           break;
@@ -101,7 +101,7 @@ export class QueryRowComponent implements OnChanges {
 
         // Rating
         case QueryType.Rating:
-          this.queryRow.integer = 1;
+          this.queryRow.intValue = 1;
           break;
 
 
@@ -149,15 +149,6 @@ export class QueryRowComponent implements OnChanges {
   onValueButtonClick(valueButton: HTMLElement) {
     switch (this.queryRow.queryType) {
 
-      // Category
-      case QueryType.Category:
-        this.openDropdownList(valueButton, this.queryBuilderService.categoriesList, (item: Item) => {
-          this.queryRow.item = item;
-          this.queryBuilderService.onChange();
-        });
-        break;
-
-
       // Niche
       case QueryType.Niche:
         this.openDropdownList(valueButton, this.queryBuilderService.nichesList, (item: Item) => {
@@ -167,7 +158,16 @@ export class QueryRowComponent implements OnChanges {
         break;
 
 
-      // Subgroup
+      // Subniche
+      case QueryType.Subniche:
+        this.openDropdownList(valueButton, this.queryBuilderService.subnichesList, (item: Item) => {
+          this.queryRow.item = item;
+          this.queryBuilderService.onChange();
+        });
+        break;
+
+
+      // Product Group
       case QueryType.ProductGroup:
         this.openDropdownList(valueButton, this.queryBuilderService.productGroupsList, (item: Item) => {
           this.queryRow.item = item;
@@ -185,7 +185,7 @@ export class QueryRowComponent implements OnChanges {
       // Rating
       case QueryType.Rating:
         this.openDropdownList(valueButton, this.queryBuilderService.ratingList, (item: KeyValue<string, number>) => {
-          this.queryRow.integer = item.value;
+          this.queryRow.intValue = item.value;
           this.queryBuilderService.onChange();
         });
         break;
@@ -226,7 +226,7 @@ export class QueryRowComponent implements OnChanges {
   // ---------------------------------------------------------------- Clear Value ------------------------------------------------------------------
   clearValue(): void {
     this.queryRow.item = null!;
-    this.queryRow.integer = null!;
+    this.queryRow.intValue = null!;
     this.queryRow.date = null!;
     this.queryRow.price = null!;
     this.queryRow.auto = null!;
@@ -256,7 +256,7 @@ export class QueryRowComponent implements OnChanges {
           element.firstElementChild!.innerHTML = text;
         }
 
-        dropdownList.onItemSelect = callback;
+        dropdownList.onItemSubmit = callback;
       });
   }
 
@@ -310,14 +310,14 @@ export class QueryRowComponent implements OnChanges {
       if (!this.queryRow.item.name) {
         switch (this.queryRow.queryType) {
 
-          // Categroy
-          case QueryType.Category:
-            name = this.queryBuilderService.categoriesList.find(x => x.id == this.queryRow.item?.id)?.name!;
-            break;
-
           // Niche
           case QueryType.Niche:
             name = this.queryBuilderService.nichesList.find(x => x.id == this.queryRow.item?.id)?.name!;
+            break;
+
+          // Subniche
+          case QueryType.Subniche:
+            name = this.queryBuilderService.subnichesList.find(x => x.id == this.queryRow.item?.id)?.name!;
             break;
 
           // Keyword Group

@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DataService } from 'common';
+import { Subscription } from 'rxjs';
 import { Product } from '../../classes/product';
 import { Query } from '../../classes/query';
 import { QueryElement } from '../../classes/query-element';
@@ -13,8 +14,9 @@ import { WidgetService } from '../../services/widget/widget.service';
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss']
 })
-export class QueryBuilderComponent implements OnInit {
+export class QueryBuilderComponent implements OnInit, OnDestroy {
   @Input() widget!: Queryable;
+  private subscription!: Subscription;
 
   constructor(public queryBuilderService: QueryBuilderService, private dataService: DataService, private widgetService: WidgetService) { }
 
@@ -22,13 +24,15 @@ export class QueryBuilderComponent implements OnInit {
   // ---------------------------------------------------------------- Ng On Init -------------------------------------------------------------------
   public ngOnInit(): void {
     this.queryBuilderService.getQueryLists();
-    this.queryBuilderService.change$.subscribe(() => {
+    this.subscription = this.queryBuilderService.change$.subscribe(() => {
 
-      this.dataService.get<Array<Product>>('api/Products/QueryBuilder', [{key: 'queryString', value: this.widgetService.stringify(this.widget.query)}])
-        .subscribe((products: Array<Product>) => {
-          this.widget.products = products;
-          this.widget.ngOnChanges();
-        });
+      this.dataService.get<Array<Product>>('api/QueryBuilder/GetQueryBuilderProducts',
+        [{ key: 'queryString', value: this.widgetService.stringify(this.widget.query) }], {
+        authorization: true
+      }).subscribe((products: Array<Product>) => {
+        this.widget.products = products;
+        this.widget.ngOnChanges();
+      });
     });
   }
 
@@ -126,5 +130,11 @@ export class QueryBuilderComponent implements OnInit {
     }
 
     this.queryBuilderService.onChange();
+  }
+
+
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

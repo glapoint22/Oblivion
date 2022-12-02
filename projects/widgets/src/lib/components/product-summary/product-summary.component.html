@@ -1,12 +1,12 @@
-<div class="product-container" (click)="onClick()">
-    <div class="media-backdrop">
+<div class="product-summary-product-container" (click)="onClick()">
+    <div class="product-summary-media-backdrop">
         <img [src]="'images/' + product.image.src">
     </div>
 
-    <div class="product-info    ">
+    <div class="product-summary-product-info    ">
         <div style="font-size: 14px; font-weight: bold; color: #dadada;">{{product.name}}</div>
         
-        <div class="reviews" *ngIf="product.totalReviews > 0">
+        <div class="product-summary-reviews" *ngIf="product.totalReviews > 0">
             {{product.totalReviews}}
             Review{{product.totalReviews == 0 || product.totalReviews > 1 ? 's': ''}}
         </div>

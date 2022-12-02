@@ -143,8 +143,8 @@ export enum EmailType {
 
 export enum QueryType {
     None,
-    Category,
     Niche,
+    Subniche,
     ProductGroup,
     Price,
     Rating,

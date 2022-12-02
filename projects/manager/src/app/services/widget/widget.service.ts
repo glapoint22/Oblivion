@@ -817,7 +817,7 @@ export class WidgetService {
               item: value.element.item ? {
                 id: value.element.item?.id
               } : null,
-              integer: value.element.integer,
+              intValue: value.element.intValue,
               date: value.element.date,
               price: value.element.price,
               auto: value.element.auto
