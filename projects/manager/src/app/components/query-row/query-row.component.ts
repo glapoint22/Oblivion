@@ -101,7 +101,7 @@ export class QueryRowComponent implements OnChanges {
 
         // Rating
         case QueryType.Rating:
-          this.queryRow.integer = 1;
+          this.queryRow.intValue = 1;
           break;
 
 
@@ -185,7 +185,7 @@ export class QueryRowComponent implements OnChanges {
       // Rating
       case QueryType.Rating:
         this.openDropdownList(valueButton, this.queryBuilderService.ratingList, (item: KeyValue<string, number>) => {
-          this.queryRow.integer = item.value;
+          this.queryRow.intValue = item.value;
           this.queryBuilderService.onChange();
         });
         break;
@@ -226,7 +226,7 @@ export class QueryRowComponent implements OnChanges {
   // ---------------------------------------------------------------- Clear Value ------------------------------------------------------------------
   clearValue(): void {
     this.queryRow.item = null!;
-    this.queryRow.integer = null!;
+    this.queryRow.intValue = null!;
     this.queryRow.date = null!;
     this.queryRow.price = null!;
     this.queryRow.auto = null!;

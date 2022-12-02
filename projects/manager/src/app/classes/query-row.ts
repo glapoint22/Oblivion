@@ -6,7 +6,7 @@ export class QueryRow {
     public logicalOperatorType?: LogicalOperatorType;
     public comparisonOperatorType?: ComparisonOperatorType;
     public item?: Item;
-    public integer?: number;
+    public intValue?: number;
     public date?: Date;
     public price?: number;
     public auto?: AutoQueryType;
@@ -25,7 +25,7 @@ export class QueryRow {
                 this.logicalOperatorType = init.queryRow?.logicalOperatorType;
                 this.comparisonOperatorType = init.queryRow?.comparisonOperatorType;
                 this.item = init.queryRow?.item;
-                this.integer = init.queryRow?.integer;
+                this.intValue = init.queryRow?.intValue;
                 this.date = init.queryRow?.date;
                 this.price = init.queryRow?.price;
                 this.auto = init.queryRow?.auto;
