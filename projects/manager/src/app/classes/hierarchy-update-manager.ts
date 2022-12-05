@@ -105,7 +105,9 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         if (hierarchyUpdate.arrowDown && !hierarchyUpdate.hasChildren) {
             // If the hierarchy item is a top level hierarchy item
             if (hierarchyUpdate.hierarchyGroupID == 0) {
-                this.dataService.get<Array<HierarchyItem>>('api/' + this.childDataServicePath, this.getChildItemParameters(hierarchyUpdate))
+                this.dataService.get<Array<HierarchyItem>>('api/' + this.childDataServicePath, this.getChildItemParameters(hierarchyUpdate), {
+                    authorization: true
+                })
                     .subscribe((children: Array<HierarchyItem>) => {
                         window.setTimeout(() => {
                             let num = this.listComponent.listManager.editedItem ? 2 : 1;

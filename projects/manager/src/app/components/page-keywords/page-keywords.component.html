@@ -16,7 +16,7 @@
     </div>
 
     <!-- Search -->
-    <search [apiUrl]="'Keywords/Search'" [placeholderText]="'Add a keyword group'" [clearOnSelection]="true"
+    <search [apiUrl]="'Keywords/KeywordGroups/Search'" [placeholderText]="'Add a keyword group'" [clearOnSelection]="true"
         (onItemSelect)="add($event.id, $event.name)">
     </search>
 

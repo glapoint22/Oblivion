@@ -16,7 +16,7 @@ import { PromptComponent } from '../prompt/prompt.component';
   styleUrls: ['./page-dev.component.scss']
 })
 export class PageDevComponent extends PageComponent implements ContainerHost {
-  public id: number = 0;
+  public id!: string | null;
   public name!: string;
   public pageType: PageType = PageType.Custom;
   public builderType!: BuilderType;
@@ -136,11 +136,11 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
     this.dataService.post<number>(this.apiUrl, {
       name: this.name,
       pageType: this.pageType,
-      content: this.pageContent.toString()
+      content: this.widgetService.stringify(this.pageContent)
     }, {
       authorization: true
-    }).subscribe((pageId: number) => {
-      this.id = pageId;
+    }).subscribe((page: any) => {
+      this.id = page.id;
     });
   }
 
@@ -167,7 +167,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // -------------------------------------------------------------------------------- Delete -------------------------------------------------------------------
   public delete(): void {
-    if (this.id == 0) return;
+    if (this.id == null) return;
 
     this.lazyLoadingService.load(async () => {
       const { PromptComponent } = await import('../prompt/prompt.component');
@@ -215,8 +215,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // --------------------------------------------------------------------------------- Clear -----------------------------------------------------------------------
   public clear(): void {
-    if (this.id == 0) return;
-    this.id = 0;
+    if (this.id == null) return;
+    this.id = null;
     this.clearBackground(this.widgetService.widgetDocument.body);
     this.name = null!;
     this.pageType = PageType.Custom;
@@ -235,14 +235,14 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
   // ------------------------------------------------------------------------------- Duplicate -----------------------------------------------------------------------
   public duplicate(): void {
-    if (this.id == 0) return;
+    if (this.id == null) return;
 
     this.dataService.post<number>(this.apiUrl + '/Duplicate', {
       id: this.id
     }, {
       authorization: true
-    }).subscribe((pageId: number) => {
-      this.getData(pageId);
+    }).subscribe((page: any) => {
+      this.getData(page.id);
     });
   }
 

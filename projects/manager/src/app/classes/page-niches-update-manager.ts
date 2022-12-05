@@ -32,8 +32,8 @@ export class PageNichesUpdateManager extends ListUpdateManager {
     // ====================================================================( NG ON INIT )==================================================================== \\
     ngOnInit() {
         super.ngOnInit();
-        this.dataServicePath = 'Pages/Niche';
-        this.itemType = 'Niche';
+        this.dataServicePath = 'Pages/Subniche';
+        this.itemType = 'Subniche';
         this.listOptions.editable = false;
         this.listOptions.deletePrompt = null!;
         this.listOptions.menu!.menuOptions = [
@@ -78,8 +78,22 @@ export class PageNichesUpdateManager extends ListUpdateManager {
 
     getDeletedItemParameters(deletedItem: ListItem) {
         return {
-            id: deletedItem.id,
-            pageId: this.widgetService.page.id
+            pageId: this.widgetService.page.id,
+            id: deletedItem.id
         }
+    }
+
+
+
+    // ====================================================================( ON ITEM ADD )==================================================================== \\
+
+    onItemAdd(listUpdate: ListUpdate) {
+        this.dataService.post<number>('api/' + this.dataServicePath, {
+            pageId: this.widgetService.page.id,
+            subnicheId: listUpdate.id
+
+        }, {
+            authorization: true
+        }).subscribe();
     }
 }
