@@ -67,13 +67,15 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
 
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
         const index = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
-        const groupId = this.thisArray[index].id;
+        const keywordGroupId = this.thisArray[index].id;
 
         this.dataService.put('api/' + this.childDataServicePath, {
             pageId: this.widgetService.page.id,
+            keywordGroupId: keywordGroupId,
             keywordId: hierarchyUpdate.id,
-            groupId: groupId,
             checked: hierarchyUpdate.checked
+        }, {
+            authorization: true
         }).subscribe();
     }
 
@@ -98,7 +100,16 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
     // =============================================================( GET CHILD ITEM PARAMETERS )============================================================== \\
 
     getChildItemParameters(hierarchyUpdate: HierarchyUpdate): Array<KeyValue<any, any>> {
-        return [{ key: 'groupId', value: hierarchyUpdate.id }, { key: 'pageId', value: this.widgetService.page.id }];
+        return [
+            {
+                key: 'pageId',
+                value: this.widgetService.page.id
+            },
+            {
+                key: 'KeywordGroupId',
+                value: hierarchyUpdate.id
+            }
+        ];
     }
 
 
@@ -123,8 +134,10 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
 
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         this.dataService.post<number>('api/' + this.dataServicePath, {
-            itemId: hierarchyUpdate.id,
-            pageId: this.widgetService.page.id
+            pageId: this.widgetService.page.id,
+            keywordGroupId: hierarchyUpdate.id
+        }, {
+            authorization: true
         }).subscribe();
     }
 
@@ -134,8 +147,8 @@ export class PageKeywordsUpdateManager extends HierarchyUpdateManager {
 
     getDeletedItemParameters(deletedItem: HierarchyItem) {
         return {
+            pageId: this.widgetService.page.id,
             id: deletedItem.id,
-            pageId: this.widgetService.page.id
         }
     }
 }

@@ -158,7 +158,9 @@ export class ListUpdateManager {
 
     onOpen() {
         if (this.thisArray.length == 0) {
-            this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath, this.getItemParameters())
+            this.dataService.get<Array<ListItem>>('api/' + this.dataServicePath, this.getItemParameters(), {
+                authorization: true
+            })
                 .subscribe((thisArray: Array<ListItem>) => {
                     thisArray.forEach(x => {
                         this.thisArray.push(this.getItem(x));
@@ -364,16 +366,15 @@ export class ListUpdateManager {
 
     // ====================================================================( ON ITEM ADD )==================================================================== \\
 
-    private listAddId: number = 1000;
     onItemAdd(listUpdate: ListUpdate) {
-        this.listAddId++;
-        // ********* Commented Out Data Service *********
-        // this.dataService.post<number>('api/' + this.dataServicePath, {
-        //     name: listUpdate.name
-        // }).subscribe((id: number) => {
-        this.thisArray[listUpdate.index!].id = this.listAddId//id;
-        this.updateOtherItems(listUpdate);
-        // }
+        this.dataService.post<number>('api/' + this.dataServicePath, {
+            name: listUpdate.name
+        }, {
+            authorization: true
+        }).subscribe((id: number) => {
+            this.thisArray[listUpdate.index!].id = id;
+            this.updateOtherItems(listUpdate);
+        });
     }
 
 
@@ -464,8 +465,9 @@ export class ListUpdateManager {
     // ==================================================================( ON ITEM DELETE )=================================================================== \\
 
     onItemDelete(listUpdate: ListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(listUpdate.deletedItems![0])).subscribe();
+        this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(listUpdate.deletedItems![0]), {
+            authorization: true
+        }).subscribe();
         this.updateOtherItems(listUpdate);
     }
 
@@ -660,7 +662,9 @@ export class ListUpdateManager {
 
     getSearchResults(searchWords: string) {
         this.thisSearchArray.splice(0, this.thisSearchArray.length);
-        this.dataService.get<Array<SearchResultItem>>('api/' + this.dataServicePath + '/Search', this.getSearchResultsParameters(searchWords))
+        this.dataService.get<Array<SearchResultItem>>('api/' + this.dataServicePath + '/Search', this.getSearchResultsParameters(searchWords), {
+            authorization: true
+        })
             .subscribe((searchResults: Array<SearchResultItem>) => {
 
                 // As long as search results were returned

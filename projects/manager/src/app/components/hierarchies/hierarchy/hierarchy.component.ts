@@ -117,6 +117,8 @@ export class HierarchyComponent extends ListComponent {
 
   
   commitAdd(id: number, name: string){
+    this.listManager.addEditVerificationInProgress = false;
+
     // Add the new item to the list
     this.sourceList.push({ id: id, name: name, hierarchyGroupID: 0 });
 
