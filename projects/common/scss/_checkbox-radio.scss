@@ -72,7 +72,7 @@ $border: #505050;
 .checkbox {
     &:hover {
         .checkmark {
-            background-color: lighten($background, 20);
+            background-color: lighten($background, 10);
             border-color: lighten($border, 20);
 
             &:after {
@@ -95,7 +95,7 @@ $border: #505050;
 .radio {
     &:hover {
         .checkmark {
-            background-color: lighten($background, 20);
+            background-color: lighten($background, 10);
             border-color: lighten($border, 20);
 
             &:after {

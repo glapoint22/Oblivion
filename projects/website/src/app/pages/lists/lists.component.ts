@@ -5,6 +5,7 @@ import { DataService, DropdownType, LazyLoadingService, SpinnerAction } from 'co
 import { List } from '../../classes/list';
 import { ListProduct } from '../../classes/list-product';
 import { CreateListFormComponent } from '../../components/create-list-form/create-list-form.component';
+import { ListsMenuComponent } from '../../components/lists-menu/lists-menu.component';
 import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-side-menu.component';
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
@@ -15,6 +16,7 @@ import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/r
   styleUrls: ['./lists.component.scss']
 })
 export class ListsComponent implements OnInit {
+  private indexOfSelectedList!: number;
   private listsSideMenu!: ListsSideMenuComponent;
 
   public lists!: Array<List>;
@@ -22,8 +24,10 @@ export class ListsComponent implements OnInit {
   public products!: Array<ListProduct> | undefined;
   public DropdownType = DropdownType;
   public window = window;
+
   @ViewChild('purpleButton') purpleButton!: ElementRef<HTMLElement>;
   @ViewChild('listMenuContainer') listMenuContainer!: ElementRef<HTMLElement>;
+  @ViewChild('listMenu') listMenu!: ListsMenuComponent;
 
   public sortOptions: Array<KeyValue<string, string>> = [
     { key: 'Sort by Date Added', value: 'date' },
@@ -45,14 +49,15 @@ export class ListsComponent implements OnInit {
 
 
 
-
   ngOnInit() {
     this.route.parent?.data.subscribe(results => {
       if (results.listData) {
         this.lists = results.listData.lists;
         this.products = results.listData.products;
         this.selectedList = results.listData.selectedList;
+        this.indexOfSelectedList = this.lists.indexOf(this.selectedList)
         this.populateMoveToList();
+        window.addEventListener("keydown", this.keyDown);
       } else {
         this.lists = [];
       }
@@ -61,8 +66,9 @@ export class ListsComponent implements OnInit {
 
 
   ngAfterViewInit() {
-    this.setPurpleButtonWidth();
+    this.setStylingValues();
   }
+
 
 
   setSelectedSortOption() {
@@ -138,7 +144,7 @@ export class ListsComponent implements OnInit {
           this.populateMoveToList();
           this.products = [];
           this.location.replaceState('/account/lists/' + list.id);
-          this.setPurpleButtonWidth();
+          this.setStylingValues();
           if (this.listsSideMenu) this.listsSideMenu.setSelectedList(list);
         });
       });
@@ -184,6 +190,7 @@ export class ListsComponent implements OnInit {
   onListClick(list: List) {
     if (list == this.selectedList) return;
     this.selectedList = list;
+    this.indexOfSelectedList = this.lists.indexOf(this.selectedList)
 
 
     // This will clear any query params
@@ -238,6 +245,8 @@ export class ListsComponent implements OnInit {
   }
 
 
+
+
   onVisitOfficalWebsiteClick(hoplink: string) {
     window.open(hoplink, '_blank');
   }
@@ -253,11 +262,46 @@ export class ListsComponent implements OnInit {
   }
 
 
-  setPurpleButtonWidth() {
+  setStylingValues() {
     window.setTimeout(() => {
       if (this.purpleButton) {
-        this.purpleButton.nativeElement.style.maxWidth = this.listMenuContainer.nativeElement.scrollHeight > this.listMenuContainer.nativeElement.clientHeight ? '215px' : '230px';
+        this.purpleButton.nativeElement.style.maxWidth = this.listMenuContainer.nativeElement.scrollHeight > this.listMenuContainer.nativeElement.clientHeight ? '215px' : '240px';
+      }
+
+      if(this.listMenuContainer) {
+        this.listMenuContainer.nativeElement.style.paddingRight = this.listMenuContainer.nativeElement.scrollHeight > this.listMenuContainer.nativeElement.clientHeight ? '10px' : '0';
       }
     })
+  }
+
+
+
+
+
+
+  keyDown = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this.onArrow(-1);
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.onArrow(1);
+    }
+  }
+
+
+  onArrow(direction: number) {
+
+    if (this.listMenu.HtmlLists.some(x => x.nativeElement == document.activeElement || this.listMenuContainer.nativeElement == document.activeElement)) {
+      // Increment or decrement the index (depending on direction)
+      this.indexOfSelectedList = this.indexOfSelectedList + direction;
+
+      // If the index increments past the end of the list or decrements beyond the begining of the list, then loop back around
+      if (this.indexOfSelectedList == (direction == 1 ? this.lists.length : -1)) this.indexOfSelectedList = direction == 1 ? 0 : this.lists.length - 1;
+
+      this.onListClick(this.lists[this.indexOfSelectedList]);
+    }
   }
 }

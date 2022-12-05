@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction, Image } from 'common';
 import { Collaborator } from '../../classes/collaborator';
 import { ShareListType } from '../../classes/enums';
+import { InitialCollaborator } from '../../classes/initial-collaborator';
 import { List } from '../../classes/list';
 import { ListPermissions } from '../../classes/list-permissions';
 import { ShareListFormComponent } from '../share-list-form/share-list-form.component';
@@ -155,7 +156,8 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
     let index = this.collaborators.findIndex(x => x == this.selectedCollaborator);
 
     this.collaborators.splice(index, 1);
-    this.tabElements.splice(index, 1);
+
+    this.list.collaboratorCount = this.collaborators.length;
 
     if (this.collaborators.length > 0) {
       this.onCollaboratorClick(this.collaborators[0]);
@@ -171,6 +173,11 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
       while (this.tabElements[0].nativeElement.previousElementSibling instanceof HTMLInputElement) {
         this.tabElements.splice(0, 1);
       }
+
+      window.setTimeout(() => {
+        this.tabElements.unshift(this.HTMLElements.get(0)!);
+      })
+
 
       this.base.nativeElement.focus();
     }
@@ -255,9 +262,4 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
     const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
     listContainer.scrollTop += (delta * 44);
   }
-}
-
-
-export class InitialCollaborator {
-  initialPermissions: Array<boolean> = new Array<boolean>();
 }

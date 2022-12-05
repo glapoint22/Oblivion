@@ -4,6 +4,8 @@ import { LazyLoadingService } from "../services/lazy-loading/lazy-loading.servic
 
 @Directive()
 export class LazyLoad implements AfterViewInit {
+    private scrollbarWidth!: number;
+
     public show: boolean = false;
     public fadeOut: boolean = false;
     public viewRef!: ViewRef;
@@ -29,7 +31,9 @@ export class LazyLoad implements AfterViewInit {
     ngOnInit(): void {
         this.addEventListeners();
         this.disableScrolling = true;
+
         if (!this.lazyLoadingService.showBackdrop) {
+            this.scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
             this.lazyLoadingService.showBackdrop = true;
             window.setTimeout(() => {
                 this.lazyLoadingService.backdropFadeIn = true;
@@ -50,11 +54,9 @@ export class LazyLoad implements AfterViewInit {
         if (this.disableScrolling) {
             // If the window has overflow
             if (window.innerHeight != document.body.clientHeight) {
-                const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-
                 document.body.style.overflow = "hidden";
-                document.body.style.paddingRight = scrollbarWidth + 'px';
-                this.lazyLoadingService.paddingRight = scrollbarWidth;
+                document.body.style.paddingRight = this.scrollbarWidth + 'px';
+                this.lazyLoadingService.paddingRight = this.scrollbarWidth;
 
                 // If it's an IOS device
                 if (this.checkIos()) document.body.style.position = 'fixed';
@@ -277,7 +279,8 @@ export class LazyLoad implements AfterViewInit {
 
     ngOnDestroy() {
         this.removeEventListeners();
-        if (this.disableScrolling) {
+
+        if (this.disableScrolling && !this.lazyLoadingService.backdropFadeIn) {
             document.body.style.overflow = "auto";
             document.body.style.paddingRight = '0';
             this.lazyLoadingService.paddingRight = 0;

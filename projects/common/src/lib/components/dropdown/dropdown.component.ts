@@ -72,7 +72,7 @@ export class DropdownComponent {
 
     // Select the next item in the list
     this.selectedListItem = this.list[this.indexOfSelectedListItem];
-    this.onChange.emit(this.list[this.indexOfSelectedListItem]);
+    if (this.dropdownType != DropdownType.Button) this.onChange.emit(this.list[this.indexOfSelectedListItem]);
   }
 
 
@@ -145,6 +145,7 @@ export class DropdownComponent {
           dropdownList.onItemSubmit = (item: KeyValue<any, any>) => {
             this.selectedListItem = item;
             this.onChange.emit(item);
+            console.log('fuck you')
           }
 
           const dropdownCloseListener = this.dropdownList.onClose.subscribe(() => {

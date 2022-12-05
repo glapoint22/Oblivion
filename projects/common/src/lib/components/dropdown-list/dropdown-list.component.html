@@ -16,8 +16,8 @@
      [ngClass]="{'show': show,
                  'button-list': dropdownType == DropdownType.Button,
                  'manager-list': dropdownType == DropdownType.Manager,
-                 'website-button-list': dropdownType == DropdownType.Website || dropdownType == DropdownType.Button,
-                 'website-manager-list': dropdownType == DropdownType.Website || dropdownType == DropdownType.Manager}">
+                 'website-list': dropdownType == DropdownType.Website,
+                 'website-button-list': dropdownType == DropdownType.Website || dropdownType == DropdownType.Button}">
 
      <!-- List Items-->
     <ng-container *ngIf="list && list.length > 0">

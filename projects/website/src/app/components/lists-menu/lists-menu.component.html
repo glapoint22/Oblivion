@@ -1,5 +1,9 @@
-<div #list *ngFor="let list of lists" [class]="list.isOwner ? 'owner-list' : 'collaborator-list'" [ngClass]="{'selected-owner-list': selectedList.isOwner && selectedList == list, 'selected-collaborator-list': !selectedList.isOwner && selectedList == list}"
-    (click)="selectedList = list; onListClick.emit(list)" tabindex="-1">
+<div #list
+     tabindex="-1"
+     *ngFor="let list of lists"
+     (click)="selectedList = list; onListClick.emit(list);"
+     [class]="list.isOwner ? 'owner-list' : 'collaborator-list'"
+     [ngClass]="{'selected-owner-list': selectedList.isOwner && selectedList == list, 'selected-collaborator-list': !selectedList.isOwner && selectedList == list}">
 
     <div style="margin-right: 10px;" [title]="list.ownerProfileImage?.name">
         <div class="profile-pic" style="position: absolute; z-index: 2;"></div>

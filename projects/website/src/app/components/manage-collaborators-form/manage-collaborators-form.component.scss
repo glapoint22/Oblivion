@@ -1,3 +1,5 @@
+@import '../../../scss/variables';
+
 .list-border {
     border: 1px solid #343434;
 }
@@ -6,6 +8,8 @@
     background: #181818;
     border: 2px solid rgba(22, 22, 22, 0.945);
     border-right: none;
+    height: 112px;
+    overflow-y: auto;
 }
 
 
@@ -16,6 +20,53 @@
 
 .selected-list-item {
     margin: 0 2px 0 0;
+}
+
+
+.no-collaborators {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    flex-direction: column;
+}
+
+
+.no-collaborators-text {
+    color: #dadada;
+    margin-bottom: 5px;
+}
+
+
+.invite-collaborators {
+    color: #ffba00;
+    text-align: center;
+    padding: 15px;
+}
+
+
+.invite-collaborators-link {
+    cursor: pointer;
+    color: #dadada;
+    outline: none;
+
+
+
+    &:hover {
+        color: white;
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        color: white;
+        text-decoration: underline;
+        font-size: 13.5px;
+        margin-top: -1px;
+        margin-left: -1px;
+    }
 }
 
 
@@ -30,7 +81,6 @@
 .permissions-container {
     position: relative;
     margin-bottom: 22px;
-    padding: 0 0 2px 6px;
     border: 1px solid #343434;
 }
 
@@ -44,6 +94,7 @@
     justify-content: space-between;
 
     &:hover {
+        background: $hover-background-color;
 
         .permission-text {
             color: #e0e0e0;
@@ -72,17 +123,37 @@
 .permission-text {
     width: 100%;
     line-height: 23px;
-    // padding: 5px 10px 5px 0;
+    padding-left: 6px;
     cursor: pointer;
 }
 
 
-.invite-collaborators {
-    text-decoration: underline;
-    cursor: pointer;
-    color: #dadada;
+.checkbox {
+    padding-bottom: 2px;
+}
 
-    &:hover {
-        color: white;
-    }
+
+.disable-cover {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(24, 24, 24, 0.75);
+}
+
+
+.button-container {
+    justify-content: space-between;
+}
+
+.purple-button {
+    margin-left: 0;
+}
+
+
+.right-buttons-container {
+    display: flex;
+    width: 100%;
+    max-width: 170px;
 }
