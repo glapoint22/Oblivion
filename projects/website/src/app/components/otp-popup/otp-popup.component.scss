@@ -1,0 +1,49 @@
+@import '../../../scss/mixins';
+
+
+.popup {
+    @include popup(0);
+    width: 56px;
+    height: 41px;
+    font-size: 12px;
+    color: #dadada;
+    top: 0;
+
+    &::before {
+        border: none;
+    }
+
+    &::after {
+        border: none;
+    }
+}
+    
+.popup-content {
+    position: relative;
+    // left: 6px;
+    top: 5px;
+    text-align: center;
+}
+
+
+.arrow-container {
+    position: relative;
+}
+
+
+.arrow-down {
+    &::before {
+        content: "";
+        position: absolute;
+        top: 12px;
+        left: 21px;
+        @include arrow-down(12px, 7px, #5e5e5e);
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        top: 11px;
+        left: 21px;
+        @include arrow-down(12px, 6px, #161616);
+    }
+}

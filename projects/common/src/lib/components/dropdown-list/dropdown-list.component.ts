@@ -11,7 +11,7 @@ import { ListItem } from '../../classes/list-item';
   styleUrls: ['./dropdown-list.component.scss']
 })
 export class DropdownListComponent<T extends ListItem | KeyValue<any, any>> extends LazyLoad {
-  private indexOfSelectedListItem: number = 0;
+  private indexOfSelectedListItem: number = -1;
 
   public list!: Array<T>;
   public top!: number;

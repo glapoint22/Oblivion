@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
+import { OtpPopupComponent } from '../otp-popup/otp-popup.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 @Component({
@@ -13,6 +14,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class ResetPasswordFormComponent extends Validation {
   public email!: string;
   public emailResent!: boolean;
+  @ViewChild('otpResentPopupContainer', { read: ViewContainerRef }) otpResentPopupContainer!: ViewContainerRef;
 
   constructor
     (
@@ -77,13 +79,37 @@ export class ResetPasswordFormComponent extends Validation {
 
 
   onResendEmailClick() {
+    this.openOtpPopup();
+
     this.dataService.get('api/Account/ForgotPassword', [{
       key: 'email',
       value: this.email
-    }]).subscribe(() => {
-      this.emailResent = true;
-    });
+    }]).subscribe();
   }
+
+
+
+
+  openOtpPopup() {
+    this.emailResent = true;
+
+    this.lazyLoadingService.load(async () => {
+      const { OtpPopupComponent } = await import('../otp-popup/otp-popup.component');
+      const { OtpPopupModule } = await import('../otp-popup/otp-popup.module');
+
+      return {
+        component: OtpPopupComponent,
+        module: OtpPopupModule
+      }
+    }, SpinnerAction.None, this.otpResentPopupContainer).then((otpPopup: OtpPopupComponent)=> {
+      otpPopup.onClose.subscribe(()=> {
+        this.emailResent = false;
+      })
+    })
+  }
+
+
+
 
 
   async OpenSuccessPrompt() {

@@ -28,7 +28,7 @@
 
                 <!-- List Name -->
                 <div class="label">List Name:</div>
-                <input #tabElement type="text" formControlName="listName" spellcheck="false" (keydown.space)="$event.stopPropagation()"
+                <input #tabElement type="text" formControlName="listName" spellcheck="false"
                     [ngClass]="{'error-border': _form.submitted && form.controls.listName.errors}">
 
                 <ng-container *ngIf="_form.submitted && form.controls.listName.errors">
@@ -42,7 +42,7 @@
 
                 <!-- Comments -->
                 <div class="label">Brief Description (optional):</div>
-                <textarea #tabElement formControlName="description" (keydown.space)="$event.stopPropagation()"></textarea>
+                <textarea #tabElement formControlName="description"></textarea>
 
 
 

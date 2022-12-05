@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
+import { OtpPopupComponent } from '../otp-popup/otp-popup.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
 
 
@@ -14,6 +15,7 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class DeleteAccountFormComponent extends Validation implements OnInit {
   public email!: string;
   public emailResent!: boolean;
+  @ViewChild('otpResentPopupContainer', { read: ViewContainerRef }) otpResentPopupContainer!: ViewContainerRef;
 
   constructor
     (
@@ -84,15 +86,38 @@ export class DeleteAccountFormComponent extends Validation implements OnInit {
 
 
   onResendEmailClick() {
+    this.openOtpPopup();
+
     this.dataService.get('api/Account/CreateDeleteAccountOTP', [],
       {
-        spinnerAction: SpinnerAction.StartEnd,
+        spinnerAction: SpinnerAction.None,
         authorization: true
       }
-    ).subscribe(() => {
-      this.emailResent = true;
-    });
+    ).subscribe();
   }
+
+
+
+
+  openOtpPopup() {
+    this.emailResent = true;
+
+    this.lazyLoadingService.load(async () => {
+      const { OtpPopupComponent } = await import('../otp-popup/otp-popup.component');
+      const { OtpPopupModule } = await import('../otp-popup/otp-popup.module');
+
+      return {
+        component: OtpPopupComponent,
+        module: OtpPopupModule
+      }
+    }, SpinnerAction.None, this.otpResentPopupContainer).then((otpPopup: OtpPopupComponent)=> {
+      otpPopup.onClose.subscribe(()=> {
+        this.emailResent = false;
+      })
+    })
+  }
+
+
 
 
   async OpenSuccessPrompt() {
