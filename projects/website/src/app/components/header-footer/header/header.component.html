@@ -1,14 +1,15 @@
 <div class="header-container" [style.paddingRight.px]="lazyLoadingService.paddingRight + 16">
     <div class="left-container">
 
-        <button (click)="trumpy()">Trumpy</button>
-
         <!-- Hamburger Button -->
-        <i tabindex="0"
-           class="hamburger-button"
-           (click)="onHamburgerButtonClick()"
-           (keydown.enter)="onHamburgerButtonClick()">
-        </i>
+        <div class="hamburger-button-container">
+            <i tabindex="0"
+               class="hamburger-button"
+               (click)="onHamburgerButtonClick()"
+               (keydown.enter)="onHamburgerButtonClick()">
+            </i>
+        </div>
+            
         <ng-template #sideMenuContainer></ng-template>
 
 
@@ -98,20 +99,47 @@
 
     <!-- Right Container -->
     <div class="right-container">
+
+        <!-- NOT logged in -->
         <ng-container *ngIf="!accountService.user || !accountService.user.firstName">
-            <a tabindex="0" id="about1" class="links" routerLink="/about">About</a>
-            <a tabindex="0" id="orderSupport1" class="links" href="https://www.clkbank.com/" target="_blank">Order
-                Support</a>
-            <button tabindex="0" class="login-button" (click)="onLoginClick()">Log In</button>
-            <button tabindex="0" class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
+
+            <!-- About -->
+            <div class="link-container">
+                <a id="about1" routerLink="/about">About</a>
+            </div>
+            
+            <!-- Order Support -->
+            <div class="link-container">
+                <a id="orderSupport1" href="https://www.clkbank.com/" target="_blank">Order Support</a>
+            </div>
+
+            <button class="login-button" (click)="onLoginClick()">Log In</button>
+            <button class="sign-up-button" (click)="onSignUpClick()">Sign Up</button>
         </ng-container>
 
+
+        <!-- Logged in -->
         <ng-container *ngIf="accountService.user && accountService.user.firstName">
-            <a tabindex="0" id="about2" class="links" routerLink="/about">About</a>
-            <a tabindex="0" id="orderSupport2" class="links" href="https://www.clkbank.com/" target="_blank">Order
-                Support</a>
-            <a tabindex="0" id="orders" class="links" routerLink="/account/orders">Orders</a>
-            <a tabindex="0" id="lists" class="links" routerLink="/account/lists">Lists</a>
+
+            <!-- About -->
+            <div id="about2" class="link-container">
+                <a routerLink="/about">About</a>
+            </div>
+
+            <!-- Order Support -->
+            <div id="orderSupport2" class="link-container">
+                <a href="https://www.clkbank.com/" target="_blank">Order Support</a>
+            </div>
+
+            <!-- Orders -->
+            <div id="orders" class="link-container">
+                <a routerLink="/account/orders">Orders</a>
+            </div>
+
+            <!-- Lists -->
+            <div id="lists" class="link-container">
+                <a routerLink="/account/lists">Lists</a>
+            </div>
 
 
             <div tabindex="0"
@@ -121,7 +149,6 @@
                  (keydown.enter)="onProfilePicClick()"
                  [ngClass]="{'remain-in-focus': accountMenuPopupOpen}">
 
-                <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
                 <img class="profile-pic"
                      [alt]="accountService.user.profileImage.name"
                      [title]="accountService.user.profileImage.name"

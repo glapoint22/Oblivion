@@ -24,51 +24,63 @@
     margin-right: 30px;
 
     a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 181px;
+        height: 46px;
+
+        outline: none;
+
+        &:hover {
+            img {
+                filter: brightness(1.2);
+            }
+        }
+
+        img:nth-child(1) {
+            display: block;
+        }
+
+        img:nth-child(2) {
+            position: relative;
+            display: none;
+            filter: brightness(1.2);
+        }
+
+        &:focus-visible {
+            img:nth-child(1) {
+                display: none;
+            }
+
+            img:nth-child(2) {
+                display: block;
+            }
+        }
     }
+}
+
+
+.hamburger-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 20px;
+    margin: 4px 16px 0 0;
 }
 
 
 .hamburger-button {
-    margin-right: 16px;
-    width: 22px;
-    height: 22px;
-    pointer-events: all;
-    margin-top: 4px;
-}
-
-
-a {
-    outline: none;
-
-    &:hover {
-        img {
-            filter: brightness(1.2);
-        }
-    }
-
-    img:nth-child(1) {
-        opacity: 1;
-    }
-
-    img:nth-child(2) {
-        position: relative;
-        opacity: 0;
-        top: -48px;
-        left: -2px;
-        filter: brightness(1.2);
-    }
 
     &:focus-visible {
-        img:nth-child(1) {
-            opacity: 0;;
-        }
-
-        img:nth-child(2) {
-            opacity: 1;
-        }
+        font-size: 24px;
+        color: lighten($gold, 25);
     }
 }
+
+
+
 
 
 .center-container {
@@ -96,10 +108,10 @@ a {
     justify-content: center;
     user-select: none;
     position: relative;
-    
+
     &:focus-visible {
         outline: none;
-        transform: scale(1.05);
+        transform: scale(1.1);
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
     }
 }
@@ -213,10 +225,24 @@ input {
 
     &:focus-visible {
         outline: none;
-        transform: scale(1.08);
+        transform: scale(1.1);
         background: linear-gradient(lighten(map-get($gold-gradient-map, light), 10), lighten(map-get($gold-gradient-map, dark), 10));
     }
 }
+
+
+.suggestion-list-backdrop {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    top: 79px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+}
+
+
+
 
 
 .right-container {
@@ -227,24 +253,59 @@ input {
     justify-content: space-between;
     margin-left: 20px;
     flex-shrink: 0;
+
+    a {
+        outline: none;
+        color: #dadada;
+        text-decoration: none;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+            color: white;
+        }
+
+        &:focus-visible {
+            text-decoration: underline;
+            color: white;
+            font-size: 15.5px;
+        }
+    }
 }
 
 
-.links {
-    color: #dadada;
-    cursor: pointer;
-    text-decoration: none;
+.link-container {
+    display: flex;
+    height: 18px;
+    align-items: center;
+    justify-content: center;
 
-    &:hover {
-        text-decoration: underline;
-        color: white;
+
+    &:first-child {
+        width: 42px;
     }
 
-    &:focus {
-        text-decoration: underline;
-        color: white;
+
+    &:nth-child(2) {
+        width: 100px;
+    }
+
+
+    &:nth-child(3) {
+        width: 48px;
+    }
+
+
+    &:nth-child(4) {
+        width: 32px;
     }
 }
+
+
+
+
+
+
 
 
 .login-button {
@@ -262,10 +323,12 @@ input {
     width: 88px;
     height: 28px;
     border-radius: 14px;
-    border: 2px solid #bdbdbd;
+    border: 1px solid #bdbdbd;
     background: none;
     color: #dddddd;
-    outline: none;
+    outline: 1px solid #bdbdbd;
+    ;
+    outline-offset: -1px;
     cursor: pointer;
 
     &:hover {
@@ -282,12 +345,17 @@ input {
 
 
 .profile-pic-container {
+    width: 38px;
+    height: 38px;
     outline: none;
 
     &:focus-visible {
-        transform: scale(1.1);
 
         .profile-pic {
+            top: 0;
+            left: 0;
+            width: 38px;
+            height: 38px;
             filter: brightness(1.25);
         }
     }
@@ -295,9 +363,30 @@ input {
 
 
 .profile-pic {
+    position: relative;
+    top: 2px;
+    left: 2px;
     width: 34px;
     height: 34px;
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(1.15);
+    }
 }
+
+
+.remain-in-focus {
+    .profile-pic {
+        top: 0;
+        left: 0;
+        width: 38px;
+        height: 38px;
+        filter: brightness(1.25);
+    }
+}
+
+
 
 
 .account-menu-popup-container {
@@ -310,24 +399,8 @@ input {
 }
 
 
-.remain-in-focus {
-    transform: scale(1.1);
-
-    .profile-pic {
-        filter: brightness(1.25);
-    }
-}
 
 
-.suggestion-list-backdrop {
-    position: fixed;
-    background: rgba(0, 0, 0, 0.8);
-    top: 79px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 50;
-}
 
 
 @media(max-width: 1500px) {

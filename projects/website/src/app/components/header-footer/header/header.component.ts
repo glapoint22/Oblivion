@@ -8,10 +8,7 @@ import { Niche } from '../../../classes/niche';
 import { Suggestion } from '../../../classes/suggestion';
 import { NichesService } from '../../../services/niches/niches.service';
 import { AccountMenuPopupComponent } from '../../account-menu-popup/account-menu-popup.component';
-import { AccountNotActivatedFormComponent } from '../../account-not-activated-form/account-not-activated-form.component';
-import { ActivateAccountFormComponent } from '../../activate-account-form/activate-account-form.component';
 import { NicheMenuPopupComponent } from '../../niche-menu-popup/niche-menu-popup.component';
-import { ResetPasswordFormComponent } from '../../reset-password-form/reset-password-form.component';
 import { SideMenuComponent } from '../../side-menu/side-menu.component';
 
 @Component({
@@ -163,65 +160,6 @@ export class HeaderComponent {
 
 
 
-  trumpy() {
-
-
-    // this.lazyLoadingService.load(async () => {
-    //   const { AccountNotActivatedFormComponent } = await import('../../account-not-activated-form/account-not-activated-form.component');
-    //   const { AccountNotActivatedFormModule } = await import('../../account-not-activated-form/account-not-activated-form.module');
-
-    //   return {
-    //     component: AccountNotActivatedFormComponent,
-    //     module: AccountNotActivatedFormModule
-    //   }
-    // }, SpinnerAction.StartEnd)
-    //   .then((accountNotActivatedPrompt: AccountNotActivatedFormComponent) => {
-    //     // accountNotActivatedPrompt.email = this.form.get('email')?.value;
-    //   });
-
-
-
-
-
-    // this.lazyLoadingService.load(async () => {
-    //   const { ActivateAccountFormComponent } = await import('../../activate-account-form/activate-account-form.component');
-    //   const { ActivateAccountFormModule } = await import('../../activate-account-form/activate-account-form.module');
-
-    //   return {
-    //     component: ActivateAccountFormComponent,
-    //     module: ActivateAccountFormModule
-    //   }
-    // }, SpinnerAction.End)
-    //   .then((ActivateAccountForm: ActivateAccountFormComponent) => {
-    //     // ActivateAccountForm.email = this.form.get('email')?.value;
-    //   });
-
-
-
-    // this.lazyLoadingService.load(async () => {
-    //   const { DeleteAccountFormComponent } = await import('../../delete-account-form/delete-account-form.component');
-    //   const { DeleteAccountFormModule } = await import('../../delete-account-form/delete-account-form.module');
-
-    //   return {
-    //     component: DeleteAccountFormComponent,
-    //     module: DeleteAccountFormModule
-    //   }
-    // }, SpinnerAction.End);
-
-
-    this.lazyLoadingService.load(async () => {
-      const { ResetPasswordFormComponent } = await import('../../reset-password-form/reset-password-form.component');
-      const { ResetPasswordFormModule } = await import('../../reset-password-form/reset-password-form.module');
-
-      return {
-        component: ResetPasswordFormComponent,
-        module: ResetPasswordFormModule
-      }
-    }, SpinnerAction.End)
-      .then((resetPasswordForm: ResetPasswordFormComponent) => {
-        // resetPasswordForm.email = email;
-      });
-  }
 
 
   

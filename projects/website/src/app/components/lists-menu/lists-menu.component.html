@@ -6,7 +6,6 @@
      [ngClass]="{'selected-owner-list': selectedList.isOwner && selectedList == list, 'selected-collaborator-list': !selectedList.isOwner && selectedList == list}">
 
     <div style="margin-right: 10px;" [title]="list.ownerProfileImage?.name">
-        <div class="profile-pic" style="position: absolute; z-index: 2;"></div>
         <img [src]="list.ownerProfileImage?.src ? 'images/' + list.ownerProfileImage?.src : 'assets/no-account-pic.png'" [alt]="list.ownerProfileImage?.name" class="profile-pic">
     </div>
 

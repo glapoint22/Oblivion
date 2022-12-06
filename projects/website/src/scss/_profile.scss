@@ -1,31 +1,16 @@
 .profile-pic {
-    border-radius: 50%;
     width: 30px;
     height: 30px;
+    border-radius: 50%;
+    border: 1px solid #999999;
     outline: 1px solid #999999;
-    cursor: pointer;
+    background: #313131;
+    outline-offset: -1px;
+    // cursor: pointer;
 
 
-    &::before {
-        content: "";
-        position: absolute;
-        border-radius: 50%;
-        width: inherit;
-        height: inherit;
-        outline: 1px solid #999999;
-    }
 
-
-    &::after {
-        content: "";
-        position: absolute;
-        border-radius: 50%;
-        width: inherit;
-        height: inherit;
-        outline: 1px solid #999999;
-    }
-
-    &:hover {
-        filter: brightness(1.15);
-    }
+    // &:hover {
+    //     filter: brightness(1.15);
+    // }
 }
