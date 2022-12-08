@@ -35,7 +35,7 @@
 
                 <!-- Name -->
                 <div class="label"> Name:</div>
-                <input #name #tabElement type="text" formControlName="name" (keydown.space)="$event.stopPropagation()"
+                <input #name #tabElement type="text" formControlName="name"
                     [ngClass]="{'error-border':!accountService.user && _form.submitted && form.controls.name.errors}" spellcheck="false">
 
                 <ng-container *ngIf="!accountService.user && _form.submitted && form.controls.name.errors">
@@ -51,7 +51,7 @@
 
                 <!-- Email -->
                 <div class="label">Email:</div>
-                <input #email #tabElement type="text" formControlName="email" (keydown.space)="$event.stopPropagation()"
+                <input #email #tabElement type="text" formControlName="email"
                     [ngClass]="{'error-border': !accountService.user && _form.submitted && form.controls.email.errors}">
 
                 <ng-container *ngIf="!accountService.user && _form.submitted && form.controls.email.errors">
@@ -66,7 +66,7 @@
 
                 <!-- Comments -->
                 <div class="label">Write your message:</div>
-                <textarea #tabElement formControlName="message" [ngClass]="{'error-border': _form.submitted && form.controls.message.errors}" (keydown.space)="$event.stopPropagation()"></textarea>
+                <textarea #tabElement formControlName="message" [ngClass]="{'error-border': _form.submitted && form.controls.message.errors}"></textarea>
 
                 <ng-container *ngIf="_form.submitted && form.controls.message.errors">
                     <ul>

@@ -82,7 +82,8 @@ export class ShareListFormComponent extends RadioButtonLazyLoad {
         component: CopiedPopupComponent,
         module: CopiedPopupModule
       }
-    }, SpinnerAction.None, this.copiedPopupContainer).then((copiedPopup: CopiedPopupComponent)=> {
+    }, SpinnerAction.None, this.copiedPopupContainer)
+    .then((copiedPopup: CopiedPopupComponent)=> {
       copiedPopup.onClose.subscribe(()=> {
         this.linkCopied = false;
       })

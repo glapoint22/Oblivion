@@ -42,7 +42,7 @@
                 <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
                     <!-- Email -->
                     <div class="label">Email:</div>
-                    <input #tabElement type="text" formControlName="email" (keydown.space)="$event.stopPropagation()"
+                    <input #tabElement type="text" formControlName="email"
                         [ngClass]="{'error-border': _form.submitted && form.controls.email.errors}">
 
                     <ng-container *ngIf="_form.submitted && form.controls.email.errors">
@@ -56,7 +56,7 @@
                     <!-- Password -->
                     <div class="label">Password:</div>
                     <div class="password-input-container">
-                        <input #tabElement type="password" formControlName="password" (keydown.space)="$event.stopPropagation()"
+                        <input #tabElement type="password" formControlName="password"
                         [ngClass]="{'error-border': _form.submitted && (form.controls.password.errors)}"
                             style="margin-bottom: 8px;">
 

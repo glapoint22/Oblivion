@@ -60,7 +60,6 @@
                 <div class="property">
                     <div style="margin-bottom: 10px;">Profile Image:</div>
                     <div>
-                        <div class="profile-pic" style="position: absolute; z-index: -1;"></div>
                         <img [src]="accountService.user?.profileImage?.src ? 'images/' + accountService.user?.profileImage?.src : 'assets/no-account-pic.png'" class="profile-pic"
                             [title]="accountService.user?.profileImage?.name"
                             [alt]="accountService.user?.profileImage?.name">

@@ -28,17 +28,26 @@
 
                     <div class="emphasized-text">{{email}}</div>
 
-                    <div style="margin-bottom: 20px;">If you don’t see this email
-                        in your inbox, check your junk or spam folder. Please enter the one-time password into
-                        the field below.</div>
+                    
+                    <div style="margin-bottom: 20px;">If you DO NOT see this email in your inbox, then please check your Spam (Bulk or Junk) folder or click
+                        the <span class="resend-otp">Resend OTP</span> button below and we'll send you another one-time password.</div>
+
+
+                    <div style="margin-bottom: 20px;">Please enter the one-time password into the field below.</div>
                 </div>
 
 
                 <form [formGroup]="form" #_form="ngForm" (ngSubmit)="onSubmit()">
+
+
                     <!-- One-time Password -->
                     <div class="label">One-time Password:</div>
-                    <input #tabElement #otpInput type="text" formControlName="otp" spellcheck="false" (keydown.space)="$event.stopPropagation()"
-                        [ngClass]="{'error-border': _form.submitted && form.controls.otp.errors}">
+                    <input #otpInput
+                           #tabElement
+                           type="text"
+                           spellcheck="false"
+                           formControlName="otp"
+                           [ngClass]="{'error-border': _form.submitted && form.controls.otp.errors}">
 
                     <ng-container *ngIf="_form.submitted && form.controls.otp.errors">
                         <ul>
@@ -49,22 +58,29 @@
                     </ng-container>
 
 
-                    <div *ngIf="emailResent" class="email-sent">
-                        <i class="check-mark"></i>
-                        <span>A new one-time password has been sent to your email.</span>
-                    </div>
 
-                    <div style="display: flex; margin-top: 10px;">
-                        <button #tabElement type="button" class="purple-button" (click)="onResendEmailClick()">Resend</button>
+                    <!-- Buttons -->
+                    <div class="buttons-container">
+                        <button #tabElement
+                                #purpleButton
+                                type="button"
+                                class="purple-button"
+                                [disabled]="emailResent"
+                                [ngClass]="{'disabled-purple-button': emailResent}"
+                                (click)="!emailResent ? onResendEmailClick() : null">
+                            Resend OTP
+                        </button>
 
-                        <!-- Button Container -->
+                        <div class="otp-resent-popup-container"
+                             [style.left.px]="(purpleButton.offsetWidth / 2) - (56 / 2)">
+                            <ng-template #otpResentPopupContainer></ng-template>
+                        </div>
+                        
                         <div class="button-container">
                             <button #tabElement type="button" class="dark-button" (click)="close()">Cancel</button>
                             <button #tabElement type="submit" class="gold-rect-button">Submit</button>
                         </div>
                     </div>
-
-
                 </form>
             </div>
         </div>

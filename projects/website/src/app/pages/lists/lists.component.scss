@@ -25,7 +25,6 @@
     margin-bottom: 10px;
 
     button {
-        position: absolute;
         background: none;
         border: none;
         color: #cacaca;
@@ -52,47 +51,25 @@
 
 
 .list-button-container {
-    position: relative;
-    height: 17px;
+    display: flex;
+    height: 18px;
+    align-items: center;
+    justify-content: center;
 
     &:first-child {
         width: 34px;
-
-        button {
-            &:focus-visible {
-                left: -1px;
-            }
-        }
     }
 
     &:nth-child(2) {
         width: 51px;
-
-        button {
-            &:focus-visible {
-                left: -2px;
-            }
-        }
     }
 
     &:nth-child(3) {
         width: 48px;
-
-        button {
-            &:focus-visible {
-                left: -2px;
-            }
-        }
     }
 
     &:last-child {
         width: 91px;
-
-        button {
-            &:focus-visible {
-                left: -4px;
-            }
-        }
     }
 }
 

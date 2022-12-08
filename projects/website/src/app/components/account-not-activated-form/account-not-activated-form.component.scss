@@ -8,21 +8,47 @@
     margin-bottom: 20px;
 }
 
-.purple-button {
-    float: left;
+
+.not {
+    font-family: 'lithos pro';
+    color: $error-color
 }
 
-.email-sent {
-    color: $success-color;
-    margin-top: -10px;
-    margin-bottom: 10px;
-    font-size: 12px;
+.resend-otp {
+    color: $purple-text;
+}
 
-    span {
-        margin-left: 5px;
-    }
+.buttons-container {
+    display: flex;
+    position: relative;
+}
+
+.purple-button {
+    float: left;
+    max-width: 100px;
+    opacity: 1;
+    margin-left: 0;
+    transition: opacity 0.4s;
+}
+
+
+.disabled-purple-button {
+    opacity: 0.3;
+}
+
+
+.otp-resent-popup-container {
+    position: absolute;
+    top: -53px;
 }
 
 .button-container {
     width: 100%;
+}
+
+
+@media(max-width: 265px) {
+    .purple-button {
+        font-size: 12px;
+    }
 }
