@@ -1,6 +1,6 @@
 <div class="description-property-container product-property-hover-container">
     <div class="product-property-label">Description:</div>
     <div class="description-container product-dashed-border-bright">
-        <description [product]="subproduct" [apiUrl]="'Subproduct/Description'"></description>
+        <description [product]="subproduct" (onChange)="onChange($event)"></description>
     </div>
 </div>

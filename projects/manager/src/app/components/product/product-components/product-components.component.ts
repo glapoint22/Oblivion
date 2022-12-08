@@ -13,7 +13,7 @@ export class ProductComponentsComponent {
   @Input() product!: Product;
 
   constructor(private dataService: DataService) { }
- 
+
 
   // ==================================================================( ADD SUBPRODUCT )=================================================================== \\
 
@@ -33,6 +33,8 @@ export class ProductComponentsComponent {
     this.dataService.post<number>('api/Products/Subproduct', {
       productId: this.product.id,
       type: type
+    }, {
+      authorization: true
     }).subscribe((id: number) => {
       subproduct.id = id;
     });

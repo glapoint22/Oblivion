@@ -67,6 +67,8 @@ export class ProductRecurringPaymentComponent extends ProductComponent {
     this.dataService.put('api/Products/RecurringPayment', {
       id: this.product.id,
       recurringPayment: this.product.recurringPayment
+    }, {
+      authorization: true
     }).subscribe();
   }
 

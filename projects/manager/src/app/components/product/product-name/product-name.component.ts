@@ -16,7 +16,7 @@ export class ProductNameComponent {
   @Input() product!: Product;
 
   constructor(private dataService: DataService, private productService: ProductService) { }
- 
+
 
   // =====================================================================( ON PASTE )====================================================================== \\
 
@@ -85,6 +85,8 @@ export class ProductNameComponent {
     this.dataService.put('api/Products', {
       id: product.id,
       name: product.name
+    }, {
+      authorization: true
     }).subscribe();
   }
 }

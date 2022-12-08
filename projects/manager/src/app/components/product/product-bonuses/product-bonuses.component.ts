@@ -32,6 +32,8 @@ export class ProductBonusesComponent  {
     this.dataService.post<number>('api/Products/Subproduct', {
       productId: this.product.id,
       type: type
+    }, {
+      authorization: true
     }).subscribe((id: number) => {
       subproduct.id = id;
     });

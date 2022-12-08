@@ -16,7 +16,7 @@ import { ProductFormComponent } from '../../components/product/product-form/prod
 })
 export class ProductService {
   private nicheId!: number;
-  private subNicheId!: number;
+  private subnicheId!: number;
   private productId!: number;
   private onProductLoad: Subject<void> = new Subject<void>();
   private onProductOpen: Subject<ProductFormComponent> = new Subject<ProductFormComponent>();
@@ -49,7 +49,7 @@ export class ProductService {
       if (this.sideMenuNicheArray.length == 0) {
 
         // Then first, load the niches into the niches side menu
-        this.dataService.get<Array<HierarchyItem>>('api/Categories')
+        this.dataService.get<Array<HierarchyItem>>('api/Niches')
           .subscribe((niches: Array<HierarchyItem>) => {
             niches.forEach(x => {
               this.sideMenuNicheArray.push(
@@ -87,10 +87,12 @@ export class ProductService {
     // If the product has NOT been opened yet
     if (!openedProduct) {
 
-      this.dataService.get<Product>('api/Products/Product', [{ key: 'productId', value: productId }])
+      this.dataService.get<Product>('api/Products/Product', [{ key: 'productId', value: productId }], {
+        authorization: true
+      })
         .subscribe((product: Product) => {
           this.nicheId = product.niche.id!;
-          this.subNicheId = product.subNiche.id!;
+          this.subnicheId = product.subniche.id!;
           const productComponentFactory: ComponentFactory<ProductFormComponent> = this.resolver.resolveComponentFactory(ProductFormComponent);
           const productComponentRef = this.productsContainer.createComponent(productComponentFactory);
           const productComponent: ProductFormComponent = productComponentRef.instance;
@@ -120,7 +122,7 @@ export class ProductService {
       // If the product is already open
     } else {
       this.nicheId = openedProduct.product.niche.id!;
-      this.subNicheId = openedProduct.product.subNiche.id!;
+      this.subnicheId = openedProduct.product.subniche.id!;
       openedProduct.zIndex = this.zIndex;
       this.selectedProduct = openedProduct;
       this.onProductLoad.next();
@@ -156,7 +158,7 @@ export class ProductService {
 
     // Get the index of the niche
     const nicheIndex: number = this.sideMenuNicheArray.findIndex(x => x.hierarchyGroupID == 0 && x.id == this.nicheId)!;
-    this.setHierarchy(nicheIndex, this.subNicheId, 1, this.loadSubNichesAndProducts, [nicheIndex], this.setSubNiche, [nicheIndex], this.setSubNiche, null!);
+    this.setHierarchy(nicheIndex, this.subnicheId, 1, this.loadSubNichesAndProducts, [nicheIndex], this.setSubNiche, [nicheIndex], this.setSubNiche, null!);
   }
 
 
@@ -192,7 +194,7 @@ export class ProductService {
 
   loadSubNichesAndProducts(nicheIndex: number) {
     // Load all the subNiches of the Niche as well as all the products of the subNiche that the product belongs to
-    this.dataService.get<NicheHierarchy>('api/Products/SubNiches_Products', [{ key: 'nicheId', value: this.nicheId }, { key: 'subNicheId', value: this.subNicheId }])
+    this.dataService.get<NicheHierarchy>('api/Products/SubNiches_Products', [{ key: 'nicheId', value: this.nicheId }, { key: 'subNicheId', value: this.subnicheId }])
       .subscribe((nicheHierarchy: NicheHierarchy) => {
 
         // SubNiches
@@ -201,7 +203,7 @@ export class ProductService {
         }
 
         // And the index of the subNiche
-        const subNicheIndex: number = this.sideMenuNicheArray.findIndex(x => x.hierarchyGroupID == 1 && x.id == this.subNicheId);
+        const subNicheIndex: number = this.sideMenuNicheArray.findIndex(x => x.hierarchyGroupID == 1 && x.id == this.subnicheId);
 
         // Products
         for (let i = nicheHierarchy.products.length - 1; i >= 0; i--) {
@@ -217,7 +219,7 @@ export class ProductService {
 
   loadProducts(subNicheIndex: number) {
     // Load the products
-    this.dataService.get<Array<HierarchyItem>>('api/Products', [{ key: 'parentId', value: this.subNicheId }])
+    this.dataService.get<Array<HierarchyItem>>('api/Products', [{ key: 'parentId', value: this.subnicheId }])
       .subscribe((products: Array<HierarchyItem>) => {
         for (let i = products.length - 1; i >= 0; i--) {
           this.sideMenuNicheArray.splice(subNicheIndex + 1, 0, this.getHierarchyItem(products[i], 2));
@@ -236,7 +238,7 @@ export class ProductService {
       name: hierarchyItem.name,
       hierarchyGroupID: hierarchyGroupID,
       hidden: false,
-      arrowDown: hierarchyGroupID == 1 && hierarchyItem.id == this.subNicheId ? true : false,
+      arrowDown: hierarchyGroupID == 1 && hierarchyItem.id == this.subnicheId ? true : false,
       selected: hierarchyGroupID == 2 && hierarchyItem.id == this.productId ? true : false,
       isParent: hierarchyGroupID == 2 ? false : true,
       case: CaseType.TitleCase
@@ -251,7 +253,7 @@ export class ProductService {
     if (nicheIndex) this.unhide(nicheIndex);
 
     // Get the index of the subNiche
-    const subNicheIndex: number = this.sideMenuNicheArray.findIndex(x => x.hierarchyGroupID == 1 && x.id == this.subNicheId);
+    const subNicheIndex: number = this.sideMenuNicheArray.findIndex(x => x.hierarchyGroupID == 1 && x.id == this.subnicheId);
     this.setHierarchy(subNicheIndex, this.productId, 2, this.loadProducts, [subNicheIndex], this.selectProduct, [subNicheIndex], this.selectProduct, nicheIndex ? [subNicheIndex] : null!);
   }
 

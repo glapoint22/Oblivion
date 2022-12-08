@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { SpinnerAction } from 'common';
 import { PopupArrowPosition } from '../../../classes/enums';
 import { HoplinkPopupComponent } from '../../hoplink-popup/hoplink-popup.component';
@@ -40,6 +40,8 @@ export class ProductHoplinkComponent extends ProductComponent {
           this.dataService.put('api/Products/Hoplink', {
             id: this.product.id,
             hoplink: this.product.hoplink
+          }, {
+            authorization: true
           }).subscribe();
         }
 

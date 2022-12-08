@@ -43,6 +43,8 @@ export class ProductPriceComponent extends ProductComponent {
             this.dataService.post('api/Products/Price', {
               productId: this.product.id,
               price: price
+            }, {
+              authorization: true
             }).subscribe();
 
             // If a price is being updated
@@ -51,6 +53,8 @@ export class ProductPriceComponent extends ProductComponent {
             this.dataService.put('api/Products/Price', {
               productId: this.product.id,
               price: price
+            }, {
+              authorization: true
             }).subscribe();
           }
           this.product.minPrice = price;

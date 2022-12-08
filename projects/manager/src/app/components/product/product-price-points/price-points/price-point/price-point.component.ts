@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { DataService, LazyLoadingService, PricePoint } from 'common';
 import { PopupArrowPosition } from 'projects/manager/src/app/classes/enums';
+import { ProductService } from 'projects/manager/src/app/services/product/product.service';
 
 @Component({
   template: '',
@@ -10,7 +11,7 @@ export class PricePointComponent {
   public PopupArrowPosition = PopupArrowPosition;
   @Input() pricePoint!: PricePoint;
 
-  constructor(public dataService: DataService, public lazyLoadingService: LazyLoadingService) { }
+  constructor(public dataService: DataService, public lazyLoadingService: LazyLoadingService, private productService: ProductService) { }
 
 
   // =====================================================================( ON FOCUS )====================================================================== \\
@@ -84,7 +85,7 @@ export class PricePointComponent {
 
 
   // =================================================================( IS WHOLE NUMBER )=================================================================== \\
-  
+
   isWholeNumber(value: string): boolean {
     return parseFloat(value) % 1 == 0;
   }
@@ -112,22 +113,27 @@ export class PricePointComponent {
     htmlElement.blur();
   }
 
-  
+
 
   // ================================================================( UPDATE PRICE POINT )================================================================= \\
 
   updatePricePoint(pricePoint: PricePoint) {
     this.dataService.put('api/Products/PricePoint', {
-      id: pricePoint.id,
-      header: pricePoint.header && pricePoint.header.length > 0 ? pricePoint.header : null,
-      quantity: pricePoint.quantity && pricePoint.quantity.length > 0 ? pricePoint.quantity : null,
-      imageId: pricePoint.image.id ? pricePoint.image.id : null,
-      unitPrice: pricePoint.unitPrice && pricePoint.unitPrice.length > 0 ? pricePoint.unitPrice : null,
-      unit: pricePoint.unit && pricePoint.unit.length > 0 ? pricePoint.unit : null,
-      strikethroughPrice: pricePoint.strikethroughPrice && pricePoint.strikethroughPrice.length > 0 ? pricePoint.strikethroughPrice : null,
-      price: pricePoint.price && pricePoint.price.length > 0 ? parseFloat(pricePoint.price) : 0,
-      shippingType: pricePoint.shippingType,
-      recurringPayment: pricePoint.recurringPayment
+      productId: this.productService.selectedProduct.product.id,
+      pricePoint: {
+        id: pricePoint.id,
+        header: pricePoint.header && pricePoint.header.length > 0 ? pricePoint.header : null,
+        quantity: pricePoint.quantity && pricePoint.quantity.length > 0 ? pricePoint.quantity : null,
+        imageId: pricePoint.image.id ? pricePoint.image.id : null,
+        unitPrice: pricePoint.unitPrice && pricePoint.unitPrice.length > 0 ? pricePoint.unitPrice : null,
+        unit: pricePoint.unit && pricePoint.unit.length > 0 ? pricePoint.unit : null,
+        strikethroughPrice: pricePoint.strikethroughPrice && pricePoint.strikethroughPrice.length > 0 ? pricePoint.strikethroughPrice : null,
+        shippingType: pricePoint.shippingType,
+        price: pricePoint.price && pricePoint.price.length > 0 ? parseFloat(pricePoint.price) : 0,
+        recurringPayment: pricePoint.recurringPayment
+      }
+    }, {
+      authorization: true
     }).subscribe();
   }
 }

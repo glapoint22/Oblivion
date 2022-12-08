@@ -18,9 +18,9 @@ export class MediaComponent implements OnInit {
 
 
   // ====================================================================( NG ON INIT )===================================================================== \\
-  
+
   ngOnInit() {
-      this.productForm.selectedProductMedia = this.product.media[0];
+    this.productForm.selectedProductMedia = this.product.media[0];
   }
 
 
@@ -59,14 +59,16 @@ export class MediaComponent implements OnInit {
   // ==================================================================( UPDATE INDICES )=================================================================== \\
 
   updateIndices() {
-    this.dataService.put('api/Products/Media/Indices', {
+    this.dataService.put('api/Products/MediaIndices', {
       productId: this.product.id,
       productMedia: this.product.media.map((media: ProductMedia) => {
         return {
-          productMediaId: media.productMediaId,
+          id: media.productMediaId,
           index: media.index
         }
       })
+    }, {
+      authorization: true
     }).subscribe();
   }
 }

@@ -10,16 +10,16 @@
 
         <div class="border product-dashed-border-bright">
             <div class="image-container">
-                <subproduct-image [subproduct]="subproduct"></subproduct-image>
+                <subproduct-image [subproduct]="subproduct" [productId]="productId"></subproduct-image>
             </div>
             
             <div class="name-and-description-container">
-                <subproduct-name [subproduct]="subproduct"></subproduct-name>
-                <subproduct-description [subproduct]="subproduct"></subproduct-description>
+                <subproduct-name [subproduct]="subproduct" [productId]="productId"></subproduct-name>
+                <subproduct-description [subproduct]="subproduct" [productId]="productId"></subproduct-description>
             </div>
 
             <ng-container *ngIf="subproductType == SubproductType.Bonus">
-                <subproduct-value [subproduct]="subproduct"></subproduct-value>
+                <subproduct-value [subproduct]="subproduct" [productId]="productId"></subproduct-value>
             </ng-container>
         </div>
     </div>

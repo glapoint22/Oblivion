@@ -24,12 +24,14 @@ export class SubproductsComponent {
     this.dataService.post<number>('api/Products/Subproduct', {
       productId: this.productId,
       type: this.subproductType
+    }, {
+      authorization: true
     }).subscribe((id: number) => {
       this.subproducts[this.subproducts.length - 1].id = id;
     });
   }
 
-  
+
 
   // =====================================================================( ON PASTE )====================================================================== \\
 
@@ -64,14 +66,17 @@ export class SubproductsComponent {
   }
 
 
-  
+
   // ================================================================( DELETE SUBPRODUCT )================================================================== \\
 
   deleteSubproduct(index: number, id: number): void {
     this.subproducts.splice(index, 1);
 
     this.dataService.delete('api/Products/Subproduct', {
-      id: id
+      productId: this.productId,
+      subproductId: id
+    }, {
+      authorization: true
     }).subscribe();
   }
 
@@ -81,10 +86,14 @@ export class SubproductsComponent {
 
   updateSubproduct(subproduct: Subproduct) {
     this.dataService.put('api/Products/Subproduct', {
-      id: subproduct.id,
+      productId: this.productId,
+      subproductId: subproduct.id,
+      name: subproduct.name,
+      description: subproduct.description,
       imageId: subproduct.image.id,
-      name: subproduct.name && subproduct.name.length > 0 ? subproduct.name : null,
       Value: subproduct.value && !isNaN(subproduct.value) ? subproduct.value : 0
+    }, {
+      authorization: true
     }).subscribe();
   }
 }

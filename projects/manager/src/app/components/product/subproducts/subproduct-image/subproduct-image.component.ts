@@ -45,7 +45,7 @@ export class SubproductImageComponent extends SubproductsComponent {
 
   public removeImage(subproduct: Subproduct) {
     // Remove the image
-    this.dataService.delete('api/Products/Subproduct/Image', { subproductId: subproduct.id }).subscribe();
     subproduct.image.src = null!;
+    this.updateSubproduct(subproduct);
   }
 }
