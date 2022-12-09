@@ -154,49 +154,48 @@ export class ProductMediaDisplayComponent extends MediaComponent {
 
   public removeProductMedia() {
     // Remove the image
-    this.dataService.delete('api/Products/Media', { id: this.productForm.selectedProductMedia.productMediaId }, {
-      authorization: true
-    })
-      .subscribe(() => {
-        let arrayIndex = this.product.media.findIndex(x => this.productForm.selectedProductMedia == x);
-        let index = this.productForm.selectedProductMedia.index + 1;
-        let selectedProductMedia!: ProductMedia;
+    this.dataService.delete('api/Products/Media',
+      {
+        productId: this.product.id,
+        productMediaId: this.productForm.selectedProductMedia.productMediaId
+      },
+      {
+        authorization: true
+      }
+    ).subscribe(() => {
+      let arrayIndex = this.product.media.findIndex(x => this.productForm.selectedProductMedia == x);
+      let index = this.productForm.selectedProductMedia.index + 1;
+      let selectedProductMedia!: ProductMedia;
 
-        this.product.media.splice(arrayIndex, 1);
+      this.product.media.splice(arrayIndex, 1);
 
-        // Reorder the media
-        do {
-          selectedProductMedia = this.product.media.find(x => x.index == index)!;
+      // Reorder the media
+      do {
+        selectedProductMedia = this.product.media.find(x => x.index == index)!;
 
-          if (selectedProductMedia) {
-            selectedProductMedia.index--;
-            selectedProductMedia.top = this.productMediaSpacing * selectedProductMedia.index;
-            selectedProductMedia.transition = 'all 0ms ease 0s';
-            index++;
-          }
-
-        } while (selectedProductMedia);
-
-        // Get the next selected media
-        if (this.productForm.selectedProductMedia.index == this.product.media.length) {
-          selectedProductMedia = this.product.media.find(x => x.index == this.productForm.selectedProductMedia.index - 1)!;
-        } else {
-          selectedProductMedia = this.product.media.find(x => x.index == this.productForm.selectedProductMedia.index)!;
-        }
-
-        // Select the media
         if (selectedProductMedia) {
-          this.onMediaSelect(selectedProductMedia);
-        } else {
-          this.productForm.selectedProductMedia = null!;
+          selectedProductMedia.index--;
+          selectedProductMedia.top = this.productMediaSpacing * selectedProductMedia.index;
+          selectedProductMedia.transition = 'all 0ms ease 0s';
+          index++;
         }
 
-        // Update the indices
-        if (this.product.media.length > 0) {
-          this.updateIndices();
-        }
+      } while (selectedProductMedia);
 
-      });
+      // Get the next selected media
+      if (this.productForm.selectedProductMedia.index == this.product.media.length) {
+        selectedProductMedia = this.product.media.find(x => x.index == this.productForm.selectedProductMedia.index - 1)!;
+      } else {
+        selectedProductMedia = this.product.media.find(x => x.index == this.productForm.selectedProductMedia.index)!;
+      }
+
+      // Select the media
+      if (selectedProductMedia) {
+        this.onMediaSelect(selectedProductMedia);
+      } else {
+        this.productForm.selectedProductMedia = null!;
+      }
+    });
   }
 
 
