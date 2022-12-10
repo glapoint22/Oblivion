@@ -56,12 +56,13 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
 
     onItemCheckboxChange(hierarchyUpdate: CheckboxListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.put('api/Products/Filter', {
-        //     productId: this.productId,
-        //     id: hierarchyUpdate.id,
-        //     checked: hierarchyUpdate.checked
-        // }).subscribe();
+        this.dataService.put('api/Products/Filter', {
+            productId: this.productId,
+            filterOptionId: hierarchyUpdate.id,
+            checked: hierarchyUpdate.checked
+        }, {
+            authorization: true
+        }).subscribe();
     }
 
 
@@ -125,7 +126,7 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productId }, { key: 'searchWords', value: searchWords }];
+    getSearchResultsParameters(searchTerm: string): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productId }, { key: 'searchTerm', value: searchTerm }];
     }
 }

@@ -21,18 +21,6 @@ export class VendorPopupComponent extends LazyLoad {
     super(lazyLoadingService);
   }
 
-  // Not sure if this was needed
-  
-  // ngOnInit(): void {
-  //   super.ngOnInit();
-
-  //   this.dataService.get<Vendor>('api/Vendors/Vendor', [{ key: 'vendorId', value: this.product.vendor.id }])
-  //     .subscribe((vendor: Vendor) => {
-  //       this.product.vendor = vendor;
-  //     })
-  // }
-
-
   ngOnInit() {
     super.ngOnInit();
     window.addEventListener('mousedown', this.mousedown);
@@ -48,8 +36,10 @@ export class VendorPopupComponent extends LazyLoad {
     this.product.vendor = vendor;
 
     this.dataService.put('api/Products/Vendor', {
-      itemId: this.product.id,
-      propertyId: vendor.id
+      productId: this.product.id,
+      vendorId: vendor.id
+    }, {
+      authorization: true
     }).subscribe();
   }
 
@@ -71,7 +61,7 @@ export class VendorPopupComponent extends LazyLoad {
 
 
   onEscape(): void {
-    if(this.search.dropdownList == null) super.onEscape();
+    if (this.search.dropdownList == null) super.onEscape();
   }
 
 
