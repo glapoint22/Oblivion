@@ -73,7 +73,6 @@ export class SubproductsComponent {
     this.subproducts.splice(index, 1);
 
     this.dataService.delete('api/Products/Subproduct', {
-      productId: this.productId,
       subproductId: id
     }, {
       authorization: true
@@ -86,7 +85,6 @@ export class SubproductsComponent {
 
   updateSubproduct(subproduct: Subproduct) {
     this.dataService.put('api/Products/Subproduct', {
-      productId: this.productId,
       subproductId: subproduct.id,
       name: subproduct.name,
       description: subproduct.description,
