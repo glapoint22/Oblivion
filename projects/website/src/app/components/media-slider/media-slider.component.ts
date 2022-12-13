@@ -21,12 +21,11 @@ export class MediaSliderComponent implements OnChanges {
 
 
   async onMediaClick(media: Media) {
-    if (media.type != MediaType.Video) return;
 
     this.lazyLoadingService.load(async () => {
       const { MediaPlayerComponent } = await import('../../components/media-player/media-player.component');
       const { MediaPlayerModule } = await import('../../components/media-player/media-player.module');
-
+  
       return {
         component: MediaPlayerComponent,
         module: MediaPlayerModule
@@ -34,8 +33,20 @@ export class MediaSliderComponent implements OnChanges {
     }, SpinnerAction.StartEnd)
       .then((mediaPlayer: MediaPlayerComponent) => {
         mediaPlayer.media = this.media;
-        mediaPlayer.selectedVideo = media;
-        mediaPlayer.selectedImage = this.media[0];
+  
+  
+        mediaPlayer.selectedMedia = media;
+  
+  
+        if (media.type == MediaType.Video) {
+          mediaPlayer.isVideos = true;
+          mediaPlayer.selectedVideo = media;
+          mediaPlayer.selectedImage = this.media[0];
+        }else {
+          mediaPlayer.isVideos = false;
+          mediaPlayer.selectedImage = media;
+          mediaPlayer.selectedVideo = this.media.find(x => x.type == MediaType.Video)!;
+        }
       });
   }
 }
