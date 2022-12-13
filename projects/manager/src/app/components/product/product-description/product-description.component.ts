@@ -8,4 +8,9 @@ import { Product } from '../../../classes/product';
 })
 export class ProductDescriptionComponent  {
   @Input() product!: Product;
+
+  onChange(description: string) {
+    this.product.description = description;
+    // this.updateSubproduct(this.subproduct);
+  }
 }

@@ -47,8 +47,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         super.ngOnInit()
         this.itemType = 'Niche';
         this.childType = 'Sub Niche';
-        this.dataServicePath = 'Categories';
-        this.childDataServicePath = 'Niches';
+        this.dataServicePath = 'Niches';
+        this.childDataServicePath = 'Subniches';
         this.parentSearchType = 'Niche';
         this.childSearchType = 'Sub Niche';
         this.searchNameWidth = '295px';
@@ -110,7 +110,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
             // If the hierarchy item is a second level hierarchy item
             if (hierarchyUpdate.hierarchyGroupID == 1) {
-                this.dataService.get<Array<Item>>('api/' + this.grandchildDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }])
+                this.dataService.get<Array<Item>>('api/' + this.grandchildDataServicePath, [{ key: 'parentId', value: hierarchyUpdate.id }], {
+                    authorization: true
+                })
                     .subscribe((grandchildren: Array<Item>) => {
                         window.setTimeout(() => {
                             let num = this.listComponent.listManager.editedItem ? 2 : 1;
@@ -276,6 +278,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
                 id: this.thisArray[indexOfHierarchyItemParent].id,
                 name: hierarchyUpdate.name
+            }, {
+                authorization: true
             }).subscribe((id: number) => {
                 this.thisArray[hierarchyUpdate.index!].id = id;
             })
@@ -304,6 +308,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.dataService.put('api/' + this.grandchildDataServicePath, {
                 id: hierarchyUpdate.id,
                 name: hierarchyUpdate.name
+            }, {
+                authorization: true
             }).subscribe();
         }
         super.onItemEdit(hierarchyUpdate);
@@ -358,7 +364,10 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             // Prefill the prompt so if the prompt opens before we get the child name, it won't be an empty prompt
             this.searchOptions.deletePrompt!.message = this.deletePromptGrandchildMessage(this.childType, deletedItem.values[0].name, this.itemType, '');
 
-            this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: deletedItem.id }])
+            this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: deletedItem.id }],
+                {
+                    authorization: true
+                })
                 .subscribe((parentItem: Item) => {
                     // If the child name comes back before the propmt is opened
                     if (!this.searchComponent.listManager.prompt) {
@@ -378,7 +387,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             // Prefill the prompt so if the prompt opens before we get the grandchild name, it won't be an empty prompt
             this.searchOptions.deletePrompt!.message = this.deletePromptChildMessage(this.grandchildType, deletedItem.values[0].name, this.childType, '');
 
-            this.dataService.get<Item>('api/' + this.grandchildDataServicePath + '/Parent', [{ key: 'productId', value: deletedItem.id }])
+            this.dataService.get<Item>('api/' + this.grandchildDataServicePath + '/Parent', [{ key: 'productId', value: deletedItem.id }], {
+                authorization: true
+            })
                 .subscribe((grandchildItem: Item) => {
                     // If the grandchild name comes back before the propmt is opened
                     if (!this.searchComponent.listManager.prompt) {
@@ -442,7 +453,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
         // If the item that is being deleted is a niche
         if (deletedItem.values[1].name == this.parentSearchType) {
-            this.dataService.get<Array<MultiColumnItem>>('api/' + this.dataServicePath + '/Children', [{ key: 'parentId', value: deletedItem.id }])
+            this.dataService.get<Array<MultiColumnItem>>('api/' + this.dataServicePath + '/Children', [{ key: 'parentId', value: deletedItem.id }], {
+                authorization: true
+            })
                 .subscribe((children: Array<MultiColumnItem>) => {
                     children.forEach(x => {
 
@@ -459,7 +472,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
         // If the item that is being deleted is a sub niche
         if (deletedItem.values[1].name == this.childSearchType) {
-            this.dataService.get<Array<MultiColumnItem>>('api/' + this.childDataServicePath + '/Children', [{ key: 'parentId', value: deletedItem.id }])
+            this.dataService.get<Array<MultiColumnItem>>('api/' + this.childDataServicePath + '/Children', [{ key: 'parentId', value: deletedItem.id }], {
+                authorization: true
+            })
                 .subscribe((children: Array<MultiColumnItem>) => {
                     children.forEach(x => {
 
@@ -563,7 +578,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                     const parentPath = (this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.childType ? 'api/' + this.childDataServicePath + '/Parent' : 'api/' + this.grandchildDataServicePath + '/Parent';
                     const key = (this.searchComponent.listManager.selectedItem as MultiColumnItem).values[1].name == this.childType ? 'childId' : 'productId';
 
-                    this.dataService.get<Item>(parentPath, [{ key: key, value: this.searchComponent.listManager.selectedItem.id }])
+                    this.dataService.get<Item>(parentPath, [{ key: key, value: this.searchComponent.listManager.selectedItem.id }], {
+                        authorization: true
+                    })
                         .subscribe((item: Item) => {
                             const fromItem: HierarchyItem = { id: item.id, name: item.name };
                             this.setMoveForm(moveForm, itemToBeMovedType, destinationItemType, itemToBeMoved!, fromItem, path);

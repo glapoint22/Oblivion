@@ -7,7 +7,7 @@ import { Vendor } from "./vendor";
 export class Product implements IProduct {
     public id!: number;
     public niche: Item = new Item();
-    public subNiche: Item = new Item();
+    public subniche: Item = new Item();
     public vendor!: Vendor;
     public name!: string;
     public shippingType: ShippingType = ShippingType.None;

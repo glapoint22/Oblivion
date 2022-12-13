@@ -47,7 +47,7 @@ export class ProductShippingComponent extends ProductComponent {
       });
   }
 
-  
+
 
   // =================================================================( UPDATE SHIPPING )=================================================================== \\
 
@@ -55,6 +55,8 @@ export class ProductShippingComponent extends ProductComponent {
     this.dataService.put('api/Products/Shipping', {
       id: this.product.id,
       shippingType: this.product.shippingType
+    }, {
+      authorization: true
     }).subscribe();
   }
 }

@@ -25,7 +25,9 @@ export class PricePointsComponent {
 
 
     this.dataService.post<number>('api/Products/PricePoint', {
-      ProductId: this.product.id
+      productId: this.product.id
+    }, {
+      authorization: true
     }).subscribe((pricePointId: number) => {
       this.product.pricePoints[this.product.pricePoints.length - 1].id = pricePointId;
     });
@@ -49,7 +51,7 @@ export class PricePointsComponent {
     }
   }
 
-  
+
 
   // ================================================================( DELETE PRICE POINT )================================================================= \\
 
@@ -58,7 +60,10 @@ export class PricePointsComponent {
     this.updateMinMaxPrice();
 
     this.dataService.delete('api/Products/PricePoint', {
+      productId: this.product.id,
       pricePointId: pricePointId
+    }, {
+      authorization: true
     }).subscribe();
   }
 }

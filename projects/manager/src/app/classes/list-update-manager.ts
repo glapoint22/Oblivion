@@ -399,11 +399,12 @@ export class ListUpdateManager {
     // ===================================================================( ON ITEM EDIT )==================================================================== \\
 
     onItemEdit(listUpdate: ListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.put('api/' + this.dataServicePath, {
-        //     id: listUpdate.id,
-        //     name: listUpdate.name
-        // }).subscribe();
+        this.dataService.put('api/' + this.dataServicePath, {
+            id: listUpdate.id,
+            name: listUpdate.name
+        }, {
+            authorization: true
+        }).subscribe();
         this.updateOtherItems(listUpdate);
     }
 
@@ -773,8 +774,8 @@ export class ListUpdateManager {
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'searchWords', value: searchWords }];
+    getSearchResultsParameters(searchTerm: string): Array<KeyValue<any, any>> {
+        return [{ key: 'searchTerm', value: searchTerm }];
     }
 
 

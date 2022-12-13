@@ -1,5 +1,5 @@
-import { ApplicationRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { DataService, IProduct } from 'common';
+import { ApplicationRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { IProduct } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { TextBoxData, TextBoxDev } from 'text-box';
 import { WidgetService } from '../../../../services/widget/widget.service';
@@ -11,7 +11,8 @@ import { WidgetService } from '../../../../services/widget/widget.service';
 })
 export class DescriptionComponent {
   @Input() product!: IProduct;
-  @Input() apiUrl!: string;
+  // @Input() apiUrl!: string;
+  @Output() onChange: EventEmitter<string> = new EventEmitter();
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public height: number = 32;
   public textBox!: TextBoxDev;
@@ -19,7 +20,7 @@ export class DescriptionComponent {
   private saveData = new Subject<void>();
   private mousedown!: boolean;
 
-  constructor(private appRef: ApplicationRef, private dataService: DataService, private widgetService: WidgetService) { }
+  constructor(private appRef: ApplicationRef, private widgetService: WidgetService) { }
 
 
   // --------------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
@@ -27,10 +28,13 @@ export class DescriptionComponent {
     this.saveData
       .pipe(debounceTime(500))
       .subscribe(() => {
-        this.dataService.put('api/Products/' + this.apiUrl, {
-          productId: this.product.id,
-          description: this.widgetService.stringify(this.textBox.getData())
-        }).subscribe();
+        this.onChange.emit(this.widgetService.stringify(this.textBox.getData()));
+        // this.dataService.put('api/Products/' + this.apiUrl, {
+        //   id: this.product.id,
+        //   description: this.widgetService.stringify(this.textBox.getData())
+        // }, {
+        //   authorization: true
+        // }).subscribe();
       });
   }
 

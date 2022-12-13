@@ -223,9 +223,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
     // ====================================================================( ON ITEM ADD )==================================================================== \\
 
-    private hierarchyAddId: number = 2000;
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
-        this.hierarchyAddId++;
         // Add parent hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 0) {
             super.onItemAdd(hierarchyUpdate);
@@ -235,14 +233,15 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         if (hierarchyUpdate.hierarchyGroupID == 1) {
             const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
-            // ********* Commented Out Data Service *********
-            // this.dataService.post<number>('api/' + this.childDataServicePath, {
-            //     id: this.thisArray[indexOfHierarchyItemParent].id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe((id: number) => {
-            this.thisArray[hierarchyUpdate.index!].id = this.hierarchyAddId//id;
-            this.updateOtherItems(hierarchyUpdate);
-            // }
+            this.dataService.post<number>('api/' + this.childDataServicePath, {
+                id: this.thisArray[indexOfHierarchyItemParent].id,
+                name: hierarchyUpdate.name
+            }, {
+                authorization: true
+            }).subscribe((id: number) => {
+                this.thisArray[hierarchyUpdate.index!].id = id;
+                this.updateOtherItems(hierarchyUpdate);
+            });
         }
     }
 
@@ -290,11 +289,12 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // Edit child hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 1) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.put('api/' + this.childDataServicePath, {
-            //     id: hierarchyUpdate.id,
-            //     name: hierarchyUpdate.name
-            // }).subscribe();
+            this.dataService.put('api/' + this.childDataServicePath, {
+                id: hierarchyUpdate.id,
+                name: hierarchyUpdate.name
+            }, {
+                authorization: true
+            }).subscribe();
             this.updateOtherItems(hierarchyUpdate);
         }
 
@@ -437,8 +437,10 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // If we're deleting a child item
         if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 1) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0])).subscribe();
+            this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0]), {
+                authorization: true
+            })
+                .subscribe();
             this.updateOtherItems(hierarchyUpdate);
         }
     }
@@ -642,7 +644,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         }
     }
 
-    
+
 
     // ===================================================================( HAS CHILDREN )==================================================================== \\
 

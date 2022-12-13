@@ -36,23 +36,13 @@ export class ProductPriceComponent extends ProductComponent {
         pricePopup.price = this.product.minPrice;
 
         pricePopup.callback = (price: number) => {
+          this.dataService.post('api/Products/Price', {
+            productId: this.product.id,
+            price: price
+          }, {
+            authorization: true
+          }).subscribe();
 
-          // If a price is being added
-          if (this.product.minPrice == null) {
-
-            this.dataService.post('api/Products/Price', {
-              productId: this.product.id,
-              price: price
-            }).subscribe();
-
-            // If a price is being updated
-          } else {
-
-            this.dataService.put('api/Products/Price', {
-              productId: this.product.id,
-              price: price
-            }).subscribe();
-          }
           this.product.minPrice = price;
         }
 

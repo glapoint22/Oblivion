@@ -6,7 +6,7 @@
          contenteditable="true"
          (focus)="onFocus(price)"
          (input)="onInput(price)"
-         (blur)="onBlur(pricePoint, 'price', price, true)"
+         (blur)="onBlur(pricePoint, 'price', price, true); onUpdateMinMaxPrice.emit()"
          (keydown.escape)="onEscape(pricePoint, 'price', price)"
          (keydown.enter)="price.blur()"
          (paste)="onPaste($event, price, true)">
