@@ -53,11 +53,12 @@
 }
 
 .selected-thumbnail {
-    border: 1px solid $gold;
+    border: 2px solid $gold;
 }
 
 .media-container {
     margin-right: 26px;
+    cursor: pointer;
 }
 
 
@@ -202,6 +203,14 @@
         line-height: 15px;
     }
 }
+
+
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+
 
 @media(min-width: 1024px) {
     .product-info-container-pc {
