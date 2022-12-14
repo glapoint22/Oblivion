@@ -8,6 +8,7 @@ export class SpinnerService {
   public spinnerState: Subject<boolean> = new Subject<boolean>();
 
 
+
   private _show!: boolean;
   public get show(): boolean {
     return this._show;
