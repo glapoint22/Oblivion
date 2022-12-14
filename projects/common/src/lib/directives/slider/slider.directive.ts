@@ -6,8 +6,8 @@ import { AfterViewChecked, Directive, ElementRef, Input } from '@angular/core';
 export class SliderDirective implements AfterViewChecked {
   public sliderElement!: HTMLElement;
   public sliderSet!: boolean;
-  @Input() scrollbarElement!: HTMLElement;
-  @Input() scrollbarContainer!: HTMLElement;
+  // @Input() scrollbarElement!: HTMLElement;
+  // @Input() scrollbarContainer!: HTMLElement;
   @Input() leftArrowButtonElement!: HTMLElement;
   @Input() rightArrowButtonElement!: HTMLElement;
   @Input() changeCount!: number;
@@ -32,10 +32,10 @@ export class SliderDirective implements AfterViewChecked {
   }
 
   ngAfterViewInit() {
-    if (this.scrollbarElement) {
-      this.scrollbarElement.addEventListener('touchstart', this.onScrollbarStart);
-      this.scrollbarElement.addEventListener('mousedown', this.onScrollbarStart);
-    }
+    // if (this.scrollbarElement) {
+    //   this.scrollbarElement.addEventListener('touchstart', this.onScrollbarStart);
+    //   this.scrollbarElement.addEventListener('mousedown', this.onScrollbarStart);
+    // }
 
     if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
       this.leftArrowButtonElement.addEventListener('click', this.onLeftArrowClick);
@@ -59,15 +59,15 @@ export class SliderDirective implements AfterViewChecked {
 
 
       // If we have a scrollbar
-      if (this.scrollbarElement) {
-        if (this.sliderElement.childElementCount < 2) {
-          this.scrollbarContainer.style.display = 'none';
-        } else {
-          this.scrollbarContainer.style.display = 'block';
-          this.scrollbarPosition = this.scrollbarOffset = this.scrollbarContainer.offsetLeft;
-          this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
-        }
-      }
+      // if (this.scrollbarElement) {
+      //   if (this.sliderElement.childElementCount < 2) {
+      //     this.scrollbarContainer.style.display = 'none';
+      //   } else {
+      //     this.scrollbarContainer.style.display = 'block';
+      //     this.scrollbarPosition = this.scrollbarOffset = this.scrollbarContainer.offsetLeft;
+      //     this.scrollbarElement.style.left = this.scrollbarPosition + 'px';
+      //   }
+      // }
 
       // If we have arrows
       if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
@@ -93,7 +93,7 @@ export class SliderDirective implements AfterViewChecked {
   // ----------------------------------------------------------------- Initialize Transition ------------------------------------------------------------------------
   initializeTransitions() {
     this.sliderElement.style.transition = 'all 0ms ease 0s';
-    if (this.scrollbarElement) this.scrollbarElement.style.transition = 'all 0ms ease 0s';
+    // if (this.scrollbarElement) this.scrollbarElement.style.transition = 'all 0ms ease 0s';
   }
 
 
@@ -107,11 +107,11 @@ export class SliderDirective implements AfterViewChecked {
     this.sliderElement.style.left = sliderPosition + 'px';
     this.sliderElement.style.transition = transition;
 
-    // Scrollbar
-    if (this.scrollbarElement) {
-      this.scrollbarElement.style.left = scrollbarPosition + 'px';
-      this.scrollbarElement.style.transition = transition;
-    }
+    // // Scrollbar
+    // if (this.scrollbarElement) {
+    //   this.scrollbarElement.style.left = scrollbarPosition + 'px';
+    //   this.scrollbarElement.style.transition = transition;
+    // }
   }
 
 
@@ -198,19 +198,19 @@ export class SliderDirective implements AfterViewChecked {
 
     if (this.startTime == 0) this.startTime = touchMoveEvent.timeStamp;
 
-    // This will set the position of the scrollbar when the slider is being moved
-    if (this.scrollbarElement) {
-      const normalizedPosition = this.sliderPosition / this.sliderElement.clientWidth;
-      this.scrollbarPosition = (normalizedPosition * this.containerWidth) - this.scrollbarOffset;
+    // // This will set the position of the scrollbar when the slider is being moved
+    // if (this.scrollbarElement) {
+    //   const normalizedPosition = this.sliderPosition / this.sliderElement.clientWidth;
+    //   this.scrollbarPosition = (normalizedPosition * this.containerWidth) - this.scrollbarOffset;
 
-      // Set the boundries
-      this.scrollbarPosition = Math.min(-this.scrollbarOffset, this.scrollbarPosition);
-      this.scrollbarPosition = Math.max(-(this.containerWidth +
-        this.scrollbarOffset - this.scrollbarElement.getBoundingClientRect().width), this.scrollbarPosition);
+    //   // Set the boundries
+    //   this.scrollbarPosition = Math.min(-this.scrollbarOffset, this.scrollbarPosition);
+    //   this.scrollbarPosition = Math.max(-(this.containerWidth +
+    //     this.scrollbarOffset - this.scrollbarElement.getBoundingClientRect().width), this.scrollbarPosition);
 
-      // Assign the position
-      this.scrollbarElement.style.left = -this.scrollbarPosition + 'px';
-    }
+    //   // Assign the position
+    //   this.scrollbarElement.style.left = -this.scrollbarPosition + 'px';
+    // }
   }
 
 
@@ -237,11 +237,11 @@ export class SliderDirective implements AfterViewChecked {
     this.sliderPosition = Math.max(-(this.sliderElement.childElementCount - 1) * this.containerWidth, this.sliderPosition);
 
 
-    // Set the scrollbar position
-    if (this.scrollbarElement) {
-      const normalizedPosition = this.sliderPosition / this.sliderElement.clientWidth;
-      this.scrollbarPosition = (normalizedPosition * this.containerWidth) - this.scrollbarOffset;
-    }
+    // // Set the scrollbar position
+    // if (this.scrollbarElement) {
+    //   const normalizedPosition = this.sliderPosition / this.sliderElement.clientWidth;
+    //   this.scrollbarPosition = (normalizedPosition * this.containerWidth) - this.scrollbarOffset;
+    // }
 
 
     // Transition the slider and scrollbar
@@ -254,56 +254,56 @@ export class SliderDirective implements AfterViewChecked {
 
 
 
-  // ----------------------------------------------------------------- On Scrollbar Start ------------------------------------------------------------------------
-  onScrollbarStart = (startEvent: TouchEvent | MouseEvent) => {
-    // Initialize
-    this.initializeTransitions();
-    this.scrollbarPosition = this.getClientX(startEvent) - this.scrollbarElement.offsetLeft;
+  // // ----------------------------------------------------------------- On Scrollbar Start ------------------------------------------------------------------------
+  // onScrollbarStart = (startEvent: TouchEvent | MouseEvent) => {
+  //   // Initialize
+  //   this.initializeTransitions();
+  //   // this.scrollbarPosition = this.getClientX(startEvent) - this.scrollbarElement.offsetLeft;
 
 
-    // Scrollbar Move
-    const onScrollbarMove = (moveEvent: TouchEvent | MouseEvent) => {
+  //   // Scrollbar Move
+  //   const onScrollbarMove = (moveEvent: TouchEvent | MouseEvent) => {
 
-      // Set the position
-      let pos = this.getClientX(moveEvent) - this.scrollbarPosition;
-      pos = Math.max(this.scrollbarOffset, pos);
-      this.scrollbarElement.style.left = Math.min(this.containerWidth +
-        this.scrollbarOffset - this.scrollbarElement.getBoundingClientRect().width, pos) + 'px';
-
-
-
-      // This will set the slider position based on the scrollbar
-      const normalizedPosition = (this.scrollbarElement.offsetLeft - this.scrollbarOffset) / this.containerWidth;
-      this.sliderPosition = -(normalizedPosition * this.sliderElement.clientWidth);
-      this.sliderElement.style.left = this.sliderPosition + 'px';
-    }
-
-
-    // Scrollbar End
-    const onScrollbarEnd = () => {
-      // This will set the slider stopping position
-      this.sliderPosition = Math.round(this.sliderPosition / this.containerWidth) * this.containerWidth;
-
-      // Set the stopping scrollbar position
-      const normalizedPosition = -this.sliderPosition / this.sliderElement.clientWidth;
-      this.scrollbarPosition = (normalizedPosition * this.containerWidth) + this.scrollbarOffset;
-
-
-      // Transition the slider and scrollbar
-      this.setTransitions(this.sliderPosition, this.scrollbarPosition);
-
-      this.setRightArrowVisibility();
-      this.setLeftArrowVisibility();
-
-      // Remove the listeners
-      this.removeEventListeners(startEvent, this.scrollbarElement, onScrollbarMove, onScrollbarEnd);
-    }
+  //     // Set the position
+  //     let pos = this.getClientX(moveEvent) - this.scrollbarPosition;
+  //     pos = Math.max(this.scrollbarOffset, pos);
+  //     this.scrollbarElement.style.left = Math.min(this.containerWidth +
+  //       this.scrollbarOffset - this.scrollbarElement.getBoundingClientRect().width, pos) + 'px';
 
 
 
-    // Add the listeners
-    this.addEventListeners(startEvent, this.scrollbarElement, onScrollbarMove, onScrollbarEnd);
-  }
+  //     // This will set the slider position based on the scrollbar
+  //     const normalizedPosition = (this.scrollbarElement.offsetLeft - this.scrollbarOffset) / this.containerWidth;
+  //     this.sliderPosition = -(normalizedPosition * this.sliderElement.clientWidth);
+  //     this.sliderElement.style.left = this.sliderPosition + 'px';
+  //   }
+
+
+  //   // Scrollbar End
+  //   const onScrollbarEnd = () => {
+  //     // This will set the slider stopping position
+  //     this.sliderPosition = Math.round(this.sliderPosition / this.containerWidth) * this.containerWidth;
+
+  //     // Set the stopping scrollbar position
+  //     const normalizedPosition = -this.sliderPosition / this.sliderElement.clientWidth;
+  //     this.scrollbarPosition = (normalizedPosition * this.containerWidth) + this.scrollbarOffset;
+
+
+  //     // Transition the slider and scrollbar
+  //     this.setTransitions(this.sliderPosition, this.scrollbarPosition);
+
+  //     this.setRightArrowVisibility();
+  //     this.setLeftArrowVisibility();
+
+  //     // Remove the listeners
+  //     this.removeEventListeners(startEvent, this.scrollbarElement, onScrollbarMove, onScrollbarEnd);
+  //   }
+
+
+
+  //   // Add the listeners
+  //   this.addEventListeners(startEvent, this.scrollbarElement, onScrollbarMove, onScrollbarEnd);
+  // }
 
 
 
@@ -404,10 +404,10 @@ export class SliderDirective implements AfterViewChecked {
   ngOnDestroy() {
     this.sliderElement.removeEventListener('touchstart', this.onSliderTouchStart);
 
-    if (this.scrollbarElement) {
-      this.scrollbarElement.removeEventListener('touchstart', this.onScrollbarStart);
-      this.scrollbarElement.removeEventListener('mousedown', this.onScrollbarStart);
-    }
+    // if (this.scrollbarElement) {
+    //   this.scrollbarElement.removeEventListener('touchstart', this.onScrollbarStart);
+    //   this.scrollbarElement.removeEventListener('mousedown', this.onScrollbarStart);
+    // }
 
     if (this.leftArrowButtonElement && this.rightArrowButtonElement) {
       this.leftArrowButtonElement.removeEventListener('click', this.onLeftArrowClick);
