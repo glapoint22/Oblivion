@@ -1,13 +1,15 @@
 @mixin arrow-button ($size) {
+    position: absolute;
+    display: flex;
     width: $size;
     height: $size;
-    position: absolute;
     top: 50%;
     z-index: 10;
     transform: translateY(-50%);
-    border: 1px solid #dadada;
+    border: 1px solid #d5d5d5;
     border-radius: 50%;
-    display: flex;
+    outline: 1px solid #d5d5d5;
+    outline-offset: -1px;
     justify-content: center;
     align-items: center;
     background: rgba(24, 24, 24, 0.75);
@@ -48,7 +50,7 @@
 }
 
 .left-arrow-button {
-    left: 20px;
+    // left: 0px;
 
     i {
         font-family: 'arrow-icons';
@@ -60,7 +62,8 @@
 }
 
 .right-arrow-button {
-    right: 20px;
+    // right: 16px;
+
     i {
         font-family: 'arrow-icons';
         transform: translateX(1px);

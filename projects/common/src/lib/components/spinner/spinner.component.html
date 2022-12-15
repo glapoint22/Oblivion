@@ -1,4 +1,4 @@
-<div *ngIf="showComponent" class="spinner-backdrop hide" [ngClass]="{'show': showSpinner}" (wheel)="$event.preventDefault()">
+<div *ngIf="showComponent" class="spinner-backdrop hide" [ngClass]="{'show': showSpinner}" (wheel)="$event.preventDefault()" [style.paddingRight.px]="lazyLoadingService.paddingRight">
     <div class="lds-spinner">
         <div></div>
         <div></div>

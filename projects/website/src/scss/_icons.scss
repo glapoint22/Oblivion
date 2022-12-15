@@ -112,10 +112,12 @@
 
 .play-icon {
     position: absolute;
+    display: flex;
     z-index: 10;
     border: 1px solid #dadada;
     border-radius: 50%;
-    display: flex;
+    outline: 1px solid #dadada;
+    outline-offset: -1px;
     justify-content: center;
     align-items: center;
     background: rgba(24, 24, 24, 0.75);

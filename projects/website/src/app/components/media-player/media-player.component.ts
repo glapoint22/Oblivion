@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { LazyLoad, LazyLoadingService, Media, MediaType, Video, VideoType } from 'common';
 import { VideoApiService } from '../../services/video-api/video-api.service';
 
@@ -10,14 +10,18 @@ import { VideoApiService } from '../../services/video-api/video-api.service';
 export class MediaPlayerComponent extends LazyLoad {
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public media!: Array<Media>;
+  public selectedMedia!: Media;
   public selectedVideo!: Media;
   public selectedImage!: Media;
-  public isVideos: boolean = true;
+  public isVideos!: boolean;
   public mediaType = MediaType;
 
   private youTubePlayer: any;
   private vimeoPlayer: any;
   private wistiaPlayer: any;
+
+  @ViewChildren('mediaListItem') mediaListItems!: QueryList<ElementRef<HTMLElement>>;
+  @ViewChildren('mobileMediaListItem') mobileMediaListItems!: QueryList<ElementRef<HTMLElement>>;
 
   constructor
     (
@@ -28,9 +32,31 @@ export class MediaPlayerComponent extends LazyLoad {
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
+    this.setMediaListItemFocus();
+    this.onThumbnailClick(this.selectedMedia);
+  }
 
 
-    this.setPlayer();
+  setMediaListItemFocus() {
+    window.setTimeout(() => {
+      const mediaList = this.media.filter((media: Media) => this.isVideos ? media.type == MediaType.Video : media.type == MediaType.Image);
+      const index = mediaList.findIndex(x => this.isVideos ? x == this.selectedVideo : x == this.selectedImage);
+      this.mediaListItems.get(index)?.nativeElement.focus();
+      this.mobileMediaListItems.get(index)?.nativeElement.focus();
+    })
+  }
+
+
+  onMediaPlayerButtonClick(isVideos: boolean) {
+    this.isVideos = isVideos;
+
+    this.setMediaListItemFocus();
+
+    if (this.isVideos) {
+      this.playVideo();
+    } else {
+      this.pauseVideo();
+    }
   }
 
 
@@ -38,6 +64,7 @@ export class MediaPlayerComponent extends LazyLoad {
     if (media.type == MediaType.Video) {
       this.selectedVideo = media;
       this.setPlayer();
+
     } else {
       this.selectedImage = media;
     }
@@ -103,6 +130,11 @@ export class MediaPlayerComponent extends LazyLoad {
   }
 
   playVideo() {
+    if (this.iframe.nativeElement.src.length == 0) {
+      this.setPlayer();
+      return;
+    }
+
     switch (this.selectedVideo.videoType) {
       case VideoType.YouTube:
         this.youTubePlayer.playVideo();
@@ -115,7 +147,6 @@ export class MediaPlayerComponent extends LazyLoad {
       case VideoType.Wistia:
         this.wistiaPlayer.play();
         break;
-
     }
   }
 

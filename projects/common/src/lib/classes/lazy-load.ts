@@ -1,6 +1,7 @@
 import { AfterViewInit, Directive, ElementRef, HostListener, QueryList, ViewChild, ViewChildren, ViewContainerRef, ViewRef } from "@angular/core";
 import { Subject } from "rxjs";
 import { LazyLoadingService } from "../services/lazy-loading/lazy-loading.service";
+import { SpinnerService } from "../services/spinner/spinner.service";
 
 @Directive()
 export class LazyLoad implements AfterViewInit {

@@ -5,7 +5,7 @@ $price-point-width: 330px;
 .price-points-background {
     width: 100%;
     background: #1e1e1e;
-    padding: 10px 0;
+    padding: 20px 0;
 }
 
 
@@ -132,6 +132,16 @@ $price-point-width: 330px;
     display: flex;
     position: relative;
     width: fit-content;
+}
+
+
+.left-arrow-button {
+    left: 30px;
+}
+
+
+.right-arrow-button {
+    right: 30px;
 }
 
 

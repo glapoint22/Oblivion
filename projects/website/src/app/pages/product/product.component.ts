@@ -43,7 +43,7 @@ export class ProductComponent implements OnInit {
 
           if (properties.relatedProducts && properties.relatedProducts.length > 0) {
             this.relatedProducts = {
-              caption: 'Similar items you might like',
+              caption: 'Similar items you may like',
               products: properties.relatedProducts
             }
           }

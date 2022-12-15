@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { AccountService, LazyLoadingService, Media, MediaType, ShippingType, SpinnerAction } from 'common';
-import { Subscription } from 'rxjs';
 import { TextBox, TextBoxData } from 'text-box';
 import { DetailProduct } from '../../classes/detail-product';
 import { AddToListFormComponent } from '../../components/add-to-list-form/add-to-list-form.component';
@@ -94,7 +93,6 @@ export class ProductInfoComponent implements OnChanges {
 
 
   async onMediaClick(media: Media) {
-    if (media.type != MediaType.Video) return;
 
     this.lazyLoadingService.load(async () => {
       const { MediaPlayerComponent } = await import('../../components/media-player/media-player.component');
@@ -107,8 +105,20 @@ export class ProductInfoComponent implements OnChanges {
     }, SpinnerAction.StartEnd)
       .then((mediaPlayer: MediaPlayerComponent) => {
         mediaPlayer.media = this.product.media;
-        mediaPlayer.selectedVideo = this.selectedMedia;
-        mediaPlayer.selectedImage = this.product.media[0];
+
+
+        mediaPlayer.selectedMedia = media;
+
+
+        if (media.type == MediaType.Video) {
+          mediaPlayer.isVideos = true;
+          mediaPlayer.selectedVideo = media;
+          mediaPlayer.selectedImage = this.product.media[0];
+        }else {
+          mediaPlayer.isVideos = false;
+          mediaPlayer.selectedImage = media;
+          mediaPlayer.selectedVideo = this.product.media.find(x => x.type == MediaType.Video)!;
+        }
       });
   }
 
