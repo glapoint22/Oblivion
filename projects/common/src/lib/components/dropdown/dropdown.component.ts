@@ -145,7 +145,6 @@ export class DropdownComponent {
           dropdownList.onItemSubmit = (item: KeyValue<any, any>) => {
             this.selectedListItem = item;
             this.onChange.emit(item);
-            console.log('fuck you')
           }
 
           const dropdownCloseListener = this.dropdownList.onClose.subscribe(() => {

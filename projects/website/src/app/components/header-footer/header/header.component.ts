@@ -50,7 +50,6 @@ export class HeaderComponent {
   ) { }
 
 
-
   async ngOnInit() {
     this.nicheService.getNiches();
     const { NicheMenuPopupComponent } = await import('../../niche-menu-popup/niche-menu-popup.component');

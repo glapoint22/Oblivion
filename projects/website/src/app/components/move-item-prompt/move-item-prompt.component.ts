@@ -26,7 +26,6 @@ export class MoveItemPromptComponent extends LazyLoad {
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-    this.setFocus(1);
   }
 
 

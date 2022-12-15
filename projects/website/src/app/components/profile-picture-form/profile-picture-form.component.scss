@@ -207,25 +207,25 @@ img {
     height: 22px;
     background: linear-gradient(to right, #787777, #515151);
     border-radius: 100%;
-    border: 1px solid #e1a500;
+    border: 1px solid #a7a7a7;
     flex-shrink: 0;
     pointer-events: all;
     cursor: pointer;
 
     &:hover  {
         background: linear-gradient(to right, lighten(#787777, 5), lighten(#515151, 5));
-        border: 1px solid lighten(#e1a500, 10);
+        border: 1px solid lighten(#a7a7a7, 10);
     }
 
     &:active {
         background: linear-gradient(to right, lighten(#787777, 10), lighten(#515151, 10));
-        border: 1px solid lighten(#e1a500, 20);
+        border: 1px solid lighten(#a7a7a7, 20);
     }
 
     &:focus-visible {
         outline: none;
         background: linear-gradient(to right, lighten(#787777, 10), lighten(#515151, 10));
-        border: 1px solid lighten(#e1a500, 30);
+        border: 1px solid lighten(#a7a7a7, 30);
     }
 }
 
