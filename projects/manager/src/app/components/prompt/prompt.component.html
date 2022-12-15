@@ -1,6 +1,6 @@
 <div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()" (contextmenu)="$event.preventDefault()">
 
-    <div class="modal-base">
+    <div class="modal-base" (mousedown)="$event.stopPropagation()">
 
         <div class="modal-bar">
             <div>{{title}}</div>

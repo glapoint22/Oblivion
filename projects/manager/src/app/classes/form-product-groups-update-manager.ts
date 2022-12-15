@@ -18,7 +18,7 @@ export class FormProductGroupsUpdateManager extends ListUpdateManager {
     ngOnInit() {
         super.ngOnInit();
         this.itemType = 'Product Group';
-        this.dataServicePath = 'Subgroups';
+        this.dataServicePath = 'ProductGroups';
         this.searchOptions.sortable = false;
         this.searchInputName = 'productGroupsFormSearchInput';
         this.otherProductArray = 'productProductGroupArray';
