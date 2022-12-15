@@ -54,12 +54,13 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
     // ==============================================================( ON ITEM CHECKBOX CHANGE )============================================================== \\
 
     onItemCheckboxChange(checkboxListUpdate: CheckboxListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.put('api/Products/Subgroup', {
-        //     productId: this.productId,
-        //     id: checkboxListUpdate.id,
-        //     checked: checkboxListUpdate.checked
-        // }).subscribe();
+        this.dataService.put('api/Products/ProductGroup', {
+            productId: this.productId,
+            productGroupId: checkboxListUpdate.id,
+            checked: checkboxListUpdate.checked
+        }, {
+            authorization: true
+        }).subscribe();
     }
 
 
@@ -67,12 +68,13 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
     // ==========================================================( ON SEARCH ITEM CHECKBOX CHANGE )=========================================================== \\
 
     onSearchItemCheckboxChange(checkboxListUpdate: CheckboxListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.put('api/Products/Subgroup', {
-        //     productId: this.productId,
-        //     id: checkboxListUpdate.id,
-        //     checked: checkboxListUpdate.checked
-        // }).subscribe();
+        this.dataService.put('api/Products/ProductGroup', {
+            productId: this.productId,
+            productGroupId: checkboxListUpdate.id,
+            checked: checkboxListUpdate.checked
+        }, {
+            authorization: true
+        }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
         const listItem = this.thisArray.find(x => x.id == checkboxListUpdate.id && x.name == checkboxListUpdate.name);
@@ -118,7 +120,7 @@ export class ProductProductGroupsUpdateManager extends FormProductGroupsUpdateMa
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productId }, { key: 'searchWords', value: searchWords }];
+    getSearchResultsParameters(searchTerm: string): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productId }, { key: 'searchTerm', value: searchTerm }];
     }
 }

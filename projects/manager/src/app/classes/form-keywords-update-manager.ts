@@ -32,10 +32,10 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         this.parentSearchType = 'Group';
         this.itemType = 'Keyword Group';
         this.childSearchType = 'Keyword';
-        this.childDataServicePath = 'AvailableKeywords';
+        this.childDataServicePath = 'Keywords/AvailableKeywords';
         this.otherProductArray = 'availableKeywordArray';
         this.searchInputName = 'keywordsFormSearchInput';
-        this.dataServicePath = 'AvailableKeywords/Groups';
+        this.dataServicePath = 'Keywords/AvailableKeywords/Groups';
         this.thisArray = this.productService.formKeywordArray;
         this.otherProductSearchArray = 'availableKeywordSearchArray';
         this.thisSearchArray = this.productService.formKeywordSearchArray;

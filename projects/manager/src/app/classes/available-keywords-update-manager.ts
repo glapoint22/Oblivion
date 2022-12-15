@@ -23,7 +23,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
     // ====================================================================( NG ON INIT )===================================================================== \\
-    
+
     ngOnInit() {
         super.ngOnInit();
         this.otherArray = this.productService.formKeywordArray;
@@ -125,11 +125,11 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
 
     // ====================================================================( ON ITEM ADD )==================================================================== \\
-    
+
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         super.onItemAdd(hierarchyUpdate);
 
-        if(hierarchyUpdate.hierarchyGroupID == 1) {
+        if (hierarchyUpdate.hierarchyGroupID == 1) {
             const parentIndex = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
             this.thisArray[hierarchyUpdate.index!].opacity = this.thisArray[parentIndex].opacity;
         }
@@ -177,11 +177,12 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 if (this.thisArray[i].hierarchyGroupID! <= this.listComponent.listManager.selectedItem.hierarchyGroupID!) break;
                 this.thisArray[i].opacity = 0.4;
             }
-            // ********* Commented Out Data Service *********
-            // this.dataService.post('api/SelectedKeywords/Groups/Add', {
-            //   productId: this.productId,
-            //   id: keywordGroup.id
-            // }).subscribe();
+            this.dataService.post('api/Keywords/SelectedKeywords/Groups', {
+                productId: this.productId,
+                keywordGroupId: keywordGroup.id
+            }, {
+                authorization: true
+            }).subscribe();
 
             // If a keyword is selected
         } else {
@@ -199,12 +200,13 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 if (this.thisArray[i].hierarchyGroupID! <= parent.hierarchyGroupID!) break;
                 this.thisArray[i].opacity = 0.4;
             }
-            // ********* Commented Out Data Service *********
-            // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
-            //   productId: this.productId,
-            //   keywordGroupId: keywordGroup.id,
-            //   KeywordId: childId
-            // }).subscribe();
+            this.dataService.post('api/Keywords/SelectedKeywords/Groups/AddKeyword', {
+                productId: this.productId,
+                keywordGroupId: keywordGroup.id,
+                KeywordId: childId
+            }, {
+                authorization: true
+            }).subscribe();
         }
     }
 
