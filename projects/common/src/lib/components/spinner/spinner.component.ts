@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { LazyLoadingService } from '../../services/lazy-loading/lazy-loading.service';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
@@ -10,11 +9,11 @@ import { SpinnerService } from '../../services/spinner/spinner.service';
 export class SpinnerComponent implements OnInit {
   public showSpinner: boolean = false;
   public showComponent!: boolean;
+  public window = window;
 
-  constructor(public spinnerService: SpinnerService, public lazyLoadingService: LazyLoadingService) { }
+  constructor(public spinnerService: SpinnerService) { }
 
   ngOnInit(): void {
-    this.lazyLoadingService.paddingRight = 0;
     this.spinnerService.spinnerState
       .subscribe((show: boolean) => {
         if (show) {
@@ -32,7 +31,5 @@ export class SpinnerComponent implements OnInit {
           }, 500);
         }
       });
-
-
   }
 }

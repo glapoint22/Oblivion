@@ -21,7 +21,7 @@ i {
 ul, ol {
     list-style-position: inside;
     margin-block-start: 0;
-    margin-block-end: 0;
+    margin-block-end: 15px; // This value was 0px, but was updated to 15px to allow spacing after the validation error list
 }
 
 a {
