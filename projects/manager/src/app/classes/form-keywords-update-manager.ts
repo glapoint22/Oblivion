@@ -179,4 +179,33 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
             case: caseType
         }
     }
+
+
+
+
+
+    // ===================================================================( ON ITEM EDIT )==================================================================== \\
+
+    onItemEdit(hierarchyUpdate: HierarchyUpdate) {
+        let url: string = '';
+
+        // Edit parent hierarchy item
+        if (hierarchyUpdate.hierarchyGroupID == 0) {
+            url = 'api/keywords/groups';
+        } else
+
+        // Edit child hierarchy item
+        if (hierarchyUpdate.hierarchyGroupID == 1) {
+            url = 'api/keywords';
+        }
+
+        this.dataService.put(url, {
+            id: hierarchyUpdate.id,
+            name: hierarchyUpdate.name
+        }, {
+            authorization: true
+        }).subscribe();
+
+        this.updateOtherItems(hierarchyUpdate);
+    }
 }

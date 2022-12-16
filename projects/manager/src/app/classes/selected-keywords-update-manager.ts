@@ -276,12 +276,13 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
     // ==========================================================( ON SEARCH ITEM CHECKBOX CHANGE )=========================================================== \\
 
     onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.put('api/' + this.childDataServicePath + '/Update', {
-        //     productId: this.productId,
-        //     id: checkboxMultiColumnListUpdate.id,
-        //     checked: checkboxMultiColumnListUpdate.checked
-        // }).subscribe();
+        this.dataService.put('api/Products/Keyword', {
+            productId: this.productId,
+            keywordId: checkboxMultiColumnListUpdate.id,
+            checked: checkboxMultiColumnListUpdate.checked
+        }, {
+            authorization: true
+        }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
         const hierarchyItem = this.thisArray.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);
@@ -435,11 +436,12 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem));
 
 
-                // ********* Commented Out Data Service *********
-                // this.dataService.put('api/' + this.dataServicePath + '/Remove', {
-                //     productId: this.productId,
-                //     id: searchUpdate.deletedItems![0].id
-                // }).subscribe();
+                this.dataService.put('api/' + this.dataServicePath + '/Remove', {
+                    productId: this.productId,
+                    id: searchUpdate.deletedItems![0].id
+                }, {
+                    authorization: true
+                }).subscribe();
 
 
                 this.deleteOtherItem(this.thisArray, searchUpdate.deletedItems![0] as MultiColumnItem, (searchUpdate.deletedItems![0] as MultiColumnItem).values![1].name == this.parentSearchType ? 0 : 1);
@@ -732,7 +734,7 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productId }, { key: 'searchWords', value: searchWords }];
+    getSearchResultsParameters(searchTerm: string): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productId }, { key: 'searchTerm', value: searchTerm }];
     }
 }

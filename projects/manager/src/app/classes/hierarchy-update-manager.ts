@@ -166,6 +166,15 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
 
 
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
+
+    onSearchListUpdate(searchUpdate: ListUpdate) {
+        super.onSearchListUpdate(searchUpdate);
+        this._searchUpdate = searchUpdate;
+    }
+
+
+
     // =================================================================( ON SELECTED ITEM )================================================================== \\
 
     onSelectedItem(hierarchyUpdate: HierarchyUpdate) {
