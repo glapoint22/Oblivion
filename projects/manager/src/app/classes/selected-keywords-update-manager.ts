@@ -375,46 +375,59 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
         // If we're deleting a keyword Group
         if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 0) {
 
-            this.dataService.delete('api/' + this.dataServicePath, {
-                productId: this.productId,
-                keywordGroupId: hierarchyUpdate.deletedItems![0].id
-            }, {
-                authorization: true
-            }).subscribe();
+            // NOT custom
+            if (this.itemType == 'Keyword Group') {
+                this.dataService.delete('api/' + this.dataServicePath, {
+                    productId: this.productId,
+                    keywordGroupId: hierarchyUpdate.deletedItems![0].id
+                }, {
+                    authorization: true
+                }).subscribe();
 
 
-            // Get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this hierarchy list
-            const removedItemIndex = this.otherArray.findIndex(x => x.id == hierarchyUpdate.deletedItems![0].id && x.name == hierarchyUpdate.deletedItems![0].name && x.hierarchyGroupID == 0);
-            if (removedItemIndex != -1) {
-                // Un-dim the parent in the available list that has that index
-                this.otherArray[removedItemIndex].opacity = null!;
-                // Un-dim it's children too (if available)
-                for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
-                    if (this.otherArray[i].hierarchyGroupID! <= hierarchyUpdate.deletedItems![0].hierarchyGroupID!) break;
-                    this.otherArray[i].opacity = null!;
+                // Get the index of the parent in the available hierarchy list that's the same as the parent that's being removed in this hierarchy list
+                const removedItemIndex = this.otherArray.findIndex(x => x.id == hierarchyUpdate.deletedItems![0].id && x.name == hierarchyUpdate.deletedItems![0].name && x.hierarchyGroupID == 0);
+                if (removedItemIndex != -1) {
+                    // Un-dim the parent in the available list that has that index
+                    this.otherArray[removedItemIndex].opacity = null!;
+                    // Un-dim it's children too (if available)
+                    for (let i = removedItemIndex + 1; i < this.otherArray.length; i++) {
+                        if (this.otherArray[i].hierarchyGroupID! <= hierarchyUpdate.deletedItems![0].hierarchyGroupID!) break;
+                        this.otherArray[i].opacity = null!;
+                    }
                 }
+
+                // Check to see if the removed keyword group is present in the available search list
+                const searchItem = this.otherSearchArray.find(y => y.id == hierarchyUpdate.deletedItems![0].id && y.values[0].name == hierarchyUpdate.deletedItems![0].name && y.values[1].name == 'Group');
+                // If it is, then un-dim it
+                if (searchItem) searchItem!.opacity = null!;
+
+
+                // Also, check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if found
+                this.dataService.get<Array<KeywordCheckboxItem>>('api/Keywords/AvailableKeywords', [{ key: 'parentId', value: hierarchyUpdate.deletedItems![0].id }], {
+                    authorization: true
+                })
+                    .subscribe((children: Array<KeywordCheckboxItem>) => {
+                        children.forEach(x => {
+                            const searchItem = this.otherSearchArray.find(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
+                            if (searchItem) searchItem.opacity = null!;
+                        })
+                    })
+
+
+                // Custom
+            } else {
+
+                this.dataService.delete('api/' + this.dataServicePath, {
+                    productId: this.productId,
+                    keywordGroupId: hierarchyUpdate.deletedItems![0].id
+                }, {
+                    authorization: true
+                }).subscribe();
             }
 
-            // Check to see if the removed keyword group is present in the available search list
-            const searchItem = this.otherSearchArray.find(y => y.id == hierarchyUpdate.deletedItems![0].id && y.values[0].name == hierarchyUpdate.deletedItems![0].name && y.values[1].name == 'Group');
-            // If it is, then un-dim it
-            if (searchItem) searchItem!.opacity = null!;
-
-
-            // Also, check to see if any of the children of the removed keyword group is present in the available search list and un-dim them if found
-            this.dataService.get<Array<KeywordCheckboxItem>>('api/Keywords/AvailableKeywords', [{ key: 'parentId', value: hierarchyUpdate.deletedItems![0].id }], {
-                authorization: true
-            })
-                .subscribe((children: Array<KeywordCheckboxItem>) => {
-                    children.forEach(x => {
-                        const searchItem = this.otherSearchArray.find(y => y.id == x.id && y.values[0].name == x.name && y.values[1].name == 'Keyword');
-                        if (searchItem) searchItem.opacity = null!;
-                    })
-                })
-        }
-
-        // If we're deleting a custom keyword
-        if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 1) {
+            // If we're deleting a custom keyword
+        } else if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 1) {
             this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0]), {
                 authorization: true
             }).subscribe();
@@ -436,9 +449,9 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 this.deleteChildren(this.thisSearchArray, (searchUpdate.deletedItems![0] as MultiColumnItem));
 
 
-                this.dataService.put('api/' + this.dataServicePath + '/Remove', {
+                this.dataService.delete('api/' + this.dataServicePath, {
                     productId: this.productId,
-                    id: searchUpdate.deletedItems![0].id
+                    keywordGroupId: searchUpdate.deletedItems![0].id
                 }, {
                     authorization: true
                 }).subscribe();
@@ -466,7 +479,9 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 if (searchItem) searchItem!.opacity = null!;
 
                 // Grab all the children belonging to the keyword group that's being removed  
-                this.dataService.get<Array<KeywordCheckboxItem>>('api/AvailableKeywords', [{ key: 'parentId', value: searchUpdate.deletedItems![0].id }])
+                this.dataService.get<Array<KeywordCheckboxItem>>('api/keywords/AvailableKeywords', [{ key: 'parentId', value: searchUpdate.deletedItems![0].id }], {
+                    authorization: true
+                })
                     .subscribe((children: Array<KeywordCheckboxItem>) => {
 
                         children.forEach(x => {
@@ -478,7 +493,12 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
                 // Custom
             } else {
-                super.onSearchItemDelete(searchUpdate);
+                this.dataService.delete('api/' + this.dataServicePath, {
+                    productId: this.productId,
+                    keywordGroupId: searchUpdate.deletedItems![0].id
+                }, {
+                    authorization: true
+                }).subscribe();
             }
         }
 
@@ -736,5 +756,20 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     getSearchResultsParameters(searchTerm: string): Array<KeyValue<any, any>> {
         return [{ key: 'productId', value: this.productId }, { key: 'searchTerm', value: searchTerm }];
+    }
+
+
+
+    // ============================================================( DELETE CHILDREN PARAMETERS )============================================================= \\
+
+    deleteChildrenParameters(deletedItem: MultiColumnItem) {
+        return [
+            {
+                key: 'productId', value: this.productId
+            },
+            {
+                key: 'parentId', value: deletedItem.id
+            }
+        ]
     }
 }

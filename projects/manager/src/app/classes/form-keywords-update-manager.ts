@@ -151,19 +151,22 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
     getDeletedItemParameters(deletedItem: HierarchyItem) {
         let keywordGroupId = null;
 
-        if (deletedItem.hierarchyGroupID == 1) {
+        if (!(deletedItem as MultiColumnItem).values && deletedItem.hierarchyGroupID == 1) {
             const parentIndex = this.productService.getIndexOfHierarchyItemParent(this.thisArray[deletedItem.index!], this.thisArray);
             keywordGroupId = this.thisArray[parentIndex].id;
         }
+
+
+        if ((deletedItem as MultiColumnItem).values && (deletedItem as MultiColumnItem).values[1].name == this.childSearchType) {
+            keywordGroupId = this.parentItem.id;
+        }
+
+
         return {
             id: deletedItem.id,
             keywordGroupId: keywordGroupId
         }
     }
-
-
-    //     productId: this.productId,
-                //     id: searchUpdate.deletedItems![0].id
 
 
 
@@ -207,5 +210,29 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         }).subscribe();
 
         this.updateOtherItems(hierarchyUpdate);
+    }
+
+
+
+    // ===============================================================( GET DATA SERVICE PATH )=============================================================== \\
+
+    getDataServicePath() {
+        return 'api/Keywords/Groups';
+    }
+
+
+
+    // ============================================================( GET CHILD DATA SERVICE PATH )============================================================ \\
+
+    getChildDataServicePath() {
+        return 'api/Keywords';
+    }
+
+
+
+    // =================================================( GET SEARCH DELETE PROMPT CHILD DATA SERVICE PATH )================================================== \\
+    
+    getSearchDeletePromptChildDataServicePath() {
+        return 'api/Keywords/Groups';
     }
 }

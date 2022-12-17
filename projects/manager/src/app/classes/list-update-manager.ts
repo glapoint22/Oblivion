@@ -413,11 +413,9 @@ export class ListUpdateManager {
     // ================================================================( ON SEARCH ITEM EDIT )================================================================ \\
 
     onSearchItemEdit(searchUpdate: ListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.put('api/' + this.dataServicePath, {
-        //     id: searchUpdate.id,
-        //     name: searchUpdate.values![0].name
-        // }).subscribe();
+        this.dataService.put(this.getDataServicePath(), this.getEditedSearchItemParameters(searchUpdate), {
+            authorization: true
+        }).subscribe();
         this.updateOtherItems(searchUpdate);
     }
 
@@ -477,8 +475,9 @@ export class ListUpdateManager {
     // ===============================================================( ON SEARCH ITEM DELETE )=============================================================== \\
 
     onSearchItemDelete(searchUpdate: ListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(searchUpdate.deletedItems![0])).subscribe();
+        this.dataService.delete('api/' + this.dataServicePath, this.getDeletedItemParameters(searchUpdate.deletedItems![0]), {
+            authorization: true
+        }).subscribe();
         this.updateOtherItems(searchUpdate);
     }
 
@@ -780,11 +779,30 @@ export class ListUpdateManager {
 
 
 
+    // =========================================================( GET EDITED SEARCH ITEM PARAMETERS )========================================================= \\
+
+    getEditedSearchItemParameters(searchUpdate: ListUpdate) {
+        return {
+            id: searchUpdate.id,
+            name: searchUpdate.name
+        }
+    }
+
+
+
     // ============================================================( GET DELETED ITEM PARAMETERS )============================================================ \\
 
     getDeletedItemParameters(deletedItem: ListItem) {
         return {
             id: deletedItem.id
         }
+    }
+
+
+
+    // ===============================================================( GET DATA SERVICE PATH )=============================================================== \\
+
+    getDataServicePath() {
+        return 'api/' + this.dataServicePath;
     }
 }
