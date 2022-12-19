@@ -23,6 +23,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     private _searchUpdate!: MultiColumnListUpdate;
 
     // Public
+    public parentItem!: Item;
     public childType!: string;
     public searchNameWidth!: string;
     public searchTypeWidth!: string;
@@ -162,6 +163,15 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         super.onListUpdate(hierarchyUpdate);
         this._hierarchyUpdate = hierarchyUpdate;
         if (hierarchyUpdate.type == ListUpdateType.ArrowClicked) this.onArrowClick(hierarchyUpdate);
+    }
+
+
+
+    // ===============================================================( ON SEARCH LIST UPDATE )=============================================================== \\
+
+    onSearchListUpdate(searchUpdate: ListUpdate) {
+        super.onSearchListUpdate(searchUpdate);
+        this._searchUpdate = searchUpdate;
     }
 
 
@@ -312,11 +322,12 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // Edit child search item
         if (searchUpdate.values![1].name == this.childSearchType) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.put('api/' + this.childDataServicePath, {
-            //     id: searchUpdate.id,
-            //     name: searchUpdate.values![0].name
-            // }).subscribe();
+            this.dataService.put(this.getChildDataServicePath(), {
+                id: searchUpdate.id,
+                name: searchUpdate.values![0].name
+            }, {
+                authorization: true
+            }).subscribe();
             this.updateOtherItems(searchUpdate);
         }
 
@@ -413,8 +424,12 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             // Prefill the prompt so if the prompt opens before we get the parent name, it won't be an empty prompt
             this.searchOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.values[0].name, this.itemType, '');
 
-            this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: deletedItem.id }])
+            this.dataService.get<Item>(this.getSearchDeletePromptChildDataServicePath(), [{ key: 'childId', value: deletedItem.id }], {
+                authorization: true
+            })
                 .subscribe((parentItem: Item) => {
+                    this.parentItem = parentItem;
+
                     // If the parent name comes back before the propmt is opened
                     if (!this.searchComponent.listManager.prompt) {
                         this.searchOptions.deletePrompt!.message = this.deletePromptChildMessage(this.childType, deletedItem.values[0].name, this.itemType, parentItem.name!);
@@ -460,8 +475,9 @@ export class HierarchyUpdateManager extends ListUpdateManager {
 
         // If we're deleting a child item
         if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.childSearchType) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters((searchUpdate.deletedItems![0] as MultiColumnItem))).subscribe();
+            this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters((searchUpdate.deletedItems![0] as MultiColumnItem)), {
+                authorization: true
+            }).subscribe();
             this.updateOtherItems(searchUpdate);
         }
     }
@@ -537,7 +553,9 @@ export class HierarchyUpdateManager extends ListUpdateManager {
     // ==================================================================( DELETE CHILDREN )================================================================== \\
 
     deleteChildren(searchList: Array<MultiColumnItem>, deletedItem: MultiColumnItem) {
-        this.dataService.get<Array<MultiColumnItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: deletedItem.id }])
+        this.dataService.get<Array<MultiColumnItem>>('api/' + this.childDataServicePath, this.deleteChildrenParameters(deletedItem), {
+            authorization: true
+        })
             .subscribe((children: Array<MultiColumnItem>) => {
                 children.forEach(x => {
                     // Check to see if any of the children of the parent item is present in the search list. If so, delete them
@@ -774,21 +792,21 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         if (searchUpdate.values![1].name == this.childSearchType) {
 
             // Query the database to check for a duplicate
-            this.dataService.get<DuplicateItem>('api/' + this.childDataServicePath + '/CheckDuplicate', [{ key: 'childId', value: searchUpdate.id }, { key: 'childName', value: searchUpdate.values![0].name }])
-                .subscribe((duplicateItem: DuplicateItem) => {
+            // this.dataService.get<DuplicateItem>('api/' + this.childDataServicePath + '/CheckDuplicate', [{ key: 'childId', value: searchUpdate.id }, { key: 'childName', value: searchUpdate.values![0].name }])
+            //     .subscribe((duplicateItem: DuplicateItem) => {
 
-                    // If no match was found
-                    if (duplicateItem == null) {
+            //         // If no match was found
+            //         if (duplicateItem == null) {
                         this.searchComponent.commitAddEdit();
 
-                        // If a match was found
-                    } else {
-                        const parentItem = this.thisArray.find(x => x.id == duplicateItem.parentId && x.hierarchyGroupID == 0);
-                        this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
-                        this.searchOptions.duplicatePrompt!.message = this.duplicatePromptChildMessage(this.childType, searchUpdate.values![0].name, this.itemType, parentItem!.name!);
-                        this.searchComponent.openDuplicatePrompt();
-                    }
-                })
+                //         // If a match was found
+                //     } else {
+                //         const parentItem = this.thisArray.find(x => x.id == duplicateItem.parentId && x.hierarchyGroupID == 0);
+                //         this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
+                //         this.searchOptions.duplicatePrompt!.message = this.duplicatePromptChildMessage(this.childType, searchUpdate.values![0].name, this.itemType, parentItem!.name!);
+                //         this.searchComponent.openDuplicatePrompt();
+                //     }
+                // })
         }
     }
 
@@ -961,5 +979,40 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             hierarchyGroupID: hierarchyItem.hierarchyGroupID,
             hidden: !array[indexOfOtherParent].arrowDown
         }
+    }
+
+
+
+    // =========================================================( GET EDITED SEARCH ITEM PARAMETERS )========================================================= \\
+
+    getEditedSearchItemParameters(searchUpdate: MultiColumnListUpdate) {
+        return {
+            id: searchUpdate.id,
+            name: searchUpdate.values![0].name
+        }
+    }
+
+
+
+    // =================================================( GET SEARCH DELETE PROMPT CHILD DATA SERVICE PATH )================================================== \\
+
+    getSearchDeletePromptChildDataServicePath() {
+        return 'api/' + this.childDataServicePath + '/Parent';
+    }
+
+
+
+    // ============================================================( GET CHILD DATA SERVICE PATH )============================================================ \\
+
+    getChildDataServicePath() {
+        return 'api/' + this.childDataServicePath;
+    }
+
+
+
+    // ============================================================( DELETE CHILDREN PARAMETERS )============================================================= \\
+
+    deleteChildrenParameters(deletedItem: MultiColumnItem) {
+        return [{ key: 'parentId', value: deletedItem.id }]
     }
 }

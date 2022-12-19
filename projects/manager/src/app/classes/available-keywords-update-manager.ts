@@ -344,7 +344,7 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
     // ===========================================================( GET SEARCH RESULTS PARAMETERS )=========================================================== \\
 
-    getSearchResultsParameters(searchWords: string): Array<KeyValue<any, any>> {
-        return [{ key: 'productId', value: this.productId }, { key: 'searchWords', value: searchWords }];
+    getSearchResultsParameters(searchTerm: string): Array<KeyValue<any, any>> {
+        return [{ key: 'productId', value: this.productId }, { key: 'searchTerm', value: searchTerm }];
     }
 }
