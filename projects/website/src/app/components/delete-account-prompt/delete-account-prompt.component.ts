@@ -16,7 +16,6 @@ export class DeleteAccountPromptComponent extends LazyLoad {
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-    this.setFocus(0);
   }
 
 
