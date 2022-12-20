@@ -76,7 +76,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
   // ----------------------------------------------------------------------------- Get Data --------------------------------------------------------------
-  public getData(pageId: number): void {
+  public getData(pageId: any): void {
     this.clear();
 
     this.dataService.get<PageData>(this.apiUrl, [{ key: 'id', value: pageId }],
@@ -133,14 +133,14 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Page;
 
-    this.dataService.post<number>(this.apiUrl, {
+    this.dataService.post<string>(this.apiUrl, {
       name: this.name,
       pageType: this.pageType,
       content: this.widgetService.stringify(this.pageContent)
     }, {
       authorization: true
-    }).subscribe((page: any) => {
-      this.id = page.id;
+    }).subscribe((id: string) => {
+      this.id = id;
     });
   }
 
@@ -237,12 +237,12 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public duplicate(): void {
     if (this.id == null) return;
 
-    this.dataService.post<number>(this.apiUrl + '/Duplicate', {
+    this.dataService.post<string>(this.apiUrl + '/Duplicate', {
       id: this.id
     }, {
       authorization: true
-    }).subscribe((page: any) => {
-      this.getData(page.id);
+    }).subscribe((id: string) => {
+      this.getData(id);
     });
   }
 

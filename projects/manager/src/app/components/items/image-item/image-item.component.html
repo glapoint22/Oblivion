@@ -19,7 +19,7 @@
          (mousedown)="listManager.onItemDown(item, $event)"
          (dblclick)="listManager.onItemDoubleClick(item)"
          [contentEditable]="item == listManager.editedItem"
-         [ngStyle]="{'cursor': listManager.cursor ? listManager.cursor : 'default'}"
+         [ngStyle]="{'cursor': listManager.cursor ? listManager.cursor : 'auto'}"
          [ngClass]="{'selected-item': listManager.showSelection ? item == listManager.selectedItem : null,
                      'unselected-item': listManager.showSelection ? item == listManager.unselectedItem : null,
                      'transparent-item': listManager.showSelection ? listManager.editedItem != null && listManager.editedItem != item : null,

@@ -5,7 +5,7 @@
          tabindex="-1"
          (contextmenu)="$event.preventDefault()"
          (mousedown)="listManager.onItemDown(item, $event)"
-         [ngStyle]="{'cursor': listManager.cursor ? listManager.cursor : 'default'}"
+         [ngStyle]="{'cursor': listManager.cursor ? listManager.cursor : 'auto'}"
          [ngClass]="{'selected-item': listManager.showSelection ? item == listManager.selectedItem : null,
                      'unselected-item': listManager.showSelection ? item == listManager.unselectedItem : null,
                      'selected-item-top': listManager.showSelection ? item.selectType == listManager.SelectType.Top : null,
