@@ -41,6 +41,10 @@
 
 
 .breadcrumb {
+    position: fixed;
+    top: 79px;
+    left: 0;
+    right: 0;
     height: 58px;
     background: #1f1f1f;
     border-bottom: 1px solid #252525;
@@ -50,17 +54,13 @@
     white-space: nowrap;
     line-height: 58px;
     padding: 0 10px;
-
-    position: fixed;
-    top: 79px;
-    left: 0;
-    right: 0;
     z-index: 50;
 
     a {
         color: $gold;
         text-decoration: none;
         display: inline-block;
+        outline: none;
 
         &:hover {
             text-decoration: underline;
@@ -68,8 +68,14 @@
 
         & + div {
             @include arrow-right(9px, 6px, #dadada);
-            margin: 0 10px;
+            margin: 0 10px 0 5px;
             display: inline-block;
+        }
+
+        &:focus-visible {
+            color: lighten($gold, 20);
+            font-size: 15.5px;
+            // font-weight: bold;
         }
     }
 
