@@ -788,6 +788,7 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             }
         }
 
+
         // If we're verifying a child item
         if (searchUpdate.values![1].name == this.childSearchType) {
 

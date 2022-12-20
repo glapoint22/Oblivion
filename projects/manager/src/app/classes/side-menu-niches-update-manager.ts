@@ -46,11 +46,11 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     ngOnInit() {
         super.ngOnInit()
         this.itemType = 'Niche';
-        this.childType = 'Sub Niche';
+        this.childType = 'Subniche';
         this.dataServicePath = 'Niches';
         this.childDataServicePath = 'Subniches';
         this.parentSearchType = 'Niche';
-        this.childSearchType = 'Sub Niche';
+        this.childSearchType = 'Subniche';
         this.searchNameWidth = '295px';
         this.searchTypeWidth = '78px';
         this.collapseHierarchyOnOpen = false;
@@ -267,14 +267,11 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
     // ====================================================================( ON ITEM ADD )==================================================================== \\
-    private nicheAddId: number = 3000;
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
-        this.nicheAddId++;
         // Add grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
             const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
-            // ********* Commented Out Data Service *********
             this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
                 id: this.thisArray[indexOfHierarchyItemParent].id,
                 name: hierarchyUpdate.name
@@ -410,8 +407,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     onItemDelete(hierarchyUpdate: HierarchyUpdate) {
         // If we're deleting a grandchild item
         if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 2) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0])).subscribe();
+            this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0]), {
+                authorization: true
+            }).subscribe();
         }
         super.onItemDelete(hierarchyUpdate);
     }
@@ -428,8 +426,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
         // If we're deleting a grandchild item
         if ((searchUpdate.deletedItems![0] as MultiColumnItem).values[1].name == this.grandchildSearchType) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(deletedItem)).subscribe();
+            this.dataService.delete('api/' + this.grandchildDataServicePath, this.getDeletedItemParameters(searchUpdate.deletedItems![0]), {
+                authorization: true
+            }).subscribe();
             this.updateOtherItems(searchUpdate);
         }
         super.onSearchItemDelete(searchUpdate);
@@ -470,9 +469,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                 })
         }
 
-        // If the item that is being deleted is a sub niche
+        // If the item that is being deleted is a subniche
         if (deletedItem.values[1].name == this.childSearchType) {
-            this.dataService.get<Array<MultiColumnItem>>('api/' + this.childDataServicePath + '/Children', [{ key: 'parentId', value: deletedItem.id }], {
+            this.dataService.get<Array<MultiColumnItem>>('api/Products', [{ key: 'parentId', value: deletedItem.id }], {
                 authorization: true
             })
                 .subscribe((children: Array<MultiColumnItem>) => {
@@ -495,11 +494,12 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
         // Edit grandchild search item
         if (searchUpdate.values![1].name == this.grandchildSearchType) {
-            // ********* Commented Out Data Service *********
-            // this.dataService.put('api/' + this.grandchildDataServicePath, {
-            //     id: searchUpdate.id,
-            //     name: searchUpdate.values![0].name
-            // }).subscribe();
+            this.dataService.put('api/' + this.grandchildDataServicePath, {
+                id: searchUpdate.id,
+                name: searchUpdate.values![0].name
+            }, {
+                authorization: true
+            }).subscribe();
             // this.sort(this.OldEditItem(this.thisArray, searchUpdate, 2), this.thisArray);
         }
     }

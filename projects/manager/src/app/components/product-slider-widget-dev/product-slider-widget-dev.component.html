@@ -14,8 +14,7 @@
         <!-- Slider -->
         <div class="slider-container">
             <div #slider slider [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton"
-                [scrollbarElement]="scrollbar" [changeCount]="changeCount" [scrollbarContainer]="scrollbarContainer"
-                [changeCount]="changeCount" class="slider">
+                [changeCount]="changeCount" [changeCount]="changeCount" class="slider">
 
                 <!-- Products -->
                 <div *ngFor="let productGroup of productGroups" [style.width.px]="sliderContainer.clientWidth"

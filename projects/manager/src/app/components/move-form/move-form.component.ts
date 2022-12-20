@@ -99,7 +99,7 @@ export class MoveFormComponent extends LazyLoad {
     this.nicheHierarchy.splice(indexOfItemToBeMoved, moveList.length);
 
     // Get the index of the item that the item-to-be-moved will be moved to
-    const indexOfDestinationItem = this.nicheHierarchy.findIndex(x => x.id == this.destinationItem.id && x.name == this.destinationItem.name && x.hierarchyGroupID == (this.itemToBeMovedType == 'Sub Niche' ? 0 : 1));
+    const indexOfDestinationItem = this.nicheHierarchy.findIndex(x => x.id == this.destinationItem.id && x.name == this.destinationItem.name && x.hierarchyGroupID == (this.itemToBeMovedType == 'Subniche' ? 0 : 1));
 
     // If the destination-item has its arrow expanded
     if (indexOfDestinationItem != -1 && this.nicheHierarchy[indexOfDestinationItem].arrowDown) {
@@ -135,7 +135,7 @@ export class MoveFormComponent extends LazyLoad {
       }
     }
 
-    let itemToBeMovedType = this.itemToBeMovedType == 'Sub Niche' ? 'Niches' : 'Products';
+    let itemToBeMovedType = this.itemToBeMovedType == 'Subniche' ? 'Niches' : 'Products';
     // ********* Commented Out Data Service *********
     // this.dataService.put('api/' + itemToBeMovedType + '/Move', {
     //   itemToBeMovedId: this.itemToBeMoved.id,
