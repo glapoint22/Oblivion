@@ -14,7 +14,7 @@
             <div *ngIf="!product" class="search-container">
                 <search #search
                         [apiUrl]="'Vendors/Search'"
-                        (onItemSelect)="onVendorSelect($event)"
+                        (onItemSelect)="onVendorSelect($event.id)"
                         [placeholderText]="'Search for a vendor'"
                         (onGetTabElement)="searchTabElement = $event">
                 </search>
@@ -43,7 +43,7 @@
                     <icon-button [icon]="'fas fa-trash-alt'"
                                  [title]="'Delete Vendor'"
                                  [isDisabled]="iconButtonsDisabled"
-                                 (onClick)="onDeleteButtonClick()">
+                                 (onClick)="openDeletePrompt()">
                     </icon-button>
 
                     <!-- Add Vendor -->

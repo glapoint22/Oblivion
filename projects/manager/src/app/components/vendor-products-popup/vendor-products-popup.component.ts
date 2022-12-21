@@ -49,12 +49,14 @@ export class VendorProductsPopupComponent extends LazyLoad {
 
 
   mousedown = () => {
-    if(!this.imageListComponent.listManager.selectedItem && !this.imageListComponent.listManager.contextMenuOpen) this.close();
+    if (!this.imageListComponent.listManager.selectedItem && !this.imageListComponent.listManager.contextMenuOpen) this.close();
   }
 
 
   onOpen() {
-    this.dataService.get<Array<ImageItem>>('api/Vendors/Products', [{ key: "vendorId", value: this.vendorId }]).subscribe((products: Array<ImageItem>) => {
+    this.dataService.get<Array<ImageItem>>('api/Vendors/Products', [{ key: "id", value: this.vendorId }], {
+      authorization: true
+    }).subscribe((products: Array<ImageItem>) => {
       products.forEach(x => {
         this.products.push(x);
       })
@@ -75,7 +77,7 @@ export class VendorProductsPopupComponent extends LazyLoad {
 
 
   onEscape(): void {
-    if(!this.imageListComponent.listManager.selectedItem && !this.imageListComponent.listManager.contextMenuOpen) super.onEscape();
+    if (!this.imageListComponent.listManager.selectedItem && !this.imageListComponent.listManager.contextMenuOpen) super.onEscape();
   }
 
 
