@@ -14,10 +14,17 @@
 
                 <div class="section">
                     <label class="checkbox">
-                        <input type="checkbox" tabindex="-2"
+                        <input #allCheckedInput type="checkbox" tabindex="-2"
                             (change)="allChecked = !allChecked; toggleAllChecked()"
                             [checked]="allChecked">
-                        <span class="checkmark" tabindex="0"></span>
+
+                            <span tabindex="0"
+                                  class="checkmark"
+                                  (keydown.space)="$event.preventDefault();
+                                                   allChecked = !allChecked;
+                                                   toggleAllChecked()">
+                            </span>
+
                     </label>
                 </div>
 
@@ -38,7 +45,13 @@
                             <input #nameChangeInput type="checkbox" tabindex="-2"
                                 (change)="preferences.nameChange = nameChangeInput.checked; setAllChecked()"
                                 [checked]="preferences?.nameChange">
-                            <span class="checkmark" tabindex="0"></span>
+                                <span tabindex="0"
+                                      class="checkmark"
+                                      (keydown.space)="$event.preventDefault();
+                                                       nameChangeInput.checked = !nameChangeInput.checked;
+                                                       preferences.nameChange = nameChangeInput.checked;
+                                                       setAllChecked();">
+                                </span>
                         </label>
                     </div>
 
@@ -54,7 +67,13 @@
                         <label class="checkbox">
                             <input #emailChangeInput type="checkbox" [checked]="preferences?.emailChange" tabindex="-2"
                                 (change)="preferences.emailChange = emailChangeInput.checked; setAllChecked()">
-                            <span class="checkmark" tabindex="0"></span>
+                            <span tabindex="0"
+                                  class="checkmark"
+                                  (keydown.space)="$event.preventDefault();
+                                                   emailChangeInput.checked = !emailChangeInput.checked;
+                                                   preferences.emailChange = emailChangeInput.checked;
+                                                   setAllChecked();">
+                            </span>
                         </label>
                     </div>
 
@@ -71,7 +90,13 @@
                             <input #passwordChangeInput type="checkbox" tabindex="-2"
                                 (change)="preferences.passwordChange = passwordChangeInput.checked; setAllChecked()"
                                 [checked]="preferences?.passwordChange">
-                            <span class="checkmark" tabindex="0"></span>
+                            <span tabindex="0"
+                                  class="checkmark"
+                                  (keydown.space)="$event.preventDefault();
+                                                   passwordChangeInput.checked = !passwordChangeInput.checked;
+                                                   preferences.passwordChange = passwordChangeInput.checked;
+                                                   setAllChecked();">
+                            </span>
                         </label>
                     </div>
 
@@ -87,7 +112,15 @@
                             <input #profilePicChangeInput type="checkbox" tabindex="-2"
                                 (change)="preferences.profileImageChange = profilePicChangeInput.checked; setAllChecked()"
                                 [checked]="preferences?.profileImageChange">
-                            <span class="checkmark" tabindex="0"></span>
+
+                                <span tabindex="0"
+                                      class="checkmark"
+                                      (keydown.space)="$event.preventDefault();
+                                                       profilePicChangeInput.checked = !profilePicChangeInput.checked;
+                                                       preferences.profileImageChange = profilePicChangeInput.checked;
+                                                       setAllChecked();">
+                                </span>
+
                         </label>
                     </div>
                 </div>
@@ -112,7 +145,13 @@
                             <input #newCollaboratorInput type="checkbox" tabindex="-2"
                                 (change)="preferences.newCollaborator = newCollaboratorInput.checked; setAllChecked()"
                                 [checked]="preferences?.newCollaborator">
-                            <span class="checkmark" tabindex="0"></span>
+                                <span tabindex="0"
+                                      class="checkmark"
+                                      (keydown.space)="$event.preventDefault();
+                                                       newCollaboratorInput.checked = !newCollaboratorInput.checked;
+                                                       preferences.newCollaborator = newCollaboratorInput.checked;
+                                                       setAllChecked();">
+                                </span>
                         </label>
                     </div>
 
@@ -131,7 +170,13 @@
                             <input #removedCollaboratorInput type="checkbox" tabindex="-2"
                                 (change)="preferences.removedCollaborator = removedCollaboratorInput.checked; setAllChecked()"
                                 [checked]="preferences?.removedCollaborator">
-                            <span class="checkmark" tabindex="0"></span>
+                                <span tabindex="0"
+                                      class="checkmark"
+                                      (keydown.space)="$event.preventDefault();
+                                                       removedCollaboratorInput.checked = !removedCollaboratorInput.checked;
+                                                       preferences.removedCollaborator = removedCollaboratorInput.checked;
+                                                       setAllChecked();">
+                                </span>
                         </label>
                     </div>
 
@@ -149,7 +194,13 @@
                             <input #addedListItemInput type="checkbox" tabindex="-2"
                                 (change)="preferences.addedListItem = addedListItemInput.checked; setAllChecked()"
                                 [checked]="preferences?.addedListItem">
-                            <span class="checkmark" tabindex="0"></span>
+                                <span tabindex="0"
+                                      class="checkmark"
+                                      (keydown.space)="$event.preventDefault();
+                                                       addedListItemInput.checked = !addedListItemInput.checked;
+                                                       preferences.addedListItem = addedListItemInput.checked;
+                                                       setAllChecked();">
+                                </span>
                         </label>
                     </div>
 
@@ -167,7 +218,13 @@
                             <input #removedListItemInput type="checkbox" tabindex="-2"
                                 (change)="preferences.removedListItem = removedListItemInput.checked; setAllChecked()"
                                 [checked]="preferences?.removedListItem">
-                            <span class="checkmark" tabindex="0"></span>
+                                <span tabindex="0"
+                                      class="checkmark"
+                                      (keydown.space)="$event.preventDefault();
+                                                       removedListItemInput.checked = !removedListItemInput.checked;
+                                                       preferences.removedListItem = removedListItemInput.checked;
+                                                       setAllChecked();">
+                                </span>
                         </label>
                     </div>
 
@@ -188,7 +245,13 @@
                             <input #listNameChangeInput type="checkbox" tabindex="-2"
                                 (change)="preferences.editedList = listNameChangeInput.checked; setAllChecked()"
                                 [checked]="preferences?.editedList">
-                            <span class="checkmark" tabindex="0"></span>
+                                <span tabindex="0"
+                                      class="checkmark"
+                                      (keydown.space)="$event.preventDefault();
+                                                       listNameChangeInput.checked = !listNameChangeInput.checked;
+                                                       preferences.editedList = listNameChangeInput.checked;
+                                                       setAllChecked();">
+                                </span>
                         </label>
                     </div>
 
@@ -206,7 +269,13 @@
                             <input #deletedListInput type="checkbox" tabindex="-2"
                                 (change)="preferences.deletedList = deletedListInput.checked; setAllChecked()"
                                 [checked]="preferences?.deletedList">
-                            <span class="checkmark" tabindex="0"></span>
+                                <span tabindex="0"
+                                      class="checkmark"
+                                      (keydown.space)="$event.preventDefault();
+                                                       deletedListInput.checked = !deletedListInput.checked;
+                                                       preferences.deletedList = deletedListInput.checked;
+                                                       setAllChecked();">
+                                </span>
                         </label>
                     </div>
 
@@ -229,7 +298,13 @@
                     <label class="checkbox">
                         <input #reviewInput type="checkbox" (change)="preferences.review = reviewInput.checked; setAllChecked()" tabindex="-2"
                             [checked]="preferences?.review">
-                        <span class="checkmark" tabindex="0"></span>
+                            <span tabindex="0"
+                                  class="checkmark"
+                                  (keydown.space)="$event.preventDefault();
+                                                   reviewInput.checked = !reviewInput.checked;
+                                                   preferences.review = reviewInput.checked;
+                                                   setAllChecked();">
+                            </span>
                     </label>
                 </div>
 
