@@ -49,7 +49,9 @@ export class ProductService {
       if (this.sideMenuNicheArray.length == 0) {
 
         // Then first, load the niches into the niches side menu
-        this.dataService.get<Array<HierarchyItem>>('api/Niches')
+        this.dataService.get<Array<HierarchyItem>>('api/Niches', undefined, {
+          authorization: true
+        })
           .subscribe((niches: Array<HierarchyItem>) => {
             niches.forEach(x => {
               this.sideMenuNicheArray.push(
@@ -194,12 +196,14 @@ export class ProductService {
 
   loadSubNichesAndProducts(nicheIndex: number) {
     // Load all the subNiches of the Niche as well as all the products of the subNiche that the product belongs to
-    this.dataService.get<NicheHierarchy>('api/Products/SubNiches_Products', [{ key: 'nicheId', value: this.nicheId }, { key: 'subNicheId', value: this.subnicheId }])
+    this.dataService.get<NicheHierarchy>('api/Niches/SubnichesProducts', [{ key: 'nicheId', value: this.nicheId }, { key: 'subnicheId', value: this.subnicheId }], {
+      authorization: true
+    })
       .subscribe((nicheHierarchy: NicheHierarchy) => {
 
         // SubNiches
-        for (let i = nicheHierarchy.subNiches.length - 1; i >= 0; i--) {
-          this.sideMenuNicheArray.splice(nicheIndex + 1, 0, this.getHierarchyItem(nicheHierarchy.subNiches[i], 1));
+        for (let i = nicheHierarchy.subniches.length - 1; i >= 0; i--) {
+          this.sideMenuNicheArray.splice(nicheIndex + 1, 0, this.getHierarchyItem(nicheHierarchy.subniches[i], 1));
         }
 
         // And the index of the subNiche

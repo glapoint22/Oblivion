@@ -2,7 +2,7 @@
         [title]="title ? title : ''"
         [disabled]="isDisabled"
         (click)="!isDisabled ? onClick.next() : null"
-        (mousedown)="popupOpen ? $event.stopPropagation() : null">
+        (mousedown)="$event.stopPropagation()"> <!-- popupOpen ? $event.stopPropagation() : null -->
 
     <i #iconButton
        [tabindex]="0"

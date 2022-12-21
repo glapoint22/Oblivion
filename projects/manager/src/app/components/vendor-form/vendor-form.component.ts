@@ -71,11 +71,15 @@ export class VendorFormComponent extends LazyLoad {
   }
 
 
-  onVendorSelect(vendor: Vendor) {
-    this.vendor = vendor;
-    this.fieldsDisabled = false;
-    this.iconButtonsDisabled = false;
-    this.populateFields();
+  onVendorSelect(id: any) {
+    this.dataService.get<Vendor>('api/Vendors', [{ key: 'id', value: id }], {
+      authorization: true
+    }).subscribe((vendor: Vendor) => {
+      this.vendor = vendor;
+      this.fieldsDisabled = false;
+      this.iconButtonsDisabled = false;
+      this.populateFields();
+    });
   }
 
 
@@ -110,17 +114,7 @@ export class VendorFormComponent extends LazyLoad {
   }
 
 
-
-  onDeleteButtonClick() {
-    this.dataService.get<number>('api/Vendors/ProductCount', [{ key: "vendorId", value: this.vendor.id }])
-      .subscribe((productCount: number) => {
-        this.openDeletePrompt(productCount);
-      })
-  }
-
-
-
-  openDeletePrompt(productCount: number) {
+  openDeletePrompt() {
     this.lazyLoadingService.load(async () => {
       const { PromptComponent } = await import('../prompt/prompt.component');
       const { PromptModule } = await import('../prompt/prompt.module');
@@ -134,50 +128,24 @@ export class VendorFormComponent extends LazyLoad {
         prompt.title = 'Delete Vendor';
 
 
-        // If the vendor does NOT have any products
-        if (productCount == 0) {
+        // Display the delete message
+        prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+          'The vendor' +
+          ' <span style="color: #ffba00">\"' + this.vendor.name + '\"</span>' +
+          ' will be permanently deleted.');
 
-          // Display the delete allowed message
-          prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-            'The vendor' +
-            ' <span style="color: #ffba00">\"' + this.vendor.name + '\"</span>' +
-            ' will be permanently deleted.');
 
-          // But if the vendor does have products
-        } else {
 
-          // If the vendor only has one product
-          if (productCount == 1) {
-
-            // Display the NO delete allowed message for one product
-            prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-              'The vendor' +
-              ' <span style="color: #ffba00">\"' + this.vendor.name + '\"</span>' +
-              ' has a dependency and cannot be deleted. Before continuing, you must remove any references to this vendor.');
-
-            // If the vendor has more than one product
-          } else {
-
-            // Display the NO delete allowed message for many products
-            prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-              'The vendor' +
-              ' <span style="color: #ffba00">\"' + this.vendor.name + '\"</span>' +
-              ' has ' + productCount +
-              ' dependencies and cannot be deleted. Before continuing, you must remove all references to this vendor.');
-          }
+        // Set the primary button
+        prompt.primaryButton = {
+          name: 'Delete',
+          buttonFunction: this.deleteVendor,
         }
 
 
-        // If delete is allowed, show the delete button
-        prompt.primaryButton = productCount == 0 ? {
-          name: 'Delete',
-          buttonFunction: this.deleteVendor,
-        } : null!
-
-
-        // If delete is allowed, name the button 'Cancel', otherwise name it 'Close'
+        // Set the secondary button
         prompt.secondaryButton = {
-          name: productCount == 0 ? 'Cancel' : 'Close'
+          name: 'Close'
         };
       });
   }
@@ -185,7 +153,10 @@ export class VendorFormComponent extends LazyLoad {
 
 
   deleteVendor() {
-    this.dataService.delete('api/Vendors', { vendorId: this.vendor.id }).subscribe();
+    this.dataService.delete('api/Vendors', { id: this.vendor.id }, {
+      authorization: true
+    }).subscribe();
+
     this.vendor = null!;
     this.fieldsDisabled = true;
     this.iconButtonsDisabled = true;
@@ -248,23 +219,23 @@ export class VendorFormComponent extends LazyLoad {
   }
 
 
-  checkForDuplicateVendor() {
-    this.dataService.get<Vendor>('api/Vendors/Duplicate', [{ key: 'vendorName', value: this.companyName.nativeElement.value }])
-      .subscribe((vendor: Vendor) => {
+  // checkForDuplicateVendor() {
+  //   this.dataService.get<Vendor>('api/Vendors/Duplicate', [{ key: 'vendorName', value: this.companyName.nativeElement.value }])
+  //     .subscribe((vendor: Vendor) => {
 
-        // If a vendor with the same name already exits
-        if (vendor) {
-          // Open the duplicate prompt
-          this.openDuplicatePrompt(vendor.name!);
+  //       // If a vendor with the same name already exits
+  //       if (vendor) {
+  //         // Open the duplicate prompt
+  //         this.openDuplicatePrompt(vendor.name!);
 
-          // If NO vendor has the same name
-        } else {
+  //         // If NO vendor has the same name
+  //       } else {
 
-          // Submit vendor
-          this.submitNewVendor();
-        }
-      });
-  }
+  //         // Submit vendor
+  //         this.submitNewVendor();
+  //       }
+  //     });
+  // }
 
 
   submitNewVendor() {
@@ -272,20 +243,23 @@ export class VendorFormComponent extends LazyLoad {
     this.updateVendorProperties();
 
     // Post the new vendor to the database
-    this.dataService.post<number>('api/Vendors', this.vendor).subscribe((vendorId: number) => {
-      this.vendor.id = vendorId;
+    this.dataService.post<number>('api/Vendors', this.vendor, {
+      authorization: true
+    })
+      .subscribe((vendorId: number) => {
+        this.vendor.id = vendorId;
 
-      // If this form was opened from a product
-      if (this.product) {
-        // Update the product's vendor with this new vendor
-        this.product.vendor = this.vendor;
+        // If this form was opened from a product
+        if (this.product) {
+          // Update the product's vendor with this new vendor
+          this.product.vendor = this.vendor;
 
-        this.dataService.put('api/Products/Vendor', {
-          itemId: this.product.id,
-          propertyId: this.vendor.id
-        }).subscribe();
-      }
-    });
+          this.dataService.put('api/Products/Vendor', {
+            itemId: this.product.id,
+            propertyId: this.vendor.id
+          }).subscribe();
+        }
+      });
   }
 
 
@@ -358,13 +332,15 @@ export class VendorFormComponent extends LazyLoad {
 
   onSubmit() {
     if (this.newVendor) {
-      this.checkForDuplicateVendor();
+      this.submitNewVendor();
     } else {
       this.close();
       this.updateVendorProperties();
 
       // Update the vendor in the database
-      this.dataService.put('api/Vendors', this.vendor).subscribe();
+      this.dataService.put('api/Vendors', this.vendor, {
+        authorization: true
+      }).subscribe();
     }
   }
 
@@ -376,7 +352,7 @@ export class VendorFormComponent extends LazyLoad {
 
 
   onEscape(): void {
-    if(!this.vendorProductsPopupOpen) super.onEscape();
+    if (!this.vendorProductsPopupOpen) super.onEscape();
   }
 
 
