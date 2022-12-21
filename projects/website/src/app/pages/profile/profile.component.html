@@ -14,10 +14,10 @@
             <div class="section">
                 <div class="property">
                     <div>Name:</div>
-                    <div>{{accountService.user?.firstName + ' ' + accountService.user?.lastName}}</div>
+                    <div title="Change Name" (click)="onChangeNameClick()">{{accountService.user?.firstName + ' ' + accountService.user?.lastName}}</div>
                 </div>
 
-                <div class="icon-container" title="Change Name" (click)="onChangeNameClick()">
+                <div class="icon-container" title="Change Name" (click)="onChangeNameClick()" (keydown.enter)="onChangeNameClick()" tabindex="0">
                     <div class="pencil-icon"></div>
                 </div>
             </div>
@@ -28,10 +28,10 @@
             <div class="section">
                 <div class="property">
                     <div>Email:</div>
-                    <div>{{accountService.user?.email}}</div>
+                    <div title="Change Email" (click)="onChangeEmailClick()">{{accountService.user?.email}}</div>
                 </div>
 
-                <div class="icon-container" title="Change Email" (click)="onChangeEmailClick()">
+                <div class="icon-container" title="Change Email" (click)="onChangeEmailClick()" (keydown.enter)="onChangeEmailClick()" tabindex="0">
                     <div class="pencil-icon"></div>
                 </div>
             </div>
@@ -43,11 +43,11 @@
             <div class="section" style="margin-bottom: 8px;">
                 <div class="property">
                     <div>Password:</div>
-                    <div *ngIf="!this.accountService.user?.externalLoginProvider || accountService.user?.hasPassword">******</div>
-                    <div *ngIf="this.accountService.user?.externalLoginProvider && !accountService.user?.hasPassword" style="font-style: italic; font-size: 12px;">(No Password)</div>
+                    <div *ngIf="!this.accountService.user?.externalLoginProvider || accountService.user?.hasPassword" title="Change Password" (click)="onChangePasswordClick()">******</div>
+                    <div *ngIf="this.accountService.user?.externalLoginProvider && !accountService.user?.hasPassword" style="font-style: italic; font-size: 12px;" title="Create Password" (click)="onChangePasswordClick()">(No Password)</div>
                 </div>
 
-                <div class="icon-container" title="Change Password" (click)="onChangePasswordClick()">
+                <div class="icon-container" title="Change Password" (click)="onChangePasswordClick()" (keydown.enter)="onChangePasswordClick()" tabindex="0">
                     <div class="pencil-icon"></div>
                 </div>
             </div>
@@ -62,11 +62,12 @@
                     <div>
                         <img [src]="accountService.user?.profileImage?.src ? 'images/' + accountService.user?.profileImage?.src : 'assets/no-account-pic.png'" class="profile-pic"
                             [title]="accountService.user?.profileImage?.name"
+                            (click)="onChangeProfilePictureClick(fileInput)"
                             [alt]="accountService.user?.profileImage?.name">
                     </div>
                 </div>
 
-                <div class="icon-container" title="Change Profile Image" (click)="onChangeProfilePictureClick(fileInput)">
+                <div class="icon-container" title="Change Profile Image" (click)="onChangeProfilePictureClick(fileInput)" (keydown.enter)="onChangeProfilePictureClick(fileInput)" tabindex="0">
                     <div class="pencil-icon"></div>
                 </div>
             </div>

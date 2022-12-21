@@ -28,8 +28,10 @@
                     You must first be logged in before you can perform this action. You will be redirected after completing the login process.
                 </div>
 
-                <external-login-providers #externalLoginProvidersComponent [signInType]="'Log in'"
-                    (onLogIn)="setLogIn()" (onGetExternalLoginProviders)="externalLoginProviders = $event">
+                <external-login-providers #externalLoginProvidersComponent
+                                          (onLogIn)="setLogIn()"
+                                          [signInType]="'Log in'"
+                                          (onGetExternalLoginProviders)="externalLoginProviders = $event">
                 </external-login-providers>
 
                 <!-- Or -->

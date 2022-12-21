@@ -43,10 +43,17 @@ input[type=text] {
     margin-top: 15px;
     font-size: 13px;
     cursor: pointer;
+    outline: none;
     text-decoration: underline;
     
     &:hover {
         color: lighten(#ffba00, 10);
+    }
+
+    &:focus-visible {
+        text-decoration: underline;
+        transform: scale(1.05);
+        color: lighten(#ffba00, 15);
     }
 }
 

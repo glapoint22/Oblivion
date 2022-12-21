@@ -27,10 +27,16 @@
     }
 
     div:last-child {
+        width: fit-content;
         color: white;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }
 
@@ -40,10 +46,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    outline: none;
     cursor: pointer;
 
     &:hover .pencil-icon {
         color: white;
+    }
+
+    &:focus-visible {
+        .pencil-icon {
+            transform: scale(1.2);
+            color: white;
+        }
+        
     }
 }
 
@@ -71,6 +86,15 @@ input {
     top: 0;
     width: 0;
     height: 0;
+}
+
+
+img {
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(1.2);
+    }
 }
 
 

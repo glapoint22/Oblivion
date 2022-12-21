@@ -81,7 +81,7 @@
 
     <!-- Show more/less subniches -->
     <div *ngIf="niche.subnicheFilters.hidden.length > 0" class="show-more"
-        (click)="seeAllFewerSubniches(niche.subnicheFilters)">
+        (click)="seeAllFewerSubniches(niche.subnicheFilters)" (keydown.enter)="seeAllFewerSubniches(niche.subnicheFilters)" tabindex="0">
         {{niche.subnicheFilters.hidden[0].visible ? 'Show less' : 'Show more'}}
     </div>
 
@@ -103,5 +103,5 @@
 
 <!-- Show more/less niches -->
 <div *ngIf="nicheFilters.hidden.length > 0" class="show-all-container" (click)="seeAllFewerNiches()">
-    <div class="show-all">{{nicheFilters.hidden[0].visible ? 'Show less niches' : 'Show more niches'}}</div>
+    <div class="show-all" tabindex="0" (keydown.enter)="seeAllFewerNiches()">{{nicheFilters.hidden[0].visible ? 'Show less niches' : 'Show more niches'}}</div>
 </div>

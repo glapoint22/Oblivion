@@ -1,8 +1,8 @@
 <div style="padding: 0 13px; padding-bottom: 0;">
     <div *ngFor="let option of filter.options; trackBy:trackFilterOption" class="option">
         <label class="checkbox">
-            <input #checkbox type="checkbox" (change)="onFilterClick(option.id.toString())" [value]="option.id">
-            <span class="checkmark"></span>
+            <input #checkbox type="checkbox" (change)="onFilterClick(option.id.toString())" [value]="option.id" tabindex="-2">
+            <span class="checkmark" tabindex="0" (keydown.enter)="onFilterClick(option.id.toString())"></span>
         </label>
 
         <stars [rating]="option.id"></stars>

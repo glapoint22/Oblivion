@@ -14,7 +14,7 @@
 
             <button type="submit" class="gold-round-button-sm">Go</button>
         </div>
-        <div *ngIf="showClearPrice" class="clear-price" (click)="clearPrice(true)">Clear Price Range</div>
+        <div *ngIf="showClearPrice" class="clear-price" (click)="clearPrice(true)" (keydown.enter)="clearPrice(true)" tabindex="0">Clear Price Range</div>
     </form>
 
 
@@ -24,8 +24,8 @@
         <label class="radio">
             <div>{{option.label}}</div>
             <input #checkbox type="radio" name="price-option" (change)="onFilterClick(option.min + '-' + option.max)"
-                [value]="option.min + '-' + option.max">
-            <span class="checkmark"></span>
+                [value]="option.min + '-' + option.max" tabindex="-2">
+            <span class="checkmark" tabindex="0" (keydown.space)="$event.preventDefault(); onFilterClick(option.min + '-' + option.max)"></span>
         </label>
     </div>
 </div>

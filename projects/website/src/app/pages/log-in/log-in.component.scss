@@ -1,8 +1,43 @@
 @import '../../../scss/variables';
 
-img {
-    display: block;
+.niche-shack-logo-container {
     margin: 20px auto;
+    width: fit-content;
+
+    a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 181px;
+        height: 46px;
+        outline: none;
+
+        &:hover {
+            img {
+                filter: brightness(1.2);
+            }
+        }
+
+        img:nth-child(1) {
+            display: block;
+        }
+
+        img:nth-child(2) {
+            position: relative;
+            display: none;
+            filter: brightness(1.2);
+        }
+
+        &:focus-visible {
+            img:nth-child(1) {
+                display: none;
+            }
+
+            img:nth-child(2) {
+                display: block;
+            }
+        }
+    }
 }
 
 .gold-round-button-sm {
