@@ -219,23 +219,25 @@ export class VendorFormComponent extends LazyLoad {
   }
 
 
-  // checkForDuplicateVendor() {
-  //   this.dataService.get<Vendor>('api/Vendors/Duplicate', [{ key: 'vendorName', value: this.companyName.nativeElement.value }])
-  //     .subscribe((vendor: Vendor) => {
+  checkForDuplicateVendor() {
+    this.dataService.get<Vendor>('api/Vendors/Duplicate', [{ key: 'vendorName', value: this.companyName.nativeElement.value }], {
+      authorization: true
+    })
+      .subscribe((vendor: Vendor) => {
 
-  //       // If a vendor with the same name already exits
-  //       if (vendor) {
-  //         // Open the duplicate prompt
-  //         this.openDuplicatePrompt(vendor.name!);
+        // If a vendor with the same name already exits
+        if (vendor) {
+          // Open the duplicate prompt
+          this.openDuplicatePrompt(vendor.name!);
 
-  //         // If NO vendor has the same name
-  //       } else {
+          // If NO vendor has the same name
+        } else {
 
-  //         // Submit vendor
-  //         this.submitNewVendor();
-  //       }
-  //     });
-  // }
+          // Submit vendor
+          this.submitNewVendor();
+        }
+      });
+  }
 
 
   submitNewVendor() {
@@ -332,7 +334,7 @@ export class VendorFormComponent extends LazyLoad {
 
   onSubmit() {
     if (this.newVendor) {
-      this.submitNewVendor();
+      this.checkForDuplicateVendor();
     } else {
       this.close();
       this.updateVendorProperties();
