@@ -1,7 +1,11 @@
-<!-- Logo -->
-<a routerLink="/home" title="Niche Shack Homepage">
-    <img src="assets/logo.png">
-</a>
+<!-- Niche Shack Logo -->
+<div class="niche-shack-logo-container">
+    <a routerLink="/home" title="Niche Shack Homepage" tabindex="0">
+        <img src="assets/niche-shack-logo-small.png">
+        <img src="assets/niche-shack-logo-scaled.png">
+    </a>
+</div>
+
 
 <div class="border">
     <div style="padding: 20px;">
@@ -51,11 +55,11 @@
 
             <label class="checkbox">
                 <div style="color: #dadada;">Keep me logged in</div>
-                <input type="checkbox" (change)="isPersistent = !isPersistent" [checked]="isPersistent">
-                <span class="checkmark"></span>
+                <input type="checkbox" (change)="isPersistent = !isPersistent" [checked]="isPersistent" tabindex="-2">
+                <span class="checkmark" tabindex="0"></span>
             </label>
 
-            <div class="purple-text forgot-password" (click)="onForgotPasswordLinkClick()">Forgot password?
+            <div class="purple-text forgot-password" (click)="onForgotPasswordLinkClick()" tabindex="0">Forgot password?
             </div>
 
 
@@ -71,6 +75,6 @@
     <div class="footer">
         <div class="horizontal-groove-line"></div>
         <span class="footer-text">Not a member yet? </span>
-        <span class="purple-text" (click)="onSignUpLinkClick()">Sign Up</span>
+        <span class="purple-text" (click)="onSignUpLinkClick()" tabindex="0">Sign Up</span>
     </div>
 </div>

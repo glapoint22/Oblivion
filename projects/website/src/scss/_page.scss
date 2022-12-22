@@ -61,6 +61,7 @@
         text-decoration: none;
         display: inline-block;
         outline: none;
+        width: 92px;
 
         &:hover {
             text-decoration: underline;
@@ -75,6 +76,7 @@
         &:focus-visible {
             color: lighten($gold, 20);
             font-size: 15.5px;
+            text-decoration: underline;
             // font-weight: bold;
         }
     }
