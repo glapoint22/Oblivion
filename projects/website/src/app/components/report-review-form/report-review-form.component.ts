@@ -57,4 +57,14 @@ export class ReportReviewFormComponent extends LazyLoad {
         successPrompt.message = 'Thank you for your feedback.';
       });
   }
+
+
+  onEnter(e: KeyboardEvent): void {
+    if (this.tabElements) {
+      if (this.tabElements[0].nativeElement != document.activeElement &&
+        this.tabElements[1].nativeElement != document.activeElement) {
+        this.onSubmit();
+      }
+    }
+  }
 }
