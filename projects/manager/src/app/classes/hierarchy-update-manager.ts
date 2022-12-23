@@ -793,21 +793,23 @@ export class HierarchyUpdateManager extends ListUpdateManager {
         if (searchUpdate.values![1].name == this.childSearchType) {
 
             // Query the database to check for a duplicate
-            // this.dataService.get<DuplicateItem>('api/' + this.childDataServicePath + '/CheckDuplicate', [{ key: 'childId', value: searchUpdate.id }, { key: 'childName', value: searchUpdate.values![0].name }])
-            //     .subscribe((duplicateItem: DuplicateItem) => {
+            this.dataService.get<DuplicateItem>('api/' + this.childDataServicePath + '/CheckDuplicate', [{ key: 'childId', value: searchUpdate.id }, { key: 'childName', value: searchUpdate.values![0].name }], {
+                authorization: true
+            })
+                .subscribe((duplicateItem: DuplicateItem) => {
 
-            //         // If no match was found
-            //         if (duplicateItem == null) {
+                    // If no match was found
+                    if (duplicateItem == null) {
                         this.searchComponent.commitAddEdit();
 
-                //         // If a match was found
-                //     } else {
-                //         const parentItem = this.thisArray.find(x => x.id == duplicateItem.parentId && x.hierarchyGroupID == 0);
-                //         this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
-                //         this.searchOptions.duplicatePrompt!.message = this.duplicatePromptChildMessage(this.childType, searchUpdate.values![0].name, this.itemType, parentItem!.name!);
-                //         this.searchComponent.openDuplicatePrompt();
-                //     }
-                // })
+                        // If a match was found
+                    } else {
+                        const parentItem = this.thisArray.find(x => x.id == duplicateItem.parentId && x.hierarchyGroupID == 0);
+                        this.searchOptions.duplicatePrompt!.title = 'Duplicate ' + this.childType;
+                        this.searchOptions.duplicatePrompt!.message = this.duplicatePromptChildMessage(this.childType, searchUpdate.values![0].name, this.itemType, parentItem!.name!);
+                        this.searchComponent.openDuplicatePrompt();
+                    }
+                })
         }
     }
 
