@@ -46,19 +46,28 @@
 
                 <div class="product-title">{{product.name}}</div>
                 <div class="social-media-container">
-                    <div title="Share on Facebook"
-                        (click)="socialMediaService.facebookShare('/' + product.urlName + '/' + product.id, product.name)">
+                    <div tabindex="0"
+                         title="Share on Facebook"
+                         class="social-media-image-container"
+                         (click)="socialMediaService.facebookShare('/' + product.urlName + '/' + product.id, product.name)">
                         <img src="assets/facebook-share.png" alt="Share on Facebook">
+                        <img src="assets/facebook-share-scaled.png" alt="Share on Facebook">
                     </div>
 
-                    <div title="Share on Twitter"
-                        (click)="socialMediaService.twitterShare('/' + product.urlName + '/' + product.id, product.name)">
+                    <div tabindex="0"
+                         title="Share on Twitter"
+                         class="social-media-image-container"
+                         (click)="socialMediaService.twitterShare('/' + product.urlName + '/' + product.id, product.name)">
                         <img src="assets/twitter-share.png" alt="Share on Twitter">
+                        <img src="assets/twitter-share-scaled.png" alt="Share on Twitter">
                     </div>
 
-                    <div title="Share on Pinterest"
-                        (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.id, product.media[0].src, product.name)">
+                    <div tabindex="0"
+                         title="Share on Pinterest"
+                         class="social-media-image-container"
+                         (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.id, product.media[0].src, product.name)">
                         <img src="assets/pinterest-share.png" alt="Share on Pinterest">
+                        <img src="assets/pinterest-share-scaled.png" alt="Share on Pinterest">
                     </div>
                 </div>
             </div>
@@ -109,7 +118,7 @@
                     Add to List
                 </button>
 
-                <div class="report-item-container" (click)="onReportItemClick()">
+                <div class="report-item-container" (click)="onReportItemClick()" tabindex="0" (keydown.enter)="onReportItemClick()">
                     <div class="flag-icon"></div>
                     <div class="report-item-text">
                         Report this item
@@ -211,7 +220,7 @@
                 Add to List
             </button>
 
-            <div class="report-item-container" (click)="onReportItemClick()">
+            <div class="report-item-container" (click)="onReportItemClick()" tabindex="0" (keydown.enter)="onReportItemClick()">
                 <div class="flag-icon"></div>
                 <div class="report-item-text">
                     Report this item

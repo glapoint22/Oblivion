@@ -57,9 +57,17 @@
         <!-- No Match -->
         <ng-template #noMatch>
             <div class="no-match">
-                <a routerLink="/home" title="Niche Shack Homepage">
+                <!-- <a routerLink="/home" title="Niche Shack Homepage">
                     <img src="assets/logo.png">
-                </a>
+                </a> -->
+
+                <!-- Niche Shack Logo -->
+                <div class="niche-shack-logo-container">
+                    <a routerLink="/home" title="Niche Shack Homepage" tabindex="0">
+                        <img src="assets/niche-shack-logo-small.png">
+                        <img src="assets/niche-shack-logo-scaled.png">
+                    </a>
+                </div>
 
                 <div class="gold-text">Sorry...</div>
                 <div class="white-text">We couldn't find a match for "{{route.snapshot.queryParams.search}}"</div>

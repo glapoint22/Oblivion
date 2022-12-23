@@ -101,13 +101,38 @@
 
 .rating-icon-container {
     display: flex;
+    height: 20px;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     margin-right: 16px;
+    outline: none;
+    flex-shrink: 0;
+    cursor: pointer;
     
     div:first-child {
         margin-right: 4px;
+    }
+
+    &:hover {
+        div:first-child {
+            color: lighten($purple-text, 20);
+        }
+
+        div:nth-child(2) {
+            color: white;
+        }
+    }
+
+    &:focus-visible {
+        transform: scale(1.1);
+
+        div:first-child {
+            color: lighten($purple-text, 20);
+        }
+
+        div:nth-child(2) {
+            color: white;
+        }
     }
 }
 
@@ -117,12 +142,37 @@
 
 .report-review {
     color: $purple-text;
-    cursor: pointer;
     display: flex;
     align-items: center;
+    outline: none;
+    cursor: pointer;
 
     div:first-child {
         margin-right: 4px;
+    }
+
+    &:hover {
+        div:first-child {
+            color: lighten($purple-text, 20);
+        }
+
+        div:nth-child(2) {
+            color: lighten($purple-text, 20);
+            text-decoration: underline;
+        }
+    }
+
+    &:focus-visible {
+        transform: scale(1.04);
+
+        div:first-child {
+            color: lighten($purple-text, 20);
+        }
+
+        div:nth-child(2) {
+            color: lighten($purple-text, 20);
+            text-decoration: underline;
+        }
     }
 }
 

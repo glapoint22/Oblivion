@@ -3,12 +3,13 @@
     justify-content: center;
     margin-top: 48px;
 
-    .ellipsis, .page-button {
-        height:30px;
+    .ellipsis,
+    .page-button {
+        height: 30px;
         text-align: center;
-        line-height: 30px
+        line-height: 28px
     }
-    
+
     .page-button {
         border: 1px solid #424242;
         margin: 0 5px;
@@ -21,8 +22,13 @@
         &:hover:not(.active) {
             background-color: #161616;
         }
+
+        &:focus-visible {
+            outline: 1px solid #a08534;
+            outline-offset: 2px;
+        }
     }
-    
+
     .active {
         background: #4c4c4c;
         border-color: #808080;
@@ -36,10 +42,10 @@
     src: url('../../../../assets/fonts/ellipsis-icon.ttf');
 }
 
-.ellipsis-icon
-{
+.ellipsis-icon {
     font-family: 'ellipsis-icon';
     color: #dadada;
+
     &::before {
         content: "\e913";
     }
