@@ -25,4 +25,9 @@ export class SuccessPromptComponent extends LazyLoad {
       super.close();
     }
   }
+
+
+  onEnter(e: KeyboardEvent): void {
+    this.close();
+  }
 }

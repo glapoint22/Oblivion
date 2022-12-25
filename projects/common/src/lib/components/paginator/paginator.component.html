@@ -1,7 +1,7 @@
 <div *ngIf="pageCount > 1" class="paginator-container">
 
     <!-- Previous Button -->
-    <div *ngIf="currentPage > 1" class="page-button" (click)="setPage(currentPage - 1)">Previous</div>
+    <div #previousButton *ngIf="currentPage > 1" class="page-button" (click)="setPage(currentPage - 1)" (keydown.enter)="previousButton.blur(); setPage(currentPage - 1)" tabindex="0">Previous</div>
 
     <!-- Page Buttons & Ellipsis -->
     <div *ngFor="let page of pages" class="show-xs">
@@ -12,10 +12,10 @@
 
         <!-- Page Button -->
         <ng-template #pageNumber>
-            <div class="page-button" [ngClass]="{'active': currentPage == page}" (click)="setPage(page)">{{page}}</div>
+            <div #pageButton class="page-button" [ngClass]="{'active': currentPage == page}" (click)="setPage(page)" (keydown.enter)="pageButton.blur(); setPage(page)" [tabIndex]="currentPage != page ? 0 : -2">{{page}}</div>
         </ng-template>
     </div>
 
     <!-- Next Button -->
-    <div *ngIf="currentPage < pageCount" class="page-button" (click)="setPage(currentPage + 1)">Next</div>
+    <div #nextButton *ngIf="currentPage < pageCount" class="page-button" (click)="setPage(currentPage + 1)" (keydown.enter)="nextButton.blur(); setPage(currentPage + 1)" tabindex="0">Next</div>
 </div>

@@ -61,7 +61,7 @@
         text-decoration: none;
         display: inline-block;
         outline: none;
-        width: 92px;
+        // width: 92px;
 
         &:hover {
             text-decoration: underline;
@@ -69,13 +69,13 @@
 
         & + div {
             @include arrow-right(9px, 6px, #dadada);
-            margin: 0 10px 0 5px;
+            margin: 0 10px;
             display: inline-block;
         }
 
         &:focus-visible {
             color: lighten($gold, 20);
-            font-size: 15.5px;
+            // font-size: 15.5px;
             text-decoration: underline;
             // font-weight: bold;
         }

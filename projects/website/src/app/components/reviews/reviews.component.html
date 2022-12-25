@@ -59,22 +59,22 @@
                     <div *ngIf="review.hasBeenRated" class="thanks-for-feedback-text">Thanks for your feedback</div>
 
                     <div *ngIf="!review.hasBeenRated" class="rating-container">
-                        <div (click)="onRateReviewClick(review, 1, 0)" class="rating-icon-container">
+                        <div (click)="onRateReviewClick(review, 1, 0)" class="rating-icon-container" tabindex="0">
                             <div class="like-icon"></div>
                             <div class="rating-count-text">{{review.likes}}</div>
                         </div>
 
 
-                        <div (click)="onRateReviewClick(review, 0, 1)" class="rating-icon-container">
+                        <div (click)="onRateReviewClick(review, 0, 1)" class="rating-icon-container" tabindex="0">
                             <div class="dislike-icon"></div>
                             <div class="rating-count-text">{{review.dislikes}}</div>
                         </div>
 
                     </div>
 
-                    <div class="report-review" (click)="onReportReviewClick(review.id)">
+                    <div class="report-review" (click)="onReportReviewClick(review.id)" tabindex="0">
                         <div class="flag-icon"></div>
-                        Report this review
+                        <div>Report this review</div>
                     </div>
                 </div>
             </div>

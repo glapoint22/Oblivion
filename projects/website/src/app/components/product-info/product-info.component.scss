@@ -130,14 +130,34 @@
     display: flex;
     width: 80px;
     justify-content: space-between;
+}
 
-    div {
-        width: 22px;
-        height: 22px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
+.social-media-image-container {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    cursor: pointer;
+
+    img {
+        &:nth-child(2) {
+            display: none;
+        }
+    }
+
+    &:focus-visible {
+        img {
+            &:first-child {
+                display: none;
+            }
+
+            &:nth-child(2) {
+                display: block;
+                filter: brightness(1.4);
+            }
+        }
     }
 }
 
@@ -157,6 +177,29 @@
     cursor: pointer;
     height: 16px;
     font-size: 12px;
+    outline: none;
+
+    &:hover {
+        .flag-icon {
+            color: lighten($purple-text, 20);
+        }
+
+        .report-item-text {
+            color: lighten($purple-text, 20);
+        }
+    }
+
+    &:focus-visible {
+        transform: scale(1.05);
+
+        .flag-icon {
+            color: lighten($purple-text, 20);
+        }
+
+        .report-item-text {
+            color: lighten($purple-text, 20);
+        }
+    }
 }
 
 .report-item-text {
@@ -166,9 +209,8 @@
 }
 
 .product-description {
-    color: #dadada;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
+    color: #c9c9c9;
+    font-size: 15px;
 }
 
 

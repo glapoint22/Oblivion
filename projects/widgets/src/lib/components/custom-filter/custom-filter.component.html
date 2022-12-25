@@ -3,7 +3,7 @@
         <label class="checkbox">
             <div>{{option.label}}</div>
             <input #checkbox type="checkbox" (change)="onFilterClick(option.id.toString())" [value]="option.id" tabindex="-2">
-            <span class="checkmark" tabindex="0" (keydown.space)="onFilterClick(option.id.toString())"></span>
+            <span class="checkmark" tabindex="0" (keydown.space)="$event.preventDefault(); onFilterClick(option.id.toString())"></span>
         </label>
     </div>
 </div>
