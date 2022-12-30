@@ -52,7 +52,7 @@
                                     [ngStyle]="{'border-radius': notification[userIndex].nonAccountName ? 'none' : '50%'}"
                                     (mousedown)="$event.stopPropagation()"
                                     (click)="openProfilePopup(notification[userIndex], profilePopupContainer)"
-                                    [src]="notification[userIndex].nonAccountName ? 'assets/message-notification.png' : notification[userIndex].image ? 'images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
+                                    [src]="notification[userIndex].nonAccountName ? 'assets/message-notification.png' : notification[userIndex].image ? 'website-images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
                                     [title]="notification[userIndex].nonAccountName ? notification[userIndex].nonAccountName : notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
                             </div>
                         </div>

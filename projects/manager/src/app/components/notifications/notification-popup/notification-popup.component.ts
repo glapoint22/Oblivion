@@ -32,6 +32,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   public secondaryButtonPromptTitle!: string;
   public secondaryButtonPromptMessage!: SafeHtml;
   public secondaryButtonPromptPrimaryButtonName!: string;
+  public secondaryButtonPromptIsReview!: boolean;
   public secondaryButtonPrompt!: PromptComponent;
   public deletePrompt!: PromptComponent;
   public notification!: any;
@@ -184,6 +185,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
       prompt.parentObj = this;
       prompt.title = this.secondaryButtonPromptTitle;
       prompt.message = this.secondaryButtonPromptMessage;
+      prompt.isReview = this.secondaryButtonPromptIsReview;
       prompt.primaryButton = {
         name: this.secondaryButtonPromptPrimaryButtonName,
         buttonFunction: () => {

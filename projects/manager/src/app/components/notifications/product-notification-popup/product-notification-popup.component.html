@@ -1,4 +1,4 @@
-<div class="hide notification-popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="!contextMenu && profilePopupContainer.length == 0 && !notificationItemsDropdown.dropdownList ? $event.stopPropagation() : null">
+<div class="hide notification-popup-container" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="!contextMenu && profilePopupContainer.length == 0 && !notificationItemsDropdown?.dropdownList ? $event.stopPropagation() : null">
 
     <div class="notification-popup-arrow-container" [ngClass]="{'product-notification-popup-arrow-container': fromProduct}">
         <div class="notification-popup-arrow-up-Border"></div>
@@ -13,7 +13,7 @@
             <!-- Product -->
             <div class="notification-product-container">
                 <div class="notification-product-thumbnail-container">
-                    <img [src]="'images/' + notificationItem.image">
+                    <img [src]="'website-images/' + notificationItem.image">
                 </div>
                 <div class="notification-product-name">{{notificationItem.productName}}</div>
             </div>
@@ -74,7 +74,7 @@
                             <img style="cursor: pointer;"
                                 (mousedown)="$event.stopPropagation()"
                                 (click)="openProfilePopup(notification.users[userIndex], profilePopupContainer)"
-                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
+                                [src]="notification.users[userIndex].image ? 'website-images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
                                 [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>
                     </div>

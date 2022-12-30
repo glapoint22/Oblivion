@@ -63,7 +63,7 @@
 
                             <img style="cursor: pointer;"
                                 (mousedown)="reviewProfilePopupContainer.length > 0 ? reviewProfilePopup.close() : null; $event.stopPropagation()"
-                                [src]="notification.users[userIndex].image ? 'images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
+                                [src]="notification.users[userIndex].image ? 'website-images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
                                 (click)="openProfilePopup(notification.users[userIndex], profilePopupContainer)"
                                 [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>
@@ -109,7 +109,7 @@
 
                             <img style="cursor: pointer;"
                                 (mousedown)="profilePopupContainer.length > 0 ? profilePopup.close() : null; $event.stopPropagation()"
-                                [src]="notification.reviewWriter.image ? 'images/' + notification.reviewWriter.image : 'assets/no-account-pic.png'"
+                                [src]="notification.reviewWriter.image ? 'website-images/' + notification.reviewWriter.image : 'assets/no-account-pic.png'"
                                 (click)="openProfilePopup(notification.reviewWriter, reviewProfilePopupContainer, true)"
                                 [title]="notification.reviewWriter.firstName + ' ' + notification.reviewWriter.lastName">
                         </div>

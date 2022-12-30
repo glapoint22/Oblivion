@@ -1,17 +1,25 @@
 import { Component } from '@angular/core';
+import { NotificationType, SpinnerAction } from 'common';
 import { MenuOptionType } from '../../../classes/enums';
 import { MenuOption } from '../../../classes/menu-option';
 import { NotificationEmployee } from '../../../classes/notifications/notification-employee';
 import { UserAccountNotification } from '../../../classes/notifications/user-account-notification';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
+import { ReformListFormComponent } from '../reform-list-form/reform-list-form.component';
 
 @Component({
   templateUrl: './user-account-notification-popup.component.html',
   styleUrls: ['../notification-form/notification-form.component.scss', './user-account-notification-popup.component.scss']
 })
 export class UserAccountNotificationPopupComponent extends NotificationPopupComponent {
+  private dataServicePath!: string;
+  private reformListForm!: ReformListFormComponent;
+
   public newNotesAdded: Array<boolean> = new Array<boolean>();
-  public isUserName!: boolean;
+  public notificationType!: NotificationType;
+  public NotificationType = NotificationType;
+  public notificationName!: string;
+  public buttonName!: string;
 
 
   // ====================================================================( NG ON INIT )===================================================================== \\
@@ -25,7 +33,33 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
       });
     });
 
-    this.getNotification<Array<UserAccountNotification>>('api/Notifications/' + (this.isUserName ? 'GetUserNameNotification' : 'GetUserImageNotification'),
+    switch (this.notificationType) {
+      case NotificationType.UserName:
+        this.buttonName = 'Replace Name';
+        this.notificationName = 'User Name';
+        this.dataServicePath = 'GetUserNameNotification';
+        break;
+
+      case NotificationType.UserImage:
+        this.buttonName = 'Remove Image';
+        this.notificationName = 'User Image';
+        this.dataServicePath = 'GetUserImageNotification';
+        break;
+
+      case NotificationType.List:
+        this.notificationName = 'List';
+        this.buttonName = 'Reform List';
+        this.dataServicePath = 'GetListNotification';
+        break;
+
+      case NotificationType.Review:
+        this.notificationName = 'Review';
+        this.buttonName = 'Remove Review';
+        this.dataServicePath = 'GetReviewNotification';
+        break;
+    }
+
+    this.getNotification<Array<UserAccountNotification>>('api/Notifications/' + this.dataServicePath,
       [
         {
           key: 'notificationGroupId',
@@ -36,6 +70,8 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
           value: this.notificationItem.isNew
         }
       ]);
+
+
   }
 
 
@@ -129,17 +165,100 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
 
 
 
-
   // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
 
   openSecondaryButtonPrompt() {
     this.secondaryButtonPromptPrimaryButtonName = 'Remove';
-    this.secondaryButtonPromptTitle = 'Remove ' + this.isUserName ? 'User Name' : 'Profile Image';
+    this.secondaryButtonPromptTitle = 'Remove ' +
+      (this.notificationType == NotificationType.UserName ?
+        'User Name' :
+        this.notificationType == NotificationType.UserImage ?
+          'Profile Image' :
+          'Review');
     this.secondaryButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
-      (this.isUserName ? 'The name,' : 'The profile image for the user,') +
-      ' <span style="color: #ffba00">\"' + this.notification[0].firstName + ' ' + this.notification[0].lastName + '\"</span>' +
-      (this.isUserName ? ' will be removed from this user. ' : ' will be removed. ') + 'Also, a strike will be added against them for not complying with the terms of use.');
+      (this.notificationType == NotificationType.UserName ?
+        'The name,' :
+        this.notificationType == NotificationType.UserImage ?
+          'The profile image for the user,' :
+          'The review titled,') +
+      ' <span style="color: #ffba00">\"' +
+      (this.notificationType == NotificationType.Review ?
+        this.notification[0].title :
+        this.notification[0].firstName + ' ' + this.notification[0].lastName) + '\"</span>' +
+
+
+
+
+      (this.notificationType == NotificationType.UserName ? ' will be removed from this user. ' : ' will be removed. ') +
+
+
+      'Also, a strike will be added against ' +
+
+      (this.notificationType == NotificationType.Review ?
+        'the review writer, <span style="color: #ffba00">\"' + this.notification[0].firstName + ' ' + this.notification[0].lastName + '\"</span>' :
+        'them') +
+      ' for not complying with the terms of use.'
+
+
+
+    );
+
+
     super.openSecondaryButtonPrompt();
+  }
+
+
+  // ===============================================================( OPEN REFORM LIST FORM )=============================================================== \\
+
+  openReformListForm() {
+    this.lazyLoadingService.load(async () => {
+      const { ReformListFormComponent } = await import('../reform-list-form/reform-list-form.component');
+      const { ReformListFormModule } = await import('../reform-list-form/reform-list-form.module');
+      return {
+        component: ReformListFormComponent,
+        module: ReformListFormModule
+      }
+    }, SpinnerAction.None).then((reformListForm: ReformListFormComponent) => {
+      this.reformListForm = reformListForm;
+
+      reformListForm.callback = (reformListOption: number) => {
+        // If any notes were written
+        if (this.areAnyEmployeeNotesWritten()) {
+          // Then save the new note
+          this.saveEmployeeText();
+        }
+        // Update the count for the notification bell
+        this.notificationService.notificationCount -= 1;
+
+        this.dataService.put('api/Notifications/Archive', {
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          notificationId: this.notification[this.userIndex].notificationId
+        }, {
+          authorization: true
+        }).subscribe();
+
+        // Update the lists
+        this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
+
+
+        this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeList', {
+          listId: this.notification[this.userIndex].listId,
+          option: reformListOption,
+          userId: this.notification[this.userIndex].userId
+        }, {
+          authorization: true
+        }).subscribe((removalSuccessful: boolean) => {
+          if (removalSuccessful) {
+            this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+          }
+        });
+      }
+
+      const reformListCloseListener = reformListForm.onClose.subscribe(() => {
+        reformListCloseListener.unsubscribe();
+        this.reformListForm = null!;
+      })
+    })
   }
 
 
@@ -166,8 +285,8 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     // Update the lists
     this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
 
-    if (this.notification[this.userIndex].userName) {
-      // Add a non-compliant strike because of user name
+    // Add a non-compliant strike because of user name
+    if (this.notificationType == NotificationType.UserName) {
       this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserName', {
         userId: this.notification[this.userIndex].userId,
         userName: this.notification[this.userIndex].userName
@@ -181,7 +300,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     }
 
     // Add a non-compliant strike because of image
-    else {
+    else if (this.notificationType == NotificationType.UserImage) {
       this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserImage', {
         userId: this.notification[this.userIndex].userId,
         userImage: this.notification[this.userIndex].userImage
@@ -192,6 +311,10 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
           this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
         }
       });
+
+    } else {
+
+      console.log('review')
     }
   }
 
@@ -200,12 +323,33 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
   // =====================================================================( ON DELETE )===================================================================== \\
 
   onDelete() {
-    this.notificationService.removeNotification(this.notificationItem.isNew ? this.notificationService.newNotifications : this.notificationService.archiveNotifications, this.notificationItem, this);
-
     let notificationIds = new Array<number>();
-    (this.notification as Array<UserAccountNotification>).forEach(x => {
-      notificationIds.push(x.notificationId)
-    });
+
+    if (this.notificationType == NotificationType.UserName || this.notificationType == NotificationType.UserImage || !this.notificationItem.isNew) {
+      this.notificationService.removeNotification(this.notificationItem.isNew ? this.notificationService.newNotifications : this.notificationService.archiveNotifications, this.notificationItem, this);
+
+      (this.notification as Array<UserAccountNotification>).forEach(x => {
+        notificationIds.push(x.notificationId);
+      });
+    } else {
+
+      notificationIds.push(this.notification[this.userIndex].notificationId);
+
+      if (this.notificationItem.count > 1) {
+        // Minus the count for the notification's red circle by one
+        this.notificationItem.count -= 1;
+        // And then remove the current message from the popup
+        this.notification.splice(this.userIndex, 1);
+        // Set the counter so that the first message is being displayed (if not already)
+        this.userIndex = 0;
+      } else {
+
+        this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
+      }
+    }
+
+
+
 
 
     // Update database
@@ -222,7 +366,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.reformListForm) {
       if (!this.areAnyEmployeeNotesWritten()) {
         this.close();
       } else {

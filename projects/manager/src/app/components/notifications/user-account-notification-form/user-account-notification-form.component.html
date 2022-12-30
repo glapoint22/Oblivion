@@ -9,7 +9,7 @@
 
         <!-- User -->
         <div class="notification-label">User {{isUserName ? 'Name' : 'Image'}}:</div>
-        <div class="image-info-box">
+        <div class="user-info-box">
             <div class="notification-info-bar">
                 <div class="notification-profile-container">
                     <!-- Date -->
@@ -27,7 +27,7 @@
                         <img style="cursor: pointer;"
                             (mousedown)="$event.stopPropagation()"
                             (click)="openProfilePopup(user, profilePopupContainer)"
-                            [src]="'images/' + user.image"
+                            [src]="'website-images/' + user.image"
                             [title]="user.firstName + ' ' + user.lastName">
                     </div>
                 </div>
@@ -38,7 +38,7 @@
             </div>
         
             <div *ngIf="!isUserName" class="user-image-container">
-                <img [src]="'images/' + user.image">
+                <img [src]="'website-images/' + user.image">
             </div>
 
             

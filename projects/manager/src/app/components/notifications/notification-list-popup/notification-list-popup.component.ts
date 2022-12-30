@@ -130,7 +130,11 @@ export class NotificationListPopupComponent extends LazyLoad {
 
   openNotificationPopup(notificationItem: NotificationItem) {
     // User Name / User Image
-    if (notificationItem.notificationType == NotificationType.UserName || notificationItem.notificationType == NotificationType.UserImage) {
+    if (notificationItem.notificationType == NotificationType.UserName ||
+      notificationItem.notificationType == NotificationType.UserImage ||
+      notificationItem.notificationType == NotificationType.List ||
+      notificationItem.notificationType == NotificationType.Review) {
+
       this.lazyLoadingService.load(async () => {
         const { UserAccountNotificationPopupComponent } = await import('../user-account-notification-popup/user-account-notification-popup.component');
         const { UserAccountNotificationPopupModule } = await import('../user-account-notification-popup/user-account-notification-popup.module');
@@ -140,7 +144,7 @@ export class NotificationListPopupComponent extends LazyLoad {
         }
       }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
         .then((userAccountNotificationPopup: UserAccountNotificationPopupComponent) => {
-          userAccountNotificationPopup.isUserName = notificationItem.notificationType == NotificationType.UserName ? true : false;
+          userAccountNotificationPopup.notificationType = notificationItem.notificationType;
           userAccountNotificationPopup.notificationItem = notificationItem;
           this.notificationService.notificationPopup = userAccountNotificationPopup;
         })
@@ -163,7 +167,7 @@ export class NotificationListPopupComponent extends LazyLoad {
     }
 
     // Review
-    if (notificationItem.notificationType == NotificationType.Review) {
+    if (notificationItem.notificationType == NotificationType.ReviewComplaint) {
       this.lazyLoadingService.load(async () => {
         const { ReviewNotificationPopupComponent } = await import('../review-notification-popup/review-notification-popup.component');
         const { ReviewNotificationPopupModule } = await import('../review-notification-popup/review-notification-popup.module');
@@ -179,7 +183,7 @@ export class NotificationListPopupComponent extends LazyLoad {
     }
 
     // Product (Form)
-    if (notificationItem.notificationType > NotificationType.Review && notificationItem.notificationType < NotificationType.ProductReportedAsIllegal) {
+    if (notificationItem.notificationType > NotificationType.ReviewComplaint && notificationItem.notificationType < NotificationType.ProductReportedAsIllegal) {
       this.productService.openNotificationProduct(notificationItem.productId, notificationItem);
     }
 

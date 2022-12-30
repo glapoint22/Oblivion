@@ -10,7 +10,7 @@
                              'outline': user.nonAccountName ? 'none' : '1px solid #868686',
                              'margin-top': user.nonAccountName ? '-1px' : '2px'}">
            
-                <img [src]="user.nonAccountName ? 'assets/message-notification.png' : user.image ? 'images/' + user.image : 'assets/no-account-pic.png'"
+                <img [src]="user.nonAccountName ? 'assets/message-notification.png' : user.image ? 'website-images/' + user.image : 'assets/no-account-pic.png'"
                      [ngStyle]="{'border-radius': user.nonAccountName ? 'none' : '50%'}">
             </div>
 
@@ -62,10 +62,6 @@
 
         <!-- Noncompliant Strike Buttons -->
         <ng-container *ngIf="isReview">
-            <button class="button" (click)="onAddNoncompliantStrikeButtonClick()" [disabled]="AddNoncompliantStrikeButtonDisabled">
-                Add Noncompliant Strike
-            </button>
-
             <button class="button" (click)="remove(true)" [disabled]="(user.firstName == 'NicheShack' && user.lastName == 'User') || RemoveUserNameButtonDisabled">
                 Remove User's Name
             </button>

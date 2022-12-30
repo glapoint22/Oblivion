@@ -19,7 +19,7 @@ export class UserAccountNotificationFormComponent extends NotificationFormCompon
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
 
 
-  
+
   // ============================================================( IS EMPLOYEE NOTES WRITTEN )============================================================== \\
 
   isEmployeeNotesWritten(): boolean {
@@ -30,7 +30,7 @@ export class UserAccountNotificationFormComponent extends NotificationFormCompon
 
 
   // ======================================================================( REMOVE )======================================================================= \\
-  
+
   remove() {
     this.removedButtonClicked = true;
     this.close();
@@ -40,6 +40,8 @@ export class UserAccountNotificationFormComponent extends NotificationFormCompon
       userName: this.isUserName ? this.user.firstName + ' ' + this.user.lastName : null,
       userImage: !this.isUserName ? this.user.image : null
 
+    }, {
+      authorization: true
     }).subscribe((removalSuccessful: boolean) => {
 
       // If the removal of the name or the image was successful
@@ -52,23 +54,25 @@ export class UserAccountNotificationFormComponent extends NotificationFormCompon
           userName: this.isUserName ? this.user.firstName + ' ' + this.user.lastName : null,
           userImage: !this.isUserName ? this.user.image : null,
           employeeNotes: this.isEmployeeNotesWritten() ? this.notes.nativeElement.value : null
+        }, {
+          authorization: true
         }).subscribe((notificationItem: NotificationItem) => {
           this.notificationService.addToList(this.notificationService.archiveNotifications, 1, notificationItem);
         })
 
         this.user.noncompliantStrikes++;
 
-        if(this.isUserName) {
+        if (this.isUserName) {
           this.user.firstName = 'NicheShack';
           this.user.lastName = 'User';
-        }else {
+        } else {
           this.user.image = null!
         }
       }
     });
   }
 
- 
+
 
   // ======================================================================( CLOSE )======================================================================== \\
 

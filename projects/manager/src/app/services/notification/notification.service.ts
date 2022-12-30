@@ -31,7 +31,10 @@ export class NotificationService {
 
 
   constructor(private dataService: DataService) {
-    this.getNotificationsTimer = window.setTimeout(() => {
+    this.getNewNotifications();
+    this.getArchivedNotifications();
+
+    this.getNotificationsTimer = window.setInterval(() => {
       this.getNewNotifications();
     }, this.timeinMinutesToCheckFornewNotifications * 1000 * 60)
   }
@@ -167,7 +170,15 @@ export class NotificationService {
         notificationName = "User Image";
         break;
 
+      case NotificationType.List:
+        notificationName = "List";
+        break;
+
       case NotificationType.Review:
+        notificationName = "Review";
+        break;
+
+      case NotificationType.ReviewComplaint:
         notificationName = "Review Complaint";
         break;
 

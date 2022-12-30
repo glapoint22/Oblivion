@@ -65,8 +65,10 @@ export enum ImageSizeType {
 export enum NotificationType {
     UserName,
     UserImage,
-    Message,
+    List,
     Review,
+    Message,
+    ReviewComplaint,
     ProductNameDoesNotMatchWithProductDescription,
     ProductNameDoesNotMatchWithProductImage,
     ProductNameOther,
