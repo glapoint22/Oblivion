@@ -15,15 +15,12 @@
                 <div class="section">
                     <label class="checkbox">
                         <input #allCheckedInput type="checkbox" tabindex="-2"
-                            (change)="allChecked = !allChecked; toggleAllChecked()"
-                            [checked]="allChecked">
+                            (change)="allChecked = !allChecked; toggleAllChecked()" [checked]="allChecked">
 
-                            <span tabindex="0"
-                                  class="checkmark"
-                                  (keydown.space)="$event.preventDefault();
+                        <span tabindex="0" class="checkmark" (keydown.space)="$event.preventDefault();
                                                    allChecked = !allChecked;
                                                    toggleAllChecked()">
-                            </span>
+                        </span>
 
                     </label>
                 </div>
@@ -33,96 +30,32 @@
 
                     <div class="heading">Account</div>
 
-                    <!-- Name Change -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="nameChangeInput.checked = !nameChangeInput.checked; preferences.nameChange = nameChangeInput.checked; setAllChecked()">
-                            Notify me on a successful name change
-                        </div>
-                        
-
-                        <label class="checkbox">
-                            <input #nameChangeInput type="checkbox" tabindex="-2"
-                                (change)="preferences.nameChange = nameChangeInput.checked; setAllChecked()"
-                                [checked]="preferences?.nameChange">
-                                <span tabindex="0"
-                                      class="checkmark"
-                                      (keydown.space)="$event.preventDefault();
-                                                       nameChangeInput.checked = !nameChangeInput.checked;
-                                                       preferences.nameChange = nameChangeInput.checked;
-                                                       setAllChecked();">
-                                </span>
-                        </label>
-                    </div>
+                    <!-- Name Updated -->
+                    <email-preference [text]="'When I update my name, please send me a confirmation email.'"
+                        [checked]="preferences.nameUpdated"
+                        (onChange)="preferences.nameUpdated = $event; setAllChecked()">
+                    </email-preference>
 
 
-
-                    <!-- Email Change -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="emailChangeInput.checked = !emailChangeInput.checked; preferences.emailChange = emailChangeInput.checked; setAllChecked()">
-                            Notify me on a successful email change
-                        </div>
-
-                        <label class="checkbox">
-                            <input #emailChangeInput type="checkbox" [checked]="preferences?.emailChange" tabindex="-2"
-                                (change)="preferences.emailChange = emailChangeInput.checked; setAllChecked()">
-                            <span tabindex="0"
-                                  class="checkmark"
-                                  (keydown.space)="$event.preventDefault();
-                                                   emailChangeInput.checked = !emailChangeInput.checked;
-                                                   preferences.emailChange = emailChangeInput.checked;
-                                                   setAllChecked();">
-                            </span>
-                        </label>
-                    </div>
+                    <!-- Email Updated -->
+                    <email-preference [text]="'When I update my email, please send me a confirmation email.'"
+                        [checked]="preferences.emailUpdated"
+                        (onChange)="preferences.emailUpdated = $event; setAllChecked()">
+                    </email-preference>
 
 
-
-                    <!-- Password Change -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="passwordChangeInput.checked = !passwordChangeInput.checked; preferences.passwordChange = passwordChangeInput.checked; setAllChecked()">
-                            Notify me on a successful password change
-                        </div>
-
-                        <label class="checkbox">
-                            <input #passwordChangeInput type="checkbox" tabindex="-2"
-                                (change)="preferences.passwordChange = passwordChangeInput.checked; setAllChecked()"
-                                [checked]="preferences?.passwordChange">
-                            <span tabindex="0"
-                                  class="checkmark"
-                                  (keydown.space)="$event.preventDefault();
-                                                   passwordChangeInput.checked = !passwordChangeInput.checked;
-                                                   preferences.passwordChange = passwordChangeInput.checked;
-                                                   setAllChecked();">
-                            </span>
-                        </label>
-                    </div>
+                    <!-- Password Updated -->
+                    <email-preference [text]="'When I update my password, please send me a confirmation email.'"
+                        [checked]="preferences.passwordUpdated"
+                        (onChange)="preferences.passwordUpdated = $event; setAllChecked()">
+                    </email-preference>
 
 
-                    <!-- Profile Pic Change -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="profilePicChangeInput.checked = !profilePicChangeInput.checked; preferences.profileImageChange = profilePicChangeInput.checked; setAllChecked()">
-                            Notify me on a successful profile picture change
-                        </div>
-
-                        <label class="checkbox">
-                            <input #profilePicChangeInput type="checkbox" tabindex="-2"
-                                (change)="preferences.profileImageChange = profilePicChangeInput.checked; setAllChecked()"
-                                [checked]="preferences?.profileImageChange">
-
-                                <span tabindex="0"
-                                      class="checkmark"
-                                      (keydown.space)="$event.preventDefault();
-                                                       profilePicChangeInput.checked = !profilePicChangeInput.checked;
-                                                       preferences.profileImageChange = profilePicChangeInput.checked;
-                                                       setAllChecked();">
-                                </span>
-
-                        </label>
-                    </div>
+                    <!-- Profile Image Updated -->
+                    <email-preference [text]="'When I update my profile image, please send me a confirmation email.'"
+                        [checked]="preferences.profileImageUpdated"
+                        (onChange)="preferences.profileImageUpdated = $event; setAllChecked()">
+                    </email-preference>
                 </div>
 
 
@@ -133,153 +66,111 @@
 
                     <div class="heading">Lists</div>
 
-
-                    <!-- New Collaborator -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="newCollaboratorInput.checked = !newCollaboratorInput.checked; preferences.newCollaborator = newCollaboratorInput.checked; setAllChecked()">
-                            Notify me when a new collaborator has joined a list
-                        </div>
-
-                        <label class="checkbox">
-                            <input #newCollaboratorInput type="checkbox" tabindex="-2"
-                                (change)="preferences.newCollaborator = newCollaboratorInput.checked; setAllChecked()"
-                                [checked]="preferences?.newCollaborator">
-                                <span tabindex="0"
-                                      class="checkmark"
-                                      (keydown.space)="$event.preventDefault();
-                                                       newCollaboratorInput.checked = !newCollaboratorInput.checked;
-                                                       preferences.newCollaborator = newCollaboratorInput.checked;
-                                                       setAllChecked();">
-                                </span>
-                        </label>
-                    </div>
+                    <!-- Collaborator Joined List -->
+                    <email-preference [text]="'Send me an email whenever a new collaborator joins a list.'"
+                        [checked]="preferences.collaboratorJoinedList"
+                        (onChange)="preferences.collaboratorJoinedList = $event; setAllChecked()">
+                    </email-preference>
 
 
+                    <!-- User Joined List -->
+                    <email-preference [text]="'When I join a list, please send me a confirmation email.'"
+                        [checked]="preferences.userJoinedList"
+                        (onChange)="preferences.userJoinedList = $event; setAllChecked()">
+                    </email-preference>
 
 
-
-                    <!-- Remove Collaborator -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="removedCollaboratorInput.checked = !removedCollaboratorInput.checked; preferences.removedCollaborator = removedCollaboratorInput.checked; setAllChecked()">
-                            Notify me when a I have been removed from a list
-                        </div>
-
-                        <label class="checkbox">
-                            <input #removedCollaboratorInput type="checkbox" tabindex="-2"
-                                (change)="preferences.removedCollaborator = removedCollaboratorInput.checked; setAllChecked()"
-                                [checked]="preferences?.removedCollaborator">
-                                <span tabindex="0"
-                                      class="checkmark"
-                                      (keydown.space)="$event.preventDefault();
-                                                       removedCollaboratorInput.checked = !removedCollaboratorInput.checked;
-                                                       preferences.removedCollaborator = removedCollaboratorInput.checked;
-                                                       setAllChecked();">
-                                </span>
-                        </label>
-                    </div>
+                    <!-- User Removed From List -->
+                    <email-preference [text]="'Send me an email whenever I\'m removed from a list.'"
+                        [checked]="preferences.userRemovedFromList"
+                        (onChange)="preferences.userRemovedFromList = $event; setAllChecked()">
+                    </email-preference>
 
 
+                    <!-- Collaborator Removed From List -->
+                    <email-preference [text]="'Send me an email whenever a collaborator is removed from a list.'"
+                        [checked]="preferences.collaboratorRemovedFromList"
+                        (onChange)="preferences.collaboratorRemovedFromList = $event; setAllChecked()">
+                    </email-preference>
 
 
-                    <!-- Added List Item -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="addedListItemInput.checked = !addedListItemInput.checked; preferences.addedListItem = addedListItemInput.checked; setAllChecked()">
-                            Notify me when a collaborator adds an item to a list
-                        </div>
-
-                        <label class="checkbox">
-                            <input #addedListItemInput type="checkbox" tabindex="-2"
-                                (change)="preferences.addedListItem = addedListItemInput.checked; setAllChecked()"
-                                [checked]="preferences?.addedListItem">
-                                <span tabindex="0"
-                                      class="checkmark"
-                                      (keydown.space)="$event.preventDefault();
-                                                       addedListItemInput.checked = !addedListItemInput.checked;
-                                                       preferences.addedListItem = addedListItemInput.checked;
-                                                       setAllChecked();">
-                                </span>
-                        </label>
-                    </div>
+                    <!-- User Removed Collaborator -->
+                    <email-preference
+                        [text]="'When I remove a collaborator from a list, please send me a confirmation email.'"
+                        [checked]="preferences.userRemovedCollaborator"
+                        (onChange)="preferences.userRemovedCollaborator = $event; setAllChecked()">
+                    </email-preference>
 
 
+                    <!-- Collaborator Added List Item -->
+                    <email-preference [text]="'Send me an email whenever a collaborator adds an item to a list.'"
+                        [checked]="preferences.collaboratorAddedListItem"
+                        (onChange)="preferences.collaboratorAddedListItem = $event; setAllChecked()">
+                    </email-preference>
 
 
-                    <!-- Removed List Item -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="removedListItemInput.checked = !removedListItemInput.checked; preferences.removedListItem = removedListItemInput.checked; setAllChecked()">
-                            Notify me when a collaborator removes an item from a list
-                        </div>
-
-                        <label class="checkbox">
-                            <input #removedListItemInput type="checkbox" tabindex="-2"
-                                (change)="preferences.removedListItem = removedListItemInput.checked; setAllChecked()"
-                                [checked]="preferences?.removedListItem">
-                                <span tabindex="0"
-                                      class="checkmark"
-                                      (keydown.space)="$event.preventDefault();
-                                                       removedListItemInput.checked = !removedListItemInput.checked;
-                                                       preferences.removedListItem = removedListItemInput.checked;
-                                                       setAllChecked();">
-                                </span>
-                        </label>
-                    </div>
+                    <!-- User Added List Item -->
+                    <email-preference [text]="'When I add an item to a list, please send me a confirmation email.'"
+                        [checked]="preferences.userAddedListItem"
+                        (onChange)="preferences.userAddedListItem = $event; setAllChecked()">
+                    </email-preference>
 
 
+                    <!-- Collaborator Removed List Item -->
+                    <email-preference [text]="'Send me an email whenever a collaborator removes an item from a list.'"
+                        [checked]="preferences.collaboratorRemovedListItem"
+                        (onChange)="preferences.collaboratorRemovedListItem = $event; setAllChecked()">
+                    </email-preference>
 
 
+                    <!-- User Removed List Item -->
+                    <email-preference [text]="'When I remove an item from a list, please send me a confirmation email.'"
+                        [checked]="preferences.userRemovedListItem"
+                        (onChange)="preferences.userRemovedListItem = $event; setAllChecked()">
+                    </email-preference>
 
 
-
-                    <!-- List Name Change -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="listNameChangeInput.checked = !listNameChangeInput.checked; preferences.editedList = listNameChangeInput.checked; setAllChecked()">
-                            Notify me when a collaborator renames a list I'm collaborating on
-                        </div>
-
-                        <label class="checkbox">
-                            <input #listNameChangeInput type="checkbox" tabindex="-2"
-                                (change)="preferences.editedList = listNameChangeInput.checked; setAllChecked()"
-                                [checked]="preferences?.editedList">
-                                <span tabindex="0"
-                                      class="checkmark"
-                                      (keydown.space)="$event.preventDefault();
-                                                       listNameChangeInput.checked = !listNameChangeInput.checked;
-                                                       preferences.editedList = listNameChangeInput.checked;
-                                                       setAllChecked();">
-                                </span>
-                        </label>
-                    </div>
+                    <!-- Collaborator Moved List Item -->
+                    <email-preference [text]="'Send me an email whenever a collaborator moves an item to another list.'"
+                        [checked]="preferences.collaboratorMovedListItem"
+                        (onChange)="preferences.collaboratorMovedListItem = $event; setAllChecked()">
+                    </email-preference>
 
 
+                    <!-- User Moved List Item -->
+                    <email-preference
+                        [text]="'When I move an item to another list, please send me a confirmation email.'"
+                        [checked]="preferences.userMovedListItem"
+                        (onChange)="preferences.userMovedListItem = $event; setAllChecked()">
+                    </email-preference>
 
 
-                    <!-- Deleted List -->
-                    <div class="preference">
-                        <div class="preference-text"
-                             (click)="deletedListInput.checked = !deletedListInput.checked; preferences.deletedList = deletedListInput.checked; setAllChecked()">
-                            Notify me when a collaborator deletes a list I'm collaborating on
-                        </div>
-
-                        <label class="checkbox">
-                            <input #deletedListInput type="checkbox" tabindex="-2"
-                                (change)="preferences.deletedList = deletedListInput.checked; setAllChecked()"
-                                [checked]="preferences?.deletedList">
-                                <span tabindex="0"
-                                      class="checkmark"
-                                      (keydown.space)="$event.preventDefault();
-                                                       deletedListInput.checked = !deletedListInput.checked;
-                                                       preferences.deletedList = deletedListInput.checked;
-                                                       setAllChecked();">
-                                </span>
-                        </label>
-                    </div>
+                    <!-- Collaborator Updated List -->
+                    <email-preference [text]="'Send me an email whenever a collaborator updates a list.'"
+                        [checked]="preferences.collaboratorUpdatedList"
+                        (onChange)="preferences.collaboratorUpdatedList = $event; setAllChecked()">
+                    </email-preference>
 
 
+                    <!-- User Updated List -->
+                    <email-preference [text]="'When I update a list, please send me a confirmation email.'"
+                        [checked]="preferences.userUpdatedList"
+                        (onChange)="preferences.userUpdatedList = $event; setAllChecked()">
+                    </email-preference>
+
+
+                    <!-- Collaborator Deleted List -->
+                    <email-preference [text]="'Send me an email whenever a collaborator deletes a list.'"
+                        [checked]="preferences.collaboratorDeletedList"
+                        (onChange)="preferences.collaboratorDeletedList = $event; setAllChecked()">
+                    </email-preference>
+
+
+                    <!-- User Deleted List -->
+                    <email-preference [text]="'When I delete a list, please send me a confirmation email.'"
+                        [checked]="preferences.userDeletedList"
+                        (onChange)="preferences.userDeletedList = $event; setAllChecked()">
+                    </email-preference>
                 </div>
 
 
@@ -288,28 +179,15 @@
                 <!-- Product Reviews -->
                 <div class="heading">Product Reviews</div>
 
-                <!-- Review -->
-                <div class="preference">
-                    <div class="preference-text"
-                             (click)="reviewInput.checked = !reviewInput.checked; preferences.review = reviewInput.checked; setAllChecked()">
-                        Notify me when my product review is posted
-                    </div>
-
-                    <label class="checkbox">
-                        <input #reviewInput type="checkbox" (change)="preferences.review = reviewInput.checked; setAllChecked()" tabindex="-2"
-                            [checked]="preferences?.review">
-                            <span tabindex="0"
-                                  class="checkmark"
-                                  (keydown.space)="$event.preventDefault();
-                                                   reviewInput.checked = !reviewInput.checked;
-                                                   preferences.review = reviewInput.checked;
-                                                   setAllChecked();">
-                            </span>
-                    </label>
-                </div>
+                <!-- Item Reviewed -->
+                <email-preference [text]="'When I review an item, please send me a confirmation email.'"
+                    [checked]="preferences.itemReviewed"
+                    (onChange)="preferences.itemReviewed = $event; setAllChecked()">
+                </email-preference>
 
 
-                <button class="gold-rect-button" [disabled]="isDisabled()" (click)="onSaveChangesClick()">Save Changes</button>
+                <button class="gold-rect-button" [disabled]="isDisabled()" (click)="onSaveChangesClick()">Save
+                    Changes</button>
 
             </div>
 

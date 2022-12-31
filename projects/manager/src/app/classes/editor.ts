@@ -1,22 +1,19 @@
-import { Compiler, ComponentFactoryResolver, ComponentRef, Directive, Injector, NgModuleFactory, OnInit, ViewContainerRef } from "@angular/core";
-import { PageDevComponent } from "../components/page-dev/page-dev.component";
-import { PageDevModule } from "../components/page-dev/page-dev.module";
+import { Compiler, ComponentFactoryResolver, ComponentRef, Directive, Injector, OnInit, ViewContainerRef } from "@angular/core";
 import { WidgetService } from "../services/widget/widget.service";
 import { ContainerHost } from "./container-host";
 import { WidgetCursor } from "./widget-cursor";
 
 @Directive()
-export abstract class Editor implements OnInit, ContainerHost {
-    public page!: PageDevComponent;
+export abstract class Editor<T> implements OnInit, ContainerHost {
     public document = document;
 
     constructor
         (
-            private widgetService: WidgetService,
-            private viewContainerRef: ViewContainerRef,
-            private resolver: ComponentFactoryResolver,
-            private compiler: Compiler,
-            private injector: Injector
+            public widgetService: WidgetService,
+            public viewContainerRef: ViewContainerRef,
+            public resolver: ComponentFactoryResolver,
+            public compiler: Compiler,
+            public injector: Injector
         ) { }
 
 
@@ -26,13 +23,9 @@ export abstract class Editor implements OnInit, ContainerHost {
 
     onLoad(iframe: HTMLIFrameElement) {
         const iframeContentDocument = iframe.contentDocument!;
-        const compFactory = this.resolver.resolveComponentFactory(PageDevComponent);
-        const moduleFactory: NgModuleFactory<PageDevModule> = this.compiler.compileModuleSync(PageDevModule);
-        const moduleRef = moduleFactory.create(this.injector);
-        const componentRef: ComponentRef<PageDevComponent> = this.viewContainerRef.createComponent(compFactory, undefined, moduleRef.injector);
+        const componentRef: ComponentRef<T> = this.getComponentRef();
 
-        this.page = componentRef.instance;
-        this.page.host = this;
+        this.setPage(componentRef);
         this.widgetService.widgetDocument = iframeContentDocument;
         iframeContentDocument.head.innerHTML = document.head.innerHTML;
         iframeContentDocument.body.appendChild(componentRef.location.nativeElement);
@@ -53,4 +46,6 @@ export abstract class Editor implements OnInit, ContainerHost {
     }
 
     public abstract onRowChange(maxBottom: number): void;
+    public abstract getComponentRef(): ComponentRef<T>;
+    public abstract setPage(componentRef: ComponentRef<T>): void;
 }

@@ -3,6 +3,7 @@ import { ApplicationRef, Component, OnInit } from '@angular/core';
 import { DropdownType } from 'common';
 import { EmailType } from '../../classes/enums';
 import { WidgetService } from '../../services/widget/widget.service';
+import { EmailPageComponent } from '../email-page/email-page.component';
 
 @Component({
   selector: 'email-properties',
@@ -29,10 +30,10 @@ export class EmailPropertiesComponent implements OnInit {
 
 
   getSelectedEmailType(): KeyValue<string, number> {
-    const name = this.widgetService.page.name;
+    const emailType = (this.widgetService.page as EmailPageComponent).emailType;
 
-    if (name) {
-      return this.emailTypes.find(x => x.key == name)!;
+    if (emailType) {
+      return this.emailTypes.find(x => x.value == emailType)!;
     } else {
       return this.emailTypes[0];
     }
@@ -40,7 +41,7 @@ export class EmailPropertiesComponent implements OnInit {
 
 
   onEmailTypeChange(emailType: KeyValue<string, number>) {
-    this.widgetService.page.name = emailType.key;
+    (this.widgetService.page as EmailPageComponent).emailType = emailType.value;
     this.widgetService.page.save();
   }
 

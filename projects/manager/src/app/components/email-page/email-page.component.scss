@@ -1,0 +1,36 @@
+.container-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: -3px;
+    left: 0;
+    overflow: overlay;
+    overflow-x: hidden;
+    outline-offset: -4px;
+    outline: 4px solid #1b1b1b;
+}
+
+.container-outline {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: -3px;
+    left: 0;
+    outline-offset: -4px;
+}
+
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a3a3a7a;
+    border-radius: 100vh;
+    border: none;
+}
+
+::-webkit-scrollbar-track {
+    background: none;
+    border: none;
+}

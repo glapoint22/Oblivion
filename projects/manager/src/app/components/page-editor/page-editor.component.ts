@@ -1,17 +1,20 @@
-import { Compiler, Component, ComponentFactoryResolver, Injector, ViewContainerRef } from '@angular/core';
+import { Compiler, Component, ComponentFactoryResolver, ComponentRef, Injector, NgModuleFactory, ViewContainerRef } from '@angular/core';
 import { DropdownType } from 'common';
 import { Editor } from '../../classes/editor';
 import { BuilderType } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
 import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 import { WidgetService } from '../../services/widget/widget.service';
+import { PageDevComponent } from '../page-dev/page-dev.component';
+import { PageDevModule } from '../page-dev/page-dev.module';
 
 @Component({
   selector: 'page-editor',
   templateUrl: './page-editor.component.html',
   styleUrls: ['./page-editor.component.scss']
 })
-export class PageEditorComponent extends Editor {
+export class PageEditorComponent extends Editor<PageDevComponent> {
+  public page!: PageDevComponent;
   public widgetCursors = WidgetCursor.getWidgetCursors(BuilderType.Page);
   public showResizeCover!: boolean;
   public DropdownType = DropdownType;
@@ -33,14 +36,29 @@ export class PageEditorComponent extends Editor {
   }
 
 
-  
-  onLoad(iframe: HTMLIFrameElement): void {
-    super.onLoad(iframe);
-
-    this.page.builderType = BuilderType.Page;
+  // ---------------------------------------- Get Component Ref ----------------------------------------
+  public getComponentRef(): ComponentRef<PageDevComponent> {
+    const compFactory = this.resolver.resolveComponentFactory(PageDevComponent);
+    const moduleFactory: NgModuleFactory<PageDevModule> = this.compiler.compileModuleSync(PageDevModule);
+    const moduleRef = moduleFactory.create(this.injector);
+    return this.viewContainerRef.createComponent(compFactory, undefined, moduleRef.injector);
   }
 
-  
+
+
+
+  // ---------------------------------------- Set Page ----------------------------------------
+  public setPage(componentRef: ComponentRef<PageDevComponent>): void {
+    this.page = componentRef.instance;
+    this.page.host = this;
+    this.widgetService.page = this.page;
+    this.page.builderType = BuilderType.Page;
+    this.page.apiUrl = 'api/Pages';
+  }
+
+
+
+
 
 
 
