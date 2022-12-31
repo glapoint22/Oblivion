@@ -1,11 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PageDevComponent } from './page-dev.component';
-import { RouterModule } from '@angular/router';
-import { VideoWidgetDevComponent } from '../video-widget-dev/video-widget-dev.component';
-import { ProductSliderWidgetDevModule } from '../product-slider-widget-dev/product-slider-widget-dev.module';
-import { GridWidgetDevModule } from '../grid-widget-dev/grid-widget-dev.module';
-import { CarouselWidgetDevComponent } from '../carousel-widget-dev/carousel-widget-dev.component';
+import { EmailPageComponent } from './email-page.component';
 import { ContainerDevModule } from '../container-dev/container-dev.module';
 import { RowDevModule } from '../row-dev/row-dev.module';
 import { ColumnDevModule } from '../column-dev/column-dev.module';
@@ -16,17 +11,13 @@ import { ImageWidgetDevModule } from '../image-widget-dev/image-widget-dev.modul
 import { LineWidgetDevModule } from '../line-widget-dev/line-widget-dev.module';
 
 
+
 @NgModule({
   declarations: [
-    PageDevComponent,
-    VideoWidgetDevComponent,
-    CarouselWidgetDevComponent,
+    EmailPageComponent
   ],
   imports: [
     CommonModule,
-    RouterModule,
-    ProductSliderWidgetDevModule,
-    GridWidgetDevModule,
     ContainerDevModule,
     RowDevModule,
     ColumnDevModule,
@@ -36,6 +27,8 @@ import { LineWidgetDevModule } from '../line-widget-dev/line-widget-dev.module';
     ImageWidgetDevModule,
     LineWidgetDevModule
   ],
-  exports: [PageDevComponent]
+  exports: [
+    EmailPageComponent
+  ]
 })
-export class PageDevModule { }
+export class EmailPageModule { }

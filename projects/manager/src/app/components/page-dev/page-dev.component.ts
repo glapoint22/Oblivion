@@ -20,27 +20,23 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   public name!: string;
   public pageType: PageType = PageType.Custom;
   public builderType!: BuilderType;
-  public BuilderType = BuilderType;
   public host!: ContainerHost;
   public widgetInspectorView = WidgetInspectorView;
   public container!: ContainerDevComponent;
   private saveData = new Subject<void>();
-  private apiUrl!: string;
+  public apiUrl!: string;
 
   constructor
     (
       public widgetService: WidgetService,
-      private dataService: DataService,
+      public dataService: DataService,
       private lazyLoadingService: LazyLoadingService,
-      private sanitizer: DomSanitizer
+      public sanitizer: DomSanitizer
     ) { super(); }
 
 
   // --------------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
   public ngOnInit(): void {
-    this.widgetService.page = this;
-    this.apiUrl = this.builderType == BuilderType.Page ? 'api/Pages' : 'api/Emails';
-
     this.saveData
       .pipe(debounceTime(200))
       .subscribe(() => {
@@ -49,15 +45,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
         // Get the updated rows
         this.pageContent.rows = container.getData();
 
-        // Update the database
-        this.dataService.put(this.apiUrl, {
-          id: this.id,
-          name: this.name,
-          pageType: this.pageType,
-          content: this.widgetService.stringify(this.pageContent)
-        }, {
-          authorization: true
-        }).subscribe();
+        // Update the page
+        this.updatePage();
       });
   }
 
@@ -71,7 +60,17 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
 
-
+  // --------------------------------------------------------------------------- Update Page -----------------------------------------------------------
+  public updatePage(){
+    this.dataService.put(this.apiUrl, {
+      id: this.id,
+      name: this.name,
+      pageType: this.pageType,
+      content: this.widgetService.stringify(this.pageContent)
+    }, {
+      authorization: true
+    }).subscribe();
+  }
 
 
 
@@ -121,16 +120,8 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
   // -------------------------------------------------------------------------------- New -------------------------------------------------------------------
   public new(): void {
     this.clear();
-    this.name = this.builderType == BuilderType.Page ? 'Custom Page' : 'None';
+    this.name = 'Custom Page';
     this.pageContent = new PageContent();
-
-    if (this.builderType == BuilderType.Email) {
-      this.pageContent.background.enabled = true;
-      this.pageContent.background.color = '#ffffff';
-      this.setBackground();
-    }
-
-
     this.widgetService.currentWidgetInspectorView = WidgetInspectorView.Page;
 
     this.dataService.post<string>(this.apiUrl, {
@@ -179,10 +170,7 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
       }
     }, SpinnerAction.None)
       .then((prompt: PromptComponent) => {
-        prompt.title = this.builderType == BuilderType.Page ? 'Delete Page' : 'Delete Email';
-        prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-          'The ' + (this.builderType == BuilderType.Page ? 'page' : 'email ') + '<span style="color: #ffba00">\"' + this.name + '\"</span>' +
-          ' will be permanently deleted.');
+        this.SetDeletePrompt(prompt);
         prompt.primaryButton.name = 'Delete';
         prompt.primaryButton.buttonFunction = () => {
           this.deletePage();
@@ -195,6 +183,12 @@ export class PageDevComponent extends PageComponent implements ContainerHost {
 
 
 
+  SetDeletePrompt(prompt: PromptComponent) {
+    prompt.title = 'Delete Page';
+    prompt.message = this.sanitizer.bypassSecurityTrustHtml(
+      'The page, <span style="color: #ffba00">\"' + this.name + '\"</span>' +
+      ', will be permanently deleted.');
+  }
 
 
 

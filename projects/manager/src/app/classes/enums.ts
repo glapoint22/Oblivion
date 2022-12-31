@@ -119,15 +119,15 @@ export enum BuilderType {
 
 export enum EmailType {
     None,
-    AccountActivation,
-    ForgotPassword,
-    NameChange,
-    EmailChange,
-    PasswordChange,
-    ProfileImageChange,
-    EmailOneTimePassword,
-    CollaboratorAddedToList,
-    UserAddedToList,
+    ActivateAccountOneTimePassword,
+    ForgotPasswordOneTimePassword,
+    NameUpdated,
+    UpdateEmailOneTimePassword,
+    EmailUpdated,
+    PasswordUpdated,
+    ProfileImageUpdated,
+    CollaboratorJoinedList,
+    UserJoinedList,
     UserRemovedFromList,
     CollaboratorRemovedFromList,
     UserRemovedCollaborator,
@@ -141,9 +141,9 @@ export enum EmailType {
     UserUpdatedList,
     CollaboratorDeletedList,
     UserDeletedList,
-    Review,
+    ItemReviewed,
     DeleteAccountOneTimePassword,
-    DeleteAccount,
+    AccountDeleted,
     WelcomeToNicheShack
 }
 

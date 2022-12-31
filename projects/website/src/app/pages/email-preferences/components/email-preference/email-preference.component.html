@@ -1,0 +1,19 @@
+<div class="preference">
+    <div class="preference-text"
+         (click)="input.checked = !input.checked; onChange.emit(input.checked)">
+         {{text}}
+    </div>
+    
+
+    <label class="checkbox">
+        <input #input type="checkbox" tabindex="-2"
+            (change)="onChange.emit(input.checked)"
+            [checked]="checked">
+            <span tabindex="0"
+                  class="checkmark"
+                  (keydown.space)="$event.preventDefault();
+                                   input.checked = !input.checked;
+                                   onChange.emit(input.checked)">
+            </span>
+    </label>
+</div>

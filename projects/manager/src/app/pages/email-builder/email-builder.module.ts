@@ -20,6 +20,7 @@ import { EmailButtonWidgetPropertiesComponent } from '../../components/email-but
 import { EmailTextWidgetPropertiesComponent } from '../../components/email-text-widget-properties/email-text-widget-properties.component';
 import { DropdownModule } from 'common';
 import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
     SearchModule,
     DropdownModule,
     PanelModule,
-    MenuBarModule
+    MenuBarModule,
+    FormsModule
   ]
 })
 export class EmailBuilderModule { }

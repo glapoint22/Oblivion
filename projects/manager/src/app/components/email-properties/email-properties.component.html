@@ -5,5 +5,12 @@
 </div>
 
 
+<!-- Page Name -->
+<div class="property">
+    <div class="label" style="margin-right: 9px;">Subject:</div>
+    <input [(ngModel)]="widgetService.page.name" (input)="widgetService.page.save()">
+</div>
+
+
 <!-- Background color & image -->
 <background [background]="widgetService.page.pageContent.background" [toggleable]="false" (onChange)="onBackgroundChange()"></background>

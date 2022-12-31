@@ -1,4 +1,4 @@
-<div class="container-wrapper" style="outline-color: #1b1b1b;">
+<div class="container-wrapper" [style.outlineColor]="pageContent ? '#dddddd' :'#1b1b1b'">
     <div [ngClass]="{'container-outline': pageContent, 'selected-page':widgetService.currentWidgetInspectorView == widgetInspectorView.Page}"></div>
     <container-dev #container></container-dev>
 </div>
