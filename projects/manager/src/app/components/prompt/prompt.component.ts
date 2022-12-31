@@ -11,7 +11,6 @@ import { Button } from '../../classes/button';
 })
 export class PromptComponent extends LazyLoad {
   public parentObj!: Object;
-  public isReview!: boolean;
   public checkboxChecked: boolean = true;
   public title!: string;
   public message!: SafeHtml;

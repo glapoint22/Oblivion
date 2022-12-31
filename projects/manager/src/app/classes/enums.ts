@@ -194,3 +194,10 @@ export enum QueryElementType {
     QueryRow,
     QueryGroup
 }
+
+
+export enum ReformListOption {
+    ReplaceName,
+    RemoveDescription,
+    ReplaceNameandRemoveDescription
+}

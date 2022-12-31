@@ -68,7 +68,6 @@ export class ReviewNotificationPopupComponent extends NotificationPopupComponent
   // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
 
   openSecondaryButtonPrompt() {
-    this.secondaryButtonPromptIsReview = true;
     this.secondaryButtonPromptPrimaryButtonName = !this.notification.reviewDeleted ? 'Remove' : 'Restore';
     this.secondaryButtonPromptTitle = (!this.notification.reviewDeleted ? 'Remove' : 'Restore') + ' Review';
     this.secondaryButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(

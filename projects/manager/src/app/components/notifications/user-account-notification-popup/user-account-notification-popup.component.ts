@@ -6,6 +6,7 @@ import { NotificationEmployee } from '../../../classes/notifications/notificatio
 import { UserAccountNotification } from '../../../classes/notifications/user-account-notification';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { ReformListFormComponent } from '../reform-list-form/reform-list-form.component';
+import { ReplaceUserNameFormComponent } from '../replace-user-name-form/replace-user-name-form.component';
 
 @Component({
   templateUrl: './user-account-notification-popup.component.html',
@@ -13,7 +14,7 @@ import { ReformListFormComponent } from '../reform-list-form/reform-list-form.co
 })
 export class UserAccountNotificationPopupComponent extends NotificationPopupComponent {
   private dataServicePath!: string;
-  private reformListForm!: ReformListFormComponent;
+  private formOpen!: boolean;
 
   public newNotesAdded: Array<boolean> = new Array<boolean>();
   public notificationType!: NotificationType;
@@ -70,8 +71,6 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
           value: this.notificationItem.isNew
         }
       ]);
-
-
   }
 
 
@@ -164,48 +163,41 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
   }
 
 
+  // ============================================================( OPEN REPLACE USER NAME FORM )============================================================ \\
 
-  // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
+  openReplaceUserNameForm() {
+    this.lazyLoadingService.load(async () => {
+      const { ReplaceUserNameFormComponent } = await import('../replace-user-name-form/replace-user-name-form.component');
+      const { ReplaceUserNameFormModule } = await import('../replace-user-name-form/replace-user-name-form.module');
+      return {
+        component: ReplaceUserNameFormComponent,
+        module: ReplaceUserNameFormModule
+      }
+    }, SpinnerAction.None).then((replaceUserNameForm: ReplaceUserNameFormComponent) => {
+      this.formOpen = true;
+      replaceUserNameForm.notification = this.notification[this.userIndex];
+      replaceUserNameForm.callback = () => {
+        this.setCallback('api/Notifications/AddNoncompliantStrikeUserName', {
+          userId: this.notification[this.userIndex].userId,
+          userName: this.notification[this.userIndex].userName
+        });
+      }
 
-  openSecondaryButtonPrompt() {
-    this.secondaryButtonPromptPrimaryButtonName = 'Remove';
-    this.secondaryButtonPromptTitle = 'Remove ' +
-      (this.notificationType == NotificationType.UserName ?
-        'User Name' :
-        this.notificationType == NotificationType.UserImage ?
-          'Profile Image' :
-          'Review');
-    this.secondaryButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
-      (this.notificationType == NotificationType.UserName ?
-        'The name,' :
-        this.notificationType == NotificationType.UserImage ?
-          'The profile image for the user,' :
-          'The review titled,') +
-      ' <span style="color: #ffba00">\"' +
-      (this.notificationType == NotificationType.Review ?
-        this.notification[0].title :
-        this.notification[0].firstName + ' ' + this.notification[0].lastName) + '\"</span>' +
-
-
-
-
-      (this.notificationType == NotificationType.UserName ? ' will be removed from this user. ' : ' will be removed. ') +
-
-
-      'Also, a strike will be added against ' +
-
-      (this.notificationType == NotificationType.Review ?
-        'the review writer, <span style="color: #ffba00">\"' + this.notification[0].firstName + ' ' + this.notification[0].lastName + '\"</span>' :
-        'them') +
-      ' for not complying with the terms of use.'
-
-
-
-    );
-
-
-    super.openSecondaryButtonPrompt();
+      const replaceUserNameCloseListener = replaceUserNameForm.onClose.subscribe(() => {
+        replaceUserNameCloseListener.unsubscribe();
+        this.formOpen = false;
+      })
+    })
   }
+
+
+
+  // ============================================================( OPEN REMOVE USER IMAGE FORM )============================================================ \\
+
+  openRemoveUserImageForm() {
+    console.log('user image')
+  }
+
 
 
   // ===============================================================( OPEN REFORM LIST FORM )=============================================================== \\
@@ -219,103 +211,61 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
         module: ReformListFormModule
       }
     }, SpinnerAction.None).then((reformListForm: ReformListFormComponent) => {
-      this.reformListForm = reformListForm;
-
+      this.formOpen = true;
+      reformListForm.notification = this.notification[this.userIndex];
       reformListForm.callback = (reformListOption: number) => {
-        // If any notes were written
-        if (this.areAnyEmployeeNotesWritten()) {
-          // Then save the new note
-          this.saveEmployeeText();
-        }
-        // Update the count for the notification bell
-        this.notificationService.notificationCount -= 1;
-
-        this.dataService.put('api/Notifications/Archive', {
-          notificationGroupId: this.notificationItem.notificationGroupId,
-          notificationId: this.notification[this.userIndex].notificationId
-        }, {
-          authorization: true
-        }).subscribe();
-
-        // Update the lists
-        this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
-
-
-        this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeList', {
+        this.setCallback('api/Notifications/AddNoncompliantStrikeList', {
           listId: this.notification[this.userIndex].listId,
           option: reformListOption,
           userId: this.notification[this.userIndex].userId
-        }, {
-          authorization: true
-        }).subscribe((removalSuccessful: boolean) => {
-          if (removalSuccessful) {
-            this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
-          }
         });
       }
 
       const reformListCloseListener = reformListForm.onClose.subscribe(() => {
         reformListCloseListener.unsubscribe();
-        this.reformListForm = null!;
+        this.formOpen = false;
       })
     })
   }
 
 
 
-  // =========================================================( SECONDARY BUTTON PROMPT FUNCTION )========================================================== \\
+  // ==============================================================( OPEN REMOVE REVIEW FORM )============================================================== \\
 
-  secondaryButtonPromptFunction() {
-    // If any notes were written
+  openRemoveReviewForm() {
+    console.log('review')
+  }
+
+
+
+  // ===================================================================( SET CALLBACK )==================================================================== \\
+
+  setCallback(dataServicePath: string, dataServiceParameters: object) {
+    // Save the notes (if any)
     if (this.areAnyEmployeeNotesWritten()) {
-      // Then save the new note
       this.saveEmployeeText();
     }
+
     // Update the count for the notification bell
     this.notificationService.notificationCount -= 1;
 
-    // Update the database
+    // Archive the notification
     this.dataService.put('api/Notifications/Archive', {
       notificationGroupId: this.notificationItem.notificationGroupId,
       notificationId: this.notification[this.userIndex].notificationId
     }, {
       authorization: true
     }).subscribe();
-
-    // Update the lists
     this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
 
-    // Add a non-compliant strike because of user name
-    if (this.notificationType == NotificationType.UserName) {
-      this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserName', {
-        userId: this.notification[this.userIndex].userId,
-        userName: this.notification[this.userIndex].userName
-      }, {
-        authorization: true
-      }).subscribe((removalSuccessful: boolean) => {
-        if (removalSuccessful) {
-          this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
-        }
-      });
-    }
-
-    // Add a non-compliant strike because of image
-    else if (this.notificationType == NotificationType.UserImage) {
-      this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserImage', {
-        userId: this.notification[this.userIndex].userId,
-        userImage: this.notification[this.userIndex].userImage
-      }, {
-        authorization: true
-      }).subscribe((removalSuccessful: boolean) => {
-        if (removalSuccessful) {
-          this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
-        }
-      });
-
-    } else {
-
-      console.log('review')
-    }
+    // Add the noncompliant strike
+    this.dataService.put<boolean>(dataServicePath, dataServiceParameters, {
+      authorization: true
+    }).subscribe((removalSuccessful: boolean) => {
+      if (removalSuccessful) {
+        this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+      }
+    });
   }
 
 
@@ -349,9 +299,6 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     }
 
 
-
-
-
     // Update database
     this.dataService.delete('api/Notifications/DeleteNotifications', {
       notificationGroupId: this.notificationItem.notificationGroupId,
@@ -366,7 +313,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.reformListForm) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.formOpen) {
       if (!this.areAnyEmployeeNotesWritten()) {
         this.close();
       } else {
@@ -375,3 +322,73 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // =========================================================( SECONDARY BUTTON PROMPT FUNCTION )========================================================== \\
+
+  // secondaryButtonPromptFunction() {
+  //   // If any notes were written
+  //   if (this.areAnyEmployeeNotesWritten()) {
+  //     // Then save the new note
+  //     this.saveEmployeeText();
+  //   }
+  //   // Update the count for the notification bell
+  //   this.notificationService.notificationCount -= 1;
+
+  //   // Update the database
+  //   this.dataService.put('api/Notifications/Archive', {
+  //     notificationGroupId: this.notificationItem.notificationGroupId,
+  //     notificationId: this.notification[this.userIndex].notificationId
+  //   }, {
+  //     authorization: true
+  //   }).subscribe();
+
+  //   // Update the lists
+  //   this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
+
+  //   // Add a non-compliant strike because of user name
+  //   if (this.notificationType == NotificationType.UserName) {
+  //     this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserName', {
+  //       userId: this.notification[this.userIndex].userId,
+  //       userName: this.notification[this.userIndex].userName
+  //     }, {
+  //       authorization: true
+  //     }).subscribe((removalSuccessful: boolean) => {
+  //       if (removalSuccessful) {
+  //         this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+  //       }
+  //     });
+  //   }
+
+  //   // Add a non-compliant strike because of image
+  //   else if (this.notificationType == NotificationType.UserImage) {
+  //     this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserImage', {
+  //       userId: this.notification[this.userIndex].userId,
+  //       userImage: this.notification[this.userIndex].userImage
+  //     }, {
+  //       authorization: true
+  //     }).subscribe((removalSuccessful: boolean) => {
+  //       if (removalSuccessful) {
+  //         this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+  //       }
+  //     });
+
+  //   } else {
+
+  //     console.log('review')
+  //   }
+  // }

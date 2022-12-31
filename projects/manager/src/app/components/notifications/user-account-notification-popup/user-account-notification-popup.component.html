@@ -140,7 +140,15 @@
         <!-- Buttons -->
         <div class="notification-button-container">
             <div>
-                <button *ngIf="notificationItem.isNew"  class="notification-button" (click)="notificationType == NotificationType.List ? openReformListForm() : openSecondaryButtonPrompt()" [disabled]="secondaryButtonDisabled">{{buttonName}}</button>
+                <button *ngIf="notificationItem.isNew" 
+                        class="notification-button"
+                        [disabled]="secondaryButtonDisabled"
+                        (click)="notificationType == NotificationType.UserName ? openReplaceUserNameForm() :
+                                 notificationType == NotificationType.UserImage ? openRemoveUserImageForm() :
+                                 notificationType == NotificationType.List ? openReformListForm() :
+                                 openRemoveReviewForm()">
+                    {{buttonName}}
+                </button>
             </div>
             
             <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onPrimaryButtonClick()">{{notificationItem.isNew ? 'Ok' : 'Close'}}</button>

@@ -1,1 +1,37 @@
-<p>replace-user-name-form works!</p>
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div id="modalBase" class="modal-base" tabindex="-1">
+        <div class="modal-bar">
+            <div>Replace User Name</div>
+            <div class="modal-x-button"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+
+        <div class="modal-content">
+
+            <!-- Name -->
+            <div class="notification-label">User Name:</div>
+            <div class="user-name-container">
+                {{notification.userName}}
+            </div>
+
+
+            <!-- Notes -->
+            <div class="notification-label">Notes:</div>
+            <div class="notification-info-box">
+                <textarea #notes #tabElement (input)="onNotes(notes)"></textarea>
+            </div>
+        </div>
+
+        
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #tabElement class="gold-button" (click)="onReplaceButton()">Replace</button>
+        </div>
+    </div>
+</div>

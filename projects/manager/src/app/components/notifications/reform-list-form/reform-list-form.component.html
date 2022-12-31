@@ -12,49 +12,61 @@
         </div>
 
         <div class="modal-content">
-            <label class="radio" style="display: block; width: fit-content;">
-                <div>Replace Name</div>
-                <input type="radio"
-                       name="list"
-                       (change)="onRadioButtonChange(tabElements[0])">
-                <span #tabElement
-                      tabindex="-1"
-                      id="radioButton"
-                      class="checkmark">
-                </span>
-            </label>
-    
-    
-            <label class="radio" style="display: block; width: fit-content;">
-                <div>Remove Description</div>
-                <input type="radio"
-                       name="list"
-                       (change)="onRadioButtonChange(tabElements[1])">
-                <span #tabElement
-                      tabindex="-1"
-                      id="radioButton"
-                      class="checkmark">
-                </span>
-            </label>
-    
-    
-            <label class="radio" style="display: block; width: fit-content;">
-                <div>Replace Name and Remove Description</div>
-                <input type="radio"
-                       name="list"
-                       (change)="onRadioButtonChange(tabElements[2])">
-                <span #tabElement
-                      tabindex="-1"
-                      id="radioButton"
-                      class="checkmark">
-                </span>
-            </label>
+
+            <!-- Name -->
+            <div class="notification-label">Name:</div>
+            <div class="notification-info-box">
+                <div class="checkbox-container">
+                    <label class="checkbox">
+                        <input #nameCheckbox
+                               type="checkbox"
+                               (change)="onCheckboxChange(nameCheckbox, descriptionCheckbox)">
+                        <span #tabElement
+                              tabindex="-1"
+                              class="checkmark"
+                              (keydown.space)="nameCheckbox.checked = !nameCheckbox.checked; onCheckboxChange(nameCheckbox, descriptionCheckbox)">
+                        </span>
+                    </label>
+                </div>
+                <div class="notification-user-comment">
+                    {{notification.listName}}
+                </div>
+            </div>
+
+
+            <!-- Description -->
+            <div class="notification-label">Description:</div>
+            <div class="notification-info-box">
+                <div class="checkbox-container">
+                    <label class="checkbox">
+                        <input #descriptionCheckbox
+                               type="checkbox"
+                               (change)="onCheckboxChange(nameCheckbox, descriptionCheckbox)">
+                        <span #tabElement
+                              tabindex="-1"
+                              class="checkmark"
+                              (keydown.space)="descriptionCheckbox.checked = !descriptionCheckbox.checked; onCheckboxChange(nameCheckbox, descriptionCheckbox)">
+                        </span>
+                    </label>
+                </div>
+                <div class="notification-user-comment">
+                    {{notification.text}}
+                </div>
+            </div>
+
+
+            <!-- Notes -->
+            <div class="notification-label">Notes:</div>
+            <div class="notification-info-box">
+                <textarea #notes #tabElement (input)="onNotes(notes)"></textarea>
+            </div>
         </div>
 
+        
         <!-- Button Container -->
         <div class="modal-button-container">
             <button #tabElement class="dark-button" (click)="close()">Close</button>
-            <button #tabElement class="gold-button" (click)="onSubmitButton()" [disabled]="!optionSelected">Submit</button>
+            <button #tabElement class="gold-button" (click)="onReformButton()" [disabled]="!checkboxChecked">Reform</button>
         </div>
     </div>
 </div>
