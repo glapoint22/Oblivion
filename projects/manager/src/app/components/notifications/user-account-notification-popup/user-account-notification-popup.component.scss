@@ -7,10 +7,19 @@
 
 .notification-type-name {
     position: absolute;
-    left: 163px;
+    display: flex;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    align-items: center;
+    justify-content: center;
 }
 
 
+.ellipsis {
+    z-index: 1;
+}
 
 
 .notification-info-box {
@@ -52,11 +61,31 @@
 }
 
 
-.image-info-box {
+.user-info-box {
     @extend .notification-info-box;
     height: 114px;
     background: none;
     border: 1px solid #454545;
+}
+
+.dashed-border {
+    height: 221px;
+    border-style: dashed;
+    border-color: #373737;
+}
+
+
+.list-review-container {
+    padding: 4px 8px 8px;
+
+    :nth-child(2) {
+        height: 26px;
+    }
+
+    :nth-child(4) {
+        height: 100px;
+        margin-bottom: 0;
+    }
 }
 
 

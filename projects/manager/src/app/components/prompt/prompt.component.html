@@ -8,6 +8,17 @@
         </div>
 
         <div class="message" [innerHtml]="message"></div>
+
+
+        <!-- Checkbox -->
+        <div *ngIf="isReview" class="checkbox-container">
+            <label class="checkbox">
+                <div>Add noncompliant strike to the review writer</div>
+                <input type="checkbox" [checked]="true" (change)="oncheckboxClick()">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+            
             
         <div class="modal-button-container">
 

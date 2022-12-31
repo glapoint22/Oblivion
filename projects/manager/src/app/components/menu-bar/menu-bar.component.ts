@@ -40,8 +40,6 @@ export class MenuBarComponent {
   ) { }
 
   ngOnInit() {
-    this.notificationService.getNewNotifications();
-
     this.notificationService.onNotificationCount.subscribe((notificationCount) => {
       this.notificationCount = notificationCount;
     });

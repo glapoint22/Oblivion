@@ -1,0 +1,60 @@
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div id="modalBase" class="modal-base" tabindex="-1">
+        <div class="modal-bar">
+            <div>Reform List</div>
+            <div class="modal-x-button"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+
+        <div class="modal-content">
+            <label class="radio" style="display: block; width: fit-content;">
+                <div>Replace Name</div>
+                <input type="radio"
+                       name="list"
+                       (change)="onRadioButtonChange(tabElements[0])">
+                <span #tabElement
+                      tabindex="-1"
+                      id="radioButton"
+                      class="checkmark">
+                </span>
+            </label>
+    
+    
+            <label class="radio" style="display: block; width: fit-content;">
+                <div>Remove Description</div>
+                <input type="radio"
+                       name="list"
+                       (change)="onRadioButtonChange(tabElements[1])">
+                <span #tabElement
+                      tabindex="-1"
+                      id="radioButton"
+                      class="checkmark">
+                </span>
+            </label>
+    
+    
+            <label class="radio" style="display: block; width: fit-content;">
+                <div>Replace Name and Remove Description</div>
+                <input type="radio"
+                       name="list"
+                       (change)="onRadioButtonChange(tabElements[2])">
+                <span #tabElement
+                      tabindex="-1"
+                      id="radioButton"
+                      class="checkmark">
+                </span>
+            </label>
+        </div>
+
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #tabElement class="gold-button" (click)="onSubmitButton()" [disabled]="!optionSelected">Submit</button>
+        </div>
+    </div>
+</div>

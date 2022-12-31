@@ -11,7 +11,7 @@
         <div class="tabs">
             <div class="tabs-container">
                 <div class="tab" [ngClass]="{'selected-tab': newTabSelected}" (click)="newTabSelected = true; newListZIndex = archiveListZIndex + 1;">New ({{notificationService.notificationCount}})</div>
-                <div class="tab" [ngClass]="{'selected-tab': !newTabSelected}" (click)="newTabSelected = false; archiveListZIndex = newListZIndex + 1; notificationService.getArchivedNotifications()">Archive</div>
+                <div class="tab" [ngClass]="{'selected-tab': !newTabSelected}" (click)="newTabSelected = false; archiveListZIndex = newListZIndex + 1;">Archive</div>
             </div>
             
             <icon-button [icon]="'fa-solid fa-arrows-rotate'"

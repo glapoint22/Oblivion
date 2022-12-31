@@ -121,25 +121,6 @@ export class NotificationProfilePopupComponent extends LazyLoad {
   }
 
 
-  onAddNoncompliantStrikeButtonClick() {
-    this.promptTitle = 'Add Noncompliant Strike';
-    this.promptMessage = this.sanitizer.bypassSecurityTrustHtml(
-      'The user' +
-      ' <span style="color: #ffba00">\"' + this.user.firstName + ' ' + this.user.lastName + '\"</span>' +
-      ' will have a strike added against them for not complying with the terms of use.');
-    this.promptButtonName = 'Add Strike';
-    this.promptFunction = () => {
-      this.user.noncompliantStrikes++;
-      this.AddNoncompliantStrikeButtonDisabled = true;
-
-      this.dataService.put('api/Notifications/AddNoncompliantStrike', {
-        userId: this.user.userId
-      }).subscribe();
-    }
-    this.openPrompt();
-  }
-
-
 
 
   remove(isUserName: boolean) {
