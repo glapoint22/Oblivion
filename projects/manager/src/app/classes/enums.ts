@@ -144,7 +144,9 @@ export enum EmailType {
     ItemReviewed,
     DeleteAccountOneTimePassword,
     AccountDeleted,
-    WelcomeToNicheShack
+    WelcomeToNicheShack,
+    NoncompliantStrikeList,
+    NoncompliantStrikeUserImage
 }
 
 

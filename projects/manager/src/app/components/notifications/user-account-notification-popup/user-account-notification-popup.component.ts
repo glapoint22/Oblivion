@@ -249,13 +249,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     // Update the count for the notification bell
     this.notificationService.notificationCount -= 1;
 
-    // Archive the notification
-    this.dataService.put('api/Notifications/Archive', {
-      notificationGroupId: this.notificationItem.notificationGroupId,
-      notificationId: this.notification[this.userIndex].notificationId
-    }, {
-      authorization: true
-    }).subscribe();
+
     this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
 
     // Add the noncompliant strike
@@ -263,6 +257,14 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
       authorization: true
     }).subscribe((removalSuccessful: boolean) => {
       if (removalSuccessful) {
+        // Archive the notification
+        this.dataService.put('api/Notifications/Archive', {
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          notificationId: this.notification[this.userIndex].notificationId
+        }, {
+          authorization: true
+        }).subscribe();
+        
         this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
       }
     });
