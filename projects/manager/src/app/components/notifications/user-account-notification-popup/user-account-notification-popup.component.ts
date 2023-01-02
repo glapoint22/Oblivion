@@ -6,6 +6,8 @@ import { NotificationEmployee } from '../../../classes/notifications/notificatio
 import { UserAccountNotification } from '../../../classes/notifications/user-account-notification';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { ReformListFormComponent } from '../reform-list-form/reform-list-form.component';
+import { RemoveReviewFormComponent } from '../remove-review-form/remove-review-form.component';
+import { RemoveUserImageFormComponent } from '../remove-user-image-form/remove-user-image-form.component';
 import { ReplaceUserNameFormComponent } from '../replace-user-name-form/replace-user-name-form.component';
 
 @Component({
@@ -183,8 +185,8 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
         });
       }
 
-      const replaceUserNameCloseListener = replaceUserNameForm.onClose.subscribe(() => {
-        replaceUserNameCloseListener.unsubscribe();
+      const replaceUserNameFormCloseListener = replaceUserNameForm.onClose.subscribe(() => {
+        replaceUserNameFormCloseListener.unsubscribe();
         this.formOpen = false;
       })
     })
@@ -195,7 +197,28 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
   // ============================================================( OPEN REMOVE USER IMAGE FORM )============================================================ \\
 
   openRemoveUserImageForm() {
-    console.log('user image')
+    this.lazyLoadingService.load(async () => {
+      const { RemoveUserImageFormComponent } = await import('../remove-user-image-form/remove-user-image-form.component');
+      const { RemoveUserImageFormModule } = await import('../remove-user-image-form/remove-user-image-form.module');
+      return {
+        component: RemoveUserImageFormComponent,
+        module: RemoveUserImageFormModule
+      }
+    }, SpinnerAction.None).then((removeUserImageForm: RemoveUserImageFormComponent) => {
+      this.formOpen = true;
+      removeUserImageForm.notification = this.notification[this.userIndex];
+      removeUserImageForm.callback = () => {
+        this.setCallback('api/Notifications/AddNoncompliantStrikeUserImage', {
+          userId: this.notification[this.userIndex].userId,
+          userImage: this.notification[this.userIndex].userImage
+        });
+      }
+
+      const replaceUserImageFormCloseListener = removeUserImageForm.onClose.subscribe(() => {
+        replaceUserImageFormCloseListener.unsubscribe();
+        this.formOpen = false;
+      })
+    })
   }
 
 
@@ -221,8 +244,8 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
         });
       }
 
-      const reformListCloseListener = reformListForm.onClose.subscribe(() => {
-        reformListCloseListener.unsubscribe();
+      const reformListFormCloseListener = reformListForm.onClose.subscribe(() => {
+        reformListFormCloseListener.unsubscribe();
         this.formOpen = false;
       })
     })
@@ -233,7 +256,29 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
   // ==============================================================( OPEN REMOVE REVIEW FORM )============================================================== \\
 
   openRemoveReviewForm() {
-    console.log('review')
+    this.lazyLoadingService.load(async () => {
+      const { RemoveReviewFormComponent } = await import('../remove-review-form/remove-review-form.component');
+      const { RemoveReviewFormModule } = await import('../remove-review-form/remove-review-form.module');
+      return {
+        component: RemoveReviewFormComponent,
+        module: RemoveReviewFormModule
+      }
+    }, SpinnerAction.None).then((RemoveReviewForm: RemoveReviewFormComponent) => {
+      this.formOpen = true;
+      RemoveReviewForm.notification = this.notification[this.userIndex];
+      RemoveReviewForm.callback = () => {
+        this.setCallback('api/Notifications/AddNoncompliantStrikeReview', {
+          userId: this.notification[this.userIndex].userId,
+          reviewId: this.notification[this.userIndex].reviewId,
+          addStrike: true
+        });
+      }
+
+      const RemoveReviewFormCloseListener = RemoveReviewForm.onClose.subscribe(() => {
+        RemoveReviewFormCloseListener.unsubscribe();
+        this.formOpen = false;
+      })
+    })
   }
 
 
@@ -313,7 +358,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.formOpen) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.deletePrompt && !this.formOpen) {
       if (!this.areAnyEmployeeNotesWritten()) {
         this.close();
       } else {
@@ -322,73 +367,3 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // =========================================================( SECONDARY BUTTON PROMPT FUNCTION )========================================================== \\
-
-  // secondaryButtonPromptFunction() {
-  //   // If any notes were written
-  //   if (this.areAnyEmployeeNotesWritten()) {
-  //     // Then save the new note
-  //     this.saveEmployeeText();
-  //   }
-  //   // Update the count for the notification bell
-  //   this.notificationService.notificationCount -= 1;
-
-  //   // Update the database
-  //   this.dataService.put('api/Notifications/Archive', {
-  //     notificationGroupId: this.notificationItem.notificationGroupId,
-  //     notificationId: this.notification[this.userIndex].notificationId
-  //   }, {
-  //     authorization: true
-  //   }).subscribe();
-
-  //   // Update the lists
-  //   this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
-
-  //   // Add a non-compliant strike because of user name
-  //   if (this.notificationType == NotificationType.UserName) {
-  //     this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserName', {
-  //       userId: this.notification[this.userIndex].userId,
-  //       userName: this.notification[this.userIndex].userName
-  //     }, {
-  //       authorization: true
-  //     }).subscribe((removalSuccessful: boolean) => {
-  //       if (removalSuccessful) {
-  //         this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
-  //       }
-  //     });
-  //   }
-
-  //   // Add a non-compliant strike because of image
-  //   else if (this.notificationType == NotificationType.UserImage) {
-  //     this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeUserImage', {
-  //       userId: this.notification[this.userIndex].userId,
-  //       userImage: this.notification[this.userIndex].userImage
-  //     }, {
-  //       authorization: true
-  //     }).subscribe((removalSuccessful: boolean) => {
-  //       if (removalSuccessful) {
-  //         this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
-  //       }
-  //     });
-
-  //   } else {
-
-  //     console.log('review')
-  //   }
-  // }

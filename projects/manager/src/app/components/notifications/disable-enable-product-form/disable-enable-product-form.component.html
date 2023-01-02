@@ -1,1 +1,48 @@
-<p>disable-enable-product-form works!</p>
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div id="modalBase"
+         tabindex="-1"
+         class="modal-base">
+
+         <!-- Bar -->
+        <div class="modal-bar">
+            <div>Disable Product</div>
+            <div class="modal-x-button"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+
+        <div class="modal-content">
+            <!-- Name -->
+            <div class="notification-label">Title:</div>
+            <div class="notification-info-box" style="height: 26px; margin-bottom: 13px;">
+                <div class="notification-user-comment">
+                    <!-- {{notification.title}} -->
+                </div>
+            </div>
+            <div class="notification-label">Review:</div>
+            <div class="notification-info-box" style="height: 100px; margin-bottom: 13px;">
+                <div class="notification-user-comment">
+                    <!-- {{notification.text}} -->
+                </div>
+            </div>
+
+
+            <!-- Notes -->
+            <div class="notification-label">Notes:</div>
+            <div class="notification-info-box">
+                <textarea #notes #tabElement (input)="onNotes(notes)"></textarea>
+            </div>
+        </div>
+
+        
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #tabElement class="gold-button" (click)="onRemoveButton()">Remove</button>
+        </div>
+    </div>
+</div>

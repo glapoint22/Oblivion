@@ -18,7 +18,6 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   public isNew!: boolean;
   public notificationItem!: NotificationItem;
   public contextMenu!: ContextMenuComponent;
-
   public newNoteAdded!: boolean;
   public employeeIndex!: number;
   public firstNote!: string;
@@ -27,19 +26,12 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   public employeeTextPath = 'api/Notifications/PostNote';
   public employeeTextParameters = {};
   public deletePromptTitle: string = 'Delete Notification';
-
   public deletePromptMessage!: SafeHtml;
-  public secondaryButtonPromptTitle!: string;
-  public secondaryButtonPromptMessage!: SafeHtml;
-  public secondaryButtonPromptPrimaryButtonName!: string;
-  public secondaryButtonPrompt!: PromptComponent;
   public deletePrompt!: PromptComponent;
   public notification!: any;
-
   public secondaryButtonDisabledPath!: string;
   public secondaryButtonDisabledParameters!: {};
   public onNotificationLoad: Subject<void> = new Subject<void>();
-
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('reviewProfilePopupContainerTemplate', { read: ViewContainerRef }) reviewProfilePopupContainer!: ViewContainerRef;
@@ -165,50 +157,6 @@ export class NotificationPopupComponent extends NotificationFormComponent {
       authorization: true
     }).subscribe();
   }
-
-
-
-  // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
-
-  openSecondaryButtonPrompt() {
-    this.lazyLoadingService.load(async () => {
-      const { PromptComponent } = await import('../../prompt/prompt.component');
-      const { PromptModule } = await import('../../prompt/prompt.module');
-
-      return {
-        component: PromptComponent,
-        module: PromptModule
-      }
-    }, SpinnerAction.None).then((prompt: PromptComponent) => {
-      this.secondaryButtonPrompt = prompt;
-      prompt.parentObj = this;
-      prompt.title = this.secondaryButtonPromptTitle;
-      prompt.message = this.secondaryButtonPromptMessage;
-      prompt.primaryButton = {
-        name: this.secondaryButtonPromptPrimaryButtonName,
-        buttonFunction: () => {
-          this.secondaryButtonPromptFunction();
-        }
-      }
-      prompt.secondaryButton.name = 'Cancel'
-
-      const promptCloseListener = prompt.onClose.subscribe(() => {
-        promptCloseListener.unsubscribe();
-        this.secondaryButtonPrompt = null!;
-      })
-    })
-  }
-
-
-
-  // =========================================================( SECONDARY BUTTON PROMPT FUNCTION )========================================================== \\
-
-  secondaryButtonPromptFunction() {
-    this.secondaryButtonDisabled = true;
-  }
-
-
-
 
 
 

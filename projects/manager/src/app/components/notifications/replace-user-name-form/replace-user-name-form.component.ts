@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import { UserNameNotification } from '../../../classes/notifications/user-name-notification';
 
 @Component({
-  selector: 'app-replace-user-name-form',
   templateUrl: './replace-user-name-form.component.html',
   styleUrls: ['./replace-user-name-form.component.scss']
 })

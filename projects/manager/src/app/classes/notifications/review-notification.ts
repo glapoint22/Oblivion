@@ -1,11 +1,7 @@
-import { NotificationUser } from "./notification-user";
-import { NotificationReviewWriter } from "./notification-review-writer";
-import { NotificationEmployee } from "./notification-employee";
+import { UserAccountNotification } from "./user-account-notification";
 
-export class ReviewNotification {
-    reviewId!: number;
-    reviewDeleted!: boolean;
-    users!: Array<NotificationUser>;
-    reviewWriter!: NotificationReviewWriter;
-    employeeNotes!: Array<NotificationEmployee>;
+export class ReviewNotification extends UserAccountNotification {
+    reviewId!: string;
+    title!: string;
+    text!: string;
 }
