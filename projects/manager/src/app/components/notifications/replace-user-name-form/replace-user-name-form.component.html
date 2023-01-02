@@ -2,7 +2,11 @@
      [ngClass]="{'show': show}"
      (transitionend)="onHide()">
 
-    <div id="modalBase" class="modal-base" tabindex="-1">
+    <div id="modalBase"
+         tabindex="-1"
+         class="modal-base">
+
+         <!-- Bar -->
         <div class="modal-bar">
             <div>Replace User Name</div>
             <div class="modal-x-button"
@@ -12,7 +16,6 @@
         </div>
 
         <div class="modal-content">
-
             <!-- Name -->
             <div class="notification-label">User Name:</div>
             <div class="user-name-container">

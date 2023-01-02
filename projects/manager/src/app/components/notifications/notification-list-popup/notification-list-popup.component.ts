@@ -10,7 +10,7 @@ import { NotificationListComponent } from '../../lists/notification-list/notific
 import { ErrorNotificationPopupComponent } from '../error-notification-popup/error-notification-popup.component';
 import { MessageNotificationPopupComponent } from '../message-notification-popup/message-notification-popup.component';
 import { ProductNotificationPopupComponent } from '../product-notification-popup/product-notification-popup.component';
-import { ReviewNotificationPopupComponent } from '../review-notification-popup/review-notification-popup.component';
+import { ReviewComplaintNotificationPopupComponent } from '../review-complaint-notification-popup/review-complaint-notification-popup.component';
 import { UserAccountNotificationPopupComponent } from '../user-account-notification-popup/user-account-notification-popup.component';
 
 @Component({
@@ -166,17 +166,17 @@ export class NotificationListPopupComponent extends LazyLoad {
         })
     }
 
-    // Review
+    // Review Complaint
     if (notificationItem.notificationType == NotificationType.ReviewComplaint) {
       this.lazyLoadingService.load(async () => {
-        const { ReviewNotificationPopupComponent } = await import('../review-notification-popup/review-notification-popup.component');
-        const { ReviewNotificationPopupModule } = await import('../review-notification-popup/review-notification-popup.module');
+        const { ReviewComplaintNotificationPopupComponent } = await import('../review-complaint-notification-popup/review-complaint-notification-popup.component');
+        const { ReviewComplaintNotificationPopupModule } = await import('../review-complaint-notification-popup/review-complaint-notification-popup.module');
         return {
-          component: ReviewNotificationPopupComponent,
-          module: ReviewNotificationPopupModule
+          component: ReviewComplaintNotificationPopupComponent,
+          module: ReviewComplaintNotificationPopupModule
         }
       }, SpinnerAction.None, this.notificationService.notificationPopupContainer)
-        .then((reviewNotificationPopup: ReviewNotificationPopupComponent) => {
+        .then((reviewNotificationPopup: ReviewComplaintNotificationPopupComponent) => {
           reviewNotificationPopup.notificationItem = notificationItem;
           this.notificationService.notificationPopup = reviewNotificationPopup;
         })

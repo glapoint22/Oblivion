@@ -7,7 +7,6 @@ import { PromptComponent } from '../../prompt/prompt.component';
 import { NotificationProfilePopupComponent } from '../notification-profile-popup/notification-profile-popup.component';
 
 @Component({
-  selector: 'app-notification-form',
   templateUrl: './notification-form.component.html',
   styleUrls: ['./notification-form.component.scss']
 })

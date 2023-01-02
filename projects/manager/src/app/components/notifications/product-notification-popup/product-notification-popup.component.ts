@@ -7,16 +7,18 @@ import { NotificationItem } from '../../../classes/notifications/notification-it
 import { KeyValue } from '@angular/common';
 import { ProductNotification } from '../../../classes/notifications/product-notification';
 import { DomSanitizer } from '@angular/platform-browser';
-import { LazyLoadingService, DataService, DropdownType, DropdownComponent } from 'common';
+import { LazyLoadingService, DataService, DropdownType, DropdownComponent, SpinnerAction } from 'common';
 import { NotificationService } from '../../../services/notification/notification.service';
 import { ProductService } from '../../../services/product/product.service';
 import { Subject } from 'rxjs';
+import { DisableEnableProductFormComponent } from '../disable-enable-product-form/disable-enable-product-form.component';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
   styleUrls: ['../notification-form/notification-form.component.scss', './product-notification-popup.component.scss']
 })
 export class ProductNotificationPopupComponent extends NotificationPopupComponent {
+  private formOpen!: boolean;
   public fromProduct!: boolean;
   public DropdownType = DropdownType;
   public notificationItems!: Array<NotificationItem>;
@@ -47,6 +49,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
     this.onNotificationLoad.subscribe(() => {
       if (this.notification.employeeNotes.length == 0) this.notification.employeeNotes.push(new NotificationEmployee());
+      console.log(this.notification)
     });
   }
 
@@ -174,25 +177,38 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
 
 
-  // ===========================================================( OPEN SECONDARY BUTTON PROMPT )============================================================ \\
 
-  openSecondaryButtonPrompt() {
-    this.secondaryButtonPromptPrimaryButtonName = this.notification.productDisabled ? 'Enable' : 'Disable';
-    this.secondaryButtonPromptTitle = (this.notification.productDisabled ? 'Enable' : 'Disable') + ' Product';
-    this.secondaryButtonPromptMessage = this.sanitizer.bypassSecurityTrustHtml(
-      'The product,' +
-      ' <span style="color: #ffba00">\"' + this.notificationItem.productName + '\"</span>' +
-      ' will be ' + (this.notification.productDisabled ? 'enabled' : 'disabled') + '.');
+  openDisableEnableProductForm() {
+    this.lazyLoadingService.load(async () => {
+      const { DisableEnableProductFormComponent } = await import('../disable-enable-product-form/disable-enable-product-form.component');
+      const { DisableEnableProductFormModule } = await import('../disable-enable-product-form/disable-enable-product-form.module');
+      return {
+        component: DisableEnableProductFormComponent,
+        module: DisableEnableProductFormModule
+      }
+    }, SpinnerAction.None).then((replaceUserNameForm: DisableEnableProductFormComponent) => {
+      this.formOpen = true;
+      replaceUserNameForm.notification = this.notification[this.userIndex];
+      replaceUserNameForm.callback = () => {
+        
+      }
 
-    super.openSecondaryButtonPrompt();
+      const disableEnableProductFormCloseListener = replaceUserNameForm.onClose.subscribe(() => {
+        disableEnableProductFormCloseListener.unsubscribe();
+        this.formOpen = false;
+      })
+    })
   }
+
+
+
 
 
 
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.notificationItemsDropdown?.dropdownList && !this.undoChangesPrompt && !this.secondaryButtonPrompt && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.notificationItemsDropdown?.dropdownList && !this.undoChangesPrompt && !this.formOpen && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
       if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded) && !this.secondaryButtonDisabled) {
         this.close();
       } else {
