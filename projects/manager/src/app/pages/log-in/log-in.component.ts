@@ -1,38 +1,27 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AccountService, DataService } from 'common';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
-  selector: 'app-log-in',
+  selector: 'log-in',
   templateUrl: './log-in.component.html',
   styleUrls: ['./log-in.component.scss']
 })
-export class LogInComponent implements OnInit {
+export class LogInComponent {
 
-  constructor(private dataService: DataService, private accountService: AccountService) { }
+  constructor(private dataService: DataService, private accountService: AccountService, private notificationService: NotificationService) { }
 
-  ngOnInit(): void {
-  }
 
   onSubmit(form: NgForm) {
-    if(form.valid){
+    if (form.valid) {
       this.dataService.post('api/Account/LogIn', {
         email: form.controls.email.value,
         password: form.controls.password.value,
-      })
-        .subscribe({
-          complete: () => {
-            this.accountService.logIn();
-          },
-          error: (error: HttpErrorResponse) => {
-            if (error.status == 401) {
-              // this.form.controls.email.setErrors({ noMatch: true });
-            }
-          }
-        });
+      }).subscribe(() => {
+        this.accountService.logIn();
+        this.notificationService.startNotificationTimer();
+      });
     }
-    
   }
-
 }

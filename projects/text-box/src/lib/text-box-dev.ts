@@ -250,17 +250,21 @@ export class TextBoxDev extends TextBox {
 
                 // If we have an empty text
                 if (textElement.text.length == 0) {
+                    let previousChild = textElement.previousChild;
+
                     textElement.delete();
 
                     // Insert a break element
                     if (startContainer.children.length == 0) {
                         startContainer.children.push(new BreakElement(startContainer));
                         startContainer.firstChild.parent.setSelection(this.selection);
+                    } else {
+                        // Set the selection to the end of the previous element
+                        previousChild?.setSelection(this.selection, (previousChild as TextElement).text.length);
                     }
                 } else {
                     currentElement.setSelection(this.selection, this.selection.startOffset);
                 }
-
 
                 return ElementDeleteStatus.DeletionComplete;
             }

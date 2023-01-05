@@ -651,6 +651,9 @@ export class WidgetService {
       const containerTop = container.viewContainerRef.element.nativeElement.parentElement.getBoundingClientRect().top;
 
       return maxBottom - containerTop;
+    } else if (this.selectedWidget.type == WidgetType.Text) {
+      const children: Array<Element> = Array.from(this.selectedWidget.widgetElement.children[0].children);
+      return Math.max(...children.map((x: any) => x.offsetHeight));
     }
 
     const children: Array<Element> = Array.from(this.selectedWidget.widgetElement.children).filter(x => x.id != 'ignore-element-height');

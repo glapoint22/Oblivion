@@ -1,5 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, ViewContainerRef } from '@angular/core';
-import { DataService, LazyLoad, NotificationType } from 'common';
+import { AccountService, DataService, LazyLoad, NotificationType } from 'common';
 import { Subject } from 'rxjs';
 import { NotificationItem } from '../../classes/notifications/notification-item';
 import { NotificationQueue } from '../../classes/notifications/notification-queue';
@@ -11,7 +12,7 @@ import { NotificationPopupComponent } from '../../components/notifications/notif
 export class NotificationService {
   // Private
   private _notificationCount: number = 0;
-  private getNotificationsTimer!: number;
+  private notificationsTimer!: number;
   private timeinMinutesToCheckFornewNotifications = 1;
 
   // Public
@@ -30,23 +31,43 @@ export class NotificationService {
   }
 
 
-  constructor(private dataService: DataService) {
-    this.getNewNotifications();
+  constructor(private dataService: DataService, private accountService: AccountService) {
     this.getArchivedNotifications();
+    this.startNotificationTimer();
+  }
 
-    this.getNotificationsTimer = window.setInterval(() => {
+
+
+  startNotificationTimer() {
+    // Stop the current timer, if any
+    this.stopNotificationTimer();
+    
+    this.getNewNotifications();
+
+    this.notificationsTimer = window.setInterval(() => {
       this.getNewNotifications();
     }, this.timeinMinutesToCheckFornewNotifications * 1000 * 60)
   }
 
 
+  stopNotificationTimer() {
+    clearInterval(this.notificationsTimer);
+  }
+
+
   getNewNotifications() {
+    // If we are not signed in, stop the notification timer and return
+    if (!this.accountService.user) {
+      this.stopNotificationTimer();
+      return;
+    }
+
+
     // Query the database to get a count of how many notifications are currently in the queue
     this.dataService.get<NotificationQueue>('api/Notifications/GetNewNotifications', [{ key: 'currentCount', value: this.notificationCount }], {
       authorization: true
-    })
-      .subscribe((notificationQueue: NotificationQueue) => {
-
+    }).subscribe({
+      next: (notificationQueue: NotificationQueue) => {
         // If the number of notifications in the queue are different from the number of notifications we have in our list
         if (notificationQueue != null) {
           // Update the count of the list
@@ -62,7 +83,13 @@ export class NotificationService {
           this.onNotificationCount.next(this.notificationCount);
         }
         this.refreshNotificationsInProgress = false;
-      });
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status == 401 || error.status == 403) {
+          this.stopNotificationTimer();
+        }
+      }
+    });
   }
 
 
@@ -70,7 +97,7 @@ export class NotificationService {
 
   refreshNotifications() {
     this.refreshNotificationsInProgress = true;
-    clearTimeout(this.getNotificationsTimer);
+    clearTimeout(this.notificationsTimer);
     this.getNewNotifications();
   }
 
