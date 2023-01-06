@@ -14,9 +14,8 @@ export class TextElement extends Element {
 
 
     // ---------------------------------------------------Generate Html-----------------------------------------------------
-    public generateHtml(parent: HTMLElement, isDev?: boolean): void {
-        // const text = isDev ? this.text.replace(/\s/g, '\u00A0') : this.text;
-        const text = this.text;
+    public generateHtml(parent: HTMLElement): void {
+        const text = this.text.replace(/\s\B/g, '\u00A0');
         const textNode = document.createTextNode(text);
 
         parent.appendChild(textNode);

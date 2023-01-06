@@ -58,7 +58,9 @@ export class BlockedUsersFormComponent extends LazyLoad {
 
     // DataService path will be changed to 'api/Users/BlockedUsers'
 
-    this.dataService.get<Array<BlockedUserItem>>('api/Notifications/BlockedUsers').subscribe((blockedUserItems: Array<BlockedUserItem>) => {
+    this.dataService.get<Array<BlockedUserItem>>('api/Notifications/BlockedUsers', undefined, {
+      authorization: true
+    }).subscribe((blockedUserItems: Array<BlockedUserItem>) => {
       blockedUserItems.forEach((x, index) => this.blockedUsers.push({
         id: index,
         userId: x.userId,

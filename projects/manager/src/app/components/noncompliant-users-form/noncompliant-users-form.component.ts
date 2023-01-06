@@ -23,7 +23,9 @@ export class NoncompliantUsersFormComponent extends LazyLoad {
     // DataService path will be changed to 'api/Users/NoncompliantUsers'
 
 
-    this.dataService.get<Array<NoncompliantUserItem>>('api/Notifications/NoncompliantUsers').subscribe((blockedUserItems: Array<NoncompliantUserItem>) => {
+    this.dataService.get<Array<NoncompliantUserItem>>('api/Notifications/NoncompliantUsers', undefined, {
+      authorization: true
+    }).subscribe((blockedUserItems: Array<NoncompliantUserItem>) => {
       blockedUserItems.forEach((x, index) => {
         this.nonCompliantUsers.push({
           id: index,

@@ -180,6 +180,7 @@ export class MenuBarComponent {
             name: 'Log Out',
             optionFunction: () => {
               this.accountService.logOut();
+              this.notificationService.stopNotificationTimer();
             }
           }
         ]
