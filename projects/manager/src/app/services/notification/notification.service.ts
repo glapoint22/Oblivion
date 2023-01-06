@@ -144,14 +144,18 @@ export class NotificationService {
   createNewNotificationItem(isNew: boolean, messageCount: number, notificationItem: NotificationItem): NotificationItem {
     const newNotificationItem = new NotificationItem();
     newNotificationItem.id = notificationItem.id;
+    newNotificationItem.name = notificationItem.name;
+    newNotificationItem.image = notificationItem.image;
     newNotificationItem.notificationGroupId = notificationItem.notificationGroupId;
     newNotificationItem.notificationType = notificationItem.notificationType;
+    newNotificationItem.email = notificationItem.email;
+    newNotificationItem.productId = notificationItem.productId;
     newNotificationItem.productName = notificationItem.productName;
-    newNotificationItem.image = notificationItem.image;
+    newNotificationItem.userName = notificationItem.userName;
+    newNotificationItem.userImage = notificationItem.userImage;
     newNotificationItem.isNew = isNew;
     newNotificationItem.creationDate = notificationItem.creationDate;
     newNotificationItem.count = messageCount;
-    newNotificationItem.name = notificationItem.name;
     return newNotificationItem;
   }
 
@@ -254,7 +258,6 @@ export class NotificationService {
         notificationName = "Offensive Product (Other)";
         break;
 
-
       case NotificationType.ProductInactive:
         notificationName = "Product Inactive";
         break;
@@ -263,11 +266,9 @@ export class NotificationService {
         notificationName = "Product site no longer in service";
         break;
 
-
       case NotificationType.MissingProductOther:
         notificationName = "Missing Product (Other)";
         break;
-
 
       case NotificationType.Error:
         notificationName = "Error";

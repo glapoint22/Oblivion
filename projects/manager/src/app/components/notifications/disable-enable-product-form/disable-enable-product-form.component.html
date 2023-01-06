@@ -8,7 +8,7 @@
 
          <!-- Bar -->
         <div class="modal-bar">
-            <div>Disable Product</div>
+            <div>{{!notification.productDisabled ? 'Disable' : 'Enable'}} Product</div>
             <div class="modal-x-button"
                  (click)="close()">
                 X
@@ -16,25 +16,67 @@
         </div>
 
         <div class="modal-content">
+
+            <div class="notification-top-container">
+                <div class="notification-product-container">
+                    <div class="notification-product-thumbnail-container">
+                        <img [src]="'website-images/' + notificationItem.image">
+                    </div>
+                    <div class="notification-product-name">{{notificationItem.productName}}</div>
+                </div>
+
+                <div #ellipsis>
+                    <icon-button [icon]="'fa-solid fa-ellipsis-vertical'"
+                                 (onClick)="openContextMenu(ellipsis)">
+                    </icon-button>
+                </div>
+            </div>
+
             <!-- Name -->
-            <div class="notification-label">Title:</div>
+            <div class="notification-label">Issue:</div>
             <div class="notification-info-box" style="height: 26px; margin-bottom: 13px;">
                 <div class="notification-user-comment">
-                    <!-- {{notification.title}} -->
+                    {{notificationItem.name}}
                 </div>
             </div>
-            <div class="notification-label">Review:</div>
+
+
+
+
+            <div class="notification-label">User Comment:</div>
+
+
+
+
+
             <div class="notification-info-box" style="height: 100px; margin-bottom: 13px;">
-                <div class="notification-user-comment">
-                    <!-- {{notification.text}} -->
+                <div *ngIf="notification.users.length > 1" class="notification-info-bar">
+
+                    <!-- Counter -->
+                    <div class="notification-counter-container">
+                        <counter 
+                                    [itemCount]="notification.users.length"
+                                    (onItemChange)="userIndex = $event"
+                                    [currentIndex]="userIndex">
+                        </counter>
+                    </div>
+                    
+
+                    
+                </div>
+            
+                <!-- User Comment -->
+                <div class="notification-user-comment" [style.height.px]="notification.users.length == 1 ? '98' : '64'">
+                    {{notification.users[userIndex].text}}
                 </div>
             </div>
+
 
 
             <!-- Notes -->
             <div class="notification-label">Notes:</div>
             <div class="notification-info-box">
-                <textarea #notes #tabElement (input)="onNotes(notes)"></textarea>
+                <textarea #notes #tabElement [value]="employeeNotes" (input)="onNotes(notes)"></textarea>
             </div>
         </div>
 
@@ -42,7 +84,7 @@
         <!-- Button Container -->
         <div class="modal-button-container">
             <button #tabElement class="dark-button" (click)="close()">Close</button>
-            <button #tabElement class="gold-button" (click)="onRemoveButton()">Remove</button>
+            <button #tabElement class="gold-button" (click)="onRemoveButton()">{{!notification.productDisabled ? 'Disable' : 'Enable'}}</button>
         </div>
     </div>
 </div>

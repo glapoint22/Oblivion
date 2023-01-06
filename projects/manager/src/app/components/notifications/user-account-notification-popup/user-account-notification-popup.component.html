@@ -142,7 +142,6 @@
             <div>
                 <button *ngIf="notificationItem.isNew" 
                         class="notification-button"
-                        [disabled]="secondaryButtonDisabled"
                         (click)="notificationType == NotificationType.UserName ? openReplaceUserNameForm() :
                                  notificationType == NotificationType.UserImage ? openRemoveUserImageForm() :
                                  notificationType == NotificationType.List ? openReformListForm() :

@@ -178,7 +178,7 @@
         <div class="notification-button-container">
             <div>
                 <!-- Show button only when data loads, otherwise button's length changes which looks terrible -->
-                <button *ngIf="notification" class="notification-button" (click)="openRemoveReviewComplaintForm()" [disabled]="secondaryButtonDisabled">{{!notification.reviewDeleted ? 'Remove' : 'Restore'}} Review</button>
+                <button *ngIf="notification" class="notification-button" (click)="openRemoveReviewComplaintForm()">{{!notification.reviewDeleted ? 'Remove' : 'Restore'}} Review</button>
             </div>
             
             <button [class]="notificationItem.isNew ? 'gold-button' : 'dark-button'" (click)="onClose(notification.employeeNotes)">{{notificationItem.isNew ? 'Archive' : 'Close'}}</button>

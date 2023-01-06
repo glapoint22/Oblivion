@@ -21,7 +21,6 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   public newNoteAdded!: boolean;
   public employeeIndex!: number;
   public firstNote!: string;
-  public secondaryButtonDisabled!: boolean;
   public userIndex!: number;
   public employeeTextPath = 'api/Notifications/PostNote';
   public employeeTextParameters = {};
@@ -29,8 +28,6 @@ export class NotificationPopupComponent extends NotificationFormComponent {
   public deletePromptMessage!: SafeHtml;
   public deletePrompt!: PromptComponent;
   public notification!: any;
-  public secondaryButtonDisabledPath!: string;
-  public secondaryButtonDisabledParameters!: {};
   public onNotificationLoad: Subject<void> = new Subject<void>();
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
@@ -244,12 +241,6 @@ export class NotificationPopupComponent extends NotificationFormComponent {
           notificationGroupId: this.notificationItem.notificationGroupId,
           restore: true
         }, {
-        authorization: true
-      }).subscribe();
-    }
-
-    if (this.secondaryButtonDisabled) {
-      this.dataService.put(this.secondaryButtonDisabledPath, this.secondaryButtonDisabledParameters, {
         authorization: true
       }).subscribe();
     }

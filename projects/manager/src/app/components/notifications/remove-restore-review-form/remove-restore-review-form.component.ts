@@ -7,10 +7,12 @@ import { ReviewComplaintNotification } from '../../../classes/notifications/revi
   templateUrl: './remove-restore-review-form.component.html',
   styleUrls: ['./remove-restore-review-form.component.scss']
 })
-export class RemoveRestoreReviewFormComponent extends LazyLoad  {
+export class RemoveRestoreReviewFormComponent extends LazyLoad {
   public notification!: ReviewComplaintNotification;
+  public employeeNotes!: string;
   public callback!: Function;
   public addStrike!: boolean;
+  public newNoteAdded!: boolean;
   public onClose: Subject<void> = new Subject<void>();
 
   ngOnInit() {
@@ -21,7 +23,7 @@ export class RemoveRestoreReviewFormComponent extends LazyLoad  {
 
 
   onNotes(notes: HTMLTextAreaElement) {
-    this.notification.employeeNotes[this.notification.employeeNotes.length - 1].text = notes.value;
+    this.employeeNotes = notes.value.trim();
   }
 
 
@@ -32,7 +34,8 @@ export class RemoveRestoreReviewFormComponent extends LazyLoad  {
 
   onRemoveButton() {
     this.close();
-    this.callback(this.addStrike);
+    if(this.notification.employeeNotes.length > 0 && this.employeeNotes.length > 0) this.newNoteAdded = true;
+    this.callback(this.addStrike, this.employeeNotes, this.newNoteAdded);
   }
 
 

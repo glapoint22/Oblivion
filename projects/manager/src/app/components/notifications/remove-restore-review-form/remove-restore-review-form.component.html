@@ -34,7 +34,7 @@
             <!-- Notes -->
             <div class="notification-label">Notes:</div>
             <div class="notification-info-box">
-                <textarea #notes #tabElement (input)="onNotes(notes)"></textarea>
+                <textarea #notes #tabElement [value]="employeeNotes" (input)="onNotes(notes)"></textarea>
             </div>
         </div>
 

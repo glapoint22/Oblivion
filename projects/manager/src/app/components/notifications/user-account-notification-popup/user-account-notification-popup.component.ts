@@ -179,7 +179,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
       this.formOpen = true;
       replaceUserNameForm.notification = this.notification[this.userIndex];
       replaceUserNameForm.callback = () => {
-        this.setCallback('api/Notifications/AddNoncompliantStrikeUserName', {
+        this.setCallback('api/Notifications/ReplaceUserName', {
           userId: this.notification[this.userIndex].userId,
           userName: this.notification[this.userIndex].userName
         });
@@ -208,7 +208,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
       this.formOpen = true;
       removeUserImageForm.notification = this.notification[this.userIndex];
       removeUserImageForm.callback = () => {
-        this.setCallback('api/Notifications/AddNoncompliantStrikeUserImage', {
+        this.setCallback('api/Notifications/RemoveUserImage', {
           userId: this.notification[this.userIndex].userId,
           userImage: this.notification[this.userIndex].userImage
         });
@@ -237,7 +237,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
       this.formOpen = true;
       reformListForm.notification = this.notification[this.userIndex];
       reformListForm.callback = (reformListOption: number) => {
-        this.setCallback('api/Notifications/AddNoncompliantStrikeList', {
+        this.setCallback('api/Notifications/ReformList', {
           listId: this.notification[this.userIndex].listId,
           option: reformListOption,
           userId: this.notification[this.userIndex].userId
@@ -267,7 +267,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
       this.formOpen = true;
       RemoveReviewForm.notification = this.notification[this.userIndex];
       RemoveReviewForm.callback = () => {
-        this.setCallback('api/Notifications/AddNoncompliantStrikeReview', {
+        this.setCallback('api/Notifications/RemoveReview', {
           userId: this.notification[this.userIndex].userId,
           reviewId: this.notification[this.userIndex].reviewId,
           addStrike: true

@@ -75,23 +75,29 @@ export class ReviewComplaintNotificationPopupComponent extends NotificationPopup
         component: RemoveRestoreReviewFormComponent,
         module: RemoveRestoreReviewFormModule
       }
-    }, SpinnerAction.None).then((RemoveReviewComplaintForm: RemoveRestoreReviewFormComponent) => {
+    }, SpinnerAction.None).then((RemoveRestoreReviewForm: RemoveRestoreReviewFormComponent) => {
       this.formOpen = true;
-      RemoveReviewComplaintForm.notification = this.notification;
-      RemoveReviewComplaintForm.callback = (addStrike: boolean) => {
+      RemoveRestoreReviewForm.notification = this.notification;
+      RemoveRestoreReviewForm.newNoteAdded = this.newNoteAdded;
+      RemoveRestoreReviewForm.employeeNotes = this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded) ? this.notification.employeeNotes[this.notification.employeeNotes.length - 1].text : '';
 
-        // Save the notes (if any)
-        if (this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded)) {
-          this.saveEmployeeText();
+      // Callback
+      RemoveRestoreReviewForm.callback = (addStrike: boolean, employeeNotes: string, newNoteAdded: boolean) => {
+        // If the notification resides in the new list
+        if (this.notificationItem.isNew) {
+          // Update the count for the notification bell
+          this.notificationService.notificationCount -= 1;
+          // Remove the notification from the new list
+          this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
+
+          // If the notification resides in the archive list
+        } else {
+
+          // Just close this popup
+          this.close();
         }
 
-        // Update the count for the notification bell
-        this.notificationService.notificationCount -= 1;
-
-
-        this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
-
-        // Add the noncompliant strike
+        // Remove/restore the review
         this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeReview', {
           userId: this.notification.reviewWriter.userId,
           reviewId: this.notification.reviewId,
@@ -99,7 +105,10 @@ export class ReviewComplaintNotificationPopupComponent extends NotificationPopup
         }, {
           authorization: true
         }).subscribe((removalSuccessful: boolean) => {
+
+          // If the remove/restore was successful
           if (removalSuccessful) {
+
             // Archive the notification
             this.dataService.put('api/Notifications/Archive', {
               notificationGroupId: this.notificationItem.notificationGroupId,
@@ -107,17 +116,28 @@ export class ReviewComplaintNotificationPopupComponent extends NotificationPopup
             }, {
               authorization: true
             }).subscribe();
-            this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+
+            // If the notification resides in the new list
+            if (this.notificationItem.isNew) {
+              // Add the notification to the archive list
+              this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
+            }
           }
         });
 
+        // Wait one second to allow this popup to close before the notes from the (Remove/Restore Review) form get assigned.
+        // This prevents the notes from being seen appearing into the notes section as popup closes
+        window.setTimeout(() => {
+          this.notification.employeeNotes[this.notification.employeeNotes.length - 1].text = employeeNotes;
 
-
-
-
+          // Save the notes (if any)
+          if (this.isEmployeeNotesWritten(this.notification.employeeNotes, newNoteAdded)) {
+            this.saveEmployeeText();
+          }
+        }, 1000)
       }
 
-      const RemoveReviewComplaintFormCloseListener = RemoveReviewComplaintForm.onClose.subscribe(() => {
+      const RemoveReviewComplaintFormCloseListener = RemoveRestoreReviewForm.onClose.subscribe(() => {
         RemoveReviewComplaintFormCloseListener.unsubscribe();
         this.formOpen = false;
       })
@@ -130,7 +150,7 @@ export class ReviewComplaintNotificationPopupComponent extends NotificationPopup
 
   onEscape(): void {
     if (!this.contextMenu && this.profilePopupContainer.length == 0 && this.reviewProfilePopupContainer.length == 0 && !this.undoChangesPrompt && !this.formOpen && !this.deletePrompt) {
-      if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded) && !this.secondaryButtonDisabled) {
+      if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded)) {
         this.close();
       } else {
         this.openUndoChangesPrompt();
@@ -143,8 +163,6 @@ export class ReviewComplaintNotificationPopupComponent extends NotificationPopup
   // =====================================================================( ON CLOSE )====================================================================== \\
 
   onClose(employees: Array<NotificationEmployee>, restore?: boolean): void {
-    this.secondaryButtonDisabledPath = 'api/Notifications/RemoveReview';
-    this.secondaryButtonDisabledParameters = { reviewId: this.notification.reviewId }
     super.onClose(employees, restore);
   }
 }

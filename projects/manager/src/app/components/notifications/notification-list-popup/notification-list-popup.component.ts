@@ -251,13 +251,31 @@ export class NotificationListPopupComponent extends LazyLoad {
     this.notificationService.notificationCount += this.notificationItem.count;
 
 
-    // Update database
-    this.dataService.put('api/Notifications/Archive',
+
+    if(this.notificationItem.notificationType == NotificationType.Message) {
+      this.dataService.put('api/Notifications/RestoreAll',
       {
-        restore: true,
-        notificationGroupId: this.notificationItem.notificationGroupId,
-        restoreAllMessagesInGroup: this.notificationItem.notificationType == NotificationType.Message ? true : false
+        notificationGroupId: this.notificationItem.notificationGroupId
       }).subscribe();
+      
+    }else {
+
+      this.dataService.put('api/Notifications/Restore',
+      {
+        notificationGroupId: this.notificationItem.notificationGroupId,
+        NotificationId: this.notificationItem.id
+      }).subscribe();
+    }
+
+
+
+    // // Update database
+    // this.dataService.put('api/Notifications/Archive',
+    //   {
+    //     restore: true,
+    //     notificationGroupId: this.notificationItem.notificationGroupId,
+    //     restoreAllMessagesInGroup: this.notificationItem.notificationType == NotificationType.Message ? true : false
+    //   }).subscribe();
   }
 
 
