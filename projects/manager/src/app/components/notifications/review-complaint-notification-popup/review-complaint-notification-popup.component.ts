@@ -83,10 +83,11 @@ export class ReviewComplaintNotificationPopupComponent extends NotificationPopup
 
       // Callback
       RemoveRestoreReviewForm.callback = (addStrike: boolean, employeeNotes: string, newNoteAdded: boolean) => {
+
         // If the notification resides in the new list
         if (this.notificationItem.isNew) {
           // Update the count for the notification bell
-          this.notificationService.notificationCount -= 1;
+          this.notificationService.notificationCount -= this.notification.users.length;
           // Remove the notification from the new list
           this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
 
@@ -98,32 +99,23 @@ export class ReviewComplaintNotificationPopupComponent extends NotificationPopup
         }
 
         // Remove/restore the review
-        this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrikeReview', {
+        this.dataService.put<boolean>('api/Notifications/RemoveRestoreReview', {
           userId: this.notification.reviewWriter.userId,
           reviewId: this.notification.reviewId,
-          addStrike: addStrike
+          addStrike: addStrike,
+          IsNew: this.notificationItem.isNew,
+          NotificationGroupId: this.notificationItem.notificationGroupId
         }, {
           authorization: true
-        }).subscribe((removalSuccessful: boolean) => {
+        }).subscribe();
 
-          // If the remove/restore was successful
-          if (removalSuccessful) {
 
-            // Archive the notification
-            this.dataService.put('api/Notifications/Archive', {
-              notificationGroupId: this.notificationItem.notificationGroupId,
-              notificationId: this.notificationItem.id
-            }, {
-              authorization: true
-            }).subscribe();
+        // If the notification resides in the new list
+        if (this.notificationItem.isNew) {
+          // Add the notification to the archive list
+          this.notificationService.addToList(this.notificationService.archiveNotifications, this.notification.users.length, this.notificationItem);
+        }
 
-            // If the notification resides in the new list
-            if (this.notificationItem.isNew) {
-              // Add the notification to the archive list
-              this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
-            }
-          }
-        });
 
         // Wait one second to allow this popup to close before the notes from the (Remove/Restore Review) form get assigned.
         // This prevents the notes from being seen appearing into the notes section as popup closes

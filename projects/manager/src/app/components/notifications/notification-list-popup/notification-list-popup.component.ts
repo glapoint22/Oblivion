@@ -88,7 +88,9 @@ export class NotificationListPopupComponent extends LazyLoad {
 
           // If the notification is either a User Name notification or a User Image notification
           if ((listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.UserName ||
-            (listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.UserImage) {
+            (listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.UserImage ||
+            (listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.List ||
+            (listUpdate.selectedItems![0] as NotificationItem).notificationType == NotificationType.Review) {
 
             // Don't allow the context menu to be shown
             listUpdate.selectedItems![0].selectable = false;
@@ -252,30 +254,23 @@ export class NotificationListPopupComponent extends LazyLoad {
 
 
 
-    if(this.notificationItem.notificationType == NotificationType.Message) {
-      this.dataService.put('api/Notifications/RestoreAll',
-      {
-        notificationGroupId: this.notificationItem.notificationGroupId
+    if (this.notificationItem.notificationType == NotificationType.Message) {
+      this.dataService.put('api/Notifications/RestoreAllNotifications',
+        {
+          notificationGroupId: this.notificationItem.notificationGroupId
+        }, {
+        authorization: true
       }).subscribe();
-      
-    }else {
 
-      this.dataService.put('api/Notifications/Restore',
-      {
-        notificationGroupId: this.notificationItem.notificationGroupId,
-        NotificationId: this.notificationItem.id
+    } else {
+
+      this.dataService.put('api/Notifications/RestoreGroup',
+        {
+          notificationGroupId: this.notificationItem.notificationGroupId
+        }, {
+        authorization: true
       }).subscribe();
     }
-
-
-
-    // // Update database
-    // this.dataService.put('api/Notifications/Archive',
-    //   {
-    //     restore: true,
-    //     notificationGroupId: this.notificationItem.notificationGroupId,
-    //     restoreAllMessagesInGroup: this.notificationItem.notificationType == NotificationType.Message ? true : false
-    //   }).subscribe();
   }
 
 

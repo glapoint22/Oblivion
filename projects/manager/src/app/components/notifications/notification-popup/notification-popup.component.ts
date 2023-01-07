@@ -221,7 +221,7 @@ export class NotificationPopupComponent extends NotificationFormComponent {
       this.notificationService.notificationCount -= this.notificationItem.count;
 
       // Update database
-      this.dataService.put('api/Notifications/Archive',
+      this.dataService.put('api/Notifications/ArchiveGroup',
         {
           notificationGroupId: this.notificationItem.notificationGroupId
         }, {
@@ -236,10 +236,9 @@ export class NotificationPopupComponent extends NotificationFormComponent {
       this.notificationService.newNotifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
 
       // Update database
-      this.dataService.put('api/Notifications/Archive',
+      this.dataService.put('api/Notifications/RestoreGroup',
         {
-          notificationGroupId: this.notificationItem.notificationGroupId,
-          restore: true
+          notificationGroupId: this.notificationItem.notificationGroupId
         }, {
         authorization: true
       }).subscribe();

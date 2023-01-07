@@ -181,7 +181,9 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
       replaceUserNameForm.callback = () => {
         this.setCallback('api/Notifications/ReplaceUserName', {
           userId: this.notification[this.userIndex].userId,
-          userName: this.notification[this.userIndex].userName
+          userName: this.notification[this.userIndex].userName,
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          notificationId: this.notification[this.userIndex].notificationId
         });
       }
 
@@ -210,7 +212,9 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
       removeUserImageForm.callback = () => {
         this.setCallback('api/Notifications/RemoveUserImage', {
           userId: this.notification[this.userIndex].userId,
-          userImage: this.notification[this.userIndex].userImage
+          userImage: this.notification[this.userIndex].userImage,
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          notificationId: this.notification[this.userIndex].notificationId
         });
       }
 
@@ -240,7 +244,9 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
         this.setCallback('api/Notifications/ReformList', {
           listId: this.notification[this.userIndex].listId,
           option: reformListOption,
-          userId: this.notification[this.userIndex].userId
+          userId: this.notification[this.userIndex].userId,
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          notificationId: this.notification[this.userIndex].notificationId
         });
       }
 
@@ -270,7 +276,8 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
         this.setCallback('api/Notifications/RemoveReview', {
           userId: this.notification[this.userIndex].userId,
           reviewId: this.notification[this.userIndex].reviewId,
-          addStrike: true
+          notificationGroupId: this.notificationItem.notificationGroupId,
+          notificationId: this.notification[this.userIndex].notificationId
         });
       }
 
@@ -297,19 +304,10 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
 
     this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
 
-    // Add the noncompliant strike
     this.dataService.put<boolean>(dataServicePath, dataServiceParameters, {
       authorization: true
     }).subscribe((removalSuccessful: boolean) => {
       if (removalSuccessful) {
-        // Archive the notification
-        this.dataService.put('api/Notifications/Archive', {
-          notificationGroupId: this.notificationItem.notificationGroupId,
-          notificationId: this.notification[this.userIndex].notificationId
-        }, {
-          authorization: true
-        }).subscribe();
-        
         this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
       }
     });

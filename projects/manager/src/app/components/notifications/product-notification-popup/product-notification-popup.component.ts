@@ -197,7 +197,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
         // If the notification resides in the new list
         if (this.notificationItem.isNew) {
           // Update the count for the notification bell
-          this.notificationService.notificationCount -= 1;
+          this.notificationService.notificationCount -= this.notification.users.length;
           // Remove the notification from the new list
           this.notificationService.removeNotification(this.notificationService.newNotifications, this.notificationItem, this);
 
@@ -208,29 +208,24 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
           this.close();
         }
 
-
-        this.dataService.put('api/Notifications/DisableEnableProduct', { productId: this.notificationItem.productId }, {
+        // Disable/Enable the product
+        this.dataService.put('api/Notifications/DisableEnableProduct', {
+          productId: this.notificationItem.productId,
+          isNew: this.notificationItem.isNew,
+          notificationGroupId: this.notificationItem.notificationGroupId
+        }, {
           authorization: true
-        }).subscribe(() => {
+        }).subscribe();
 
 
-          // Archive the notification
-          this.dataService.put('api/Notifications/Archive', {
-            notificationGroupId: this.notificationItem.notificationGroupId,
-            notificationId: this.notificationItem.id
-          }, {
-            authorization: true
-          }).subscribe();
-
-          // If the notification resides in the new list
-          if (this.notificationItem.isNew) {
-            // Add the notification to the archive list
-            this.notificationService.addToList(this.notificationService.archiveNotifications, 1, this.notificationItem);
-          }
-        });
+        // If the notification resides in the new list
+        if (this.notificationItem.isNew) {
+          // Add the notification to the archive list
+          this.notificationService.addToList(this.notificationService.archiveNotifications, this.notification.users.length, this.notificationItem);
+        }
 
 
-        // Wait one second to allow this popup to close before the notes from the (Disable/Enable Product) form get assigned.
+        // Wait one second to allow this popup to close before the notes from the (Disable/Enable Product) get assigned.
         // This prevents the notes from being seen appearing into the notes section as popup closes
         window.setTimeout(() => {
           this.notification.employeeNotes[this.notification.employeeNotes.length - 1].text = employeeNotes;

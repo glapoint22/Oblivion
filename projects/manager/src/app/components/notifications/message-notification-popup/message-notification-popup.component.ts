@@ -51,20 +51,18 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
           this.notificationItem.isNew ?
 
             // Archive All
-            this.transfer(this.notificationService.newNotifications, null!, this.notificationService.archiveNotifications, this.notificationItem.count,
+            this.transfer(this.notificationService.newNotifications, null!, this.notificationService.archiveNotifications, this.notificationItem.count, 'api/Notifications/ArchiveAllNotifications',
               {
-                archiveAllMessagesInGroup: true,
                 notificationGroupId: this.notificationItem.notificationGroupId
               })
 
             :
 
             // Restore
-            this.transfer(this.notificationService.archiveNotifications, this.notificationItem.count, this.notificationService.newNotifications, 1,
+            this.transfer(this.notificationService.archiveNotifications, this.notificationItem.count, this.notificationService.newNotifications, 1, 'api/Notifications/RestoreNotification',
               {
-                restore: true,
-                notificationId: this.notification[this.userIndex].notificationId,
-                notificationGroupId: this.notificationItem.notificationGroupId
+                notificationGroupId: this.notificationItem.notificationGroupId,
+                notificationId: this.notification[this.userIndex].notificationId
               })
         }
       },
@@ -83,10 +81,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
         optionFunction: () => {
 
           // Restore All
-          this.transfer(this.notificationService.archiveNotifications, null!, this.notificationService.newNotifications, this.notificationItem.count,
+          this.transfer(this.notificationService.archiveNotifications, null!, this.notificationService.newNotifications, this.notificationItem.count, 'api/Notifications/RestoreAllNotifications',
             {
-              restore: true,
-              restoreAllMessagesInGroup: true,
               notificationGroupId: this.notificationItem.notificationGroupId
             })
         }
@@ -171,10 +167,11 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   // ======================================================================( ARCHIVE )====================================================================== \\
 
   archive() {
-    this.transfer(this.notificationService.newNotifications, this.notificationItem.count, this.notificationService.archiveNotifications, 1, {
-      notificationId: this.notification[this.userIndex].notificationId,
-      notificationGroupId: this.notificationItem.notificationGroupId
-    });
+    this.transfer(this.notificationService.newNotifications, this.notificationItem.count, this.notificationService.archiveNotifications, 1, 'api/Notifications/ArchiveNotification',
+      {
+        notificationGroupId: this.notificationItem.notificationGroupId,
+        notificationId: this.notification[this.userIndex].notificationId
+      });
   }
 
 
@@ -215,14 +212,14 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   // ======================================================================( TRANSFER )===================================================================== \\
 
-  transfer(originList: Array<NotificationItem>, originMessageCount: number, destinationList: Array<NotificationItem>, destinationMessageCount: number, dataServiceParameters: {}) {
+  transfer(originList: Array<NotificationItem>, originMessageCount: number, destinationList: Array<NotificationItem>, destinationMessageCount: number, dataServicePath: string, dataServiceParameters: {}) {
     this.removeFromList(originList, originMessageCount);
     this.notificationService.addToList(destinationList, destinationMessageCount, this.notificationItem);
 
     // Update the count for the notification bell
     this.notificationService.notificationCount += (destinationList == this.notificationService.archiveNotifications ? -destinationMessageCount : destinationMessageCount);
     // Update database
-    this.dataService.put('api/Notifications/Archive', dataServiceParameters, {
+    this.dataService.put(dataServicePath, dataServiceParameters, {
       authorization: true
     }).subscribe();
   }
