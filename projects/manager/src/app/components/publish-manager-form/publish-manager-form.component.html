@@ -1,0 +1,35 @@
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div class="modal-base">
+        <div class="modal-bar">
+            <div>Publish Manager</div>
+            <div class="modal-x-button"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+
+        <div class="modal-content">
+            <div class="header">
+                <div style="margin-right: 213px;">Item</div>
+                <div style="margin-right: 18px;">Status</div>
+                <div>User</div>
+            </div>
+            <div class="modal-list-container">
+                <publish-list [sourceList]="publishItems"
+                              (onListUpdate)="onListUpdate($event)">
+                </publish-list>
+            </div>
+        </div>
+
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button class="dark-button"
+                    (click)="close()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>

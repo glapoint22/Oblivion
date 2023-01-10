@@ -1,0 +1,25 @@
+.modal-base {
+    width: 350px;
+}
+
+
+.header {
+    display: flex;
+    height: 25px;
+    background: #2d2d2d;
+    border: 1px solid #363636;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    align-items: center;
+    // justify-content: space-between;
+    padding: 0 6px;
+    color: #7a7a7a;
+    font-size: 12px;
+}
+
+.modal-list-container {
+    height: 274px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}

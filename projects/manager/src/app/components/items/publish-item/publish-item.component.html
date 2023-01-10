@@ -1,0 +1,52 @@
+<div class="item-container">
+
+    <div #htmlItem
+         class="item"
+         tabindex="-1"
+         [style.color]="item.color"
+         (contextmenu)="$event.preventDefault()"
+         (mousedown)="listManager.onItemDown(item, $event)"
+         (dblclick)="listManager.onItemDoubleClick(item)"
+         [contentEditable]="item == listManager.editedItem"
+         [ngStyle]="{'cursor': listManager.cursor ? listManager.cursor : 'auto'}"
+         [ngClass]="{'selected-item': listManager.showSelection ? item == listManager.selectedItem : null,
+                'unselected-item': listManager.showSelection ? item == listManager.unselectedItem : null,
+                'edited-item': listManager.showSelection ? item == listManager.editedItem : null,
+                'transparent-item': listManager.showSelection ? listManager.editedItem != null && listManager.editedItem != item : null,
+                'selected-item-top': listManager.showSelection ? item.selectType == listManager.SelectType.Top : null,
+                'selected-item-all': listManager.showSelection ? item.selectType == listManager.SelectType.All : null,
+                'selected-item-middle': listManager.showSelection ? item.selectType == listManager.SelectType.Middle : null,
+                'selected-item-bottom': listManager.showSelection ? item.selectType == listManager.SelectType.Bottom : null,
+                'no-hover': listManager.contextMenuOpen}">
+
+
+        
+        <div class="image-name-container" [title]="item.name">
+            <!-- Image -->
+            <div class="image-container">
+                <div class="image-border">
+                    <img [src]="item.publishType == PublishType.Product ? 'website-images/' + item.image :
+                                item.publishType == PublishType.Page ? 'assets/page-builder.png' :
+                                'assets/email-builder.png'">
+                </div>
+            </div>
+        
+
+            <!-- Name -->
+            <div class="name">{{item.name}}</div>
+        </div>
+
+        <!-- Status -->
+        <div class="status"
+             [ngStyle]="{'color': item.status == PublishStatus.New ? '#5f9f76' : '#aa926f'}"
+             [title]="item.status == PublishStatus.New ? 'New' : 'Modified'">
+            {{item.status == PublishStatus.New ? 'N' : 'M'}}
+        </div>
+
+
+        <!-- User Image -->
+        <div class="user-image-container" [title]="item.userName">
+            <img [src]="item.userImage ? 'images/' + item.userImage : 'assets/no-account-pic.png'">
+        </div>
+    </div>
+</div>

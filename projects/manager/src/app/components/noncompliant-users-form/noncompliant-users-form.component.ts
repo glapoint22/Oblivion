@@ -15,14 +15,9 @@ export class NoncompliantUsersFormComponent extends LazyLoad {
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     // Get all the noncompliant users
-
-
-    // *** WARNING ***
-
-    // DataService path will be changed to 'api/Users/NoncompliantUsers'
-
-
     this.dataService.get<Array<NoncompliantUserItem>>('api/Notifications/NoncompliantUsers', undefined, {
       authorization: true
     }).subscribe((blockedUserItems: Array<NoncompliantUserItem>) => {

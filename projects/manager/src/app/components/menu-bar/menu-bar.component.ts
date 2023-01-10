@@ -130,6 +130,15 @@ export class MenuBarComponent {
             name: 'Noncompliant Users',
             shortcut: 'Alt+N',
             optionFunction: this.openNoncompliantUserForm
+          },
+          {
+            type: MenuOptionType.Divider
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Publish Manager',
+            shortcut: 'Alt+P',
+            optionFunction: this.openPublishManagerForm
           }
         ]
       },
@@ -374,6 +383,19 @@ export class MenuBarComponent {
       return {
         component: NoncompliantUsersFormComponent,
         module: NoncompliantUsersFormModule
+      }
+    }, SpinnerAction.None)
+  }
+
+
+
+  openPublishManagerForm() {
+    this.lazyLoadingService.load(async () => {
+      const { PublishManagerFormComponent } = await import('../publish-manager-form/publish-manager-form.component');
+      const { PublishManagerFormModule } = await import('../publish-manager-form/publish-manager-form.module');
+      return {
+        component: PublishManagerFormComponent,
+        module: PublishManagerFormModule
       }
     }, SpinnerAction.None)
   }

@@ -205,3 +205,9 @@ export enum ReformListOption {
     RemoveDescription,
     ReplaceNameandRemoveDescription
 }
+
+
+export enum PublishStatus {
+    New,
+    Modified
+}
