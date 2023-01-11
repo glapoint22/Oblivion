@@ -1,0 +1,31 @@
+<div class="hide modal-backdrop"
+     [ngClass]="{'show': show}"
+     (transitionend)="onHide()">
+
+    <div class="modal-base">
+        <div class="modal-bar">
+            <div>Disabled Products</div>
+            <div class="modal-x-button"
+                 (click)="close()">
+                X
+            </div>
+        </div>
+
+        <div class="modal-content">
+            <div class="modal-list-container">
+                <image-list #listComponent
+                      [sourceList]="disabledProducts"
+                      >
+                </image-list>
+            </div>
+        </div>
+
+        <!-- Button Container -->
+        <div class="modal-button-container">
+            <button class="dark-button"
+                    (click)="close()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>

@@ -136,6 +136,15 @@ export class MenuBarComponent {
           },
           {
             type: MenuOptionType.MenuItem,
+            name: 'Disabled Products',
+            shortcut: 'Ctrl+Alt+D',
+            optionFunction: this.openDisabledProductsForm
+          },
+          {
+            type: MenuOptionType.Divider
+          },
+          {
+            type: MenuOptionType.MenuItem,
             name: 'Publish Manager',
             shortcut: 'Alt+P',
             optionFunction: this.openPublishManagerForm
@@ -383,6 +392,19 @@ export class MenuBarComponent {
       return {
         component: NoncompliantUsersFormComponent,
         module: NoncompliantUsersFormModule
+      }
+    }, SpinnerAction.None)
+  }
+
+
+
+  openDisabledProductsForm() {
+    this.lazyLoadingService.load(async () => {
+      const { DisabledProductsFormComponent } = await import('../disabled-products-form/disabled-products-form.component');
+      const { DisabledProductsFormModule } = await import('../disabled-products-form/disabled-products-form.module');
+      return {
+        component: DisabledProductsFormComponent,
+        module: DisabledProductsFormModule
       }
     }, SpinnerAction.None)
   }
