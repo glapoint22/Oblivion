@@ -16,13 +16,17 @@ export class PublishManagerFormComponent extends LazyLoad {
     super(lazyLoadingService);
   }
 
-  onOpen() {
+
+  ngOnInit(): void {
+    super.ngOnInit();
+
     this.dataService.get<Array<PublishItem>>('api/PublishItems/GetPublishItems').subscribe((publishItems: Array<PublishItem>) => {
       publishItems.forEach(x => {
         this.publishItems.push(x);
       })
     });
   }
+
 
 
   onListUpdate(listUpdate: ListUpdate) {

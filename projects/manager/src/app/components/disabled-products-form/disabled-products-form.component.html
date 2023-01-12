@@ -14,8 +14,9 @@
         <div class="modal-content">
             <div class="modal-list-container">
                 <image-list #listComponent
-                      [sourceList]="disabledProducts"
-                      >
+                            [sourceList]="disabledProducts"
+                            [options]="listOptions"
+                            (onListUpdate)="onListUpdate($event)">
                 </image-list>
             </div>
         </div>
