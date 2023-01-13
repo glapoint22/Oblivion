@@ -74,7 +74,7 @@ export class NotificationProfilePopupComponent extends LazyLoad {
     })
   }
 
-
+  // 'api/Users/BlockedUsers'
 
   oncheckboxClick() {
     this.promptTitle = (!this.user.blockNotificationSending ? 'Block' : 'Unblock') + ' Notification Sending';
@@ -91,17 +91,21 @@ export class NotificationProfilePopupComponent extends LazyLoad {
         // And that user's email is NOT currently blocked
         if (!this.user.blockNotificationSending) {
           // Block user's email
-          this.dataService.post('api/Notifications/BlockNonAccountEmail', {
+          this.dataService.post('api/Notifications/BlockNonAccountUser', {
             email: this.user.email,
             userName: this.user.nonAccountName
+          }, {
+            authorization: true
           }).subscribe();
 
           // But if the user's email IS blocked
         } else {
 
           // Unblock users email
-          this.dataService.delete('api/Notifications/UnblockNonAccountEmail', {
-            blockedEmail: this.user.email
+          this.dataService.delete('api/Notifications/UnblockNonAccountUser', {
+            blockedUserEmail: this.user.email
+          }, {
+            authorization: true
           }).subscribe();
         }
 
@@ -110,8 +114,10 @@ export class NotificationProfilePopupComponent extends LazyLoad {
       } else {
 
         // Block user from sending notifications
-        this.dataService.put('api/Notifications/BlockNotificationSending', {
+        this.dataService.put('api/Notifications/BlockUnblockUser', {
           userId: this.user.userId
+        }, {
+          authorization: true
         }).subscribe();
       }
 

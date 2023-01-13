@@ -552,7 +552,7 @@ export class ListManager {
   // =====================================================================( SET DELETE )==================================================================== \\
 
   setDelete() {
-    if (!this.editedItem) {
+    if (!this.editedItem && this.deletable) {
       // If a delete prompt is being used with this list
       if (this.options && this.options.deletePrompt) {
         // If the delete prompt has NOT been opened yet
@@ -585,7 +585,7 @@ export class ListManager {
 
   delete() {
     // If an item is selected
-    if (this.sourceList.filter(x => x.selected).length > 0 && this.deletable) {
+    if (this.sourceList.filter(x => x.selected).length > 0) {
       // Gather all the selected items
       let selectedItems: Array<ListItem> = this.sourceList.filter(x => x.selected);
       // Get all the items that are going to be deleted

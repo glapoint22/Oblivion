@@ -16,7 +16,10 @@ export class PublishManagerFormComponent extends LazyLoad {
     super(lazyLoadingService);
   }
 
-  onOpen() {
+
+  ngOnInit(): void {
+    super.ngOnInit();
+
     this.dataService.get<Array<PublishItem>>('api/Publish', [], {
       authorization: true
     }).subscribe((publishItems: Array<PublishItem>) => {
@@ -25,6 +28,7 @@ export class PublishManagerFormComponent extends LazyLoad {
       })
     });
   }
+
 
 
   onListUpdate(listUpdate: ListUpdate) {
