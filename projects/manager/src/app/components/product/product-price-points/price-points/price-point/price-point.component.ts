@@ -129,7 +129,7 @@ export class PricePointComponent {
         unit: pricePoint.unit && pricePoint.unit.length > 0 ? pricePoint.unit : null,
         strikethroughPrice: pricePoint.strikethroughPrice && pricePoint.strikethroughPrice.length > 0 ? pricePoint.strikethroughPrice : null,
         shippingType: pricePoint.shippingType,
-        price: pricePoint.price && pricePoint.price.length > 0 ? parseFloat(pricePoint.price) : 0,
+        price: pricePoint.price,
         recurringPayment: pricePoint.recurringPayment
       }
     }, {

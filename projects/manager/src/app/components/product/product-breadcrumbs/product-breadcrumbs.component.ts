@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { DataService } from 'common';
 import { Product } from '../../../classes/product';
 
 @Component({
@@ -8,4 +9,14 @@ import { Product } from '../../../classes/product';
 })
 export class ProductBreadcrumbsComponent {
   @Input() product!: Product;
+
+  constructor(private dataService: DataService) { }
+
+  public onPublishClick(): void {
+    this.dataService.post('api/Publish/PublishProduct', {
+      productId: this.product.id
+    }, {
+      authorization: true
+    }).subscribe();
+  }
 }

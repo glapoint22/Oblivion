@@ -17,7 +17,9 @@ export class PublishManagerFormComponent extends LazyLoad {
   }
 
   onOpen() {
-    this.dataService.get<Array<PublishItem>>('api/PublishItems/GetPublishItems').subscribe((publishItems: Array<PublishItem>) => {
+    this.dataService.get<Array<PublishItem>>('api/Publish', [], {
+      authorization: true
+    }).subscribe((publishItems: Array<PublishItem>) => {
       publishItems.forEach(x => {
         this.publishItems.push(x);
       })

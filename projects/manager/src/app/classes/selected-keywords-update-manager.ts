@@ -428,7 +428,15 @@ export class SelectedKeywordsUpdateManager extends FormKeywordsUpdateManager {
 
             // If we're deleting a custom keyword
         } else if (hierarchyUpdate.deletedItems![0].hierarchyGroupID == 1) {
-            this.dataService.delete('api/' + this.childDataServicePath, this.getDeletedItemParameters(hierarchyUpdate.deletedItems![0]), {
+            const parentIndex = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.deletedItems![0].index!], this.thisArray);
+            const keywordGroupId = this.thisArray[parentIndex].id;
+
+
+            this.dataService.delete('api/' + this.childDataServicePath, {
+                keywordId: hierarchyUpdate.deletedItems![0].id,
+                keywordGroupId: keywordGroupId,
+                productId: this.productId
+            }, {
                 authorization: true
             }).subscribe();
         }
