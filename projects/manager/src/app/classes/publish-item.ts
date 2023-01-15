@@ -9,4 +9,5 @@ export class PublishItem extends ImageItem {
     status!: PublishStatus;
     userName!: string;
     userImage!: string;
+    publishSuccessful!: boolean;
 }

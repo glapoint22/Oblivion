@@ -1,1 +1,1 @@
-<publish-item *ngFor="let publishItem of sourceList" [item]="publishItem" [listManager]="listManager"></publish-item>
+<publish-item *ngFor="let publishItem of sourceList" [item]="publishItem" [listManager]="listManager" (onPublish)="onPublish.emit($event)"></publish-item>

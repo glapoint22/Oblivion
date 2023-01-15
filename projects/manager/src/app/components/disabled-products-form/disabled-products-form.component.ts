@@ -30,6 +30,7 @@ export class DisabledProductsFormComponent extends LazyLoad {
     this.listOptions = {
       multiselectable: false,
       deletable: false,
+      editable: false,
       menu: {
         parentObj: this,
         menuOptions: [

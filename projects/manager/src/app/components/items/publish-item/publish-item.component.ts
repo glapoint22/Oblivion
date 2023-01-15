@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BuilderType, PublishStatus } from '../../../classes/enums';
 import { PublishItem } from '../../../classes/publish-item';
 import { ListItemComponent } from '../list-item/list-item.component';
@@ -9,7 +9,8 @@ import { ListItemComponent } from '../list-item/list-item.component';
   styleUrls: ['../list-item/list-item.component.scss', './publish-item.component.scss']
 })
 export class PublishItemComponent extends ListItemComponent {
-  @Input() item!: PublishItem;
   public PublishType = BuilderType;
   public PublishStatus = PublishStatus;
+  @Input() item!: PublishItem;
+  @Output() onPublish: EventEmitter<PublishItem> = new EventEmitter();
 }

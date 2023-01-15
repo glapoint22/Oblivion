@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PublishItem } from '../../../classes/publish-item';
 import { ListComponent } from '../list/list.component';
 
@@ -9,6 +9,5 @@ import { ListComponent } from '../list/list.component';
 })
 export class PublishListComponent extends ListComponent {
   @Input() sourceList!: Array<PublishItem>;
-
-
+  @Output() onPublish: EventEmitter<PublishItem> = new EventEmitter();
 }

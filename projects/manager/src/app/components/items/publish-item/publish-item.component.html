@@ -25,15 +25,15 @@
             <!-- Image -->
             <div class="image-container">
                 <div class="image-border">
-                    <img [src]="item.publishType == PublishType.Product ? 'images/' + item.image :
+                    <img *ngIf="item.publishType == PublishType.Product && item.image || item.publishType != PublishType.Product" [src]="item.publishType == PublishType.Product ? 'images/' + item.image :
                                 item.publishType == PublishType.Page ? 'assets/page-builder.png' :
                                 'assets/email-builder.png'">
                 </div>
             </div>
         
-
+<!-- listManager.sourceList.length -->
             <!-- Name -->
-            <div class="name">{{item.name}}</div>
+            <div class="name" [ngStyle]="{'width': listManager.sourceList.length > 8 ? '210px' : '225px'}">{{item.name}}</div>
         </div>
 
         <!-- Status -->
@@ -47,6 +47,14 @@
         <!-- User Image -->
         <div class="user-image-container" [title]="item.userName">
             <img [src]="item.userImage ? 'images/' + item.userImage : 'assets/no-account-pic.png'">
+        </div>
+
+        
+
+        <button *ngIf="!item.publishSuccessful" class="gold-button" (mousedown)="$event.stopPropagation()" (click)="onPublish.emit(item); listManager.onItemDown(item, $event)">Publish</button>
+
+        <div *ngIf="item.publishSuccessful" class="publish-successful">
+            <i class="fa-solid fa-check"></i>
         </div>
     </div>
 </div>

@@ -41,7 +41,6 @@ import { SubproductImageComponent } from '../subproducts/subproduct-image/subpro
 import { SubproductNameComponent } from '../subproducts/subproduct-name/subproduct-name.component';
 import { SubproductDescriptionComponent } from '../subproducts/subproduct-description/subproduct-description.component';
 import { SubproductValueComponent } from '../subproducts/subproduct-value/subproduct-value.component';
-import { ProductPublishButtonComponent } from '../product-publish-button/product-publish-button.component';
 
 
 
@@ -55,7 +54,6 @@ import { ProductPublishButtonComponent } from '../product-publish-button/product
     FiltersCircleButtonComponent,
     KeywordsCircleButtonComponent,
     ProductGroupsCircleButtonComponent,
-    ProductPublishButtonComponent,
     ProductBreadcrumbsComponent,
     ProductMediaListComponent,
     ProductMediaDisplayComponent,
