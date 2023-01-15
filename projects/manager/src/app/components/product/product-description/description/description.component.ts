@@ -1,5 +1,5 @@
 import { ApplicationRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { IProduct } from 'common';
+import { DataService, IProduct } from 'common';
 import { debounceTime, Subject } from 'rxjs';
 import { TextBoxData, TextBoxDev } from 'text-box';
 import { WidgetService } from '../../../../services/widget/widget.service';
@@ -11,7 +11,6 @@ import { WidgetService } from '../../../../services/widget/widget.service';
 })
 export class DescriptionComponent {
   @Input() product!: IProduct;
-  // @Input() apiUrl!: string;
   @Output() onChange: EventEmitter<string> = new EventEmitter();
   @ViewChild('iframe') iframe!: ElementRef<HTMLIFrameElement>;
   public height: number = 32;
@@ -20,7 +19,7 @@ export class DescriptionComponent {
   private saveData = new Subject<void>();
   private mousedown!: boolean;
 
-  constructor(private appRef: ApplicationRef, private widgetService: WidgetService) { }
+  constructor(private appRef: ApplicationRef, private widgetService: WidgetService, private dataService: DataService) { }
 
 
   // --------------------------------------------------------------------------- Ng On Init ---------------------------------------------------------
@@ -29,12 +28,12 @@ export class DescriptionComponent {
       .pipe(debounceTime(500))
       .subscribe(() => {
         this.onChange.emit(this.widgetService.stringify(this.textBox.getData()));
-        // this.dataService.put('api/Products/' + this.apiUrl, {
-        //   id: this.product.id,
-        //   description: this.widgetService.stringify(this.textBox.getData())
-        // }, {
-        //   authorization: true
-        // }).subscribe();
+        this.dataService.put('api/Products/Description', {
+          id: this.product.id,
+          description: this.widgetService.stringify(this.textBox.getData())
+        }, {
+          authorization: true
+        }).subscribe();
       });
   }
 
