@@ -211,8 +211,11 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                 if (!openedProduct || (openedProduct && openedProduct.zIndex != this.productService.zIndex)) {
                     // This is an output that notifies the (Niches Side Menu) that it can close
                     this.onProductSelect.emit();
-                    // Open the product
-                    this.productService.openProduct(hierarchyUpdate.selectedItems![0].id!);
+                    // As long the product is NOT new (it won't have an ID yet if it is)
+                    if (hierarchyUpdate.selectedItems![0].id != -1) {
+                        // Open the product
+                        this.productService.openProduct(hierarchyUpdate.selectedItems![0].id!);
+                    }
                 }
             }
         }
@@ -270,6 +273,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         // Add grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
+            
             const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
             this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
@@ -279,6 +283,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                 authorization: true
             }).subscribe((id: number) => {
                 this.thisArray[hierarchyUpdate.index!].id = id;
+                this.productService.openProduct(id);
             })
         }
         super.onItemAdd(hierarchyUpdate);
@@ -581,9 +586,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
                     this.dataService.get<Item>(parentPath, [{ key: key, value: this.searchComponent.listManager.selectedItem.id }], {
                         authorization: true
                     }).subscribe((item: Item) => {
-                            const fromItem: HierarchyItem = { id: item.id, name: item.name };
-                            this.setMoveForm(moveForm, itemToBeMovedType, destinationItemType, itemToBeMoved!, fromItem, path);
-                        });
+                        const fromItem: HierarchyItem = { id: item.id, name: item.name };
+                        this.setMoveForm(moveForm, itemToBeMovedType, destinationItemType, itemToBeMoved!, fromItem, path);
+                    });
                 }
             });
     }
@@ -606,7 +611,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         })
 
 
-        this.dataService.get<Array<ListItem>>(path, undefined, {authorization: true})
+        this.dataService.get<Array<ListItem>>(path, undefined, { authorization: true })
             .subscribe((results: Array<ListItem>) => {
                 results.forEach(x => {
                     if (x.name != fromItem.name) {
