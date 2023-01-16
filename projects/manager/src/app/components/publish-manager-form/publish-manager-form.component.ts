@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
+import { Observable } from 'rxjs';
 import { BuilderType, ListUpdateType, MenuOptionType } from '../../classes/enums';
 import { ListOptions } from '../../classes/list-options';
 import { ListUpdate } from '../../classes/list-update';
@@ -119,37 +120,48 @@ export class PublishManagerFormComponent extends LazyLoad {
   publishItem() {
     this.spinner = true;
     this.listComponent.listManager.promptOpen = true;
+    let publish$: Observable<void>;
 
+    // Product
     switch (this.selectedPublishItem.publishType) {
       case BuilderType.Product:
-
-
-        this.dataService.get('api/Publish/PublishProduct', [{ key: 'productId', value: this.selectedPublishItem.productId }], {
+        publish$ = this.dataService.get('api/Publish/PublishProduct', [{ key: 'productId', value: this.selectedPublishItem.productId }], {
           authorization: true
-        }).subscribe({
-          complete: () => {
-            this.onPublishSuccess();
-          },
-          error: (error: HttpErrorResponse) => {
-
-            // ***** Temporary ***** \\
-            let tempList: Array<string> = ['Alita', 'Battle', 'Angel'];
-            // *****
-
-
-            this.onPublishFail(tempList);
-          }
         });
         break;
 
+      // Page
       case BuilderType.Page:
-        console.log('publish page')
+        publish$ = this.dataService.get('api/Publish/PublishPage', [{ key: 'pageId', value: this.selectedPublishItem.pageId }], {
+          authorization: true
+        });
         break;
 
+      // Email
       case BuilderType.Email:
-        console.log('publish email')
+        publish$ = this.dataService.get('api/Publish/PublishEmail', [{ key: 'emailId', value: this.selectedPublishItem.emailId }], {
+          authorization: true
+        });
         break;
     }
+
+
+    publish$.subscribe({
+      complete: () => {
+        this.onPublishSuccess();
+      },
+      error: (httpErrorResponse: HttpErrorResponse) => {
+        const errorKeys = Object.keys(httpErrorResponse.error);
+        const errorList: Array<string> = new Array<string>();
+
+        errorKeys.forEach((errorKey: string) => {
+          const errorArray = httpErrorResponse.error[errorKey];
+          errorArray.forEach((error: string) => errorList.push(error));
+        });
+
+        this.onPublishFail(errorList);
+      }
+    });
   }
 
 
@@ -209,7 +221,7 @@ export class PublishManagerFormComponent extends LazyLoad {
     return bulletedErrorList;
   }
 
-  
+
 
   onEscape(): void {
     if (this.listComponent.listManager.selectedItem == null) super.onEscape();
