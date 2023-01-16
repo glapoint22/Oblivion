@@ -4,6 +4,7 @@ import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common
 import { Subject } from 'rxjs';
 import { ListUpdateType } from '../../classes/enums';
 import { HierarchyItem } from '../../classes/hierarchy-item';
+import { HierarchyManager } from '../../classes/hierarchy-manager';
 import { ListItem } from '../../classes/list-item';
 import { ListOptions } from '../../classes/list-options';
 import { ListUpdate } from '../../classes/list-update';
@@ -101,16 +102,33 @@ export class MoveFormComponent extends LazyLoad {
     // Get the index of the item that the item-to-be-moved will be moved to
     const indexOfDestinationItem = this.nicheHierarchy.findIndex(x => x.id == this.destinationItem.id && x.name == this.destinationItem.name && x.hierarchyGroupID == (this.itemToBeMovedType == 'Subniche' ? 0 : 1));
 
-    // If the destination-item has its arrow expanded
-    if (indexOfDestinationItem != -1 && this.nicheHierarchy[indexOfDestinationItem].arrowDown) {
-      // Make a copy of all the children that belongs to that destination-item
+
+
+    // If the destination-item has been found
+    if (indexOfDestinationItem != -1 &&
+
+      // And the destination-item has its arrow expanded
+      (this.nicheHierarchy[indexOfDestinationItem].arrowDown ||
+
+        // Or 
+
+        // As long as the destination-item is (NOT) the last item in the list
+        (this.nicheHierarchy[indexOfDestinationItem + 1] != null &&
+          // And the destination-item's arrow is (NOT) expanded but it was already expanded at some point
+          this.nicheHierarchy[indexOfDestinationItem + 1].hierarchyGroupID! > this.nicheHierarchy[indexOfDestinationItem].hierarchyGroupID!))) {
+
+      // Then make a copy of all the children that belongs to that destination-item
       for (let i = indexOfDestinationItem + 1; i < this.nicheHierarchy.length; i++) {
         if (this.nicheHierarchy[i].hierarchyGroupID! <= this.nicheHierarchy[indexOfDestinationItem].hierarchyGroupID! && i != indexOfDestinationItem + 1) break;
         if (this.nicheHierarchy[i].hierarchyGroupID == this.nicheHierarchy[indexOfDestinationItem].hierarchyGroupID! + 1) toList.push(this.nicheHierarchy[i]);
       }
 
+      // If the destination-item does (NOT) currently have its arrow expanded, then set the item-to-be-moved as hidden
+      if (!this.nicheHierarchy[indexOfDestinationItem].arrowDown) moveList[0].hidden = true;
+
       // Then add the item-to-be-moved to that list
       toList.push(moveList[0]);
+
 
       // If the list is allowed to be sorted
       if (this.list.listManager.sortable) {
@@ -135,17 +153,19 @@ export class MoveFormComponent extends LazyLoad {
       }
     }
 
-    let itemToBeMovedType = this.itemToBeMovedType == 'Subniche' ? 'Niches' : 'Products';
-    // ********* Commented Out Data Service *********
-    // this.dataService.put('api/' + itemToBeMovedType + '/Move', {
-    //   itemToBeMovedId: this.itemToBeMoved.id,
-    //   destinationItemId: this.destinationItem.id
-    // }).subscribe(()=> {
-      this.openSuccessPrompt();
-    // });
+
+    this.openSuccessPrompt();
+
+    const itemToBeMovedType = this.itemToBeMovedType == 'Subniche' ? 'Subniches' : 'Products';
+
+
+    this.dataService.put('api/' + itemToBeMovedType + '/Move', {
+      itemToBeMovedId: this.itemToBeMoved.id,
+      destinationItemId: this.destinationItem.id
+    }, { authorization: true }).subscribe();
   }
 
-  async openSuccessPrompt(){
+  async openSuccessPrompt() {
     this.lazyLoadingService.load(async () => {
       const { PromptComponent } = await import('../../components/prompt/prompt.component');
       const { PromptModule } = await import('../../components/prompt/prompt.module');
@@ -158,29 +178,29 @@ export class MoveFormComponent extends LazyLoad {
       this.close();
       prompt.title = 'Move Successful';
       prompt.message = this.sanitizer.bypassSecurityTrustHtml(
-        
+
 
         '<div style="margin-bottom: 4px; display: flex">' +
-          '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">Moved ' + this.itemToBeMovedType + ':</div>' +
-          '<div style="color: #ffba00">' + this.itemToBeMoved.name + '</div>' +
+        '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">Moved ' + this.itemToBeMovedType + ':</div>' +
+        '<div style="color: #ffba00">' + this.itemToBeMoved.name + '</div>' +
         '</div>' +
 
 
         '<div style="margin-bottom: 4px; display: flex">' +
-          '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">From ' + this.destinationItemType + ':</div>' +
-          '<div style="color: #ffba00">' + this.fromItem.name + '</div>' +
+        '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">From ' + this.destinationItemType + ':</div>' +
+        '<div style="color: #ffba00">' + this.fromItem.name + '</div>' +
         '</div>' +
 
 
         '<div style="margin-bottom: 21px; display: flex">' +
-          '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">To ' + this.destinationItemType + ':</div>' +
-          '<div style="color: #ffba00">' + this.destinationItem.name + '</div>' +
+        '<div style="color: #b4b4b4; width: fit-content; padding-right: 4px; flex-shrink: 0;">To ' + this.destinationItemType + ':</div>' +
+        '<div style="color: #ffba00">' + this.destinationItem.name + '</div>' +
         '</div>' +
 
 
-        'The move operation listed above has been completed successfully.' 
-        
-        );
+        'The move operation listed above has been completed successfully.'
+
+      );
       prompt.secondaryButton = {
         name: 'Close'
       }
