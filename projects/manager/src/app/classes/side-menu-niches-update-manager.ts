@@ -580,8 +580,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
                     this.dataService.get<Item>(parentPath, [{ key: key, value: this.searchComponent.listManager.selectedItem.id }], {
                         authorization: true
-                    })
-                        .subscribe((item: Item) => {
+                    }).subscribe((item: Item) => {
                             const fromItem: HierarchyItem = { id: item.id, name: item.name };
                             this.setMoveForm(moveForm, itemToBeMovedType, destinationItemType, itemToBeMoved!, fromItem, path);
                         });
@@ -607,7 +606,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
         })
 
 
-        this.dataService.get<Array<ListItem>>(path)
+        this.dataService.get<Array<ListItem>>(path, undefined, {authorization: true})
             .subscribe((results: Array<ListItem>) => {
                 results.forEach(x => {
                     if (x.name != fromItem.name) {
