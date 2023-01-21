@@ -1,15 +1,21 @@
-@import '../../../../styles.scss';
-
-
-
 .review-info-box {
-    @extend .notification-info-box;
+    height: 130px;
+    background: #242424;
+    border: 1px solid #454545;
+    margin-top: 3px;
     margin-bottom: 13px;
 }
 
 
 .review-info-bar {
-    @extend .notification-info-bar;
+    display: flex;
+    height: 34px;
+    background: #2e2e2e;
+    border: 2px solid #242424;
+    outline: 1px solid #343434;
+    outline-offset: -3px;
+    justify-content: space-between;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -45,7 +51,8 @@
 
 
 .review-profile-popup-container {
-    @extend .notification-profile-popup-container;
+    position: absolute;
+    z-index: 100;
     left: 28px;
     top: -157px;
 }
