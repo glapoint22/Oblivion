@@ -67,12 +67,12 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
             let currentKeywords: Array<string> = new Array<string>();
             let newKeywords: Array<string> = new Array<string>();
 
-            this.thisArray.splice(hierarchyUpdate.index!, 1);
+            
 
 
             const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
-            
+            this.thisArray.splice(hierarchyUpdate.index!, 1);
 
             for(let i = indexOfHierarchyItemParent + 1; i < this.thisArray.length; i++) {
 
@@ -96,9 +96,11 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
             
 
-            this.dataService.post('api/AvailableKeywords/List',{
+            this.dataService.post('api/Keywords/AvailableKeywords/List',{
                 keywordGroupId: this.thisArray[indexOfHierarchyItemParent].id,
                 keywords: newKeywords
+            }, {
+                authorization: true
             }).subscribe(()=> {
                 
             })
