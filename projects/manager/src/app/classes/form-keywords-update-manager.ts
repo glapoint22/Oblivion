@@ -10,6 +10,7 @@ import { CaseType, ListUpdateType } from "./enums";
 import { SearchResultItem } from "./search-result-item";
 import { ListUpdate } from "./list-update";
 import { ProductFormComponent } from "../components/product/product-form/product-form.component";
+import { Item } from "./item";
 
 @Directive()
 export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
@@ -66,25 +67,20 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
         if (hierarchyUpdate.hierarchyGroupID == 1) {
             let currentKeywords: Array<string> = new Array<string>();
             let newKeywords: Array<string> = new Array<string>();
-
-            
-
-
             const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
+            // First, remove the edible item from the list that was created on add
             this.thisArray.splice(hierarchyUpdate.index!, 1);
 
+            // Then get a list of all the keywords that are currently in the group (if any)
             for(let i = indexOfHierarchyItemParent + 1; i < this.thisArray.length; i++) {
-
                 if(this.thisArray[i].hierarchyGroupID == 0) break;
-
                 currentKeywords.push(this.thisArray[i].name!)
             }
 
-
-
-
+            // Add the new keywords to the list
             hierarchyUpdate.items?.forEach((x, i) => {
+                // As long as there is (NOT) a keyword in the list that already has the same name
                 if(!currentKeywords.find(y => y == x)) {
                     newKeywords.push(x.toLowerCase().trim());
                     this.thisArray.splice(hierarchyUpdate.index! + i, 0, { id: -1, name: x.toLowerCase().trim(), hierarchyGroupID: 1 })
@@ -96,13 +92,16 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
             
 
-            this.dataService.post('api/Keywords/AvailableKeywords/List',{
+            this.dataService.post<Array<Item>>('api/Keywords/AvailableKeywords/List',{
                 keywordGroupId: this.thisArray[indexOfHierarchyItemParent].id,
                 keywords: newKeywords
             }, {
                 authorization: true
-            }).subscribe(()=> {
-                
+            }).subscribe((keywords: Array<Item>)=> {
+                keywords.forEach(x => {
+                    const newKeyword = this.thisArray.find(y => y.name == x.name && y.id == -1);
+                    newKeyword!.id = x.id;
+                })
             })
         }
     }

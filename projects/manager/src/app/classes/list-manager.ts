@@ -230,16 +230,18 @@ export class ListManager {
 
         // Remove \r anywhere it is found (if any)
         clipboardDataArray.forEach((x, i, arry) => {
-          arry[i] = x.replace('\r', '');
+          arry[i] = x.replace('\r', '').toLowerCase();
         })
 
         // If the array has more than one element (that would mean a list was pasted in)
         if (clipboardDataArray.length > 1) {
+          // Remove the duplicate items (if any)
+          let uniqueClipboardDataArray = [...new Set(clipboardDataArray)];
 
           // And as long as the list was pasted into a new list item (not an existing list item that is being edited)
           if (this.newItem) {
             this.newItem = false;
-            this.getEditedItem().items = clipboardDataArray;
+            this.getEditedItem().items = uniqueClipboardDataArray;
             this.multiItemAddUpdate(this.getEditedItem());
           }
 
