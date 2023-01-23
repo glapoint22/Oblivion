@@ -418,15 +418,15 @@ export class HierarchyManager extends ListManager {
 
     // ===========================================================( DUPLICATE PROMPT OPEN UPDATE )============================================================ \\
 
-  duplicatePromptOpenUpdate() {
-    this.onListUpdate.next({
-      type: ListUpdateType.DuplicatePromptOpen,
-      addDisabled: this.addDisabled,
-      editDisabled: this.editDisabled,
-      deleteDisabled: this.deleteDisabled,
-      collapseDisabled: this.collapseDisabled
-    })
-  }
+    duplicatePromptOpenUpdate() {
+        this.onListUpdate.next({
+            type: ListUpdateType.DuplicatePromptOpen,
+            addDisabled: this.addDisabled,
+            editDisabled: this.editDisabled,
+            deleteDisabled: this.deleteDisabled,
+            collapseDisabled: this.collapseDisabled
+        })
+    }
 
 
 
@@ -446,15 +446,31 @@ export class HierarchyManager extends ListManager {
 
     // =================================================================( CASE TYPE UPDATE )================================================================== \\
 
-  caseTypeUpdate(hierarchyItem: HierarchyItem) {
-    this.onListUpdate.next(
-      {
-        type: ListUpdateType.CaseTypeUpdate,
-        id: hierarchyItem.id,
-        index: this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID),
-        name: hierarchyItem.name,
-        hierarchyGroupID: hierarchyItem.hierarchyGroupID
-      }
-    );
-  }
+    caseTypeUpdate(hierarchyItem: HierarchyItem) {
+        this.onListUpdate.next(
+            {
+                type: ListUpdateType.CaseTypeUpdate,
+                id: hierarchyItem.id,
+                index: this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID),
+                name: hierarchyItem.name,
+                hierarchyGroupID: hierarchyItem.hierarchyGroupID
+            }
+        );
+    }
+
+
+
+    // ===============================================================( MULTI ITEM ADD UPDATE )=============================================================== \\
+
+    multiItemAddUpdate(hierarchyItem: HierarchyItem) {
+        this.onListUpdate.next(
+            {
+                type: ListUpdateType.MultiItemAdd,
+                id: hierarchyItem.id,
+                index: this.sourceList.findIndex(x => x.id == hierarchyItem.id && x.name == hierarchyItem.name && x.hierarchyGroupID == hierarchyItem.hierarchyGroupID),
+                hierarchyGroupID: hierarchyItem.hierarchyGroupID,
+                items: hierarchyItem.items
+            }
+        );
+    }
 }

@@ -38,7 +38,8 @@ export enum ListUpdateType {
     DoubleClick,
     DuplicatePromptOpen,
     DuplicatePromptClose,
-    CaseTypeUpdate
+    CaseTypeUpdate,
+    MultiItemAdd
 }
 
 

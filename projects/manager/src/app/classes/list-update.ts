@@ -13,4 +13,5 @@ export class ListUpdate {
   editDisabled?: boolean;
   deleteDisabled?: boolean;
   rightClick?: boolean;
+  items?: Array<string>;
 }

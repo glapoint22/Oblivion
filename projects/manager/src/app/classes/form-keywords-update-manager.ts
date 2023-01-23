@@ -48,6 +48,61 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
     onListUpdate(hierarchyUpdate: HierarchyUpdate) {
         super.onListUpdate(hierarchyUpdate);
         if (hierarchyUpdate.type == ListUpdateType.CaseTypeUpdate) this.thisArray[hierarchyUpdate.index!].case = hierarchyUpdate.hierarchyGroupID == 0 ? CaseType.CapitalizedCase : CaseType.LowerCase;
+
+        if (hierarchyUpdate.type == ListUpdateType.MultiItemAdd) this.onMultiItemAdd(hierarchyUpdate);
+    }
+
+
+
+    // =================================================================( ON MULTI ITEM ADD )================================================================= \\
+
+    onMultiItemAdd(hierarchyUpdate: HierarchyUpdate) {
+        // Add parent hierarchy item
+        if (hierarchyUpdate.hierarchyGroupID == 0) {
+            console.log('group')
+        }
+
+        // Add child hierarchy item
+        if (hierarchyUpdate.hierarchyGroupID == 1) {
+            let currentKeywords: Array<string> = new Array<string>();
+            let newKeywords: Array<string> = new Array<string>();
+
+            this.thisArray.splice(hierarchyUpdate.index!, 1);
+
+
+            const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
+
+            
+
+            for(let i = indexOfHierarchyItemParent + 1; i < this.thisArray.length; i++) {
+
+                if(this.thisArray[i].hierarchyGroupID == 0) break;
+
+                currentKeywords.push(this.thisArray[i].name!)
+            }
+
+
+
+
+            hierarchyUpdate.items?.forEach((x, i) => {
+                if(!currentKeywords.find(y => y == x)) {
+                    newKeywords.push(x.toLowerCase().trim());
+                    this.thisArray.splice(hierarchyUpdate.index! + i, 0, { id: -1, name: x.toLowerCase().trim(), hierarchyGroupID: 1 })
+                }
+            })
+
+            this.listComponent.listManager.removeFocus();
+            this.listComponent.listManager.setButtonsState();
+
+            
+
+            this.dataService.post('api/AvailableKeywords/List',{
+                keywordGroupId: this.thisArray[indexOfHierarchyItemParent].id,
+                keywords: newKeywords
+            }).subscribe(()=> {
+                
+            })
+        }
     }
 
 
@@ -197,10 +252,10 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
             url = 'api/keywords/groups';
         } else
 
-        // Edit child hierarchy item
-        if (hierarchyUpdate.hierarchyGroupID == 1) {
-            url = 'api/keywords';
-        }
+            // Edit child hierarchy item
+            if (hierarchyUpdate.hierarchyGroupID == 1) {
+                url = 'api/keywords';
+            }
 
         this.dataService.put(url, {
             id: hierarchyUpdate.id,
@@ -231,7 +286,7 @@ export class FormKeywordsUpdateManager extends HierarchyUpdateManager {
 
 
     // =================================================( GET SEARCH DELETE PROMPT CHILD DATA SERVICE PATH )================================================== \\
-    
+
     getSearchDeletePromptChildDataServicePath() {
         return 'api/Keywords/Groups';
     }

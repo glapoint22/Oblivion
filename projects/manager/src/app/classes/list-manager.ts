@@ -43,6 +43,7 @@ export class ListManager {
   public contextMenu!: ContextMenuComponent;
 
 
+
   // ====================================================================( CONSTRUCTOR )==================================================================== \\
 
   constructor(public lazyLoadingService: LazyLoadingService) { }
@@ -216,13 +217,30 @@ export class ListManager {
   // =====================================================================( ON PASTE )====================================================================== \\
 
   onPaste = (e: Event) => {
-
-    if (this.editedItem) {
+    if (this.getEditedItem()) {
       e.preventDefault();
-      const clipboardData = (e as ClipboardEvent).clipboardData!.getData('text/plain');
+      const clipboardData = (e as ClipboardEvent).clipboardData!.getData('text/plain').trim();
 
       if (clipboardData) {
-        this.getHtmlItem().innerText = clipboardData;
+        const clipboardDataArray = clipboardData.split("\n");
+
+        clipboardDataArray.forEach((x, i, arry) => {
+          arry[i] = x.replace('\r', '');
+        })
+
+
+        if (clipboardDataArray.length > 1) {
+
+          if (this.newItem) {
+            this.getEditedItem().items = clipboardDataArray;
+            this.multiItemAddUpdate(this.getEditedItem());
+          }
+
+
+
+        } else {
+          this.getHtmlItem().innerText = clipboardData;
+        }
       }
     }
   }
@@ -878,40 +896,43 @@ export class ListManager {
         // But the (Enter) key was pressed or the list item was (Blurred)
       } else {
 
-        // If its a new item, asign the case type (if need be)
-        if (this.newItem) this.caseTypeUpdate(this.editedItem);
+        if(!this.getEditedItem().items) {
 
-        // As long as the edited name is different from what it was before the edit
-        if (trimmedEditedItem.toLowerCase() != this.getEditedItem().name!.trim().toLowerCase()) {
+          // If its a new item, asign the case type (if need be)
+          if (this.newItem) this.caseTypeUpdate(this.editedItem);
 
-          // If this list is set to verify add and edit
-          if (this.verifyAddEdit) {
+          // As long as the edited name is different from what it was before the edit
+          if (trimmedEditedItem.toLowerCase() != this.getEditedItem().name!.trim().toLowerCase()) {
 
-            // As long as a verification is NOT in progress
-            if (!this.addEditVerificationInProgress) {
+            // If this list is set to verify add and edit
+            if (this.verifyAddEdit) {
 
-              // Begin add edit verification
-              this.addEditVerificationInProgress = true;
-              this.verifyAddEditUpdate(this.editedItem, trimmedEditedItem);
-              return
+              // As long as a verification is NOT in progress
+              if (!this.addEditVerificationInProgress) {
+
+                // Begin add edit verification
+                this.addEditVerificationInProgress = true;
+                this.verifyAddEditUpdate(this.editedItem, trimmedEditedItem);
+                return
+              }
+
+              // If this list does NOT verify
+            } else {
+              this.commitAddEdit();
             }
 
-            // If this list does NOT verify
+            // If the edited name has NOT changed
           } else {
-            this.commitAddEdit();
-          }
 
-          // If the edited name has NOT changed
-        } else {
-
-          //If the case was changed. i.e. lower case to upper case
-          if (trimmedEditedItem != this.getEditedItem().name!.trim()) {
-            this.getEditedItem().name = this.getCase();
-            if (this.sortable) this.sort(this.editedItem);
-            this.addEditUpdate(this.editedItem);
+            //If the case was changed. i.e. lower case to upper case
+            if (trimmedEditedItem != this.getEditedItem().name!.trim()) {
+              this.getEditedItem().name = this.getCase();
+              if (this.sortable) this.sort(this.editedItem);
+              this.addEditUpdate(this.editedItem);
+            }
+            this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
+            this.reselectItem();
           }
-          this.restoreIndent(); // * Used for hierarchy list * (calling this puts back the indent)
-          this.reselectItem();
         }
       }
 
@@ -1225,6 +1246,21 @@ export class ListManager {
         id: listItem.id,
         index: this.sourceList.findIndex(x => x.id == listItem.id && x.name == listItem.name),
         name: listItem.name
+      }
+    );
+  }
+
+
+
+  // ===============================================================( MULTI ITEM ADD UPDATE )=============================================================== \\
+
+  multiItemAddUpdate(listItem: ListItem) {
+    this.onListUpdate.next(
+      {
+        type: ListUpdateType.MultiItemAdd,
+        id: listItem.id,
+        index: this.sourceList.findIndex(x => x.id == listItem.id && x.name == listItem.name),
+        items: listItem.items,
       }
     );
   }

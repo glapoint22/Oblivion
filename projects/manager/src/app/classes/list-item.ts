@@ -13,4 +13,5 @@ export class ListItem extends Item {
     selectable?: boolean;
     editable?: boolean;
     case?: CaseType;
+    items?: Array<string>;
 }
