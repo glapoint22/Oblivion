@@ -219,25 +219,31 @@ export class ListManager {
   onPaste = (e: Event) => {
     if (this.getEditedItem()) {
       e.preventDefault();
+
+      // Record the clipboard data
       const clipboardData = (e as ClipboardEvent).clipboardData!.getData('text/plain').trim();
 
+      // As long as there is clipboard data (and not an empty string)
       if (clipboardData) {
+        // Convert the clipboard data into an array anywhere there is a newline detected (if any)
         const clipboardDataArray = clipboardData.split("\n");
 
+        // Remove \r anywhere it is found (if any)
         clipboardDataArray.forEach((x, i, arry) => {
           arry[i] = x.replace('\r', '');
         })
 
-
+        // If the array has more than one element (that would mean a list was pasted in)
         if (clipboardDataArray.length > 1) {
 
+          // And as long as the list was pasted into a new list item (not an existing list item that is being edited)
           if (this.newItem) {
+            this.newItem = false;
             this.getEditedItem().items = clipboardDataArray;
             this.multiItemAddUpdate(this.getEditedItem());
           }
 
-
-
+          // But if the array has only one element (that would mean a list was (NOT) pasted in)
         } else {
           this.getHtmlItem().innerText = clipboardData;
         }
@@ -895,9 +901,10 @@ export class ListManager {
         // If we did NOT press the (Escape) key
         // But the (Enter) key was pressed or the list item was (Blurred)
       } else {
-
+        
+        // As long as a list was (NOT) pasted into the list item
         if(!this.getEditedItem().items) {
-
+          
           // If its a new item, asign the case type (if need be)
           if (this.newItem) this.caseTypeUpdate(this.editedItem);
 
