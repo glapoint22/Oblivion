@@ -20,6 +20,7 @@ export class LogInComponent {
         password: form.controls.password.value,
       }).subscribe(() => {
         this.accountService.logIn();
+        this.notificationService.getArchivedNotifications();
         this.notificationService.startNotificationTimer();
       });
     }

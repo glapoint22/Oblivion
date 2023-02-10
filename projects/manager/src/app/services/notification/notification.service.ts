@@ -41,7 +41,7 @@ export class NotificationService {
   startNotificationTimer() {
     // Stop the current timer, if any
     this.stopNotificationTimer();
-    
+
     this.getNewNotifications();
 
     this.notificationsTimer = window.setInterval(() => {
@@ -103,6 +103,12 @@ export class NotificationService {
 
 
   getArchivedNotifications() {
+    // If we are not signed in, stop the notification timer and return
+    if (!this.accountService.user) {
+      this.stopNotificationTimer();
+      return;
+    }
+
     this.dataService.get<Array<NotificationItem>>('api/Notifications/GetArchivedNotifications', undefined, {
       authorization: true
     })

@@ -87,6 +87,7 @@ export class AccountService {
   public refresh() {
     // Flag that we are in the refreshing process
     this.refreshing = true;
+    this.refreshTokenSet = false;
 
     // Get a new refresh token
     this.dataService.get('api/Account/Refresh', undefined, { authorization: true })
