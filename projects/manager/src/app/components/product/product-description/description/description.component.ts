@@ -28,12 +28,6 @@ export class DescriptionComponent {
       .pipe(debounceTime(500))
       .subscribe(() => {
         this.onChange.emit(this.widgetService.stringify(this.textBox.getData()));
-        this.dataService.put('api/Products/Description', {
-          id: this.product.id,
-          description: this.widgetService.stringify(this.textBox.getData())
-        }, {
-          authorization: true
-        }).subscribe();
       });
   }
 

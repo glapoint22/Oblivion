@@ -257,8 +257,10 @@ export class VendorFormComponent extends LazyLoad {
           this.product.vendor = this.vendor;
 
           this.dataService.put('api/Products/Vendor', {
-            itemId: this.product.id,
-            propertyId: this.vendor.id
+            productId: this.product.id,
+            vendorId: this.vendor.id
+          }, {
+            authorization: true
           }).subscribe();
         }
       });

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { DataService } from 'common';
 import { Product } from '../../../classes/product';
 
 @Component({
@@ -9,8 +10,16 @@ import { Product } from '../../../classes/product';
 export class ProductDescriptionComponent  {
   @Input() product!: Product;
 
+  constructor(private dataService: DataService){}
+
   onChange(description: string) {
     this.product.description = description;
-    // this.updateSubproduct(this.subproduct);
+
+    this.dataService.put('api/Products/Description', {
+      id: this.product.id,
+      description: description
+    }, {
+      authorization: true
+    }).subscribe();
   }
 }

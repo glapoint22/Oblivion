@@ -19,7 +19,7 @@ export class SubproductNameComponent extends SubproductsComponent {
   onNameBlur(subproduct: Subproduct, htmlElement: HTMLElement) {
     window.getSelection()!.removeAllRanges();
 
-    if (!(subproduct.name == null && htmlElement.innerText.length == 0) && subproduct.name != htmlElement.innerText) {
+    if (!(subproduct.name == null && htmlElement.innerText.length == 0)) {
       subproduct.name = htmlElement.innerText = !this.titleCaseOff ? this.titleCase.getCase(htmlElement.innerText) : htmlElement.innerText;
       this.updateSubproduct(subproduct);
     }

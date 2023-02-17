@@ -54,11 +54,13 @@ export class ProductNameComponent {
 
   // ===================================================================( ON NAME BLUR )==================================================================== \\
 
-  onNameBlur(product: Product, htmlElement: HTMLElement, titleCaseOff: boolean) {
+  onNameBlur(product: Product, htmlElement: HTMLElement) {
     window.getSelection()!.removeAllRanges();
 
-    if (!(product.name == null && htmlElement.innerText.length == 0) && product.name != htmlElement.innerText) {
-      product.name = htmlElement.innerText = !titleCaseOff ? this.titleCase.getCase(htmlElement.innerText) : htmlElement.innerText;
+    
+
+    if (!(product.name == null && htmlElement.innerText.length == 0)) {
+      product.name = htmlElement.innerText = !this.titleCaseOff ? this.titleCase.getCase(htmlElement.innerText) : htmlElement.innerText;
       this.updateName(product);
     }
   }

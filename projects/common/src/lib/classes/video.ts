@@ -53,7 +53,7 @@ export class Video {
         let result!: RegExpExecArray;
 
         // YouTube
-        pattern = /(?:https?:\/\/)?(?:(?:(?:www\.?)?youtube\.com(?:\/(?:(?:watch\?.*?(?:v=([^&\s]+)).*)|(?:v\/(.*))|(?:embed\/(.+))))?)|(?:youtu\.be\/(.*)?))/;
+        pattern = /(?:https?:\/\/)?(?:(?:(?:www\.?)?youtube\.com(?:\/(?:(?:watch\?.*?(?:v=([^&\s]+)).*)|(?:v\/(.*))|(?:(?:embed|live)\/(.+))))?)|(?:youtu\.be\/(.*)?))/;
         result = pattern.exec(url)!;
         this.videoType = VideoType.YouTube;
 

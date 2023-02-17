@@ -11,7 +11,7 @@
         class="name-container product-dashed-border"
         contenteditable="true"
         (focus)="selectRange(name)"
-        (blur)="onNameBlur(product, name, titleCaseOff)"
+        (blur)="onNameBlur(product, name)"
         (keydown.escape)="onNameEscape(product, name)"
         (keydown.enter)="name.blur()"
         (paste)="onPaste($event, name)">

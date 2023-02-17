@@ -838,7 +838,9 @@ export class HierarchyUpdateManager extends ListUpdateManager {
             const child: MultiColumnItem = this.searchComponent.listManager.selectedItem as MultiColumnItem;
 
             this.searchMode = false;
-            this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: child.id }])
+            this.dataService.get<Item>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: child.id }], {
+                authorization: true
+            })
                 .subscribe((parent: Item) => {
                     this.searchInputSubscription.unsubscribe();
                     this.goToParent(parent.id!, child.id!, this.selectItem, [child.id, 1], this.selectItem, [child.id, 1]);
