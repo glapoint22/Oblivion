@@ -54,7 +54,7 @@ export class VendorFormComponent extends LazyLoad {
     if (this.product) {
 
       // If the product does NOT have a vendor yet
-      if (!this.product.vendor) {
+      if (!this.product.vendor.name) {
         this.fieldsDisabled = true;
         this.iconButtonsDisabled = true;
         this.createNewVendor();
