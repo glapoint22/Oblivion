@@ -306,7 +306,6 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             }
 
 
-            // ********* Commented Out Data Service *********
             this.dataService.put('api/' + this.grandchildDataServicePath, {
                 id: hierarchyUpdate.id,
                 name: hierarchyUpdate.name

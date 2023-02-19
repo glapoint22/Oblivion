@@ -70,12 +70,13 @@ export class ProductFiltersUpdateManager extends FormFiltersUpdateManager {
     // ==========================================================( ON SEARCH ITEM CHECKBOX CHANGE )=========================================================== \\
 
     onSearchItemCheckboxChange(checkboxMultiColumnListUpdate: CheckboxMultiColumnListUpdate) {
-        // ********* Commented Out Data Service *********
-        // this.dataService.put('api/Products/Filter', {
-        //     productId: this.productId,
-        //     id: checkboxMultiColumnListUpdate.id,
-        //     checked: checkboxMultiColumnListUpdate.checked
-        // }).subscribe();
+        this.dataService.put('api/Products/Filter', {
+            productId: this.productId,
+            filterOptionId: checkboxMultiColumnListUpdate.id,
+            checked: checkboxMultiColumnListUpdate.checked
+        }, {
+            authorization: true
+        }).subscribe();
 
         // Check to see if the search item that had the checkbox change is visible in the hierarchy
         const hierarchyItem = this.thisArray.find(x => x.id == checkboxMultiColumnListUpdate.id && x.hierarchyGroupID == 1);

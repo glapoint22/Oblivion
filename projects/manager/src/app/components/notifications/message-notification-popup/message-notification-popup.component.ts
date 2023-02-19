@@ -276,7 +276,9 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
 
   delete(dataServiceParameters: {}, messageCount?: number) {
     this.removeFromList(this.notificationService.archiveNotifications, messageCount);
-    this.dataService.delete('api/Notifications', dataServiceParameters).subscribe();
+    this.dataService.delete('api/Notifications', dataServiceParameters, {
+      authorization: true
+    }).subscribe();
   }
 
 

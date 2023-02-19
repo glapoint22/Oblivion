@@ -226,7 +226,9 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
             this.searchComponent.listManager.selectedItem.opacity = 0.4;
 
             // Then if any children of the selected keyword group are in the search list, set the disabled look to them too
-            this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }])
+            this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }], {
+                authorization: true
+            })
                 .subscribe((children: Array<KeywordCheckboxItem>) => {
                     children.forEach(x => {
                         const searchItem = this.thisSearchArray.find(y => y.id == x.id && y.values[1].name == 'Keyword');
@@ -243,18 +245,21 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                 if (this.thisArray[i].hierarchyGroupID! <= 0) break;
                 this.thisArray[i].opacity = 0.4;
             }
-            // ********* Commented Out Data Service *********
-            // this.dataService.post('api/SelectedKeywords/Groups/Add', {
-            //     productId: this.productId,
-            //     id: keywordGroup.id
-            // }).subscribe();
+            this.dataService.post('api/Keywords/SelectedKeywords/Groups', {
+                productId: this.productId,
+                keywordGroupId: keywordGroup.id
+            }, {
+                authorization: true
+            }).subscribe();
 
 
             // If a keyword is selected 
         } else {
 
             // Get the parent of the selected keyword
-            this.dataService.get<KeywordCheckboxItem>('api/' + this.childDataServicePath + '/Parent', [{ key: 'childId', value: this.searchComponent.listManager.selectedItem.id }])
+            this.dataService.get<KeywordCheckboxItem>('api/keywords/Groups', [{ key: 'childId', value: this.searchComponent.listManager.selectedItem.id }], {
+                authorization: true
+            })
                 .subscribe((keywordParent: KeywordCheckboxItem) => {
                     const parentIndex = this.thisArray.findIndex(x => x.id == keywordParent.id && x.hierarchyGroupID == 0);
                     const parent = this.thisArray[parentIndex];
@@ -267,7 +272,9 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                     this.searchComponent.listManager.selectedItem.opacity = 0.4;
 
                     // Then if any siblings of the selected keyword are in the search list, set the disabled look to them too
-                    this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }])
+                    this.dataService.get<Array<KeywordCheckboxItem>>('api/' + this.childDataServicePath, [{ key: 'parentId', value: keywordGroup.id }], {
+                        authorization: true
+                    })
                         .subscribe((children: Array<KeywordCheckboxItem>) => {
                             children.forEach(x => {
                                 const searchItem = this.thisSearchArray.find(y => y.id == x.id && y.values[1].name == 'Keyword');
@@ -290,12 +297,15 @@ export class AvailableKeywordsUpdateManager extends FormKeywordsUpdateManager {
                         this.thisArray[i].opacity = 0.4;
                     }
 
-                    // ********* Commented Out Data Service *********
-                    // this.dataService.post('api/SelectedKeywords/Groups/AddKeyword', {
-                    //     productId: this.productId,
-                    //     keywordGroupId: keywordGroup.id,
-                    //     KeywordId: this.searchComponent.listManager.selectedItem.id
-                    // }).subscribe();
+
+
+                    this.dataService.post('api/Keywords/SelectedKeywords/Groups/AddKeyword', {
+                        productId: this.productId,
+                        keywordGroupId: keywordGroup.id,
+                        KeywordId: this.searchComponent.listManager.selectedItem.id
+                    }, {
+                        authorization: true
+                    }).subscribe();
                 })
         }
     }

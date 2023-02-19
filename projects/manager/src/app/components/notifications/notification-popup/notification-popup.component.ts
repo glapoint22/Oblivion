@@ -199,6 +199,8 @@ export class NotificationPopupComponent extends NotificationFormComponent {
 
     this.dataService.delete('api/Notifications', {
       notificationGroupId: this.notificationItem.notificationGroupId
+    }, {
+      authorization: true
     }).subscribe();
   }
 
