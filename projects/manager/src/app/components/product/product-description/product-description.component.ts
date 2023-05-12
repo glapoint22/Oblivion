@@ -7,14 +7,12 @@ import { Product } from '../../../classes/product';
   templateUrl: './product-description.component.html',
   styleUrls: ['./product-description.component.scss']
 })
-export class ProductDescriptionComponent  {
+export class ProductDescriptionComponent {
   @Input() product!: Product;
 
-  constructor(private dataService: DataService){}
+  constructor(private dataService: DataService) { }
 
   onChange(description: string) {
-    this.product.description = description;
-
     this.dataService.put('api/Products/Description', {
       id: this.product.id,
       description: description

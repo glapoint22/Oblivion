@@ -11,7 +11,12 @@ export class SubproductDescriptionComponent extends SubproductsComponent {
   @Input() subproduct!: Subproduct;
 
   onChange(description: string) {
-    this.subproduct.description = description;
-    this.updateSubproduct(this.subproduct);
+    this.updateSubproduct({
+      id: this.subproduct.id,
+      name: this.subproduct.name,
+      description: description,
+      image: this.subproduct.image,
+      value: this.subproduct.value
+    });
   }
 }

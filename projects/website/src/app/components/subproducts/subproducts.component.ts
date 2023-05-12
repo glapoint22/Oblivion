@@ -10,12 +10,4 @@ import { TextBox, TextBoxData } from 'text-box';
 export class SubproductsComponent {
   @Input() components!: Array<Subproduct>;
   @Input() bonuses!: Array<Subproduct>;
-
-  getDescription(rootElement: HTMLElement, description: string) {
-    const textBoxData: Array<TextBoxData> = JSON.parse(description);
-    const textBox = new TextBox(rootElement);
-    
-    textBox.load(textBoxData);
-    textBox.render();
-  }
 }

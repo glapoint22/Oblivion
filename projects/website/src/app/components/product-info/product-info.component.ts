@@ -33,16 +33,6 @@ export class ProductInfoComponent implements OnChanges {
 
 
 
-
-  getDescription(rootElement: HTMLElement) {
-    const textBoxData: Array<TextBoxData> = JSON.parse(this.product.description);
-    const textBox = new TextBox(rootElement);
-    
-    textBox.load(textBoxData);
-    textBox.render();
-  }
-
-
   onVisitOfficialWebsiteClick() {
     // Navigate to the product page
     window.open(this.product.hoplink, '_blank');

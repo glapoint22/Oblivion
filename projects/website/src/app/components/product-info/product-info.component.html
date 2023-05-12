@@ -109,7 +109,7 @@
             <button class="gold-round-button-sm" (click)="onVisitOfficialWebsiteClick()">Visit offical website to
                 buy</button>
 
-            <div #rootElement class="product-description">{{getDescription(rootElement)}}</div>
+            <div class="product-description" [innerHtml]="product.description"></div>
 
 
 
@@ -207,8 +207,7 @@
         <media-slider [media]="product.media" [clientWidth]="clientWidth"></media-slider>
 
 
-
-        <div #rootElement class="product-description" style="margin-top: 10px;">{{getDescription(rootElement)}}</div>
+        <div class="product-description" style="margin-top: 10px;" [innerHtml]="product.description"></div>
 
 
 

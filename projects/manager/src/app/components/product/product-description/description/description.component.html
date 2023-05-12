@@ -1,5 +1,1 @@
-<div style="position: absolute; top: -45px; left: 0;" [style.visibility]="showToolbar ? 'visible' : 'hidden'">
-    <text-toolbar-popup [textBox]="textBox"></text-toolbar-popup>
-</div>
-
-<iframe #iframe style="width: 100%;" scrolling="no" frameborder="0" [style.height.px]="height"></iframe>
+<div #descriptionContainer contenteditable="plaintext-only" [innerHtml]="description"></div>
