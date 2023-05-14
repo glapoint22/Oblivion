@@ -1,4 +1,4 @@
-import { HttpRequest } from '@angular/common/http';
+import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscriber, Subscription } from 'rxjs';
@@ -60,7 +60,7 @@ export class AccountService {
 
     // If not in the middle of refreshing, log out
     if (!this.refreshing) {
-      this.dataService.get('api/Account/LogOut').subscribe(()=> {
+      this.dataService.get('api/Account/LogOut').subscribe(() => {
         this.user = undefined;
       });
       this.router.navigate(['/log-in']);
@@ -91,18 +91,25 @@ export class AccountService {
 
     // Get a new refresh token
     this.dataService.get('api/Account/Refresh', undefined, { authorization: true })
-      .subscribe((newRefreshToken: any) => {
-        this.refreshTokenSet = true;
-        this.refreshing = false;
-        this.waitForRefreshToken.next();
+      .subscribe({
+        next: (newRefreshToken: any) => {
+          this.refreshTokenSet = true;
+          this.refreshing = false;
+          this.waitForRefreshToken.next();
 
-        // If we received a new refresh token,
-        // Make a call to the server to delete all old refresh tokens
-        if (newRefreshToken) {
+          // Make a call to the server to delete all old refresh tokens
           this.dataService.delete('api/Account/Refresh', { newRefreshToken: encodeURIComponent(newRefreshToken.value) }, { authorization: true })
             .subscribe();
-        } else {
-          this.logOut();
+        },
+
+        error: (error: HttpErrorResponse) => {
+          // Something went wrong trying to refresh the token
+          if (error.status == 404) {
+            this.refreshTokenSet = true;
+            this.refreshing = false;
+            this.waitForRefreshToken.next();
+            this.logOut();
+          }
         }
       });
   }
