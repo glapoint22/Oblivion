@@ -21,4 +21,5 @@ export class Product implements IProduct {
     public bonuses!: Array<Subproduct>;
     public media!: Array<ProductMedia>;
     public notificationItems: Array<NotificationItem> = new Array<NotificationItem>();
+    public currency!: string;
 }

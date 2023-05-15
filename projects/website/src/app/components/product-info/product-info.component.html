@@ -82,10 +82,10 @@
             <stars-summary [product]="product"></stars-summary>
 
             <div class="price-container">
-                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:product.currency}}</ng-container>
                 <ng-container *ngIf="product.maxPrice > 0">
-                    {{product.minPrice | currency:'USD'}} -
-                    {{product.maxPrice | currency:'USD'}}
+                    {{product.minPrice | currency:product.currency}} -
+                    {{product.maxPrice | currency:product.currency}}
                 </ng-container>
             </div>
 
@@ -165,10 +165,10 @@
             <stars-summary [product]="product"></stars-summary>
 
             <div class="price-container">
-                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:product.currency}}</ng-container>
                 <ng-container *ngIf="product.maxPrice > 0">
-                    {{product.minPrice | currency:'USD'}} -
-                    {{product.maxPrice | currency:'USD'}}
+                    {{product.minPrice | currency:product.currency}} -
+                    {{product.maxPrice | currency:product.currency}}
                 </ng-container>
             </div>
 

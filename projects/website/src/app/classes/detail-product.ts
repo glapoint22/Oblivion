@@ -8,4 +8,5 @@ export class DetailProduct extends SummaryProduct {
     public recurringPayment!: RecurringPayment;
     public media!: Array<Media>;
     public breadcrumb!: Array<Niche>;
+    public currency!: string;
 }

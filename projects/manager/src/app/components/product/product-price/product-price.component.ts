@@ -34,16 +34,19 @@ export class ProductPriceComponent extends ProductComponent {
         this.pricePopup = pricePopup;
         pricePopup.arrowPosition = arrowPosition;
         pricePopup.price = this.product.minPrice;
+        pricePopup.currency = this.product.currency;
 
-        pricePopup.callback = (price: number) => {
+        pricePopup.callback = (pricePopupResult: any) => {
           this.dataService.post('api/Products/Price', {
             productId: this.product.id,
-            price: price
+            price: pricePopupResult.price,
+            currency: pricePopupResult.currency
           }, {
             authorization: true
           }).subscribe();
 
-          this.product.minPrice = price;
+          this.product.minPrice = pricePopupResult.price;
+          this.product.currency = pricePopupResult.currency;
         }
 
         const onPricePopupCloseListener = this.pricePopup.onClose.subscribe(() => {

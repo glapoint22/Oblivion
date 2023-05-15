@@ -23,10 +23,10 @@
             </icon-button>
         </div>
         <div *ngIf="product.minPrice != null" class="price-container">
-            <ng-container *ngIf="product.pricePoints.length == 0">{{product.minPrice | currency:'USD'}}</ng-container>
+            <ng-container *ngIf="product.pricePoints.length == 0">{{product.minPrice | currency:product.currency}}</ng-container>
             <ng-container *ngIf="product.pricePoints.length > 0">
-                {{product.minPrice | currency:'USD'}} -
-                {{product.pricePoints.length > 1 ? (product.maxPrice | currency:'USD') : ''}}
+                {{product.minPrice | currency:product.currency}} -
+                {{product.pricePoints.length > 1 ? (product.maxPrice | currency:product.currency) : ''}}
             </ng-container>
         </div>
         <div class="product-property-add-popup-container">

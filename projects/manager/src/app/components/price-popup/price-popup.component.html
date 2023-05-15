@@ -1,9 +1,11 @@
-<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()"
-    [style.top.px]="top ? top : null" [style.left.px]="left ? left : null" [ngStyle]="{'position': top && left ? 'absolute' : null}">
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()"
+    (mousedown)="$event.stopPropagation()" [style.top.px]="top ? top : null" [style.left.px]="left ? left : null"
+    [ngStyle]="{'position': top && left ? 'absolute' : null}">
 
 
     <!-- Arrow Left -->
-    <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft || arrowPosition == PopupArrowPosition.BottomLeft" class="popup-arrow-container">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft || arrowPosition == PopupArrowPosition.BottomLeft"
+        class="popup-arrow-container">
         <div class="popup-arrow-left-Border"></div>
         <div class="popup-arrow-left-background"></div>
     </div>
@@ -13,19 +15,30 @@
 
         <!-- Price -->
         <div class="popup-label">Price:</div>
-        <input #priceInput #tabElement (keydown.enter)="onSubmitClick()" (input)="onInput()">
+
+        <div style="display: flex;
+        align-items: baseline;
+        justify-content: space-between;">
+            <input #priceInput #tabElement (keydown.enter)="onSubmitClick()" (input)="onInput()">
+            <dropdown style="width: 150px" [dropdownType]="DropdownType.Manager"
+                [list]="currencies" (onChange)="onCurrencyChange($event)" [selectedListItem]="selectedCurrency">
+            </dropdown>
+        </div>
+
 
 
         <!-- Buttons -->
         <div class="popup-button-container">
             <button #tabElement class="dark-button" (click)="close()">Close</button>
-            <button #tabElement class="gold-button" (click)="onSubmitClick()" [disabled]="submitButtonDisabled">Submit</button>
+            <button #tabElement class="gold-button" (click)="onSubmitClick()"
+                [disabled]="submitButtonDisabled">Submit</button>
         </div>
     </div>
 
 
     <!-- Arrow Right -->
-    <div *ngIf="arrowPosition == PopupArrowPosition.TopRight || arrowPosition == PopupArrowPosition.BottomRight" class="popup-arrow-container">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopRight || arrowPosition == PopupArrowPosition.BottomRight"
+        class="popup-arrow-container">
         <div class="popup-arrow-right-Border"></div>
         <div class="popup-arrow-right-background"></div>
     </div>
