@@ -1,5 +1,6 @@
 export class ErrorDetails {
-    innerExeption!: string;
-    message!: string;
-    source!: string;
+    InnerExeption!: string;
+    Message!: string;
+    Source!: string;
+    StackTrace!: string;
 }

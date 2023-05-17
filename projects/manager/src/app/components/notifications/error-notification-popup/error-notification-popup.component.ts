@@ -23,13 +23,8 @@ export class ErrorNotificationPopupComponent extends NotificationPopupComponent 
     this.onNotificationLoad.subscribe(() => {
       if (this.notification.employeeNotes.length == 0) this.notification.employeeNotes.push(new NotificationEmployee());
 
-      let text = this.notification.text.replace(/"([^"]+)":/g, ($0: string, $1: string) => {
-        return ('"' + $1.toLowerCase() + '":');
-      });
-
+      let text = this.notification.text;
       this.errorDetails = JSON.parse(text);
-
-
     });
   }
 
