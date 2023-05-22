@@ -10,4 +10,5 @@ export class OrderProduct {
     public paymentsRemaining!: number;
     public urlName!: string;
     public productId!: string;
+    public disabled!: boolean;
 }

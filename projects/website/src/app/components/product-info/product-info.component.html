@@ -36,7 +36,15 @@
                     <i></i>
                 </div>
 
+                <div *ngIf="product.disabled" class="not-in-service">
+                    <div style="display: flex; align-items: center;">
+                        <img src="assets/exclamation.png" style="margin-right: 10px;">
+                        <div>NO LONGER IN SERVICE</div>
+                    </div>
+                </div>
+
             </div>
+
         </div>
 
 
@@ -46,26 +54,20 @@
 
                 <div class="product-title">{{product.name}}</div>
                 <div class="social-media-container">
-                    <div tabindex="0"
-                         title="Share on Facebook"
-                         class="social-media-image-container"
-                         (click)="socialMediaService.facebookShare('/' + product.urlName + '/' + product.id, product.name)">
+                    <div tabindex="0" title="Share on Facebook" class="social-media-image-container"
+                        (click)="socialMediaService.facebookShare('/' + product.urlName + '/' + product.id, product.name)">
                         <img src="assets/facebook-share.png" alt="Share on Facebook">
                         <img src="assets/facebook-share-scaled.png" alt="Share on Facebook">
                     </div>
 
-                    <div tabindex="0"
-                         title="Share on Twitter"
-                         class="social-media-image-container"
-                         (click)="socialMediaService.twitterShare('/' + product.urlName + '/' + product.id, product.name)">
+                    <div tabindex="0" title="Share on Twitter" class="social-media-image-container"
+                        (click)="socialMediaService.twitterShare('/' + product.urlName + '/' + product.id, product.name)">
                         <img src="assets/twitter-share.png" alt="Share on Twitter">
                         <img src="assets/twitter-share-scaled.png" alt="Share on Twitter">
                     </div>
 
-                    <div tabindex="0"
-                         title="Share on Pinterest"
-                         class="social-media-image-container"
-                         (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.id, product.media[0].src, product.name)">
+                    <div tabindex="0" title="Share on Pinterest" class="social-media-image-container"
+                        (click)="socialMediaService.pinterestShare('/' + product.urlName + '/' + product.id, product.media[0].src, product.name)">
                         <img src="assets/pinterest-share.png" alt="Share on Pinterest">
                         <img src="assets/pinterest-share-scaled.png" alt="Share on Pinterest">
                     </div>
@@ -82,7 +84,8 @@
             <stars-summary [product]="product"></stars-summary>
 
             <div class="price-container">
-                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:product.currency}}</ng-container>
+                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice |
+                    currency:product.currency}}</ng-container>
                 <ng-container *ngIf="product.maxPrice > 0">
                     {{product.minPrice | currency:product.currency}} -
                     {{product.maxPrice | currency:product.currency}}
@@ -118,7 +121,8 @@
                     Add to List
                 </button>
 
-                <div class="report-item-container" (click)="onReportItemClick()" tabindex="0" (keydown.enter)="onReportItemClick()">
+                <div class="report-item-container" (click)="onReportItemClick()" tabindex="0"
+                    (keydown.enter)="onReportItemClick()">
                     <div class="flag-icon"></div>
                     <div class="report-item-text">
                         Report this item
@@ -165,7 +169,8 @@
             <stars-summary [product]="product"></stars-summary>
 
             <div class="price-container">
-                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice | currency:product.currency}}</ng-container>
+                <ng-container *ngIf="product.maxPrice == 0">{{product.minPrice |
+                    currency:product.currency}}</ng-container>
                 <ng-container *ngIf="product.maxPrice > 0">
                     {{product.minPrice | currency:product.currency}} -
                     {{product.maxPrice | currency:product.currency}}
@@ -192,7 +197,6 @@
 
         </div>
 
-            
 
 
 
@@ -204,7 +208,16 @@
 
 
 
-        <media-slider [media]="product.media" [clientWidth]="clientWidth"></media-slider>
+        <div style="position: relative;">
+            <media-slider [media]="product.media" [clientWidth]="clientWidth"></media-slider>
+            <div *ngIf="product.disabled" class="not-in-service" class="not-in-service">
+                <div style="display: flex; align-items: center;">
+                    <img src="assets/exclamation.png" style="margin-right: 10px;">
+                    <div>NO LONGER IN SERVICE</div>
+                </div>
+            </div>
+        </div>
+
 
 
         <div class="product-description" style="margin-top: 10px;" [innerHtml]="product.description"></div>
@@ -219,7 +232,8 @@
                 Add to List
             </button>
 
-            <div class="report-item-container" (click)="onReportItemClick()" tabindex="0" (keydown.enter)="onReportItemClick()">
+            <div class="report-item-container" (click)="onReportItemClick()" tabindex="0"
+                (keydown.enter)="onReportItemClick()">
                 <div class="flag-icon"></div>
                 <div class="report-item-text">
                     Report this item

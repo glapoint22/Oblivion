@@ -109,6 +109,14 @@
                                         </ng-container>
                                     </div>
                                 </div>
+
+                                <div *ngIf="product.disabled" class="not-in-service">
+                                    <div style="display: flex; align-items: center;">
+                                        <img src="assets/exclamation.png" style="margin-right: 5px">
+                                        <div>NO LONGER IN SERVICE</div>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="vertical-line"></div>

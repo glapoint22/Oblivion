@@ -41,6 +41,8 @@ export class ProductComponent implements OnInit {
           this.components = properties.components;
           this.bonuses = properties.bonuses;
 
+          this.relatedProducts = null!;
+
           if (properties.relatedProducts && properties.relatedProducts.length > 0) {
             this.relatedProducts = {
               caption: 'Similar items you may like',

@@ -14,4 +14,5 @@ export class SummaryProduct {
     public threeStars!: number;
     public fourStars!: number;
     public fiveStars!: number;
+    public disabled!: boolean;
 }

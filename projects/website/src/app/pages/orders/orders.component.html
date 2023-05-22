@@ -83,7 +83,7 @@
                     <div class="order">
 
                         <!-- Products -->
-                        <div class="products-container">
+                        <div class="products-container" style="position: relative;">
 
 
                             <div class="product-container" *ngFor="let product of order.products">
@@ -104,6 +104,16 @@
                                     <div *ngIf="product.rebillFrequency" style="color: #b4b4b4;">Recurring -
                                         {{getRecurringText(product)}} {{product.rebillAmount | currency:'USD'}}
                                     </div>
+                                </div>
+
+                                
+                                
+                            </div>
+
+                            <div *ngIf="order.products[0].disabled" class="not-in-service">
+                                <div style="display: flex; align-items: center;">
+                                    <img src="assets/exclamation.png" style="margin-right: 5px">
+                                    <div>NO LONGER IN SERVICE</div>
                                 </div>
                             </div>
                         </div>
@@ -186,6 +196,13 @@
                                     [alt]="product.image && product.image.name ? product.image.name : 'No Image Available'"
                                     [title]="product.image && product.image.name ? product.image.name : 'No Image Available'">
                             </div>
+
+                            <div *ngIf="product.disabled" class="not-in-service">
+                                <div style="display: flex; align-items: center;">
+                                    <img src="assets/exclamation.png">
+                                    <div>NO LONGER IN SERVICE</div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="product-info-container">
@@ -202,6 +219,8 @@
                                 (click)="onVisitOfficialWebsiteClick(product.hoplink)">Visit official website</button>
 
                         </div>
+
+                        
 
                     </div>
 

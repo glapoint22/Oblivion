@@ -8,4 +8,5 @@ export class QueriedOrderProduct {
     public orderNumber!: string;
     public productId!: string;
     public urlName!: string;
+    public disabled!: boolean;
 }

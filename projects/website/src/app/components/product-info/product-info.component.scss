@@ -210,7 +210,6 @@
 
 .product-description {
     color: #c9c9c9;
-    font-size: 15px;
 }
 
 
@@ -246,6 +245,21 @@
     }
 }
 
+.not-in-service {
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    background: rgba(98, 21, 21, 0.95);
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #cdcdcd;
+    font-size: 18px;
+    outline: 1px solid #8b1e1e;
+    font-weight: bold;
+}
+
 
 
 ::-webkit-scrollbar {
@@ -276,10 +290,12 @@
     .product-info-container-pc {
         display: none;
     }
+}
 
-    // .product-section {
-    //     padding: 13px 10px;
-    // }
+@media(max-width: 300px) {
+    .not-in-service {
+        font-size: 14px;
+    }
 }
 
 
