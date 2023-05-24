@@ -9,6 +9,7 @@ import { ListsMenuComponent } from '../../components/lists-menu/lists-menu.compo
 import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-side-menu.component';
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
+import { Breadcrumb } from '../../classes/breadcrumb';
 
 @Component({
   selector: 'lists',
@@ -24,6 +25,7 @@ export class ListsComponent implements OnInit {
   public products!: Array<ListProduct> | undefined;
   public DropdownType = DropdownType;
   public window = window;
+  public breadcrumbs!: Array<Breadcrumb>;
 
   @ViewChild('purpleButton') purpleButton!: ElementRef<HTMLElement>;
   @ViewChild('listMenuContainer') listMenuContainer!: ElementRef<HTMLElement>;
@@ -62,6 +64,19 @@ export class ListsComponent implements OnInit {
         this.lists = [];
       }
     });
+
+    // Set the breadcrumbs
+    this.breadcrumbs = [
+      {
+        link: {
+          name: 'Your Account',
+          route: '/account'
+        }
+      },
+      {
+        active: 'Your Lists'
+      }
+    ]
   }
 
 

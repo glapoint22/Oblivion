@@ -1,23 +1,4 @@
-<header-footer>
-    <div class="breadcrumb" [style.paddingRight.px]="lazyLoadingService.paddingRight + 10">
-        <!-- Niche -->
-        <a routerLink="/browse"
-            [queryParams]="{nicheName: product.breadcrumb[0].urlName, nicheId: product.breadcrumb[0].id}">{{product.breadcrumb[0].name}}</a>
-        <div></div>
-
-        <!-- Subniche -->
-        <a routerLink="/browse"
-            [queryParams]="{subnicheName: product.breadcrumb[1].urlName, subnicheId: product.breadcrumb[1].id}">{{product.breadcrumb[1].name}}</a>
-            
-        <div></div>
-
-        <a [routerLink]="'/' + product.urlName + '/' + product.id">{{product.name}}</a>
-        <div></div>
-
-        <div>Reviews</div>
-    </div>
-
-
+<header-footer [breadcrumbs]="breadcrumbs">
     <div class="page-content-container">
         <div class="page-content">
             <div class="page-title">Reviews</div>
@@ -41,21 +22,10 @@
                         <button class="gold-round-button-lg" (click)="onWriteReviewClick()">Write a
                             Review</button>
                     </div>
-
-
-
                 </div>
-
             </div>
-
             <helpful-reviews></helpful-reviews>
-
-
         </div>
         <reviews #reviews [product]="product" [showPaginator]="true"></reviews>
     </div>
-
-
-
-
 </header-footer>

@@ -1,0 +1,50 @@
+.message-container {
+    width: 100%;
+    position: fixed;
+    z-index: 50;
+    background: #fbfbe8;
+    border-radius: 5px;
+}
+
+.message-flex-container {
+    display: flex;
+}
+
+.message-image-container {
+    padding: 5px;
+    padding-left: 10px;
+
+    img {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+.message {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.close-button-container {
+    width: 25px;
+}
+
+.close-button {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #484848;
+    font-size: 15px;
+    font-family: "lithos pro";
+    cursor: pointer;
+
+    &:hover {
+        color: #666666;
+    }
+}

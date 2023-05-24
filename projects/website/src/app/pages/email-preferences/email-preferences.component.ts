@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { EmailPreferences } from '../../classes/email-preferences';
 import { SuccessPromptComponent } from '../../components/success-prompt/success-prompt.component';
+import { Breadcrumb } from '../../classes/breadcrumb';
 
 @Component({
   selector: 'email-preferences',
@@ -13,6 +14,7 @@ export class EmailPreferencesComponent implements OnInit {
   public preferences!: EmailPreferences;
   private initialPreferences: EmailPreferences = new EmailPreferences();
   public allChecked!: boolean;
+  public breadcrumbs!: Array<Breadcrumb>;
 
   constructor
     (
@@ -25,9 +27,22 @@ export class EmailPreferencesComponent implements OnInit {
     this.preferences = this.route.snapshot.data.preferences;
     this.setInitialPreferences();
     this.setAllChecked();
+
+    // Set the breadcrumbs
+    this.breadcrumbs = [
+      {
+        link: {
+          name: 'Your Account',
+          route: '/account'
+        }
+      },
+      {
+        active: 'Email Preferences'
+      }
+    ]
   }
 
-
+  
 
   isDisabled() {
     if (!this.preferences) return true;

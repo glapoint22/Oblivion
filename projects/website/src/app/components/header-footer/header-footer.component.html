@@ -1,7 +1,10 @@
-<header></header>
+<header #headerComponent></header>
+<message #messageComponent [top]="messageComponentTop" (onMessageChange)="onMessageChange()"></message>
+<breadcrumbs #breadcrumbsComponent [top]="breadcrumbsComponentTop" [breadcrumbs]="breadcrumbs"></breadcrumbs>
+
 
 <div class="page-container">
-    <div class="page">
+    <div class="page" [style.paddingTop.px]="pageTop">
         <ng-content></ng-content>
     </div>
     <footer></footer>

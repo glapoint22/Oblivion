@@ -36,6 +36,12 @@ export class HeaderComponent {
   @ViewChild('sideMenuContainer', { read: ViewContainerRef }) sideMenuContainer!: ViewContainerRef;
   @ViewChild('nicheMenuPopupContainer', { read: ViewContainerRef }) nicheMenuPopupContainer!: ViewContainerRef;
   @ViewChild('accountMenuPopupContainer', { read: ViewContainerRef }) accountMenuPopupContainer!: ViewContainerRef;
+  @ViewChild('headerContainer') private headerContainer!: ElementRef<HTMLElement>;
+
+  public get height(): number {
+    return this.headerContainer ? this.headerContainer.nativeElement.clientHeight : 0;
+  }
+
 
 
 
@@ -161,7 +167,7 @@ export class HeaderComponent {
 
 
 
-  
+
 
   onHamburgerButtonClick() {
     if (this.sideMenuContainer.length == 0) {
@@ -239,10 +245,10 @@ export class HeaderComponent {
             this.selectedNiche = niche;
           });
 
-          const nicheMenuPopupCloseListener = this.nicheMenuPopup.onClose.subscribe(() => {
-            nicheMenuPopupCloseListener.unsubscribe();
-            this.nicheMenuPopupOpen = false;
-          });
+        const nicheMenuPopupCloseListener = this.nicheMenuPopup.onClose.subscribe(() => {
+          nicheMenuPopupCloseListener.unsubscribe();
+          this.nicheMenuPopupOpen = false;
+        });
       });
   }
 
@@ -287,7 +293,7 @@ export class HeaderComponent {
 
 
 
-  
+
 
 
 

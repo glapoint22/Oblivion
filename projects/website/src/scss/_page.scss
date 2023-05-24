@@ -40,59 +40,59 @@
 }
 
 
-.breadcrumb {
-    position: fixed;
-    top: 79px;
-    left: 0;
-    right: 0;
-    height: 58px;
-    background: #1f1f1f;
-    border-bottom: 1px solid #252525;
-    text-align: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    line-height: 58px;
-    padding: 0 10px;
-    z-index: 50;
+// .breadcrumb {
+//     position: fixed;
+//     top: 79px;
+//     left: 0;
+//     right: 0;
+//     height: 58px;
+//     background: #1f1f1f;
+//     border-bottom: 1px solid #252525;
+//     text-align: center;
+//     overflow-x: auto;
+//     overflow-y: hidden;
+//     white-space: nowrap;
+//     line-height: 58px;
+//     padding: 0 10px;
+//     z-index: 50;
 
-    a {
-        color: $gold;
-        text-decoration: none;
-        display: inline-block;
-        outline: none;
-        // width: 92px;
+//     a {
+//         color: $gold;
+//         text-decoration: none;
+//         display: inline-block;
+//         outline: none;
+//         // width: 92px;
 
-        &:hover {
-            text-decoration: underline;
-        }
+//         &:hover {
+//             text-decoration: underline;
+//         }
 
-        & + div {
-            @include arrow-right(9px, 6px, #dadada);
-            margin: 0 10px;
-            display: inline-block;
-        }
+//         & + div {
+//             @include arrow-right(9px, 6px, #dadada);
+//             margin: 0 10px;
+//             display: inline-block;
+//         }
 
-        &:focus-visible {
-            color: lighten($gold, 20);
-            // font-size: 15.5px;
-            text-decoration: underline;
-            // font-weight: bold;
-        }
-    }
+//         &:focus-visible {
+//             color: lighten($gold, 20);
+//             // font-size: 15.5px;
+//             text-decoration: underline;
+//             // font-weight: bold;
+//         }
+//     }
 
-    div:last-child {
-        display: inline-block;
-        color: #b4b4b4;
-    }
-}
+//     div:last-child {
+//         display: inline-block;
+//         color: #b4b4b4;
+//     }
+// }
 
 
-@media(max-width: 800px) {
-    .breadcrumb {
-        top: 100px;
-    }
-}
+// @media(max-width: 800px) {
+//     .breadcrumb {
+//         top: 100px;
+//     }
+// }
 
 
 .section-container {

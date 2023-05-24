@@ -1,0 +1,44 @@
+.breadcrumb {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 58px;
+    background: #1f1f1f;
+    border-bottom: 1px solid #252525;
+    text-align: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    line-height: 58px;
+    padding: 0 10px;
+    z-index: 50;
+
+    a {
+        color: #ffba00;
+        text-decoration: none;
+        display: inline-block;
+        outline: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        &+div {
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 6px solid #dadada;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        &:focus-visible {
+            color: lighten(#ffba00, 20);
+            text-decoration: underline;
+        }
+    }
+
+    div:last-child {
+        display: inline-block;
+        color: #b4b4b4;
+    }
+}

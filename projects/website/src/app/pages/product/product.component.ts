@@ -6,6 +6,7 @@ import { DetailProduct } from '../../classes/detail-product';
 import { RelatedProducts } from '../../classes/related-products';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
+import { Breadcrumb } from '../../classes/breadcrumb';
 
 @Component({
   selector: 'product',
@@ -19,6 +20,7 @@ export class ProductComponent implements OnInit {
   public bonuses!: Array<Subproduct>;
   public relatedProducts!: RelatedProducts;
   public clientWidth!: number;
+  public breadcrumbs!: Array<Breadcrumb>;
 
   constructor
     (
@@ -32,7 +34,31 @@ export class ProductComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.product = data.product;
+
+      // Set the meta tags
       this.socialMediaService.addMetaTags(this.product.name, this.product.description, this.product.media[0].src);
+
+      // Set the breadcrumbs
+      this.breadcrumbs = [
+        {
+          link: {
+            name: this.product.breadcrumb[0].name,
+            route: '/browse',
+            queryParams: { nicheName: this.product.breadcrumb[0].urlName, nicheId: this.product.breadcrumb[0].id }
+          }
+        },
+        {
+          link: {
+            name: this.product.breadcrumb[1].name,
+            route: '/browse',
+            queryParams: { subnicheName: this.product.breadcrumb[1].urlName, subnicheId: this.product.breadcrumb[1].id }
+          }
+        },
+        {
+          active: this.product.name
+        }
+      ]
+
 
       // This will get the rest of the product properties
       this.dataService.get('api/Products/GetProperties', [{ key: 'productId', value: this.product.id }])

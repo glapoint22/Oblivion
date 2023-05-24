@@ -1,11 +1,4 @@
-<header-footer>
-    <div class="breadcrumb" [style.paddingRight.px]="lazyLoadingService.paddingRight + 10">
-        <a routerLink="/account">Your Account</a>
-        <div></div>
-
-        <div>Your Profile</div>
-    </div>
-
+<header-footer [breadcrumbs]="breadcrumbs">
     <div class="page-content-container">
         <div class="page-content">
             <div class="page-title">Your Profile</div>

@@ -1,25 +1,4 @@
-<header-footer>
-    <div class="breadcrumb" [style.paddingRight.px]="lazyLoadingService.paddingRight + 10">
-
-        <ng-container *ngIf="!isSearch">
-            <a routerLink="/account">Your Account</a>
-            <div></div>
-
-            <div>Your Orders</div>
-        </ng-container>
-
-        <ng-container *ngIf="isSearch">
-            <a routerLink="/account">Your Account</a>
-            <div></div>
-
-            <a routerLink="/account/orders">Your Orders</a>
-            <div></div>
-
-            <div>Order Search</div>
-        </ng-container>
-
-    </div>
-
+<header-footer [breadcrumbs]="breadcrumbs">
     <div class="page-content-container">
         <div class="page-content">
             <div class="page-title">{{!isSearch ? 'Your Orders': 'Order Search'}}</div>
@@ -33,11 +12,8 @@
                         <div class="orders-placed-text">
                             {{orders.length}} order{{orders.length == 0 || orders.length > 1 ? 's' : ''}} placed in
                         </div>
-                        <dropdown [list]="filters"
-                                  style="width: 186px;"
-                                  (onChange)="onFilterChange($event)"
-                                  [selectedListItem]="selectedFilter"
-                                  [dropdownType]="DropdownType.Website">
+                        <dropdown [list]="filters" style="width: 186px;" (onChange)="onFilterChange($event)"
+                            [selectedListItem]="selectedFilter" [dropdownType]="DropdownType.Website">
                         </dropdown>
                     </div>
 
@@ -106,8 +82,8 @@
                                     </div>
                                 </div>
 
-                                
-                                
+
+
                             </div>
 
                             <div *ngIf="order.products[0].disabled" class="not-in-service">
@@ -211,7 +187,7 @@
 
                             <div>Ordered on {{getDate(product.date) | date}}</div>
 
-                            
+
 
                             <div (click)="onSearch(product.orderNumber)">View Order</div>
 
@@ -220,7 +196,7 @@
 
                         </div>
 
-                        
+
 
                     </div>
 

@@ -1,0 +1,13 @@
+<ng-container *ngIf="breadcrumbs && breadcrumbs.length > 0">
+    <div #breadcrumbContainer class="breadcrumb" [style.top.px]="top" [style.paddingRight.px]="lazyLoadingService.paddingRight + 10">
+
+        <ng-container *ngFor="let breadcrumb of breadcrumbs; let i = index">
+            <a *ngIf="breadcrumb.link" [routerLink]="breadcrumb.link.route"
+                [queryParams]="breadcrumb.link.queryParams">{{breadcrumb.link.name}}</a>
+
+            <div *ngIf="i < breadcrumbs.length -1"></div>
+
+            <div *ngIf="breadcrumb.active">{{breadcrumb.active}}</div>
+        </ng-container>
+    </div>
+</ng-container>

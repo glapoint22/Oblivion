@@ -4,6 +4,7 @@ import { AccountService, LazyLoadingService, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
 import { DetailProduct } from '../../classes/detail-product';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
+import { Breadcrumb } from '../../classes/breadcrumb';
 
 @Component({
   selector: 'reviews-page',
@@ -12,7 +13,7 @@ import { WriteReviewFormComponent } from '../../components/write-review-form/wri
 })
 export class ReviewsPageComponent implements OnInit {
   public product!: DetailProduct;
-
+  public breadcrumbs!: Array<Breadcrumb>;
 
   constructor
     (
@@ -23,6 +24,33 @@ export class ReviewsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.product = this.route.snapshot.parent?.data.product;
+
+    // Set the breadcrumbs
+    this.breadcrumbs = [
+      {
+        link: {
+          name: this.product.breadcrumb[0].name,
+          route: '/browse',
+          queryParams: { nicheName: this.product.breadcrumb[0].urlName, nicheId: this.product.breadcrumb[0].id }
+        }
+      },
+      {
+        link: {
+          name: this.product.breadcrumb[1].name,
+          route: '/browse',
+          queryParams: { subnicheName: this.product.breadcrumb[1].urlName, subnicheId: this.product.breadcrumb[1].id }
+        }
+      },
+      {
+        link: {
+          name: this.product.name,
+          route: '/' + this.product.urlName + '/' + this.product.id
+        }
+      },
+      {
+        active: 'Reviews'
+      }
+    ]
   }
 
 

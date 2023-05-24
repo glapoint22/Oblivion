@@ -8,6 +8,7 @@ import { QueriedOrderProduct } from '../../classes/queried-order-product';
 import { OrdersSideMenuComponent } from '../../components/orders-side-menu/orders-side-menu.component';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { OrdersResolver } from '../../resolvers/orders/orders.resolver';
+import { Breadcrumb } from '../../classes/breadcrumb';
 
 @Component({
   selector: 'orders',
@@ -22,6 +23,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   public isSearch!: boolean;
   public searchTerm!: string;
   public DropdownType = DropdownType;
+  public breadcrumbs!: Array<Breadcrumb>;
 
   constructor
     (
@@ -42,8 +44,38 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
       if (this.searchTerm) {
         this.isSearch = true;
+
+        this.breadcrumbs = [
+          {
+            link: {
+              name: 'Your Account',
+              route: '/account'
+            }
+          },
+          {
+            link: {
+              name: 'Your Orders',
+              route: '/account/orders'
+            }
+          },
+          {
+            active: 'Order Search'
+          }
+        ]
       } else {
         this.isSearch = false;
+
+        this.breadcrumbs = [
+          {
+            link: {
+              name: 'Your Account',
+              route: '/account'
+            }
+          },
+          {
+            active: 'Your Orders'
+          }
+        ]
       }
     })
   }

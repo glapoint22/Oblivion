@@ -1,24 +1,4 @@
-<header-footer>
-
-    <!-- Breadcrumb -->
-    <div class="breadcrumb" [style.paddingRight.px]="lazyLoadingService.paddingRight + 10">
-
-        <!-- Niche -->
-        <a routerLink="/browse"
-            [queryParams]="{nicheName: product.breadcrumb[0].urlName, nicheId: product.breadcrumb[0].id}">{{product.breadcrumb[0].name}}</a>
-        <div></div>
-
-        <!-- Subniche -->
-        <a routerLink="/browse"
-            [queryParams]="{subnicheName: product.breadcrumb[1].urlName, subnicheId: product.breadcrumb[1].id}">{{product.breadcrumb[1].name}}</a>
-
-        <div></div>
-
-        <div>{{product.name}}</div>
-    </div>
-
-
-
+<header-footer [breadcrumbs]="breadcrumbs">
     <div class="product-container">
 
         <!-- Product Info -->

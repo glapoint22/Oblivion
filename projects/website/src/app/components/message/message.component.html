@@ -1,0 +1,15 @@
+<ng-container *ngIf="message">
+    <div #messageContainer class="message-container" [style.top.px]="top">
+        <div class="message-flex-container">
+            <div class="message-image-container">
+                <img src="assets/exclamation.png">
+            </div>
+            <div class="message">{{message}}</div>
+            <div class="close-button-container">
+                <div class="close-button" title="Close" (click)="onCloseButtonClick()">
+                    X
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

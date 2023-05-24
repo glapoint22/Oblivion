@@ -4,6 +4,8 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderFooterComponent } from './header-footer.component';
 import { RouterModule } from '@angular/router';
+import { MessageComponent } from '../message/message.component';
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 
 
 
@@ -12,7 +14,9 @@ import { RouterModule } from '@angular/router';
   declarations: [
     HeaderComponent,
     FooterComponent,
-    HeaderFooterComponent
+    HeaderFooterComponent,
+    MessageComponent,
+    BreadcrumbsComponent
   ],
   imports: [
     CommonModule,

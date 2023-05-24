@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AccountService, LazyLoadingService, SpinnerAction } from 'common';
 import { CreatePasswordFormComponent } from '../../components/create-password-form/create-password-form.component';
 import { ProfilePictureFormComponent } from '../../components/profile-picture-form/profile-picture-form.component';
+import { Breadcrumb } from '../../classes/breadcrumb';
 
 @Component({
   selector: 'profile',
@@ -9,12 +10,28 @@ import { ProfilePictureFormComponent } from '../../components/profile-picture-fo
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent {
+  public breadcrumbs!: Array<Breadcrumb>;
 
   constructor
     (
       public accountService: AccountService,
       public lazyLoadingService: LazyLoadingService
     ) { }
+
+  ngOnInit() {
+    // Set the breadcrumbs
+    this.breadcrumbs = [
+      {
+        link: {
+          name: 'Your Account',
+          route: '/account'
+        }
+      },
+      {
+        active: 'Your Profile'
+      }
+    ]
+  }
 
 
   async onChangeNameClick() {
