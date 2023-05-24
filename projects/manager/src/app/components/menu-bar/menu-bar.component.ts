@@ -148,6 +148,15 @@ export class MenuBarComponent {
             name: 'Publish Manager',
             shortcut: 'Alt+P',
             optionFunction: this.openPublishManagerForm
+          },
+          {
+            type: MenuOptionType.Divider
+          },
+          {
+            type: MenuOptionType.MenuItem,
+            name: 'Messenger',
+            shortcut: 'Alt+M',
+            optionFunction: this.openMessengerForm
           }
         ]
       },
@@ -450,5 +459,18 @@ export class MenuBarComponent {
       .then((notificationListPopup: NotificationListPopupComponent) => {
         this.notificationListPopup = notificationListPopup;
       });
+  }
+
+
+
+  openMessengerForm() {
+    this.lazyLoadingService.load(async () => {
+      const { MessengerFormComponent } = await import('../messenger-form/messenger-form.component');
+      const { MessengerFormModule } = await import('../messenger-form/messenger-form.module');
+      return {
+        component: MessengerFormComponent,
+        module: MessengerFormModule
+      }
+    }, SpinnerAction.None)
   }
 }
