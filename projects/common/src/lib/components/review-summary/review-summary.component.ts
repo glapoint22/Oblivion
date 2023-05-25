@@ -40,6 +40,8 @@ export class ReviewSummaryComponent implements OnChanges {
 
 
   getStatPercentage(count: number): number {
+    if (this.product.totalReviews == 0) return 0;
+
     let percentage = Math.round((count / this.product.totalReviews) * 100) / 100;
 
     percentage = Math.round(percentage * 100);

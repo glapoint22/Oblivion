@@ -26,6 +26,6 @@
             </div>
             <helpful-reviews></helpful-reviews>
         </div>
-        <reviews #reviews [product]="product" [showPaginator]="true"></reviews>
+        <reviews *ngIf="product.totalReviews > 0" #reviews [product]="product" [showPaginator]="true"></reviews>
     </div>
 </header-footer>

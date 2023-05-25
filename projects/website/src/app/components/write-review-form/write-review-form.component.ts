@@ -48,10 +48,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
   onSubmit(): void {
     if (this.form.valid) {
-      let review: string = this.form.get('review')?.value;
-
-      // Replace every new line with a <BR> tag
-      review = review.replace(/[\r\n]/g, '<br>');
+      const review: string = this.form.get('review')?.value;
 
       this.dataService.post('api/ProductReviews/PostReview', {
         productId: this.productId,
