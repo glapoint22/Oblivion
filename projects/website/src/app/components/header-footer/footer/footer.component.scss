@@ -107,7 +107,7 @@
 .social-media-container {
     position: absolute;
     right: 30px;
-    bottom: 15px;
+    bottom: 80px;
     color: $purple-text;
     display: flex;
     align-items: center;
@@ -207,7 +207,13 @@
 }
 
 
-
+.disclaimer {
+    padding: 10px;
+    color: #727272;
+    font-style: italic;
+    font-size: 12px;
+    text-align: center;
+}
 
 @media(max-width: 1400px) {
     .social-media-container {
@@ -215,6 +221,7 @@
         margin: auto;
         margin-top: 30px;
         right: 0;
+        bottom: 10px;
     }
 }
 
