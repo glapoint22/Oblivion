@@ -3,8 +3,6 @@
         <div class="page-content">
             <div class="page-title">{{!isSearch ? 'Your Orders': 'Order Search'}}</div>
 
-
-
             <div class="orders-container">
                 <div class="top-container">
 
@@ -52,7 +50,8 @@
                         </div>
                         <div class="header-text" style="align-items: flex-end;">
                             <div>Order Number:</div>
-                            <div>{{order.orderNumber}}</div>
+                            <!-- <div>{{order.orderNumber}}</div> -->
+                            <a [href]="'https://www.clkbank.com/?receiptNo=' + order.orderNumber" target="_blank">{{order.orderNumber}}</a>
                         </div>
                     </div>
 
@@ -75,10 +74,10 @@
 
                                 <div class="product-info">
                                     <div class="product-name">{{product.name}}</div>
-                                    <div class="product-price">{{product.price | currency:'USD'}}</div>
+                                    <div class="product-price">{{product.price | currency:order.currency}}</div>
 
                                     <div *ngIf="product.rebillFrequency" style="color: #b4b4b4;">Recurring -
-                                        {{getRecurringText(product)}} {{product.rebillAmount | currency:'USD'}}
+                                        {{getRecurringText(product)}} {{product.rebillAmount | currency:order.currency}}
                                     </div>
                                 </div>
 
@@ -113,35 +112,35 @@
 
                                 <div class="order-info-row">
                                     <div>Item(s) Subtotal:</div>
-                                    <div>{{order.subtotal | currency:'USD'}}</div>
+                                    <div>{{order.subtotal | currency:order.currency}}</div>
                                 </div>
 
                                 <div class="order-info-row">
                                     <div>Shipping & Handling:</div>
-                                    <div>{{order.shippingHandling | currency:'USD'}}</div>
+                                    <div>{{order.shippingHandling | currency:order.currency}}</div>
                                 </div>
 
                                 <div class="order-info-row">
                                     <div>Discount:</div>
-                                    <div>{{order.discount | currency:'USD'}}</div>
+                                    <div>{{order.discount | currency:order.currency}}</div>
                                 </div>
 
                                 <div class="order-info-row">
                                     <div>Tax:</div>
-                                    <div>{{order.tax | currency:'USD'}}</div>
+                                    <div>{{order.tax | currency:order.currency}}</div>
                                 </div>
 
                                 <div class="order-info-row">
                                     <div>Total:</div>
-                                    <div>{{order.total | currency:'USD'}}</div>
+                                    <div>{{order.total | currency:order.currency}}</div>
                                 </div>
                             </div>
 
 
 
 
-                            <div>
-                                <button class="dark-button" (click)="onWriteReviewClick(order)">Write a review</button>
+                            <div style="margin-top: 18px;">
+                                <button *ngIf="!order.isUpsell" class="dark-button" (click)="onWriteReviewClick(order)">Write a review</button>
 
                                 <button class="gold-rect-button"
                                     (click)="onVisitOfficialWebsiteClick(order.hoplink)">Visit official website</button>
@@ -191,7 +190,7 @@
 
                             <div (click)="onSearch(product.orderNumber)">View Order</div>
 
-                            <button class="gold-rect-button"
+                            <button class="gold-rect-button" style="max-width: 160px;"
                                 (click)="onVisitOfficialWebsiteClick(product.hoplink)">Visit official website</button>
 
                         </div>

@@ -5,4 +5,5 @@ export class ListProduct extends SummaryProduct {
     public dateAdded!: string;
     public collaborator!: Collaborator;
     public hoplink!: string;
+    public currency!: string;
 }

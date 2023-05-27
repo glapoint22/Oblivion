@@ -13,4 +13,6 @@ export class Order {
     public productId!: string;
     public hoplink!: string;
     public products!: Array<OrderProduct>;
+    public isUpsell!: boolean;
+    public currency!: string;
 }

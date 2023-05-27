@@ -92,10 +92,10 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
 
   getRecurringText(product: OrderProduct) {
-    let paymentsRemaining: number = 0;
+    // let paymentsRemaining: number = 0;
     let frequency!: string;
 
-    if (product.paymentsRemaining < 50) paymentsRemaining = product.paymentsRemaining;
+    // if (product.paymentsRemaining < 50) paymentsRemaining = product.paymentsRemaining;
 
     switch (product.rebillFrequency) {
       case "DAYS":
@@ -107,11 +107,11 @@ export class OrdersComponent implements OnInit, OnDestroy {
         break;
 
       case "WEEKLY":
-        frequency = "weekly";
+        frequency = "weekly ";
         break;
 
       case "BIWEEKLY":
-        frequency = "biweekly";
+        frequency = "biweekly ";
         break;
 
       case "MONTHS":
@@ -119,16 +119,16 @@ export class OrdersComponent implements OnInit, OnDestroy {
         break;
 
       case "MONTHLY":
-        frequency = "monthly";
+        frequency = "monthly ";
         break;
 
       case "QUARTERLY":
-        frequency = "quarterly";
+        frequency = "quarterly ";
         break;
     }
 
 
-    return paymentsRemaining + ' ' + frequency + ' payment' + (paymentsRemaining != 0 ? 's' : '') + ' of'
+    return frequency + 'payment of'
 
   }
 
