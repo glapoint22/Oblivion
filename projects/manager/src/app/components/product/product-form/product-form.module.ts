@@ -41,6 +41,7 @@ import { SubproductImageComponent } from '../subproducts/subproduct-image/subpro
 import { SubproductNameComponent } from '../subproducts/subproduct-name/subproduct-name.component';
 import { SubproductDescriptionComponent } from '../subproducts/subproduct-description/subproduct-description.component';
 import { SubproductValueComponent } from '../subproducts/subproduct-value/subproduct-value.component';
+import { ProductCurrencyComponent } from '../product-currency/product-currency.component';
 
 
 
@@ -82,7 +83,8 @@ import { SubproductValueComponent } from '../subproducts/subproduct-value/subpro
     SubproductImageComponent,
     SubproductNameComponent,
     SubproductDescriptionComponent,
-    SubproductValueComponent
+    SubproductValueComponent,
+    ProductCurrencyComponent
   ],
   imports: [
     CommonModule,

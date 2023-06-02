@@ -16,16 +16,7 @@
         <!-- Price -->
         <div class="popup-label">Price:</div>
 
-        <div style="display: flex;
-        align-items: baseline;
-        justify-content: space-between;">
-            <input #priceInput #tabElement (keydown.enter)="onSubmitClick()" (input)="onInput()">
-            <dropdown style="width: 150px" [dropdownType]="DropdownType.Manager"
-                [list]="currencies" (onChange)="onCurrencyChange($event)" [selectedListItem]="selectedCurrency">
-            </dropdown>
-        </div>
-
-
+        <input #priceInput #tabElement (keydown.enter)="onSubmitClick()" (input)="onInput()">
 
         <!-- Buttons -->
         <div class="popup-button-container">

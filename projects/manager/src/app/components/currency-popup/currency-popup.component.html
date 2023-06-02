@@ -1,0 +1,32 @@
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()"
+    (mousedown)="$event.stopPropagation()">
+
+
+    <div class="popup-base">
+
+        <!-- Price -->
+        <div class="popup-label">Currency:</div>
+
+        <div class="dropdown-container">
+            <dropdown style="width: 150px" [dropdownType]="DropdownType.Manager" [list]="currencies"
+                (onChange)="onCurrencyChange($event)" [selectedListItem]="selectedCurrency">
+            </dropdown>
+        </div>
+
+
+
+        <!-- Buttons -->
+        <div class="popup-button-container">
+            <button #tabElement class="dark-button" (click)="close()">Close</button>
+            <button #tabElement class="gold-button" (click)="onSubmitClick()"
+                [disabled]="submitButtonDisabled">Submit</button>
+        </div>
+    </div>
+
+
+    <!-- Arrow Right -->
+    <div class="popup-arrow-container">
+        <div class="popup-arrow-right-Border"></div>
+        <div class="popup-arrow-right-background"></div>
+    </div>
+</div>

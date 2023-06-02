@@ -8,20 +8,9 @@
     top: 13px;
 }
 
-.popup-arrow-left-Border {
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
-    border-right: 12px solid #414141;
-}
 
-.popup-arrow-left-background {
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    border-top: 11px solid transparent;
-    border-bottom: 11px solid transparent;
-    border-right: 11px solid #282828;
-}
+
+
 
 
 .popup-arrow-right-Border {
@@ -59,20 +48,11 @@
     user-select: none;
 }
 
-input {
-    height: 24px;
-    background: #1e1e1e;
-    border-radius: 4px;
-    margin-top: 7px;
-    margin-bottom: 18px;
-    border: 1px solid rgb(128, 43, 43);
-    border-right-color: #3c3c3c;
-    border-bottom-color: #3c3c3c;
-    color: #dadada;
-    margin-right: 10px;
+
+
+.dropdown-container {
+    margin: 5px 0;
 }
-
-
 
 
 .popup-button-container {

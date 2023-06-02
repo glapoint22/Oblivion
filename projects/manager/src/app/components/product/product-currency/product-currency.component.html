@@ -1,0 +1,20 @@
+<div class="product-property-container">
+    <div class="product-label-and-icon-buttons-container">
+        <div class="product-property-label">Currency:</div>
+        <div class="product-property-icon-button-container">
+            <icon-button [icon]="'fas fa-pencil-alt'"
+                         [title]="'Edit Currency'"
+                         [popupOpen]="popupOpen"
+                         (onClick)="openCurrencyPopup()">
+            </icon-button>
+        </div>
+        <div class="product-property-edit-popup-container-1">
+            <ng-template #editPopupContainer></ng-template>
+        </div>
+    </div>
+    <div class="product-dashed-border min-height">
+        <div class="currency-container">
+            {{currency}}
+        </div>
+    </div>
+</div>
