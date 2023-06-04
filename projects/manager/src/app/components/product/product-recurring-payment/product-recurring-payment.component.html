@@ -27,7 +27,7 @@
             </icon-button>
         </div>
         <div *ngIf="product.recurringPayment.recurringPrice > 0" class="recurring-container">
-            <recurring-payment [recurringPayment]="product.recurringPayment"></recurring-payment>
+            <recurring-payment [recurringPayment]="product.recurringPayment" [currency]="product.currency"></recurring-payment>
         </div>
         <div class="product-property-add-popup-container">
             <ng-template #addPopupContainer></ng-template>

@@ -101,7 +101,7 @@
 
                 <div class="product-info">
                     <recurring-payment *ngIf="product.recurringPayment.recurringPrice > 0"
-                        [recurringPayment]="product.recurringPayment">
+                        [recurringPayment]="product.recurringPayment" [currency]="product.currency">
                     </recurring-payment>
                 </div>
             </div>
@@ -186,7 +186,7 @@
 
                 <div class="product-info">
                     <recurring-payment *ngIf="product.recurringPayment.recurringPrice > 0"
-                        [recurringPayment]="product.recurringPayment">
+                        [recurringPayment]="product.recurringPayment" [currency]="product.currency">
                     </recurring-payment>
                 </div>
             </div>

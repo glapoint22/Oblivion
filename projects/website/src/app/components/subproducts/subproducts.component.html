@@ -33,7 +33,7 @@
                     <img src="assets/value-star.png">
 
                     <div class="value-text-container">
-                        <div class="value-amount-text">${{component.value}}</div>
+                        <div class="value-amount-text">{{component.value | currency:currency:'symbol':'1.0'}}</div>
                         <div class="value-text">Value</div>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                     <img src="assets/value-star.png">
 
                     <div class="value-text-container">
-                        <div class="value-amount-text">${{bonus.value}}</div>
+                        <div class="value-amount-text">{{bonus.value | currency:currency:'symbol':'1.0'}}</div>
                         <div class="value-text">Value</div>
                     </div>
                 </div>

@@ -10,4 +10,5 @@ import { TextBox, TextBoxData } from 'text-box';
 export class SubproductsComponent {
   @Input() components!: Array<Subproduct>;
   @Input() bonuses!: Array<Subproduct>;
+  @Input () currency!: string;
 }

@@ -1,6 +1,6 @@
 <i class="clock-icon"></i>
 <span class="header-text">{{RecurringPayment.getPaymentText(recurringPayment)}}</span>
-<span class="header-text">{{recurringPayment.recurringPrice | currency:'USD'}}</span>
+<span class="header-text">{{recurringPayment.recurringPrice | currency:currency}}</span>
 
 
 <div *ngIf="recurringPayment.rebillFrequency > 0" style="margin-top: 4px;" class="billing-text">

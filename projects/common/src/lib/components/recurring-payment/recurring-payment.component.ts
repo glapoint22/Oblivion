@@ -8,5 +8,6 @@ import { RecurringPayment } from '../../classes/recurring-payment';
 })
 export class RecurringPaymentComponent {
   @Input() recurringPayment!: RecurringPayment;
+  @Input() currency!: string;
   public RecurringPayment = RecurringPayment;
 }
