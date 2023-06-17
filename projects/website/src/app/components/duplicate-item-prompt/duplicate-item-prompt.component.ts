@@ -10,6 +10,7 @@ import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.com
 export class DuplicateItemPromptComponent extends LazyLoad {
   public list!: string;
   public product!: SummaryProduct;
+  public productImage!: string;
   public fromAddToListForm!: boolean
 
   ngAfterViewInit() {
@@ -32,6 +33,7 @@ export class DuplicateItemPromptComponent extends LazyLoad {
     }, SpinnerAction.StartEnd)
       .then((addToListForm: AddToListFormComponent) => {
         addToListForm.product = this.product;
+        addToListForm.productImage = this.productImage;
       });
   }
 

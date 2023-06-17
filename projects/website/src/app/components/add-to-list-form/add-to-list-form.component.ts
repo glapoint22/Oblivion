@@ -5,6 +5,7 @@ import { List } from '../../classes/list';
 import { AddToListPromptComponent } from '../../components/add-to-list-prompt/add-to-list-prompt.component';
 import { CreateListFormComponent } from '../create-list-form/create-list-form.component';
 import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate-item-prompt.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'add-to-list-form',
@@ -16,7 +17,7 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
   public product!: SummaryProduct;
   public productImage!: string;
   public selectedList!: KeyValue<string, string>;
-  
+
 
   constructor
     (
@@ -29,29 +30,23 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
     this.dataService.get<Array<KeyValue<string, string>>>('api/Lists/GetDropdownLists', undefined, {
       authorization: true,
       spinnerAction: SpinnerAction.StartEnd
-    })
-      .subscribe((lists: Array<KeyValue<string, string>>) => {
-        this.lists = lists;
+    }).subscribe((lists: Array<KeyValue<string, string>>) => {
+      this.lists = lists;
 
-        window.setTimeout(() => {
-          super.ngAfterViewInit();
+      window.setTimeout(() => {
+        super.ngAfterViewInit();
 
-          // If there are lists available
-          if (this.lists.length > 0) {
-            this.selectedList = this.lists[0];
-          }
-        })
-      });
-
-
-      
-
-      
+        // If there are lists available
+        if (this.lists.length > 0) {
+          this.selectedList = this.lists[0];
+        }
+      })
+    });
   }
 
 
 
-  
+
 
 
   onScroll(radioButtonsContainer: HTMLElement) {
@@ -77,11 +72,14 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
     }, {
       authorization: true,
       spinnerAction: SpinnerAction.Start
-    }).subscribe((isDuplicate: boolean) => {
-      if (isDuplicate) {
-        this.openDuplicateItemPrompt();
-      } else {
+    }).subscribe({
+      complete: () => {
         this.openAddToListPrompt();
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status == 409) {
+          this.openDuplicateItemPrompt();
+        }
       }
     });
   }
@@ -102,6 +100,7 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
       .then((duplicateItemPrompt: DuplicateItemPromptComponent) => {
         if (this.selectedList) duplicateItemPrompt.list = this.selectedList.key;
         duplicateItemPrompt.product = this.product;
+        duplicateItemPrompt.productImage = this.productImage;
         duplicateItemPrompt.fromAddToListForm = true;
       });
   }
