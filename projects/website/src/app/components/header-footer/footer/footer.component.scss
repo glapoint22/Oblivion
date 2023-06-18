@@ -104,107 +104,107 @@
 
 
 
-.social-media-container {
-    position: absolute;
-    right: 30px;
-    bottom: 80px;
-    color: $purple-text;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 210px;
-}
+// .social-media-container {
+//     position: absolute;
+//     right: 30px;
+//     bottom: 80px;
+//     color: $purple-text;
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+//     width: 210px;
+// }
 
 
-.icon-container {
-    display: flex;
-    width: 25px;
-    height: 25px;
-    align-items: center;
-    justify-content: center;
-}
-
-
-
-.facebook-icon,
-.twitter-icon,
-.instagram-icon,
-.pinterest-icon {
-    text-decoration: none;
-    color: inherit;
-    font-size: 18px;
-    outline: none;
-
-
-    &:focus-visible {
-        font-size: 24px;
-        color: lighten($purple-text, 20);
-    }
-}
+// .icon-container {
+//     display: flex;
+//     width: 25px;
+//     height: 25px;
+//     align-items: center;
+//     justify-content: center;
+// }
 
 
 
-
-@font-face {
-    font-family: 'facebook-icon';
-    src: url('../../../../assets/fonts/facebook-icon.ttf');
-}
-
-
-@font-face {
-    font-family: 'twitter-icon';
-    src: url('../../../../assets/fonts/twitter-icon.ttf');
-}
+// .facebook-icon,
+// .twitter-icon,
+// .instagram-icon,
+// .pinterest-icon {
+//     text-decoration: none;
+//     color: inherit;
+//     font-size: 18px;
+//     outline: none;
 
 
-@font-face {
-    font-family: 'instagram-icon';
-    src: url('../../../../assets/fonts/instagram-icon.ttf');
-}
-
-
-@font-face {
-    font-family: 'pinterest-icon';
-    src: url('../../../../assets/fonts/pinterest-icon.ttf');
-}
+//     &:focus-visible {
+//         font-size: 24px;
+//         color: lighten($purple-text, 20);
+//     }
+// }
 
 
 
-.facebook-icon {
-    font-family: 'facebook-icon';
 
-    &::before {
-        content: "\e51";
-    }
-}
+// @font-face {
+//     font-family: 'facebook-icon';
+//     src: url('../../../../assets/fonts/facebook-icon.ttf');
+// }
 
 
-.twitter-icon {
-    font-family: 'twitter-icon';
-
-    &::before {
-        content: "\e32";
-    }
-}
+// @font-face {
+//     font-family: 'twitter-icon';
+//     src: url('../../../../assets/fonts/twitter-icon.ttf');
+// }
 
 
-
-.instagram-icon {
-    font-family: 'instagram-icon';
-
-    &::before {
-        content: "\e50";
-    }
-}
+// @font-face {
+//     font-family: 'instagram-icon';
+//     src: url('../../../../assets/fonts/instagram-icon.ttf');
+// }
 
 
-.pinterest-icon {
-    font-family: 'pinterest-icon';
+// @font-face {
+//     font-family: 'pinterest-icon';
+//     src: url('../../../../assets/fonts/pinterest-icon.ttf');
+// }
 
-    &::before {
-        content: "\e52";
-    }
-}
+
+
+// .facebook-icon {
+//     font-family: 'facebook-icon';
+
+//     &::before {
+//         content: "\e51";
+//     }
+// }
+
+
+// .twitter-icon {
+//     font-family: 'twitter-icon';
+
+//     &::before {
+//         content: "\e32";
+//     }
+// }
+
+
+
+// .instagram-icon {
+//     font-family: 'instagram-icon';
+
+//     &::before {
+//         content: "\e50";
+//     }
+// }
+
+
+// .pinterest-icon {
+//     font-family: 'pinterest-icon';
+
+//     &::before {
+//         content: "\e52";
+//     }
+// }
 
 
 .disclaimer {
@@ -215,15 +215,15 @@
     text-align: center;
 }
 
-@media(max-width: 1400px) {
-    .social-media-container {
-        position: relative;
-        margin: auto;
-        margin-top: 30px;
-        right: 0;
-        bottom: 10px;
-    }
-}
+// @media(max-width: 1400px) {
+//     .social-media-container {
+//         position: relative;
+//         margin: auto;
+//         margin-top: 30px;
+//         right: 0;
+//         bottom: 10px;
+//     }
+// }
 
 @media(max-width: 525px) {
     .heading {
