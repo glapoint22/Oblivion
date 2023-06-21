@@ -1,7 +1,10 @@
-<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()" (mousedown)="$event.stopPropagation()">
+<div class="popup-container hide" [ngClass]="{'show': show}" (transitionend)="onHide()"
+    (mousedown)="$event.stopPropagation()">
 
     <!-- Arrow Left -->
-    <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft || arrowPosition == PopupArrowPosition.BottomLeft" class="popup-arrow-container" [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopLeft ? '13px' : '133px'}">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopLeft || arrowPosition == PopupArrowPosition.BottomLeft"
+        class="popup-arrow-container"
+        [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopLeft ? '13px' : '133px'}">
         <div class="popup-arrow-left-Border"></div>
         <div class="popup-arrow-left-background"></div>
     </div>
@@ -42,28 +45,41 @@
 
 
         <label class="radio" style="display: block; width: fit-content;">
-            
-            
+
+
             <input type="radio" name="shipping" [checked]="shipping == ShippingType.Value"
                 (change)="onRadioButtonChange(tabElements[4])">
             <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
 
             <div style="height: 15px;">
-                <input #shippingInput (input)="onInputChange(shippingInput.value)" type="text" style="opacity: 1; width: 100px;" [disabled]="shipping != ShippingType.Value">
+                <input #shippingInput (input)="onInputChange(shippingInput.value)" type="text"
+                    style="opacity: 1; width: 100px;" [disabled]="shipping != ShippingType.Value">
             </div>
+        </label>
+
+
+
+        <label class="radio" style="display: block; width: fit-content;">
+            <div>Digital Product</div>
+            <input type="radio" name="shipping" [checked]="shipping == ShippingType.DigitalProduct"
+                (change)="onRadioButtonChange(tabElements[5])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
 
         <!-- Buttons -->
         <div class="popup-button-container">
             <button #tabElement class="dark-button" (click)="close()">Close</button>
-            <button #tabElement class="gold-button" (click)="onSubmitClick()" [disabled]="submitButtonDisabled">Submit</button>
+            <button #tabElement class="gold-button" (click)="onSubmitClick()"
+                [disabled]="submitButtonDisabled">Submit</button>
         </div>
     </div>
 
 
     <!-- Arrow Right -->
-    <div *ngIf="arrowPosition == PopupArrowPosition.TopRight || arrowPosition == PopupArrowPosition.BottomRight" class="popup-arrow-container" [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopRight ? '13px' : '133px'}">
+    <div *ngIf="arrowPosition == PopupArrowPosition.TopRight || arrowPosition == PopupArrowPosition.BottomRight"
+        class="popup-arrow-container"
+        [ngStyle]="{'top': arrowPosition == PopupArrowPosition.TopRight ? '13px' : '133px'}">
         <div class="popup-arrow-right-Border"></div>
         <div class="popup-arrow-right-background"></div>
     </div>

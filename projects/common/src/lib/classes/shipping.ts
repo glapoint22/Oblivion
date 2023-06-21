@@ -25,6 +25,10 @@ export class Shipping {
                 text = value!;
                 break;
 
+                case ShippingType.DigitalProduct:
+                text = '*Digital Product';
+                break;
+
             default:
                 text = '';
                 break;

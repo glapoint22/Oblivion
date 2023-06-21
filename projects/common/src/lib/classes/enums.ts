@@ -36,7 +36,8 @@ export enum ShippingType {
     FreeUsShipping,
     PlusShipping,
     JustPayShipping,
-    Value
+    Value,
+    DigitalProduct
 }
 
 
