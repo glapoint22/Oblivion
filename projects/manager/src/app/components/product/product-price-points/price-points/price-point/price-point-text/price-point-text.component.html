@@ -1,0 +1,13 @@
+<div class="text-property-container">
+    <div class="product-label-and-icon-buttons-container">
+        <div class="product-property-label">Text:</div>
+        <div class="product-property-icon-button-container">
+            <icon-button [icon]="'fa fa-file-text-o'" [title]="'Text Editor'" (click)="onTextEditorButtonClick()">
+            </icon-button>
+
+        </div>
+    </div>
+    <div class="product-dashed-border-bright text-container" [innerHtml]="html"></div>
+
+    <textarea id="text-editor" *ngIf="showTextEditor" #textarea (input)="onInputChange(textarea.value)">{{pricePoint.text}}</textarea>
+</div>

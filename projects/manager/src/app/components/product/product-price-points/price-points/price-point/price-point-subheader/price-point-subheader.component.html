@@ -1,0 +1,14 @@
+<div class="product-property-hover-container margin-top">
+    <div class="product-property-label">Subheader:</div>
+    <div #subheader
+         tabindex="0"
+         class="header-container product-property-input-container product-dashed-border-bright"
+         contenteditable="true"
+         (focus)="selectRange(subheader)"
+         (blur)="onBlur(pricePoint, 'subheader', subheader)"
+         (keydown.escape)="onEscape(pricePoint, 'subheader', subheader)"
+         (keydown.enter)="subheader.blur()"
+         (paste)="onPaste($event, subheader)">
+            {{pricePoint.subheader}}
+    </div>
+</div>

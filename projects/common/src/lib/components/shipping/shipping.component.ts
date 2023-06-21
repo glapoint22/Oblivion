@@ -9,5 +9,6 @@ import { Shipping } from '../../classes/shipping';
 })
 export class ShippingComponent {
   @Input() shippingType!: ShippingType;
+  @Input() shippingValue!: string;
   public Shipping = Shipping;
 }

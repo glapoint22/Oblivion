@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PricePointComponent } from '../price-point.component';
 
 @Component({
@@ -7,5 +7,6 @@ import { PricePointComponent } from '../price-point.component';
   styleUrls: ['../../price-point/price-point.component.scss', './price-point-price.component.scss']
 })
 export class PricePointPriceComponent extends PricePointComponent {
+  @Input() currency!: string;
   @Output() onUpdateMinMaxPrice: EventEmitter<void> = new EventEmitter();
 }

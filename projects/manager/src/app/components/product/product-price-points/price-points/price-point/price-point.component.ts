@@ -123,14 +123,14 @@ export class PricePointComponent {
       pricePoint: {
         id: pricePoint.id,
         header: pricePoint.header && pricePoint.header.length > 0 ? pricePoint.header : null,
+        subheader: pricePoint.subheader && pricePoint.subheader.length > 0 ? pricePoint.subheader : null,
         quantity: pricePoint.quantity && pricePoint.quantity.length > 0 ? pricePoint.quantity : null,
         imageId: pricePoint.image.id ? pricePoint.image.id : null,
-        unitPrice: pricePoint.unitPrice && pricePoint.unitPrice.length > 0 ? pricePoint.unitPrice : null,
-        unit: pricePoint.unit && pricePoint.unit.length > 0 ? pricePoint.unit : null,
-        strikethroughPrice: pricePoint.strikethroughPrice && pricePoint.strikethroughPrice.length > 0 ? pricePoint.strikethroughPrice : null,
         shippingType: pricePoint.shippingType,
         price: pricePoint.price,
-        recurringPayment: pricePoint.recurringPayment
+        text: pricePoint.text,
+        info: pricePoint.info,
+        shippingValue: pricePoint.shippingValue ? pricePoint.shippingValue : null
       }
     }, {
       authorization: true

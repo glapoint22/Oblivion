@@ -18,6 +18,7 @@ export class ShippingPopupComponent extends RadioButtonLazyLoad {
   public callback!: Function;
   public onClose: Subject<void> = new Subject<void>();
   public submitButtonDisabled: boolean = true;
+  private shippingValue!: string;
 
   ngOnInit() {
     super.ngOnInit();
@@ -31,7 +32,7 @@ export class ShippingPopupComponent extends RadioButtonLazyLoad {
   }
 
   onSubmitClick() {
-    this.callback(this.shipping);
+    this.callback(this.shipping, this.shippingValue);
     this.close();
   }
 
@@ -44,6 +45,11 @@ export class ShippingPopupComponent extends RadioButtonLazyLoad {
   onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
     this.shipping = this.tabElements.indexOf(radioButton) + 1;
     this.submitButtonDisabled = this.shipping == this.initialShippingType;
+  }
+
+
+  onInputChange(value: string){
+    this.shippingValue = value;
   }
 
 

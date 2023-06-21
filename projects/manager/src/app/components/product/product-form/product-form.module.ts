@@ -20,11 +20,11 @@ import { PricePointHeaderComponent } from '../product-price-points/price-points/
 import { PricePointImageComponent } from '../product-price-points/price-points/price-point/price-point-image/price-point-image.component';
 import { PricePointPriceComponent } from '../product-price-points/price-points/price-point/price-point-price/price-point-price.component';
 import { PricePointQuantityComponent } from '../product-price-points/price-points/price-point/price-point-quantity/price-point-quantity.component';
-import { PricePointRecurringPaymentComponent } from '../product-price-points/price-points/price-point/price-point-recurring-payment/price-point-recurring-payment.component';
+// import { PricePointRecurringPaymentComponent } from '../product-price-points/price-points/price-point/price-point-recurring-payment/price-point-recurring-payment.component';
 import { PricePointShippingComponent } from '../product-price-points/price-points/price-point/price-point-shipping/price-point-shipping.component';
-import { PricePointStrikethroughPriceComponent } from '../product-price-points/price-points/price-point/price-point-strikethrough-price/price-point-strikethrough-price.component';
-import { PricePointUnitPriceComponent } from '../product-price-points/price-points/price-point/price-point-unit-price/price-point-unit-price.component';
-import { PricePointUnitComponent } from '../product-price-points/price-points/price-point/price-point-unit/price-point-unit.component';
+// import { PricePointStrikethroughPriceComponent } from '../product-price-points/price-points/price-point/price-point-strikethrough-price/price-point-strikethrough-price.component';
+// import { PricePointUnitPriceComponent } from '../product-price-points/price-points/price-point/price-point-unit-price/price-point-unit-price.component';
+// import { PricePointUnitComponent } from '../product-price-points/price-points/price-point/price-point-unit/price-point-unit.component';
 import { PricePointsComponent } from '../product-price-points/price-points/price-points.component';
 import { ProductPricePointsComponent } from '../product-price-points/product-price-points.component';
 import { ProductPriceComponent } from '../product-price/product-price.component';
@@ -42,6 +42,9 @@ import { SubproductNameComponent } from '../subproducts/subproduct-name/subprodu
 import { SubproductDescriptionComponent } from '../subproducts/subproduct-description/subproduct-description.component';
 import { SubproductValueComponent } from '../subproducts/subproduct-value/subproduct-value.component';
 import { ProductCurrencyComponent } from '../product-currency/product-currency.component';
+import { PricePointSubheaderComponent } from '../product-price-points/price-points/price-point/price-point-subheader/price-point-subheader.component';
+import { PricePointTextComponent } from '../product-price-points/price-points/price-point/price-point-text/price-point-text.component';
+import { PricePointInfoComponent } from '../product-price-points/price-points/price-point/price-point-info/price-point-info.component';
 
 
 
@@ -69,14 +72,15 @@ import { ProductCurrencyComponent } from '../product-currency/product-currency.c
     ProductPricePointsComponent,
     PricePointsComponent,
     PricePointHeaderComponent,
+    PricePointSubheaderComponent,
     PricePointQuantityComponent,
     PricePointImageComponent,
-    PricePointUnitPriceComponent,
-    PricePointUnitComponent,
-    PricePointStrikethroughPriceComponent,
+    // PricePointUnitPriceComponent,
+    // PricePointUnitComponent,
+    // PricePointStrikethroughPriceComponent,
     PricePointPriceComponent,
     PricePointShippingComponent,
-    PricePointRecurringPaymentComponent,
+    // PricePointRecurringPaymentComponent,
     ProductComponentsComponent,
     ProductBonusesComponent,
     SubproductsComponent,
@@ -84,7 +88,9 @@ import { ProductCurrencyComponent } from '../product-currency/product-currency.c
     SubproductNameComponent,
     SubproductDescriptionComponent,
     SubproductValueComponent,
-    ProductCurrencyComponent
+    ProductCurrencyComponent,
+    PricePointTextComponent,
+    PricePointInfoComponent
   ],
   imports: [
     CommonModule,

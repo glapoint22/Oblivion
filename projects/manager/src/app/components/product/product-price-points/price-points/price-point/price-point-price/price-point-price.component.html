@@ -1,4 +1,4 @@
-<div class="price-property-container product-property-hover-container">
+<div class="product-property-hover-container margin-top">
     <div class="product-property-label">Price:</div>
     <div #price
          tabindex="0"
@@ -10,6 +10,6 @@
          (keydown.escape)="onEscape(pricePoint, 'price', price)"
          (keydown.enter)="price.blur()"
          (paste)="onPaste($event, price, true)">
-            {{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}
+            {{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:currency:'symbol':'0.0-0') : (pricePoint.price | currency:currency:'symbol':'0.2-2')}}
     </div>
 </div>

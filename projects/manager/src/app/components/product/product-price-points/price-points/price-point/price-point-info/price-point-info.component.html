@@ -1,0 +1,16 @@
+<div class="info-property-container">
+    <div class="product-label-and-icon-buttons-container">
+        <div class="product-property-label">Info:</div>
+        <div class="product-property-icon-button-container">
+            <div style="width: 110px;">
+                <dropdown [list]="options" [dropdownType]="DropdownType.Manager" (onChange)="onDropdownChange($event)"
+                    [selectedListItem]="selectedOption">
+                </dropdown>
+            </div>
+
+        </div>
+    </div>
+    <div class="product-dashed-border-bright info-container">{{selectedOption.key}}</div>
+
+
+</div>

@@ -41,6 +41,19 @@
         </label>
 
 
+        <label class="radio" style="display: block; width: fit-content;">
+            
+            
+            <input type="radio" name="shipping" [checked]="shipping == ShippingType.Value"
+                (change)="onRadioButtonChange(tabElements[4])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
+
+            <div style="height: 15px;">
+                <input #shippingInput (input)="onInputChange(shippingInput.value)" type="text" style="opacity: 1; width: 100px;" [disabled]="shipping != ShippingType.Value">
+            </div>
+        </label>
+
+
         <!-- Buttons -->
         <div class="popup-button-container">
             <button #tabElement class="dark-button" (click)="close()">Close</button>

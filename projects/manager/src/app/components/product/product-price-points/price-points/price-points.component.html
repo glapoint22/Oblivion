@@ -1,46 +1,33 @@
 <div class="background">
 
-    <div class="price-point-overflow" [ngStyle]="{'justify-content': product.pricePoints.length < 5 ? 'center' : 'flex-start', 'margin-bottom': product.pricePoints.length <= 5 ? '0' : '20px'}">
+    <div class="price-point-overflow"
+        [ngStyle]="{'justify-content': product.pricePoints.length < 5 ? 'center' : 'flex-start', 'margin-bottom': product.pricePoints.length <= 5 ? '0' : '20px'}">
 
         <div *ngIf="product.pricePoints.length < 4" class="empty-plus-button-container"></div>
 
         <div *ngFor="let pricePoint of product.pricePoints; let i = index" class="price-point-container">
 
-            <icon-button [icon]="'fas fa-trash-alt'"
-                         [title]="'Remove Price Point'"
-                         (onClick)="deletePricePoint(i, pricePoint.id)">
+            <icon-button [icon]="'fas fa-trash-alt'" [title]="'Remove Price Point'"
+                (onClick)="deletePricePoint(i, pricePoint.id)">
             </icon-button>
-            
+
             <div class="border product-dashed-border-bright">
                 <price-point-header #header [pricePoint]="pricePoint"></price-point-header>
+                <price-point-subheader [pricePoint]="pricePoint"></price-point-subheader>
                 <price-point-quantity [pricePoint]="pricePoint"></price-point-quantity>
                 <price-point-image [pricePoint]="pricePoint"></price-point-image>
-    
-    
-                <div class="space-between-container">
-                    <div class="units-container">
-                        <price-point-unit-price [pricePoint]="pricePoint"></price-point-unit-price>
-                        <price-point-unit [pricePoint]="pricePoint"></price-point-unit>
-                    </div>
-        
-                    <div class="prices-container">
-                        <price-point-strikethrough-price [pricePoint]="pricePoint"></price-point-strikethrough-price>
-                        <price-point-price [pricePoint]="pricePoint" (onUpdateMinMaxPrice)="updateMinMaxPrice()"></price-point-price>
-                    </div>
-                    
-                    <price-point-shipping [pricePoint]="pricePoint"></price-point-shipping>
-                    <price-point-recurring-payment [pricePoint]="pricePoint"></price-point-recurring-payment>
-                </div>
+                <price-point-text [pricePoint]="pricePoint"></price-point-text>
+                <price-point-info [pricePoint]="pricePoint"></price-point-info>
+                <price-point-price [pricePoint]="pricePoint"
+                    (onUpdateMinMaxPrice)="updateMinMaxPrice()" [currency]="product.currency"></price-point-price>
+                <price-point-shipping [pricePoint]="pricePoint"></price-point-shipping>
             </div>
         </div>
 
         <ng-container *ngIf="product.pricePoints.length < 4">
             <div class="lg-plus-button-container">
-                <icon-button style="transform: rotate(45deg)"
-                             [icon]="'fa-regular fa-circle-xmark'"
-                             [title]="'Add Price Point'"
-                             [fontSize]="'25'"
-                             (onClick)="addPricePoint(true)">
+                <icon-button style="transform: rotate(45deg)" [icon]="'fa-regular fa-circle-xmark'"
+                    [title]="'Add Price Point'" [fontSize]="'25'" (onClick)="addPricePoint(true)">
                 </icon-button>
             </div>
         </ng-container>
@@ -48,11 +35,8 @@
 
     <ng-container *ngIf="product.pricePoints.length >= 4">
         <div class="lg-plus-button-container-2">
-            <icon-button style="transform: rotate(45deg)"
-                         [icon]="'fa-regular fa-circle-xmark'"
-                         [title]="'Add Price Point'"
-                         [fontSize]="'25'"
-                         (onClick)="addPricePoint(true)">
+            <icon-button style="transform: rotate(45deg)" [icon]="'fa-regular fa-circle-xmark'"
+                [title]="'Add Price Point'" [fontSize]="'25'" (onClick)="addPricePoint(true)">
             </icon-button>
         </div>
     </ng-container>
