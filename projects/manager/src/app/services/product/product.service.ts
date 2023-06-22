@@ -223,7 +223,7 @@ export class ProductService {
 
   loadProducts(subNicheIndex: number) {
     // Load the products
-    this.dataService.get<Array<HierarchyItem>>('api/Products', [{ key: 'parentId', value: this.subnicheId }])
+    this.dataService.get<Array<HierarchyItem>>('api/Products', [{ key: 'parentId', value: this.subnicheId }],{authorization: true})
       .subscribe((products: Array<HierarchyItem>) => {
         for (let i = products.length - 1; i >= 0; i--) {
           this.sideMenuNicheArray.splice(subNicheIndex + 1, 0, this.getHierarchyItem(products[i], 2));
