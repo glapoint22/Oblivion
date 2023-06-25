@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PricePoint, ShippingType } from 'common';
 
 @Component({
@@ -16,6 +17,29 @@ export class PricePointsComponent {
   private pricePointGroupsSet!: boolean;
   public changeCount: number = 0;
   public shippingType = ShippingType;
+
+  public html!: SafeHtml;
+
+
+  constructor(private sanitizer: DomSanitizer) {
+
+  }
+
+  ngOnInit() {
+    this.html = this.sanitizer.bypassSecurityTrustHtml(`<div class="price-point-top-line">
+    <span class="price-point-font-20">Total: </span>
+    <span class="price-point-font-30">$17</span>
+</div>
+
+
+
+<div class="price-point-bottom-line">
+    <span>Regular Price: </span>
+    <span class="price-point-strikethrough">
+        <span class="price-point-strikethrough-text">$50</span>
+    </span>
+</div>`);
+  }
 
   ngOnChanges() {
     this.classSet = false;

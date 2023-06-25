@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Subproduct } from 'common';
-import { TextBox, TextBoxData } from 'text-box';
 
 @Component({
   selector: 'subproducts',

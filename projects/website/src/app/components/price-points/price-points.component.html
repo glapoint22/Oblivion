@@ -1,6 +1,11 @@
 <!-- Background -->
 <div *ngIf="pricePoints && pricePoints.length > 0" class="price-points-background">
 
+    <div class="section-container">
+        <div class="section-background"></div>
+        <div class="section-text">Price Options</div>
+    </div>
+
     <div #sliderContainer class="price-points-slider-container">
         <!-- Slider -->
         <div class="slider-container">
@@ -12,70 +17,100 @@
                 <div *ngFor="let pricePointGroup of pricePointGroups" class="price-point-group"
                     [style.width.px]="sliderContainer.clientWidth">
 
+                    
+
                     <div *ngFor="let pricePoint of pricePointGroup">
+
+
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 300px; margin-left: 15px; margin-right: 15px; background: #292929; border: 2px solid #464646; border-radius: 17px; padding-bottom: 14px;">
+                        
+                            <div style="display: flex; width: 100%; flex-direction: column; justify-content: center; height: 67px; background: linear-gradient(#621e57, #430039); border-top-left-radius: 15px; border-top-right-radius: 15px; border: 2px solid #202020; margin-bottom: 10px;">
+                            
+                                <div style="color: #dcdcdc; font-size: 21px; font-weight: bold; text-align: center; width: 100%;">Digital Package</div>
+
+                                <div style="color: #bcbcbc; font-size: 13px; text-align: center; width: 100%; margin-top: 6px;">Instant Access On Any Device</div>
+                            
+                            </div>
+                        
+                            <div style="color: #dcdcdc; font-size: 21px; font-weight: bold; text-align: center; width: 100%; margin-top: -4px; margin-bottom: 25px;">30 Day Supply</div>
+                        
+                            <img [src]="'images/' + 'b0060b0d6aa34f04ba3db957fad1e5a5.png'">
+
+                            <div style="margin-top: 15px; text-align: center;">
+                                <div [innerHTML]="html"></div>
+                            </div>
+                            
+                            <button style="margin-top: 38px;" class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">Visit
+                                offical website to buy
+                            </button>
+
+                            <!-- <div *ngIf="pricePoint.shippingType != shippingType.None" class="shipping-recurring-container">
+                                <shipping *ngIf="pricePoint.shippingType != shippingType.None"
+                                    [shippingType]="pricePoint.shippingType"></shipping>
+                            </div> -->
+                        
+                        </div>
+
                         <!-- Price Point Base -->
-                        <div class="price-point-base">
+                        <!-- <div class="price-point-base"> -->
 
 
                             <!-- Header -->
-                            <div class="price-point-header">
+                            <!-- <div class="price-point-header">
                                 {{pricePoint.header}}
-                            </div>
+                            </div> -->
 
                             <!-- Quantity -->
-                            <div *ngIf="pricePoint.quantity" class="quantity">
+                            <!-- <div *ngIf="pricePoint.quantity" class="quantity">
                                 {{pricePoint.quantity}}
-                            </div>
+                            </div> -->
 
 
                             <!-- Image -->
-                            <img *ngIf="pricePoint.image && pricePoint.image.src" [src]="'images/' + pricePoint.image.src">
+                            <!-- <img *ngIf="pricePoint.image && pricePoint.image.src" [src]="'images/' + pricePoint.image.src"> -->
 
 
                             <!-- Space Between -->
-                            <div class="space-between-container" [ngStyle]="{'justify-content': !pricePoint.unitPrice && !pricePoint.unit && !pricePoint.strikethroughPrice && !pricePoint.price ? 'flex-end' : 'space-between'}">
+                            <!-- <div class="space-between-container" [ngStyle]="{'justify-content': !pricePoint.unitPrice && !pricePoint.unit && !pricePoint.strikethroughPrice && !pricePoint.price ? 'flex-end' : 'space-between'}"> -->
 
                                 <!-- Unit -->
-                                <div *ngIf="pricePoint.unitPrice || pricePoint.unit" class="unit-container">
+                                <!-- <div *ngIf="pricePoint.unitPrice || pricePoint.unit" class="unit-container">
                                     <div *ngIf="pricePoint.unitPrice" class="unit-price">{{isWholeNumber(pricePoint.unitPrice) ?  (pricePoint.unitPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.unitPrice | currency:'USD':'symbol':'0.2-2')}}</div>
                                     <div *ngIf="pricePoint.unitPrice && pricePoint.unit" class="unit">
                                         {{pricePoint.unitPrice
                                         ? '/ '
                                         + pricePoint.unit : pricePoint.unit}}</div>
-                                </div>
+                                </div> -->
 
 
                                 <!-- Total -->
-                                <div *ngIf="pricePoint.strikethroughPrice || pricePoint.price" class="total-container">
+                                <!-- <div *ngIf="pricePoint.strikethroughPrice || pricePoint.price" class="total-container">
                                     <div class="total-label">Total:</div>
                                     <div *ngIf="pricePoint.strikethroughPrice" class="strikethrough">
                                         <div class="strikethrough-price">{{isWholeNumber(pricePoint.strikethroughPrice) ? (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.0-0') : (pricePoint.strikethroughPrice | currency:'USD':'symbol':'0.2-2')}}</div>
                                     </div>
                                     <div *ngIf="pricePoint.price" class="total-price">{{isWholeNumber(pricePoint.price) ? (pricePoint.price | currency:'USD':'symbol':'0.0-0') : (pricePoint.price | currency:'USD':'symbol':'0.2-2')}}</div>
-                                </div>
+                                </div> -->
+
+                                
 
                                 
 
 
-                                <div *ngIf="pricePoint.shippingType != shippingType.None || pricePoint.recurringPayment.recurringPrice > 0" class="shipping-recurring-container">
+                                <!-- Gold Button -->
+                                <!-- <button class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">Visit
+                                    offical website to buy
+                                </button> -->
 
-                                    <!-- Shipping -->
+
+                                <!-- Shipping -->
+                                <!-- <div *ngIf="pricePoint.shippingType != shippingType.None" class="shipping-recurring-container">
                                     <shipping *ngIf="pricePoint.shippingType != shippingType.None"
                                         [shippingType]="pricePoint.shippingType"></shipping>
+                                </div> -->
 
-                                    <!-- Recurring Payment -->
-                                    <recurring-payment [ngStyle]="{'margin-top': pricePoint.shippingType == shippingType.None ? '20px' : '5px'}" *ngIf="pricePoint.recurringPayment.recurringPrice > 0"
-                                        [recurringPayment]="pricePoint.recurringPayment"></recurring-payment>
-
-                                </div>
-
-
-                                <!-- Gold Button -->
-                                <button class="gold-round-button-lg" (click)="onVisitOfficialWebsiteClick()">Visit
-                                    offical website to buy</button>
-
-                            </div>
-                        </div>
+                            <!-- </div> -->
+                        <!-- </div> -->
                     </div>
                 </div>
             </div>

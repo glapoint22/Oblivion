@@ -112,8 +112,9 @@ $price-point-width: 330px;
 
 .price-points-slider-container {
     overflow: hidden;
-    margin: auto;
+    margin: 40px auto 20px;
     width: 0;
+    
 }
 
 
@@ -148,7 +149,8 @@ $price-point-width: 330px;
 .shipping-recurring-container {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-top: 21px;
+    margin-bottom: -3px;
 }
 
 
