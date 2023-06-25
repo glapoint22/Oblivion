@@ -1,2 +1,12 @@
-<i class="shipping-icon"></i>
-<span class="header-text">{{Shipping.getShippingText(shippingType, shippingValue)}}</span>
+<i *ngIf="shippingType != ShippingType.DigitalProduct" class="shipping-icon"></i>
+<span *ngIf="shippingType != ShippingType.FreeShipping && shippingType != ShippingType.FreeUsShipping" class="header-text">{{shippingType == ShippingType.Value ? (shippingValue | currency:currency) + ' Shipping' : Shipping.getShippingText(shippingType)}}</span>
+
+
+<span *ngIf="shippingType == ShippingType.FreeShipping" style="color: #909090; font-weight: bold;">FREE
+    <span style="font-weight: normal;">Shipping</span>
+</span>
+
+
+<span *ngIf="shippingType == ShippingType.FreeUsShipping" style="color: #909090; font-weight: bold;">FREE
+    <span style="font-weight: normal;">US Shipping</span>
+</span>

@@ -20,7 +20,7 @@
                 <price-point-info [pricePoint]="pricePoint"></price-point-info>
                 <price-point-price [pricePoint]="pricePoint"
                     (onUpdateMinMaxPrice)="updateMinMaxPrice()" [currency]="product.currency"></price-point-price>
-                <price-point-shipping [pricePoint]="pricePoint"></price-point-shipping>
+                <price-point-shipping [pricePoint]="pricePoint" [currency]="product.currency"></price-point-shipping>
             </div>
         </div>
 

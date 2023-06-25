@@ -10,5 +10,7 @@ import { Shipping } from '../../classes/shipping';
 export class ShippingComponent {
   @Input() shippingType!: ShippingType;
   @Input() shippingValue!: string;
+  @Input() currency!: string;
+  ShippingType = ShippingType;
   public Shipping = Shipping;
 }

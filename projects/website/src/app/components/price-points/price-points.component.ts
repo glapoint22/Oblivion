@@ -11,6 +11,7 @@ export class PricePointsComponent {
   @Input() pricePoints!: Array<PricePoint>;
   @Input() hoplink!: string;
   @Input() clientWidth!: number; // Used for change
+  @Input() currency!: string;
   @ViewChild('sliderContainer') sliderContainer!: ElementRef<HTMLElement>;
   public pricePointGroups: Array<any> = [];
   private classSet!: boolean;
@@ -18,28 +19,8 @@ export class PricePointsComponent {
   public changeCount: number = 0;
   public shippingType = ShippingType;
 
-  public html!: SafeHtml;
 
 
-  constructor(private sanitizer: DomSanitizer) {
-
-  }
-
-  ngOnInit() {
-    this.html = this.sanitizer.bypassSecurityTrustHtml(`<div class="price-point-top-line">
-    <span class="price-point-font-20">Total: </span>
-    <span class="price-point-font-30">$17</span>
-</div>
-
-
-
-<div class="price-point-bottom-line">
-    <span>Regular Price: </span>
-    <span class="price-point-strikethrough">
-        <span class="price-point-strikethrough-text">$50</span>
-    </span>
-</div>`);
-  }
 
   ngOnChanges() {
     this.classSet = false;

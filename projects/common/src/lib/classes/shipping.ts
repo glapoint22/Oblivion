@@ -1,7 +1,7 @@
 import { ShippingType } from "./enums";
 
 export class Shipping {
-    public static getShippingText(shippingType: ShippingType, value?: string): string {
+    public static getShippingText(shippingType: ShippingType): string {
         let text: string;
 
         switch (shippingType) {
@@ -21,11 +21,7 @@ export class Shipping {
                 text = 'Just Pay Shipping';
                 break;
 
-                case ShippingType.Value:
-                text = value!;
-                break;
-
-                case ShippingType.DigitalProduct:
+            case ShippingType.DigitalProduct:
                 text = '*Digital Product';
                 break;
 

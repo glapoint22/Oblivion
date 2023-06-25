@@ -27,7 +27,7 @@
             </icon-button>
         </div>
         <div *ngIf="pricePoint.shippingType != ShippingType.None" class="shipping-container">
-            <shipping [shippingType]="pricePoint.shippingType" [shippingValue]="pricePoint.shippingValue"></shipping>
+            <shipping [shippingType]="pricePoint.shippingType" [shippingValue]="pricePoint.shippingValue" [currency]="currency"></shipping>
         </div>
         <div class="add-popup-container">
             <ng-template #addShippingPopup></ng-template>

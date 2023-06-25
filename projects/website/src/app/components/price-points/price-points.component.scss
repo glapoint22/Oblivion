@@ -9,103 +9,169 @@ $price-point-width: 330px;
 }
 
 
-.price-point-header {
-    display: flex;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(to bottom, #680059, #45003c);
-    border-top-left-radius: 18px;
-    border-top-right-radius: 18px;
-    min-height: 66px;
-    font-size: 21px;
-    font-weight: bold;
-    color: #e9e9e9;
-    width: 300px;
-    margin-bottom: 10px;
-}
 
 .price-point-base {
-    background: #292929;
-    border-radius: 18px;
-    border: 4px solid #46003c;
-    box-sizing: border-box;
-    border-top: none;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100%;
-    padding: 0 10px 12px;
     width: 300px;
-    margin: 0 15px;
+    height: 100%;
+    margin-left: 15px;
+    margin-right: 15px;
+    background: #292929;
+    border: 2px solid #464646;
+    border-radius: 17px;
+    padding-bottom: 14px;
 }
+
+
+
+
+.price-point-header {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    height: 67px;
+    flex-shrink: 0;
+    background: linear-gradient(#621e57, #430039);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border: 2px solid #202020;
+    margin-bottom: 10px;
+}
+
+
+
+.price-point-header-text {
+    color: #dcdcdc;
+    font-size: 21px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+
+
+.price-point-subheader-text {
+    color: #bcbcbc;
+    font-size: 13px;
+    text-align: center;
+    width: 100%;
+    margin-top: 6px;
+}
+
 
 
 .quantity {
-    color: #c0c0c0;
+    color: #dcdcdc;
+    font-size: 21px;
     font-weight: bold;
-    margin-bottom: 16px;
-    font-size: 22px;
+    text-align: center;
+    width: 100%;
+    margin-top: -4px;
+    margin-bottom: 25px;
 }
 
 
+.price-point-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 200px;
+}
 
-.space-between-container {
+.price-point-info-image {
+    position: absolute;
+    left: 157px;
+}
+
+
+.price-point-text-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+
+.price-point-bottom-container {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     align-items: center;
-    margin-top: 5px;
 }
 
 
-.unit-container {
+.gold-round-button-lg {
+    margin-top: 38px;
+}
+
+
+.shipping-recurring-container {
     display: flex;
-    align-items: baseline;
-    margin-top: 10px;
+    flex-direction: column;
+    margin-top: 21px;
+    margin-bottom: -3px;
 }
 
 
-.unit-price {
-    color: white;
-    font-weight: bold;
-    font-size: 63px;
-}
-
-.unit {
-    color: white;
-    margin-top: 13px;
-    margin-left: 5px;
-    font-weight: bold;
-    font-size: 21px;
-}
-
-.total-container {
-    display: flex;
-    margin-bottom: 20px;
-    font-size: 22px;
-}
+// .space-between-container {
+//     width: 100%;
+//     height: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     margin-top: 5px;
+// }
 
 
-.total-label {
-    color: $gold;
-    margin-right: 10px;
-}
+// .unit-container {
+//     display: flex;
+//     align-items: baseline;
+//     margin-top: 10px;
+// }
 
-.strikethrough {
-    color: #eb01c8;
-    text-decoration: line-through;
-}
 
-.strikethrough-price {
-    color: $gold;
-    margin-right: 10px;
-}
+// .unit-price {
+//     color: white;
+//     font-weight: bold;
+//     font-size: 63px;
+// }
 
-.total-price {
-    color: $gold;
-}
+// .unit {
+//     color: white;
+//     margin-top: 13px;
+//     margin-left: 5px;
+//     font-weight: bold;
+//     font-size: 21px;
+// }
+
+// .total-container {
+//     display: flex;
+//     margin-bottom: 20px;
+//     font-size: 22px;
+// }
+
+
+// .total-label {
+//     color: $gold;
+//     margin-right: 10px;
+// }
+
+// .strikethrough {
+//     color: #eb01c8;
+//     text-decoration: line-through;
+// }
+
+// .strikethrough-price {
+//     color: $gold;
+//     margin-right: 10px;
+// }
+
+// .total-price {
+//     color: $gold;
+// }
 
 
 
@@ -114,7 +180,7 @@ $price-point-width: 330px;
     overflow: hidden;
     margin: 40px auto 20px;
     width: 0;
-    
+
 }
 
 
@@ -146,12 +212,7 @@ $price-point-width: 330px;
 }
 
 
-.shipping-recurring-container {
-    display: flex;
-    flex-direction: column;
-    margin-top: 21px;
-    margin-bottom: -3px;
-}
+
 
 
 
@@ -245,8 +306,8 @@ $price-point-width: 330px;
 @media(max-width: 330px) {
 
 
-    .price-point-header {
-        width: 240px;
+    .price-point-header-text {
+        font-size: 16px;
     }
 
     .price-point-base {
@@ -254,11 +315,7 @@ $price-point-width: 330px;
         margin: 0 0;
     }
 
-    
 
-    .unit-price {
-        font-size: 50px;
-    }
 
     .gold-round-button-lg {
         font-size: 14px;
