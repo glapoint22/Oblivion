@@ -14,6 +14,7 @@ import { VideoWidgetComponent } from '../video-widget/video-widget.component';
 import { ProductSliderWidgetModule } from '../product-slider-widget/product-slider-widget.module';
 import { CarouselWidgetModule } from '../carousel-widget/carousel-widget.module';
 import { GridWidgetModule } from '../grid-widget/grid-widget.module';
+import { NichesWidgetModule } from '../niches-widget/niches-widget.module';
 
 
 
@@ -35,7 +36,8 @@ import { GridWidgetModule } from '../grid-widget/grid-widget.module';
     RouterModule,
     ProductSliderWidgetModule,
     CarouselWidgetModule,
-    GridWidgetModule
+    GridWidgetModule,
+    NichesWidgetModule
   ],
   exports: [PageComponent]
 })

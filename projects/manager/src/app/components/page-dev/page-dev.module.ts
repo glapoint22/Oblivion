@@ -14,6 +14,7 @@ import { TextWidgetDevModule } from '../text-widget-dev/text-widget-dev.module';
 import { ContainerWidgetDevModule } from '../container-widget-dev/container-widget-dev.module';
 import { ImageWidgetDevModule } from '../image-widget-dev/image-widget-dev.module';
 import { LineWidgetDevModule } from '../line-widget-dev/line-widget-dev.module';
+import { NichesWidgetDevComponent } from '../niches-widget-dev/niches-widget-dev.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { LineWidgetDevModule } from '../line-widget-dev/line-widget-dev.module';
     PageDevComponent,
     VideoWidgetDevComponent,
     CarouselWidgetDevComponent,
+    NichesWidgetDevComponent
   ],
   imports: [
     CommonModule,

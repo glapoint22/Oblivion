@@ -1,0 +1,16 @@
+<div #widget class="widget-outline"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+    style="user-select: none; min-height: 261px;">
+
+    <div style="display: flex; flex-flow: row wrap; justify-content: center; max-width: 1200px; margin: auto;">
+        <div *ngFor="let niche of niches" style="margin: 20px;">
+            <img *ngIf="niche.image && niche.image.src" [src]="'/images/' + niche.image.src"
+            draggable="false" style="border-radius: 50%">
+
+            <div *ngIf="!niche.image || !niche.image.src" style="width: 200px; height: 200px; background: white; border-radius: 50%"></div>
+            <div style="text-align: center;
+            margin-top: 5px;
+            color: #cdcdcd;">{{niche.title}}</div>
+        </div>
+    </div>
+</div>

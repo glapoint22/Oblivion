@@ -139,6 +139,13 @@ export class ColumnComponent implements AfterViewInit {
         const { GridWidgetComponent } = await import('../grid-widget/grid-widget.component');
         widget = GridWidgetComponent;
         break;
+
+
+      // Niches
+      case WidgetType.Niches:
+        const { NichesWidgetComponent } = await import('../niches-widget/niches-widget.component');
+        widget = NichesWidgetComponent;
+        break;
     }
 
     return widget;

@@ -76,6 +76,7 @@ export * from './lib/components/rating-filter/rating-filter.component';
 export * from './lib/components/row/row.component';
 export * from './lib/components/text-widget/text-widget.component';
 export * from './lib/components/video-widget/video-widget.component';
+export * from './lib/components/niches-widget/niches-widget.component';
 
 
 // Directives

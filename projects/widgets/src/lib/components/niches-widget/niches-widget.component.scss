@@ -1,0 +1,55 @@
+.niches-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.niche {
+    flex: 0 0 16.6667%;
+    max-width: 16.6667%;
+}
+
+img {
+    border-radius: 50%;
+    width: 100%;
+}
+
+.title {
+    text-align: center;
+    margin-top: 2px;
+    color: #cdcdcd;
+}
+
+
+
+@media(max-width: 1020px) {
+    .niche {
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+}
+
+
+
+@media(max-width: 820px) {
+    .niche {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+
+
+@media(max-width: 620px) {
+    .niche {
+        flex: 0 0 33.3333%;
+        max-width: 33.3333%;
+    }
+}
+
+
+@media(max-width: 420px) {
+    .niche {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}

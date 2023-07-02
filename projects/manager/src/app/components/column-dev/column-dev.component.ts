@@ -441,6 +441,12 @@ export class ColumnDevComponent extends ColumnComponent {
         const { GridWidgetDevComponent } = await import('../grid-widget-dev/grid-widget-dev.component');
         widget = GridWidgetDevComponent;
         break;
+
+        // Niches
+      case WidgetType.Niches:
+        const { NichesWidgetDevComponent } = await import('../niches-widget-dev/niches-widget-dev.component');
+        widget = NichesWidgetDevComponent;
+        break;
     }
 
     return widget;

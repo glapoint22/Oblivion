@@ -1,0 +1,47 @@
+<!-- Property Box -->
+<div class="property-box-light">
+
+    <!-- Container for counter & icons -->
+    <div class="property-box-light-icon-bar">
+
+        <!-- Counter -->
+        <counter #counter [itemCount]="widget.niches.length" (onItemChange)="widget.currentNicheIndex = $event">
+        </counter>
+
+
+        <!-- Icons -->
+        <div class="icons">
+
+            <!-- Delete Niche -->
+            <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Niche'" [isDisabled]="widget.niches.length == 0"
+                (click)="deleteNiche(counter)">
+            </icon-button>
+
+
+            <!-- Add Niche -->
+            <icon-button [icon]="'fas fa-plus-circle'" [title]="'Add Niche'" (click)="addNiche(counter)">
+            </icon-button>
+        </div>
+    </div>
+
+    <div *ngIf="widget.niches.length > 0; else placeholder">
+        <!-- Title -->
+        <div class="property-label">Title:</div>
+        <input #titleInput [value]="widget.niches[widget.currentNicheIndex].title" (input)="onTitleChange(titleInput.value)">
+
+        <!-- Niche -->
+        <div class="property-label">Niche:</div>
+        <image-box [image]="widget.niches[widget.currentNicheIndex].image" (onChange)="update()"></image-box>
+
+
+        <!-- Link -->
+        <div class="property-label">Link:</div>
+        <link-property [link]="widget.niches[widget.currentNicheIndex].link" (onChange)="update()"></link-property>
+    </div>
+
+
+    <!-- Placeholder -->
+    <ng-template #placeholder>
+        <div class="placeholder">No niches available</div>
+    </ng-template>
+</div>

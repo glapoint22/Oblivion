@@ -20,7 +20,7 @@ export class CarouselWidgetComponent extends Widget {
 
   // ----------------------------------------------------------- Ng On Init --------------------------------------------------------------
   ngOnInit() {
-    this.type = WidgetType.Carousel
+    this.type = WidgetType.Carousel;
   }
 
 

@@ -6,7 +6,7 @@ export enum WidgetType {
     Line,
     Video,
     ProductSlider,
-    Shop,
+    Niches,
     Carousel,
     Grid
 }

@@ -199,6 +199,17 @@ export class WidgetCursor {
                 '24px',
                 25,
                 4));
+
+
+                // Niches
+            widgetCursors.push(new WidgetCursor(
+                'Niches',
+                WidgetType.Niches,
+                'fa-solid fa-table-cells-large',
+                '\uf009',
+                '24px',
+                25,
+                4));
         }
 
 
