@@ -1,7 +1,7 @@
 <div #widget class="carousel-container">
 
-    <div carousel [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton" [changeCount]="changeCount"
-        class="carousel">
+    <div carousel [leftArrowButtonElement]="leftArrowButton" [rightArrowButtonElement]="rightArrowButton"
+        [changeCount]="changeCount" class="carousel">
 
         <!-- Carousel element -->
         <div *ngFor="let banner of banners" class="carousel-element">
@@ -16,7 +16,8 @@
 
             <!-- local link -->
             <a *ngIf="banner.link && banner.link.url && banner.link.linkType != linkType.WebAddress"
-                [routerLink]="banner.link.url" draggable="false">
+                [routerLink]="getRouterLink(banner.link.url)" [queryParams]="getQueryParams(banner.link.url)"
+                draggable="false">
                 <img [src]="'/images/' + banner.image.src" [alt]="banner.image.name" [title]="banner.image.name"
                     draggable="false" (mousedown)="$event.preventDefault()">
             </a>

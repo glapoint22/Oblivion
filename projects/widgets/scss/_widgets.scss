@@ -282,6 +282,10 @@ $num-grid-columns: 12;
         -webkit-user-drag: none;
         object-fit: cover;
     }
+
+    .right-arrow-button {
+        right: 0px;
+    }
     
     @media(max-width: 1024px) {
         img {

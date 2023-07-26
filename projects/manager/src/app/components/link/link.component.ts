@@ -48,7 +48,7 @@ export class LinkComponent extends RadioButtonLazyLoad {
       if (this.currentLinkType == LinkType.WebAddress) {
         this.linkInput.nativeElement.value = this.link.url;
         this.linkInput.nativeElement.select();
-      } else if (this.currentLinkType == LinkType.Page || this.currentLinkType == LinkType.Product) {
+      } else if (this.currentLinkType == LinkType.Page || this.currentLinkType == LinkType.Product || this.currentLinkType == LinkType.Browse) {
         this.search.searchInput.nativeElement.value = this.link.name;
       }
     });
@@ -90,6 +90,8 @@ export class LinkComponent extends RadioButtonLazyLoad {
       this.apiUrl = 'Pages/LinkSearch';
     } else if (this.currentLinkType == LinkType.Product) {
       this.apiUrl = 'Products/LinkSearch';
+    } else if (this.currentLinkType == LinkType.Browse) {
+      this.apiUrl = 'Subniches/LinkSearch';
     }
   }
 
@@ -109,7 +111,7 @@ export class LinkComponent extends RadioButtonLazyLoad {
 
     if (this.link.linkType == LinkType.WebAddress) {
       this.link.url = this.linkInput.nativeElement.value;
-    } else if (this.link.linkType == LinkType.Page || this.link.linkType == LinkType.Product) {
+    } else if (this.link.linkType == LinkType.Page || this.link.linkType == LinkType.Product || this.link.linkType == LinkType.Browse) {
       if (!this.linkItem) return;
 
       this.link.id = this.linkItem.id!;
@@ -163,6 +165,12 @@ export class LinkComponent extends RadioButtonLazyLoad {
 
       case 3:
         this.setLinkType(LinkType.WebAddress);
+        this.isApplyButtonDisabled = true
+        break;
+
+      case 4:
+        this.setLinkType(LinkType.Browse);
+        this.search ? this.search.clear() : null;
         this.isApplyButtonDisabled = true
         break;
     }

@@ -3,4 +3,5 @@ export enum LinkType {
     Page,
     Product,
     WebAddress,
+    Browse
 }

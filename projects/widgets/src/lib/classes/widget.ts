@@ -34,4 +34,34 @@ export class Widget {
         widgetData.height = this.height;
         return widgetData;
     }
+
+
+    getRouterLink(link: string) {
+        if (link.includes('?')) {
+          const regex = new RegExp(/.+(?=\?)/);
+    
+          const result = regex.exec(link);
+    
+          return result![0];
+        }
+    
+        return link;
+      }
+    
+    
+      getQueryParams(link: string) {
+        if (link.includes('?')) {
+          const regex = new RegExp(/(:?\?|&)([a-zA-Z0-9\-]+)=([a-zA-Z0-9\-]+)/g);
+    
+          let match;
+          let dynamicObject: any = {};
+          while ((match = regex.exec(link)) !== null) {
+            dynamicObject[match[2]] = match[3];
+          }
+    
+          return dynamicObject;
+        }
+    
+        return null;
+      }
 }

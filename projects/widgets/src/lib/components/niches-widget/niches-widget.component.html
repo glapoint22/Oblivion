@@ -11,7 +11,8 @@
 
                 <!-- local link -->
                 <a *ngIf="niche.link && niche.link.url && niche.link.linkType != linkType.WebAddress"
-                    [routerLink]="niche.link.url" draggable="false">
+                    [routerLink]="getRouterLink(niche.link.url)" [queryParams]="getQueryParams(niche.link.url)"
+                    draggable="false">
                     <img [src]="'/images/' + niche.image.src" [alt]="niche.image.name" [title]="niche.image.name"
                         draggable="false" (mousedown)="$event.preventDefault()">
                 </a>

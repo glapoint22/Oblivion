@@ -46,17 +46,27 @@
             <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
         </label>
 
+
+
+        <!-- Browse -->
+        <label class="radio">
+            <div>Browse</div>
+            <input type="radio" name="link-option" [checked]="link.linkType == linkType.Browse"
+                (change)="onRadioButtonChange(tabElements[4])">
+            <span id="radioButton" #tabElement class="checkmark" tabindex="-1"></span>
+        </label>
+
         <div style="width: 100%;">
             <!-- Search -->
-            <search #search *ngIf="currentLinkType == linkType.Product || currentLinkType == linkType.Page"
+            <search #search *ngIf="currentLinkType == linkType.Product || currentLinkType == linkType.Page || currentLinkType == linkType.Browse"
                 [apiUrl]="apiUrl"
-                [placeholderText]="currentLinkType == linkType.Product ? 'Search for a product' : 'Search for a page'"
+                [placeholderText]="currentLinkType == linkType.Product ? 'Search for a product' : currentLinkType == linkType.Page ? 'Search for a page' : 'Search for a subniche'"
                 (input)="isApplyButtonDisabled = true" (onItemSelect)="onSearchItemSelect($event);"
                 (keydown.enter)="setLink()">
             </search>
 
             <!-- Link Input -->
-            <input #linkInput *ngIf="currentLinkType != linkType.Product && currentLinkType != linkType.Page"
+            <input #linkInput *ngIf="currentLinkType != linkType.Product && currentLinkType != linkType.Page && currentLinkType != linkType.Browse"
                 [disabled]="currentLinkType == linkType.None" (keydown.enter)="setLink()"
                 (input)="linkInput.value != '' ? isApplyButtonDisabled = false : isApplyButtonDisabled = true"
                 [placeholder]="currentLinkType == linkType.WebAddress ? 'Enter a web address' : ''" spellcheck="false">

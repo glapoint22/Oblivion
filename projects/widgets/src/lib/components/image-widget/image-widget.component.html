@@ -17,7 +17,8 @@
 
 
     <!-- Link && link type is not web address -->
-    <a *ngIf="image && image.src && link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
+    <a *ngIf="image && image.src && link && link.url && link.linkType != linkType.WebAddress"
+        [routerLink]="getRouterLink(link.url)" [queryParams]="getQueryParams(link.url)">
         <img [style.outline]="border && border.enabled ? border.width + 'px ' + border.style + ' ' + border.color : null"
             [style.borderRadius]="
             corners && 

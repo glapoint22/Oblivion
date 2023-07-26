@@ -784,7 +784,7 @@ export class WidgetService {
 
       // Link
       else if (value instanceof Link) {
-        if (value.linkType == LinkType.Page || value.linkType == LinkType.Product) {
+        if (value.linkType == LinkType.Page || value.linkType == LinkType.Product || value.linkType == LinkType.Browse) {
           return {
             id: value.id,
             linkType: value.linkType

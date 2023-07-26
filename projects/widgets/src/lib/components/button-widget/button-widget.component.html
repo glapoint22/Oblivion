@@ -13,7 +13,7 @@ corners.topLeft + 'px ' + corners.topRight + 'px ' + corners.bottomRight + 'px '
         {{caption.text}}</a>
 
     <!-- local link -->
-    <a *ngIf="link && link.url && link.linkType != linkType.WebAddress" [routerLink]="link.url">
+    <a *ngIf="link && link.url && link.linkType != linkType.WebAddress" [routerLink]="getRouterLink(link.url)" [queryParams]="getQueryParams(link.url)">
         {{caption.text}}</a>
 
     <ng-container *ngIf="!link || !link.url">{{caption.text}}</ng-container>
