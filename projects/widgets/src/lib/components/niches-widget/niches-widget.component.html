@@ -1,25 +1,26 @@
-<div #widget style="margin: auto; width: 100%; max-width: 1200px;">
+<div #widget>
     <div class="niches-container">
         <div *ngFor="let niche of niches" class="niche">
-            <div style="margin: 5% 5% 10px;">
-                <!-- Web address -->
+            <div class="content">
+
+                <!-- Web Address -->
                 <a *ngIf="niche.link && niche.link.url && niche.link.linkType == linkType.WebAddress"
                     [href]="niche.link.url" target="_blank" draggable="false">
                     <img [src]="'/images/' + niche.image.src" [alt]="niche.image.name" [title]="niche.image.name"
                         draggable="false" (mousedown)="$event.preventDefault()">
                 </a>
 
-                <!-- local link -->
+                <!-- Local Link -->
                 <a *ngIf="niche.link && niche.link.url && niche.link.linkType != linkType.WebAddress"
                     [routerLink]="getRouterLink(niche.link.url)" [queryParams]="getQueryParams(niche.link.url)"
                     draggable="false">
                     <img [src]="'/images/' + niche.image.src" [alt]="niche.image.name" [title]="niche.image.name"
                         draggable="false" (mousedown)="$event.preventDefault()">
                 </a>
-
-                <!-- Title -->
-                <div class="title">{{niche.title}}</div>
             </div>
+
+            <!-- Title -->
+            <div class="title">{{niche.title}}</div>
         </div>
     </div>
 </div>
