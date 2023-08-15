@@ -208,6 +208,16 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
           this.close();
         }
 
+
+        const selectedItem = this.productService.sideMenuNicheArray.find(x => x.id == this.notificationItem.productId);
+
+        if (selectedItem) {
+          selectedItem.opacity = selectedItem.opacity == null ? 0.4 : null!;
+          this.productService.disableEnableParent(selectedItem, this.productService.sideMenuNicheArray);
+          const IndexOfParentSubNiche = this.productService.getIndexOfHierarchyItemParent(selectedItem, this.productService.sideMenuNicheArray);
+          this.productService.disableEnableParent(this.productService.sideMenuNicheArray[IndexOfParentSubNiche], this.productService.sideMenuNicheArray);
+        }
+
         // Disable/Enable the product
         this.dataService.put('api/Notifications/DisableEnableProduct', {
           productId: this.notificationItem.productId,

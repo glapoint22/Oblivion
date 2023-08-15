@@ -7,6 +7,7 @@ import { ListOptions } from '../../classes/list-options';
 import { ListUpdate } from '../../classes/list-update';
 import { ImageListComponent } from '../lists/image-list/image-list.component';
 import { PromptComponent } from '../prompt/prompt.component';
+import { ProductService } from '../../services/product/product.service';
 
 @Component({
   templateUrl: './disabled-products-form.component.html',
@@ -20,7 +21,7 @@ export class DisabledProductsFormComponent extends LazyLoad {
   @ViewChild('listComponent') listComponent!: ImageListComponent;
 
 
-  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer) {
+  constructor(lazyLoadingService: LazyLoadingService, private dataService: DataService, private sanitizer: DomSanitizer, private productService: ProductService) {
     super(lazyLoadingService);
   }
 
@@ -103,6 +104,16 @@ export class DisabledProductsFormComponent extends LazyLoad {
 
 
   enableProduct() {
+    const selectedItem = this.productService.sideMenuNicheArray.find(x => x.id == this.selectedDisabledProduct.id);
+
+    if (selectedItem) {
+      selectedItem.opacity = null!;
+      this.productService.disableEnableParent(selectedItem, this.productService.sideMenuNicheArray);
+      const IndexOfParentSubNiche = this.productService.getIndexOfHierarchyItemParent(selectedItem, this.productService.sideMenuNicheArray);
+      this.productService.disableEnableParent(this.productService.sideMenuNicheArray[IndexOfParentSubNiche], this.productService.sideMenuNicheArray);
+    }
+
+
     this.dataService.put('api/Products/DisableEnableProduct',
       {
         productId: this.selectedDisabledProduct.id

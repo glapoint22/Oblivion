@@ -72,6 +72,16 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             optionFunction: this.openMoveForm
         }
 
+        this.listOptions.menu!.menuOptions[8] = {
+            type: MenuOptionType.Divider
+        };
+
+        this.listOptions.menu!.menuOptions[9] = {
+            type: MenuOptionType.MenuItem,
+            shortcut: 'Ctrl+D',
+            optionFunction: this.disableEnableListItem
+        }
+
         // ---------- SEARCH OPTIONS ---------- \\
 
         this.searchOptions.unselectable = false;
@@ -166,6 +176,8 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.listOptions.menu!.menuOptions[1].optionFunction = this.addChildBelow;
             this.listOptions.menu!.menuOptions[7].isDisabled = true;
             this.listOptions.menu!.menuOptions[7].name = 'Move ' + this.itemType;
+            this.listOptions.menu!.menuOptions[9].name = (hierarchyUpdate.selectedItems![0].opacity == null ? 'Disable ' : 'Enable ') + this.itemType;
+
 
 
 
@@ -184,6 +196,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.listOptions.menu!.menuOptions[4].hidden = true;
             this.listOptions.menu!.menuOptions[7].isDisabled = false;
             this.listOptions.menu!.menuOptions[7].name = 'Move ' + this.childType;
+            this.listOptions.menu!.menuOptions[9].name = (hierarchyUpdate.selectedItems![0].opacity == null ? 'Disable ' : 'Enable ') + this.childType;
         }
 
         if (hierarchyUpdate.selectedItems![0].hierarchyGroupID == 2) {
@@ -200,6 +213,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             this.listOptions.menu!.menuOptions[5].name = 'Delete ' + this.grandchildType;
             this.listOptions.menu!.menuOptions[7].isDisabled = false;
             this.listOptions.menu!.menuOptions[7].name = 'Move ' + this.grandchildType;
+            this.listOptions.menu!.menuOptions[9].name = (hierarchyUpdate.selectedItems![0].opacity == null ? 'Disable ' : 'Enable ') + this.grandchildType;
 
             // As long as we're not right-clicking on the list item
             if (!hierarchyUpdate.rightClick) {
@@ -273,7 +287,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
     onItemAdd(hierarchyUpdate: HierarchyUpdate) {
         // Add grandchild hierarchy item
         if (hierarchyUpdate.hierarchyGroupID == 2) {
-            
+
             const indexOfHierarchyItemParent = this.productService.getIndexOfHierarchyItemParent(this.thisArray[hierarchyUpdate.index!], this.thisArray);
 
             this.dataService.post<number>('api/' + this.grandchildDataServicePath, {
@@ -625,6 +639,72 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
 
 
+    // =============================================================( DISABLE ENABLE LIST ITEM )============================================================== \\
+
+
+    // 1.) Disable niche: All subniches and products below niche gets disabled
+    // 2.) Disable subniche: All products below subniche gets disabled
+    // 3.) Disable product: Just that product gets disabled
+    // 4.) Disable subniche that has (NO) siblings: All products below subniche gets disabled, plus parent niche gets disabled
+    // 5.) Disable subniche that has siblings and all of them are disabled: All products below subniche gets disabled, plus parent niche gets disabled
+    // 6.) Disable Product that has (NO) siblings: Parent subniche gets disabled
+    // 7.) Disable Product that has siblings and all of them are disabled: Parent subniche gets disabled
+    // 8.) Disable Product that has (NO) siblings and parent subniche has (NO) siblings: Parent subniche gets disabled and parent niche gets disabled
+    // 9.) Disable Product that has siblings and all of them are disabled, plus parent subniche has siblings and all of them are disabled: Parent subniche gets disabled and parent niche gets disabled
+    // 10.) Enable niche: All subniches and products below niche gets enabled
+    // 11.) Enable subniche: All products below subniche gets enabled
+    // 12.) Enable product: Just that product gets enabled
+    // 13.) Enable subniche that has (NO) siblings: All products below subniche gets enabled, plus parent niche gets enabled
+    // 14.) Enable subniche that has siblings and all of them are disabled: All products below subniche gets enabled, plus parent niche gets enabled
+    // 15.) Enable Product that has (NO) siblings: Parent subniche gets enabled
+    // 16.) Enable Product that has siblings and all of them are disabled: Parent subniche gets enabled
+    // 17.) Enable Product that has (NO) siblings and parent subniche has (NO) siblings: Parent subniche gets enabled and parent niche gets enabled
+    // 18.) Enable Product that has siblings and all of them are disabled, plus parent subniche has siblings and all of them are disabled: Parent subniche gets enabled and parent niche gets enabled
+
+
+    disableEnableListItem() {
+        this.listComponent.listManager.selectedItem.opacity = this.listComponent.listManager.selectedItem.opacity == null ? 0.4 : null!;
+
+        switch (this.listComponent.listManager.selectedItem.hierarchyGroupID) {
+            case 0:
+                this.productService.disableEnableChildren(this.listComponent.listManager.selectedItem, this.thisArray);
+
+                this.dataService.put('api/Niches/DisableEnableNiche', {
+                    nicheId: this.listComponent.listManager.selectedItem.id
+                }, {
+                    authorization: true
+                }).subscribe();
+                break;
+
+            case 1:
+                this.productService.disableEnableChildren(this.listComponent.listManager.selectedItem, this.thisArray);
+                this.productService.disableEnableParent(this.listComponent.listManager.selectedItem, this.thisArray);
+                
+
+                this.dataService.put('api/Subniches/DisableEnableSubniche', {
+                    subnicheId: this.listComponent.listManager.selectedItem.id
+                }, {
+                    authorization: true
+                }).subscribe();
+                break;
+
+            case 2:
+                this.productService.disableEnableParent(this.listComponent.listManager.selectedItem, this.thisArray);
+                const IndexOfParentSubNiche = this.productService.getIndexOfHierarchyItemParent(this.listComponent.listManager.selectedItem, this.thisArray);
+                this.productService.disableEnableParent(this.thisArray[IndexOfParentSubNiche], this.thisArray);
+                
+
+                this.dataService.put('api/Products/DisableEnableProduct', {
+                    productId: this.listComponent.listManager.selectedItem.id
+                }, {
+                    authorization: true
+                }).subscribe();
+                break;
+        }
+    }
+
+
+
     // ==================================================================( GO TO HIERARCHY )================================================================== \\
 
     goToHierarchy() {
@@ -664,7 +744,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             hierarchyGroupID: 0,
             hidden: false,
             arrowDown: false,
-            case: CaseType.TitleCase
+            case: CaseType.TitleCase,
+            disabled: x.disabled,
+            opacity: !x.disabled ? null! : 0.4
         }
     }
 
@@ -672,7 +754,7 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
     // ===================================================================( GET CHILD ITEM )=================================================================== \\
 
-    getChildItem(child: Item) {
+    getChildItem(child: HierarchyItem) {
         return {
             id: child.id,
             name: child.name,
@@ -680,7 +762,9 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
             hidden: false,
             arrowDown: false,
             isParent: true,
-            case: CaseType.TitleCase
+            case: CaseType.TitleCase,
+            disabled: child.disabled,
+            opacity: !child.disabled ? null! : 0.4
         }
     }
 
@@ -688,13 +772,15 @@ export class SideMenuNichesUpdateManager extends HierarchyUpdateManager {
 
     // ================================================================( GET GRANDCHILD ITEM )================================================================= \\
 
-    getGrandchildItem(grandchild: Item) {
+    getGrandchildItem(grandchild: HierarchyItem) {
         return {
             id: grandchild.id,
             name: grandchild.name,
             hierarchyGroupID: 2,
             hidden: false,
-            case: CaseType.TitleCase
+            case: CaseType.TitleCase,
+            disabled: grandchild.disabled,
+            opacity: !grandchild.disabled ? null! : 0.4
         }
     }
 }

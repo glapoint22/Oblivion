@@ -223,7 +223,7 @@ export class ProductService {
 
   loadProducts(subNicheIndex: number) {
     // Load the products
-    this.dataService.get<Array<HierarchyItem>>('api/Products', [{ key: 'parentId', value: this.subnicheId }],{authorization: true})
+    this.dataService.get<Array<HierarchyItem>>('api/Products', [{ key: 'parentId', value: this.subnicheId }], { authorization: true })
       .subscribe((products: Array<HierarchyItem>) => {
         for (let i = products.length - 1; i >= 0; i--) {
           this.sideMenuNicheArray.splice(subNicheIndex + 1, 0, this.getHierarchyItem(products[i], 2));
@@ -352,5 +352,54 @@ export class ProductService {
       }
     }
     return parentHierarchyIndex;
+  }
+
+
+
+
+
+
+  disableEnableParent(selectedItem: HierarchyItem, array: Array<HierarchyItem>) {
+    let siblings = [];
+    let siblingsDisabled = true;
+    const indexOfParent = this.getIndexOfHierarchyItemParent(selectedItem, array);
+
+    // Find all the siblings of the selected item
+    for (let i = indexOfParent + 1; i < array.length; i++) {
+      if (array[i].hierarchyGroupID! > array[indexOfParent].hierarchyGroupID!) {
+        if (array[i].hierarchyGroupID == array[indexOfParent].hierarchyGroupID! + 1) siblings.push(array[i]);
+      } else {
+        break;
+      }
+    }
+
+    // Check to see if all the siblings are disabled
+    for (let i = 0; i < siblings.length; i++) {
+      if (siblings[i] != selectedItem && siblings[i].opacity == null) {
+        siblingsDisabled = false;
+        break;
+      }
+    }
+
+    // If all the siblings are disabled and the opacity of the parent does (NOT) match the opacity of the selected item
+    if (siblingsDisabled && array[indexOfParent].opacity != selectedItem.opacity) {
+      // Set the opacity of the parent the same as the opacity of the selected item
+      array[indexOfParent].opacity = selectedItem.opacity;
+    }
+  }
+
+
+
+
+
+
+  disableEnableChildren(selectedItem: HierarchyItem, array: Array<HierarchyItem>) {
+    for (let i = selectedItem.index! + 1; i < array.length; i++) {
+      if (array[i].hierarchyGroupID! > selectedItem.hierarchyGroupID!) {
+        array[i].opacity = selectedItem.opacity;
+      } else {
+        break;
+      }
+    }
   }
 }
