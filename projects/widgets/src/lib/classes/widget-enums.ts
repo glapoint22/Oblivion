@@ -8,7 +8,8 @@ export enum WidgetType {
     ProductSlider,
     Niches,
     Carousel,
-    Grid
+    Grid,
+    Poster
 }
 
 

@@ -39,6 +39,7 @@ import { QueryGroupComponent } from '../../components/query-group/query-group.co
 import { DropdownModule } from 'common';
 import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
 import { NichesWidgetPropertiesComponent } from '../../components/niches-widget-properties/niches-widget-properties.component';
+import { PosterWidgetPropertiesComponent } from '../../components/poster-widget-properties/poster-widget-properties.component';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { NichesWidgetPropertiesComponent } from '../../components/niches-widget-
     QueryComponent,
     QueryRowComponent,
     QueryGroupComponent,
-    NichesWidgetPropertiesComponent
+    NichesWidgetPropertiesComponent,
+    PosterWidgetPropertiesComponent
   ],
   imports: [
     CommonModule,

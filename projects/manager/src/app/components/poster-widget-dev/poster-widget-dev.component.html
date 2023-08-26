@@ -1,17 +1,21 @@
-<div #widget class="carousel-container widget-outline"
+<div #widget class="widget-outline"
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
-    style="user-select: none;">
+    style="user-select: none;
+    overflow: hidden;
+    max-width: 1484px;
+    max-height: 764px;
+    margin: auto;">
 
     <ng-container
-        *ngIf="banners && banners.length > 0 && banners[currentBannerIndex].image && banners[currentBannerIndex].image.src; else placeholder">
-        <img [src]="'/images/' + banners[currentBannerIndex].image.src" [alt]="banners[currentBannerIndex].image.name"
-            [title]="banners[currentBannerIndex].image.name" draggable="false">
+        *ngIf="image && image.src; else placeholder">
+        <img [src]="'/images/' + image.src" [alt]="image.name"
+            [title]="image.name" draggable="false">
     </ng-container>
 
     <!-- Placeholder -->
     <ng-template #placeholder>
-        <div style="width: 1500px;
-        height: 600px;
+        <div style="width: 1484px;
+        height: 764px;
         display: flex;
         justify-content: center;
         align-items: center;

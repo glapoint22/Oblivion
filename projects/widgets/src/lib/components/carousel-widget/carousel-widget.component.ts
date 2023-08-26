@@ -68,6 +68,7 @@ export class CarouselWidgetComponent extends Widget {
       const newBanner = new CarouselBanner();
 
       newBanner.image.setData(banner.image);
+      newBanner.image2.setData(banner.image2);
       newBanner.link.setData(banner.link);
       carouselWidgetData.banners.push(newBanner);
     });

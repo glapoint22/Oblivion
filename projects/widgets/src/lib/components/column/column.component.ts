@@ -146,6 +146,12 @@ export class ColumnComponent implements AfterViewInit {
         const { NichesWidgetComponent } = await import('../niches-widget/niches-widget.component');
         widget = NichesWidgetComponent;
         break;
+
+      // Poster
+      case WidgetType.Poster:
+        const { PosterWidgetComponent } = await import('../poster-widget/poster-widget.component');
+        widget = PosterWidgetComponent;
+        break;
     }
 
     return widget;

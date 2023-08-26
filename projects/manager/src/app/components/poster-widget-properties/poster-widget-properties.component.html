@@ -1,0 +1,15 @@
+<!-- Property Box -->
+<div class="property-box-light">
+    <!-- Large Image -->
+    <div class="property-label">Large Image:</div>
+    <image-box [image]="widget.image" (onChange)="update()"></image-box>
+
+    <!-- Small Image -->
+    <div class="property-label">Small Image:</div>
+    <image-box [image]="widget.image2" (onChange)="update()"></image-box>
+
+
+    <!-- Link -->
+    <div class="property-label">Link:</div>
+    <link-property [link]="widget.link" (onChange)="update()"></link-property>
+</div>

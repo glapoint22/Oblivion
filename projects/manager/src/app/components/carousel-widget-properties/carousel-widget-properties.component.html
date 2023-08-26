@@ -25,9 +25,13 @@
     </div>
 
     <div *ngIf="widget.banners.length > 0; else placeholder">
-        <!-- Banner -->
-        <div class="property-label">Banner:</div>
+        <!-- Large Banner -->
+        <div class="property-label">Large Banner:</div>
         <image-box [image]="widget.banners[widget.currentBannerIndex].image" (onChange)="update()"></image-box>
+
+        <!-- Small Banner -->
+        <div class="property-label">Small Banner:</div>
+        <image-box [image]="widget.banners[widget.currentBannerIndex].image2" (onChange)="update()"></image-box>
 
 
         <!-- Link -->

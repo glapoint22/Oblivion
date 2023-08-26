@@ -1,0 +1,34 @@
+.poster-widget {
+    margin: auto;
+    width: 100%;
+    max-width: 1484px;
+    max-height: 764px;
+}
+
+.lg-img {
+    display: block;
+}
+
+.sm-img {
+    display: none;
+}
+
+img {
+    width: 100%;
+}
+
+@media(max-width: 768px) {
+    .poster-widget {
+        max-width: 764px;
+        max-height: 764px;
+    }
+
+
+    .lg-img {
+        display: none;
+    }
+
+    .sm-img {
+        display: block;
+    }
+}

@@ -15,6 +15,7 @@ import { ContainerWidgetDevModule } from '../container-widget-dev/container-widg
 import { ImageWidgetDevModule } from '../image-widget-dev/image-widget-dev.module';
 import { LineWidgetDevModule } from '../line-widget-dev/line-widget-dev.module';
 import { NichesWidgetDevComponent } from '../niches-widget-dev/niches-widget-dev.component';
+import { PosterWidgetDevModule } from '../poster-widget-dev/poster-widget-dev.module';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { NichesWidgetDevComponent } from '../niches-widget-dev/niches-widget-dev
     TextWidgetDevModule,
     ContainerWidgetDevModule,
     ImageWidgetDevModule,
-    LineWidgetDevModule
+    LineWidgetDevModule,
+    PosterWidgetDevModule
   ],
   exports: [PageDevComponent]
 })

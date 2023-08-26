@@ -10,22 +10,34 @@
             <!-- Web address -->
             <a *ngIf="banner.link && banner.link.url && banner.link.linkType == linkType.WebAddress"
                 [href]="banner.link.url" target="_blank" draggable="false">
-                <img [src]="'/images/' + banner.image.src" [alt]="banner.image.name" [title]="banner.image.name"
-                    draggable="false" (mousedown)="$event.preventDefault()">
+                <img class="lg-img" [src]="'/images/' + banner.image.src" [alt]="banner.image.name"
+                    [title]="banner.image.name" draggable="false" (mousedown)="$event.preventDefault()">
+
+                <img class="sm-img" [src]="'/images/' + banner.image2.src" [alt]="banner.image2.name"
+                    [title]="banner.image2.name" draggable="false" (mousedown)="$event.preventDefault()">
             </a>
 
             <!-- local link -->
             <a *ngIf="banner.link && banner.link.url && banner.link.linkType != linkType.WebAddress"
                 [routerLink]="getRouterLink(banner.link.url)" [queryParams]="getQueryParams(banner.link.url)"
                 draggable="false">
-                <img [src]="'/images/' + banner.image.src" [alt]="banner.image.name" [title]="banner.image.name"
-                    draggable="false" (mousedown)="$event.preventDefault()">
+                <img class="lg-img" [src]="'/images/' + banner.image.src" [alt]="banner.image.name"
+                    [title]="banner.image.name" draggable="false" (mousedown)="$event.preventDefault()">
+
+                <img class="sm-img" [src]="'/images/' + banner.image2.src" [alt]="banner.image2.name"
+                    [title]="banner.image2.name" draggable="false" (mousedown)="$event.preventDefault()">
             </a>
 
 
             <!-- No link -->
-            <img *ngIf="!banner.link || !banner.link.url" [src]="'/images/' + banner.image.src"
-                [alt]="banner.image.name" [title]="banner.image.name" draggable="false">
+            <ng-container *ngIf="!banner.link || !banner.link.url">
+                <img class="lg-img" [src]="'/images/' + banner.image.src" [alt]="banner.image.name"
+                    [title]="banner.image.name" draggable="false">
+
+                <img class="sm-img" [src]="'/images/' + banner.image2.src" [alt]="banner.image2.name"
+                    [title]="banner.image2.name" draggable="false">
+            </ng-container>
+
         </div>
     </div>
 

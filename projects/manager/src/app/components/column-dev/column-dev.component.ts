@@ -442,10 +442,16 @@ export class ColumnDevComponent extends ColumnComponent {
         widget = GridWidgetDevComponent;
         break;
 
-        // Niches
+      // Niches
       case WidgetType.Niches:
         const { NichesWidgetDevComponent } = await import('../niches-widget-dev/niches-widget-dev.component');
         widget = NichesWidgetDevComponent;
+        break;
+
+      // Poster
+      case WidgetType.Poster:
+        const { PosterWidgetDevComponent } = await import('../poster-widget-dev/poster-widget-dev.component');
+        widget = PosterWidgetDevComponent;
         break;
     }
 

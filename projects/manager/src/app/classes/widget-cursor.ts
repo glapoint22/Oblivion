@@ -14,7 +14,7 @@ export class WidgetCursor {
             public fontSize: string,
             public y: number,
             public x: number,
-    ) {
+        ) {
         this.canvas = document.createElement("canvas");
         this.canvas.width = 32;
         this.canvas.height = 32;
@@ -161,15 +161,11 @@ export class WidgetCursor {
             widgetCursors.push(new WidgetCursor(
                 'Product Slider',
                 WidgetType.ProductSlider,
-                'fa-brands fa-product-hunt',
-                '\uf288',
+                'fa-solid fa-right-left',
+                '\uf362',
                 '24px',
                 25,
                 4));
-
-
-
-
 
 
 
@@ -186,10 +182,6 @@ export class WidgetCursor {
 
 
 
-
-
-
-
             // Grid
             widgetCursors.push(new WidgetCursor(
                 'Grid',
@@ -201,18 +193,27 @@ export class WidgetCursor {
                 4));
 
 
-                // Niches
+            // Niches
             widgetCursors.push(new WidgetCursor(
                 'Niches',
                 WidgetType.Niches,
-                'fa-solid fa-table-cells-large',
-                '\uf009',
+                'fa-solid fa-circle',
+                '\uf111',
                 '24px',
                 25,
                 4));
+
+
+            // Poster
+            widgetCursors.push(new WidgetCursor(
+                'Poster',
+                WidgetType.Poster,
+                'fa-solid fa-panorama',
+                '\ue209',
+                '22px',
+                25,
+                2));
         }
-
-
 
 
         return widgetCursors;

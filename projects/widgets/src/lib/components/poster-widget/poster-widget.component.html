@@ -1,0 +1,31 @@
+<div #widget class="poster-widget">
+    <!-- Web address -->
+    <a *ngIf="link && link.url && link.linkType == linkType.WebAddress" [href]="link.url"
+        target="_blank" draggable="false">
+        <img class="lg-img" [src]="'/images/' + image.src" [alt]="image.name" [title]="image.name"
+            draggable="false" (mousedown)="$event.preventDefault()">
+
+        <img class="sm-img" [src]="'/images/' + image2.src" [alt]="image2.name"
+            [title]="image2.name" draggable="false" (mousedown)="$event.preventDefault()">
+    </a>
+
+    <!-- local link -->
+    <a *ngIf="link && link.url && link.linkType != linkType.WebAddress"
+        [routerLink]="getRouterLink(link.url)" [queryParams]="getQueryParams(link.url)" draggable="false">
+        <img class="lg-img" [src]="'/images/' + image.src" [alt]="image.name" [title]="image.name"
+            draggable="false" (mousedown)="$event.preventDefault()">
+
+        <img class="sm-img" [src]="'/images/' + image2.src" [alt]="image2.name"
+            [title]="image2.name" draggable="false" (mousedown)="$event.preventDefault()">
+    </a>
+
+
+    <!-- No link -->
+    <ng-container *ngIf="!link || !link.url">
+        <img class="lg-img" [src]="'/images/' + image.src" [alt]="image.name" [title]="image.name"
+            draggable="false">
+
+        <img class="sm-img" [src]="'/images/' + image2.src" [alt]="image2.name"
+            [title]="image2.name" draggable="false">
+    </ng-container>
+</div>
