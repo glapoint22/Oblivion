@@ -1,0 +1,27 @@
+.image-container {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+    padding: 0.731%;
+
+    img {
+        width: 100%;
+    }
+
+    &:hover {
+        filter: brightness(110%);
+    }
+}
+
+@media (max-width: 1008px) {
+    .image-container {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 507px) {
+    .image-container {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

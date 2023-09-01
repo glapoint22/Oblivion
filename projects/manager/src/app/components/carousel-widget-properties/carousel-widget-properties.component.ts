@@ -27,18 +27,16 @@ export class CarouselWidgetPropertiesComponent extends WidgetProperties<Carousel
   // --------------------------------------------------------------------- Delete Banner --------------------------------------------------------
   deleteBanner(counter: CounterComponent) {
     if (this.widget.banners[this.widget.currentBannerIndex].image && this.widget.banners[this.widget.currentBannerIndex].image.src) {
+      // Remove the banner
+      this.widget.banners.splice(this.widget.currentBannerIndex, 1);
+
+      // If we still have banners left
+      if (this.widget.banners.length > 0) {
+        this.widget.currentBannerIndex = Math.min(this.widget.banners.length - 1, this.widget.currentBannerIndex);
+        counter.set(this.widget.currentBannerIndex + 1);
+      }
+
+      this.update();
     }
-
-
-    // Remove the banner
-    this.widget.banners.splice(this.widget.currentBannerIndex, 1);
-
-    // If we still have banners left
-    if (this.widget.banners.length > 0) {
-      this.widget.currentBannerIndex = Math.min(this.widget.banners.length - 1, this.widget.currentBannerIndex);
-      counter.set(this.widget.currentBannerIndex + 1);
-    }
-
-    this.update();
   }
 }

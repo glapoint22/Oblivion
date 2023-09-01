@@ -213,8 +213,17 @@ export class WidgetCursor {
                 '22px',
                 25,
                 2));
-        }
 
+            // Image Set
+            widgetCursors.push(new WidgetCursor(
+                'Image Set',
+                WidgetType.ImageSet,
+                'fa-solid fa-table-cells',
+                '\uf00a',
+                '24px',
+                25,
+                4));
+        }
 
         return widgetCursors;
     }

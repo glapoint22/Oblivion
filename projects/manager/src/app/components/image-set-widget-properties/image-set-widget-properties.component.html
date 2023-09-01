@@ -1,0 +1,44 @@
+<!-- Property Box -->
+<div class="property-box-light">
+
+    <!-- Container for counter & icons -->
+    <div class="property-box-light-icon-bar">
+
+        <!-- Counter -->
+        <counter #counter [itemCount]="widget.images.length" (onItemChange)="widget.currentImageIndex = $event">
+        </counter>
+
+
+        <!-- Icons -->
+        <div class="icons">
+
+            <!-- Delete Image -->
+            <icon-button [icon]="'fas fa-trash-alt'" [title]="'Delete Image'" [isDisabled]="widget.images.length == 0"
+                (click)="deleteImage(counter)">
+            </icon-button>
+
+
+            <!-- Add Image -->
+            <icon-button [icon]="'fas fa-plus-circle'" [title]="'Add Image'" (click)="addImage(counter)">
+            </icon-button>
+        </div>
+    </div>
+
+    <div *ngIf="widget.images.length > 0; else placeholder">
+        <!-- Image -->
+        <div class="property-label">Image:</div>
+        <image-box [image]="widget.images[widget.currentImageIndex].image" (onChange)="update()"></image-box>
+
+
+        <!-- Link -->
+        <div class="property-label">Link:</div>
+        <link-property [link]="widget.images[widget.currentImageIndex].link" (onChange)="update()"></link-property>
+    </div>
+
+
+    <!-- Placeholder -->
+    <ng-template #placeholder>
+        <div class="placeholder">No images available</div>
+    </ng-template>
+
+</div>

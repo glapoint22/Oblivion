@@ -40,6 +40,7 @@ import { DropdownModule } from 'common';
 import { MenuBarModule } from '../../components/menu-bar/menu-bar.module';
 import { NichesWidgetPropertiesComponent } from '../../components/niches-widget-properties/niches-widget-properties.component';
 import { PosterWidgetPropertiesComponent } from '../../components/poster-widget-properties/poster-widget-properties.component';
+import { ImageSetWidgetPropertiesComponent } from '../../components/image-set-widget-properties/image-set-widget-properties.component';
 
 
 @NgModule({
@@ -70,7 +71,8 @@ import { PosterWidgetPropertiesComponent } from '../../components/poster-widget-
     QueryRowComponent,
     QueryGroupComponent,
     NichesWidgetPropertiesComponent,
-    PosterWidgetPropertiesComponent
+    PosterWidgetPropertiesComponent,
+    ImageSetWidgetPropertiesComponent
   ],
   imports: [
     CommonModule,

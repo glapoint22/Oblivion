@@ -453,6 +453,12 @@ export class ColumnDevComponent extends ColumnComponent {
         const { PosterWidgetDevComponent } = await import('../poster-widget-dev/poster-widget-dev.component');
         widget = PosterWidgetDevComponent;
         break;
+
+      // Image Set
+      case WidgetType.ImageSet:
+        const { ImageSetWidgetDevComponent } = await import('../image-set-widget-dev/image-set-widget-dev.component');
+        widget = ImageSetWidgetDevComponent;
+        break;
     }
 
     return widget;

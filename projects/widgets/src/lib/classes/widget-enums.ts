@@ -9,7 +9,8 @@ export enum WidgetType {
     Niches,
     Carousel,
     Grid,
-    Poster
+    Poster,
+    ImageSet
 }
 
 

@@ -152,6 +152,12 @@ export class ColumnComponent implements AfterViewInit {
         const { PosterWidgetComponent } = await import('../poster-widget/poster-widget.component');
         widget = PosterWidgetComponent;
         break;
+
+        // Image Set
+      case WidgetType.ImageSet:
+        const { ImageSetWidgetComponent } = await import('../image-set-widget/image-set-widget.component');
+        widget = ImageSetWidgetComponent;
+        break;
     }
 
     return widget;

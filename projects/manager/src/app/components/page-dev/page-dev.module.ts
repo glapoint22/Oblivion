@@ -16,6 +16,7 @@ import { ImageWidgetDevModule } from '../image-widget-dev/image-widget-dev.modul
 import { LineWidgetDevModule } from '../line-widget-dev/line-widget-dev.module';
 import { NichesWidgetDevComponent } from '../niches-widget-dev/niches-widget-dev.component';
 import { PosterWidgetDevModule } from '../poster-widget-dev/poster-widget-dev.module';
+import { ImageSetWidgetDevComponent } from '../image-set-widget-dev/image-set-widget-dev.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { PosterWidgetDevModule } from '../poster-widget-dev/poster-widget-dev.mo
     PageDevComponent,
     VideoWidgetDevComponent,
     CarouselWidgetDevComponent,
-    NichesWidgetDevComponent
+    NichesWidgetDevComponent,
+    ImageSetWidgetDevComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +40,7 @@ import { PosterWidgetDevModule } from '../poster-widget-dev/poster-widget-dev.mo
     ContainerWidgetDevModule,
     ImageWidgetDevModule,
     LineWidgetDevModule,
-    PosterWidgetDevModule
+    PosterWidgetDevModule,
   ],
   exports: [PageDevComponent]
 })

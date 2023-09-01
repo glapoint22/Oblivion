@@ -1,0 +1,8 @@
+<div #widget class="widget-outline"
+    [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
+    style="user-select: none; width: 1484px; height: 400px; display: flex; justify-content: space-between; margin: auto;">
+
+    <ng-container *ngFor="let image of images">
+        <img *ngIf="image.image.src" [src]="'/images/' + image.image.src" draggable="false">
+    </ng-container>
+</div>

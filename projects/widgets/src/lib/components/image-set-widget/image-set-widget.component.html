@@ -1,0 +1,15 @@
+<div #widget style="display: flex;
+flex-wrap: wrap; margin: auto; width: 100%; max-width: 1506.05px; justify-content: center;">
+    <div *ngFor="let image of images" class="image-container">
+        <a *ngIf="image.link.linkType != linkType.WebAddress" [routerLink]="getRouterLink(image.link.url)"
+            [queryParams]="getQueryParams(image.link.url)">
+            <img [src]="'/images/' + image.image.src">
+        </a>
+
+        <a *ngIf="image.link.linkType == linkType.WebAddress" [href]="image.link.url" target="_blank"><img
+                [src]="'/images/' + image.image.src">
+        </a>
+
+    </div>
+
+</div>
