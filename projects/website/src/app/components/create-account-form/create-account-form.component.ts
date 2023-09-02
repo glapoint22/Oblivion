@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
@@ -27,8 +27,8 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
     super.ngOnInit();
     this.isLoginPage = this.router.url.includes('log-in');
 
-    this.form = new FormGroup({
-      firstName: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      firstName: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidNameValidator(),
@@ -36,7 +36,7 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
         ],
         updateOn: 'submit'
       }),
-      lastName: new FormControl('', {
+      lastName: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidNameValidator(),
@@ -44,14 +44,14 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
         ],
         updateOn: 'submit'
       }),
-      password: new FormControl('', {
+      password: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()
         ],
         updateOn: 'submit'
       }),
-      email: new FormControl('', {
+      email: new UntypedFormControl('', {
         validators: [
           Validators.required,
           Validators.email

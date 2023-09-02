@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction, SummaryProduct } from 'common';
 import { List } from '../../classes/list';
 import { Validation } from '../../classes/validation';
@@ -25,12 +25,12 @@ export class CreateListFormComponent extends Validation implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      listName: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      listName: new UntypedFormControl('', {
         validators: Validators.required,
         updateOn: 'submit'
       }),
-      description: new FormControl('')
+      description: new UntypedFormControl('')
     });
   }
 

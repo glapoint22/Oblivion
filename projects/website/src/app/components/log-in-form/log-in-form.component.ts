@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { AccountNotActivatedFormComponent } from '../account-not-activated-form/account-not-activated-form.component';
@@ -41,15 +41,15 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   setForm() {
-    this.form = new FormGroup({
-      email: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      email: new UntypedFormControl('', {
         validators: [
           Validators.required,
           Validators.email
         ],
         updateOn: 'submit'
       }),
-      password: new FormControl('', {
+      password: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()

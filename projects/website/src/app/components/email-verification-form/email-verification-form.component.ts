@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { OtpPopupComponent } from '../otp-popup/otp-popup.component';
@@ -26,12 +26,12 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      otp: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      otp: new UntypedFormControl('', {
         validators: Validators.required,
         updateOn: 'submit'
       }),
-      password: new FormControl('', {
+      password: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()

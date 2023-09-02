@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -23,16 +23,16 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      rating: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      rating: new UntypedFormControl('', {
         validators: Validators.required,
         updateOn: 'submit'
       }),
-      title: new FormControl('', {
+      title: new UntypedFormControl('', {
         validators: Validators.required,
         updateOn: 'submit'
       }),
-      review: new FormControl('', {
+      review: new UntypedFormControl('', {
         validators: Validators.required,
         updateOn: 'submit'
       })

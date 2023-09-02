@@ -1,10 +1,10 @@
 import { Directive } from "@angular/core";
-import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { AbstractControl, UntypedFormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { DataService, LazyLoad, LazyLoadingService } from "common";
 
 @Directive()
 export class Validation extends LazyLoad {
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
 
   constructor(public dataService: DataService, lazyLoadingService: LazyLoadingService) { super(lazyLoadingService) }
 

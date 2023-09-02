@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -22,15 +22,15 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      newPassword: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      newPassword: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()
         ],
         updateOn: 'submit'
       }),
-      confirmPassword: new FormControl('', {
+      confirmPassword: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()

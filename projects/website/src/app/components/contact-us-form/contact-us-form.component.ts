@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -22,8 +22,8 @@ export class ContactUsFormComponent extends Validation implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      name: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      name: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidNameValidator(),
@@ -31,14 +31,14 @@ export class ContactUsFormComponent extends Validation implements OnInit {
         ],
         updateOn: 'submit'
       }),
-      email: new FormControl('', {
+      email: new UntypedFormControl('', {
         validators: [
           Validators.required,
           Validators.email
         ],
         updateOn: 'submit'
       }),
-      message: new FormControl('', {
+      message: new UntypedFormControl('', {
         validators: Validators.required,
         updateOn: 'submit'
       })

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { OtpPopupComponent } from '../otp-popup/otp-popup.component';
@@ -24,20 +24,20 @@ export class ResetPasswordFormComponent extends Validation {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      otp: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      otp: new UntypedFormControl('', {
         validators: Validators.required,
         updateOn: 'submit'
       }),
 
-      newPassword: new FormControl('', {
+      newPassword: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()
         ],
         updateOn: 'submit'
       }),
-      confirmPassword: new FormControl('', {
+      confirmPassword: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()

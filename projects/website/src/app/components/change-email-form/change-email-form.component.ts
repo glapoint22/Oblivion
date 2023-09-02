@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { EmailVerificationFormComponent } from '../email-verification-form/email-verification-form.component';
@@ -24,8 +24,8 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      email: new FormControl(this.accountService.user?.email, {
+    this.form = new UntypedFormGroup({
+      email: new UntypedFormControl(this.accountService.user?.email, {
         validators: [
           Validators.required,
           Validators.email

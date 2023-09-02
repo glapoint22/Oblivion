@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -20,8 +20,8 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      firstName: new FormControl(this.accountService.user?.firstName, {
+    this.form = new UntypedFormGroup({
+      firstName: new UntypedFormControl(this.accountService.user?.firstName, {
         validators: [
           Validators.required,
           this.invalidNameValidator(),
@@ -29,7 +29,7 @@ export class ChangeNameFormComponent extends Validation implements OnInit {
         ],
         updateOn: 'submit'
       }),
-      lastName: new FormControl(this.accountService.user?.lastName, {
+      lastName: new UntypedFormControl(this.accountService.user?.lastName, {
         validators: [
           Validators.required,
           this.invalidNameValidator(),

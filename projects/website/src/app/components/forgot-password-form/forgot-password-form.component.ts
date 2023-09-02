@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
@@ -26,8 +26,8 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
     super.ngOnInit();
     this.isLoginPage = this.router.url.includes('log-in');
 
-    this.form = new FormGroup({
-      email: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      email: new UntypedFormControl('', {
         validators: [
           Validators.required,
           Validators.email

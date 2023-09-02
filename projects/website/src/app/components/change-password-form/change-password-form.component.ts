@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
@@ -22,22 +22,22 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.form = new FormGroup({
-      newPassword: new FormControl('', {
+    this.form = new UntypedFormGroup({
+      newPassword: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()
         ],
         updateOn: 'submit'
       }),
-      confirmPassword: new FormControl('', {
+      confirmPassword: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()
         ],
         updateOn: 'submit'
       }),
-      currentPassword: new FormControl('', {
+      currentPassword: new UntypedFormControl('', {
         validators: [
           Validators.required,
           this.invalidPasswordValidator()
