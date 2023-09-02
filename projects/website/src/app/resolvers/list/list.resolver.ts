@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { DataService } from 'common';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { ListPageData } from '../../classes/list-page-data';
@@ -9,7 +9,7 @@ import { ListPageData } from '../../classes/list-page-data';
 @Injectable({
   providedIn: 'root'
 })
-export class ListResolver implements Resolve<ListPageData> {
+export class ListResolver  {
   constructor(private dataService: DataService, private router: Router, private location: Location) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ListPageData> {

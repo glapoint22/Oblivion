@@ -1,18 +1,14 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  Router, Resolve,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot
-} from '@angular/router';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { DataService } from 'common';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CollaborateListResolver implements Resolve<any> {
+export class CollaborateListResolver  {
 
   constructor(private dataService: DataService, private router: Router, private location: Location) { }
 

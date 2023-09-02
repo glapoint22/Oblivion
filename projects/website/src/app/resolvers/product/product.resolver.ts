@@ -1,12 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  Resolve,
-  ActivatedRouteSnapshot,
-  Router,
-  RouterStateSnapshot
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { AccountService, DataService } from 'common';
 import { catchError, Observable, throwError } from 'rxjs';
 import { DetailProduct } from '../../classes/detail-product';
@@ -14,7 +9,7 @@ import { DetailProduct } from '../../classes/detail-product';
 @Injectable({
   providedIn: 'root'
 })
-export class ProductResolver implements Resolve<DetailProduct> {
+export class ProductResolver  {
 
   constructor(
     private dataService: DataService,

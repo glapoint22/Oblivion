@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Router, Resolve,
-  RouterStateSnapshot,
-  ActivatedRouteSnapshot
-} from '@angular/router';
+import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { catchError, Observable, of, throwError } from 'rxjs';
 import { KeyValue, Location } from '@angular/common';
 import { DataService } from 'common';
@@ -14,7 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class BrowseResolver implements Resolve<PageContent | GridData> {
+export class BrowseResolver  {
   public currentId!: string | null;
 
   constructor

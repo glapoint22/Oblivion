@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Resolve
-} from '@angular/router';
+
 import { DataService } from 'common';
 import { Observable } from 'rxjs';
 import { PageContent, PageType } from 'widgets';
@@ -9,7 +7,7 @@ import { PageContent, PageType } from 'widgets';
 @Injectable({
   providedIn: 'root'
 })
-export class HomeResolver implements Resolve<PageContent> {
+export class HomeResolver  {
 
   constructor(private dataService: DataService) { }
 

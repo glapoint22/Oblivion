@@ -1,11 +1,6 @@
 import { KeyValue, Location } from '@angular/common';
 import { Injectable } from '@angular/core';
-import {
-  Resolve,
-  ActivatedRouteSnapshot,
-  Router,
-  RouterStateSnapshot
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { DataService } from 'common';
 import { Observable, of } from 'rxjs';
 import { GridData, PageContent } from 'widgets';
@@ -13,7 +8,7 @@ import { GridData, PageContent } from 'widgets';
 @Injectable({
   providedIn: 'root'
 })
-export class SearchResolver implements Resolve<PageContent | GridData> {
+export class SearchResolver  {
   public currentSearch!: string | null;
 
   constructor

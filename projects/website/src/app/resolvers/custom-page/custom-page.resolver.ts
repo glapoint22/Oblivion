@@ -1,11 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  Router, Resolve,
-  RouterStateSnapshot,
-  ActivatedRouteSnapshot
-} from '@angular/router';
+import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { DataService } from 'common';
 import { catchError, Observable, of, throwError } from 'rxjs';
 import { PageContent } from 'widgets';
@@ -13,7 +9,7 @@ import { PageContent } from 'widgets';
 @Injectable({
   providedIn: 'root'
 })
-export class CustomPageResolver implements Resolve<PageContent> {
+export class CustomPageResolver  {
 
   constructor
     (
