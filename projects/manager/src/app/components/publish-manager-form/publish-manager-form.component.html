@@ -1,12 +1,9 @@
-<div class="hide modal-backdrop"
-     [ngClass]="{'show': show}"
-     (transitionend)="onHide()">
+<div class="hide modal-backdrop" [ngClass]="{'show': show}" (transitionend)="onHide()">
 
     <div class="modal-base">
         <div class="modal-bar">
             <div>Publish Manager</div>
-            <div class="modal-x-button"
-                 (click)="close()">
+            <div class="modal-x-button" (click)="close()">
                 X
             </div>
         </div>
@@ -19,14 +16,12 @@
                 <div>Publish</div>
             </div>
             <div class="modal-list-container">
-                <publish-list #listComponent
-                              [sourceList]="publishItems"
-                              (onListUpdate)="onListUpdate($event)"
-                              [options]="listOptions"
-                              (onPublish)="onPublishButton($event)">
+                <publish-list #listComponent [sourceList]="publishItems" (onListUpdate)="onListUpdate($event)"
+                    [options]="listOptions" (onPublish)="onPublishButton($event)">
                 </publish-list>
 
-                <div *ngIf="spinner" style="position: absolute; display: flex; top: 0; right: 0; bottom: 0; left: 0; background: rgba(30, 30, 30, 0.801); align-items: center; justify-content: center;">
+                <div *ngIf="spinner"
+                    style="position: absolute; display: flex; top: 0; right: 0; bottom: 0; left: 0; background: rgba(30, 30, 30, 0.801); align-items: center; justify-content: center;">
                     <i class="fa-solid fa-spinner fa-spin-pulse" style="font-size: 30px; color: #dadada;"></i>
                 </div>
             </div>
@@ -34,10 +29,17 @@
 
         <!-- Button Container -->
         <div class="modal-button-container">
-            <button class="dark-button"
-                    (click)="close()">
+            <!-- Publish all -->
+            <button class="dark-button" (click)="publishAll()" [disabled]="spinner">
+                Publish All
+            </button>
+
+            <!-- Close -->
+            <button class="dark-button" (click)="close()" [disabled]="spinner">
                 Close
             </button>
+
+
         </div>
     </div>
 </div>

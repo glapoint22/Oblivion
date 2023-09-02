@@ -226,4 +226,15 @@ export class PublishManagerFormComponent extends LazyLoad {
   onEscape(): void {
     if (this.listComponent.listManager.selectedItem == null) super.onEscape();
   }
+
+
+  publishAll(): void {
+    this.spinner = true;
+
+    this.dataService.get('api/Publish/PublishAll', undefined, {
+      authorization: true
+    }).subscribe(() => {
+      this.spinner = false;
+    });
+  }
 }
