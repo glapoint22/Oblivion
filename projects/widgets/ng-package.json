@@ -3,9 +3,6 @@
   "dest": "../../dist/widgets",
   "assets": ["./scss"],
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "umdModuleIds": {
-      "common": "common"
-    }
+    "entryFile": "src/public-api.ts"
   }
 }
