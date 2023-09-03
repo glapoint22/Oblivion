@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { Background } from '../../classes/background';
 import { Border } from '../../classes/border';
 import { Column } from '../../classes/column';
@@ -26,7 +26,7 @@ export class RowComponent implements AfterViewInit {
   public verticalAlignment: VerticalAlignment = new VerticalAlignment();
   public rowElement!: HTMLElement;
 
-  constructor(public resolver: ComponentFactoryResolver) { }
+  
 
 
   ngAfterViewInit(): void {
@@ -61,8 +61,7 @@ export class RowComponent implements AfterViewInit {
   }
 
   createColumn(column: Column, index?: number): void {
-    const componentFactory = this.resolver.resolveComponentFactory(ColumnComponent);
-    const columnComponentRef = this.viewContainerRef.createComponent(componentFactory);
+    const columnComponentRef = this.viewContainerRef.createComponent(ColumnComponent);
     const columnComponent = columnComponentRef.instance;
 
     columnComponent.columnElement = columnComponentRef.location.nativeElement;

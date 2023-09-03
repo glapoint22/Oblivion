@@ -1,4 +1,4 @@
-import { Compiler, Component, ComponentFactoryResolver, ComponentRef, Injector, NgModuleFactory, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, Injector, ViewContainerRef, createNgModule } from '@angular/core';
 import { DropdownType } from 'common';
 import { Editor } from '../../classes/editor';
 import { BuilderType } from '../../classes/enums';
@@ -23,25 +23,19 @@ export class PageEditorComponent extends Editor<PageDevComponent> {
     (
       widgetService: WidgetService,
       viewContainerRef: ViewContainerRef,
-      resolver: ComponentFactoryResolver,
-      compiler: Compiler,
       injector: Injector,
       public breakpointService: BreakpointService
     ) {
     super(widgetService,
       viewContainerRef,
-      resolver,
-      compiler,
       injector);
   }
 
 
   // ---------------------------------------- Get Component Ref ----------------------------------------
   public getComponentRef(): ComponentRef<PageDevComponent> {
-    const compFactory = this.resolver.resolveComponentFactory(PageDevComponent);
-    const moduleFactory: NgModuleFactory<PageDevModule> = this.compiler.compileModuleSync(PageDevModule);
-    const moduleRef = moduleFactory.create(this.injector);
-    return this.viewContainerRef.createComponent(compFactory, undefined, moduleRef.injector);
+    const moduleRef = createNgModule(PageDevModule, this.injector);
+    return this.viewContainerRef.createComponent(PageDevComponent, {ngModuleRef: moduleRef});
   }
 
 

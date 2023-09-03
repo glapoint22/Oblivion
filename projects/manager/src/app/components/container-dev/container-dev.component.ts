@@ -1,4 +1,4 @@
-import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef } from '@angular/core';
+import { Component, ComponentRef } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, ContainerComponent, ImageWidgetData, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { ContainerHost } from '../../classes/container-host';
@@ -21,10 +21,9 @@ export class ContainerDevComponent extends ContainerComponent {
 
   constructor
     (
-      resolver: ComponentFactoryResolver,
       public widgetService: WidgetService,
       private lazyLoadingService: LazyLoadingService
-    ) { super(resolver) }
+    ) { super() }
 
 
   ngAfterViewInit() {
@@ -142,8 +141,7 @@ export class ContainerDevComponent extends ContainerComponent {
   // --------------------------------------------------------------------- Create Row ComponentRef ----------------------------------------------------
   public createRowComponentRef(top: number): ComponentRef<RowDevComponent> {
     const index = this.getRowIndex(top);
-    const rowComponentFactory: ComponentFactory<RowDevComponent> = this.resolver.resolveComponentFactory(RowDevComponent);
-    const rowComponentRef: ComponentRef<RowDevComponent> = this.viewContainerRef.createComponent(rowComponentFactory, index);
+    const rowComponentRef: ComponentRef<RowDevComponent> = this.viewContainerRef.createComponent(RowDevComponent, { index: index })
     const rowComponent: RowDevComponent = rowComponentRef.instance;
 
     this.rows.splice(index, 0, rowComponent);

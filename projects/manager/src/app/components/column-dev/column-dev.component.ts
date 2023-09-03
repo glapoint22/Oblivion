@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, Type } from '@angular/core';
+import { Component, ComponentRef, Type } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnComponent, PaddingType, Row, Widget, WidgetData, WidgetType } from 'widgets';
 import { BuilderType, MenuOptionType, WidgetCursorType, WidgetInspectorView } from '../../classes/enums';
@@ -22,10 +22,9 @@ export class ColumnDevComponent extends ColumnComponent {
   public width!: number;
 
   constructor(
-    resolver: ComponentFactoryResolver,
     public widgetService: WidgetService,
     private lazyLoadingService: LazyLoadingService
-  ) { super(resolver) }
+  ) { super() }
 
 
   ngAfterViewInit(): void {

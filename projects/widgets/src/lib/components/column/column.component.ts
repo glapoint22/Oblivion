@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, ComponentRef, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { Background } from '../../classes/background';
 import { Border } from '../../classes/border';
 import { Column } from '../../classes/column';
@@ -29,7 +29,7 @@ export class ColumnComponent implements AfterViewInit {
   public paddingElement!: HTMLElement;
   public widget!: Widget;
 
-  constructor(public resolver: ComponentFactoryResolver) { }
+  
 
   ngAfterViewInit(): void {
     this.paddingElement = this.columnElement.firstElementChild as HTMLElement;
@@ -65,8 +65,7 @@ export class ColumnComponent implements AfterViewInit {
 
 
   async createWidgetComponentRef(widgetData: WidgetData): Promise<ComponentRef<Widget>> {
-    const componentFactory = this.resolver.resolveComponentFactory(await this.getWidget(widgetData.widgetType));
-    const widgetComponentRef = this.viewContainerRef.createComponent(componentFactory);
+    const widgetComponentRef = this.viewContainerRef.createComponent(await this.getWidget(widgetData.widgetType));
 
     // Assign the widget
     this.widget = widgetComponentRef.instance;

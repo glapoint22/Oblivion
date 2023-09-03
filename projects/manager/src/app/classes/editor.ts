@@ -1,4 +1,4 @@
-import { Compiler, ComponentFactoryResolver, ComponentRef, Directive, Injector, OnInit, ViewContainerRef } from "@angular/core";
+import { ComponentRef, Directive, Injector, OnInit, ViewContainerRef } from "@angular/core";
 import { WidgetService } from "../services/widget/widget.service";
 import { ContainerHost } from "./container-host";
 import { WidgetCursor } from "./widget-cursor";
@@ -11,8 +11,6 @@ export abstract class Editor<T> implements OnInit, ContainerHost {
         (
             public widgetService: WidgetService,
             public viewContainerRef: ViewContainerRef,
-            public resolver: ComponentFactoryResolver,
-            public compiler: Compiler,
             public injector: Injector
         ) { }
 

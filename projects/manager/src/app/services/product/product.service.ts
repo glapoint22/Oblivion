@@ -1,4 +1,4 @@
-import { ComponentFactory, ComponentFactoryResolver, Injectable, ViewContainerRef } from '@angular/core';
+import { Injectable, ViewContainerRef } from '@angular/core';
 import { DataService } from 'common';
 import { Subject } from 'rxjs';
 import { CaseType } from '../../classes/enums';
@@ -36,7 +36,7 @@ export class ProductService {
   public products: Array<ProductFormComponent> = new Array<ProductFormComponent>();
   public onProductSelect: Subject<void> = new Subject<void>();
 
-  constructor(private resolver: ComponentFactoryResolver, private dataService: DataService) { }
+  constructor(private dataService: DataService) { }
 
 
   // ===================================================================( GO TO PRODUCT )=================================================================== \\
@@ -95,8 +95,7 @@ export class ProductService {
         .subscribe((product: Product) => {
           this.nicheId = product.niche.id!;
           this.subnicheId = product.subniche.id!;
-          const productComponentFactory: ComponentFactory<ProductFormComponent> = this.resolver.resolveComponentFactory(ProductFormComponent);
-          const productComponentRef = this.productsContainer.createComponent(productComponentFactory);
+          const productComponentRef = this.productsContainer.createComponent(ProductFormComponent);
           const productComponent: ProductFormComponent = productComponentRef.instance;
           productComponentRef.instance.viewRef = productComponentRef.hostView;
 

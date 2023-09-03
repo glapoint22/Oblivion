@@ -1,4 +1,4 @@
-import { Component, ComponentRef, NgModuleFactory } from '@angular/core';
+import { Component, ComponentRef, createNgModule } from '@angular/core';
 import { Editor } from '../../classes/editor';
 import { BuilderType } from '../../classes/enums';
 import { WidgetCursor } from '../../classes/widget-cursor';
@@ -19,10 +19,8 @@ export class EmailEditorComponent extends Editor<EmailPageComponent> {
 
   // ---------------------------------------- Get Component Ref ----------------------------------------
   public getComponentRef(): ComponentRef<EmailPageComponent> {
-    const compFactory = this.resolver.resolveComponentFactory(EmailPageComponent);
-    const moduleFactory: NgModuleFactory<EmailPageModule> = this.compiler.compileModuleSync(EmailPageModule);
-    const moduleRef = moduleFactory.create(this.injector);
-    return this.viewContainerRef.createComponent(compFactory, undefined, moduleRef.injector);
+    const moduleRef = createNgModule(EmailPageModule, this.injector);
+    return this.viewContainerRef.createComponent(EmailPageComponent, {ngModuleRef: moduleRef})
   }
 
 

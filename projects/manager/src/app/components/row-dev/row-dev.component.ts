@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver } from '@angular/core';
+import { Component } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
 import { Column, ColumnSpan, ImageWidgetData, PaddingType, Row, RowComponent, VideoWidgetData, WidgetData, WidgetType } from 'widgets';
 import { BuilderType, MenuOptionType, WidgetInspectorView } from '../../classes/enums';
@@ -20,7 +20,7 @@ export class RowDevComponent extends RowComponent {
   public BuilderType = BuilderType;
   public PaddingType = PaddingType;
 
-  constructor(resolver: ComponentFactoryResolver, public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(resolver); }
+  constructor(public widgetService: WidgetService, private lazyLoadingService: LazyLoadingService) { super(); }
 
 
   ngAfterViewInit(): void {
@@ -48,8 +48,7 @@ export class RowDevComponent extends RowComponent {
 
   // ------------------------------------------------------------------------ Create Column ---------------------------------------------------------
   public createColumn(column: Column, index: number): void {
-    const componentFactory = this.resolver.resolveComponentFactory(ColumnDevComponent);
-    const columnComponentRef = this.viewContainerRef.createComponent(componentFactory, index);
+    const columnComponentRef = this.viewContainerRef.createComponent(ColumnDevComponent, { index: index });
 
     this.columns.splice(index, 0, columnComponentRef.instance);
 

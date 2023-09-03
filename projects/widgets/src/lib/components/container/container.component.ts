@@ -1,4 +1,4 @@
-import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Row } from '../../classes/row';
 import { RowComponent } from '../row/row.component';
 
@@ -10,7 +10,6 @@ import { RowComponent } from '../row/row.component';
 export class ContainerComponent {
   @ViewChild('viewContainerRef', { read: ViewContainerRef }) viewContainerRef!: ViewContainerRef;
 
-  constructor(public resolver: ComponentFactoryResolver) { }
 
 
   createRow(row: Row): void {
@@ -32,7 +31,6 @@ export class ContainerComponent {
 
 
   createRowComponentRef(top: number): ComponentRef<RowComponent> {
-    const rowComponentFactory: ComponentFactory<RowComponent> = this.resolver.resolveComponentFactory(RowComponent);
-    return this.viewContainerRef.createComponent(rowComponentFactory);
+    return this.viewContainerRef.createComponent(RowComponent);
   }
 }

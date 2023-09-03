@@ -1,5 +1,4 @@
-import { ComponentRef, Injectable, Injector, Type, ViewContainerRef } from '@angular/core';
-// import { NgModuleFactory } from '@angular/core/src/r3_symbols';
+import { ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
 import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { LazyLoadResult } from '../../classes/lazy-load-result';
@@ -14,13 +13,7 @@ export class LazyLoadingService {
   public backdropFadeIn!: boolean;
   public paddingRight: number = 0;
 
-  constructor
-    (
-      // private compiler: Compiler,
-      // private injector: Injector,
-      // private resolver: ComponentFactoryResolver,
-      private spinnerService: SpinnerService
-    ) { }
+  constructor(private spinnerService: SpinnerService) { }
 
 
   public async load<T1 extends LazyLoad, T2>(callback: () => Promise<LazyLoadResult<T1, T2>>, spinnerAction: SpinnerAction, container?: ViewContainerRef) {
