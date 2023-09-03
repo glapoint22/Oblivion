@@ -8,10 +8,10 @@
     <div class="side-menu-content-container">
 
         <div class="list-menu-bar">
-            <button (click)="listMenu.onEditListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canEditList">Edit</button>
-            <button (click)="listMenu.onDeleteListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canDeleteList">Delete</button>
-            <button (click)="listMenu.onShareListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canShareList && !selectedList.listPermissions?.canInviteCollaborators">Share</button>
-            <button (click)="listMenu.onManageCollaboratorsClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canManageCollaborators">Collaborators</button>
+            <button (click)="listMenu.onEditListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canEditList">Edit</button>
+            <button (click)="listMenu.onDeleteListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canDeleteList">Delete</button>
+            <button (click)="listMenu.onShareListClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canShareList && !selectedList.listPermissions.canInviteCollaborators">Share</button>
+            <button (click)="listMenu.onManageCollaboratorsClick()" [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canManageCollaborators">Collaborators</button>
         </div>
 
         <!-- Content -->

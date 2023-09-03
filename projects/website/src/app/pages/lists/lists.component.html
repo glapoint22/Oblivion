@@ -34,28 +34,28 @@
 
                                 <div class="list-button-container">
                                     <button (click)="listMenu.onEditListClick()"
-                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canEditList">
+                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canEditList">
                                             Edit
                                     </button>
                                 </div>
 
                                 <div class="list-button-container">
                                     <button (click)="listMenu.onDeleteListClick()"
-                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canDeleteList">
+                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canDeleteList">
                                             Delete
                                     </button>
                                 </div>
 
                                 <div class="list-button-container">
                                     <button (click)="listMenu.onShareListClick()"
-                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canShareList && !selectedList.listPermissions?.canInviteCollaborators">
+                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canShareList && !selectedList.listPermissions.canInviteCollaborators">
                                             Share
                                     </button>
                                 </div>
 
                                 <div class="list-button-container">
                                     <button (click)="listMenu.onManageCollaboratorsClick()"
-                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canManageCollaborators">
+                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canManageCollaborators">
                                             Collaborators
                                     </button>
                                 </div>
@@ -139,7 +139,7 @@
                                     </dropdown> 
                                     <button class="dark-button"
                                             (click)="onRemoveItemClick(product)"
-                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions?.canRemoveFromList">
+                                            [disabled]="!selectedList.isOwner && !selectedList.listPermissions.canRemoveFromList">
                                         Remove
                                     </button>
                                 </div>

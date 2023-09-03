@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
-import { AmazonLoginProvider, FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthService } from 'angularx-social-login';
 import { DataService, SpinnerAction } from 'common';
 import { SocialUser } from '../../classes/social-user';
+import { AmazonLoginProvider, FacebookLoginProvider, MicrosoftLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'external-login-providers',
@@ -15,17 +15,22 @@ export class ExternalLoginProvidersComponent {
   @ViewChildren('tabElement') HTMLElements!: QueryList<ElementRef<HTMLElement>>;
 
   constructor(private authService: SocialAuthService, private dataService: DataService) { }
+  // constructor(private dataService: DataService) { }
 
   ngAfterViewInit(): void {
     this.onGetExternalLoginProviders.emit(this.HTMLElements.toArray());
+
+    // this.authService.authState.subscribe((user) => {
+    //   this.signIn(user);
+    // });
   }
 
-  signInWithGoogle(): void {
-    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID)
-      .then((socialUser: SocialUser) => {
-        this.signIn(socialUser);
-      });
-  }
+  // signInWithGoogle(): void {
+  //   this.authService.signIn(GoogleLoginProvider.PROVIDER_ID)
+  //     .then((socialUser: SocialUser) => {
+  //       this.signIn(socialUser);
+  //     });
+  // }
 
   signInWithFacebook(): void {
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID)
@@ -47,7 +52,17 @@ export class ExternalLoginProvidersComponent {
   signInWithAmazon(): void {
     this.authService.signIn(AmazonLoginProvider.PROVIDER_ID)
       .then((socialUser: SocialUser) => {
-        this.signIn(socialUser);
+        const nameRegex = /^(\S+)\s+(\S+)$/; // Matches "FirstName LastName"
+        const match = socialUser.name!.match(nameRegex);
+        const firstName = match![1];
+        const lastName = match![2];
+
+        this.signIn({
+          firstName: firstName,
+          lastName: lastName,
+          email: socialUser.email,
+          provider: socialUser.provider
+        });
       });
   }
 

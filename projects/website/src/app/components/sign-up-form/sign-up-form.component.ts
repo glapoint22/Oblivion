@@ -71,7 +71,7 @@ export class SignUpFormComponent extends LazyLoad implements OnInit {
 
 
   onEnter(e: KeyboardEvent): void {
-    if (this.tabElements && this.tabElements[0].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithGoogle();
+    // if (this.tabElements && this.tabElements[0].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithGoogle();
     if (this.tabElements && this.tabElements[1].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithFacebook();
     if (this.tabElements && this.tabElements[2].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithMicrosoft();
     if (this.tabElements && this.tabElements[3].nativeElement == document.activeElement) this.externalLoginProvidersComponent.signInWithAmazon();

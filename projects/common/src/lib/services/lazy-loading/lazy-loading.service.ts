@@ -1,5 +1,5 @@
-import { Compiler, ComponentFactory, ComponentFactoryResolver, ComponentRef, Injectable, Injector, NgModuleRef, Type, ViewContainerRef } from '@angular/core';
-import { NgModuleFactory } from '@angular/core/src/r3_symbols';
+import { ComponentRef, Injectable, Injector, Type, ViewContainerRef } from '@angular/core';
+// import { NgModuleFactory } from '@angular/core/src/r3_symbols';
 import { SpinnerAction } from '../../classes/enums';
 import { LazyLoad } from '../../classes/lazy-load';
 import { LazyLoadResult } from '../../classes/lazy-load-result';
@@ -16,9 +16,9 @@ export class LazyLoadingService {
 
   constructor
     (
-      private compiler: Compiler,
-      private injector: Injector,
-      private resolver: ComponentFactoryResolver,
+      // private compiler: Compiler,
+      // private injector: Injector,
+      // private resolver: ComponentFactoryResolver,
       private spinnerService: SpinnerService
     ) { }
 
@@ -27,22 +27,24 @@ export class LazyLoadingService {
     if (spinnerAction == SpinnerAction.Start || spinnerAction == SpinnerAction.StartEnd) this.spinnerService.show = true;
 
     const lazyLoadResult: LazyLoadResult<T1, T2> = await callback();
-    const moduleRef = await this.getModuleRef(lazyLoadResult.module);
+    // const moduleRef = await this.getModuleRef(lazyLoadResult.module);
 
-    return this.getComponent(lazyLoadResult.component, container ? container : this.container, moduleRef.injector, spinnerAction == SpinnerAction.End || spinnerAction == SpinnerAction.StartEnd);
+    return this.getComponent(lazyLoadResult.component, container ? container : this.container, spinnerAction == SpinnerAction.End || spinnerAction == SpinnerAction.StartEnd);
   }
 
 
 
-  private async getModuleRef<T>(module: Type<T>): Promise<NgModuleRef<T>> {
-    const moduleFactory: NgModuleFactory<T> = await this.compiler.compileModuleAsync(module);
-    return moduleFactory.create(this.injector);
-  }
+  // private async getModuleRef<T>(module: Type<T>): Promise<NgModuleRef<T>> {
+  //   const moduleFactory = await this.compiler.compileModuleAsync(module);
+  //   return moduleFactory.create(this.injector);
+  // }
 
 
-  private getComponent<T extends LazyLoad>(component: Type<T>, container: ViewContainerRef, injector: Injector, endSpinner: boolean): T {
-    const componentFactory: ComponentFactory<T> = this.resolver.resolveComponentFactory(component);
-    const componentRef: ComponentRef<T> = container.createComponent(componentFactory, undefined, injector);
+  private getComponent<T extends LazyLoad>(component: Type<T>, container: ViewContainerRef, endSpinner: boolean): T {
+    // const componentFactory = this.resolver.resolveComponentFactory(component);
+    // const componentRef: ComponentRef<T> = container.createComponent(componentFactory, undefined, injector);
+
+    const componentRef: ComponentRef<T> = container.createComponent(component)
 
     componentRef.instance.container = container;
     componentRef.instance.viewRef = componentRef.hostView;
