@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PricePointsComponent } from './price-points.component';
-import { SliderModule } from 'common';
-import { RecurringPaymentModule, ShippingModule } from 'projects/common/src/public-api';
+import { RecurringPaymentModule, ShippingModule, SliderModule } from 'common';
 
 
 

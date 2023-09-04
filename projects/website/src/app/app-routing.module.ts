@@ -79,6 +79,7 @@ const routes: Routes = [
   {
     path: ':urlTitle/:id',
     loadChildren: () => import('./pages/product/product.module').then(m => m.ProductModule),
+    pathMatch: 'full',
     resolve: {
       product: ProductResolver
     }

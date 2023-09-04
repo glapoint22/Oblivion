@@ -2,6 +2,11 @@
     [ngClass]="{'selected-widget': widgetService.selectedWidget == this && widgetService.currentWidgetInspectorView == widgetInspectorView.Widget}"
     style="user-select: none; min-height: 261px;">
 
+    <div class="caption" style="text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 53px;">Featured niches</div>
     <div style="display: flex; flex-flow: row wrap; justify-content: center; max-width: 1510px; margin: auto;">
         <div *ngFor="let niche of niches" class="niche-circle">
             <div class="content">

@@ -42,7 +42,7 @@ export class Widget {
     
           const result = regex.exec(link);
     
-          return result![0];
+          return '/' + result![0];
         }
     
         return link;
