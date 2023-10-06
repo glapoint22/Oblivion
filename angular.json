@@ -302,5 +302,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
