@@ -345,7 +345,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
 
 
     // Update database
-    this.dataService.delete('api/Notifications/DeleteNotifications', {
+    this.dataService.delete('api/Notifications', {
       notificationGroupId: this.notificationItem.notificationGroupId,
       notificationIds: notificationIds
     }, {
