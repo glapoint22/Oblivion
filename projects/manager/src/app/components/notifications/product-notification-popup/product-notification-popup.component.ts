@@ -265,7 +265,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && !this.notificationItemsDropdown?.dropdownList && !this.undoChangesPrompt && !this.formOpen && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && (!this.notificationItemsDropdown || (this.notificationItemsDropdown && !this.notificationItemsDropdown?.dropdownList)) && !this.undoChangesPrompt && !this.formOpen && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
       if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded)) {
         this.close();
       } else {
@@ -280,6 +280,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
   onClose(employees: Array<NotificationEmployee>, restore?: boolean): void {
     super.onClose(employees, restore);
+    this.onPopupClose.next();
   }
 
 
