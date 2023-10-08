@@ -8,7 +8,7 @@
     height: 34px;
     border: 1px solid $gold;
     border-radius: 17px;
-    background: #181818;
+    background-color: #202124;
     cursor: pointer;
     color: #dadada;
     margin: auto;
@@ -16,12 +16,14 @@
     
 
     &:hover {
-        border-color: lighten($gold, 10);
-        background: lighten(#181818, 2);
-        color: lighten(#dadada, 8);
-        & > .img-container {
-            filter: brightness(120%);
-        }
+        // border-color: lighten($gold, 10);
+        // background: lighten(#181818, 2);
+        // color: lighten(#dadada, 8);
+        // & > .img-container {
+        //     filter: brightness(120%);
+        // }
+        background-color: #555658;
+        transition: background-color .218s linear;
     }
 
     &:active {
@@ -49,17 +51,18 @@
         width: 49px;
         height: 100%;
         display: flex;
-        justify-content: center;
+        // justify-content: center;
         align-items: center;
+        padding-left: 10px;
     }
 
     .text-container {
         width: 100%;
         display: flex;
-        justify-content: center;
+        // justify-content: center;
         align-items: center;
         font-weight: bold;
         user-select: none;
-        padding: 0 10px;
+        padding: 0 17px;
     }
 }

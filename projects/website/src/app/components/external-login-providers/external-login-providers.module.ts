@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExternalLoginProvidersComponent } from './external-login-providers.component';
-// import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 // import { SocialLoginModule, SocialAuthServiceConfig, MicrosoftLoginProvider, AmazonLoginProvider, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 // import {
 //   GoogleLoginProvider,
@@ -13,7 +13,7 @@ import { ExternalLoginProvidersComponent } from './external-login-providers.comp
   imports: [
     CommonModule,
     // SocialLoginModule,
-    // GoogleSigninButtonModule
+    GoogleSigninButtonModule
 
   ], exports: [
     ExternalLoginProvidersComponent

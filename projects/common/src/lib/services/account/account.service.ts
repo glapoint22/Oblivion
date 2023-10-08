@@ -5,6 +5,7 @@ import { Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { User } from '../../classes/user';
 import { CookieService } from '../cookie/cookie.service';
 import { DataService } from '../data/data.service';
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 @Injectable({
   providedIn: 'root'
@@ -16,15 +17,24 @@ export class AccountService {
   private waitForRefreshToken = new Subject<void>();
   public refreshing!: boolean;
   public onRedirect = new Subject<void>();
-  public redirectListener!: Subscription
+  public redirectListener!: Subscription;
+  public onGoogleSignIn = new Subject<SocialUser>();
+  public onGoogleSignInSubscription!: Subscription;
 
   constructor
     (
       private cookieService: CookieService,
       private dataService: DataService,
       private router: Router,
-      private route: ActivatedRoute
-    ) { }
+      private route: ActivatedRoute,
+      private authService: SocialAuthService
+    ) { 
+      this.authService.authState.subscribe((user) => {
+          if (user.provider == 'GOOGLE') {
+            this.onGoogleSignIn.next(user);
+          }
+        });
+    }
 
   public setUser() {
     let userCookie = this.cookieService.getCookie('user');
