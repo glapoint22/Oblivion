@@ -1,13 +1,23 @@
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { Injectable } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
+import { Subject, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocialMediaService {
   public facebookAppId: string = '1311208896056527';
+  public onGoogleSignIn = new Subject<SocialUser>();
+  public onGoogleSignInSubscription!: Subscription;
 
-  constructor(private metaService: Meta) { }
+  constructor(private metaService: Meta, private authService: SocialAuthService) {
+    this.authService.authState.subscribe((user) => {
+      if (user.provider == 'GOOGLE') {
+        this.onGoogleSignIn.next(user);
+      }
+    });
+  }
 
   facebookShare(url: string, quote?: string) {
     const _window = window as any;

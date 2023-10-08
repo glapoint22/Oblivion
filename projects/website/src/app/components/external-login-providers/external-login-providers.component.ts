@@ -1,7 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
-import { AccountService, DataService, SpinnerAction } from 'common';
 import { SocialUser } from '../../classes/social-user';
 import { AmazonLoginProvider, FacebookLoginProvider, MicrosoftLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
+import { DataService, SpinnerAction } from 'common';
 
 @Component({
   selector: 'external-login-providers',
@@ -14,14 +15,14 @@ export class ExternalLoginProvidersComponent {
   @Output() onGetExternalLoginProviders: EventEmitter<Array<ElementRef<HTMLElement>>> = new EventEmitter();
   @ViewChildren('tabElement') HTMLElements!: QueryList<ElementRef<HTMLElement>>;
 
-  constructor(private authService: SocialAuthService, private dataService: DataService, private accountService: AccountService) { }
+  constructor(private authService: SocialAuthService, private dataService: DataService, private socialMediaService: SocialMediaService) { }
 
   ngAfterViewInit(): void {
     this.onGetExternalLoginProviders.emit(this.HTMLElements.toArray());
 
-    if (this.accountService.onGoogleSignInSubscription) this.accountService.onGoogleSignInSubscription.unsubscribe();
+    if (this.socialMediaService.onGoogleSignInSubscription) this.socialMediaService.onGoogleSignInSubscription.unsubscribe();
 
-    this.accountService.onGoogleSignInSubscription = this.accountService.onGoogleSignIn.subscribe((user: SocialUser) => {
+    this.socialMediaService.onGoogleSignInSubscription = this.socialMediaService.onGoogleSignIn.subscribe((user: SocialUser) => {
       this.signIn(user);
     });
   }
