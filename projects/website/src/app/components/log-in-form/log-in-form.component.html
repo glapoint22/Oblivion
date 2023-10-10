@@ -11,7 +11,7 @@
 
             <!-- Header -->
             <div class="header">
-                Log In
+                Sign In
 
                 <!-- X -->
                 <div class="x" (click)="close()">X</div>
@@ -77,7 +77,7 @@
                     </div>
 
                     <label class="checkbox">
-                        <div style="color: #dadada;">Keep me logged in</div>
+                        <div style="color: #dadada;">Keep me signed in</div>
                         <input type="checkbox" (change)="isPersistent = !isPersistent; checkbox.focus()"
                             [checked]="isPersistent">
                         <span #tabElement #checkbox class="checkmark" tabindex="-1"></span>

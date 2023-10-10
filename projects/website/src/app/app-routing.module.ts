@@ -71,7 +71,6 @@ const routes: Routes = [
   {
     path: 'shared-list/:listId',
     loadChildren: () => import('./pages/shared-list/shared-list.module').then(m => m.SharedListModule),
-    // runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     resolve: {
       sharedList: SharedListResolver
     }
@@ -79,7 +78,6 @@ const routes: Routes = [
   {
     path: ':urlTitle/:id',
     loadChildren: () => import('./pages/product/product.module').then(m => m.ProductModule),
-    pathMatch: 'full',
     resolve: {
       product: ProductResolver
     }
