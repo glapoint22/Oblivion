@@ -12,17 +12,14 @@
                         results
                     </div>
 
-                    <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParamMap.has('search') && (route.snapshot.queryParams.filters ||
-                        route.snapshot.queryParams.nicheId ||
-                        route.snapshot.queryParams.subnicheId)" (click)="clearFilters()">Clear Filters</button>
+                    <button class="gold-rect-button clear-filters" *ngIf="route.snapshot.queryParams.filters"
+                        (click)="clearFilters()">Clear Filters</button>
                 </div>
 
                 <!-- Sort Options -->
                 <div class="dropdown-container">
-                    <dropdown [list]="sortOptions"
-                              (onChange)="onSortChange($event)"
-                              [selectedListItem]="setSortOption()"
-                              [dropdownType]="DropdownType.Website">
+                    <dropdown [list]="sortOptions" (onChange)="onSortChange($event)"
+                        [selectedListItem]="setSortOption()" [dropdownType]="DropdownType.Website">
                     </dropdown>
                 </div>
 
@@ -57,9 +54,6 @@
         <!-- No Match -->
         <ng-template #noMatch>
             <div class="no-match">
-                <!-- <a routerLink="/home" title="Niche Shack Homepage">
-                    <img src="assets/logo.png">
-                </a> -->
 
                 <!-- Niche Shack Logo -->
                 <div class="niche-shack-logo-container">
@@ -70,11 +64,54 @@
                 </div>
 
                 <div class="gold-text">Sorry...</div>
-                <div class="white-text">We couldn't find a match for "{{route.snapshot.queryParams.search}}"</div>
-                <ul>
-                    <li>Check your spelling</li>
-                    <li>Use different keywords and try again</li>
-                </ul>
+
+                <ng-container *ngIf="route.snapshot.queryParamMap.has('search'); else noBrowseMatch">
+                    <div class="white-text">We couldn't find a match for "{{route.snapshot.queryParams.search}}"</div>
+                    <ul>
+                        <li><span style="font-weight: bold;">Check Spelling: </span><span class="grey-text">Make sure there are no typos in your
+                            search query. Small errors can lead to no results.</span>
+                        </li>
+
+                        <li><span style="font-weight: bold;">Try Different Keywords: </span><span class="grey-text">Consider using alternative
+                            keywords or rephrasing your search to broaden your results.</span>
+                        </li>
+
+                        <li><span style="font-weight: bold;">Check Back Later: </span><span class="grey-text">We may have new products that
+                            match your criteria in the future. In the meantime, feel free to explore other niches.</span>
+                        </li>
+
+                        <li><span style="font-weight: bold;">Reset Filters: </span><span class="grey-text">To see our full selection, you can
+                            try filtering by different criteria.</span>
+                        </li>
+
+                        <li><span style="font-weight: bold;">Contact Support: </span><span class="grey-text">If you believe this is an error or
+                            have specific product requirements, please contact our support team for assistance.</span>
+                        </li>
+                    </ul>
+                </ng-container>
+
+                <ng-template #noBrowseMatch>
+                    <div class="white-text">No Products Found within Selected Price Range</div>
+                    <ul>
+                        <li><span style="font-weight: bold;">Try Adjusting Your Price Range: </span><span class="grey-text">If you're not
+                            finding what you're looking for, consider expanding or narrowing your price range to
+                            discover more products.</span>
+                        </li>
+
+                        <li><span style="font-weight: bold;">Check Back Later: </span><span class="grey-text">We may have new products that
+                            match your criteria in the future. In the meantime, feel free to explore other niches.</span>
+                        </li>
+
+                        <li><span style="font-weight: bold;">Reset Filters: </span><span class="grey-text">To see our full selection, you can
+                            reset the price filter or try filtering by different criteria.</span>
+                        </li>
+
+                        <li><span style="font-weight: bold;">Contact Support: </span><span class="grey-text">If you believe this is an error or
+                            have specific product requirements, please contact our support team for assistance.</span>
+                        </li>
+                    </ul>
+                </ng-template>
+
             </div>
         </ng-template>
     </ng-container>

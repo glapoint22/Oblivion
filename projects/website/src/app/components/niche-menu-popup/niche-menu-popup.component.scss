@@ -1,6 +1,7 @@
 @import '../../../scss/mixins';
 
 .popup {
+    width: 205px;
     @include popup(0);
 
     &::before {

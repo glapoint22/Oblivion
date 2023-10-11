@@ -157,8 +157,6 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
     this.collaborators.splice(index, 1);
 
-    this.list.collaboratorCount = this.collaborators.length;
-
     if (this.collaborators.length > 0) {
       this.onCollaboratorClick(this.collaborators[0]);
     } else {
