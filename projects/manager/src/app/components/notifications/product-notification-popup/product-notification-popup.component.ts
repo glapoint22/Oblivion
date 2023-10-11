@@ -169,6 +169,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   saveEmployeeText() {
     this.employeeTextParameters = {
       notificationGroupId: this.notificationItem.notificationGroupId,
+      notificationId: this.notificationItem.id,
       note: this.notification.employeeNotes[this.notification.employeeNotes.length - 1].text.trim()
     }
     super.saveEmployeeText();
@@ -265,7 +266,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   // =====================================================================( ON ESCAPE )===================================================================== \\
 
   onEscape(): void {
-    if (!this.contextMenu && this.profilePopupContainer.length == 0 && (!this.notificationItemsDropdown || (this.notificationItemsDropdown && !this.notificationItemsDropdown?.dropdownList)) && !this.undoChangesPrompt && !this.formOpen && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
+    if (!this.contextMenu && this.profilePopupContainer.length == 0 && (!this.notificationItemsDropdown || (this.notificationItemsDropdown && !this.notificationItemsDropdown.dropdownList)) && !this.undoChangesPrompt && !this.formOpen && !this.deletePrompt && !this.productService.rightClickOnProductTab && !this.productService.productTabContextMenu) {
       if (!this.isEmployeeNotesWritten(this.notification.employeeNotes, this.newNoteAdded)) {
         this.close();
       } else {
@@ -276,9 +277,28 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
 
 
 
+  // =====================================================================( ON DELETE )===================================================================== \\
+
+  onDelete() {
+    super.onDelete();
+
+    // If this popup has notification items
+    if (this.notificationItems) {
+      // Find the notification item in the product's notification item list that's the same as the current notification item
+      const index = this.productService.selectedProduct.product.notificationItems.findIndex(x => x.id == this.notificationItem.id);
+      // Remove the notification item from the product's notification item list
+      this.productService.selectedProduct.product.notificationItems.splice(index, 1);
+      // Remove the focus on the notification circle button
+      this.onPopupClose.next();
+    }
+  }
+
+
+
   // =====================================================================( ON CLOSE )====================================================================== \\
 
   onClose(employees: Array<NotificationEmployee>, restore?: boolean): void {
+    let trumpy = this.notificationItem;
     super.onClose(employees, restore);
     this.onPopupClose.next();
   }

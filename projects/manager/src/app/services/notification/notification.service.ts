@@ -20,7 +20,7 @@ export class NotificationService {
   public notificationPopupContainer!: ViewContainerRef;
   public notificationPopup!: NotificationPopupComponent;
   public onNotificationCount: Subject<number> = new Subject<number>();
-  public newNotifications!: Array<NotificationItem>;
+  public newNotifications: Array<NotificationItem> = new Array<NotificationItem>();
   public archiveNotifications: Array<NotificationItem> = new Array<NotificationItem>();
   public get notificationCount(): number {
     return this._notificationCount;
@@ -135,37 +135,37 @@ export class NotificationService {
 
   // ====================================================================( ADD TO LIST )==================================================================== \\
 
-  addToList(notifications: Array<NotificationItem>, messageCount: number, notificationItem: NotificationItem) {
+  addToList(destinationList: Array<NotificationItem>, messageCount: number, notificationItem: NotificationItem) {
     // See if the sender of this message already has a message notification in the list
-    const notificationItemIndex = notifications.findIndex(x => x.notificationGroupId == notificationItem.notificationGroupId);
+    const notificationItemIndex = destinationList.findIndex(x => x.notificationGroupId == notificationItem.notificationGroupId);
 
     // If so
     if (notificationItemIndex != -1) {
       // Make a copy of that message notification that's in the list
-      const notificationItemCopy = notifications[notificationItemIndex];
+      const notificationItemCopy = destinationList[notificationItemIndex];
       // Update the count for that message notification's red circle
       notificationItemCopy.count += messageCount;
 
-      // If the message is being added to the archive list
-      if (notifications == this.archiveNotifications) {
-        // Then remove that message notification from the list and then put it back up at the top of the list
-        notifications.splice(notificationItemIndex, 1);
-        notifications.unshift(notificationItemCopy);
+      // If the message currently resides in the new list, then that menas it's being added to the archive list
+      if (notificationItem.isNew) {
+        // So then remove that message notification from the list and then put it back up at the top of the list
+        destinationList.splice(notificationItemIndex, 1);
+        destinationList.unshift(notificationItemCopy);
       }
 
       // If the sender of this message does NOT have a message in the list
     } else {
 
-      // If the message is being added to the archive list
-      if (notifications == this.archiveNotifications) {
-        // Create a new message notification and put it at the top of the list
-        notifications.unshift(this.createNewNotificationItem(false, messageCount, notificationItem));
+      // If the message currently resides in the new list, then that menas it's being added to the archive list
+      if (notificationItem.isNew) {
+        // So then create a new message notification and put it at the top of the list
+        destinationList.unshift(this.createNewNotificationItem(false, messageCount, notificationItem));
 
-        // If the message is being added to the new list
+        // But if the message currently resides in the archive list, then that menas it's being added to the new list
       } else {
-        // Create a new message notification and order it in the list based on its creation date
-        notifications.push(this.createNewNotificationItem(true, messageCount, notificationItem))
-        notifications.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
+        // So then create a new message notification and order it in the list based on its creation date
+        destinationList.push(this.createNewNotificationItem(true, messageCount, notificationItem))
+        destinationList.sort((a, b) => (a.creationDate > b.creationDate) ? -1 : 1);
       }
     }
   }

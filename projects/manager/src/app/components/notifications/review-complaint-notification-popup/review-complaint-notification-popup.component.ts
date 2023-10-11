@@ -60,6 +60,7 @@ export class ReviewComplaintNotificationPopupComponent extends NotificationPopup
   saveEmployeeText() {
     this.employeeTextParameters = {
       notificationGroupId: this.notificationItem.notificationGroupId,
+      notificationId: this.notificationItem.id,
       note: this.notification.employeeNotes[this.notification.employeeNotes.length - 1].text.trim()
     }
     super.saveEmployeeText();

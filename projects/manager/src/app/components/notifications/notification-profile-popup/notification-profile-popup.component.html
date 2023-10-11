@@ -62,7 +62,7 @@
 
         <!-- Noncompliant Strike Buttons -->
         <ng-container *ngIf="isReview">
-            <button class="button" (click)="remove(true)" [disabled]="(user.firstName == 'NicheShack' && user.lastName == 'User') || RemoveUserNameButtonDisabled">
+            <button class="button" (click)="remove(true)" [disabled]="(user.firstName == 'User' && user.lastName == '') || RemoveUserNameButtonDisabled">
                 Remove User's Name
             </button>
 

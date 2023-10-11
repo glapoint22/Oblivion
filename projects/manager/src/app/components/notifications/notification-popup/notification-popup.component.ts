@@ -198,7 +198,8 @@ export class NotificationPopupComponent extends NotificationFormComponent {
     this.container.remove(index);
 
     this.dataService.delete('api/Notifications', {
-      notificationGroupId: this.notificationItem.notificationGroupId
+      notificationGroupId: this.notificationItem.notificationGroupId,
+      notificationIds: [this.notificationItem.id]
     }, {
       authorization: true
     }).subscribe();

@@ -35,41 +35,44 @@ export class UserAccountNotificationFormComponent extends NotificationFormCompon
     this.removedButtonClicked = true;
     this.close();
 
-    this.dataService.put<boolean>('api/Notifications/AddNoncompliantStrike', {
+    // Create a new notification
+    this.dataService.post<NotificationItem>('api/Notifications/CreateNotification', {
       userId: this.user.userId,
+      type: this.isUserName ? NotificationType.UserName : NotificationType.UserImage,
       userName: this.isUserName ? this.user.firstName + ' ' + this.user.lastName : null,
-      userImage: !this.isUserName ? this.user.image : null
-
+      userImage: !this.isUserName ? this.user.image : null,
+      employeeNotes: this.isEmployeeNotesWritten() ? this.notes.nativeElement.value : null
     }, {
       authorization: true
-    }).subscribe((removalSuccessful: boolean) => {
+    }).subscribe((notificationItem: NotificationItem) => {
+      
+      // Put the new notification in the archive list
+      this.notificationService.addToList(this.notificationService.archiveNotifications, 1, notificationItem);
 
-      // If the removal of the name or the image was successful
-      if (removalSuccessful) {
-
-        // Post a new notification
-        this.dataService.post<NotificationItem>('api/Notifications/Post', {
+      // If we're removing a user name
+      if (this.isUserName) {
+        this.dataService.put('api/Notifications/ReplaceUserName', {
           userId: this.user.userId,
-          type: this.isUserName ? NotificationType.UserName : NotificationType.UserImage,
-          userName: this.isUserName ? this.user.firstName + ' ' + this.user.lastName : null,
-          userImage: !this.isUserName ? this.user.image : null,
-          employeeNotes: this.isEmployeeNotesWritten() ? this.notes.nativeElement.value : null
+          userName: this.user.firstName + ' ' + this.user.lastName,
+          notificationGroupId: notificationItem.notificationGroupId,
+          notificationId: notificationItem.id
         }, {
           authorization: true
-        }).subscribe((notificationItem: NotificationItem) => {
-          this.notificationService.addToList(this.notificationService.archiveNotifications, 1, notificationItem);
-        })
+        }).subscribe();
 
-        this.user.noncompliantStrikes++;
+        // If we're removing an image
+      } else {
 
-        if (this.isUserName) {
-          this.user.firstName = 'NicheShack';
-          this.user.lastName = 'User';
-        } else {
-          this.user.image = null!
-        }
+        this.dataService.put('api/Notifications/RemoveUserImage', {
+          userId: this.user.userId,
+          userImage: this.user.image,
+          notificationGroupId: notificationItem.notificationGroupId,
+          notificationId: notificationItem.id
+        }, {
+          authorization: true
+        }).subscribe();
       }
-    });
+    })
   }
 
 
