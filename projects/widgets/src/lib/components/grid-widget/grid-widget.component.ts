@@ -83,10 +83,10 @@ export class GridWidgetComponent extends Widget {
     this.router.navigate([], {
       queryParams: {
         filters: null,
-        nicheId: null,
-        nicheName: null,
-        subnicheId: null,
-        subnicheName: null
+        // nicheId: null,
+        // nicheName: null,
+        // subnicheId: null,
+        // subnicheName: null
       },
       queryParamsHandling: 'merge'
     });

@@ -65,8 +65,12 @@
         color: #dadada;
         text-align: left;
         margin: 0;
-        padding-left: 16px;
+        padding-left: 0px;
         margin-bottom: 20px;
+
+        li {
+            margin-bottom: 10px;
+        }
     }
 }
 
@@ -118,10 +122,15 @@
 }
 
 .white-text {
-    font-size: 32px;
-    margin-bottom: 16px;
+    font-size: 25px;
+    margin-bottom: 25px;
     color: #dadada;
     text-align: left;
+    font-weight: bold;
+}
+
+.grey-text {
+    color: #b4b4b4;
 }
 
 
