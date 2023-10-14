@@ -10,7 +10,7 @@ import { KeyValue } from '@angular/common';
 })
 export class PricePointInfoComponent extends PricePointComponent {
   public DropdownType = DropdownType;
-  public selectedOption!: KeyValue<string, number>;
+
   public options = [
     {
       key: 'None',
@@ -27,9 +27,13 @@ export class PricePointInfoComponent extends PricePointComponent {
   ]
 
 
+  public selectedOption: KeyValue<string, number> = this.options[0];
+
 
   ngOnChanges() {
-    this.selectedOption = this.options.find(x => x.value == this.pricePoint.info)!;
+    const selectedOption = this.options.find(x => x.value == this.pricePoint.info);
+
+    this.selectedOption = selectedOption ? selectedOption : this.options[0];
   }
 
 
