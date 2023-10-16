@@ -3,6 +3,7 @@ import { LazyLoad } from 'common';
 import { Subject } from 'rxjs';
 
 @Component({
+  selector: 'copied',
   templateUrl: './copied-popup.component.html',
   styleUrls: ['./copied-popup.component.scss']
 })

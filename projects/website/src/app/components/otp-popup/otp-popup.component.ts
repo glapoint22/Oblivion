@@ -3,6 +3,7 @@ import { LazyLoad } from 'common';
 import { Subject } from 'rxjs';
 
 @Component({
+  selector: 'otp',
   templateUrl: './otp-popup.component.html',
   styleUrls: ['./otp-popup.component.scss']
 })
