@@ -146,7 +146,7 @@
 
 
                     <!-- User Updated List -->
-                    <email-preference [text]="'When I update a list, please send me a confirmation email.'"
+                    <email-preference [text]="'When I make a change to a list name or description, please send me a confirmation email.'"
                         [checked]="preferences.userUpdatedList"
                         (onChange)="preferences.userUpdatedList = $event; setAllChecked()">
                     </email-preference>
