@@ -309,6 +309,8 @@ export class ListsComponent implements OnInit {
 
   onArrow(direction: number) {
 
+    if(this.lists.length === 0) return;
+
     if (this.listMenu.HtmlLists.some(x => x.nativeElement == document.activeElement || this.listMenuContainer.nativeElement == document.activeElement)) {
       // Increment or decrement the index (depending on direction)
       this.indexOfSelectedList = this.indexOfSelectedList + direction;
