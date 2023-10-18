@@ -55,7 +55,7 @@
 
                 <div class="remove-button-container">
                     <button #tabElement id="removeButton" class="dark-button" (click)="onRemoveClick()"
-                        [disabled]="collaborators && collaborators.length == 0">
+                        [disabled]="(collaborators && collaborators.length == 0) || (selectedCollaborator && list.collaboratorId == selectedCollaborator.id)">
                         Remove
                     </button>
                 </div>
@@ -99,7 +99,7 @@
                         </label>
                     </div>
 
-                    <div *ngIf="collaborators && collaborators.length == 0" class="disable-cover">
+                    <div *ngIf="(collaborators && collaborators.length == 0) || (selectedCollaborator && list.collaboratorId == selectedCollaborator.id)" class="disable-cover">
                     </div>
                 </div>
 

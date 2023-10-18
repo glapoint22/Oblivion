@@ -76,10 +76,19 @@
                         </div>
                     </div>
 
-                    <div style="width: 100%; text-align: center;" *ngIf="products && products.length == 0">
+                    <!-- <div style="width: 100%; text-align: center;" *ngIf="products && products.length == 0">
                         <div class="horizontal-line"></div>
                         <div class="no-items">0 items in
                             this list</div>
+                    </div> -->
+
+                    <div *ngIf="products && products.length == 0" class="no-items-container">
+                        <div class="no-items-border">
+                            <div class="no-items-text">
+                                0 items in this list
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
             </div>

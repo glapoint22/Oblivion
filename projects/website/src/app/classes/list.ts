@@ -7,6 +7,7 @@ export class List {
     public listPermissions: ListPermissions = new ListPermissions();
     public collaboratorCount: number = 0;
     public isOwner: boolean = true;
+    public collaboratorId!: number;
 
     constructor(
         public id: string,
