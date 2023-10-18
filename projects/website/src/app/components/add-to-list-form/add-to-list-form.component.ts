@@ -1,7 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { DataService, LazyLoadingService, RadioButtonLazyLoad, SpinnerAction, SummaryProduct } from 'common';
-import { List } from '../../classes/list';
 import { AddToListPromptComponent } from '../../components/add-to-list-prompt/add-to-list-prompt.component';
 import { CreateListFormComponent } from '../create-list-form/create-list-form.component';
 import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate-item-prompt.component';
@@ -139,13 +138,6 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
       }
     }, SpinnerAction.StartEnd)
       .then((createListForm: CreateListFormComponent) => {
-        createListForm.onListCreated.subscribe((list: List) => {
-          this.lists.push({
-            key: list.name,
-            value: list.id
-          });
-          this.selectedList = this.lists[this.lists.length - 1];
-        });
         createListForm.product = this.product;
         createListForm.productImage = this.productImage;
         createListForm.fromAddToListForm = true;

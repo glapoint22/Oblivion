@@ -97,4 +97,11 @@ export class UserAccountNotificationFormComponent extends NotificationFormCompon
       }
     }
   }
+
+
+
+  // ====================================================================( GET DATE )======================================================================= \\
+  getDate(date: string) {
+    return new Date(date + 'Z');
+  }
 }
