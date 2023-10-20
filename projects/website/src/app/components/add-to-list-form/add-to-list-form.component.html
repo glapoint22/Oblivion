@@ -72,7 +72,10 @@
 
                     <ng-container *ngIf="lists.length > 1">
                         <div class="label">Select Your List:</div>
-                        <div #radioButtonsContainer class="radio-buttons-container" (scroll)="onScroll(radioButtonsContainer)" (wheel)="onMouseWheel($event, radioButtonsContainer)">
+
+                        <!-- (scroll)="onScroll(radioButtonsContainer)" (wheel)="onMouseWheel($event, radioButtonsContainer)" -->
+
+                        <div #radioButtonsContainer class="radio-buttons-container">
                             <ng-container *ngFor="let list of lists">
                                 <label class="radio" style="display: block;">
                                     <div>{{list.key}}</div>

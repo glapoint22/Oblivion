@@ -248,16 +248,16 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   }
 
 
-  onScroll(listContainer: HTMLElement) {
-    listContainer.scrollTop = Math.round(listContainer.scrollTop / 22) * 22;
-  }
+  // onScroll(listContainer: HTMLElement) {
+  //   listContainer.scrollTop = Math.round(listContainer.scrollTop / 22) * 22;
+  // }
 
 
-  onMouseWheel(e: WheelEvent, listContainer: HTMLElement) {
-    e.preventDefault();
-    e.stopPropagation();
+  // onMouseWheel(e: WheelEvent, listContainer: HTMLElement) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
 
-    const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
-    listContainer.scrollTop += (delta * 44);
-  }
+  //   const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
+  //   listContainer.scrollTop += (delta * 44);
+  // }
 }

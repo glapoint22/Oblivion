@@ -42,7 +42,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
 
 
   ngAfterViewInit(): void {
-    super.ngAfterViewInit()
+    this.disableScroll();
     this.open();
 
     if (this.HTMLElements.length > 0) {

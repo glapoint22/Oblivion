@@ -27,7 +27,7 @@
 
                 <!-- Pic -->
                 <div class="pic-content" [ngStyle]="{'visibility': !picLoaded ? 'hidden' : 'visible'}">
-                    <img #pic (load)="onPicLoad()" (mousedown)="onPicDown($event)" (touchstart)="onPicTouch($event)">
+                    <img #pic (load)="onPicLoad()" (mousedown)="onPicDown($event)" (touchstart)="onPicTouch($event)" draggable="false">
                     <div #circleOverlay class="circle-overlay"></div>
                     <div *ngIf="dragMessageVisible" class="drag-message">
                         <i class="move-icon"></i>
