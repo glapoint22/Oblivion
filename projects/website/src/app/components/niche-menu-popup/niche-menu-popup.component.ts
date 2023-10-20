@@ -63,18 +63,18 @@ export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
   }
 
 
-  onScroll() {
-    this.nicheMenu.nativeElement.scrollTop = Math.round(this.nicheMenu.nativeElement.scrollTop / 22) * 22;
-  }
+  // onScroll() {
+  //   this.nicheMenu.nativeElement.scrollTop = Math.round(this.nicheMenu.nativeElement.scrollTop / 22) * 22;
+  // }
 
 
-  onMouseWheel(e: WheelEvent) {
-    e.preventDefault();
-    e.stopPropagation();
+  // onMouseWheel(e: WheelEvent) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
 
-    const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
-    this.nicheMenu.nativeElement.scrollTop += (delta * 44);
-  }
+  //   const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
+  //   this.nicheMenu.nativeElement.scrollTop += (delta * 44);
+  // }
 
 
 

@@ -53,16 +53,20 @@ export class LazyLoad implements AfterViewInit {
         }
 
         if (this.disableScrolling) {
-            // If the window has overflow
-            if (window.innerHeight != document.body.clientHeight) {
-                document.body.style.overflow = "hidden";
-                document.body.style.paddingRight = this.scrollbarWidth + 'px';
-                this.lazyLoadingService.paddingRight = this.scrollbarWidth;
+            this.disableScroll();
+        }
+    }
 
-                // If it's an IOS device
-                if (this.checkIos()) document.body.style.position = 'fixed';
-            }
 
+    disableScroll() {
+        // If the window has overflow
+        if (window.innerHeight != document.body.clientHeight) {
+            document.body.style.overflow = "hidden";
+            document.body.style.paddingRight = this.scrollbarWidth + 'px';
+            this.lazyLoadingService.paddingRight = this.scrollbarWidth;
+
+            // If it's an IOS device
+            if (this.checkIos()) document.body.style.position = 'fixed';
         }
     }
 

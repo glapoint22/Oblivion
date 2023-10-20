@@ -48,18 +48,18 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
 
 
 
-  onScroll(radioButtonsContainer: HTMLElement) {
-    radioButtonsContainer.scrollTop = Math.round(radioButtonsContainer.scrollTop / 25) * 25;
-  }
+  // onScroll(radioButtonsContainer: HTMLElement) {
+  //   radioButtonsContainer.scrollTop = Math.round(radioButtonsContainer.scrollTop / 25) * 25;
+  // }
 
 
-  onMouseWheel(e: WheelEvent, radioButtonsContainer: HTMLElement) {
-    e.preventDefault();
-    e.stopPropagation();
+  // onMouseWheel(e: WheelEvent, radioButtonsContainer: HTMLElement) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
 
-    const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
-    radioButtonsContainer.scrollTop += (delta * 50);
-  }
+  //   const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
+  //   radioButtonsContainer.scrollTop += (delta * 50);
+  // }
 
 
 

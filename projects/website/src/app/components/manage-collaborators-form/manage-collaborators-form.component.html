@@ -25,8 +25,9 @@
                 <div class="label">Collaborators:</div>
                 <div class="list-border">
 
-                    <div #listContainer class="list-container" (scroll)="onScroll(listContainer)"
-                        (wheel)="onMouseWheel($event, listContainer)">
+                    <!-- (scroll)="onScroll(listContainer)" (wheel)="onMouseWheel($event, listContainer)" -->
+
+                    <div #listContainer class="list-container">
 
                         <div #collaborator tabindex="-1" class="list-item" *ngFor="let collaborator of collaborators"
                             (click)="onCollaboratorClick(collaborator)"
