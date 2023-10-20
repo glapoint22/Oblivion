@@ -32,6 +32,10 @@
                 </ul>
             </ng-container>
 
+            <ul *ngIf="noMatch">
+                <li>Your password and email do not match.</li>
+            </ul>
+
             <!-- Password -->
             <div class="label">Password:</div>
             <div class="password-input-container">

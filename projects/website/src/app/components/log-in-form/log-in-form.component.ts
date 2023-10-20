@@ -15,6 +15,7 @@ export class LogInFormComponent extends Validation implements OnInit {
   public isPersistent: boolean = true;
   public checkbox!: HTMLInputElement;
   public externalLoginProviders!: Array<ElementRef<HTMLElement>>;
+  public noMatch!: boolean;
   @ViewChild('externalLoginProvidersComponent') externalLoginProvidersComponent!: ExternalLoginProvidersComponent;
 
   constructor(
@@ -61,6 +62,7 @@ export class LogInFormComponent extends Validation implements OnInit {
 
 
   onSubmit() {
+    this.noMatch = false;
     if (this.form.valid) {
 
       this.dataService.post('api/Account/LogIn', {
@@ -76,7 +78,8 @@ export class LogInFormComponent extends Validation implements OnInit {
           },
           error: (error: HttpErrorResponse) => {
             if (error.status == 401) {
-              this.form.controls.email.setErrors({ noMatch: true });
+              this.noMatch = true;
+              // this.form.controls.email.setErrors({ noMatch: true });
             } else if (error.status == 409) {
               this.openAccountNotActivatedForm();
             }
