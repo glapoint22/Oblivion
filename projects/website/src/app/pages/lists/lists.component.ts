@@ -137,6 +137,7 @@ export class ListsComponent implements OnInit {
         removeItemPromptComponent.product = product;
         removeItemPromptComponent.onRemove.subscribe(() => {
           this.products?.splice(this.products.indexOf(product), 1);
+          this.selectedList.totalProducts--;
         });
       });
   }
