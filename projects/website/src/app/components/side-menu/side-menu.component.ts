@@ -122,7 +122,7 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
       if (this.index > (this.niches.length - 1) + 5) this.index = 0;
       if (this.index < 0) this.index = (this.niches.length - 1) + 5;
       this.focusedListItemId = this.index.toString();
-      this.accountList.focusedListItemId = this.focusedListItemId;
+      if (this.accountList) this.accountList.focusedListItemId = this.focusedListItemId;
 
       // Sub niches
     } else {
@@ -142,7 +142,7 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
       this.index = this.index + 1;
       if (this.index > (this.niches.length - 1) + 5) this.index = (this.niches.length - 1) + 5;
       this.focusedListItemId = this.index.toString();
-      this.accountList.focusedListItemId = this.focusedListItemId;
+      if (this.accountList) this.accountList.focusedListItemId = this.focusedListItemId;
 
       // Sub niches
     } else {
@@ -161,7 +161,7 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
       this.index = this.index - 1;
       if (this.index < 0) this.index = 0;
       this.focusedListItemId = this.index.toString();
-      this.accountList.focusedListItemId = this.focusedListItemId;
+      if (this.accountList) this.accountList.focusedListItemId = this.focusedListItemId;
 
       // Sub niches
     } else {
