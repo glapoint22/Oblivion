@@ -1,3 +1,11 @@
 @import '../../../../dist/common/scss/reset';
 @import '../../../../dist/common/scss/checkbox-radio';
 @import '../../../../dist/widgets/scss/widgets';
+
+p:first-child {
+    margin-block-start: 0;
+}
+
+p:last-child {
+    margin-block-end: 0;
+}

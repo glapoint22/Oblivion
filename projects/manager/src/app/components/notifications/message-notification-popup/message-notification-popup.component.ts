@@ -18,6 +18,8 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
   // ====================================================================( NG ON INIT )===================================================================== \\
 
   ngOnInit() {
+    this.employeeTextPath = 'api/Notifications/SendEmail';
+
     super.ngOnInit();
     this.getNotification<Array<MessageNotification>>('api/Notifications/GetMessageNotification',
       [
@@ -137,7 +139,7 @@ export class MessageNotificationPopupComponent extends NotificationPopupComponen
     this.employeeTextParameters = {
       notificationGroupId: this.notificationItem.notificationGroupId,
       notificationId: this.notification[this.userIndex].notificationId,
-      note: this.notification[this.userIndex].employeeMessage.text.trim()
+      Email: this.notification[this.userIndex].employeeMessage.text.trim()
     }
     super.saveEmployeeText();
   }

@@ -150,7 +150,8 @@ export enum EmailType {
     NoncompliantStrikeUserImage,
     NoncompliantStrikeUserName,
     NoncompliantStrikeReview,
-    UserAccountTerminated
+    UserAccountTerminated,
+    MessageReply
 }
 
 

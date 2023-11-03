@@ -71,8 +71,8 @@
                 </div>
             
                 <!-- User Comment -->
-                <div class="notification-user-comment">
-                    {{notification.users[userIndex].text}}
+                <div class="notification-user-comment" [innerHTML]="notification.users[userIndex].text">
+                    <!-- {{notification.users[userIndex].text}} -->
                 </div>
             </ng-container>
         </div>
@@ -117,8 +117,7 @@
                 </div>
 
                 <!-- Review -->
-                <div class="notification-user-comment">
-                    {{notification.reviewWriter.text}}
+                <div class="notification-user-comment" [innerHTML]="notification.reviewWriter.text">
                 </div>
             </ng-container>
         </div>

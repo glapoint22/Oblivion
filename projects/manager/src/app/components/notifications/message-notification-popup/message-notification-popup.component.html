@@ -58,8 +58,8 @@
                         </div>
                     
                         <!-- User Comment -->
-                        <div class="notification-user-comment">
-                            {{notification[userIndex].text}}
+                        <div class="notification-user-comment" [innerHTML]="notification[userIndex].text">
+                            <!-- {{notification[userIndex].text}} -->
                         </div>
                     </ng-container>
                 </div>
@@ -88,13 +88,12 @@
                             </div>
 
                             <!-- Reply -->
-                            <div class="notification-user-comment">
-                                {{notification[userIndex].employeeMessage.text}}
+                            <div class="notification-user-comment" [innerHTML]="notification[userIndex].employeeMessage.text">
                             </div>
                         </ng-container>
                     
                         <!-- Empty Reply -->
-                        <textarea *ngIf="!notification[userIndex].employeeMessage.date" [(ngModel)]="notification[userIndex].employeeMessage.text" (input)="setSendButtonDisabled()"></textarea>
+                        <textarea *ngIf="!notification[userIndex].employeeMessage.date" [(ngModel)]="notification[userIndex].employeeMessage.text" (input)="setSendButtonDisabled()" style="height: -webkit-fill-available;"></textarea>
                     </ng-container>
                 </div>
             </div>

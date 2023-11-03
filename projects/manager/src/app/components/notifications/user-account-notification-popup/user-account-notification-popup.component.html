@@ -77,8 +77,7 @@
                     </div>
                     <div class="notification-label">{{notificationType == NotificationType.List ? 'Description' : 'Review'}}:</div>
                     <div class="notification-info-box">
-                        <div *ngIf="notification" class="notification-user-comment">
-                            {{notification[userIndex].text}}
+                        <div *ngIf="notification" class="notification-user-comment" [innerHTML]="notification[userIndex].text">
                         </div>
                     </div>
                 </div>

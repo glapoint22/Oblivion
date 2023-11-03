@@ -25,8 +25,8 @@
             </div>
             <div class="notification-label">Review:</div>
             <div class="notification-info-box" style="height: 100px; margin-bottom: 13px;">
-                <div class="notification-user-comment">
-                    {{notification.reviewWriter.text}}
+                <div class="notification-user-comment" [innerHTML]="notification.reviewWriter.text">
+                    <!-- {{notification.reviewWriter.text}} -->
                 </div>
             </div>
 
