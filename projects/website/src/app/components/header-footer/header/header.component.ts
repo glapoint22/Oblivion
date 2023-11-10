@@ -3,7 +3,7 @@ import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/cor
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
-import { debounceTime, delay, fromEvent, merge, Observable, of, switchMap } from 'rxjs';
+import { debounceTime, delay, fromEvent, merge, Observable, of, Subscription, switchMap } from 'rxjs';
 import { Niche } from '../../../classes/niche';
 import { Suggestion } from '../../../classes/suggestion';
 import { NichesService } from '../../../services/niches/niches.service';
@@ -19,8 +19,10 @@ import { SideMenuComponent } from '../../side-menu/side-menu.component';
 export class HeaderComponent {
   private searchTerm!: string;
   private nicheMenuPopup!: NicheMenuPopupComponent;
+  private suggestionListSubscription!: Subscription;
   private accountMenuPopup!: AccountMenuPopupComponent;
-
+  private routeQueryParamMapSubscription!: Subscription;
+  private nicheServiceGetNichesSubscription!: Subscription;
 
   public selectedNiche!: Niche;
   public sideMenu!: SideMenuComponent;
@@ -29,7 +31,6 @@ export class HeaderComponent {
   public accountMenuPopupOpen!: boolean;
   public suggestions: Array<Suggestion> = [];
   public suggestionListMousedown: boolean = false;
-
 
   @ViewChild('arrow') arrow!: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
@@ -76,14 +77,14 @@ export class HeaderComponent {
     }
 
     if (nicheId) {
-      this.nicheService.getNiches()
+      this.nicheServiceGetNichesSubscription = this.nicheService.getNiches()
         .pipe(delay(1))
         .subscribe((niches: Array<Niche>) => {
           this.selectedNiche = niches.find(x => x.id == nicheId) as Niche;
         });
     }
 
-    this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
+    this.routeQueryParamMapSubscription = this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
       this.searchInput.nativeElement.value = queryParams.get('search') as string;
     });
 
@@ -92,7 +93,7 @@ export class HeaderComponent {
     const mousedownEvent = fromEvent(this.searchInput.nativeElement, 'mousedown');
     const bothEvents = merge(inputEvent, mousedownEvent);
 
-    bothEvents
+    this.suggestionListSubscription = bothEvents
       .pipe<Event, Array<Suggestion>>(
         debounceTime(100),
         switchMap<Event, Observable<Array<Suggestion>>>(input => {
@@ -240,13 +241,14 @@ export class HeaderComponent {
         this.nicheMenuPopup.selectedNicheName = this.selectedNiche ? this.selectedNiche.name : 'All Niches';
         this.nicheMenuPopup.arrow = this.arrow;
 
-        this.nicheMenuPopup.onNicheMenuItemClick
+        const onNicheMenuItemClickSubscription = this.nicheMenuPopup.onNicheMenuItemClick
           .subscribe((niche: Niche) => {
+            onNicheMenuItemClickSubscription.unsubscribe();
             this.selectedNiche = niche;
           });
 
-        const nicheMenuPopupCloseListener = this.nicheMenuPopup.onClose.subscribe(() => {
-          nicheMenuPopupCloseListener.unsubscribe();
+        const nicheMenuPopupOnCloseSubscription = this.nicheMenuPopup.onClose.subscribe(() => {
+          nicheMenuPopupOnCloseSubscription.unsubscribe();
           this.nicheMenuPopupOpen = false;
         });
       });
@@ -273,8 +275,8 @@ export class HeaderComponent {
         this.accountMenuPopupOpen = true;
         this.accountMenuPopup = accountMenuPopup;
 
-        const accountMenuPopupCloseListener = this.accountMenuPopup.onClose.subscribe(() => {
-          accountMenuPopupCloseListener.unsubscribe();
+        const accountMenuPopupOnCloseSubscription = this.accountMenuPopup.onClose.subscribe(() => {
+          accountMenuPopupOnCloseSubscription.unsubscribe();
           this.accountMenuPopupOpen = false;
         });
       });
@@ -366,5 +368,13 @@ export class HeaderComponent {
         this.selectedNiche = this.nicheService.allNiche;
       }
     }
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.suggestionListSubscription) this.suggestionListSubscription.unsubscribe();
+    if (this.routeQueryParamMapSubscription) this.routeQueryParamMapSubscription.unsubscribe();
+    if (this.nicheServiceGetNichesSubscription) this.nicheServiceGetNichesSubscription.unsubscribe();
   }
 }

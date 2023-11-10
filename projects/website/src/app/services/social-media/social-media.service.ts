@@ -19,6 +19,8 @@ export class SocialMediaService {
     });
   }
 
+  
+
   facebookShare(url: string, quote?: string) {
     const _window = window as any;
 

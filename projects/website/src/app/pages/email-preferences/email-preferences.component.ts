@@ -4,6 +4,7 @@ import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { EmailPreferences } from '../../classes/email-preferences';
 import { SuccessPromptComponent } from '../../components/success-prompt/success-prompt.component';
 import { Breadcrumb } from '../../classes/breadcrumb';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'email-preferences',
@@ -15,6 +16,7 @@ export class EmailPreferencesComponent implements OnInit {
   private initialPreferences: EmailPreferences = new EmailPreferences();
   public allChecked!: boolean;
   public breadcrumbs!: Array<Breadcrumb>;
+  private dataServicePutSubscription!: Subscription;
 
   constructor
     (
@@ -72,7 +74,7 @@ export class EmailPreferencesComponent implements OnInit {
 
 
   onSaveChangesClick() {
-    this.dataService.put('api/EmailPreferences', this.preferences, {
+    this.dataServicePutSubscription = this.dataService.put('api/EmailPreferences', this.preferences, {
       authorization: true,
       spinnerAction: SpinnerAction.Start
     }).subscribe(() => {
@@ -106,5 +108,11 @@ export class EmailPreferencesComponent implements OnInit {
         successPromptComponent.header = 'Email Preferences';
         successPromptComponent.message = 'Your email preferences have been successfully updated.';
       });
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.dataServicePutSubscription) this.dataServicePutSubscription.unsubscribe();
   }
 }

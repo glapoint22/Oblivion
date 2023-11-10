@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { LazyLoad, LazyLoadingService } from 'common';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { Niche } from '../../classes/niche';
 import { NichesService } from '../../services/niches/niches.service';
 
@@ -15,6 +15,7 @@ export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
   public selectedNicheName!: string;
   public arrow!: ElementRef<HTMLElement>;
   public onClose: Subject<void> = new Subject<void>();
+  private nicheServiceGetNichesSubscription!: Subscription;
   @ViewChild('nicheMenu') nicheMenu!: ElementRef<HTMLElement>;
   @ViewChild('arrowContainer') arrowContainer!: ElementRef<HTMLElement>;
 
@@ -29,7 +30,7 @@ export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
 
   ngOnInit(): void {
     this.addEventListeners();
-    this.nichesService.getNiches()
+    this.nicheServiceGetNichesSubscription = this.nichesService.getNiches()
       .subscribe((niches: Array<Niche>) => {
         this.niches = niches;
       });
@@ -116,5 +117,6 @@ export class NicheMenuPopupComponent extends LazyLoad implements OnInit {
     super.ngOnDestroy();
     window.removeEventListener('mousedown', this.mousedown);
     window.removeEventListener('blur', this.windowBlur);
+    if (this.nicheServiceGetNichesSubscription) this.nicheServiceGetNichesSubscription.unsubscribe();
   }
 }

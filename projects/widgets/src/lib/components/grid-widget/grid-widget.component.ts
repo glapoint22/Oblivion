@@ -8,6 +8,7 @@ import { Widget } from '../../classes/widget';
 import { WidgetType } from '../../classes/widget-enums';
 import { GridWidgetSideMenuComponent } from '../../components/grid-widget-side-menu/grid-widget-side-menu.component';
 import { GridWidgetService } from '../../services/grid-widget/grid-widget.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'grid-widget',
@@ -39,6 +40,7 @@ export class GridWidgetComponent extends Widget {
   public clientWidth!: number;
 
   private gridWidgetSideMenu!: GridWidgetSideMenuComponent;
+  private gridDataSubscription!: Subscription;
 
   constructor(
     public route: ActivatedRoute,
@@ -70,7 +72,7 @@ export class GridWidgetComponent extends Widget {
     if (this.gridWidgetSideMenu) this.gridWidgetSideMenu.filters = this.gridData.filters;
     super.setWidget(gridWidgetData);
 
-    this.gridWidgetService.gridData.subscribe((gridData: GridData) => {
+    this.gridDataSubscription = this.gridWidgetService.gridData.subscribe((gridData: GridData) => {
       this.gridData = gridData;
       if (this.gridWidgetSideMenu) this.gridWidgetSideMenu.filters = this.gridData.filters;
     });
@@ -169,5 +171,11 @@ export class GridWidgetComponent extends Widget {
 
 
     return gridWidgetData;
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.gridDataSubscription) this.gridDataSubscription.unsubscribe();
   }
 }

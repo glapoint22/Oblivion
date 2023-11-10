@@ -4,6 +4,7 @@ import { AccountService, DataService, LazyLoadingService, SpinnerAction, Summary
 import { List } from '../../classes/list';
 import { Validation } from '../../classes/validation';
 import { AddToListFormComponent } from '../add-to-list-form/add-to-list-form.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'create-list-form',
@@ -14,6 +15,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
   public product!: SummaryProduct;
   public productImage!: string;
   public fromAddToListForm!: boolean
+  private dataServicePostSubscription!: Subscription;
   @Output() onListCreated: EventEmitter<List> = new EventEmitter();
 
   constructor
@@ -43,7 +45,7 @@ export class CreateListFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.post<List>('api/Lists/CreateList',
+      this.dataServicePostSubscription = this.dataService.post<List>('api/Lists/CreateList',
         {
           name: this.form.get('listName')?.value,
           description: this.form.get('description')?.value
@@ -88,5 +90,12 @@ export class CreateListFormComponent extends Validation implements OnInit {
     } else {
       this.openAddToListForm();
     }
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

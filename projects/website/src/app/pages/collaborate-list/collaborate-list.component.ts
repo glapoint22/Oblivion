@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from 'common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'collaborate-list',
@@ -12,6 +13,7 @@ export class CollaborateListComponent implements OnInit {
   public ownerName!: string;
   public profileImage!: string;
   public listId!: string;
+  private dataServicePostSubscription!: Subscription;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router) { }
 
@@ -26,7 +28,7 @@ export class CollaborateListComponent implements OnInit {
 
 
   onAcceptClick() {
-    this.dataService.post('api/Lists/AddCollaborator', { collaborateId: this.route.snapshot.params.collaborateListId }, { authorization: true })
+    this.dataServicePostSubscription = this.dataService.post('api/Lists/AddCollaborator', { collaborateId: this.route.snapshot.params.collaborateListId }, { authorization: true })
       .subscribe(() => {
         this.router.navigate(['account', 'lists', this.listId]);
       });
@@ -36,5 +38,11 @@ export class CollaborateListComponent implements OnInit {
 
   onCancelClick() {
     this.router.navigate(['account', 'lists']);
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

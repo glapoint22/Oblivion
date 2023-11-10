@@ -21,6 +21,8 @@ export class ProductComponent implements OnInit {
   public relatedProducts!: RelatedProducts;
   public clientWidth!: number;
   public breadcrumbs!: Array<Breadcrumb>;
+  private routeDataSubscription!: Subscription;
+  private dataServiceGetSubscription!: Subscription;
 
   constructor
     (
@@ -32,7 +34,7 @@ export class ProductComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.route.data.subscribe(data => {
+    this.routeDataSubscription = this.route.data.subscribe(data => {
       this.product = data.product;
 
       // Set the meta tags
@@ -61,7 +63,7 @@ export class ProductComponent implements OnInit {
 
 
       // This will get the rest of the product properties
-      this.dataService.get('api/Products/GetProperties', [{ key: 'productId', value: this.product.id }])
+      this.dataServiceGetSubscription = this.dataService.get('api/Products/GetProperties', [{ key: 'productId', value: this.product.id }])
         .subscribe((properties: any) => {
           this.pricePoints = properties.pricePoints;
           this.components = properties.components;
@@ -123,9 +125,9 @@ export class ProductComponent implements OnInit {
       }
     }, SpinnerAction.StartEnd)
       .then(() => {
-        const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
+        const accountServiceOnRedirectSubscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           this.onWriteReviewClick();
-          subscription.unsubscribe();
+          accountServiceOnRedirectSubscription.unsubscribe();
         });
       });
   }
@@ -134,5 +136,12 @@ export class ProductComponent implements OnInit {
   @HostListener('window:resize')
   onWindowResize() {
     this.clientWidth = document.documentElement.clientWidth;
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.routeDataSubscription) this.routeDataSubscription.unsubscribe();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
   }
 }

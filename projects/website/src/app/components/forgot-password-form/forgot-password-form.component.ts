@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { ResetPasswordFormComponent } from '../reset-password-form/reset-password-form.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'forgot-password-form',
@@ -13,6 +14,8 @@ import { ResetPasswordFormComponent } from '../reset-password-form/reset-passwor
 })
 export class ForgotPasswordFormComponent extends Validation implements OnInit {
   public isLoginPage!: boolean;
+  private dataServiceGetSubscription!: Subscription;
+  private formStatusChangesSubscription!: Subscription;
 
   constructor
     (
@@ -36,9 +39,9 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
       })
     });
 
-    this.form.statusChanges.subscribe((status: string) => {
+    this.formStatusChangesSubscription = this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
-        this.dataService.get('api/Account/ForgotPassword', [{
+        this.dataServiceGetSubscription = this.dataService.get('api/Account/ForgotPassword', [{
           key: 'email',
           value: this.form.get('email')?.value
         }], { spinnerAction: SpinnerAction.Start }).subscribe({
@@ -101,5 +104,13 @@ export class ForgotPasswordFormComponent extends Validation implements OnInit {
     if (this.tabElements && this.tabElements[2].nativeElement == document.activeElement) {
       this.onLogInLinkClick();
     }
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.formStatusChangesSubscription) this.formStatusChangesSubscription.unsubscribe();
   }
 }

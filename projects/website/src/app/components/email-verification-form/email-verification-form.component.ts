@@ -5,6 +5,7 @@ import { AccountService, DataService, LazyLoadingService, SpinnerAction } from '
 import { Validation } from '../../classes/validation';
 import { OtpPopupComponent } from '../otp-popup/otp-popup.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'email-verification-form',
@@ -14,6 +15,9 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class EmailVerificationFormComponent extends Validation implements OnInit {
   public email!: string;
   public emailResent!: boolean;
+  private dataServiceGetSubscription!: Subscription;
+  private dataServicePutSubscription!: Subscription;
+  private formStatusChangesSubscription!: Subscription;
   @ViewChild('otpResentPopupContainer', { read: ViewContainerRef }) otpResentPopupContainer!: ViewContainerRef;
 
   constructor
@@ -40,9 +44,9 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
       })
     });
 
-    this.form.statusChanges.subscribe((status: string) => {
+    this.formStatusChangesSubscription = this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
-        this.dataService.put('api/Account/ChangeEmail', {
+        this.dataServicePutSubscription =  this.dataService.put('api/Account/ChangeEmail', {
           newEmail: this.email,
           password: this.form.get('password')?.value,
           oneTimePassword: this.form.get('otp')?.value
@@ -100,7 +104,7 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
   onResendEmailClick() {
     this.openOtpPopup();
 
-    this.dataService.get('api/Account/CreateChangeEmailOTP',
+    this.dataServiceGetSubscription  = this.dataService.get('api/Account/CreateChangeEmailOTP',
       [{ key: 'email', value: this.email }],
       {
         spinnerAction: SpinnerAction.None,
@@ -124,7 +128,8 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
         module: OtpPopupModule
       }
     }, SpinnerAction.None, this.otpResentPopupContainer).then((otpPopup: OtpPopupComponent)=> {
-      otpPopup.onClose.subscribe(()=> {
+      const otpPopupOnCloseSubscription = otpPopup.onClose.subscribe(()=> {
+        otpPopupOnCloseSubscription.unsubscribe();
         this.emailResent = false;
       })
     })
@@ -138,5 +143,14 @@ export class EmailVerificationFormComponent extends Validation implements OnInit
 
   onSubmit() {
     this.emailResent = false;
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.dataServicePutSubscription) this.dataServicePutSubscription.unsubscribe();
+    if (this.formStatusChangesSubscription) this.formStatusChangesSubscription.unsubscribe();
   }
 }

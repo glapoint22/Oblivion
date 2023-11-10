@@ -5,6 +5,7 @@ import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { OtpPopupComponent } from '../otp-popup/otp-popup.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'reset-password-form',
@@ -14,6 +15,8 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class ResetPasswordFormComponent extends Validation {
   public email!: string;
   public emailResent!: boolean;
+  private dataServiceGetSubscription!: Subscription;
+  private dataServicePostSubscription!: Subscription;
   @ViewChild('otpResentPopupContainer', { read: ViewContainerRef }) otpResentPopupContainer!: ViewContainerRef;
 
   constructor
@@ -59,7 +62,7 @@ export class ResetPasswordFormComponent extends Validation {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.post('api/Account/ResetPassword', {
+      this.dataServicePostSubscription = this.dataService.post('api/Account/ResetPassword', {
         email: this.email,
         newPassword: this.form.get('newPassword')?.value,
         oneTimePassword: this.form.get('otp')?.value
@@ -81,7 +84,7 @@ export class ResetPasswordFormComponent extends Validation {
   onResendEmailClick() {
     this.openOtpPopup();
 
-    this.dataService.get('api/Account/ForgotPassword', [{
+    this.dataServiceGetSubscription = this.dataService.get('api/Account/ForgotPassword', [{
       key: 'email',
       value: this.email
     }]).subscribe();
@@ -102,7 +105,8 @@ export class ResetPasswordFormComponent extends Validation {
         module: OtpPopupModule
       }
     }, SpinnerAction.None, this.otpResentPopupContainer).then((otpPopup: OtpPopupComponent)=> {
-      otpPopup.onClose.subscribe(()=> {
+      const otpPopupOnCloseSubscription = otpPopup.onClose.subscribe(()=> {
+        otpPopupOnCloseSubscription.unsubscribe();
         this.emailResent = false;
       })
     })
@@ -128,5 +132,13 @@ export class ResetPasswordFormComponent extends Validation {
         successPromptComponent.header = 'Successful Password Reset';
         successPromptComponent.message = 'Your password has been successfully reset.';
       });
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

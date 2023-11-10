@@ -4,6 +4,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { EmailVerificationFormComponent } from '../email-verification-form/email-verification-form.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'change-email-form',
@@ -11,6 +12,8 @@ import { EmailVerificationFormComponent } from '../email-verification-form/email
   styleUrls: ['./change-email-form.component.scss']
 })
 export class ChangeEmailFormComponent extends Validation implements OnInit {
+  private dataServiceGetSubscription!: Subscription;
+  private formStatusChangesSubscription!: Subscription;
 
   constructor
     (
@@ -34,9 +37,9 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
       })
     });
 
-    this.form.statusChanges.subscribe((status: string) => {
+    this.formStatusChangesSubscription = this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
-        this.dataService.get('api/Account/CreateChangeEmailOTP', [{
+        this.dataServiceGetSubscription = this.dataService.get('api/Account/CreateChangeEmailOTP', [{
           key: 'email',
           value: this.form.get('email')?.value
         }], {
@@ -83,5 +86,13 @@ export class ChangeEmailFormComponent extends Validation implements OnInit {
       .then((emailVerificationForm: EmailVerificationFormComponent) => {
         emailVerificationForm.email = this.form.get('email')?.value;
       });
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.formStatusChangesSubscription) this.formStatusChangesSubscription.unsubscribe();
   }
 }

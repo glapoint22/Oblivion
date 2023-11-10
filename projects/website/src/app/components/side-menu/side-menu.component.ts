@@ -4,6 +4,7 @@ import { AccountService, DataService, LazyLoad, LazyLoadingService, SpinnerActio
 import { Niche } from '../../classes/niche';
 import { NichesService } from '../../services/niches/niches.service';
 import { AccountListComponent } from '../account-list/account-list.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'side-menu',
@@ -18,6 +19,8 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
   public focusedSubListItemId: string = '0';
   private index: number = -1;
   private subIndex: number = 0;
+  private dataServiceGetSubscription!: Subscription;
+  private nicheServiceGetNichesSubscription!: Subscription;
   @ViewChild('accountList') accountList!: AccountListComponent;
 
   constructor
@@ -32,7 +35,7 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
 
   ngOnInit(): void {
     this.addEventListeners();
-    this.nicheService.getNiches()
+    this.nicheServiceGetNichesSubscription = this.nicheService.getNiches()
       .subscribe((niches: Array<Niche>) => {
         this.niches = niches;
       });
@@ -93,7 +96,7 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
     this.focusedListItemId = nicheFocusId;
     this.index = parseInt(nicheFocusId);
 
-    this.dataService.get<Array<Niche>>('api/Niches/GetSubniches', [{ key: 'nicheId', value: niche.id }])
+    this.dataServiceGetSubscription = this.dataService.get<Array<Niche>>('api/Niches/GetSubniches', [{ key: 'nicheId', value: niche.id }])
       .subscribe((niches: Array<Niche>) => {
         this.subNiches = niches;
       });
@@ -223,7 +226,9 @@ export class SideMenuComponent extends LazyLoad implements OnInit {
 
   ngOnDestroy() {
     super.ngOnDestroy();
-    window.removeEventListener('mousedown', this.mousedown);
     window.removeEventListener('blur', this.windowBlur);
+    window.removeEventListener('mousedown', this.mousedown);
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.nicheServiceGetNichesSubscription) this.nicheServiceGetNichesSubscription.unsubscribe();
   }
 }

@@ -5,6 +5,7 @@ import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common
 import { List } from '../../classes/list';
 import { ListProduct } from '../../classes/list-product';
 import { DuplicateItemPromptComponent } from '../../components/duplicate-item-prompt/duplicate-item-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'move-item-prompt',
@@ -15,6 +16,7 @@ export class MoveItemPromptComponent extends LazyLoad {
   public product!: ListProduct;
   public fromList!: List;
   public toList!: KeyValue<any, any>;
+  private dataServicePutSubscription!: Subscription;
   @Output() onMove: EventEmitter<void> = new EventEmitter();
 
   constructor
@@ -30,7 +32,7 @@ export class MoveItemPromptComponent extends LazyLoad {
 
 
   onMoveClick() {
-    this.dataService.put<boolean>('api/lists/MoveProduct', {
+    this.dataServicePutSubscription = this.dataService.put<boolean>('api/lists/MoveProduct', {
       productId: this.product.id,
       sourceListId: this.fromList.id,
       destinationListId: this.toList.value
@@ -66,5 +68,12 @@ export class MoveItemPromptComponent extends LazyLoad {
         duplicateItemPrompt.list = this.toList.key;
         duplicateItemPrompt.product = this.product;
       });
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePutSubscription) this.dataServicePutSubscription.unsubscribe();
   }
 }

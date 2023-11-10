@@ -3,6 +3,7 @@ import { SocialUser } from '../../classes/social-user';
 import { AmazonLoginProvider, FacebookLoginProvider, MicrosoftLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
 import { DataService, SpinnerAction } from 'common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'external-login-providers',
@@ -14,6 +15,7 @@ export class ExternalLoginProvidersComponent {
   @Output() onLogIn: EventEmitter<void> = new EventEmitter();
   @Output() onGetExternalLoginProviders: EventEmitter<Array<ElementRef<HTMLElement>>> = new EventEmitter();
   @ViewChildren('tabElement') HTMLElements!: QueryList<ElementRef<HTMLElement>>;
+  private dataServicePostSubscription!: Subscription;
 
   constructor(private authService: SocialAuthService, private dataService: DataService, private socialMediaService: SocialMediaService) { }
 
@@ -63,7 +65,13 @@ export class ExternalLoginProvidersComponent {
 
 
   signIn(socialUser: SocialUser) {
-    this.dataService.post('api/Account/ExternalLogin', socialUser, { spinnerAction: SpinnerAction.StartEnd })
+    this.dataServicePostSubscription = this.dataService.post('api/Account/ExternalLogin', socialUser, { spinnerAction: SpinnerAction.StartEnd })
       .subscribe(() => this.onLogIn.emit());
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

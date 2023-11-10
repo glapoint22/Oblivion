@@ -63,7 +63,8 @@ export class StarsSummaryComponent {
         reviewSummaryPopup.left = (stars.left + window.scrollX) - 117 + leftOffest - rightOffest;
         reviewSummaryPopup.starsOverlayLeft = stars.left - reviewSummaryPopup.left + window.scrollX;
         reviewSummaryPopup.arrowLeft = (reviewSummaryPopup.starsOverlayLeft + 27) < 3 ? 3 : (reviewSummaryPopup.starsOverlayLeft + 27) > 283 ? 283 : (reviewSummaryPopup.starsOverlayLeft + 27);
-        reviewSummaryPopup.onClose.subscribe(() => {
+        const reviewSummaryPopupOnCloseSubscription = reviewSummaryPopup.onClose.subscribe(() => {
+          reviewSummaryPopupOnCloseSubscription.unsubscribe();
           this.popupOpen = false;
         })
       });

@@ -3,6 +3,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'write-review-form',
@@ -13,6 +14,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
   public productId!: string;
   public productImage!: string;
   public productName!: string;
+  private dataServicePostSubscription!: Subscription;
 
   constructor
     (
@@ -50,7 +52,7 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
     if (this.form.valid) {
       const review: string = this.form.get('review')?.value;
 
-      this.dataService.post('api/ProductReviews/PostReview', {
+      this.dataServicePostSubscription = this.dataService.post('api/ProductReviews/PostReview', {
         productId: this.productId,
         rating: this.form.get('rating')?.value,
         title: this.form.get('title')?.value,
@@ -122,5 +124,12 @@ export class WriteReviewFormComponent extends Validation implements OnInit {
     }
 
     return message
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

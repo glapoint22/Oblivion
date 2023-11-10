@@ -25,6 +25,9 @@ export class ReviewsComponent implements OnInit {
   public pageCount!: number;
   public showing!: string;
   public DropdownType = DropdownType;
+  private routeQueryParamMapSubscription!: Subscription;
+  private dataServiceGetSubscription!: Subscription;
+  private dataServicePutSubscription!: Subscription;
   public reviewFilterDropdownList: Array<KeyValue<string, string>> =
     [
       {
@@ -88,7 +91,7 @@ export class ReviewsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
+    this.routeQueryParamMapSubscription = this.route.queryParamMap.subscribe((queryParams: ParamMap) => {
       const currentPage = queryParams.has('page') ? Math.max(1, Number.parseInt(queryParams.get('page') as string)) : 1;
       const sort = queryParams.get('sort');
       const filter = queryParams.get('filter');
@@ -100,7 +103,7 @@ export class ReviewsComponent implements OnInit {
 
 
 
-      this.dataService.get('api/ProductReviews/GetReviews', [
+      this.dataServiceGetSubscription = this.dataService.get('api/ProductReviews/GetReviews', [
         { key: 'productId', value: this.product.id },
         { key: 'sortBy', value: sort ? sort : '' },
         { key: 'filterBy', value: filter ? filter : '' },
@@ -162,7 +165,7 @@ export class ReviewsComponent implements OnInit {
 
 
   onRateReviewClick(review: Review, likes: number, dislikes: number) {
-    this.dataService
+    this.dataServicePutSubscription = this.dataService
       .put('api/ProductReviews/RateReview', {
         reviewId: review.id,
         likes: likes,
@@ -228,14 +231,16 @@ export class ReviewsComponent implements OnInit {
         reviewsSideMenu.filtersList = this.reviewFilterDropdownList;
         reviewsSideMenu.selectedFilter = this.selectedFilter;
 
-        reviewsSideMenu.onFilterChange.subscribe((filter: KeyValue<string, string>) => {
+        const reviewsSideMenuOnFilterChangeSubscription = reviewsSideMenu.onFilterChange.subscribe((filter: KeyValue<string, string>) => {
+          reviewsSideMenuOnFilterChangeSubscription.unsubscribe();
           this.onReviewFilterChange(filter);
         });
 
         reviewsSideMenu.sortList = this.reviewSortDropdownList;
         reviewsSideMenu.selectedSort = this.selectedSort;
 
-        reviewsSideMenu.onSortChange.subscribe((sort: KeyValue<string, string>) => {
+        const reviewsSideMenuOnSortChangeSubscription = reviewsSideMenu.onSortChange.subscribe((sort: KeyValue<string, string>) => {
+          reviewsSideMenuOnSortChangeSubscription.unsubscribe();
           this.onSortChange(sort);
         });
       });
@@ -253,10 +258,9 @@ export class ReviewsComponent implements OnInit {
       }
     }, SpinnerAction.StartEnd)
       .then(() => {
-        const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
+        const accountServiceOnRedirectSubscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           this.onReportReviewClick(reviewId);
-
-          subscription.unsubscribe();
+          accountServiceOnRedirectSubscription.unsubscribe();
         });
 
       });
@@ -265,5 +269,13 @@ export class ReviewsComponent implements OnInit {
 
   getDate(date: string) {
     return new Date(date + 'Z');
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.dataServicePutSubscription) this.dataServicePutSubscription.unsubscribe();
+    if (this.routeQueryParamMapSubscription) this.routeQueryParamMapSubscription.unsubscribe();
   }
 }

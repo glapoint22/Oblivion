@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GridWidgetService, PageContent } from 'widgets';
 import { BrowseResolver } from '../../resolvers/browse/browse.resolver';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'browse',
@@ -10,6 +11,7 @@ import { BrowseResolver } from '../../resolvers/browse/browse.resolver';
 })
 export class BrowseComponent implements OnInit, OnDestroy {
   public pageContent!: PageContent;
+  private routeParentDataSubscription!: Subscription;
 
   constructor
     (
@@ -19,7 +21,7 @@ export class BrowseComponent implements OnInit, OnDestroy {
     ) { }
 
   ngOnInit(): void {
-    this.route.parent?.data.subscribe(data => {
+    this.routeParentDataSubscription = this.route.parent!.data.subscribe(data => {
       if (data.browseData.rows) {
         this.pageContent = data.browseData;
       } else {
@@ -32,5 +34,6 @@ export class BrowseComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.browseResolver.currentId = null;
+    if (this.routeParentDataSubscription) this.routeParentDataSubscription.unsubscribe();
   }
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'delete-account-prompt',
@@ -7,6 +8,8 @@ import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common
   styleUrls: ['./delete-account-prompt.component.scss']
 })
 export class DeleteAccountPromptComponent extends LazyLoad {
+  private dataServiceGetSubscription!: Subscription;
+
   constructor
     (
       private dataService: DataService,
@@ -20,7 +23,7 @@ export class DeleteAccountPromptComponent extends LazyLoad {
 
 
   onDeleteClick() {
-    this.dataService.get('api/Account/CreateDeleteAccountOTP', [], {
+    this.dataServiceGetSubscription = this.dataService.get('api/Account/CreateDeleteAccountOTP', [], {
       authorization: true,
       spinnerAction: SpinnerAction.Start
     })
@@ -42,5 +45,12 @@ export class DeleteAccountPromptComponent extends LazyLoad {
         module: DeleteAccountFormModule
       }
     }, SpinnerAction.End);
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
   }
 }

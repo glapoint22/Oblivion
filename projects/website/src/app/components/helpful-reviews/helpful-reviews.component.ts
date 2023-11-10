@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from 'common';
 import { HelpfulReviews } from '../../classes/helpful-reviews';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'helpful-reviews',
@@ -10,11 +11,12 @@ import { HelpfulReviews } from '../../classes/helpful-reviews';
 })
 export class HelpfulReviewsComponent implements OnInit {
   public helpfulReviews!: HelpfulReviews;
+  private dataServiceGetSubscription!: Subscription;
 
   constructor(private dataService: DataService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.dataService.get<HelpfulReviews>('api/ProductReviews/GetPositiveNegativeReviews', [{ key: 'productId', value: this.route.snapshot.paramMap.get('id') }])
+    this.dataServiceGetSubscription = this.dataService.get<HelpfulReviews>('api/ProductReviews/GetPositiveNegativeReviews', [{ key: 'productId', value: this.route.snapshot.paramMap.get('id') }])
       .subscribe((helpfulReviews: HelpfulReviews) => {
         this.helpfulReviews = helpfulReviews;
       });
@@ -23,5 +25,11 @@ export class HelpfulReviewsComponent implements OnInit {
 
   getDate(date: string) {
     return new Date(date + 'Z');
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
   }
 }

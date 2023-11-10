@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MessageService } from '../../services/message/message.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'message',
@@ -10,6 +11,8 @@ export class MessageComponent implements OnInit {
   @Input() top!: number;
   @Output() onMessageChange: EventEmitter<void> = new EventEmitter();
   @ViewChild('messageContainer') private messageContainer!: ElementRef<HTMLElement>;
+
+  private messageServiceGetMessageSubscription!: Subscription;
 
   // Message
   private _message!: string | null;
@@ -25,7 +28,7 @@ export class MessageComponent implements OnInit {
   constructor(private messageService: MessageService) { }
 
   ngOnInit(): void {
-    this.messageService.getMessage()
+    this.messageServiceGetMessageSubscription = this.messageService.getMessage()
       .subscribe((message: string | null) => {
         if (message) {
           this._message = message;
@@ -41,5 +44,11 @@ export class MessageComponent implements OnInit {
     this.messageService.closeMessage();
     this._message = null;
     this.onMessageChange.emit();
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.messageServiceGetMessageSubscription) this.messageServiceGetMessageSubscription.unsubscribe();
   }
 }

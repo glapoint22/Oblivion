@@ -3,6 +3,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'contact-us-form',
@@ -12,6 +13,8 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class ContactUsFormComponent extends Validation implements OnInit {
   @ViewChild('name') name!: ElementRef<HTMLInputElement>;
   @ViewChild('email') email!: ElementRef<HTMLInputElement>;
+  private dataServicePostMessageSubscription!: Subscription;
+  private dataServicePostNonAccountMessageSubscription!: Subscription;
 
   constructor
     (
@@ -88,7 +91,7 @@ export class ContactUsFormComponent extends Validation implements OnInit {
 
 
   postNonAccountMessage() {
-    this.dataService.post('api/Notifications/PostNonAccountMessage', {
+    this.dataServicePostNonAccountMessageSubscription = this.dataService.post('api/Notifications/PostNonAccountMessage', {
       name: this.form.get('name')?.value.trim(),
       email: this.form.get('email')?.value.trim(),
       text: this.form.get('message')?.value.trim()
@@ -101,7 +104,7 @@ export class ContactUsFormComponent extends Validation implements OnInit {
 
 
   postMessage() {
-    this.dataService.post('api/Notifications/PostMessage', {
+    this.dataServicePostMessageSubscription = this.dataService.post('api/Notifications/PostMessage', {
       text: this.form.get('message')?.value.trim()
     }, {
       authorization: true,
@@ -128,5 +131,12 @@ export class ContactUsFormComponent extends Validation implements OnInit {
         successPrompt.header = 'Contact Us';
         successPrompt.message = 'Thank you for contacting Niche Shack.';
       });
+  }
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePostMessageSubscription) this.dataServicePostMessageSubscription.unsubscribe();
+    if (this.dataServicePostNonAccountMessageSubscription) this.dataServicePostNonAccountMessageSubscription.unsubscribe();
   }
 }

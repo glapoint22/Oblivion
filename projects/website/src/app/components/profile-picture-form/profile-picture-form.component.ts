@@ -2,6 +2,7 @@ import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { AccountService, DataService, LazyLoad, LazyLoadingService, SpinnerAction, SpinnerService } from 'common';
 import { CircleOverlay } from '../../classes/circle-overlay';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'profile-picture-form',
@@ -14,6 +15,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
   private initialPicHeight!: number;
   private picScalingStart = { left: 0, top: 0, width: 0, height: 0 };
   private circle: CircleOverlay = new CircleOverlay();
+  private dataServicePostSubscription!: Subscription;
 
   public imageFile!: Blob;
   public picLoaded!: boolean;
@@ -370,7 +372,7 @@ export class ProfilePictureFormComponent extends LazyLoad {
     formData.append('percentTop', this.circle.percentTop.toString());
     formData.append('percentBottom', this.circle.percentBottom.toString());
 
-    this.dataService.post('api/Account/ChangeProfileImage', formData, {
+    this.dataServicePostSubscription = this.dataService.post('api/Account/ChangeProfileImage', formData, {
       authorization: true,
       spinnerAction: SpinnerAction.Start
     }).subscribe(() => {
@@ -413,5 +415,12 @@ export class ProfilePictureFormComponent extends LazyLoad {
       if (this.tabElements[0].nativeElement == document.activeElement) this.onMinusButtonClick();
       if (this.tabElements[2].nativeElement == document.activeElement) this.onPlusButtonClick();
     }
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

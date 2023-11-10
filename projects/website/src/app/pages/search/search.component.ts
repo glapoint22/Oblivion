@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GridWidgetService, PageContent } from 'widgets';
 import { SearchResolver } from '../../resolvers/search/search.resolver';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'search',
@@ -10,6 +11,7 @@ import { SearchResolver } from '../../resolvers/search/search.resolver';
 })
 export class SearchComponent implements OnInit, OnDestroy {
   public pageContent!: PageContent;
+  private routeParentDataSubscription!: Subscription;
 
   constructor
     (
@@ -19,7 +21,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     ) { }
 
   ngOnInit(): void {
-    this.route.parent?.data.subscribe(data => {
+    this.routeParentDataSubscription = this.route.parent!.data.subscribe(data => {
       if (data.pageContent.rows) {
         this.pageContent = data.pageContent;
       } else {
@@ -30,5 +32,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.searchResolver.currentSearch = null;
+    if (this.routeParentDataSubscription) this.routeParentDataSubscription.unsubscribe();
   }
 }

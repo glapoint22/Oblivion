@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService, DropdownComponent, DropdownType, LazyLoad, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'report-item-form',
@@ -17,6 +18,7 @@ export class ReportItemFormComponent extends LazyLoad {
   public whatTabElement!: ElementRef<HTMLElement>;
   @ViewChild('whereDropdown') whereDropdown!: DropdownComponent;
   @ViewChild('whatDropdown') whatDropdown!: DropdownComponent;
+  private dataServicePostSubscription!: Subscription;
 
   public listItems = [
     {
@@ -161,7 +163,7 @@ export class ReportItemFormComponent extends LazyLoad {
 
 
   onSubmit() {
-    this.dataService.post('api/Notifications/PostProductNotification', {
+    this.dataServicePostSubscription = this.dataService.post('api/Notifications/PostProductNotification', {
       type: this.notificationType,
       productId: this.productId,
       text: this.comments != null && this.comments.trim().length > 0 ? this.comments.trim() : null
@@ -197,5 +199,12 @@ export class ReportItemFormComponent extends LazyLoad {
     if (!this.whereDropdown.dropdownList && !this.whatDropdown.dropdownList) {
       this.close();
     }
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

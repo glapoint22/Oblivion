@@ -4,6 +4,7 @@ import { Event, NavigationEnd, NavigationStart, Router, Scroll } from '@angular/
 import { AccountService, LazyLoadingService, SpinnerService } from 'common';
 import { SocialMediaService } from './services/social-media/social-media.service';
 import { VideoApiService } from './services/video-api/video-api.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,7 @@ import { VideoApiService } from './services/video-api/video-api.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  private routerEventsSubscription!: Subscription
 
   constructor(
     private container: ViewContainerRef,
@@ -86,7 +88,7 @@ export class AppComponent implements OnInit {
 
 
     // Router Events
-    this.router.events
+    this.routerEventsSubscription = this.router.events
       .subscribe(
         (event: Event) => {
 
@@ -114,5 +116,11 @@ export class AppComponent implements OnInit {
             }
           }
         });
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.routerEventsSubscription) this.routerEventsSubscription.unsubscribe();
   }
 }

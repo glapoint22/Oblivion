@@ -3,6 +3,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { DataService, LazyLoadingService } from 'common';
 import { List } from '../../classes/list';
 import { Validation } from '../../classes/validation';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'edit-list-form',
@@ -10,8 +11,9 @@ import { Validation } from '../../classes/validation';
   styleUrls: ['./edit-list-form.component.scss']
 })
 export class EditListFormComponent extends Validation implements OnInit {
-  @Output() onInit: EventEmitter<void> = new EventEmitter();
   public list!: List;
+  private dataServicePutSubscription!: Subscription;
+  @Output() onInit: EventEmitter<void> = new EventEmitter();  
 
   constructor
     (
@@ -42,7 +44,7 @@ export class EditListFormComponent extends Validation implements OnInit {
     if (this.form.valid) {
 
       // Update the list name and description in the database
-      this.dataService.put<List>('api/Lists/EditList', {
+      this.dataServicePutSubscription = this.dataService.put<List>('api/Lists/EditList', {
         id: this.list.id,
         name: this.form.get('listName')?.value,
         description: this.form.get('description')?.value
@@ -54,5 +56,12 @@ export class EditListFormComponent extends Validation implements OnInit {
         this.close();
       });
     }
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePutSubscription) this.dataServicePutSubscription.unsubscribe();
   }
 }

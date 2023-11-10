@@ -501,7 +501,7 @@ export class MediaBrowserComponent extends LazyLoad {
         imageId: this.selectedMedia.id,
         imageSizeType: this.imageSizeType,
         imageSrc: imageSrc
-      }).subscribe((img: Image) => {
+      },{authorization: true}).subscribe((img: Image) => {
         image.src = img.src;
         this.callback(image);
         this.close();

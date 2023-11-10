@@ -61,7 +61,8 @@ export class AccountService {
 
     // If not in the middle of refreshing, log out
     if (!this.refreshing) {
-      this.dataService.get('api/Account/LogOut').subscribe(() => {
+      const dataServiceGetSubscription = this.dataService.get('api/Account/LogOut').subscribe(() => {
+        dataServiceGetSubscription.unsubscribe();
         this.user = undefined;
       });
       this.router.navigate(['/log-in']);
@@ -69,7 +70,9 @@ export class AccountService {
 
       // Wait for refreshing to end, then log out
       const subscription: Subscription = this.waitForRefreshToken.subscribe(() => {
-        this.dataService.get('api/Account/LogOut').subscribe();
+        const dataServiceGetSubscription =  this.dataService.get('api/Account/LogOut').subscribe(()=> {
+          dataServiceGetSubscription.unsubscribe();
+        });
         subscription.unsubscribe();
         this.router.navigate(['/log-in']);
       });
@@ -91,19 +94,24 @@ export class AccountService {
     this.refreshTokenSet = false;
 
     // Get a new refresh token
-    this.dataService.get('api/Account/Refresh', undefined, { authorization: true })
+    const dataServiceGetSubscription = this.dataService.get('api/Account/Refresh', undefined, { authorization: true })
       .subscribe({
         next: (newRefreshToken: any) => {
           this.refreshTokenSet = true;
           this.refreshing = false;
           this.waitForRefreshToken.next();
 
+          dataServiceGetSubscription.unsubscribe();
+
           // Make a call to the server to delete all old refresh tokens
-          this.dataService.delete('api/Account/Refresh', { newRefreshToken: encodeURIComponent(newRefreshToken.value) }, { authorization: true })
-            .subscribe();
+          const dataServiceDeleteSubscription = this.dataService.delete('api/Account/Refresh', { newRefreshToken: encodeURIComponent(newRefreshToken.value) }, { authorization: true })
+            .subscribe(()=> {
+              dataServiceDeleteSubscription.unsubscribe();
+            });
         },
 
         error: (error: HttpErrorResponse) => {
+          dataServiceGetSubscription.unsubscribe();
           // Something went wrong trying to refresh the token
           if (error.status == 404) {
             this.refreshTokenSet = true;

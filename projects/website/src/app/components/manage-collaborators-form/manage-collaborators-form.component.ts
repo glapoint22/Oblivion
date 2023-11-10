@@ -6,6 +6,7 @@ import { InitialCollaborator } from '../../classes/initial-collaborator';
 import { List } from '../../classes/list';
 import { ListPermissions } from '../../classes/list-permissions';
 import { ShareListFormComponent } from '../share-list-form/share-list-form.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'manage-collaborators-form',
@@ -16,6 +17,8 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   private indexOfSelectedCollaborator: number = 0;
   private selectedCollaboratorPermissionKeys!: Array<keyof ListPermissions>;
   private initialCollaborators: Array<InitialCollaborator> = new Array<InitialCollaborator>();
+  private dataServiceGetSubscription!: Subscription;
+  private dataServicePutSubscription!: Subscription;
 
   public list!: List;
   public allChecked!: boolean;
@@ -48,7 +51,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.dataService.get<Array<Collaborator>>('api/Lists/GetCollaborators', [{ key: 'listId', value: this.list.id }], {
+    this.dataServiceGetSubscription = this.dataService.get<Array<Collaborator>>('api/Lists/GetCollaborators', [{ key: 'listId', value: this.list.id }], {
       authorization: true,
       spinnerAction: SpinnerAction.End
     })
@@ -138,7 +141,7 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
 
 
   onApplyClick() {
-    this.dataService.put('api/Lists/UpdateCollaborators', {
+    this.dataServicePutSubscription = this.dataService.put('api/Lists/UpdateCollaborators', {
       updatedCollaborators: this.updatedCollaborators,
       listId: this.list.id
     }, { authorization: true })
@@ -260,4 +263,12 @@ export class ManageCollaboratorsFormComponent extends LazyLoad implements OnInit
   //   const delta = Math.max(-1, Math.min(1, (e.deltaY || -e.detail)));
   //   listContainer.scrollTop += (delta * 44);
   // }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.dataServicePutSubscription) this.dataServicePutSubscription.unsubscribe();
+  }
 }

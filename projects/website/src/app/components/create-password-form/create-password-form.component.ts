@@ -3,6 +3,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { AccountService, DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'create-password-form',
@@ -10,8 +11,9 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./create-password-form.component.scss']
 })
 export class CreatePasswordFormComponent extends Validation implements OnInit {
-  public externalLoginProvider!: string;
   public email!: string;
+  public externalLoginProvider!: string;
+  private dataServiceGetSubscription!: Subscription;
 
   constructor
     (
@@ -49,7 +51,7 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.dataService.get('api/Account/AddPassword', [
+      this.dataServiceGetSubscription = this.dataService.get('api/Account/AddPassword', [
         {
           key: 'password',
           value: this.form.get('newPassword')?.value
@@ -82,5 +84,12 @@ export class CreatePasswordFormComponent extends Validation implements OnInit {
         successPrompt.header = 'Successful Password Creation';
         successPrompt.message = 'Your password has been successfully created.';
       });
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
   }
 }

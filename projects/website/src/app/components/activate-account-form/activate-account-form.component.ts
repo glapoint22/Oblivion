@@ -5,6 +5,7 @@ import { AccountService, DataService, LazyLoadingService, SpinnerAction } from '
 import { Validation } from '../../classes/validation';
 import { OtpPopupComponent } from '../otp-popup/otp-popup.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'activate-account-form',
@@ -14,6 +15,9 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class ActivateAccountFormComponent extends Validation {
   public email!: string;
   public emailResent!: boolean;
+  private dataServiceGetSubscription!: Subscription;
+  private dataServicePostSubscription!: Subscription;
+  private formStatusChangesSubscription!: Subscription;
   @ViewChild('otpResentPopupContainer', { read: ViewContainerRef }) otpResentPopupContainer!: ViewContainerRef;
 
   constructor
@@ -33,9 +37,9 @@ export class ActivateAccountFormComponent extends Validation {
       })
     });
 
-    this.form.statusChanges.subscribe((status: string) => {
+    this.formStatusChangesSubscription = this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
-        this.dataService.post('api/Account/ActivateAccount', {
+        this.dataServicePostSubscription = this.dataService.post('api/Account/ActivateAccount', {
           email: this.email,
           oneTimePassword: this.form.get('otp')?.value,
         }, { spinnerAction: SpinnerAction.Start })
@@ -88,7 +92,7 @@ export class ActivateAccountFormComponent extends Validation {
   onResendEmailClick() {
     this.openOtpPopup();
 
-    this.dataService.get('api/Account/ResendAccountActivationEmail',
+    this.dataServiceGetSubscription = this.dataService.get('api/Account/ResendAccountActivationEmail',
       [{ key: 'email', value: this.email }],
       {
         spinnerAction: SpinnerAction.None
@@ -109,10 +113,20 @@ export class ActivateAccountFormComponent extends Validation {
         component: OtpPopupComponent,
         module: OtpPopupModule
       }
-    }, SpinnerAction.None, this.otpResentPopupContainer).then((otpPopup: OtpPopupComponent)=> {
-      otpPopup.onClose.subscribe(()=> {
+    }, SpinnerAction.None, this.otpResentPopupContainer).then((otpPopup: OtpPopupComponent) => {
+      const otpPopupOnCloseSubscription = otpPopup.onClose.subscribe(() => {
+        otpPopupOnCloseSubscription.unsubscribe();
         this.emailResent = false;
       })
     })
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
+    if (this.formStatusChangesSubscription) this.formStatusChangesSubscription.unsubscribe();
   }
 }

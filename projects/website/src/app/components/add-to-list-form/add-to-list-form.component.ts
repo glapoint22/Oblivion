@@ -5,6 +5,7 @@ import { AddToListPromptComponent } from '../../components/add-to-list-prompt/ad
 import { CreateListFormComponent } from '../create-list-form/create-list-form.component';
 import { DuplicateItemPromptComponent } from '../duplicate-item-prompt/duplicate-item-prompt.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'add-to-list-form',
@@ -16,6 +17,8 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
   public product!: SummaryProduct;
   public productImage!: string;
   public selectedList!: KeyValue<string, string>;
+  private dataServiceGetSubscription!: Subscription;
+  private dataServicePostSubscription!: Subscription;
 
 
   constructor
@@ -26,7 +29,7 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
 
 
   ngAfterViewInit() {
-    this.dataService.get<Array<KeyValue<string, string>>>('api/Lists/GetDropdownLists', undefined, {
+    this.dataServiceGetSubscription = this.dataService.get<Array<KeyValue<string, string>>>('api/Lists/GetDropdownLists', undefined, {
       authorization: true,
       spinnerAction: SpinnerAction.StartEnd
     }).subscribe((lists: Array<KeyValue<string, string>>) => {
@@ -65,7 +68,7 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
 
 
   onSubmit() {
-    this.dataService.post<boolean>('api/Lists/AddProduct', {
+    this.dataServicePostSubscription = this.dataService.post<boolean>('api/Lists/AddProduct', {
       productId: this.product.id,
       listId: this.selectedList.value
     }, {
@@ -160,5 +163,13 @@ export class AddToListFormComponent extends RadioButtonLazyLoad implements OnIni
 
   onRadioButtonChange(radioButton: ElementRef<HTMLElement>) {
     this.selectedList = this.lists[this.tabElements.indexOf(radioButton)];
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

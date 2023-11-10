@@ -88,9 +88,9 @@ export class ReviewsPageComponent implements OnInit {
       }
     }, SpinnerAction.StartEnd)
       .then(() => {
-        const subscription: Subscription = this.accountService.onRedirect.subscribe(() => {
+        const accountServiceOnRedirectSubscription: Subscription = this.accountService.onRedirect.subscribe(() => {
           this.onWriteReviewClick();
-          subscription.unsubscribe();
+          accountServiceOnRedirectSubscription.unsubscribe();
         });
       });
   }

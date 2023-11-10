@@ -52,7 +52,8 @@ export class ListsMenuComponent {
       .then((editListFormComponent: EditListFormComponent) => {
         editListFormComponent.list = this.selectedList;
 
-        editListFormComponent.onInit.subscribe(() => {
+        const editListFormComponentOnInitSubscription = editListFormComponent.onInit.subscribe(() => {
+          editListFormComponentOnInitSubscription.unsubscribe();
           // Get the controls from the edit list form
           const listName = editListFormComponent.form.get('listName');
           const description = editListFormComponent.form.get('description');
@@ -122,7 +123,8 @@ export class ListsMenuComponent {
       .then((deleteListPrompt: DeleteListPromptComponent) => {
         deleteListPrompt.list = this.selectedList;
 
-        deleteListPrompt.onDelete.subscribe(() => {
+        const deleteListPromptOnDeleteSubscription = deleteListPrompt.onDelete.subscribe(() => {
+          deleteListPromptOnDeleteSubscription.unsubscribe();
           this.lists.splice(this.lists.indexOf(this.selectedList), 1);
 
           if (this.lists.length > 0) {

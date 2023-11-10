@@ -4,6 +4,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'change-password-form',
@@ -11,6 +12,8 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
   styleUrls: ['./change-password-form.component.scss']
 })
 export class ChangePasswordFormComponent extends Validation implements OnInit {
+  private dataServicePutSubscription!: Subscription;
+  private formStatusChangesSubscription!: Subscription;
 
   constructor
     (
@@ -47,9 +50,9 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
     }, { validators: this.matchPasswordValidator });
 
 
-    this.form.statusChanges.subscribe((status: string) => {
+    this.formStatusChangesSubscription = this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
-        this.dataService
+        this.dataServicePutSubscription = this.dataService
           .put('api/Account/ChangePassword', {
             CurrentPassword: this.form.get('currentPassword')?.value,
             NewPassword: this.form.get('newPassword')?.value
@@ -96,5 +99,13 @@ export class ChangePasswordFormComponent extends Validation implements OnInit {
         successPrompt.header = 'Successful Password Change';
         successPrompt.message = 'Your password has been successfully changed.';
       });
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePutSubscription) this.dataServicePutSubscription.unsubscribe();
+    if (this.formStatusChangesSubscription) this.formStatusChangesSubscription.unsubscribe();
   }
 }

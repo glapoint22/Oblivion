@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SpinnerService } from '../../services/spinner/spinner.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'spinner',
@@ -10,11 +11,12 @@ export class SpinnerComponent implements OnInit {
   public showSpinner: boolean = false;
   public showComponent!: boolean;
   public window = window;
+  private spinnerStateSubscription!: Subscription;
 
   constructor(public spinnerService: SpinnerService) { }
 
   ngOnInit(): void {
-    this.spinnerService.spinnerState
+    this.spinnerStateSubscription = this.spinnerService.spinnerState
       .subscribe((show: boolean) => {
         if (show) {
           this.showComponent = true;
@@ -31,5 +33,11 @@ export class SpinnerComponent implements OnInit {
           }, 500);
         }
       });
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.spinnerStateSubscription) this.spinnerStateSubscription.unsubscribe();
   }
 }

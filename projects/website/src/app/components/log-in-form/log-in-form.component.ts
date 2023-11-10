@@ -5,6 +5,7 @@ import { AccountService, DataService, LazyLoadingService, SpinnerAction } from '
 import { Validation } from '../../classes/validation';
 import { AccountNotActivatedFormComponent } from '../account-not-activated-form/account-not-activated-form.component';
 import { ExternalLoginProvidersComponent } from '../external-login-providers/external-login-providers.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'log-in-form',
@@ -16,6 +17,7 @@ export class LogInFormComponent extends Validation implements OnInit {
   public checkbox!: HTMLInputElement;
   public externalLoginProviders!: Array<ElementRef<HTMLElement>>;
   public noMatch!: boolean;
+  private dataServicePostSubscription!: Subscription;
   @ViewChild('externalLoginProvidersComponent') externalLoginProvidersComponent!: ExternalLoginProvidersComponent;
 
   constructor(
@@ -65,7 +67,7 @@ export class LogInFormComponent extends Validation implements OnInit {
     this.noMatch = false;
     if (this.form.valid) {
 
-      this.dataService.post('api/Account/LogIn', {
+      this.dataServicePostSubscription = this.dataService.post('api/Account/LogIn', {
         email: this.form.get('email')?.value,
         password: this.form.get('password')?.value,
         isPersistent: this.isPersistent
@@ -187,5 +189,12 @@ export class LogInFormComponent extends Validation implements OnInit {
     if(this.accountService.onRedirect.observed) {
       this.accountService.redirectListener.unsubscribe();
     }
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

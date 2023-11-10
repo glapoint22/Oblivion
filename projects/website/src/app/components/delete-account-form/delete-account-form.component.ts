@@ -5,6 +5,7 @@ import { AccountService, DataService, LazyLoadingService, SpinnerAction } from '
 import { Validation } from '../../classes/validation';
 import { OtpPopupComponent } from '../otp-popup/otp-popup.component';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -15,6 +16,9 @@ import { SuccessPromptComponent } from '../success-prompt/success-prompt.compone
 export class DeleteAccountFormComponent extends Validation implements OnInit {
   public email!: string;
   public emailResent!: boolean;
+  private dataServiceGetSubscription!: Subscription;
+  private dataServiceDeleteSubscription!: Subscription;
+  private formStatusChangesSubscription!: Subscription;
   @ViewChild('otpResentPopupContainer', { read: ViewContainerRef }) otpResentPopupContainer!: ViewContainerRef;
 
   constructor
@@ -45,9 +49,9 @@ export class DeleteAccountFormComponent extends Validation implements OnInit {
     });
 
 
-    this.form.statusChanges.subscribe((status: string) => {
+    this.formStatusChangesSubscription = this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
-        this.dataService.delete('api/Account/DeleteAccount', {
+        this.dataServiceDeleteSubscription = this.dataService.delete('api/Account/DeleteAccount', {
           password: this.form.get('password')?.value,
           oneTimePassword: this.form.get('otp')?.value
         },
@@ -88,7 +92,7 @@ export class DeleteAccountFormComponent extends Validation implements OnInit {
   onResendEmailClick() {
     this.openOtpPopup();
 
-    this.dataService.get('api/Account/CreateDeleteAccountOTP', [],
+    this.dataServiceGetSubscription = this.dataService.get('api/Account/CreateDeleteAccountOTP', [],
       {
         spinnerAction: SpinnerAction.None,
         authorization: true
@@ -111,7 +115,8 @@ export class DeleteAccountFormComponent extends Validation implements OnInit {
         module: OtpPopupModule
       }
     }, SpinnerAction.None, this.otpResentPopupContainer).then((otpPopup: OtpPopupComponent)=> {
-      otpPopup.onClose.subscribe(()=> {
+      const otpPopupOnCloseSubscription = otpPopup.onClose.subscribe(()=> {
+        otpPopupOnCloseSubscription.unsubscribe();
         this.emailResent = false;
       })
     })
@@ -136,5 +141,14 @@ export class DeleteAccountFormComponent extends Validation implements OnInit {
         successPrompt.header = 'Successful Account Deletion';
         successPrompt.message = 'Your account has been successfully deleted.';
       });
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGetSubscription) this.dataServiceGetSubscription.unsubscribe();
+    if (this.dataServiceDeleteSubscription) this.dataServiceDeleteSubscription.unsubscribe();
+    if (this.formStatusChangesSubscription) this.formStatusChangesSubscription.unsubscribe();
   }
 }

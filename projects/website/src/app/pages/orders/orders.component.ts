@@ -9,6 +9,7 @@ import { OrdersSideMenuComponent } from '../../components/orders-side-menu/order
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { OrdersResolver } from '../../resolvers/orders/orders.resolver';
 import { Breadcrumb } from '../../classes/breadcrumb';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'orders',
@@ -24,6 +25,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   public searchTerm!: string;
   public DropdownType = DropdownType;
   public breadcrumbs!: Array<Breadcrumb>;
+  private routeParentDataSubscription!: Subscription;
 
   constructor
     (
@@ -35,7 +37,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.route.parent?.data.subscribe(data => {
+    this.routeParentDataSubscription = this.route.parent!.data.subscribe(data => {
       this.filters = data.ordersData.filters;
       this.orders = data.ordersData.orders;
       this.products = data.ordersData.products;
@@ -181,7 +183,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
         ordersSideMenu.filters = this.filters;
         ordersSideMenu.selectedFilter = this.selectedFilter;
 
-        ordersSideMenu.onApply.subscribe((filter: KeyValue<string, string>) => {
+        const ordersSideMenuOnApplySubscription = ordersSideMenu.onApply.subscribe((filter: KeyValue<string, string>) => {
+          ordersSideMenuOnApplySubscription.unsubscribe();
           this.onFilterChange(filter);
         });
       });
@@ -200,5 +203,6 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.ordersResolver.filters = null;
+    if (this.routeParentDataSubscription) this.routeParentDataSubscription.unsubscribe();
   }
 }

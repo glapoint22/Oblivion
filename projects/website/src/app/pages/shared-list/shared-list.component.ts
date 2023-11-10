@@ -5,6 +5,7 @@ import { DataService, DropdownType, LazyLoadingService, SpinnerAction } from 'co
 import { List } from '../../classes/list';
 import { ListProduct } from '../../classes/list-product';
 import { ListsComponent } from '../lists/lists.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'shared-list',
@@ -13,6 +14,8 @@ import { ListsComponent } from '../lists/lists.component';
 })
 export class SharedListComponent extends ListsComponent implements OnInit {
   public DropdownType = DropdownType;
+  private dataServiceGet3Subscription!: Subscription;
+  private routeParentData2Subscription!: Subscription;
 
   constructor(
     lazyLoadingService: LazyLoadingService,
@@ -23,7 +26,7 @@ export class SharedListComponent extends ListsComponent implements OnInit {
   ) { super(lazyLoadingService, dataService, route, router, location) }
 
   ngOnInit() {
-    this.route.parent?.data.subscribe(data => {
+    this.routeParentData2Subscription = this.route.parent!.data.subscribe(data => {
       this.products = data.sharedList.products;
       this.selectedList = new List(data.sharedList.listId, data.sharedList.name);
     });
@@ -37,7 +40,7 @@ export class SharedListComponent extends ListsComponent implements OnInit {
     });
 
     window.setTimeout(() => {
-      this.dataService.get<Array<ListProduct>>('api/Lists/GetSharedListProducts', [
+      this.dataServiceGet3Subscription = this.dataService.get<Array<ListProduct>>('api/Lists/GetSharedListProducts', [
         {
           key: 'listId',
           value: this.selectedList.id
@@ -53,5 +56,13 @@ export class SharedListComponent extends ListsComponent implements OnInit {
       });
     });
 
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServiceGet3Subscription) this.dataServiceGet3Subscription.unsubscribe();
+    if (this.routeParentData2Subscription) this.routeParentData2Subscription.unsubscribe();
   }
 }

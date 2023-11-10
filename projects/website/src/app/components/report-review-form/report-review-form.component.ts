@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService, LazyLoad, LazyLoadingService, NotificationType, SpinnerAction } from 'common';
 import { SuccessPromptComponent } from '../success-prompt/success-prompt.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'report-review-form',
@@ -11,6 +12,7 @@ export class ReportReviewFormComponent extends LazyLoad {
   public productId!: string;
   public reviewId!: number;
   public comments!: string;
+  private dataServicePostSubscription!: Subscription;
 
   constructor
     (
@@ -26,7 +28,7 @@ export class ReportReviewFormComponent extends LazyLoad {
 
 
   onSubmit() {
-    this.dataService.post('api/Notifications/PostReviewComplaintNotification', {
+    this.dataServicePostSubscription = this.dataService.post('api/Notifications/PostReviewComplaintNotification', {
       productId: this.productId,
       reviewId: this.reviewId,
       text: this.comments != null && this.comments.trim().length > 0 ? this.comments.trim() : null
@@ -66,5 +68,12 @@ export class ReportReviewFormComponent extends LazyLoad {
         this.onSubmit();
       }
     }
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
   }
 }

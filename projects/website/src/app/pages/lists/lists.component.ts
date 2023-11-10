@@ -10,6 +10,7 @@ import { ListsSideMenuComponent } from '../../components/lists-side-menu/lists-s
 import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-item-prompt.component';
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
 import { Breadcrumb } from '../../classes/breadcrumb';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'lists',
@@ -40,6 +41,9 @@ export class ListsComponent implements OnInit {
   ];
 
   public moveToList: Array<KeyValue<string, string>> = [];
+  private routeParentDataSubscription!: Subscription;
+  private dataServiceGet1Subscription!: Subscription;
+  private dataServiceGet2Subscription!: Subscription;
 
   constructor(
     public lazyLoadingService: LazyLoadingService,
@@ -52,7 +56,7 @@ export class ListsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.route.parent?.data.subscribe(results => {
+    this.routeParentDataSubscription = this.route.parent!.data.subscribe(results => {
       if (results.listData) {
         this.lists = results.listData.lists;
         this.products = results.listData.products;
@@ -109,13 +113,15 @@ export class ListsComponent implements OnInit {
         listsSideMenu.lists = this.lists;
         listsSideMenu.selectedList = this.selectedList;
 
-        listsSideMenu.onListClick
+        const listsSideMenuOnListClickSubscription = listsSideMenu.onListClick
           .subscribe((list: List) => {
+            listsSideMenuOnListClickSubscription.unsubscribe();
             this.onListClick(list);
           });
 
-        listsSideMenu.onCreateNewListClick
+        const listsSideMenuOnCreateNewListClickSubscription = listsSideMenu.onCreateNewListClick
           .subscribe(() => {
+            listsSideMenuOnCreateNewListClickSubscription.unsubscribe();
             this.onCreateNewListClick();
           });
       });
@@ -135,7 +141,8 @@ export class ListsComponent implements OnInit {
       .then((removeItemPromptComponent: RemoveItemPromptComponent) => {
         removeItemPromptComponent.list = this.selectedList;
         removeItemPromptComponent.product = product;
-        removeItemPromptComponent.onRemove.subscribe(() => {
+        const removeItemPromptComponentOnRemoveSubscription = removeItemPromptComponent.onRemove.subscribe(() => {
+          removeItemPromptComponentOnRemoveSubscription.unsubscribe();
           this.products?.splice(this.products.indexOf(product), 1);
           this.selectedList.totalProducts--;
         });
@@ -154,7 +161,8 @@ export class ListsComponent implements OnInit {
       }
     }, SpinnerAction.StartEnd)
       .then((createListForm: CreateListFormComponent) => {
-        createListForm.onListCreated.subscribe((list: List) => {
+        const createListFormOnListCreatedSubscription = createListForm.onListCreated.subscribe((list: List) => {
+          createListFormOnListCreatedSubscription.unsubscribe();
           this.lists.push(list);
           this.selectedList = list;
           this.populateMoveToList();
@@ -193,7 +201,8 @@ export class ListsComponent implements OnInit {
         moveItemPrompt.product = product;
         moveItemPrompt.fromList = this.selectedList;
         moveItemPrompt.toList = toListKeyValue;
-        moveItemPrompt.onMove.subscribe(() => {
+        const moveItemPromptOnMoveSubscription = moveItemPrompt.onMove.subscribe(() => {
+          moveItemPromptOnMoveSubscription.unsubscribe();
           this.products?.splice(this.products.indexOf(product), 1);
           this.selectedList.totalProducts--;
           const toList = this.lists.find(x => x.id == toListKeyValue.value) as List;
@@ -217,7 +226,7 @@ export class ListsComponent implements OnInit {
 
     window.setTimeout(() => {
       this.location.replaceState('/account/lists/' + list.id);
-      this.dataService.get<Array<ListProduct>>('api/Lists/GetListProducts', [
+      this.dataServiceGet1Subscription = this.dataService.get<Array<ListProduct>>('api/Lists/GetListProducts', [
         {
           key: 'listId',
           value: list.id
@@ -241,7 +250,7 @@ export class ListsComponent implements OnInit {
     });
 
     window.setTimeout(() => {
-      this.dataService.get<Array<ListProduct>>('api/Lists/GetListProducts', [
+      this.dataServiceGet2Subscription = this.dataService.get<Array<ListProduct>>('api/Lists/GetListProducts', [
         {
           key: 'listId',
           value: this.selectedList.id
@@ -321,5 +330,13 @@ export class ListsComponent implements OnInit {
 
       this.onListClick(this.lists[this.indexOfSelectedList]);
     }
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.routeParentDataSubscription) this.routeParentDataSubscription.unsubscribe();
+    if (this.dataServiceGet1Subscription) this.dataServiceGet1Subscription.unsubscribe();
+    if (this.dataServiceGet2Subscription) this.dataServiceGet2Subscription.unsubscribe();
   }
 }

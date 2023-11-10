@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DataService, LazyLoadingService, SpinnerAction } from 'common';
 import { Validation } from '../../classes/validation';
 import { ActivateAccountFormComponent } from '../../components/activate-account-form/activate-account-form.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -14,6 +15,8 @@ import { ActivateAccountFormComponent } from '../../components/activate-account-
 })
 export class CreateAccountFormComponent extends Validation implements OnInit {
   public isLoginPage!: boolean;
+  private dataServicePostSubscription!: Subscription;
+  private formStatusChangesSubscription!: Subscription;
 
   constructor
     (
@@ -59,10 +62,10 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
         updateOn: 'submit'
       })
     });
-
-    this.form.statusChanges.subscribe((status: string) => {
+    
+    this.formStatusChangesSubscription = this.form.statusChanges.subscribe((status: string) => {
       if (status == 'VALID') {
-        this.dataService.post('api/Account/SignUp', {
+        this.dataServicePostSubscription = this.dataService.post('api/Account/SignUp', {
           firstName: this.form.get('firstName')?.value,
           lastName: this.form.get('lastName')?.value,
           email: this.form.get('email')?.value,
@@ -131,5 +134,13 @@ export class CreateAccountFormComponent extends Validation implements OnInit {
     if (this.tabElements && this.tabElements[5].nativeElement == document.activeElement) {
       this.onLogInLinkClick();
     }
+  }
+
+
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    if (this.dataServicePostSubscription) this.dataServicePostSubscription.unsubscribe();
+    if (this.formStatusChangesSubscription) this.formStatusChangesSubscription.unsubscribe();
   }
 }
