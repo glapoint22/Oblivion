@@ -43,7 +43,7 @@ import {
           },
           {
             id: FacebookLoginProvider.PROVIDER_ID,
-            provider: new FacebookLoginProvider('270837701134383')
+            provider: new FacebookLoginProvider('1311208896056527')
           },
           {
             id: MicrosoftLoginProvider.PROVIDER_ID,
@@ -51,7 +51,7 @@ import {
           },
           {
             id: AmazonLoginProvider.PROVIDER_ID,
-            provider: new AmazonLoginProvider('amzn1.application-oa2-client.183608300c524e37ba3b4c5db91f9d53')
+            provider: new AmazonLoginProvider('amzn1.application-oa2-client.742b84d229be497ba1d55d31051f1d5c')
           }
         ]
       } as SocialAuthServiceConfig,
