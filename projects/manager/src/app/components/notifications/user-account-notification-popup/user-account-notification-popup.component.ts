@@ -9,6 +9,7 @@ import { ReformListFormComponent } from '../reform-list-form/reform-list-form.co
 import { RemoveReviewFormComponent } from '../remove-review-form/remove-review-form.component';
 import { RemoveUserImageFormComponent } from '../remove-user-image-form/remove-user-image-form.component';
 import { ReplaceUserNameFormComponent } from '../replace-user-name-form/replace-user-name-form.component';
+import { environment } from 'projects/manager/src/environments/environment';
 
 @Component({
   templateUrl: './user-account-notification-popup.component.html',
@@ -23,7 +24,7 @@ export class UserAccountNotificationPopupComponent extends NotificationPopupComp
   public NotificationType = NotificationType;
   public notificationName!: string;
   public buttonName!: string;
-
+  public websiteImages = environment.websiteImages;
 
   // ====================================================================( NG ON INIT )===================================================================== \\
 

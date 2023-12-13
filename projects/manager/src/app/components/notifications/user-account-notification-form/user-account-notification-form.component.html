@@ -27,7 +27,7 @@
                         <img style="cursor: pointer;"
                             (mousedown)="$event.stopPropagation()"
                             (click)="openProfilePopup(user, profilePopupContainer)"
-                            [src]="'website-images/' + user.image"
+                            [src]="websiteImages + user.image"
                             [title]="user.firstName + ' ' + user.lastName">
                     </div>
                 </div>
@@ -38,7 +38,7 @@
             </div>
         
             <div *ngIf="!isUserName" class="user-image-container">
-                <img [src]="'website-images/' + user.image">
+                <img [src]="websiteImages + user.image">
             </div>
 
             

@@ -5,6 +5,7 @@ import { NotificationPopupComponent } from '../notification-popup/notification-p
 import { MenuOption } from '../../../classes/menu-option';
 import { NotificationEmployee } from '../../../classes/notifications/notification-employee';
 import { MessageNotification } from '../../../classes/notifications/message-notification';
+import { environment } from 'projects/manager/src/environments/environment';
 
 @Component({
   templateUrl: './message-notification-popup.component.html',
@@ -13,6 +14,7 @@ import { MessageNotification } from '../../../classes/notifications/message-noti
 export class MessageNotificationPopupComponent extends NotificationPopupComponent {
   private deleteAll!: boolean;
   public sendButtonDisabled: boolean = true;
+  public websiteImages = environment.websiteImages;
 
 
   // ====================================================================( NG ON INIT )===================================================================== \\

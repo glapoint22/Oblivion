@@ -5,6 +5,7 @@ import { EmailPreferences } from '../../classes/email-preferences';
 import { SuccessPromptComponent } from '../../components/success-prompt/success-prompt.component';
 import { Breadcrumb } from '../../classes/breadcrumb';
 import { Subscription } from 'rxjs';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({
   selector: 'email-preferences',
@@ -22,7 +23,8 @@ export class EmailPreferencesComponent implements OnInit {
     (
       private dataService: DataService,
       public lazyLoadingService: LazyLoadingService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private socialMediaService: SocialMediaService
     ) { }
 
   ngOnInit() {
@@ -42,9 +44,11 @@ export class EmailPreferencesComponent implements OnInit {
         active: 'Email Preferences'
       }
     ]
+
+    this.socialMediaService.addMetaTags('Email Preferences');
   }
 
-  
+
 
   isDisabled() {
     if (!this.preferences) return true;

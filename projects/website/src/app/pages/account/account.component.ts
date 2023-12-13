@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LazyLoadingService, SpinnerAction } from 'common';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({
   selector: 'account',
@@ -8,7 +9,12 @@ import { LazyLoadingService, SpinnerAction } from 'common';
 })
 export class AccountComponent {
 
-  constructor(private lazyLoadingService: LazyLoadingService) { }
+  constructor(private lazyLoadingService: LazyLoadingService, private socialMediaService: SocialMediaService) { }
+
+  ngOnInit(): void {
+    // Set the meta tags
+    this.socialMediaService.addMetaTags('Your Account');
+  }
 
   async onContactUsClick() {
     this.lazyLoadingService.load(async () => {

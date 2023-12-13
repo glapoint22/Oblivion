@@ -4,6 +4,7 @@ import { DataService, LazyLoad, LazyLoadingService, SpinnerAction } from 'common
 import { NotificationProfilePopupUser } from '../../../classes/notifications/notification-profile-popup-user';
 import { PromptComponent } from '../../prompt/prompt.component';
 import { UserAccountNotificationFormComponent } from '../user-account-notification-form/user-account-notification-form.component';
+import { environment } from 'projects/manager/src/environments/environment';
 
 @Component({
   templateUrl: './notification-profile-popup.component.html',
@@ -22,6 +23,7 @@ export class NotificationProfilePopupComponent extends LazyLoad {
   public AddNoncompliantStrikeButtonDisabled!: boolean;
   public RemoveUserNameButtonDisabled!: boolean;
   public RemoveUserProfileImageButtonDisabled!: boolean;
+  public websiteImages = environment.websiteImages;
 
 
   constructor(lazyLoadingService: LazyLoadingService,

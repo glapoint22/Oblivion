@@ -12,6 +12,7 @@ import { NotificationService } from '../../../services/notification/notification
 import { ProductService } from '../../../services/product/product.service';
 import { Subject } from 'rxjs';
 import { DisableEnableProductFormComponent } from '../disable-enable-product-form/disable-enable-product-form.component';
+import { environment } from 'projects/manager/src/environments/environment';
 
 @Component({
   templateUrl: './product-notification-popup.component.html',
@@ -25,6 +26,7 @@ export class ProductNotificationPopupComponent extends NotificationPopupComponen
   public onPopupClose: Subject<void> = new Subject<void>();
   public selectedNotificationItem!: KeyValue<string, number>;
   public notificationItemDropdownList: Array<KeyValue<string, number>> = [];
+  public websiteImages = environment.websiteImages;
   @ViewChild('notificationItemsDropdown') notificationItemsDropdown!: DropdownComponent;
 
 

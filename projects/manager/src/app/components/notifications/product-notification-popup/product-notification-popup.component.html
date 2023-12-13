@@ -74,7 +74,7 @@
                             <img style="cursor: pointer;"
                                 (mousedown)="$event.stopPropagation()"
                                 (click)="openProfilePopup(notification.users[userIndex], profilePopupContainer)"
-                                [src]="notification.users[userIndex].image ? 'website-images/' + notification.users[userIndex].image : 'assets/no-account-pic.png'"
+                                [src]="notification.users[userIndex].image ? websiteImages + notification.users[userIndex].image : 'assets/no-account-pic.png'"
                                 [title]="notification.users[userIndex].firstName + ' ' + notification.users[userIndex].lastName">
                         </div>
                     </div>

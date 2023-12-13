@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { LazyLoad } from 'common';
 import { Subject } from 'rxjs';
 import { UserImageNotification } from '../../../classes/notifications/user-image-notification';
+import { environment } from 'projects/manager/src/environments/environment';
 
 @Component({
   templateUrl: './remove-user-image-form.component.html',
@@ -11,6 +12,7 @@ export class RemoveUserImageFormComponent extends LazyLoad {
   public notification!: UserImageNotification;
   public callback!: Function;
   public onClose: Subject<void> = new Subject<void>();
+  public websiteImages = environment.websiteImages;
 
   ngOnInit() {
     super.ngOnInit();

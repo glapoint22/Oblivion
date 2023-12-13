@@ -6,6 +6,7 @@ import { NotificationEmployee } from '../../../classes/notifications/notificatio
 import { ReviewComplaintNotification } from '../../../classes/notifications/review-complaint-notification';
 import { NotificationPopupComponent } from '../notification-popup/notification-popup.component';
 import { RemoveRestoreReviewFormComponent } from '../remove-restore-review-form/remove-restore-review-form.component';
+import { environment } from 'projects/manager/src/environments/environment';
 
 @Component({
   templateUrl: './review-complaint-notification-popup.component.html',
@@ -13,6 +14,7 @@ import { RemoveRestoreReviewFormComponent } from '../remove-restore-review-form/
 })
 export class ReviewComplaintNotificationPopupComponent extends NotificationPopupComponent {
   private formOpen!: boolean;
+  public websiteImages = environment.websiteImages;
 
   // ====================================================================( NG ON INIT )===================================================================== \\
 

@@ -53,7 +53,7 @@
                         <img *ngIf="notification" style="cursor: pointer;"
                                 (mousedown)="$event.stopPropagation()"
                                 (click)="openProfilePopup(notification[userIndex], profilePopupContainer)"
-                                [src]="notification[userIndex].image ? 'website-images/' + notification[userIndex].image : 'assets/no-account-pic.png'"
+                                [src]="notification[userIndex].image ? websiteImages + notification[userIndex].image : 'assets/no-account-pic.png'"
                                 [title]="notification[userIndex].firstName + ' ' + notification[userIndex].lastName">
                     </div>
                 </div>
@@ -64,7 +64,7 @@
             </div>
         
             <div *ngIf="notification && notificationType == NotificationType.UserImage" class="user-image-container">
-                <img [src]="'website-images/' + notification[userIndex].userImage">
+                <img [src]="websiteImages + notification[userIndex].userImage">
             </div>
 
             <div *ngIf="notificationType == NotificationType.List || notificationType == NotificationType.Review" >

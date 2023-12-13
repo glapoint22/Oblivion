@@ -38,7 +38,7 @@ export class ProductComponent implements OnInit {
       this.product = data.product;
 
       // Set the meta tags
-      this.socialMediaService.addMetaTags(this.product.name, this.product.description, this.product.media[0].src);
+      this.socialMediaService.addMetaTags(this.product.name, this.product.description, 'images/' + this.product.media[0].imageLg);
 
       // Set the breadcrumbs
       this.breadcrumbs = [

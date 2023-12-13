@@ -6,6 +6,7 @@ import { List } from '../../classes/list';
 import { ListProduct } from '../../classes/list-product';
 import { ListsComponent } from '../lists/lists.component';
 import { Subscription } from 'rxjs';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({
   selector: 'shared-list',
@@ -22,13 +23,15 @@ export class SharedListComponent extends ListsComponent implements OnInit {
     dataService: DataService,
     route: ActivatedRoute,
     public router: Router,
-    location: Location
-  ) { super(lazyLoadingService, dataService, route, router, location) }
+    location: Location,
+    socialMediaService: SocialMediaService
+  ) { super(lazyLoadingService, dataService, route, router, location, socialMediaService) }
 
   ngOnInit() {
     this.routeParentData2Subscription = this.route.parent!.data.subscribe(data => {
       this.products = data.sharedList.products;
       this.selectedList = new List(data.sharedList.listId, data.sharedList.name);
+      this.socialMediaService.addMetaTags(data.sharedList.name);
     });
   }
 

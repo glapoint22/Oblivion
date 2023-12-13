@@ -11,6 +11,7 @@ import { MoveItemPromptComponent } from '../../components/move-item-prompt/move-
 import { RemoveItemPromptComponent } from '../../components/remove-item-prompt/remove-item-prompt.component';
 import { Breadcrumb } from '../../classes/breadcrumb';
 import { Subscription } from 'rxjs';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({
   selector: 'lists',
@@ -50,7 +51,8 @@ export class ListsComponent implements OnInit {
     public dataService: DataService,
     public route: ActivatedRoute,
     public router: Router,
-    private location: Location
+    private location: Location,
+    protected socialMediaService: SocialMediaService
   ) { }
 
 
@@ -81,6 +83,8 @@ export class ListsComponent implements OnInit {
         active: 'Your Lists'
       }
     ]
+
+    this.socialMediaService.addMetaTags('Your LIsts');
   }
 
 

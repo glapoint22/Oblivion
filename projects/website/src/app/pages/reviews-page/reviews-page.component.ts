@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { DetailProduct } from '../../classes/detail-product';
 import { WriteReviewFormComponent } from '../../components/write-review-form/write-review-form.component';
 import { Breadcrumb } from '../../classes/breadcrumb';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({
   selector: 'reviews-page',
@@ -19,7 +20,8 @@ export class ReviewsPageComponent implements OnInit {
     (
       private route: ActivatedRoute,
       private accountService: AccountService,
-      public lazyLoadingService: LazyLoadingService
+      public lazyLoadingService: LazyLoadingService,
+      private socialMediaService: SocialMediaService
     ) { }
 
   ngOnInit(): void {
@@ -51,6 +53,8 @@ export class ReviewsPageComponent implements OnInit {
         active: 'Reviews'
       }
     ]
+
+    this.socialMediaService.addMetaTags(this.product.name + ' Customer Reviews');
   }
 
 

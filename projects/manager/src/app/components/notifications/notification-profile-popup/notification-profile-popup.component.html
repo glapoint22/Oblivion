@@ -10,7 +10,7 @@
                              'outline': user.nonAccountName ? 'none' : '1px solid #868686',
                              'margin-top': user.nonAccountName ? '-1px' : '2px'}">
            
-                <img [src]="user.nonAccountName ? 'assets/message-notification.png' : user.image ? 'website-images/' + user.image : 'assets/no-account-pic.png'"
+                <img [src]="user.nonAccountName ? 'assets/message-notification.png' : user.image ? websiteImages + user.image : 'assets/no-account-pic.png'"
                      [ngStyle]="{'border-radius': user.nonAccountName ? 'none' : '50%'}">
             </div>
 

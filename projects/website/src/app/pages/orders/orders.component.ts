@@ -10,6 +10,7 @@ import { WriteReviewFormComponent } from '../../components/write-review-form/wri
 import { OrdersResolver } from '../../resolvers/orders/orders.resolver';
 import { Breadcrumb } from '../../classes/breadcrumb';
 import { Subscription } from 'rxjs';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({
   selector: 'orders',
@@ -32,7 +33,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
       private route: ActivatedRoute,
       private router: Router,
       public lazyLoadingService: LazyLoadingService,
-      private ordersResolver: OrdersResolver
+      private ordersResolver: OrdersResolver,
+      private socialMediaService: SocialMediaService
     ) { }
 
 
@@ -79,7 +81,9 @@ export class OrdersComponent implements OnInit, OnDestroy {
           }
         ]
       }
-    })
+    });
+
+    this.socialMediaService.addMetaTags('Your Orders');
   }
 
 

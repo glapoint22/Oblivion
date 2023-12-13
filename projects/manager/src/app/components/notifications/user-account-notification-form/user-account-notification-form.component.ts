@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { NotificationItem } from '../../../classes/notifications/notification-item';
 import { NotificationProfilePopupUser } from '../../../classes/notifications/notification-profile-popup-user';
 import { NotificationFormComponent } from '../notification-form/notification-form.component';
+import { environment } from 'projects/manager/src/environments/environment';
 
 @Component({
   templateUrl: './user-account-notification-form.component.html',
@@ -15,6 +16,7 @@ export class UserAccountNotificationFormComponent extends NotificationFormCompon
   public user!: NotificationProfilePopupUser;
   public onClose: Subject<boolean> = new Subject<boolean>();
   public isUserName!: boolean;
+  public websiteImages = environment.websiteImages;
 
   @ViewChild('notes') notes!: ElementRef<HTMLTextAreaElement>;
 

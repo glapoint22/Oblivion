@@ -3,6 +3,7 @@ import { AccountService, LazyLoadingService, SpinnerAction } from 'common';
 import { CreatePasswordFormComponent } from '../../components/create-password-form/create-password-form.component';
 import { ProfilePictureFormComponent } from '../../components/profile-picture-form/profile-picture-form.component';
 import { Breadcrumb } from '../../classes/breadcrumb';
+import { SocialMediaService } from '../../services/social-media/social-media.service';
 
 @Component({
   selector: 'profile',
@@ -15,7 +16,8 @@ export class ProfileComponent {
   constructor
     (
       public accountService: AccountService,
-      public lazyLoadingService: LazyLoadingService
+      public lazyLoadingService: LazyLoadingService,
+      private socialMediaService: SocialMediaService
     ) { }
 
   ngOnInit() {
@@ -31,6 +33,8 @@ export class ProfileComponent {
         active: 'Your Profile'
       }
     ]
+
+    this.socialMediaService.addMetaTags('Your Profile');
   }
 
 
