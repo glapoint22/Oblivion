@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { SocialUser } from '../../classes/social-user';
-import { AmazonLoginProvider, FacebookLoginProvider, MicrosoftLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
+import { AmazonLoginProvider, MicrosoftLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
 import { SocialMediaService } from '../../services/social-media/social-media.service';
 import { DataService, SpinnerAction } from 'common';
 import { Subscription } from 'rxjs';
@@ -29,12 +29,12 @@ export class ExternalLoginProvidersComponent {
     });
   }
 
-  signInWithFacebook(): void {
-    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID)
-      .then((socialUser: SocialUser) => {
-        this.signIn(socialUser);
-      });
-  }
+  // signInWithFacebook(): void {
+  //   this.authService.signIn(FacebookLoginProvider.PROVIDER_ID)
+  //     .then((socialUser: SocialUser) => {
+  //       this.signIn(socialUser);
+  //     });
+  // }
 
 
   signInWithMicrosoft(): void {

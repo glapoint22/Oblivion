@@ -7,7 +7,7 @@ import { Subject, Subscription } from 'rxjs';
   providedIn: 'root'
 })
 export class SocialMediaService {
-  public facebookAppId: string = '1311208896056527';
+  // public facebookAppId: string = '1311208896056527';
   public onGoogleSignIn = new Subject<SocialUser>();
   public onGoogleSignInSubscription!: Subscription;
 
@@ -21,15 +21,15 @@ export class SocialMediaService {
 
 
 
-  facebookShare(url: string, quote?: string) {
-    const _window = window as any;
+  // facebookShare(url: string, quote?: string) {
+  //   const _window = window as any;
 
-    _window.FB.ui({
-      method: 'share',
-      href: location.origin + url,
-      quote: quote
-    });
-  }
+  //   _window.FB.ui({
+  //     method: 'share',
+  //     href: location.origin + url,
+  //     quote: quote
+  //   });
+  // }
 
 
 
@@ -64,32 +64,32 @@ export class SocialMediaService {
 
 
     // Facebook
-    this.metaService.removeTag("property='og:title'");
-    this.metaService.removeTag("property='og:site_name'");
-    this.metaService.removeTag("property='og:type'");
-    this.metaService.removeTag("property='og:locale'");
-    this.metaService.removeTag("property='fb:app_id'");
-    this.metaService.removeTag("property='og:url'");
-    this.metaService.removeTag("property='og:image'");
-    this.metaService.removeTag("property='og:image:width'");
-    this.metaService.removeTag("property='og:image:height'");
-    this.metaService.removeTag("property='og:description'");
-    this.metaService.addTag({ property: 'og:title', content: 'Niche Shack - ' + title });
-    this.metaService.addTag({ property: 'og:site_name', content: 'Niche Shack' });
-    this.metaService.addTag({ property: 'og:type', content: 'website' });
-    this.metaService.addTag({ property: 'og:locale', content: 'en_US' });
-    this.metaService.addTag({ property: 'fb:app_id', content: this.facebookAppId });
-    this.metaService.addTag({ property: 'og:url', content: document.location.href });
+    // this.metaService.removeTag("property='og:title'");
+    // this.metaService.removeTag("property='og:site_name'");
+    // this.metaService.removeTag("property='og:type'");
+    // this.metaService.removeTag("property='og:locale'");
+    // this.metaService.removeTag("property='fb:app_id'");
+    // this.metaService.removeTag("property='og:url'");
+    // this.metaService.removeTag("property='og:image'");
+    // this.metaService.removeTag("property='og:image:width'");
+    // this.metaService.removeTag("property='og:image:height'");
+    // this.metaService.removeTag("property='og:description'");
+    // this.metaService.addTag({ property: 'og:title', content: 'Niche Shack - ' + title });
+    // this.metaService.addTag({ property: 'og:site_name', content: 'Niche Shack' });
+    // this.metaService.addTag({ property: 'og:type', content: 'website' });
+    // this.metaService.addTag({ property: 'og:locale', content: 'en_US' });
+    // this.metaService.addTag({ property: 'fb:app_id', content: this.facebookAppId });
+    // this.metaService.addTag({ property: 'og:url', content: document.location.href });
 
-    if (image) {
-      this.metaService.addTag({ property: 'og:image', content: document.location.origin + '/' + image });
-      this.metaService.addTag({ property: 'og:image:width', content: '675' });
-      this.metaService.addTag({ property: 'og:image:height', content: '675' });
-    }
+    // if (image) {
+    //   this.metaService.addTag({ property: 'og:image', content: document.location.origin + '/' + image });
+    //   this.metaService.addTag({ property: 'og:image:width', content: '675' });
+    //   this.metaService.addTag({ property: 'og:image:height', content: '675' });
+    // }
 
 
-    if (description)
-      this.metaService.addTag({ property: 'og:description', content: description.replace(/<p>|<\/p>/gm, '') });
+    // if (description)
+    //   this.metaService.addTag({ property: 'og:description', content: description.replace(/<p>|<\/p>/gm, '') });
 
     // Twitter
     this.metaService.removeTag("name='twitter:card'");

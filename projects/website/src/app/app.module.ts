@@ -9,7 +9,7 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 import { SocialLoginModule, SocialAuthServiceConfig, MicrosoftLoginProvider, AmazonLoginProvider, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 import {
   GoogleLoginProvider,
-  FacebookLoginProvider
+  // FacebookLoginProvider
 } from '@abacritt/angularx-social-login';
 
 @NgModule({
@@ -41,10 +41,10 @@ import {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider('229649504318-88q0h3uqjhtknbem72gmf9p9hfkv0ba8.apps.googleusercontent.com')
           },
-          {
-            id: FacebookLoginProvider.PROVIDER_ID,
-            provider: new FacebookLoginProvider('1311208896056527')
-          },
+          // {
+          //   id: FacebookLoginProvider.PROVIDER_ID,
+          //   provider: new FacebookLoginProvider('1311208896056527')
+          // },
           {
             id: MicrosoftLoginProvider.PROVIDER_ID,
             provider: new MicrosoftLoginProvider('25f2a1b5-25cf-46c9-9840-2bbfa7006bb8')

@@ -70,21 +70,21 @@ export class AppComponent implements OnInit {
 
 
     // Facebook
-    _window.fbAsyncInit = () => {
-      _window.FB.init({
-        appId: this.socialMediaService.facebookAppId,
-        autoLogAppEvents: true,
-        xfbml: true,
-        version: 'v12.0'
-      });
-    };
+    // _window.fbAsyncInit = () => {
+    //   _window.FB.init({
+    //     appId: this.socialMediaService.facebookAppId,
+    //     autoLogAppEvents: true,
+    //     xfbml: true,
+    //     version: 'v12.0'
+    //   });
+    // };
 
-    const facebookScriptTag = document.createElement('script');
-    facebookScriptTag.src = 'https://connect.facebook.net/en_US/sdk.js';
-    facebookScriptTag.async = true;
-    facebookScriptTag.defer = true;
-    facebookScriptTag.crossOrigin = 'anonymous';
-    document.head.appendChild(facebookScriptTag);
+    // const facebookScriptTag = document.createElement('script');
+    // facebookScriptTag.src = 'https://connect.facebook.net/en_US/sdk.js';
+    // facebookScriptTag.async = true;
+    // facebookScriptTag.defer = true;
+    // facebookScriptTag.crossOrigin = 'anonymous';
+    // document.head.appendChild(facebookScriptTag);
 
 
     // Router Events

@@ -51,9 +51,9 @@ export class ShareListFormComponent extends RadioButtonLazyLoad {
     }
 
     switch (socialType) {
-      case 'Facebook':
-        this.socialMediaService.facebookShare(pathName, text);
-        break;
+      // case 'Facebook':
+      //   this.socialMediaService.facebookShare(pathName, text);
+      //   break;
 
       case 'Twitter':
         this.socialMediaService.twitterShare(pathName, text);
@@ -100,13 +100,13 @@ export class ShareListFormComponent extends RadioButtonLazyLoad {
   onEnter(e: KeyboardEvent): void {
     if (this.tabElements) {
       if (this.shareListType == ShareListType.Both) {
-        if (this.tabElements[2].nativeElement == document.activeElement) this.onShareClick('Facebook');
+        // if (this.tabElements[2].nativeElement == document.activeElement) this.onShareClick('Facebook');
         if (this.tabElements[3].nativeElement == document.activeElement) this.onShareClick('Twitter');
         if (this.tabElements[4].nativeElement == document.activeElement) this.onShareClick('Link');
 
       } else {
 
-        if (this.tabElements[0].nativeElement == document.activeElement) this.onShareClick('Facebook');
+        // if (this.tabElements[0].nativeElement == document.activeElement) this.onShareClick('Facebook');
         if (this.tabElements[1].nativeElement == document.activeElement) this.onShareClick('Twitter');
         if (this.tabElements[2].nativeElement == document.activeElement) this.onShareClick('Link');
       }
